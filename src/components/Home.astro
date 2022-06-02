@@ -1,0 +1,181 @@
+---
+import MainBG from '/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp';
+import Sec3BG from '/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash_flop.webp';
+import FlowerIcon from '/images/flower.svg';
+import PlanCards from './PlanCards.astro';
+import { Markdown } from 'astro/components';
+
+const GqlQuery = `{
+  	crowdfundingHome{
+        data{
+            id
+            attributes{
+                Title
+                Intro_text
+                Intro_blob{
+                    data{
+                        id
+                        attributes{
+                            url
+                        }
+                    }
+                }
+                Heading_plans
+                Heading_block
+                Block_text
+                Block_blob{
+                    data{
+                        id
+                        attributes{
+                            url
+                        }
+                    }
+                }
+                Meta{
+ 		        	HTML_Title
+                    Meta_description
+                    noindex
+                    nofollow
+                    URL_slug
+                    Canonical_link
+                }
+            }
+        }
+    }
+}`
+const url = `${import.meta.env.Assets_URL}`;
+const response = await fetch(`${import.meta.env.DB_URL}`,
+	{
+	    method:'POST',
+	    headers: {
+	    	'Content-Type':'application/json',
+	    	'Authorization': `Bearer ${import.meta.env.ACCESS_TOKEN}`
+	    },
+	    body: JSON.stringify({
+	      query: GqlQuery,
+	    })
+	});
+
+const data = await response.json();
+const parseData = data.data.crowdfundingHome.data.attributes;
+---
+
+<div class="hero sm:overflow-hidden relative">
+	<div class=" w-full absolute bottom-0">
+	 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 672.7" class="heroCurve1">
+	 		<defs>
+		        <clipPath id="heroImgFrame">
+					<path class="path" d="M0,377.7V0H1080V590.9s-71.3,81.8-205.3,81.8c-65.5,0-126.9-6.2-189.8-12.6-65.8-6.6-133.1-13.4-208.2-13.4-79.4,0-147.5,7.6-210.1,14.6-53,5.9-102.1,11.4-150.7,11.4C10.1,672.7,0,629.5,0,629.5Z"/>
+				</clipPath>
+			</defs>
+			<image class="h-full sm:h-full w-auto sm:w-screen" height="" width="" href={MainBG} clip-path="url(#heroImgFrame)"></image>
+		</svg>
+	</div>
+
+	<div class="relative h-full wrapper z-30 HeroTxtContainer">
+		<div class="sm:w-1/2 md:w-5/12 HeroTxtContent" role="banner">
+			<div>
+	    		<div class="block sm:hidden mx-auto heroLoveIcon">
+	    			<img class="w-full h-full" src="images/love.svg" alt="love-icon" />
+	    		</div>
+    			<h1 class="heroTitle">{parseData.Title}</h1>
+    			<div class="hidden sm:block ml-auto heroCupIcon">
+	    			<img class="w-full h-full" src="images/cup.svg" alt="cup-icon" />
+	    		</div>
+	    		<div class="pt-1 sm:pt-0 prose max-w-none heroTxt">
+		    		<Markdown>{parseData.Intro_text}</Markdown>
+		    	</div>
+    		</div>
+		</div>
+	</div>
+
+	<div class="hidden sm:block absolute z-20 h-full heroCurve2Container">
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 747.2 799.2" class="h-full w-full">
+		    <defs>
+		        <clipPath id="heroImgFrame2">
+		            <path  d="M747.2,0V702.2c-57,39.9-124,97-321.9,97C136.8,799.2,49.6,715,37.2,503.8S-51.3,148.1,58.5,26.2C67,16.7,75.2,8,82.9,0"/>
+		        </clipPath>
+		    </defs>
+		    <image class="w-auto h-full" x="-45%" height="" width="" href={url + parseData.Intro_blob.data.attributes.url} clip-path="url(#heroImgFrame2)"></image>
+		</svg>
+	</div>
+</div>
+
+<div class="block sm:hidden relative -mt-16 z-20 w-full">
+	<div class="heroCurve3Container">
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 238" class="h-full w-full">
+		    <defs>
+		        <clipPath id="heroImgFrame3">
+		            <path d="M105.7,0C55.3,0,23.2,5.1,0,15.3V230.9c16.8,10.9,73.1,1.5,121.5,0,55.8-1.7,113,7.1,168.9,7.1,49.5,0,84.6-11,84.6-11V15.3c-22.1-14.4-88.8,0-120,0S156.2,0,105.7,0Z"/>
+		        </clipPath>
+		    </defs>
+		    <image class="h-full w-auto" height="" width="" href={url + parseData.Intro_blob.data.attributes.url} clip-path="url(#heroImgFrame3)"></image>
+		</svg>
+	</div>
+</div>
+
+<div class="wrapper planSec" role="main">
+	<h2 class="header-default color-default">{parseData.Heading_plans}</h2>
+    <PlanCards />
+</div>
+
+<div class="homeSec3 overflow-hidden relative">
+	<div class="absolute z-10 -top-10 sm:top-0 -left-0.5 w-screen h-full">
+		<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 1056.7 660.3" class="h-full w-screen">
+		    <defs>
+		        <clipPath id="homeSec3ImgFrame">
+		            <path d="M1056.5,36.1S1016.2-3.2,894.8.2C770.2,3.7,636.1,32.3,511.5,29.1,402.6,26.3,252.1,11.9,143.3,18.4,77.2,22.3,0,36.1,0,36.1V637.5s33.5,22.8,164.7,22.8c64,0,143.2-7.6,203.6-17.6,63.3-10.4,170.1-11.5,243.6-11.5,77.7,0,211.8,24.2,332.8,6.3s111.8-46.8,111.8-46.8V36.1Z"/>
+		        </clipPath>
+		    </defs>
+		    <image class="h-full sm:h-full w-auto sm:w-screen" height="" width="" href={Sec3BG} clip-path="url(#homeSec3ImgFrame)"></image>
+		</svg>
+	</div>
+
+	<div class="hidden sm:block absolute z-20 h-full items-center homeSec3_Curve1Container">
+		<div class="w-auto h-full homeSec3_Curve1">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 803 697.1" class="w-auto h-full">
+			    <defs>
+			        <clipPath id="homeSec3_ImgFrame1">
+			            <path d="M800.6,404.2c-5.9,79.8-10.2,193-138.1,255.1s-222,24-336,24c-81.5,0-162.9,19.8-230.5,12-27-3.1-51.9-10.7-73.6-25.7A94,94,0,0,1,0,647.5V33.8C23.5,12.9,56.8,4.9,96,2.9c63.9-3.3,143.3,9.7,221.1,9.7,90.7,0,282-43.6,394.9,31.5C808.7,108.4,806.6,324.5,800.6,404.2Z"/>
+			        </clipPath>
+			    </defs>
+			    <image class="w-auto h-full" height="" width="" href={url + parseData.Block_blob.data.attributes.url} clip-path="url(#homeSec3_ImgFrame1)"></image>
+			</svg>
+		</div>
+	</div>
+
+    <div class="relative h-full wrapper z-30 homeSec3ContentContainer" role="complementary">
+    	<div class="w-full h-full justify-end flex flex-wrap">
+	    	<div class="w-full sm:w-1/2 h-full flex sm:items-center">
+	    		<div class="relative">
+	    			<h2 class="header-default homeSec3Header">{parseData.Heading_block}
+	    				<span class="icon absolute sm:relative -top-10 sm:top-4 md:top-3 ">
+					    	<span class="relative top-0.5 homeSec3FlowerIcon">
+					    		<img class="w-full h-full" src={FlowerIcon} alt="flower-icon" />
+					    	</span>
+					  	</span>
+	    			</h2>
+		    		<div class="pt-0.5 mt-7 sm:mt-12 prose max-w-none homeSec3Txt">
+		    			<Markdown>{parseData.Block_text}</Markdown>
+		    		</div>
+	    		</div>
+	    	</div>
+    	</div>
+    </div>
+</div>
+
+<div class="block sm:hidden relative -mt-28 z-20 w-full">
+	<div class="w-screen">
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 238" class="h-full w-full">
+		    <defs>
+		        <clipPath id="homeSec3ImgFrame2">
+		            <path d="M105.7,0C55.3,0,23.2,5.1,0,15.3V230.9c16.8,10.9,73.1,1.5,121.5,0,55.8-1.7,113,7.1,168.9,7.1,49.5,0,84.6-11,84.6-11V15.3c-22.1-14.4-88.8,0-120,0S156.2,0,105.7,0Z"/>
+		        </clipPath>
+		    </defs>
+		    <image class="h-auto w-full" height="" width="" href={url + parseData.Block_blob.data.attributes.url} clip-path="url(#homeSec3ImgFrame2)"></image>
+		</svg>
+	</div>
+</div>
+
+<div class="separator"></div>
+

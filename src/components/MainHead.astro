@@ -1,0 +1,39 @@
+---
+export interface Props {
+	title: string;
+	description: string;
+	noIndex: string;
+	noFollow: string;
+	image?: string;
+	canonicalURL?: string | URL;
+}
+
+const { title, description, noIndex, noFollow, image, canonicalURL } = Astro.props as Props;
+---
+<meta charset="UTF-8" />
+<title>{title}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="keywords" content="" />
+<meta name="description" content={description} />
+<meta name="author" content="Dilmah" />
+<meta name="robots" content={noIndex} />
+<meta name="robots" content={noFollow} />
+
+<!-- Sitemap -->
+<!-- <link rel="sitemap" href= /> -->
+
+<!-- RSS -->
+<!-- <link rel="alternate" type="application/rss+xml" href="" /> -->
+
+<!-- Favicon -->
+<link rel="icon" href="/favicon.svg" />
+<!-- SEO -->
+<link rel="canonical" href={canonicalURL} />
+<!-- OpenGraph -->
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:site_name" content="Nusa Ceningan" />
+<meta property="og:image" content={new URL(image, canonicalURL)} />
