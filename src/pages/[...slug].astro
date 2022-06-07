@@ -1,0 +1,153 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// All pages graphql query to be used with fetch
+import AllPagesQuery from '../queries/AllPagesQuery'
+
+// Getting the Confirmation and Home components to create pages
+import Home from '../components/Home.astro';
+import Confirmation from '../components/Confirmation.astro';
+import CrowdfundingForm from '../components/CrowdfundingForm.astro';
+
+/**
+ * This file is used for all the other pages
+ */
+
+// Using getStaticPaths to generate each path
+export async function getStaticPaths() {
+  const allPages = await fetch(`${import.meta.env.DB_URL}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${import.meta.env.ACCESS_TOKEN}`
+      },
+      body: JSON.stringify({
+        query: AllPagesQuery,
+      })
+    }).then(response => response.json());
+  // Saving all Localized home pages
+  let allLocalizedHomePages = allPages.data.crowdfundingHome.data.attributes.localizations.data;
+
+  // Mapping all localized home pages into a new array that returns an object that generates the paths
+  allLocalizedHomePages = allLocalizedHomePages.map((page) => {
+    return {
+      params: {
+        slug: `${page.attributes.locale.substring(0, 2)}`, // URL slug to be used
+      },
+      props: { // Props
+        footerText: allPages.data.recurringElement.data.attributes.Footer_text, // footer text
+        page: { // page object where empty its attributes and give it a type
+          ...page.attributes,
+          type: `home`,
+        }
+      }
+    }
+  })
+
+  // Getting Confirmation pages
+  let allLocalizedConfirmation = allPages.data.crowdfundingPaymentConfirmation.data.attributes.localizations.data;
+  // The default confirmation page
+  let defaultConfirmation = allPages.data.crowdfundingPaymentConfirmation.data.attributes;
+
+  // making sure its return type can create a page and path
+  defaultConfirmation = {
+    params: {
+      slug: defaultConfirmation.Meta.URL_slug, // URL slug to be used
+    },
+    props: { // Props that will be available for components
+      footerText: allPages.data.recurringElement.data.attributes.Footer_text,
+      page: {
+        ...defaultConfirmation,
+        type: `confirm`,
+        Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
+      },
+    }
+  }
+
+  // First check if there are any localized confirmation pages if not do nothing
+  if (allLocalizedConfirmation.length > 0) {
+    allLocalizedConfirmation = allLocalizedConfirmation.map((page) => {
+      return {
+        params: {
+          slug: page.attributes.Meta.URL_slug,
+        },
+        props: {
+          footerText: allPages.data.recurringElement.data.attributes.Footer_text,
+          page: {
+            ...page.attributes,
+            type: 'confirm',
+            Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
+          }
+        }
+      }
+    })
+  }
+
+  let formMeta = allPages.data.crowdfundingForm.data.attributes.Meta;
+  let allPlans = allPages.data.crowdfundingPlans.data;
+
+  // All plans
+
+  allPlans = allPlans.reduce((acc, plan) => {
+    const newPlan = { ...plan.attributes }
+    delete newPlan.localizations
+    const defaultPlan = {
+      params: {
+        slug: `plans/${plan.attributes.Title.toLowerCase()}`,
+      },
+      props: {
+        footerText: allPages.data.recurringElement.data.attributes.Footer_text,
+        page: {
+          ...newPlan,
+          Meta: formMeta,
+          type: 'plan',
+          Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
+        }
+      }
+    }
+    acc.push(defaultPlan)
+    if (plan.attributes.localizations.data.length > 0) {
+      plan.attributes.localizations.data.forEach((page) => {
+        const localizedPlan = {
+          params: {
+            // slug: `${page.attributes.locale.substring(0, 2)}/plans/${page.attributes.Title.toLowerCase()}`,
+            slug: `${page.attributes.locale.substring(0, 2)}/${defaultPlan.params.slug}`,
+          },
+          props: {
+            footerText: allPages.data.recurringElement.data.attributes.Footer_text,
+            page: {
+              ...page.attributes,
+              Meta: formMeta,
+              type: 'plan',
+              Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
+            }
+          }
+        }
+        acc.push(localizedPlan)
+      })
+    }
+    return acc
+  }, [])
+
+  // return all pages altogether each with the right return format
+  return [...allLocalizedConfirmation, ...allLocalizedHomePages, ...allPlans, defaultConfirmation]
+}
+
+// Get each pages props from Astro
+const {
+  page, footerText
+} = Astro.props
+
+---
+
+<Layout locale={page.locale.substring(0,2)} meta={page.Meta} footerText={footerText}
+  introBlobImage={page.Intro_blob.data.attributes.url}>
+  {page.type == `home` ?
+  <Home {page} /> : page.type == `confirm` ?
+  <Confirmation {page} />:
+  <CrowdfundingForm {page}>
+    <input type="hidden" id="planName" name="planName" value={page.Title} />
+  </CrowdfundingForm>
+  }
+</Layout>

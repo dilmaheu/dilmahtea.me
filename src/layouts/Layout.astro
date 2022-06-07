@@ -1,0 +1,130 @@
+---
+// Style Imports
+import '../styles/global.css';
+import '../styles/styles.css';
+// Component Imports
+import MainHead from '../components/MainHead.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+
+/**
+ * This file is used as a re-usable component that is the layout
+ * It features the head, navbar and footer
+ */
+
+interface Props {
+	locale: string
+	meta: any
+	footerText: string
+	introBlobImage: string
+}
+
+const { meta, locale, footerText, introBlobImage } = Astro.props as Props
+let { noindex, nofollow } = meta
+noindex = noindex == null
+nofollow = nofollow == null
+const title = meta.HTML_Title
+const description = meta.Meta_description
+const image = introBlobImage;
+const canonicalURL = Astro.canonicalURL
+
+let noIndex = '';
+if (noindex === true) { noIndex = "noindex" };
+let noFollow = '';
+if (nofollow === true) { noFollow = "nofollow" };
+
+---
+
+<html lang={locale}>
+
+<head>
+	<MainHead {title} {description} {noIndex} {noFollow} {image} {canonicalURL} />
+	<script>
+		/* Redirection Script */
+		// Placed in head as it should run before everything else
+		const allLocales = ["en", "nl", "de"] // List available locales
+		const browserLocale = navigator.language.substring(0, 2) // get browser locale
+		const locale = document.documentElement.lang // get current document locale
+		let preferredLocale = localStorage.getItem('locale') // locale stored in browser storage
+		if (preferredLocale == null) { // if no stored locale use browser locale if it exists in the list
+			localStorage.setItem(`locale`, allLocales.includes(browserLocale) ? browserLocale : "en")
+			preferredLocale = localStorage.getItem(`locale`)
+		}
+		if (locale != preferredLocale) { // if stored locale and document locale differ redirect
+			let newPath
+			if (preferredLocale == 'en') {
+				newPath = window.location.pathname.replace(/^\/\w{2}/g, '')
+				window.location.pathname = newPath
+			} else if ((preferredLocale == "nl" || preferredLocale == "de") && locale == "en") {
+				const checkRegex = RegExp(`/${preferredLocale}/`)
+				if (!checkRegex.test(window.location.pathname)) {
+					newPath = `/${preferredLocale}${window.location.pathname}`
+					window.location.pathname = newPath
+				}
+			} else {
+				const checkRegex = RegExp(`/${preferredLocale}/`)
+				if (!checkRegex.test(window.location.pathname)) {
+					newPath = `/${preferredLocale}${window.location.pathname.replace(/^\/\w{2}/g, '')}`
+					window.location.pathname = newPath
+				}
+			}
+		}
+	</script>
+</head>
+
+<body>
+	<div class="overflow-hidden">
+		<Navbar locale={locale} />
+		<main>
+			<slot />
+		</main>
+		<Footer footerText={footerText} />
+	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			document.getElementById("langBtn").addEventListener("click", function () {
+				var x = document.getElementById("dropdownMenu");
+				var y = document.getElementById("dropdown");
+				if (x.style.display == "block") {
+					x.style.display = "none";
+					y.style.borderRadius = "20px";
+				} else {
+					x.style.display = "block";
+					y.style.borderRadius = "20px 20px 0 0";
+				}
+			}, false);
+			// Language button event listeners
+			// Getting current locale
+			const locale = document.documentElement.lang
+			// Redirect function
+			const redirectPath = (newLocale) => {
+				let newPath
+				if (newLocale == 'en') {
+					newPath = window.location.pathname.replace(/^\/\w{2}/g, '')
+					window.location.pathname = newPath
+				} else if ((newLocale == "nl" || newLocale == "de") && locale == "en") {
+					newPath = `/${newLocale}${window.location.pathname}`
+					window.location.pathname = newPath
+				} else {
+					newPath = `/${newLocale}${window.location.pathname.replace(/^\/\w{2}/g, '')}`
+					window.location.pathname = newPath
+				}
+			}
+			// Select button 1 on click function
+			document.getElementById(`selectLang1`).addEventListener("click", function () {
+				const buttonLang = locale == "en" ? "de" : locale == "nl" ? "en" : "nl"
+				localStorage.setItem(`locale`, buttonLang)
+				redirectPath(buttonLang)
+			}, false)
+			// Select button 2 on click function
+			document.getElementById(`selectLang2`).addEventListener("click", function () {
+				const buttonLang = locale == "en" ? "nl" : locale == "nl" ? "de" : "en"
+				localStorage.setItem(`locale`, buttonLang)
+				redirectPath(buttonLang)
+			}, false)
+		});
+	</script>
+</body>
+
+</html>
