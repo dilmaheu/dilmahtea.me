@@ -5,10 +5,12 @@ export interface Props {
 	noIndex: string;
 	noFollow: string;
 	image?: string;
+	locale: string;
 	canonicalURL?: string | URL;
 }
 
-const { title, description, noIndex, noFollow, image, canonicalURL } = Astro.props as Props;
+const { title, description, noIndex, noFollow, image, locale, canonicalURL } = Astro.props as Props;
+const url = `${import.meta.env.Assets_URL}`;
 ---
 <meta charset="UTF-8" />
 <title>{title}</title>
@@ -29,11 +31,47 @@ const { title, description, noIndex, noFollow, image, canonicalURL } = Astro.pro
 <link rel="icon" href="/favicon.svg" />
 <!-- SEO -->
 <link rel="canonical" href={canonicalURL} />
+<link rel="alternate" href={canonicalURL} hreflang={locale} />
 <!-- OpenGraph -->
-<meta property="og:locale" content="en_US" />
+<meta property="og:locale" content={locale} />
 <meta property="og:type" content="website" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalURL} />
-<meta property="og:site_name" content="Nusa Ceningan" />
-<meta property="og:image" content={new URL(image, canonicalURL)} />
+<meta property="og:site_name" content="Dilmah" />
+<meta property="og:image" content={url + image} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+<meta property="twitter:domain" content="dilmahtea.me" />
+<meta property="twitter:url" content={canonicalURL} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={url + image} />
+
+<script defer data-domain="dilmahtea.me" data-api="/rpcq/event" src="/rpcq/script.js"></script>
+
+<!-- OpenReplay Tracking Code -->
+<script>
+    var initOpts = {
+      projectKey: "IjHJ0NTxwL2YHDk9TDnR",
+      defaultInputMode: 0,
+      obscureTextNumbers: false,
+      obscureTextEmails: true,
+    };
+    var startOpts = { userID: "" };
+    (function(A,s,a,y,e,r){
+      r=window.OpenReplay=[e,r,y,[s-1, e]];
+      s=document.createElement('script');s.src=A;s.async=!a;
+      document.getElementsByTagName('head')[0].appendChild(s);
+      r.start=function(v){r.push([0])};
+      r.stop=function(v){r.push([1])};
+      r.setUserID=function(id){r.push([2,id])};
+      r.setUserAnonymousID=function(id){r.push([3,id])};
+      r.setMetadata=function(k,v){r.push([4,k,v])};
+      r.event=function(k,p,i){r.push([5,k,p,i])};
+      r.issue=function(k,p){r.push([6,k,p])};
+      r.isActive=function(){return false};
+      r.getSessionToken=function(){};
+    })("//static.openreplay.com/latest/openreplay.js",1,0,initOpts,startOpts);
+</script>
