@@ -28,6 +28,7 @@ const CrowdFundingHomeQuery = `
             attributes {
               url
               formats
+              alternativeText
             }
           }
         }
@@ -40,6 +41,7 @@ const CrowdFundingHomeQuery = `
             attributes {
               url
               formats
+              alternativeText
             }
           }
         }

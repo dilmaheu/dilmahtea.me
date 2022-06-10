@@ -8,6 +8,7 @@ import AllPagesQuery from '../queries/AllPagesQuery'
 import Home from '../components/Home.astro';
 import Confirmation from '../components/Confirmation.astro';
 import CrowdfundingForm from '../components/CrowdfundingForm.astro';
+import BasicPage from '../components/BasicPage.astro';
 
 /**
  * This file is used for all the other pages
@@ -40,6 +41,25 @@ export async function getStaticPaths() {
         page: { // page object where empty its attributes and give it a type
           ...page.attributes,
           type: `home`,
+        }
+      }
+    }
+  })
+
+  // The default Basic pages
+  let defaultBasicPages = allPages.data.basicPages.data;
+  // Mapping all localized basic pages into a new array that returns an object that generates the paths
+  defaultBasicPages = defaultBasicPages.map((page) => {
+    return {
+      params: {
+        slug: page.attributes.Meta.Canonical_link, // URL slug to be used
+      },
+      props: { // Props
+        footerText: allPages.data.recurringElement.data.attributes.Footer_text, // footer text
+        page: { // page object where empty its attributes and give it a type
+          ...page.attributes,
+          type: `basicPages`,
+          Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
         }
       }
     }
@@ -131,7 +151,7 @@ export async function getStaticPaths() {
   }, [])
 
   // return all pages altogether each with the right return format
-  return [...allLocalizedConfirmation, ...allLocalizedHomePages, ...allPlans, defaultConfirmation]
+  return [...allLocalizedConfirmation, ...allLocalizedHomePages, ...allPlans, ...defaultBasicPages, defaultConfirmation]
 }
 
 // Get each pages props from Astro
@@ -142,9 +162,10 @@ const {
 ---
 
 <Layout locale={page.locale.substring(0,2)} meta={page.Meta} footerText={footerText}
-  introBlobImage={page.Intro_blob.data.attributes.url}>
+  introBlobImage={page.Intro_blob.data.attributes.formats.small.url}>
   {page.type == `home` ?
-  <Home {page} /> : page.type == `confirm` ?
+  <Home {page} /> : page.type == `basicPages` ?
+  <BasicPage {page} /> : page.type == `confirm` ?
   <Confirmation {page} />:
   <CrowdfundingForm {page}>
     <input type="hidden" id="planName" name="planName" value={page.Title} />
