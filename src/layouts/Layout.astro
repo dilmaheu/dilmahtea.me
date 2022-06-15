@@ -56,8 +56,11 @@ if (nofollow === true) { noFollow = "nofollow" };
 				newPath = `/${preferredLocale}${window.location.pathname}`
 				window.location.pathname = newPath
 			} else {
-				newPath = `/${preferredLocale}${window.location.pathname.replace(/^\/\w{2}/g, '')}`
-				window.location.pathname = newPath
+				const checkRegex = RegExp(`/${preferredLocale}/`)
+				if (!checkRegex.test(window.location.pathname)) {
+					newPath = `/${preferredLocale}${window.location.pathname.replace(/^\/\w{2}/g, '')}`
+					window.location.pathname = newPath
+				}
 			}
 		}
 	</script>
