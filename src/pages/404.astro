@@ -1,0 +1,37 @@
+---
+import Layout from '../layouts/Layout.astro';
+// Getting the graphql query for fetch api
+import CrowdFundingHomeQuery from '../queries/CrowdFundingHomeQuery'
+// Getting the Home component
+import Home from '../components/Home.astro';
+
+/**
+ * This is the default index page
+ */
+
+// Fetching the default home page
+// No need for
+const crowdfundingDefaultPage = await fetch(`${import.meta.env.DB_URL}`,
+    {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.ACCESS_TOKEN}`
+        },
+        body: JSON.stringify({
+            query: CrowdFundingHomeQuery,
+        })
+    }).then(response => response.json());
+
+// Saving it's page attributes like meta and other components
+const page = crowdfundingDefaultPage.data.crowdfundingHome.data.attributes;
+
+// Saving footer text
+const footerText = crowdfundingDefaultPage.data.recurringElement.data.attributes.Footer_text;
+
+---
+
+<Layout locale={page.locale.substring(0,2)} meta={page.Meta} footerText={footerText}
+    introBlobImage={page.Intro_blob.data.attributes.formats.small.url}>
+    <p>Sorry page not found</p>
+</Layout>
