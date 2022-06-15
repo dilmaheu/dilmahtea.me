@@ -50,22 +50,18 @@ if (nofollow === true) { noFollow = "nofollow" };
 			localStorage.setItem(`locale`, allLocales.includes(browserLocale) ? browserLocale : "en")
 			preferredLocale = localStorage.getItem(`locale`)
 		}
-		if (locale != preferredLocale) { // if stored locale and document locale differ redirect
-			let newPath
-			if (preferredLocale == 'en') {
-				newPath = window.location.pathname.replace(/^\/\w{2}/g, '')
-				window.location.pathname = newPath
-			} else if ((preferredLocale == "nl" || preferredLocale == "de") && locale == "en") {
-				const checkRegex = RegExp(`/${preferredLocale}/`)
-				if (!checkRegex.test(window.location.pathname)) {
+		if (window.location.pathname != "/404") {
+			if (locale != preferredLocale) { // if stored locale and document locale differ redirect
+				let newPath
+				if (locale == "en") {
 					newPath = `/${preferredLocale}${window.location.pathname}`
 					window.location.pathname = newPath
-				}
-			} else {
-				const checkRegex = RegExp(`/${preferredLocale}/`)
-				if (!checkRegex.test(window.location.pathname)) {
-					newPath = `/${preferredLocale}${window.location.pathname.replace(/^\/\w{2}/g, '')}`
-					window.location.pathname = newPath
+				} else {
+					const checkRegex = RegExp(`/${preferredLocale}/`)
+					if (!checkRegex.test(window.location.pathname)) {
+						newPath = `/${preferredLocale}${window.location.pathname.replace(/^\/\w{2}/g, '')}`
+						window.location.pathname = newPath
+					}
 				}
 			}
 		}
