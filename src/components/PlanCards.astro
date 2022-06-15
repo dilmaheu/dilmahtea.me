@@ -46,7 +46,7 @@ const plan_card = data.data.crowdfundingPlans.data;
 
 <div class="w-full grid md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-10 justify-items-center mx-auto" role="list" aria-label="Plans">
 	{plan_card.map(({ attributes }) => (
-		<div class="PlanCard" role="listitem" aria-label={attributes.Title + `plan`}>
+		<div class="PlanCard" role="listitem" aria-label={attributes.Title + `-plan`}>
 			<div class="inline-flex items-end gap-x-3.5">
 				<h3 class="text-xl alice">{attributes.Title}</h3>
 				<div class="PlanCardIcon">
@@ -58,7 +58,7 @@ const plan_card = data.data.crowdfundingPlans.data;
 			<div class="prose max-w-none mb-5 PlanCardList">
 				<Markdown>{attributes.List}</Markdown>
 			</div>
-			<a href={`plans/` + attributes.Title}>
+			<a href={`plans/` + attributes.Title.toLowerCase()}>
 				<div class="font-bold text-center PlanCardBtn">{attributes.Button_text}</div>
 			</a>
 		</div>

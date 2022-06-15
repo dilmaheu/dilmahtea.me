@@ -8,87 +8,86 @@ import { Markdown } from 'astro/components';
 
 const url = `${import.meta.env.Assets_URL}`;
 const { page } = Astro.props
-
 ---
 
+<!-- Hero Section -->
 <div class="hero sm:overflow-hidden relative">
+	<!-- Background -->
 	<div class=" w-full absolute bottom-0">
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 672.7" class="heroCurve1">
-			<defs>
-				<clipPath id="heroImgFrame">
-					<path class="path"
-						d="M0,377.7V0H1080V590.9s-71.3,81.8-205.3,81.8c-65.5,0-126.9-6.2-189.8-12.6-65.8-6.6-133.1-13.4-208.2-13.4-79.4,0-147.5,7.6-210.1,14.6-53,5.9-102.1,11.4-150.7,11.4C10.1,672.7,0,629.5,0,629.5Z" />
-				</clipPath>
-			</defs>
-			<image class="h-full sm:h-full w-auto sm:w-screen" height="" width="" xlink:href={HeaderBG}
-				clip-path="url(#heroImgFrame)"></image>
-		</svg>
-	</div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 672.7" class="heroCurve1">
+            <defs>
+                <clipPath id="heroImgFrame">
+                    <path class="path" d="M0,377.7V0H1080V590.9s-71.3,81.8-205.3,81.8c-65.5,0-126.9-6.2-189.8-12.6-65.8-6.6-133.1-13.4-208.2-13.4-79.4,0-147.5,7.6-210.1,14.6-53,5.9-102.1,11.4-150.7,11.4C10.1,672.7,0,629.5,0,629.5Z"/>
+                </clipPath>
+            </defs>
+            <image class="w-auto h-full" height="100%" width="100%" href={HeaderBG} clip-path="url(#heroImgFrame)"></image>
+        </svg>
+    </div>
 
-	<div class="relative z-30 sm:flex sm:flex-wrap sm:justify-center h-full wrapper HeroTxtContainer">
+    <!-- Text content -->
+    <div class="relative z-30 flex flex-wrap justify-center h-full wrapper HeroTxtContainer">
+        <div class="w-full md:w-9/12 lg:w-7/12 sm:text-center sm:justify-center HeroTxtContent" role="banner">
+            <div>
+                <div class="hidden sm:block mx-auto formHeroCupIcon">
+                    <img class="w-full h-full" src={CupIcon} alt="love-icon" />
+                </div>
+                <div class="block sm:hidden mx-auto heroLoveIcon">
+                    <img class="w-full h-full" src={LoveIcon} alt="love-icon" />
+                </div>
 
-		<div class="w-full md:w-9/12 lg:w-7/12 text-center HeroTxtContent" role="banner">
-			<div>
-				<div class="hidden sm:block mx-auto formHeroCupIcon">
-					<img class="w-full h-full" src={CupIcon} alt="love-icon" />
-				</div>
-				<div class="block sm:hidden mx-auto heroLoveIcon">
-					<img class="w-full h-full" src={LoveIcon} alt="love-icon" />
-				</div>
-
-				<h1 class="heroTitle">{page.Title}</h1>
-				<div class="pt-7 mt-0.5 prose max-w-none heroTxt">
-					<Markdown>{page.Intro_text}</Markdown>
-				</div>
-			</div>
-		</div>
-	</div>
+                <h1 class="BasicHeroTitle">{page.Title}</h1>
+                <div class="pt-7 mt-0.5 prose max-w-none heroTxt">
+                    <Markdown>{page.Intro_text}</Markdown>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="thanksSec1 overflow-hidden relative">
-	<div class="hidden sm:block absolute z-20 w-full sm:w-1/2 h-full items-center thanksSec1_Curve1Container">
-		<div class="w-auto h-full thanksSec1_Curve1">
-			<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="" viewBox="0 0 730.5 599.1"
-				class="w-auto h-full">
+<!-- Information Section -->
+<div class="basicInfoSec overflow-hidden relative">
+
+	<!-- Blob Image  Desktop view-->
+	<div class="hidden sm:block absolute z-20 w-full sm:w-1/2 h-full items-center basicInfoSec_Curve1Container">
+		<div class="w-auto h-full basicInfoSec_Curve1">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 730.5 599.1" class="w-auto h-full">
 				<defs>
-					<clipPath id="thanksSec1_ImgFrame1">
-						<path
-							d="M689.3,316.8c-21.5,73.7-42,166-106.8,244.3C534.8,618.8,267,607.9,96,548c-37.9-13.3-71-29-96-46.8V66.6A105,105,0,0,1,23.3,54.5,627.2,627.2,0,0,1,96,28.1C205.3-4.2,297.7,1.6,381.7,1.6c102.1,0,226.7-17.2,307.6,60.7S710.8,243.1,689.3,316.8Z" />
-					</clipPath>
+			        <clipPath id="basicInfoSec_ImgFrame1">
+			            <path d="M689.3,316.8c-21.5,73.7-42,166-106.8,244.3C534.8,618.8,267,607.9,96,548c-37.9-13.3-71-29-96-46.8V66.6A105,105,0,0,1,23.3,54.5,627.2,627.2,0,0,1,96,28.1C205.3-4.2,297.7,1.6,381.7,1.6c102.1,0,226.7-17.2,307.6,60.7S710.8,243.1,689.3,316.8Z"/>
+			        </clipPath>
 				</defs>
-				<image class="w-auto h-full" height="" width="" xlink:href={url + page.Block_blob.data.attributes.url}
-					clip-path="url(#thanksSec1_ImgFrame1)"></image>
+			    <image class="w-auto h-full" height="100%" width="100%" href={url + page.Block_blob.data.attributes.url} clip-path="url(#basicInfoSec_ImgFrame1)"></image>
 			</svg>
 		</div>
 	</div>
 
-	<div class="h-full wrapper z-30 thanksSec1ContentContainer">
-		<div class="w-full h-full justify-end flex flex-wrap">
-			<div class="w-full sm:w-1/2 h-full flex sm:items-center" role="region">
-				<div class="relative">
-					<h2 class="header-default homeSec3Header color-default">{page.Block_text}</h2>
-					<div class="pt-0.5 mt-7 prose max-w-none thanksSec1Txt">
-						<Markdown>{page.Intro_text}</Markdown>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	<!-- Text content -->
+    <div class="h-full wrapper z-30 basicInfoSecContentContainer">
+    	<div class="w-full h-full justify-end flex flex-wrap">
+	    	<div class="w-full sm:w-1/2 h-full flex sm:items-center basicInfoSecContent" role="complementary">
+	    		<div class="relative">
+	    			<h2 class="header-default homeSec3Header color-default">{page.Block_text}</h2>
+		    		<div class="pt-0.5 mt-7 prose max-w-none basicInfoSecTxt">
+		    			<Markdown>{page.Intro_text}</Markdown>
+		    		</div>
+	    		</div>
+	    	</div>
+    	</div>
+    </div>
 </div>
 
+<!-- Blob Image  Mobile view-->
 <div class="block sm:hidden w-full">
-	<div class="w-screen thanksSec1_Curve">
+	<div class="w-screen basicInfoSec_Curve">
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 287" class="h-full w-full">
-			<defs>
-				<clipPath id="thanksSec1_ImgFrame2">
-					<path
-						d="M269.3,0C319.7,0,351.8,6.1,375,18.4V278.5c-16.8,13-73.1,1.7-121.5,0-55.8-2.1-113,8.5-168.9,8.5C35.1,287,0,273.7,0,273.7V18.4c22.1-17.3,88.8,0,120,0S218.8,0,269.3,0Z" />
-				</clipPath>
-			</defs>
-			<image class="w-auto h-full" height="" width="" xlink:href={url + page.Block_blob.data.attributes.url}
-				clip-path="url(#thanksSec1_ImgFrame2)"></image>
+		    <defs>
+		        <clipPath id="basicInfoSec_ImgFrame2">
+		        	<path d="M269.3,0C319.7,0,351.8,6.1,375,18.4V278.5c-16.8,13-73.1,1.7-121.5,0-55.8-2.1-113,8.5-168.9,8.5C35.1,287,0,273.7,0,273.7V18.4c22.1-17.3,88.8,0,120,0S218.8,0,269.3,0Z"/>
+		        </clipPath>
+		    </defs>
+		    <image class="w-auto h-full" height="100%" width="100%" href={url + page.Block_blob.data.attributes.formats.medium.url} clip-path="url(#basicInfoSec_ImgFrame2)"></image>
 		</svg>
 	</div>
 </div>
 
-<div class="thanksSeparator"></div>
+<div class="separatorSm"></div>
