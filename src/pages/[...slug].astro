@@ -49,21 +49,42 @@ export async function getStaticPaths() {
   // The default Basic pages
   let defaultBasicPages = allPages.data.basicPages.data;
   // Mapping all localized basic pages into a new array that returns an object that generates the paths
-  defaultBasicPages = defaultBasicPages.map((page) => {
-    return {
-      params: {
-        slug: page.attributes.Meta.Canonical_link, // URL slug to be used
-      },
-      props: { // Props
-        footerText: allPages.data.recurringElement.data.attributes.Footer_text, // footer text
-        page: { // page object where empty its attributes and give it a type
-          ...page.attributes,
-          type: `basicPages`,
-          Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
+  defaultBasicPages = defaultBasicPages.reduce((acc, page) => {
+    let localizedPages = page.attributes.localizations.data
+    if (localizedPages.length > 0) {
+      localizedPages = localizedPages.map(foreignPage => {
+        const returnedLocale = {
+          params: {
+            slug: `${foreignPage.attributes.locale.substring(0, 2)}/${foreignPage.attributes.Meta.URL_slug}`, // URL slug to be used
+          },
+          props: { // Props
+            footerText: allPages.data.recurringElement.data.attributes.Footer_text, // footer text
+            page: { // page object where empty its attributes and give it a type
+              ...foreignPage.attributes,
+              type: `basicPages`,
+              Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
+            }
+          }
+        }
+        acc.push(returnedLocale)
+      })
+      const returnedPage = {
+        params: {
+          slug: page.attributes.Meta.URL_slug, // URL slug to be used
+        },
+        props: { // Props
+          footerText: allPages.data.recurringElement.data.attributes.Footer_text, // footer text
+          page: { // page object where empty its attributes and give it a type
+            ...page.attributes,
+            type: `basicPages`,
+            Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
+          }
         }
       }
+      acc.push(returnedPage)
+      return acc
     }
-  })
+  }, [])
 
   // Getting Confirmation pages
   let allLocalizedConfirmation = allPages.data.crowdfundingPaymentConfirmation.data.attributes.localizations.data;
