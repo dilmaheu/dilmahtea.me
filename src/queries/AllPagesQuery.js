@@ -34,6 +34,7 @@ const AllPagesQuery = `
           }
         }
         locale
+        Perk
         Title
         Title_icon {
           data {

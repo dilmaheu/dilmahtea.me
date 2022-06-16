@@ -26,12 +26,14 @@ const crowdfundingDefaultPage = await fetch(`${import.meta.env.DB_URL}`,
 // Saving it's page attributes like meta and other components
 const page = crowdfundingDefaultPage.data.crowdfundingHome.data.attributes;
 
+const availableLocales = page.localizations.data.map((localized) => localized.attributes.locale.substring(0, 2));
+
 // Saving footer text
 const footerText = crowdfundingDefaultPage.data.recurringElement.data.attributes.Footer_text;
 
 ---
 
-<Layout locale={page.locale.substring(0,2)} meta={page.Meta} footerText={footerText}
+<Layout locale={page.locale.substring(0,2)} availableLocales={availableLocales} meta={page.Meta} footerText={footerText}
 	introBlobImage={page.Intro_blob.data.attributes.formats.small.url}>
 	<Home {page} />
 </Layout>

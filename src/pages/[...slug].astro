@@ -27,8 +27,17 @@ export async function getStaticPaths() {
         query: AllPagesQuery,
       })
     }).then(response => response.json());
+  // Get all locales
+  const getAllLocales = arr => {
+    if (arr.length > 0) return arr.map(home =>
+      home.attributes.locale.substring(0, 2)
+    );
+    return []
+  }
+
   // Saving all Localized home pages
   let allLocalizedHomePages = allPages.data.crowdfundingHome.data.attributes.localizations.data;
+  const allHomeLocales = getAllLocales(allLocalizedHomePages)
 
   // Mapping all localized home pages into a new array that returns an object that generates the paths
   allLocalizedHomePages = allLocalizedHomePages.map((page) => {
@@ -40,6 +49,7 @@ export async function getStaticPaths() {
         footerText: allPages.data.recurringElement.data.attributes.Footer_text, // footer text
         page: { // page object where empty its attributes and give it a type
           ...page.attributes,
+          availableLocales: allHomeLocales,
           type: `home`,
         }
       }
@@ -51,6 +61,7 @@ export async function getStaticPaths() {
   // Mapping all localized basic pages into a new array that returns an object that generates the paths
   allPages.data.basicPages.data.forEach((page) => {
     let localizedPages = page.attributes.localizations.data
+    const basicPagesLocales = getAllLocales(localizedPages)
     if (localizedPages.length > 0) {
       localizedPages = localizedPages.map(foreignPage => {
         const returnedLocale = {
@@ -61,6 +72,7 @@ export async function getStaticPaths() {
             footerText: allPages.data.recurringElement.data.attributes.Footer_text, // footer text
             page: { // page object where empty its attributes and give it a type
               ...foreignPage.attributes,
+              availableLocales: basicPagesLocales,
               type: `basicPages`,
               Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
             }
@@ -76,6 +88,7 @@ export async function getStaticPaths() {
           footerText: allPages.data.recurringElement.data.attributes.Footer_text, // footer text
           page: { // page object where empty its attributes and give it a type
             ...page.attributes,
+            availableLocales: basicPagesLocales,
             type: `basicPages`,
             Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
           }
@@ -87,9 +100,10 @@ export async function getStaticPaths() {
   })
 
   // Getting Confirmation pages
-  let allLocalizedConfirmation = await allPages.data.crowdfundingPaymentConfirmation.data.attributes.localizations.data;
+  let allLocalizedConfirmation = allPages.data.crowdfundingPaymentConfirmation.data.attributes.localizations.data;
+  const confirmationLocales = getAllLocales(allLocalizedConfirmation)
   // The default confirmation page
-  let defaultConfirmation = await allPages.data.crowdfundingPaymentConfirmation.data.attributes;
+  let defaultConfirmation = allPages.data.crowdfundingPaymentConfirmation.data.attributes;
 
   // making sure its return type can create a page and path
   defaultConfirmation = {
@@ -100,6 +114,7 @@ export async function getStaticPaths() {
       footerText: allPages.data.recurringElement.data.attributes.Footer_text,
       page: {
         ...defaultConfirmation,
+        availableLocales: confirmationLocales,
         type: `confirm`,
         Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
       },
@@ -117,6 +132,7 @@ export async function getStaticPaths() {
           footerText: allPages.data.recurringElement.data.attributes.Footer_text,
           page: {
             ...page.attributes,
+            availableLocales: confirmationLocales,
             type: 'confirm',
             Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
           }
@@ -131,6 +147,7 @@ export async function getStaticPaths() {
   // All plans
   allPages.data.crowdfundingPlans.data.forEach((plan) => {
     const newPlan = { ...plan.attributes }
+    const planLocales = getAllLocales(plan.attributes.localizations.data)
     delete newPlan.localizations
     const defaultPlan = {
       params: {
@@ -142,6 +159,7 @@ export async function getStaticPaths() {
           ...newPlan,
           Meta: formMeta,
           type: 'plan',
+          availableLocales: planLocales,
           Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
         }
       }
@@ -158,8 +176,10 @@ export async function getStaticPaths() {
             footerText: allPages.data.recurringElement.data.attributes.Footer_text,
             page: {
               ...page.attributes,
+              Perk: newPlan.Perk,
               Meta: formMeta,
               type: 'plan',
+              availableLocales: planLocales,
               Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
             }
           }
@@ -181,7 +201,7 @@ const {
 ---
 
 <Layout locale={page.locale.substring(0,2)} meta={page.Meta} footerText={footerText}
-  introBlobImage={page.Intro_blob.data.attributes.formats.small.url}>
+  introBlobImage={page.Intro_blob.data.attributes.formats.small.url} availableLocales={page.availableLocales}>
   {page.type == `home` ?
   <Home {page} /> : page.type == `basicPages` ?
   <BasicPage {page} /> : page.type == `confirm` ?

@@ -52,7 +52,7 @@ const { page, locale } = Astro.props
 <!-- Form Section -->
 <div class="wrapper formSec">
     <div class="formContainer" role="main">
-        <form action="https://baserow-form-handler.dilmah.workers.dev" method="POST">
+        <form action="https://dilmahtea-me-form.dilmah.workers.dev" method="POST">
             <div class="formGrid1Container">
                 <div class="inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7 pb-0.5">
                     <h2 class="header-default color-default">{ locale == "nl" ? "Basis gegevens" : "Basic info" }</h2>
@@ -64,7 +64,7 @@ const { page, locale } = Astro.props
                         <label for="first_name">{ locale == "nl" ? "Voornaam": "First Name" }</label>
                         <input type="text" id="first_name" name="first_name"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder={ locale == "nl" ? "Voornaam" : "First Name" } />
+                            placeholder={ locale=="nl" ? "Voornaam" : "First Name" } />
                     </div>
 
                     <div class="formInputContainer">
@@ -85,7 +85,7 @@ const { page, locale } = Astro.props
                         <label for="favorite_tea">{ locale == "nl" ? "Favoriete thee" : "Favourite Tea" }</label>
                         <input type="text" id="favorite_tea" name="favorite_tea"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder={ locale == "nl" ? "Earl Grey" : "Black Tea" } />
+                            placeholder={ locale=="nl" ? "Earl Grey" : "Black Tea" } />
                     </div>
                 </div>
             </div>
@@ -103,7 +103,8 @@ const { page, locale } = Astro.props
                         <select id="country" name="country"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
                             required>
-                            <option value="" disabled selected>{locale == "nl" ? "Selecteer jouw land":"Select or type your country" }</option>
+                            <option value="" disabled selected>{locale == "nl" ? "Selecteer jouw land":"Select or type
+                                your country" }</option>
                             <option value="Netherlands">Netherlands</option>
                             <option value="Kenya">Kenya</option>
                             <option value="India">India</option>
@@ -118,7 +119,8 @@ const { page, locale } = Astro.props
                             }</label>
                         <input type="text" id="street" name="street"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder={ locale == "nl" ? "Vul je straat en huisnummer in" :"Enter your street address" } />
+                            placeholder={ locale=="nl" ? "Vul je straat en huisnummer in" :"Enter your street address"
+                            } />
                     </div>
 
                     <div class="formInputContainer">
@@ -132,17 +134,17 @@ const { page, locale } = Astro.props
                         <label for="postal_code">{locale == "nl" ? "Postcode" : "Postal Code" }</label>
                         <input type="text" id="postal_code" name="postal_code"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder={ locale == "nl" ? "Vul je plaatsnaam in" : "Enter your postal code" } />
+                            placeholder={ locale=="nl" ? "Vul je plaatsnaam in" : "Enter your postal code" } />
                     </div>
 
                     <input type="text" id="perk" name="perk"
                         class="hidden block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                        placeholder="Enter your perk" hidden />
+                        value={page.Perk} placeholder="Enter your perk" hidden />
                 </div>
 
                 <slot />
                 <div class="flex justify-end mt-6">
-                    <input type="submit" class="cursor-pointer formBtn" value={ locale == "nl" ? "Betalen" : "Pay" } />
+                    <input type="submit" class="cursor-pointer formBtn" value={ locale=="nl" ? "Betalen" : "Pay" } />
                 </div>
             </div>
         </form>
