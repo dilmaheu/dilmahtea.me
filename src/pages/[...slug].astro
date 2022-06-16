@@ -47,9 +47,9 @@ export async function getStaticPaths() {
   })
 
   // The default Basic pages
-  let defaultBasicPages = allPages.data.basicPages.data;
+  let allBasicPages = []
   // Mapping all localized basic pages into a new array that returns an object that generates the paths
-  defaultBasicPages = defaultBasicPages.reduce((acc, page) => {
+  allPages.data.basicPages.data.forEach((page) => {
     let localizedPages = page.attributes.localizations.data
     if (localizedPages.length > 0) {
       localizedPages = localizedPages.map(foreignPage => {
@@ -66,7 +66,7 @@ export async function getStaticPaths() {
             }
           }
         }
-        acc.push(returnedLocale)
+        allBasicPages.push(returnedLocale)
       })
       const returnedPage = {
         params: {
@@ -81,15 +81,15 @@ export async function getStaticPaths() {
           }
         }
       }
-      acc.push(returnedPage)
-      return acc
+      allBasicPages.push(returnedPage)
+      return allBasicPages
     }
-  }, [])
+  })
 
   // Getting Confirmation pages
-  let allLocalizedConfirmation = allPages.data.crowdfundingPaymentConfirmation.data.attributes.localizations.data;
+  let allLocalizedConfirmation = await allPages.data.crowdfundingPaymentConfirmation.data.attributes.localizations.data;
   // The default confirmation page
-  let defaultConfirmation = allPages.data.crowdfundingPaymentConfirmation.data.attributes;
+  let defaultConfirmation = await allPages.data.crowdfundingPaymentConfirmation.data.attributes;
 
   // making sure its return type can create a page and path
   defaultConfirmation = {
@@ -108,7 +108,7 @@ export async function getStaticPaths() {
 
   // First check if there are any localized confirmation pages if not do nothing
   if (allLocalizedConfirmation.length > 0) {
-    allLocalizedConfirmation = allLocalizedConfirmation.map((page) => {
+    allLocalizedConfirmation = await allLocalizedConfirmation.map((page) => {
       return {
         params: {
           slug: page.attributes.Meta.URL_slug,
@@ -126,11 +126,10 @@ export async function getStaticPaths() {
   }
 
   let formMeta = allPages.data.crowdfundingForm.data.attributes.Meta;
-  let allPlans = allPages.data.crowdfundingPlans.data;
+  let allPlans = [];
 
   // All plans
-
-  allPlans = allPlans.reduce((acc, plan) => {
+  allPages.data.crowdfundingPlans.data.forEach((plan) => {
     const newPlan = { ...plan.attributes }
     delete newPlan.localizations
     const defaultPlan = {
@@ -147,7 +146,7 @@ export async function getStaticPaths() {
         }
       }
     }
-    acc.push(defaultPlan)
+    allPlans.push(defaultPlan)
     if (plan.attributes.localizations.data.length > 0) {
       plan.attributes.localizations.data.forEach((page) => {
         const localizedPlan = {
@@ -165,14 +164,13 @@ export async function getStaticPaths() {
             }
           }
         }
-        acc.push(localizedPlan)
+        allPlans.push(localizedPlan)
       })
     }
-    return acc
-  }, [])
+  })
 
   // return all pages altogether each with the right return format
-  return [...allLocalizedConfirmation, ...allLocalizedHomePages, ...allPlans, ...defaultBasicPages, defaultConfirmation]
+  return [...allLocalizedConfirmation, ...allLocalizedHomePages, ...allPlans, ...allBasicPages, defaultConfirmation]
 }
 
 // Get each pages props from Astro
@@ -188,7 +186,7 @@ const {
   <Home {page} /> : page.type == `basicPages` ?
   <BasicPage {page} /> : page.type == `confirm` ?
   <Confirmation {page} />:
-  <CrowdfundingForm {page}>
+  <CrowdfundingForm {page} locale={page.locale.substring(0,2)}>
     <input type="hidden" id="planName" name="planName" value={page.Title} />
   </CrowdfundingForm>
   }
