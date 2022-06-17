@@ -43,6 +43,7 @@ const response = await fetch(`${import.meta.env.DB_URL}`,
 
 const data = await response.json();
 const plan_card = data.data.crowdfundingPlans.data;
+const imgUrl = Astro.canonicalURL.origin + `/cms`
 ---
 
 <div class="w-full grid md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-10 justify-items-center mx-auto" role="list" aria-label="Plans">
@@ -51,7 +52,7 @@ const plan_card = data.data.crowdfundingPlans.data;
 			<div class="inline-flex items-end gap-x-3.5">
 				<h3 class="text-xl alice">{attributes.Title}</h3>
 				<div class="PlanCardIcon">
-					<img class="w-full h-full" src={`./cms` + attributes.Title_icon.data.attributes.url} alt={url + attributes.Title_icon.data.attributes.alternativeText} />
+					<img class="w-full h-full" src={imgUrl + attributes.Title_icon.data.attributes.url} alt={url + attributes.Title_icon.data.attributes.alternativeText} />
 				</div>
 			</div>
 			<div class="PlanCardPrice pb-6 mb-0.5">&#8364;{attributes.Price_EUR_excl_VAT}</div>
