@@ -1,14 +1,21 @@
 {
-  "name": "@example/starter",
-  "version": "0.0.1",
+  "name": "dilmahtea.me",
+  "version": "1.0.0",
   "private": true,
+  "author": "dilmaheu",
+  "homepage": "https://dilmahtea.me",
+  "type": "module",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview"
+    "build:only": "astro build",
+    "build": "npm run fetch:imgs && npm run build:only",
+    "preview": "astro preview",
+    "fetch:imgs": "ts-node --esm ./src/utils/imageFetching.ts"
   },
   "devDependencies": {
-    "astro": "^1.0.0-beta.46"
+    "astro": "^1.0.0-beta.40",
+    "@types/node": "^17.0.35",
+    "ts-node": "^10.8.0"
   }
 }

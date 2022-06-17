@@ -13,6 +13,7 @@ const GqlQuery = `{
                         id
                         attributes{
                             name
+                            url
                             alternativeText
                         }
                     }
@@ -50,7 +51,7 @@ const plan_card = data.data.crowdfundingPlans.data;
 			<div class="inline-flex items-end gap-x-3.5">
 				<h3 class="text-xl alice">{attributes.Title}</h3>
 				<div class="PlanCardIcon">
-					<img class="w-full h-full" src={`images/` + attributes.Title_icon.data.attributes.name} alt={url + attributes.Title_icon.data.attributes.alternativeText} />
+					<img class="w-full h-full" src={`./cms` + attributes.Title_icon.data.attributes.url} alt={url + attributes.Title_icon.data.attributes.alternativeText} />
 				</div>
 			</div>
 			<div class="PlanCardPrice pb-6 mb-0.5">&#8364;{attributes.Price_EUR_excl_VAT}</div>
