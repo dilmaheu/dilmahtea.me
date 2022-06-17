@@ -9,7 +9,8 @@ import LoveIcon from '/images/love.svg';
 import FlowerIconG from '/images/flowerLightgreen.svg';
 import { Markdown } from 'astro/components';
 
-const { page } = Astro.props
+const { page, locale } = Astro.props
+
 ---
 
 <!-- Hero Section -->
@@ -23,7 +24,8 @@ const { page } = Astro.props
                         d="M0,377.7V0H1080V590.9s-71.3,81.8-205.3,81.8c-65.5,0-126.9-6.2-189.8-12.6-65.8-6.6-133.1-13.4-208.2-13.4-79.4,0-147.5,7.6-210.1,14.6-53,5.9-102.1,11.4-150.7,11.4C10.1,672.7,0,629.5,0,629.5Z" />
                 </clipPath>
             </defs>
-            <image class="h-full w-auto" height="100%" width="100%" href={HeaderBG} clip-path="url(#heroImgFrame)"></image>
+            <image class="h-full w-auto" height="100%" width="100%" href={HeaderBG} clip-path="url(#heroImgFrame)">
+            </image>
         </svg>
     </div>
 
@@ -50,57 +52,58 @@ const { page } = Astro.props
 <!-- Form Section -->
 <div class="wrapper formSec">
     <div class="formContainer" role="main">
-        <form action="https://baserow-form-handler.dilmah.workers.dev" method="POST">
+        <form action="https://dilmahtea-me-form.dilmah.workers.dev" method="POST">
             <div class="formGrid1Container">
                 <div class="inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7 pb-0.5">
-                    <h2 class="header-default color-default">Basic info</h2>
+                    <h2 class="header-default color-default">{ locale == "nl" ? "Basis gegevens" : "Basic info" }</h2>
                     <img class="formSecHeaderIcon" src={CupIconG} alt="tea-leaf-icon" />
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 formGrid">
                     <div class="formInputContainer">
-                        <label for="first_name">First Name</label>
+                        <label for="first_name">{ locale == "nl" ? "Voornaam": "First Name" }</label>
                         <input type="text" id="first_name" name="first_name"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder="First name" />
+                            placeholder={ locale=="nl" ? "Voornaam" : "First Name" } />
                     </div>
 
                     <div class="formInputContainer">
-                        <label for="last_name">Last Name</label>
+                        <label for="last_name">{ locale == "nl" ? "Achternaam" : "Last Name" }</label>
                         <input type="text" id="last_name" name="last_name"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder="Last name" />
+                            placeholder={ locale=="nl" ? "Achternaam" : "Last Name" } />
                     </div>
 
                     <div class="formInputContainer">
-                        <label for="email">Email Address</label>
+                        <label for="email">{ locale == "nl" ? "E-mailadres" : "Email Address" }</label>
                         <input type="email" id="email" name="email"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder="Enter your email address" />
+                            placeholder={ locale=="nl" ? "Vul je e-mailadres in" : "Enter your email address" } />
                     </div>
 
                     <div class="formInputContainer">
-                        <label for="favorite_tea">Favourite Tea</label>
+                        <label for="favorite_tea">{ locale == "nl" ? "Favoriete thee" : "Favourite Tea" }</label>
                         <input type="text" id="favorite_tea" name="favorite_tea"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder="Black Tea" />
+                            placeholder={ locale=="nl" ? "Earl Grey" : "Black Tea" } />
                     </div>
                 </div>
             </div>
 
             <div class="formGrid2Container">
                 <div class="inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7">
-                    <h3 class="header-default color-default">Billing details</h3>
+                    <h3 class="header-default color-default">{ locale == "nl" ? "Factuurgegevens" : "Billing details" }
+                    </h3>
                     <img class="formSecHeaderIcon" src={FlowerIconG} alt="tea-leaf-icon" />
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 formGrid">
                     <div class="formInputContainer">
-                        <label for="country">Country</label>
+                        <label for="country">{ locale == "nl" ? "Land" : "Country" }</label>
                         <select id="country" name="country"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
                             required>
-                            <option value="" disabled selected>Select or type your country</option>
+                            <option value="" disabled selected>{locale == "nl" ? "Selecteer jouw land":"Select or type your country" }</option>
                             <option value="Netherlands">Netherlands</option>
                             <option value="Kenya">Kenya</option>
                             <option value="India">India</option>
@@ -111,37 +114,34 @@ const { page } = Astro.props
                     </div>
 
                     <div class="formInputContainer">
-                        <label for="street">Street</label>
+                        <label for="street">{ locale == "nl" ? "Straat en huisnummer":"Street and house number" }</label>
                         <input type="text" id="street" name="street"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder="Enter your street address" />
+                            placeholder={ locale=="nl" ? "Vul je straat en huisnummer in" :"Enter your street address" } />
                     </div>
 
                     <div class="formInputContainer">
-                        <label for="city">City</label>
+                        <label for="city">{locale == "nl" ? "Plaatsnaam" : "City" }</label>
                         <input type="text" id="city" name="city"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder="Enter your city address" />
+                            placeholder={locale=="nl" ? "Vul je plaatsnaam in" :"Enter your city address" } />
                     </div>
 
                     <div class="formInputContainer">
-                        <label for="postal_code">Postal Code</label>
+                        <label for="postal_code">{locale == "nl" ? "Postcode" : "Postal Code" }</label>
                         <input type="text" id="postal_code" name="postal_code"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder="Enter your postal code" />
+                            placeholder={ locale=="nl" ? "Vul je plaatsnaam in" : "Enter your postal code" } />
                     </div>
 
-                    <div class="formInputContainer">
-                        <label for="perk">Perk</label>
-                        <input type="text" id="perk" name="perk"
-                            class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder="Enter your perk" />
-                    </div>
+                    <input type="text" id="perk" name="perk"
+                        class="hidden block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+                        value={page.Perk} placeholder="Enter your perk" hidden />
                 </div>
 
                 <slot />
                 <div class="flex justify-end mt-6">
-                    <input type="submit" class="cursor-pointer formBtn" value="Pay" />
+                    <input type="submit" class="cursor-pointer formBtn" value={ locale=="nl" ? "Betalen" : "Pay" } />
                 </div>
             </div>
         </form>

@@ -6,6 +6,7 @@ import '../styles/styles.css';
 import MainHead from '../components/MainHead.astro';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
+import Redirect from '../components/Redirect.astro';
 
 /**
  * This file is used as a re-usable component that is the layout
@@ -17,9 +18,10 @@ interface Props {
 	meta: any
 	footerText: string
 	introBlobImage: string
+	availableLocales: (string | null)[]
 }
 
-const { meta, locale, footerText, introBlobImage } = Astro.props as Props
+const { meta, locale, footerText, availableLocales, introBlobImage } = Astro.props as Props
 let { noindex, nofollow } = meta
 noindex = noindex == null
 nofollow = nofollow == null
@@ -27,6 +29,7 @@ const title = meta.HTML_Title
 const description = meta.Meta_description
 const image = introBlobImage;
 const canonicalURL = Astro.canonicalURL
+
 
 let noIndex = '';
 if (noindex === true) { noIndex = "noindex" };
@@ -39,33 +42,8 @@ if (nofollow === true) { noFollow = "nofollow" };
 
 <head>
 	<MainHead {title} {description} {noIndex} {noFollow} {image} {locale} {canonicalURL} />
-	<script>
-		/* Redirection Script */
-		// Placed in head as it should run before everything else
-		const allLocales = ["en", "nl", "de"] // List available locales
-		const browserLocale = navigator.language.substring(0, 2) // get browser locale
-		const locale = document.documentElement.lang // get current document locale
-		let preferredLocale = localStorage.getItem('locale') // locale stored in browser storage
-		if (preferredLocale == null) { // if no stored locale use browser locale if it exists in the list
-			localStorage.setItem(`locale`, allLocales.includes(browserLocale) ? browserLocale : "en")
-			preferredLocale = localStorage.getItem(`locale`)
-		}
-		if (window.location.pathname != "/404") {
-			if (locale != preferredLocale) { // if stored locale and document locale differ redirect
-				let newPath
-				if (locale == "en") {
-					newPath = `/${preferredLocale}${window.location.pathname}`
-					window.location.pathname = newPath
-				} else {
-					const checkRegex = RegExp(`/${preferredLocale}/`)
-					if (!checkRegex.test(window.location.pathname)) {
-						newPath = `/${preferredLocale}${window.location.pathname.replace(/^\/\w{2}/g, '')}`
-						window.location.pathname = newPath
-					}
-				}
-			}
-		}
-	</script>
+	{(availableLocales.includes(locale) && locale != "en") ?
+	<Redirect />: null}
 </head>
 
 <body>

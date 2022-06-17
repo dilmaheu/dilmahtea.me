@@ -27,8 +27,17 @@ export async function getStaticPaths() {
         query: AllPagesQuery,
       })
     }).then(response => response.json());
+  // Get all locales
+  const getAllLocales = arr => {
+    if (arr.length > 0) return arr.map(home =>
+      home.attributes.locale.substring(0, 2)
+    );
+    return []
+  }
+
   // Saving all Localized home pages
   let allLocalizedHomePages = allPages.data.crowdfundingHome.data.attributes.localizations.data;
+  const allHomeLocales = getAllLocales(allLocalizedHomePages)
 
   // Mapping all localized home pages into a new array that returns an object that generates the paths
   allLocalizedHomePages = allLocalizedHomePages.map((page) => {
@@ -40,6 +49,7 @@ export async function getStaticPaths() {
         footerText: allPages.data.recurringElement.data.attributes.Footer_text, // footer text
         page: { // page object where empty its attributes and give it a type
           ...page.attributes,
+          availableLocales: allHomeLocales,
           type: `home`,
         }
       }
@@ -47,10 +57,11 @@ export async function getStaticPaths() {
   })
 
   // The default Basic pages
-  let defaultBasicPages = allPages.data.basicPages.data;
+  let allBasicPages = []
   // Mapping all localized basic pages into a new array that returns an object that generates the paths
-  defaultBasicPages = defaultBasicPages.reduce((acc, page) => {
+  allPages.data.basicPages.data.forEach((page) => {
     let localizedPages = page.attributes.localizations.data
+    const basicPagesLocales = getAllLocales(localizedPages)
     if (localizedPages.length > 0) {
       localizedPages = localizedPages.map(foreignPage => {
         const returnedLocale = {
@@ -61,12 +72,13 @@ export async function getStaticPaths() {
             footerText: allPages.data.recurringElement.data.attributes.Footer_text, // footer text
             page: { // page object where empty its attributes and give it a type
               ...foreignPage.attributes,
+              availableLocales: basicPagesLocales,
               type: `basicPages`,
               Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
             }
           }
         }
-        acc.push(returnedLocale)
+        allBasicPages.push(returnedLocale)
       })
       const returnedPage = {
         params: {
@@ -76,18 +88,20 @@ export async function getStaticPaths() {
           footerText: allPages.data.recurringElement.data.attributes.Footer_text, // footer text
           page: { // page object where empty its attributes and give it a type
             ...page.attributes,
+            availableLocales: basicPagesLocales,
             type: `basicPages`,
             Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
           }
         }
       }
-      acc.push(returnedPage)
-      return acc
+      allBasicPages.push(returnedPage)
+      return allBasicPages
     }
-  }, [])
+  })
 
   // Getting Confirmation pages
   let allLocalizedConfirmation = allPages.data.crowdfundingPaymentConfirmation.data.attributes.localizations.data;
+  const confirmationLocales = getAllLocales(allLocalizedConfirmation)
   // The default confirmation page
   let defaultConfirmation = allPages.data.crowdfundingPaymentConfirmation.data.attributes;
 
@@ -100,6 +114,7 @@ export async function getStaticPaths() {
       footerText: allPages.data.recurringElement.data.attributes.Footer_text,
       page: {
         ...defaultConfirmation,
+        availableLocales: confirmationLocales,
         type: `confirm`,
         Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
       },
@@ -108,7 +123,7 @@ export async function getStaticPaths() {
 
   // First check if there are any localized confirmation pages if not do nothing
   if (allLocalizedConfirmation.length > 0) {
-    allLocalizedConfirmation = allLocalizedConfirmation.map((page) => {
+    allLocalizedConfirmation = await allLocalizedConfirmation.map((page) => {
       return {
         params: {
           slug: page.attributes.Meta.URL_slug,
@@ -117,6 +132,7 @@ export async function getStaticPaths() {
           footerText: allPages.data.recurringElement.data.attributes.Footer_text,
           page: {
             ...page.attributes,
+            availableLocales: confirmationLocales,
             type: 'confirm',
             Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
           }
@@ -126,12 +142,12 @@ export async function getStaticPaths() {
   }
 
   let formMeta = allPages.data.crowdfundingForm.data.attributes.Meta;
-  let allPlans = allPages.data.crowdfundingPlans.data;
+  let allPlans = [];
 
   // All plans
-
-  allPlans = allPlans.reduce((acc, plan) => {
+  allPages.data.crowdfundingPlans.data.forEach((plan) => {
     const newPlan = { ...plan.attributes }
+    const planLocales = getAllLocales(plan.attributes.localizations.data)
     delete newPlan.localizations
     const defaultPlan = {
       params: {
@@ -143,11 +159,12 @@ export async function getStaticPaths() {
           ...newPlan,
           Meta: formMeta,
           type: 'plan',
+          availableLocales: planLocales,
           Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
         }
       }
     }
-    acc.push(defaultPlan)
+    allPlans.push(defaultPlan)
     if (plan.attributes.localizations.data.length > 0) {
       plan.attributes.localizations.data.forEach((page) => {
         const localizedPlan = {
@@ -159,20 +176,21 @@ export async function getStaticPaths() {
             footerText: allPages.data.recurringElement.data.attributes.Footer_text,
             page: {
               ...page.attributes,
+              Perk: newPlan.Perk,
               Meta: formMeta,
               type: 'plan',
+              availableLocales: planLocales,
               Intro_blob: allPages.data.crowdfundingHome.data.attributes.Intro_blob
             }
           }
         }
-        acc.push(localizedPlan)
+        allPlans.push(localizedPlan)
       })
     }
-    return acc
-  }, [])
+  })
 
   // return all pages altogether each with the right return format
-  return [...allLocalizedConfirmation, ...allLocalizedHomePages, ...allPlans, ...defaultBasicPages, defaultConfirmation]
+  return [...allLocalizedConfirmation, ...allLocalizedHomePages, ...allPlans, ...allBasicPages, defaultConfirmation]
 }
 
 // Get each pages props from Astro
@@ -183,12 +201,12 @@ const {
 ---
 
 <Layout locale={page.locale.substring(0,2)} meta={page.Meta} footerText={footerText}
-  introBlobImage={page.Intro_blob.data.attributes.formats.small.url}>
+  introBlobImage={page.Intro_blob.data.attributes.formats.small.url} availableLocales={page.availableLocales}>
   {page.type == `home` ?
   <Home {page} /> : page.type == `basicPages` ?
   <BasicPage {page} /> : page.type == `confirm` ?
   <Confirmation {page} />:
-  <CrowdfundingForm {page}>
+  <CrowdfundingForm {page} locale={page.locale.substring(0,2)}>
     <input type="hidden" id="planName" name="planName" value={page.Title} />
   </CrowdfundingForm>
   }

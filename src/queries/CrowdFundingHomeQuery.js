@@ -11,6 +11,13 @@ const CrowdFundingHomeQuery = `
   crowdfundingHome {
     data {
       attributes {
+        localizations {
+          data {
+            attributes {
+              locale
+            }
+          }
+        }
         locale
         Meta {
           HTML_Title
