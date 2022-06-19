@@ -22,6 +22,7 @@ const AllPagesQuery = `
                   id
                   attributes {
                     name
+                    url
                     alternativeText
                   }
                 }

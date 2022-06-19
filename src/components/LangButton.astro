@@ -1,0 +1,17 @@
+---
+import UKImg from "/images/UK.svg";
+import GerImg from "/images/germany.svg";
+import NLImg from "/images/netherlands.svg";
+const { id, locale } = Astro.props
+
+---
+
+<li class="block">
+    <a id={id} href="#" class="hover:bg-gray-300 flex flex-wrap gap-x-1.5 md:gap-x-3 items-center dropdownItem">
+        <div class="langIcon rounded-full overflow-hidden">
+            <img src={locale=="en" ? UKImg : locale=="nl" ? NLImg : GerImg } class="w-full h-full object-cover"
+                alt="brand-logo">
+        </div>
+        <div>{locale.toUpperCase()}</div>
+    </a>
+</li>

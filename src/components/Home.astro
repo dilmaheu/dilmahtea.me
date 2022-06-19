@@ -6,7 +6,7 @@ import PlanCards from './PlanCards.astro';
 import { Markdown } from 'astro/components';
 
 const { page } = Astro.props
-const url = `${import.meta.env.Assets_URL}`;
+const url = Astro.canonicalURL.origin + `/cms`;
 ---
 
 <!-- Hero Section -->
@@ -22,7 +22,8 @@ const url = `${import.meta.env.Assets_URL}`;
 						d="M0,377.7V0H1080V590.9s-71.3,81.8-205.3,81.8c-65.5,0-126.9-6.2-189.8-12.6-65.8-6.6-133.1-13.4-208.2-13.4-79.4,0-147.5,7.6-210.1,14.6-53,5.9-102.1,11.4-150.7,11.4C10.1,672.7,0,629.5,0,629.5Z" />
 				</clipPath>
 			</defs>
-			<image class="h-full w-auto" height="100%" width="100%" href={MainBG} clip-path="url(#heroImgFrame)"></image>
+			<image class="h-full w-auto" height="100%" width="100%" href={MainBG} clip-path="url(#heroImgFrame)">
+			</image>
 		</svg>
 	</div>
 
@@ -33,11 +34,11 @@ const url = `${import.meta.env.Assets_URL}`;
 		<div class="sm:w-1/2 md:w-5/12 HeroTxtContent" role="banner">
 			<div>
 				<div class="block sm:hidden mx-auto heroLoveIcon">
-					<img class="w-full h-full" src="images/love.svg" alt="love-icon" />
+					<img class="w-full h-full" src="/images/love.svg" alt="love-icon" />
 				</div>
 				<h1 class="heroTitle">{page.Title}</h1>
 				<div class="hidden sm:block ml-auto heroCupIcon">
-					<img class="w-full h-full" src="images/cup.svg" alt="cup-icon" />
+					<img class="w-full h-full" src="/images/cup.svg" alt="cup-icon" />
 				</div>
 				<div class="pt-1 sm:pt-0 prose max-w-none heroTxt">
 					<Markdown>{page.Intro_text}</Markdown>
@@ -56,7 +57,7 @@ const url = `${import.meta.env.Assets_URL}`;
 						d="M747.2,0V702.2c-57,39.9-124,97-321.9,97C136.8,799.2,49.6,715,37.2,503.8S-51.3,148.1,58.5,26.2C67,16.7,75.2,8,82.9,0" />
 				</clipPath>
 			</defs>
-			<image class="w-auto h-full" x="-45%" height="100%" width="100%" href={url + page.Intro_blob.data.attributes.url}
+			<image class="w-auto h-full" x="-45%" height="100%" width="100%" href={page.Intro_blob.data.attributes.url}
 				clip-path="url(#heroImgFrame2)"></image>
 		</svg>
 	</div>
@@ -73,8 +74,8 @@ const url = `${import.meta.env.Assets_URL}`;
 						d="M105.7,0C55.3,0,23.2,5.1,0,15.3V230.9c16.8,10.9,73.1,1.5,121.5,0,55.8-1.7,113,7.1,168.9,7.1,49.5,0,84.6-11,84.6-11V15.3c-22.1-14.4-88.8,0-120,0S156.2,0,105.7,0Z" />
 				</clipPath>
 			</defs>
-			<image class="h-full w-auto" height="100%" width="100%" href={url +
-				page.Intro_blob.data.attributes.formats.medium.url} clip-path="url(#heroImgFrame3)"></image>
+			<image class="h-full w-auto" height="100%" width="100%"
+				href={page.Intro_blob.data.attributes.formats.medium.url} clip-path="url(#heroImgFrame3)"></image>
 		</svg>
 	</div>
 </div>
@@ -84,7 +85,7 @@ const url = `${import.meta.env.Assets_URL}`;
 
 <div class="wrapper planSec" role="main">
 	<h2 class="header-default color-default">{page.Heading_plans}</h2>
-	<PlanCards />
+	<PlanCards allPlans={page.allPlans} />
 </div>
 
 
@@ -102,7 +103,8 @@ const url = `${import.meta.env.Assets_URL}`;
 						d="M1056.5,36.1S1016.2-3.2,894.8.2C770.2,3.7,636.1,32.3,511.5,29.1,402.6,26.3,252.1,11.9,143.3,18.4,77.2,22.3,0,36.1,0,36.1V637.5s33.5,22.8,164.7,22.8c64,0,143.2-7.6,203.6-17.6,63.3-10.4,170.1-11.5,243.6-11.5,77.7,0,211.8,24.2,332.8,6.3s111.8-46.8,111.8-46.8V36.1Z" />
 				</clipPath>
 			</defs>
-			<image class="h-full w-auto" height="100%" width="100%" href={Sec3BG} clip-path="url(#homeInfoImgFrame)"></image>
+			<image class="h-full w-auto" height="100%" width="100%" href={Sec3BG} clip-path="url(#homeInfoImgFrame)">
+			</image>
 		</svg>
 	</div>
 
@@ -117,7 +119,7 @@ const url = `${import.meta.env.Assets_URL}`;
 							d="M800.6,404.2c-5.9,79.8-10.2,193-138.1,255.1s-222,24-336,24c-81.5,0-162.9,19.8-230.5,12-27-3.1-51.9-10.7-73.6-25.7A94,94,0,0,1,0,647.5V33.8C23.5,12.9,56.8,4.9,96,2.9c63.9-3.3,143.3,9.7,221.1,9.7,90.7,0,282-43.6,394.9,31.5C808.7,108.4,806.6,324.5,800.6,404.2Z" />
 					</clipPath>
 				</defs>
-				<image class="w-auto h-full" height="100%" width="100%" href={url + page.Block_blob.data.attributes.url}
+				<image class="w-auto h-full" height="100%" width="100%" href={page.Block_blob.data.attributes.url}
 					clip-path="url(#homeInfo_ImgFrame1)"></image>
 			</svg>
 		</div>
@@ -156,8 +158,9 @@ const url = `${import.meta.env.Assets_URL}`;
 						d="M105.7,0C55.3,0,23.2,5.1,0,15.3V230.9c16.8,10.9,73.1,1.5,121.5,0,55.8-1.7,113,7.1,168.9,7.1,49.5,0,84.6-11,84.6-11V15.3c-22.1-14.4-88.8,0-120,0S156.2,0,105.7,0Z" />
 				</clipPath>
 			</defs>
-			<image class="h-auto w-full" height="100%" width="100%" href={url +
-				page.Block_blob.data.attributes.formats.medium.url} clip-path="url(#homeInfoImgFrame2)"></image>
+			<image class="h-auto w-full" height="100%" width="100%"
+				href={page.Block_blob.data.attributes.formats.medium.url} clip-path="url(#homeInfoImgFrame2)">
+			</image>
 		</svg>
 	</div>
 </div>

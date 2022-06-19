@@ -48,7 +48,7 @@ if (nofollow === true) { noFollow = "nofollow" };
 
 <body>
 	<div class="overflow-hidden">
-		<Navbar locale={locale} />
+		<Navbar locale={locale} availableLocales={availableLocales} />
 		<main>
 			<slot />
 		</main>
@@ -86,17 +86,23 @@ if (nofollow === true) { noFollow = "nofollow" };
 				}
 			}
 			// Select button 1 on click function
-			document.getElementById(`selectLang1`).addEventListener("click", function () {
-				const buttonLang = locale == "en" ? "de" : locale == "nl" ? "en" : "nl"
-				localStorage.setItem(`locale`, buttonLang)
-				redirectPath(buttonLang)
-			}, false)
+			const selectLang1 = document.getElementById(`selectLang1`)
+			const selectLang2 = document.getElementById(`selectLang2`)
+			if (selectLang1) {
+				selectLang1.addEventListener("click", function () {
+					const buttonLang = selectLang1.querySelector('div:last-child').innerHTML.toLowerCase()
+					localStorage.setItem(`locale`, buttonLang)
+					redirectPath(buttonLang)
+				}, false)
+			}
 			// Select button 2 on click function
-			document.getElementById(`selectLang2`).addEventListener("click", function () {
-				const buttonLang = locale == "en" ? "nl" : locale == "nl" ? "de" : "en"
-				localStorage.setItem(`locale`, buttonLang)
-				redirectPath(buttonLang)
-			}, false)
+			if (selectLang2) {
+				document.getElementById(`selectLang2`).addEventListener("click", function () {
+					const buttonLang = selectLang2.querySelector('div:last-child').innerHTML.toLowerCase()
+					localStorage.setItem(`locale`, buttonLang)
+					redirectPath(buttonLang)
+				}, false)
+			}
 		});
 	</script>
 </body>
