@@ -55,6 +55,30 @@ const CrowdFundingHomeQuery = `
       }
     }
   }
+  crowdfundingPlans(sort: "Price_EUR_excl_VAT") {
+    data {
+      id
+      attributes {
+        locale
+        Perk
+        Title
+        Title_icon {
+          data {
+            id
+            attributes {
+              name
+              url
+              alternativeText
+            }
+          }
+        }
+        Price_EUR_excl_VAT
+        Intro_text
+        List
+        Button_text
+      }
+    }
+  }
 }
 `;
 

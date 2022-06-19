@@ -2,68 +2,29 @@
 import LeafImg from '/images/greenLeaf.webp';
 import { Markdown } from 'astro/components';
 
-const GqlQuery = `{
-    crowdfundingPlans(sort: "Price_EUR_excl_VAT"){
-        data{
-            id
-            attributes{
-                Title
-                Title_icon{
-                    data{
-                        id
-                        attributes{
-                            name
-                            url
-                            alternativeText
-                        }
-                    }
-                }
-                Price_EUR_excl_VAT
-                Intro_text
-                List
-                Button_text
-            }
-        }
-    }
-}`;
-
-
-const url = `${import.meta.env.Assets_URL}`;
-const response = await fetch(`${import.meta.env.DB_URL}`,
-	{
-	    method:'POST',
-	    headers: {
-	    	'Content-Type':'application/json',
-	    	'Authorization': `Bearer ${import.meta.env.ACCESS_TOKEN}`
-	    },
-	    body: JSON.stringify({
-	      query: GqlQuery,
-	    })
-	});
-
-const data = await response.json();
-const plan_card = data.data.crowdfundingPlans.data;
-const imgUrl = Astro.canonicalURL.origin + `/cms`
+const { allPlans } = Astro.props
 ---
 
-<div class="w-full grid md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-10 justify-items-center mx-auto" role="list" aria-label="Plans">
-	{plan_card.map(({ attributes }) => (
-		<div class="PlanCard" role="listitem" aria-label={attributes.Title + `-plan`}>
-			<div class="inline-flex items-end gap-x-3.5">
-				<h3 class="text-xl alice">{attributes.Title}</h3>
-				<div class="PlanCardIcon">
-					<img class="w-full h-full" src={imgUrl + attributes.Title_icon.data.attributes.url} alt={url + attributes.Title_icon.data.attributes.alternativeText} />
-				</div>
+<div class="w-full grid md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-10 justify-items-center mx-auto" role="list"
+	aria-label="Plans">
+	{allPlans.map(plan => (
+	<div class="PlanCard" role="listitem" aria-label={plan.Title + `-plan`}>
+		<div class="inline-flex items-end gap-x-3.5">
+			<h3 class="text-xl alice">{plan.Title}</h3>
+			<div class="PlanCardIcon">
+				<img class="w-full h-full" src={plan.Title_icon.data.attributes.url}
+					alt={plan.Title_icon.data.attributes.alternativeText} />
 			</div>
-			<div class="PlanCardPrice pb-6 mb-0.5">&#8364;{attributes.Price_EUR_excl_VAT}</div>
-			<div class="text-lg pb-6 mb-0.5">{attributes.Intro_text}</div>
-			<div class="prose max-w-none mb-5 PlanCardList">
-				<Markdown>{attributes.List}</Markdown>
-			</div>
-			<a href={`plans/` + attributes.Title.toLowerCase()}>
-				<div class="font-bold text-center PlanCardBtn">{attributes.Button_text}</div>
-			</a>
 		</div>
+		<div class="PlanCardPrice pb-6 mb-0.5">&#8364;{plan.Price_EUR_excl_VAT}</div>
+		<div class="text-lg pb-6 mb-0.5">{plan.Intro_text}</div>
+		<div class="prose max-w-none mb-5 PlanCardList">
+			<Markdown>{plan.List}</Markdown>
+		</div>
+		<a href={plan?.slug ? `/${plan.slug}` : `/plans/${plan.Title.toLowerCase()}` }>
+			<div class="font-bold text-center PlanCardBtn">{plan.Button_text}</div>
+		</a>
+	</div>
 	))}
 </div>
 
