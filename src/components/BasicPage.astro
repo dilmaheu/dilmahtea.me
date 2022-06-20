@@ -6,7 +6,6 @@ import LoveIcon from '/images/love.svg';
 
 import { Markdown } from 'astro/components';
 
-const url = Astro.canonicalURL.origin + `/cms`;
 const { page } = Astro.props
 
 const pageIntro_text = page.Intro_text.split("\n")[0];
@@ -70,8 +69,7 @@ const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, '');
 							d="M689.3,316.8c-21.5,73.7-42,166-106.8,244.3C534.8,618.8,267,607.9,96,548c-37.9-13.3-71-29-96-46.8V66.6A105,105,0,0,1,23.3,54.5,627.2,627.2,0,0,1,96,28.1C205.3-4.2,297.7,1.6,381.7,1.6c102.1,0,226.7-17.2,307.6,60.7S710.8,243.1,689.3,316.8Z" />
 					</clipPath>
 				</defs>
-				<image class="w-auto h-full" height="100%" width="100%" href={ page.Block_blob.data==null ? "" :
-					`/${page.Block_blob.data.attributes.url}`} clip-path="url(#basicInfoSec_ImgFrame1)"></image>
+				<image class="w-auto h-full" height="100%" width="100%" href={ page.Block_blob.data==null ? "" : {page.Block_blob.data.attributes.url} clip-path="url(#basicInfoSec_ImgFrame1)"></image>
 			</svg>
 		</div>
 	</div>
