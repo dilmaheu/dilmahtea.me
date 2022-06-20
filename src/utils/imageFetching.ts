@@ -8,7 +8,7 @@ import fetch from "node-fetch";
 const Stream = stream.Transform;
 
 const url = "https://cms.dilmahtea.me";
-const directory = './public/uploads/';
+const directory = './public/cms/uploads/';
 
 // Read & Clean Directory First
 readdir(directory, (err, files) => {
