@@ -96,6 +96,7 @@ const AllPagesQuery = `
               url
               formats
               alternativeText
+              provider_metadata
             }
           }
         }
@@ -120,6 +121,7 @@ const AllPagesQuery = `
                     url
                     formats
                     alternativeText
+                    provider_metadata
                   }
                 }
               }
@@ -133,6 +135,7 @@ const AllPagesQuery = `
                     url
                     formats
                     alternativeText
+                    provider_metadata
                   }
                 }
               }
@@ -161,6 +164,7 @@ const AllPagesQuery = `
                     url
                     formats
                     alternativeText
+                    provider_metadata
                   }
                 }
               }
@@ -187,6 +191,7 @@ const AllPagesQuery = `
               url
               formats
               alternativeText
+              provider_metadata
             }
           }
         }
@@ -219,6 +224,8 @@ const AllPagesQuery = `
                   attributes{
                     url
                     alternativeText
+                    provider_metadata
+                    provider_metadata
                   }
                 }
               }
@@ -244,6 +251,8 @@ const AllPagesQuery = `
             attributes{
               url
               alternativeText
+              provider_metadata
+              provider_metadata
             }
           }
         }
