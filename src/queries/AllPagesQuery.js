@@ -22,7 +22,6 @@ const AllPagesQuery = `
                   id
                   attributes {
                     name
-                    url
                     alternativeText
                   }
                 }
@@ -219,7 +218,6 @@ const AllPagesQuery = `
                   id
                   attributes{
                     url
-                    formats
                     alternativeText
                   }
                 }
@@ -245,7 +243,6 @@ const AllPagesQuery = `
             id
             attributes{
               url
-              formats
               alternativeText
             }
           }

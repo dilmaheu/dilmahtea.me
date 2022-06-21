@@ -1,20 +1,18 @@
 ---
 import Brand from "/logo.svg";
-import LangButton from "./LangButton.astro";
 import UKImg from "/images/UK.svg";
 import GerImg from "/images/germany.svg";
 import NLImg from "/images/netherlands.svg";
 
 interface Props {
     locale: string
-    availableLocales: (string | null)[]
 }
 
-const { locale, availableLocales } = Astro.props
+const { locale } = Astro.props
 ---
 
 <nav class="wrapper mx-auto z-50 relative ">
-    <div class="flex justify-between navbar">
+    <div class="flex justify-between paddingTop navbar">
         <div class="my-auto">
             <a href="/"><img src={Brand} class="brandLogo" alt="brand-logo" /></a>
         </div>
@@ -25,7 +23,7 @@ const { locale, availableLocales } = Astro.props
                     <img src={locale=="en" ? UKImg : locale=="nl" ? NLImg : GerImg} class="w-full h-full object-cover"
                         alt="brand-logo">
                 </div>
-                <div class="font-bold">{locale.toUpperCase()}</div>
+                <div class="font-bold">{locale == "en" ? "EN" : locale == "nl" ? "NL" : "DE"}</div>
                 <div class="w-3">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7">
                         <path class="cls-1"
@@ -35,15 +33,26 @@ const { locale, availableLocales } = Astro.props
                 </div>
             </div>
             <ul id="dropdownMenu" class="absolute rounded hidden overflow-hidden dropdown-menu">
-                {
-                availableLocales.filter((lcl) => lcl != locale).map((lcl, index) =>
-                <LangButton id={`selectLang${index + 1}`} locale={lcl} />)}
-                { availableLocales.length > 1 && locale != "en" ?
-                <LangButton id={`selectLang2`} locale="en" />: null
-                }
-                { availableLocales.length
-                < 2 && locale !="en" ? <LangButton id={`selectLang1`} locale="en" />: null
-                }
+                <li class="block">
+                    <a id="selectLang1" href="#"
+                        class="hover:bg-gray-300 flex flex-wrap gap-x-1.5 md:gap-x-3 items-center dropdownItem">
+                        <div class="langIcon rounded-full overflow-hidden">
+                            <img src={locale=="en" ? GerImg : locale=="nl" ? UKImg : NLImg}
+                                class="w-full h-full object-cover" alt="brand-logo">
+                        </div>
+                        <div>{locale == "en" ? "DE" : locale == "nl" ? "EN" : "NL"}</div>
+                    </a>
+                </li>
+                <li class="block">
+                    <a id="selectLang2" href="#"
+                        class="hover:bg-gray-300 flex flex-wrap gap-x-1.5 md:gap-x-3 items-center dropdownItem">
+                        <div class="langIcon rounded-full overflow-hidden">
+                            <img src={locale=="en" ? NLImg: locale=="nl" ? GerImg : UKImg}
+                                class="w-full h-full object-cover" alt="brand-logo">
+                        </div>
+                        <div>{locale == "en" ? "NL" : locale == "nl" ? "DE" : "EN"}</div>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

@@ -11,7 +11,6 @@ export interface Props {
 
 const { title, description, noIndex, noFollow, image, locale, canonicalURL } = Astro.props as Props;
 const url = `${import.meta.env.Assets_URL}`;
-const imgUrl = Astro.canonicalURL.origin;
 ---
 <meta charset="UTF-8" />
 <title>{title}</title>
@@ -40,7 +39,7 @@ const imgUrl = Astro.canonicalURL.origin;
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:site_name" content="Dilmah" />
-<meta property="og:image" content={imgUrl + image} />
+<meta property="og:image" content={image} />
 
 <!-- Twitter -->
 <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
@@ -48,7 +47,7 @@ const imgUrl = Astro.canonicalURL.origin;
 <meta property="twitter:url" content={canonicalURL} />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={imgUrl + image} />
+<meta name="twitter:image" content={image} />
 
 <script defer data-domain="dilmahtea.me" data-api="/rpcq/event" src="/rpcq/script.js"></script>
 
