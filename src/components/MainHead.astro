@@ -10,12 +10,19 @@ export interface Props {
 }
 const { title, description, noIndex, noFollow, image, locale, canonicalURL } = Astro.props as Props;
 const url = `${import.meta.env.CloudImg_URL}`;
+const domain = Astro.canonicalURL.origin;
+let canonicalUrl = domain+"/"+canonicalURL+"/";
 let availableLang;
+let availableLangUrl;
+
 // For Hreflang links
 if(locale=="en"){
   availableLang = "nl"
+  availableLangUrl = domain+"/"+availableLang+"/"+canonicalURL+"/";
 }else{
   availableLang = "en"
+  canonicalUrl=  domain+"/"+"nl"+"/"+canonicalURL+"/";
+  availableLangUrl = domain+"/"+canonicalURL+"/";
 }
 ---
 <meta charset="UTF-8" />
@@ -36,22 +43,22 @@ if(locale=="en"){
 <!-- Favicon -->
 <link rel="icon" href="/favicon.svg" />
 <!-- SEO -->
-<link rel="canonical" href={canonicalURL} />
-<link href={canonicalURL} hreflang={locale} />
-<link rel="alternate" href={canonicalURL} hreflang={availableLang} />
+<link rel="canonical" href={canonicalUrl} />
+<link href={canonicalUrl} hreflang={locale} />
+<link rel="alternate" href={availableLangUrl} hreflang={availableLang} />
 <!-- OpenGraph -->
 <meta property="og:locale" content={locale} />
 <meta property="og:type" content="website" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:url" content={canonicalURL} />
+<meta property="og:url" content={canonicalUrl} />
 <meta property="og:site_name" content="Dilmah" />
 <meta property="og:image" content={url + image + `/opengraph`} />
 
 <!-- Twitter -->
 <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
 <meta property="twitter:domain" content="dilmahtea.me" />
-<meta property="twitter:url" content={canonicalURL} />
+<meta property="twitter:url" content={canonicalUrl} />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={url + image + `/twittercard`} />
