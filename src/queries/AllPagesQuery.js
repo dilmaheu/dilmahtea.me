@@ -128,6 +128,10 @@ const AllPagesQuery = `
                   }
                 }
               }
+              Heading_button_text
+              Heading_button_link
+              Heading_goal
+              Heading_supporters
               Heading_plans
               Heading_block
               Block_text
