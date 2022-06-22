@@ -22,7 +22,6 @@ const AllPagesQuery = `
                   id
                   attributes {
                     name
-                    url
                     alternativeText
                   }
                 }
@@ -97,6 +96,7 @@ const AllPagesQuery = `
               url
               formats
               alternativeText
+              provider_metadata
             }
           }
         }
@@ -121,6 +121,7 @@ const AllPagesQuery = `
                     url
                     formats
                     alternativeText
+                    provider_metadata
                   }
                 }
               }
@@ -134,6 +135,7 @@ const AllPagesQuery = `
                     url
                     formats
                     alternativeText
+                    provider_metadata
                   }
                 }
               }
@@ -162,6 +164,7 @@ const AllPagesQuery = `
                     url
                     formats
                     alternativeText
+                    provider_metadata
                   }
                 }
               }
@@ -188,6 +191,7 @@ const AllPagesQuery = `
               url
               formats
               alternativeText
+              provider_metadata
             }
           }
         }
@@ -219,8 +223,9 @@ const AllPagesQuery = `
                   id
                   attributes{
                     url
-                    formats
                     alternativeText
+                    provider_metadata
+                    provider_metadata
                   }
                 }
               }
@@ -245,8 +250,9 @@ const AllPagesQuery = `
             id
             attributes{
               url
-              formats
               alternativeText
+              provider_metadata
+              provider_metadata
             }
           }
         }

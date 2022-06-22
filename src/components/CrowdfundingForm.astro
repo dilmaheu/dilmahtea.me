@@ -17,11 +17,11 @@ const { page, locale } = Astro.props
 <div class="hero sm:overflow-hidden relative">
     <!-- Background -->
     <div class="w-full absolute bottom-0">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 672.7" class="heroCurve1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1056.7 660.3" class="heroCurve1">
             <defs>
                 <clipPath id="heroImgFrame">
                     <path class="path"
-                        d="M0,377.7V0H1080V590.9s-71.3,81.8-205.3,81.8c-65.5,0-126.9-6.2-189.8-12.6-65.8-6.6-133.1-13.4-208.2-13.4-79.4,0-147.5,7.6-210.1,14.6-53,5.9-102.1,11.4-150.7,11.4C10.1,672.7,0,629.5,0,629.5Z" />
+                        d="M1056.5,36.1S1016.2-3.2,894.8.2C770.2,3.7,636.1,32.3,511.5,29.1,402.6,26.3,252.1,11.9,143.3,18.4,77.2,22.3,0,36.1,0,36.1V637.5s33.5,22.8,164.7,22.8c64,0,143.2-7.6,203.6-17.6,63.3-10.4,170.1-11.5,243.6-11.5,77.7,0,211.8,24.2,332.8,6.3s111.8-46.8,111.8-46.8V36.1Z" />
                 </clipPath>
             </defs>
             <image class="h-full w-auto" height="100%" width="100%" href={HeaderBG} clip-path="url(#heroImgFrame)">
@@ -41,7 +41,7 @@ const { page, locale } = Astro.props
                 </div>
 
                 <h1 class="BasicHeroTitle">{page.Title}</h1>
-                <div class="pt-7 mt-0.5 prose max-w-none heroTxt">
+                <div class="pt-7 mt-0.5 prose max-w-none BasicHeroTxt">
                     <Markdown>{page.Intro_text}</Markdown>
                 </div>
             </div>
@@ -114,17 +114,17 @@ const { page, locale } = Astro.props
                     </div>
 
                     <div class="formInputContainer">
-                        <label for="street">{ locale == "nl" ? "Straat en huisnummer":"Street and house number" }</label>
-                        <input type="text" id="street" name="street"
-                            class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder={ locale=="nl" ? "Vul je straat en huisnummer in" :"Enter your street address" } />
-                    </div>
-
-                    <div class="formInputContainer">
                         <label for="city">{locale == "nl" ? "Plaatsnaam" : "City" }</label>
                         <input type="text" id="city" name="city"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
                             placeholder={locale=="nl" ? "Vul je plaatsnaam in" :"Enter your city address" } />
+                    </div>
+
+                    <div class="formInputContainer">
+                        <label for="street">{ locale == "nl" ? "Straat en huisnummer":"Street and house number" }</label>
+                        <input type="text" id="street" name="street"
+                            class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+                            placeholder={ locale=="nl" ? "Vul je straat en huisnummer in" :"Enter your street address" } />
                     </div>
 
                     <div class="formInputContainer">
@@ -143,7 +143,7 @@ const { page, locale } = Astro.props
                 </div>
 
                 <slot />
-                <div class="flex justify-end mt-6">
+                <div>
                     <input type="submit" class="cursor-pointer formBtn" value={ locale=="nl" ? "Betalen" : "Pay" } />
                 </div>
             </div>
