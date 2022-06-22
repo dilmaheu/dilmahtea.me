@@ -17,14 +17,11 @@ const AllPagesQuery = `
             attributes {
               locale
               Title
-              TitleIcon_Name
               Title_icon {
                 data {
                   id
                   attributes {
                     name
-                    url
-                    provider_metadata
                     alternativeText
                   }
                 }
@@ -97,9 +94,9 @@ const AllPagesQuery = `
             id
             attributes {
               url
-              provider_metadata
               formats
               alternativeText
+              provider_metadata
             }
           }
         }
@@ -122,9 +119,9 @@ const AllPagesQuery = `
                   id
                   attributes {
                     url
-                    provider_metadata
                     formats
                     alternativeText
+                    provider_metadata
                   }
                 }
               }
@@ -136,9 +133,9 @@ const AllPagesQuery = `
                   id
                   attributes {
                     url
-                    provider_metadata
                     formats
                     alternativeText
+                    provider_metadata
                   }
                 }
               }
@@ -165,9 +162,9 @@ const AllPagesQuery = `
                   id
                   attributes {
                     url
-                    provider_metadata
                     formats
                     alternativeText
+                    provider_metadata
                   }
                 }
               }
@@ -192,9 +189,9 @@ const AllPagesQuery = `
             id
             attributes {
               url
-              provider_metadata
               formats
               alternativeText
+              provider_metadata
             }
           }
         }
@@ -226,9 +223,9 @@ const AllPagesQuery = `
                   id
                   attributes{
                     url
-                    provider_metadata
-                    formats
                     alternativeText
+                    provider_metadata
+                    provider_metadata
                   }
                 }
               }
@@ -253,9 +250,9 @@ const AllPagesQuery = `
             id
             attributes{
               url
-              provider_metadata
-              formats
               alternativeText
+              provider_metadata
+              provider_metadata
             }
           }
         }

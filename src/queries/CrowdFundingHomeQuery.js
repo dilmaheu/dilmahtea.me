@@ -34,9 +34,9 @@ const CrowdFundingHomeQuery = `
             id
             attributes {
               url
-              provider_metadata
               formats
               alternativeText
+              provider_metadata
             }
           }
         }
@@ -48,38 +48,12 @@ const CrowdFundingHomeQuery = `
             id
             attributes {
               url
-              provider_metadata
               formats
               alternativeText
-            }
-          }
-        }
-      }
-    }
-  }
-  crowdfundingPlans(sort: "Price_EUR_excl_VAT") {
-    data {
-      id
-      attributes {
-        locale
-        Perk
-        Title
-        TitleIcon_Name
-        Title_icon {
-          data {
-            id
-            attributes {
-              name
-              url
               provider_metadata
-              alternativeText
             }
           }
         }
-        Price_EUR_excl_VAT
-        Intro_text
-        List
-        Button_text
       }
     }
   }
