@@ -31,7 +31,7 @@ const { page } = Astro.props
 	<!-- Text content -->
 
 	<div class="relative h-full wrapper z-30 HeroTxtContainer">
-		<div class="sm:w-1/2 md:w-6/12 l:w-7/12 HeroTxtContent" role="banner">
+		<div class="sm:w-1/2 md:w-6/12 lg:w-7/12 HeroTxtContent" role="banner">
 			<div class="flex flex-wrap">
 				<h1 class="heroTitle">{page.Title}
 					<span class="icon relative top-0">
@@ -43,14 +43,14 @@ const { page } = Astro.props
 				<div class="prose max-w-none heroTxt">
 					<Markdown>{page.Intro_text}</Markdown>
 				</div>
-				<a href="#allPlans">
+				<a href={page.Heading_button_link}>
 					<div class=" flex items-center justify-center font-bold text-center heroBtn">
 						<span class="icon relative top-0">
 							<span class="relative heroBtnIcon">
 								<img class="w-full h-full" src={LoveGreenIcon} alt="cup-icon" />
 							</span>
 						</span>
-						Support Us
+						{page.Heading_button_text}
 					</div>
 				</a>
 			</div>
@@ -80,8 +80,8 @@ const { page } = Astro.props
 					<div class="progressContent">
 						<div class="progeressHeader">$3450</div>
 						<div class="flex flex-wrap gap-x-1.5 justify-between">
-							<div class="progeressTxt">raised of <strong class="color-default-light-gray">$6000</strong> goal</div>
-							<div class="progeressTxt"><span class="progeressTxtNum">23</span> Supporters</div>
+							<div class="progeressTxt">{page.Heading_goal}</div>
+							<div class="progeressTxt"><span class="progeressTxtNum">23</span> {page.Heading_supporters}</div>
 						</div>
 						<div class="mt-1 sm:mt-2 md:mt-3 w-full bg-default-light-gray rounded-full">
 						  <div class="bg-default-green rounded-full py-1.5" style="width: 25%"></div>
@@ -132,7 +132,7 @@ const { page } = Astro.props
 <!-- Plans Section -->
 
 <div class="wrapper planSec" role="main">
-	<h2 class="header-default color-default" id="allPlans">{page.Heading_plans}</h2>
+	<h2 class="header-default color-default" id="plans">{page.Heading_plans}</h2>
 	<PlanCards allPlans={page.allPlans} />
 </div>
 
