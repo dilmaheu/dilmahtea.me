@@ -32,11 +32,11 @@ const page = { ...defPage, allPlans }
 const availableLocales = page.localizations.data.map((localized) => localized.attributes.locale.substring(0, 2));
 
 // Saving footer text
-const footerText = crowdfundingDefaultPage.data.recurringElement.data.attributes.Footer_text;
+const recurData = crowdfundingDefaultPage.data.recurringElement.data.attributes;
 
 ---
 
-<Layout locale={page.locale.substring(0,2)} availableLocales={availableLocales} meta={page.Meta} footerText={footerText}
-	introBlobImage={page.Intro_blob.data.attributes.provider_metadata.public_id}>
+<Layout locale={page.locale.substring(0,2)} availableLocales={availableLocales} meta={page.Meta} recurData={recurData}
+	metaImage={page.Intro_blob.data.attributes.provider_metadata.public_id}>
 	<Home {page} />
 </Layout>
