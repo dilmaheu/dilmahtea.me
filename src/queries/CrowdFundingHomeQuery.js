@@ -5,6 +5,19 @@ const CrowdFundingHomeQuery = `
       id
       attributes {
         Footer_text
+        Company_name
+        Company_address
+        Company_email
+        OpenGraph_default{
+            data {
+                attributes {
+                    name
+                    url
+                    provider_metadata
+                    alternativeText
+                }
+            }
+        }
       }
     }
   }

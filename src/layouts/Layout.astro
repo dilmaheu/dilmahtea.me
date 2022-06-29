@@ -16,19 +16,20 @@ import Redirect from '../components/Redirect.astro';
 interface Props {
 	locale: string
 	meta: any
-	footerText: string
-	introBlobImage: string
+	recurData: any
+	metaImage: string
 	availableLocales: (string | null)[]
 }
 
-const { meta, locale, footerText, availableLocales, introBlobImage } = Astro.props as Props
+const { meta, locale, recurData, availableLocales, metaImage } = Astro.props as Props
 let { noindex, nofollow } = meta
 noindex = noindex == null
 nofollow = nofollow == null
 const title = meta.HTML_Title
 const description = meta.Meta_description
-const image = introBlobImage;
-const canonicalURL = Astro.canonicalURL.origin+"/"+meta.Canonical_link+"/";
+const image = metaImage;
+const canonicalURL = meta.Canonical_link
+const slugURL = meta.URL_slug
 
 
 let noIndex = '';
@@ -41,7 +42,7 @@ if (nofollow === true) { noFollow = "nofollow" };
 <html lang={locale}>
 
 <head>
-	<MainHead {title} {description} {noIndex} {noFollow} {image} {locale} {canonicalURL} />
+	<MainHead {title} {description} {noIndex} {noFollow} {image} {locale} {canonicalURL} {slugURL} {availableLocales} />
 	{(availableLocales.includes(locale) && locale != "en") ?
 	<Redirect />: null}
 </head>
@@ -52,7 +53,7 @@ if (nofollow === true) { noFollow = "nofollow" };
 		<main>
 			<slot />
 		</main>
-		<Footer footerText={footerText} />
+		<Footer recurData={recurData} />
 	</div>
 
 	<script>

@@ -7,15 +7,33 @@ export interface Props {
   image?: string;
   locale: string;
   canonicalURL?: string | URL;
+  slugURL: string | URL;
+  availableLocales: (string | null)[]
 }
-const { title, description, noIndex, noFollow, image, locale, canonicalURL } = Astro.props as Props;
+const { title, description, noIndex, noFollow, image, locale, canonicalURL, slugURL, availableLocales } = Astro.props as Props;
 const url = `${import.meta.env.CloudImg_URL}`;
-let availableLang;
-// For Hreflang links
+const domain = Astro.canonicalURL.origin;
+let slugLink: string | URL;
+let availableLang: (string | null)[];
+let canonicalLink = domain+"/"+canonicalURL+"/";
+
 if(locale=="en"){
-  availableLang = "nl"
+  slugLink = domain+"/"+slugURL+"/";
 }else{
-  availableLang = "en"
+  slugLink = domain+"/"+locale+"/"+slugURL+"/";
+}
+
+// Hreflang available links
+if(availableLocales.includes("nl") && availableLocales.includes("de")){  
+  availableLang = ["en", "nl", "de"]
+}else if(availableLocales.includes("nl")){
+  availableLang = ["en", "nl"]
+}else if(availableLocales.includes("de")){
+  availableLang = ["en", "de"]
+}
+// Remove current locale
+if (availableLang.indexOf(locale, 0) > -1) {
+  availableLang.splice(availableLang.indexOf(locale, 0), 1);
 }
 ---
 <meta charset="UTF-8" />
@@ -36,22 +54,27 @@ if(locale=="en"){
 <!-- Favicon -->
 <link rel="icon" href="/favicon.svg" />
 <!-- SEO -->
-<link rel="canonical" href={canonicalURL} />
-<link href={canonicalURL} hreflang={locale} />
-<link rel="alternate" href={canonicalURL} hreflang={availableLang} />
+<link rel="canonical" href={canonicalLink} />
+<link href={slugLink} hreflang={locale} />
+
+{availableLang.map((altLocale) => (
+  altLocale=="en" ? 
+  <link rel="alternate" href={domain+"/"+slugURL+"/"} hreflang={altLocale} />
+: <link rel="alternate" href={domain+"/"+altLocale+"/"+slugURL+"/"} hreflang={altLocale} />
+))}
 <!-- OpenGraph -->
 <meta property="og:locale" content={locale} />
 <meta property="og:type" content="website" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:url" content={canonicalURL} />
+<meta property="og:url" content={slugLink} />
 <meta property="og:site_name" content="Dilmah" />
 <meta property="og:image" content={url + image + `/opengraph`} />
 
 <!-- Twitter -->
 <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
 <meta property="twitter:domain" content="dilmahtea.me" />
-<meta property="twitter:url" content={canonicalURL} />
+<meta property="twitter:url" content={slugLink} />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={url + image + `/twittercard`} />
