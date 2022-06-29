@@ -1,0 +1,39 @@
+---
+import Layout from '../layouts/Layout.astro';
+// Getting the graphql query for fetch api
+import CrowdFundingHomeQuery from '../queries/CrowdFundingHomeQuery'
+// Getting the Home component
+import BlogOverview from '../components/BlogOverview.astro';
+
+/**
+ * This is the default index page
+ */
+
+// Fetching the default home page
+// No need for
+const crowdfundingDefaultPage = await fetch(`${import.meta.env.DB_URL}`,
+	{
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${import.meta.env.ACCESS_TOKEN}`
+		},
+		body: JSON.stringify({
+			query: CrowdFundingHomeQuery,
+		})
+	}).then(response => response.json());
+
+// Saving it's page attributes like meta and other components
+const defPage = crowdfundingDefaultPage.data.crowdfundingHome.data.attributes;
+
+const page = { defPage }
+const availableLocales = ['en']
+// Saving footer text
+const recurData = crowdfundingDefaultPage.data.recurringElement.data.attributes;
+
+---
+
+<Layout locale={"en"} availableLocales={availableLocales} meta={"noindex"} recurData={recurData}
+	metaImage={recurData.OpenGraph_default.data.attributes.provider_metadata.public_id}>
+	<BlogOverview />
+</Layout>
