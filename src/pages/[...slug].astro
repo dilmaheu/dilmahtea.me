@@ -10,6 +10,7 @@ import Confirmation from '../components/Confirmation.astro';
 import CrowdfundingForm from '../components/CrowdfundingForm.astro';
 import BasicPage from '../components/BasicPage.astro';
 import Blog from '../components/Blog.astro';
+import BlogDetails from '../components/BlogDetails.astro';
 
 /**
  * This file is used for all the other pages
@@ -161,32 +162,57 @@ export async function getStaticPaths() {
     allLocalizedConfirmation.forEach(page => allConfirmations.push(page))
   }
 
-  // Getting Blog pages
-  let allBlogsHome = []
-  let allLocalizedBlogsHome = allPages.data.homeBlog.data.attributes.localizations.data;
-  const blogHomeLocales = getAllLocales(allLocalizedBlogsHome)
-  // The default confirmation page
+
+  // Getting blog details pages
+  let allBlogs = []
+  // Mapping all localized blog details pages into a new array that returns an object that generates the paths
+  allPages.data.blogs.data.forEach((page) => {
+    let localizedBlogsPages = page.attributes.localizations.data
+    const blogsPagesLocales = getAllLocales(localizedBlogsPages)
+    if (localizedBlogsPages.length > 0) {
+      const localizedBlogsObj = {
+        availableLocales: blogsPagesLocales,
+        type: `blogDetails`
+      }
+      localizedBlogsPages = createPages(localizedBlogsPages, localizedBlogsObj)
+      localizedBlogsPages.forEach((lclPage) => allBlogs.push(lclPage))
+    }
+    const defaultBlogsObj = {
+      availableLocales: blogsPagesLocales,
+      type: `blogDetails`
+    }
+    const defaultBlogsPage = createPages(page.attributes, defaultBlogsObj)
+    allBlogs.push(defaultBlogsPage)
+  })
+
+  // Getting Blog home pages
+  let allBlogHome = []
+  let allLocalizedBlogHome = allPages.data.homeBlog.data.attributes.localizations.data;
+  const blogHomeLocales = getAllLocales(allLocalizedBlogHome)
+  // The default Blog home page
   let defaultBlogHome = allPages.data.homeBlog.data.attributes;
   const defaultBlogHomeObj = {
     availableLocales: blogHomeLocales,
-    type: `blog`
+    type: `blog`,
+    allBlogs: allBlogs
   }
-
   defaultBlogHome = createPages(defaultBlogHome, defaultBlogHomeObj)
-  allBlogsHome.push(defaultBlogHome)
+  allBlogHome.push(defaultBlogHome)
 
-  // First check if there are any localized confirmation pages if not do nothing
-  if (allLocalizedBlogsHome.length > 0) {
+  // First check if there are any localized Blog home pages if not do nothing
+  if (allLocalizedBlogHome.length > 0) {
     const localizedBlogHomeObj = {
       availableLocales: blogHomeLocales,
-      type: 'blog'
-    }
-    allLocalizedBlogsHome = createPages(allLocalizedBlogsHome, localizedBlogHomeObj)
-    allLocalizedBlogsHome.forEach(page => allBlogsHome.push(page))
+      type: 'blog',
+      allBlogs: allBlogs
+    };
+    allLocalizedBlogHome = createPages(allLocalizedBlogHome, localizedBlogHomeObj)
+    allLocalizedBlogHome.forEach(page => allBlogHome.push(page))
   }
-  
+
+
   // return all pages altogether each with the right return format
-  return [...allLocalizedHomePages, ...allConfirmations, ...allPlans, ...allBasicPages, ...allBlogsHome]
+  return [...allLocalizedHomePages, ...allConfirmations, ...allPlans, ...allBasicPages, ...allBlogHome, ...allBlogs]
 }
 
 // Get each pages props from Astro
@@ -204,7 +230,8 @@ const {
   {page.type == `home` ?
   <Home {page} /> : page.type == `basicPages` ?
   <BasicPage {page} /> : page.type == `blog` ?
-  <Blog {page} /> : page.type == `confirm` ?
+  <Blog {page} /> : page.type == `blogDetails` ?
+  <BlogDetails {page} /> : page.type == `confirm` ?
   <Confirmation {page} />:
   <CrowdfundingForm {page} locale={page.locale.substring(0,2)}>
     <input type="hidden" id="planName" name="planName" value={page.Title} />

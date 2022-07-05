@@ -13,100 +13,9 @@ const url = `${import.meta.env.CloudImg_URL}`;
 
 const { page } = Astro.props
 
-const GqlQuery = `{
-    blogs {
-	    data {
-	      id
-	      attributes {
-	        localizations {
-	        data {
-	          attributes {
-	            locale
-	            Title
-	            Intro_text
-	            Intro_blob{
-	              data{
-	                id
-	                attributes{
-	                url
-	                provider_metadata
-	                formats
-	                alternativeText
-	                }
-	              }
-	            }
-	            Block_text
-	            createdAt
-	            updatedAt
-	            publishedAt
-	                Meta{
-	                HTML_Title
-	                Meta_description
-	                noindex
-	                nofollow
-	                URL_slug
-	                Canonical_link
-	                }
-	            }
-	          }
-	        }
-	        locale
-	        Title
-	        Intro_text
-	        Intro_blob{
-	          data{
-	            id
-	            attributes{
-		            url
-		            provider_metadata
-		            formats
-		            alternativeText
-	            }
-	          }
-	        }
-	        Block_text
-	        createdAt
-	        updatedAt
-	        publishedAt
-	        Meta{
-	          HTML_Title
-	          Meta_description
-	          noindex
-	          nofollow
-	          URL_slug
-	          Canonical_link
-	        }
-	      }
-	    }
-	  }
-}`;
-
-
-const response = await fetch(`${import.meta.env.DB_URL}`,
-   {
-       method:'POST',
-       headers: {
-         'Content-Type':'application/json',
-         'Authorization': `Bearer ${import.meta.env.ACCESS_TOKEN}`
-       },
-       body: JSON.stringify({
-         query: GqlQuery,
-       })
-   });
-
-const data = await response.json();
-const blog1 = data.data.blogs.data[1].attributes;
-const blog2 = data.data.blogs.data[2].attributes;
-const blog3 = data.data.blogs.data[0].attributes;
-
-var date1 = new Date(blog1.createdAt);
-var createdAtDate1 = date1.toLocaleString("en-US", { day : "numeric", month : "long"});
-
-var date2 = new Date(blog2.createdAt);
-var createdAtDate2 = date2.toLocaleString("en-US", { day : "numeric", month : "long"});
-
-var date3 = new Date(blog3.createdAt);
-var createdAtDate3 = date3.toLocaleString("en-US", { day : "numeric", month : "long"});
+const blogs = page.allBlogs.filter((val) => val.props.page.locale == page.locale).map(val => val.props.page)
+const allBlogs = page.allBlogs.filter((val) => val.props.page.locale == page.locale).map(val => val.props.page)
+const blog1 = allBlogs[0];
 ---
 
 <!-- Hero Section -->
@@ -130,36 +39,32 @@ var createdAtDate3 = date3.toLocaleString("en-US", { day : "numeric", month : "l
 
 	<div class="relative h-full wrapper z-30 HeroTxtContainer">
 		<div class="sm:w-1/2 md:w-6/12 lg:w-7/12 HeroTxtContent" role="banner">
-			<div class="flex flex-wrap">
-				<div class="flex flex-wrap items-center gap-x-2.5 md:gap-x-4">
-					<div class="blogHome_heroAuthIcn">
-						<img class="w-full h-full" src={penIcon} alt="pen-icon">
+			<div class="flex flex-wrap items-center">
+				<div>
+					<div class="flex flex-wrap font-bold blogHome_heroAuth">
+						{blog1.authors.data.map((author, idx) => (
+							<a href="">{`${ idx > 0 ? ', ' : ' '}` + author.attributes.givenName}</a> 
+						))}
 					</div>
-
-					<div class="flex flex-wrap gap-x-1.5 blogHome_heroAuth">by 
-						<a href="" class="font-bold">Dilmah Family</a>
-					</div>
-				</div>
-
-				<h1 class="blogHome_heroTitle">
-					<a href="/blogOverview">{blog1.Title}</a>
-					<span class="icon relative top-0">
-						<span class="relative headingInlineIcon">
-							<img class="w-full h-full" src={CupIcon} alt="cup-icon" />
+					<ul class="flex flex-wrap items-center gap-y-1">
+						<li class="blogHome_HdItem">{new Date(blog1.createdAt).toLocaleString("en-US", { day : "numeric", month : "long"})}</li>
+						<li class="blogHome_HdItem">5 min read</li>
+						<li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li>
+					</ul>
+					<h1 class="blogHome_heroTitle">
+						<a href={blog1.Meta.URL_slug}>{blog1.Title}</a>
+						<span class="icon relative top-0">
+							<span class="relative headingInlineIcon">
+								<img class="w-full h-full" src={CupIcon} alt="cup-icon" />
+							</span>
 						</span>
-					</span>
-				</h1>
-				<a href="/blogOverview">
-					<div class="prose max-w-none blogHome_heroTxt">
-						<Markdown>{blog1.Intro_text}</Markdown>
-					</div>
-				</a>
-				
-				<ul class="flex flex-wrap items-center gap-y-1 justify-center blogHomeHeaderItemContainer">
-					<li class="blogHome_HdItem">{createdAtDate1}</li>
-					<li class="blogHome_HdItem">5 min read</li>
-					<!-- <li class="blogHome_HdItem"><span class="blogHome_HdItemBtn">Manufacturing</span></li> -->
-				</ul>
+					</h1>
+					<a href={blog1.Meta.URL_slug}>
+						<div class="prose max-w-none blogHome_heroTxt">
+							<Markdown>{blog1.Intro_text}</Markdown>
+						</div>
+					</a>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -203,142 +108,74 @@ var createdAtDate3 = date3.toLocaleString("en-US", { day : "numeric", month : "l
 
 <div class="wrapper blogHome_blogs">
 	<div class="blogHome_blogsContainer">
-		<div class="flex flex-wrap items-center blogHome_blogContaier">
-			<div class="relative w-full sm:w-1/2 blogHome_blogCurveContainer">
-				<a href="/blogOverview">
-					<!-- Blog Image Desktop view -->
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 565 500" class="hidden sm:block blogHome_blogCurveL">
-						<defs>
-					        <clipPath id="basicInfoSec_ImgFrame1">
-					            <path d="M291.8,3.8c-88.5,0-235-7.9-269.3,37.3S1.2,247.5,9.6,368.2,102.7,500,298.4,500c160.9,0,211.2-31.8,252.1-141.4C567.9,312,577,197.4,534.2,63.9,506.5-22.6,415,3.8,291.8,3.8Z"/>
-					        </clipPath>
-						</defs>
-					    <image class="w-auto h-full" height="100%" width="100%" x="-15%" href={ url +  blog2.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#basicInfoSec_ImgFrame1)"></image>
-					</svg>
+		{allBlogs.map((blog, idx) => (
+			<div class="flex flex-wrap items-center blogHome_blogContaier">
+				<div class={idx % 2 == 0 ? "relative w-full sm:w-1/2 order-1 blogHome_blogCurveContainer" : "relative w-full sm:w-1/2 order-1 sm:order-2 blogHome_blogCurveContainer"}>
+					<a href={blog.Meta.URL_slug}>
 
-					<!-- Blog Image Mobile view -->
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 912 499" class="block sm:hidden">
-						<defs>
-					        <clipPath id="basicInfoSec_ImgFrame1sm">
-					            <path d="M470.9,3.8C328.1,3.8,91.7-4.1,36.3,41S1.9,247,15.5,367.5,165.7,499,481.7,499c259.7,0,340.9-31.7,406.9-141.1,28-46.5,42.8-160.9-26.2-294.1C817.6-22.6,669.9,3.8,470.9,3.8Z"/>
-					        </clipPath>
-						</defs>
-					    <image class="w-full h-auto" height="100%" width="100%" href={ url +  blog2.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#basicInfoSec_ImgFrame1sm)"></image>
-					</svg>
+						{/*Blog Image Desktop view */}
 
-					<div class="absolute z-20 blogLeafL_container">
-						<div class="blogLeaf">
-							<img class="w-full h-full" src={LeafImg} alt="tea-leaf-image" />
-						</div>
-					</div>
-				</a>
-			</div>
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 565 500" class={idx % 2 == 0 ? "hidden sm:block blogHome_blogCurveL" : "hidden sm:block blogHome_blogCurveR"}>
+							<defs>
+						        <clipPath id="basicInfoSec_ImgFrame1">
+						            <path d="M291.8,3.8c-88.5,0-235-7.9-269.3,37.3S1.2,247.5,9.6,368.2,102.7,500,298.4,500c160.9,0,211.2-31.8,252.1-141.4C567.9,312,577,197.4,534.2,63.9,506.5-22.6,415,3.8,291.8,3.8Z"/>
+						        </clipPath>
+							</defs>
+						    <image class="w-auto h-full" height="100%" width="100%" x="-15%" href={ url +  blog.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#basicInfoSec_ImgFrame1)"></image>
+						</svg>
 
-			<!-- Text content -->
-	    	<div class="w-full sm:w-1/2 h-full">
-				<div class="flex flex-wrap blogHome_blogTxtContaierR">
-					<div class="flex flex-wrap items-center gap-x-2.5 md:gap-x-4">
-						<div class="blogHome_blogAuthIcn">
-							<div class="flex flex-wrap">
-								<img src={penGreenIcon} alt="pen-icon">
+						{/* Blog Image Mobile view */}
+
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 912 499" class="block sm:hidden">
+							<defs>
+						        <clipPath id="basicInfoSec_ImgFrame1sm">
+						            <path d="M470.9,3.8C328.1,3.8,91.7-4.1,36.3,41S1.9,247,15.5,367.5,165.7,499,481.7,499c259.7,0,340.9-31.7,406.9-141.1,28-46.5,42.8-160.9-26.2-294.1C817.6-22.6,669.9,3.8,470.9,3.8Z"/>
+						        </clipPath>
+							</defs>
+						    <image class="w-full h-auto" height="100%" width="100%" href={ url +  blog.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#basicInfoSec_ImgFrame1sm)"></image>
+						</svg>
+
+						<div class={idx % 2 == 0 ? "absolute z-20 blogLeafL_container" : "absolute z-20 blogLeafR_container"}>
+							<div class="blogLeaf">
+								<img class="w-full h-full" src={idx % 2 == 0 ? LeafImg : LeafImg1 } alt="tea-leaf-image" />
 							</div>
 						</div>
-
-						<div class="flex flex-wrap gap-x-1.5 blogHome_blogAuth">by 
-							<a href="" class="font-bold">Dilmah Family</a>
-						</div>
-					</div>
-
-					<h1 class="blogHome_blogTitle">
-						<a href="/blogOverview">{blog2.Title}</a>
-						<span class="icon relative top-0">
-							<span class="relative headingInlineIcon">
-								<img class="w-full h-full" src={CupGreenIcon} alt="cup-icon" />
-							</span>
-						</span>
-					</h1>
-					<a href="/blogOverview">
-						<div class="prose max-w-none blogHome_blogTxt">
-							<Markdown>{blog2.Intro_text}</Markdown>
-						</div>
 					</a>
-
-					<ul class="flex flex-wrap items-center gap-y-1 justify-center text-center blogHome_BlogItemContainer">
-						<li class="blogHome_blogInfoItem">{createdAtDate2}</li>
-						<li class="blogHome_blogInfoItem">5 min read</li>
-						<!-- <li class="blogHome_blogInfoItem"><span class="blogHome_blogInfoItemBtn">Manufacturing</span></li> -->
-					</ul>
 				</div>
-			</div>
-		</div>
-		<div class="flex flex-wrap items-center blogHome_blogContaier">
 
-			<!-- Text content -->
-	    	<div class="w-full sm:w-1/2 order-2 sm:order-1">
-				<div class="flex flex-wrap blogHome_blogTxtContaieL">
-					<div class="flex flex-wrap items-center gap-x-2.5 md:gap-x-4">
-						<div class="blogHome_blogAuthIcn">
-							<div class="flex flex-wrap">
-								<img src={penGreenIcon} alt="pen-icon">
+				{/*Text content*/}
+
+		    	<div class={idx % 2 == 0 ? "w-full sm:w-1/2 order-2 h-full" : "w-full sm:w-1/2  order-2 sm:order-1 h-full" }>
+					<div class={idx % 2 == 0 ? "flex flex-wrap blogHome_blogTxtContaierL" : "flex flex-wrap blogHome_blogTxtContaierR"} >
+						<div>
+							<div class="flex flex-wrap font-bold blogHome_blogAuth">
+								{blog.authors.data.map((author, idx) => (
+									<a href="">{`${ idx > 0 ? ', ' : ' '}` + author.attributes.givenName}</a> 
+								))}
 							</div>
-						</div>
+							<ul class="flex flex-wrap items-center gap-y-1">
+								<li class="blogHome_blogItem">{new Date(blog.createdAt).toLocaleString("en-US", { day : "numeric", month : "long"})}</li>
+								<li class="blogHome_blogItem">5 min read</li>
+								<li class="blogHome_blogItem"><a class="blogHome_blogItemBtn">Manufacturing</a></li>
+							</ul>
 
-						<div class="flex flex-wrap gap-x-1.5 blogHome_blogAuth">by 
-							<a href="" class="font-bold">Dilmah Family</a>
+							<h1 class="blogHome_blogTitle">
+								<a href={blog.Meta.URL_slug}>{blog.Title}</a>
+								<span class="icon relative top-0">
+									<span class="relative headingInlineIcon">
+										<img class="w-full h-full" src={CupGreenIcon} alt="cup-icon" />
+									</span>
+								</span>
+							</h1>
+							<a href={blog.Meta.URL_slug}>
+								<div class="prose max-w-none blogHome_blogTxt">
+									<Markdown>{blog.Intro_text}</Markdown>
+								</div>
+							</a>
 						</div>
 					</div>
-
-					<h1 class="blogHome_blogTitle">
-						<a href="/blogOverview">{blog3.Title}</a>
-						<span class="icon relative top-0">
-							<span class="relative headingInlineIcon">
-								<img class="w-full h-full" src={CupGreenIcon} alt="cup-icon" />
-							</span>
-						</span>
-					</h1>
-					<a href="/blogOverview">
-						<div class="prose max-w-none blogHome_blogTxt">
-							<Markdown>{blog3.Intro_text}</Markdown>
-						</div>
-					</a>
-
-					<ul class="flex flex-wrap items-center gap-y-1 justify-center text-center blogHome_BlogItemContainer">
-						<li class="blogHome_blogInfoItem">{createdAtDate3}</li>
-						<li class="blogHome_blogInfoItem">5 min read</li>
-						<!-- <li class="blogHome_blogInfoItem"><span class="blogHome_blogInfoItemBtn">Manufacturing</span></li> -->
-					</ul>
 				</div>
 			</div>
-
-			<div class="relative w-full sm:w-1/2 order-1 sm:order-2 blogHome_blogCurveContainer">
-				<a href="/blogOverview">
-					<!-- Blog Image Desktop view -->
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 565 500" class="hidden sm:block blogHome_blogCurveR">
-						<defs>
-					        <clipPath id="basicInfoSec_ImgFrame1">
-					            <path d="M291.8,3.8c-88.5,0-235-7.9-269.3,37.3S1.2,247.5,9.6,368.2,102.7,500,298.4,500c160.9,0,211.2-31.8,252.1-141.4C567.9,312,577,197.4,534.2,63.9,506.5-22.6,415,3.8,291.8,3.8Z"/>
-					        </clipPath>
-						</defs>
-					    <image class="w-auto h-full" height="100%" width="100%" x="-15%" href={ url +  blog3.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#basicInfoSec_ImgFrame1)"></image>
-					</svg>
-
-					<!-- Blog Image Mobile view -->
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 912 499" class="block sm:hidden">
-						<defs>
-					        <clipPath id="basicInfoSec_ImgFrame1sm">
-					            <path d="M470.9,3.8C328.1,3.8,91.7-4.1,36.3,41S1.9,247,15.5,367.5,165.7,499,481.7,499c259.7,0,340.9-31.7,406.9-141.1,28-46.5,42.8-160.9-26.2-294.1C817.6-22.6,669.9,3.8,470.9,3.8Z"/>
-					        </clipPath>
-						</defs>
-					    <image class="w-full h-auto" height="100%" width="100%" href={ url +  blog3.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#basicInfoSec_ImgFrame1sm)"></image>
-					</svg>
-
-					<div class="absolute z-30 blogLeafR_container">
-						<div class="blogLeaf">
-							<img class="w-full h-full" src={LeafImg1} alt="tea-leaf-image" />
-						</div>
-					</div>
-				</a>
-			</div>
-		</div>
+		))}
 	</div>
 </div>

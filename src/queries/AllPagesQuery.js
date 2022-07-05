@@ -308,24 +308,24 @@ const AllPagesQuery = `
         }
         locale
         Meta{
-        HTML_Title
-        Meta_description
-        noindex
-        nofollow
-        URL_slug
-        Canonical_link
+          HTML_Title
+          Meta_description
+          noindex
+          nofollow
+          URL_slug
+          Canonical_link
         }
       }
     }
   }
-  blogs {
+  blogs{
     data {
       id
       attributes {
         localizations {
-        data {
-          attributes {
-            locale
+          data {
+            attributes {
+              locale
               Title
               Intro_text
               Intro_blob{
@@ -343,6 +343,22 @@ const AllPagesQuery = `
               createdAt
               updatedAt
               publishedAt
+              authors{
+                data{
+                  attributes{
+                    givenName
+                    Profile_picture{
+                      data{
+                        attributes{
+                          url
+                          provider_metadata
+                          alternativeText
+                        }
+                      }
+                    }
+                  }
+                }
+              }
               Meta{
                 HTML_Title
                 Meta_description
@@ -372,6 +388,22 @@ const AllPagesQuery = `
         createdAt
         updatedAt
         publishedAt
+        authors{
+          data{
+            attributes{
+              givenName
+              Profile_picture{
+                data{
+                  attributes{
+                    url
+                    provider_metadata
+                    alternativeText
+                  }
+                }
+              }
+            }
+          }
+        }
         Meta{
           HTML_Title
           Meta_description
