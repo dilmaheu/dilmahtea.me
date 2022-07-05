@@ -13,6 +13,12 @@ const url = `${import.meta.env.CloudImg_URL}`;
 
 const { page } = Astro.props
 
+// const blogs = page.allBlogs.data.filter((val) => val.attributes.locale == page.locale)
+
+// const allBlogs = page.allBlogs.data.filter((val) => val.attributes.locale == page.locale).map(val => val.attributes)
+
+// const blog1 = blogs[1].attributes;
+
 const blogs = page.allBlogs.filter((val) => val.props.page.locale == page.locale).map(val => val.props.page)
 const allBlogs = page.allBlogs.filter((val) => val.props.page.locale == page.locale).map(val => val.props.page)
 const blog1 = allBlogs[0];
@@ -52,14 +58,14 @@ const blog1 = allBlogs[0];
 						<li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li>
 					</ul>
 					<h1 class="blogHome_heroTitle">
-						<a href={blog1.Meta.URL_slug}>{blog1.Title}</a>
+						<a href={`/`+ blog1.Meta.URL_slug}>{blog1.Title}</a>
 						<span class="icon relative top-0">
 							<span class="relative headingInlineIcon">
 								<img class="w-full h-full" src={CupIcon} alt="cup-icon" />
 							</span>
 						</span>
 					</h1>
-					<a href={blog1.Meta.URL_slug}>
+					<a href={`/`+ blog1.Meta.URL_slug}>
 						<div class="prose max-w-none blogHome_heroTxt">
 							<Markdown>{blog1.Intro_text}</Markdown>
 						</div>
@@ -111,7 +117,7 @@ const blog1 = allBlogs[0];
 		{allBlogs.map((blog, idx) => (
 			<div class="flex flex-wrap items-center blogHome_blogContaier">
 				<div class={idx % 2 == 0 ? "relative w-full sm:w-1/2 order-1 blogHome_blogCurveContainer" : "relative w-full sm:w-1/2 order-1 sm:order-2 blogHome_blogCurveContainer"}>
-					<a href={blog.Meta.URL_slug}>
+					<a href={`/`+ blog.Meta.URL_slug}>
 
 						{/*Blog Image Desktop view */}
 
@@ -160,14 +166,14 @@ const blog1 = allBlogs[0];
 							</ul>
 
 							<h1 class="blogHome_blogTitle">
-								<a href={blog.Meta.URL_slug}>{blog.Title}</a>
+								<a href={`/`+ blog.Meta.URL_slug}>{blog.Title}</a>
 								<span class="icon relative top-0">
 									<span class="relative headingInlineIcon">
 										<img class="w-full h-full" src={CupGreenIcon} alt="cup-icon" />
 									</span>
 								</span>
 							</h1>
-							<a href={blog.Meta.URL_slug}>
+							<a href={`/`+ blog.Meta.URL_slug}>
 								<div class="prose max-w-none blogHome_blogTxt">
 									<Markdown>{blog.Intro_text}</Markdown>
 								</div>
