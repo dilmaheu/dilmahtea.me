@@ -39,35 +39,55 @@ export async function getStaticPaths() {
   }
 
   // Create Pages Function
-  const createPages = (arrOrObj, obj) => Array.isArray(arrOrObj) ? arrOrObj.map((page) => {
-    return {
-      params: {
-        slug: obj.type == 'plan' ?
-          obj.slug :
-          `${page.attributes.locale.substring(0, 2)}${obj.type != 'home' ? '/' + page.attributes.Meta.URL_slug : ''}`, // URL slug to be used
-      },
-      props: { // Props
-        recurData: allPages.data.recurringElement.data.attributes, // recurring data
-        page: { // page object where empty its attributes and give it a type
-          ...page.attributes,
-          ...obj
-        }
-      }
-    }
-  }) : {
-    params: {
-      slug: obj.type == 'plan' ?
-        obj.slug : obj.type == 'home' ? arrOrObj.locale.substring(0, 2) :
-          arrOrObj.Meta.URL_slug, // URL slug to be used
-    },
-    props: { // Props
-      recurData: allPages.data.recurringElement.data.attributes, // recurring data
-      page: { // page object where empty its attributes and give it a type
-        ...arrOrObj,
-        ...obj
-      }
-    }
-  }
+  const createPages = (arrOrObj, obj) =>
+    Array.isArray(arrOrObj)
+      ? arrOrObj.map((page) => {
+        return {
+          params: {
+            slug:
+              obj.type == "plan"
+                ? obj.slug
+                // : `${page.attributes.locale.substring(0, 2)}${obj.type != "home"
+                : `${page.attributes.locale.substring(0, 2)}${page.attributes.Meta.URL_slug != "/"
+                  ? "/" + page.attributes.Meta.URL_slug
+                  : ""
+                }`, // URL slug to be used
+          },
+          props: {
+            // Props
+            recurData: allPages.data.recurringElement.data.attributes, // recurring data
+            page: {
+              // page object where empty its attributes and give it a type
+              ...page.attributes,
+              ...obj,
+            },
+          },
+        };
+      })
+      : {
+        params: {
+          slug:
+            obj.type == "plan"
+              ? obj.slug
+              : // : obj.type == "home"
+              //   ? arrOrObj.locale.substring(0, 2)
+              //   : arrOrObj.Meta.URL_slug
+              arrOrObj.Meta.URL_slug == "/"
+                ? undefined
+                : arrOrObj.Meta.URL_slug == "crowdfunding"
+                  ? `${arrOrObj.locale.substring(0, 2)}/crowdfunding`
+                  : arrOrObj.Meta.URL_slug, // URL slug to be used
+        },
+        props: {
+          // Props
+          recurData: allPages.data.recurringElement.data.attributes, // recurring data
+          page: {
+            // page object where empty its attributes and give it a type
+            ...arrOrObj,
+            ...obj,
+          },
+        },
+      };
 
   let allPlans = [];
   const formMeta = allPages.data.crowdfundingForm.data.attributes.Meta;
