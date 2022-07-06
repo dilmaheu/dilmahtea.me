@@ -1,0 +1,181 @@
+---
+import MainBG from '/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp';
+import LeafImg from '/images/greenLeaf5.webp';
+import LeafImg1 from '/images/greenLeaf.webp';
+import CupIcon from '/images/cup.svg';
+import CupGreenIcon from '/images/cupGreen.svg';
+import penIcon from '/images/pen.svg';
+import penGreenIcon from '/images/penGreen.svg';
+
+import { Markdown } from 'astro/components';
+
+const url = `${import.meta.env.CloudImg_URL}`;
+
+const { page } = Astro.props
+
+const blogs = page.allBlogs.filter((val) => val.props.page.locale == page.locale).map(val => val.props.page)
+const allBlogs = page.allBlogs.filter((val) => val.props.page.locale == page.locale).map(val => val.props.page)
+const blog1 = allBlogs[0];
+---
+
+<!-- Hero Section -->
+
+<div class="hero sm:overflow-hidden relative">
+
+	<!-- Background -->
+	<div class="w-full absolute bottom-0">
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1056.7 660.3" class="heroCurve1">
+			<defs>
+				<clipPath id="heroImgFrame">
+					<path d="M1056.7,0V619.7c-31,16.2-92.5,40.6-182,40.6H855.8c-24.8,0-49-.9-72.9-2.4-32.8-1.6-65.2-3.8-98-6-65.8-4.4-133.1-9-208.2-9-79.4,0-147.5,5.1-210.1,9.8-53,3.9-102.1,7.6-150.7,7.6h-13C9.3,657.9,0,631.4,0,631.4V0Z"/>
+				</clipPath>
+			</defs>
+			<image class="h-full w-auto" height="100%" width="100%" href={MainBG} clip-path="url(#heroImgFrame)"></image>
+		</svg>
+	</div>
+
+
+	<!-- Text content -->
+
+	<div class="relative h-full wrapper z-30 HeroTxtContainer">
+		<div class="sm:w-1/2 md:w-6/12 lg:w-7/12 HeroTxtContent" role="banner">
+			<div class="flex flex-wrap items-center">
+				<div>
+					<div class="flex flex-wrap font-bold blogHome_heroAuth">
+						{blog1.authors.data.map((author, idx) => (
+							<a href="">{`${ idx > 0 ? ', ' : ' '}` + author.attributes.givenName}</a> 
+						))}
+					</div>
+					<ul class="flex flex-wrap items-center gap-y-1">
+						<li class="blogHome_HdItem">{new Date(blog1.createdAt).toLocaleString("en-US", { day : "numeric", month : "long"})}</li>
+						<!-- <li class="blogHome_HdItem">5 min read</li>
+						<li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li> -->
+					</ul>
+					<h1 class="blogHome_heroTitle">
+						<a href={`/`+ blog1.Meta.URL_slug}>{blog1.Title}</a>
+						<span class="icon relative top-0">
+							<span class="relative headingInlineIcon">
+								<img class="w-full h-full" src={CupIcon} alt="cup-icon" />
+							</span>
+						</span>
+					</h1>
+					<a href={`/`+ blog1.Meta.URL_slug}>
+						<div class="prose max-w-none blogHome_heroTxt">
+							<Markdown>{blog1.Intro_text}</Markdown>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Blob Image  Desktop view-->
+
+	<div class="hidden sm:block absolute z-20 h-full heroCurve2Container">
+		<div class="w-full h-full relative">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 617.8 543.8" class="h-full w-full">
+				<defs>
+					<clipPath id="heroImgFrame2">
+						<path
+							d="M617.8,0S213.3.3,60.8.8C-7.9,85.7-4.5,186,5.3,329.5,15.7,482.7,89,543.8,331.2,543.8c185.2,0,233.9-51.5,286.6-79.8Z" />
+					</clipPath>
+				</defs>
+				<image class="w-auto h-full" style="" height="100%" width="100%" href={ url +  blog1.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#heroImgFrame2)"></image>
+			</svg>
+		</div>
+	</div>
+</div>
+
+<!-- Blob Image Mobile view -->
+
+<div class="block sm:hidden relative -mt-20 z-20 w-full">
+	<div class="heroCurve3Container relative">
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 290.3" class="h-full w-full">
+			<defs>
+				<clipPath id="heroImgFrame3">
+					<path
+						d="M375,21.4V283.8s-35.1,6.5-84.6,6.5c-25.5,0-51.2-1.1-76.9-2.1-30.8-1.3-61.6-2.6-92-2-14.4.2-29.5.9-44,1.5-34.4,1.5-65.7,2.9-77.5-1.5V21.4C23.2,7.1,55.3,0,105.7,0c28.3,0,62,6.7,91.6,12.6,23.3,4.6,44.1,8.8,57.7,8.8,9.6,0,22.5-1.9,36.4-4C322.9,12.8,359.7,7.4,375,21.4Z" />
+				</clipPath>
+			</defs>
+			<image class="h-full w-auto" height="100%" width="100%" href={ url +  blog1.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#heroImgFrame3)"></image>
+		</svg>
+	</div>
+</div>
+
+
+
+<!-- Blog Section -->
+
+<div class="wrapper blogHome_blogs">
+	<div class="blogHome_blogsContainer">
+		{allBlogs.map((blog, idx) => (
+			<div class="flex flex-wrap items-center blogHome_blogContaier">
+				<div class={idx % 2 == 0 ? "relative w-full sm:w-1/2 order-1 blogHome_blogCurveContainer" : "relative w-full sm:w-1/2 order-1 sm:order-2 blogHome_blogCurveContainer"}>
+					<a href={`/`+ blog.Meta.URL_slug}>
+
+						{/*Blog Image Desktop view */}
+
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 565 500" class={idx % 2 == 0 ? "hidden sm:block blogHome_blogCurveL" : "hidden sm:block blogHome_blogCurveR"}>
+							<defs>
+						        <clipPath id="basicInfoSec_ImgFrame1">
+						            <path d="M291.8,3.8c-88.5,0-235-7.9-269.3,37.3S1.2,247.5,9.6,368.2,102.7,500,298.4,500c160.9,0,211.2-31.8,252.1-141.4C567.9,312,577,197.4,534.2,63.9,506.5-22.6,415,3.8,291.8,3.8Z"/>
+						        </clipPath>
+							</defs>
+						    <image class="w-auto h-full" height="100%" width="100%" x="-15%" href={ url +  blog.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#basicInfoSec_ImgFrame1)"></image>
+						</svg>
+
+						{/* Blog Image Mobile view */}
+
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 912 499" class="block sm:hidden">
+							<defs>
+						        <clipPath id="basicInfoSec_ImgFrame1sm">
+						            <path d="M470.9,3.8C328.1,3.8,91.7-4.1,36.3,41S1.9,247,15.5,367.5,165.7,499,481.7,499c259.7,0,340.9-31.7,406.9-141.1,28-46.5,42.8-160.9-26.2-294.1C817.6-22.6,669.9,3.8,470.9,3.8Z"/>
+						        </clipPath>
+							</defs>
+						    <image class="w-full h-auto" height="100%" width="100%" href={ url +  blog.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#basicInfoSec_ImgFrame1sm)"></image>
+						</svg>
+
+						<div class={idx % 2 == 0 ? "absolute z-20 blogLeafL_container" : "absolute z-20 blogLeafR_container"}>
+							<div class="blogLeaf">
+								<img class="w-full h-full" src={idx % 2 == 0 ? LeafImg : LeafImg1 } alt="tea-leaf-image" />
+							</div>
+						</div>
+					</a>
+				</div>
+
+				{/*Text content*/}
+
+		    	<div class={idx % 2 == 0 ? "w-full sm:w-1/2 order-2 h-full" : "w-full sm:w-1/2  order-2 sm:order-1 h-full" }>
+					<div class={idx % 2 == 0 ? "flex flex-wrap blogHome_blogTxtContaierL" : "flex flex-wrap blogHome_blogTxtContaierR"} >
+						<div>
+							<div class="flex flex-wrap font-bold blogHome_blogAuth">
+								{blog.authors.data.map((author, idx) => (
+									<a href="">{`${ idx > 0 ? ', ' : ' '}` + author.attributes.givenName}</a> 
+								))}
+							</div>
+							<ul class="flex flex-wrap items-center gap-y-1">
+								<li class="blogHome_blogItem">{new Date(blog.createdAt).toLocaleString("en-US", { day : "numeric", month : "long"})}</li>
+								{/*<li class="blogHome_blogItem">5 min read</li>
+								<li class="blogHome_blogItem"><a class="blogHome_blogItemBtn">Manufacturing</a></li>*/}
+							</ul>
+
+							<h1 class="blogHome_blogTitle">
+								<a href={`/`+ blog.Meta.URL_slug}>{blog.Title}</a>
+								<span class="icon relative top-0">
+									<span class="relative headingInlineIcon">
+										<img class="w-full h-full" src={CupGreenIcon} alt="cup-icon" />
+									</span>
+								</span>
+							</h1>
+							<a href={`/`+ blog.Meta.URL_slug}>
+								<div class="prose max-w-none blogHome_blogTxt">
+									<Markdown>{blog.Intro_text}</Markdown>
+								</div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		))}
+	</div>
+</div>
