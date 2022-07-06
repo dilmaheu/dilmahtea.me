@@ -15,12 +15,14 @@ const url = `${import.meta.env.CloudImg_URL}`;
 const domain = Astro.canonicalURL.origin;
 let slugLink: string | URL;
 let availableLang: (string | null)[];
-let canonicalLink = domain+"/"+canonicalURL+"/";
+let canonicalLink =
+  domain + (canonicalURL == "/" ? "" : "/" + canonicalURL) + "/";
 
-if(locale=="en"){
-  slugLink = domain+"/"+slugURL+"/";
-}else{
-  slugLink = domain+"/"+locale+"/"+slugURL+"/";
+if (locale == "en") {
+  slugLink = domain + (slugURL == "/" ? "" : "/" + slugURL) + "/";
+} else {
+  slugLink =
+    domain + "/" + locale + (slugURL == "/" ? "" : "/" + slugURL) + "/";
 }
 
 // Hreflang available links
@@ -56,12 +58,26 @@ if (availableLang.indexOf(locale, 0) > -1) {
 <!-- SEO -->
 <link rel="canonical" href={canonicalLink} />
 <link href={slugLink} hreflang={locale} />
+{
+  availableLang.map((altLocale) =>
+    altLocale == "en" ? (
+      <link
+        rel="alternate"
+        href={domain + (slugURL == "/" ? "" : "/" + slugURL) + "/"}
+        hreflang={altLocale}
+      />
+    ) : (
+      <link
+        rel="alternate"
+        href={
+          domain + "/" + altLocale + (slugURL == "/" ? "" : "/" + slugURL) + "/"
+        }
+        hreflang={altLocale}
+      />
+    )
+  )
+}
 
-{availableLang.map((altLocale) => (
-  altLocale=="en" ? 
-  <link rel="alternate" href={domain+"/"+slugURL+"/"} hreflang={altLocale} />
-: <link rel="alternate" href={domain+"/"+altLocale+"/"+slugURL+"/"} hreflang={altLocale} />
-))}
 <!-- OpenGraph -->
 <meta property="og:locale" content={locale} />
 <meta property="og:type" content="website" />
