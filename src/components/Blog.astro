@@ -16,6 +16,7 @@ const { page } = Astro.props
 const blogs = page.allBlogs.filter((val) => val.props.page.locale == page.locale).map(val => val.props.page)
 const allBlogs = page.allBlogs.filter((val) => val.props.page.locale == page.locale).map(val => val.props.page)
 const blog1 = allBlogs[0];
+
 ---
 
 <!-- Hero Section -->
@@ -38,19 +39,21 @@ const blog1 = allBlogs[0];
 	<!-- Text content -->
 
 	<div class="relative h-full wrapper z-30 HeroTxtContainer">
-		<div class="sm:w-1/2 md:w-6/12 lg:w-7/12 HeroTxtContent" role="banner">
+		<div class="sm:w-8/12 md:w-7/12 HeroTxtContent BlogHeroTxtContent" role="banner">
 			<div class="flex flex-wrap items-center">
 				<div>
-					<div class="flex flex-wrap font-bold blogHome_heroAuth">
-						{blog1.authors.data.map((author, idx) => (
-							<a href="">{`${ idx > 0 ? ', ' : ' '}` + author.attributes.givenName}</a> 
-						))}
+					<div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
+						<div class="flex flex-wrap font-bold blogHome_heroAuth">
+							{blog1.authors.data.map((author, idx) => (
+								<a href="">{`${ idx > 0 ? ', ' : ' '}` + author.attributes.givenName}</a> 
+							))}
+						</div>
+						<ul class="flex flex-wrap items-center">
+							<li class="blogHome_HdItem">{new Date(blog1.createdAt).toLocaleString("en-US", { day : "numeric", month : "long"})}</li>
+							<!-- <li class="blogHome_HdItem">5 min read</li>
+							<li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li> -->
+						</ul>
 					</div>
-					<ul class="flex flex-wrap items-center gap-y-1">
-						<li class="blogHome_HdItem">{new Date(blog1.createdAt).toLocaleString("en-US", { day : "numeric", month : "long"})}</li>
-						<!-- <li class="blogHome_HdItem">5 min read</li>
-						<li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li> -->
-					</ul>
 					<h1 class="blogHome_heroTitle">
 						<a href={`/`+ blog1.Meta.URL_slug}>{blog1.Title}</a>
 						<span class="icon relative top-0">
@@ -71,7 +74,7 @@ const blog1 = allBlogs[0];
 
 	<!-- Blob Image  Desktop view-->
 
-	<div class="hidden sm:block absolute z-20 h-full heroCurve2Container">
+	<div class="hidden sm:block absolute z-20 h-full heroCurve2Container BlogHeroCurveContainer">
 		<div class="w-full h-full relative">
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 617.8 543.8" class="h-full w-full">
 				<defs>
@@ -80,7 +83,8 @@ const blog1 = allBlogs[0];
 							d="M617.8,0S213.3.3,60.8.8C-7.9,85.7-4.5,186,5.3,329.5,15.7,482.7,89,543.8,331.2,543.8c185.2,0,233.9-51.5,286.6-79.8Z" />
 					</clipPath>
 				</defs>
-				<image class="w-auto h-full" style="" height="100%" width="100%" href={ url +  blog1.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#heroImgFrame2)"></image>
+				<image class="hidden lg:block w-auto h-full" x="-10%" height="100%" width="100%" href={ url +  blog1.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#heroImgFrame2)"></image>
+				<image class="block lg:hidden w-auto h-full" x="-20%" height="100%" width="100%" href={ url +  blog1.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#heroImgFrame2)"></image>
 			</svg>
 		</div>
 	</div>
@@ -108,7 +112,7 @@ const blog1 = allBlogs[0];
 
 <div class="wrapper blogHome_blogs">
 	<div class="blogHome_blogsContainer">
-		{allBlogs.map((blog, idx) => (
+		{allBlogs.slice(1).map((blog, idx) => (
 			<div class="flex flex-wrap items-center blogHome_blogContaier">
 				<div class={idx % 2 == 0 ? "relative w-full sm:w-1/2 order-1 blogHome_blogCurveContainer" : "relative w-full sm:w-1/2 order-1 sm:order-2 blogHome_blogCurveContainer"}>
 					<a href={`/`+ blog.Meta.URL_slug}>
@@ -155,8 +159,8 @@ const blog1 = allBlogs[0];
 							</div>
 							<ul class="flex flex-wrap items-center gap-y-1">
 								<li class="blogHome_blogItem">{new Date(blog.createdAt).toLocaleString("en-US", { day : "numeric", month : "long"})}</li>
-								{/*<li class="blogHome_blogItem">5 min read</li>
-								<li class="blogHome_blogItem"><a class="blogHome_blogItemBtn">Manufacturing</a></li>*/}
+								<li class="blogHome_blogItem">5 min read</li>
+								<li class="blogHome_blogItem"><a class="blogHome_blogItemBtn">Manufacturing</a></li>
 							</ul>
 
 							<h1 class="blogHome_blogTitle">

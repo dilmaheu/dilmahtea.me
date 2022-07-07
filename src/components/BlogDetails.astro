@@ -33,10 +33,10 @@ const { page } = Astro.props
 	<!-- Text content -->
 
 	<div class="relative h-full wrapper z-30 HeroTxtContainer">
-		<div class="sm:w-1/2 md:w-6/12 lg:w-7/12 HeroTxtContent" role="banner">
-			<div class="flex flex-wrap items-center">
+		<div class="sm:w-8/12 md:w-7/12 HeroTxtContent BlogDetails_HeroTxtContent" role="banner">
+			<div class="flex flex-wrap items-start">
 				<div>
-					<div class="flex flex-wrap gap-x-2.5">
+					<div class="flex flex-wrap gap-x-2.5 blogDetails_heroAuthContainer">
 						<div class="flex relative">
 							{page.authors.data.map((author, idx) => (
 								<div class={ idx > 0 ? "blogDetails_authImg relative -ml-5" : "blogDetails_authImg"} >
@@ -45,13 +45,13 @@ const { page } = Astro.props
 							))}
 						</div>
 						
-						<div>
-							<div class="flex flex-wrap font-bold blogHome_heroAuth">
+						<div class="grid content-between">
+							<div class="flex flex-wrap font-bold blogDetails_heroAuth">
 								{page.authors.data.map((author, idx) => (
-									<a href="">{`${ idx > 0 ? ', ' : ' '}` + author.attributes.givenName}</a> 
+									<a>{`${ idx > 0 ? ', ' : ' '}` + author.attributes.givenName}</a> 
 								))}
 							</div>
-							<ul class="flex flex-wrap items-center gap-y-1">
+							<ul class="flex flex-wrap items-center">
 								<li class="blogHome_HdItem">{new Date(page.createdAt).toLocaleString("en-US", { day : "numeric", month : "long"})}</li>
 								<!-- <li class="blogHome_HdItem">5 min read</li>
 								<li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li> -->
@@ -60,16 +60,16 @@ const { page } = Astro.props
 					</div>
 						
 
-					<h1 class="blogHome_heroTitle">
-						<a href="">{page.Title}</a>
+					<h1 class="blogDetails_heroTitle">
+						<a >{page.Title}</a>
 						<span class="icon relative top-0">
 							<span class="relative headingInlineIcon">
 								<img class="w-full h-full" src={CupIcon} alt="cup-icon" />
 							</span>
 						</span>
 					</h1>
-					<a href="">
-						<div class="prose max-w-none blogHome_heroTxt">
+					<a>
+						<div class="prose max-w-none blogDetails_heroTxt">
 							<Markdown>{page.Intro_text}</Markdown>
 						</div>
 					</a>
@@ -80,7 +80,7 @@ const { page } = Astro.props
 
 	<!-- Blob Image  Desktop view-->
 
-	<div class="hidden sm:block absolute z-20 h-full heroCurve2Container">
+	<div class="hidden sm:block absolute z-20 h-full heroCurve2Container BlogHeroCurveContainer">
 		<div class="w-full h-full relative">
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 617.8 543.8" class="h-full w-full">
 				<defs>
@@ -115,10 +115,30 @@ const { page } = Astro.props
 
 <!-- Blog Section -->
 
-<div class="wrapper blogContentContainer">
-	<div class="w-full" role="mian">
-		<div class="prose max-w-none basicInfoSecTxt detailedBlog">
-			<Markdown>{page.Block_text}</Markdown>
+<div class="wrapper blogContentContainer" role="mian">
+	<div class="w-full flex flex-wrap">
+		<div class="md:w-8/12 order-2 md:order-1">
+			<div class="prose max-w-none basicInfoSecTxt detailedBlog" id="detailedBlog">
+				<Markdown>{page.Block_text}</Markdown>
+			</div>
+		</div>
+		<div class="md:w-4/12 order-1 md:order-2 blogContent_StickyContainer">
+			<h3 class="blog_StickyHeader">Chapters</h3>
+			<div id="blog_StickyItemContainer"></div>
 		</div>
 	</div>
 </div>
+
+<script is:inline>
+	document.addEventListener('DOMContentLoaded', function () {
+		const db = document.getElementById(`detailedBlog`);
+		const tags = db.querySelectorAll("h2");
+		for (const tag of tags) {
+			var div = document.getElementById("blog_StickyItemContainer");
+			var aTag = document.createElement('a');
+			aTag.setAttribute('href', `#`+ tag.id);
+			aTag.innerText = tag.innerHTML;
+			div.appendChild(aTag);
+		};
+	});
+</script>
