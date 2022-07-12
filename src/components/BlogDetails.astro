@@ -2,20 +2,21 @@
 import MainBG from '/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp';
 import CupIcon from '/images/cup.svg';
 import CupGreenIcon from '/images/cupGreen.svg';
-import penIcon from '/images/pen.svg';
-import calenderIcon from '/images/calender.svg';
-import penGreenIcon from '/images/penGreen.svg';
+import RightArrow from '/images/rightArrow.svg';
 
 import { Markdown } from 'astro/components';
 
 const url = `${import.meta.env.CloudImg_URL}`;
 
 const { page } = Astro.props
+
+const allBlogs = page.allBlogs.filter((val) => val.props.page.locale == page.locale).map(val => val.props.page);
+const recentBlogs = allBlogs.filter((val) => val.Meta.URL_slug != page.Meta.URL_slug);
 ---
 
 <!-- Hero Section -->
 
-<div class="hero sm:overflow-hidden relative">
+<div class="hero overflow-hidden relative">
 
 	<!-- Background -->
 	<div class="w-full absolute bottom-0">
@@ -111,21 +112,78 @@ const { page } = Astro.props
 	</div>
 </div>
 
-
-
 <!-- Blog Section -->
-
-<div class="wrapper blogContentContainer" role="mian">
-	<div class="w-full flex flex-wrap">
+<div class="blogContentContainer" role="mian">
+	<div class="block md:hidden sticky -top-0.5 overflow-hiden self-start" id="blogContent_StickyContainerMd">
+		<div class="wrapper">
+			<div id="blog_StickyItemContainerMd"></div>
+		</div>
+	</div>
+	<div class="wrapper w-full flex flex-wrap">
 		<div class="md:w-8/12 order-2 md:order-1">
 			<div class="prose max-w-none basicInfoSecTxt detailedBlog" id="detailedBlog">
 				<Markdown>{page.Block_text}</Markdown>
 			</div>
 		</div>
-		<div class="md:w-4/12 order-1 md:order-2 blogContent_StickyContainer">
-			<h3 class="blog_StickyHeader">Chapters</h3>
+		<div class="md:w-4/12 order-1 md:order-2 blogContent_StickyContainer md:sticky top-0 overflow-hiden self-start" id="blogContent_StickyContainer">
+			<h3 id="blog_StickyHeader">Chapters</h3>
 			<div id="blog_StickyItemContainer"></div>
 		</div>
+
+	</div>
+</div>
+
+<div class="wrapper">
+	<h2 class="blogDetails_recentTitle">Explore the world of kindness</h2>
+
+	<div class="w-full grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 mx-auto justify-items-center sm:justify-items-start blogDetails_CardsContainer" role="list" aria-label="Kindness Items">
+		{recentBlogs.slice(0, 3).map((blog, idx) => (
+			<div class="blogDetails_Card" role="listitem" aria-label="Kindness Item">
+				<div class="relative">
+					<div>
+						<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 423.3 559.8" class="blogDetails_cardBg"><path d="M419.2,306.4c-1.2,40.4,0,72.6,0,93.6,0,176.6-12.5,158-197.8,158S2.1,587.1,2.1,410c0-58.7.1-86,.3-97.5-.1-1.2-.2-3.1-.3-6.1v-.3C-2.2,194.8-1.3,81.5,17.9,43.2,43.3-7.3,151.7,1.5,217.2,1.5c91.3,0,173.8-18.8,194.3,78.1,19.3,91,9.6,163.8,7.7,226.8Z" fill="#273E3F"/></svg>
+					</div>
+					<div class="absolute inset-0 z-30">
+						<div class="w-full">
+						
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 423.3 306.1" class="h-full w-full">
+								<defs>
+									<clipPath id={`blogDetails_Card` + idx}>
+										<path
+											d="M419.2,306.1H2.1C-2.2,194.8-1.3,81.5,17.9,43.2,43.3-7.3,151.7,1.5,217.2,1.5c91.3,0,173.8-18.8,194.3,78.1C430.7,170.5,421.1,243.2,419.2,306.1Z" />
+									</clipPath></defs>
+								<a href={`/`+ blog.Meta.URL_slug}>
+									<image class="h-full w-auto" height="100%" width="100%" href={ url +  blog.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path={`url(#` + `blogDetails_Card` + idx + `)`}></image>
+								</a>
+							</svg>
+						</div>
+
+						<div class="blogDetails_CardConentConatiner">
+							<div class="flex flex-wrap font-bold blogDetails_cardAuth">
+								{blog.authors.data.map((author, idx) => (
+									<a>{`${ idx > 0 ? ', ' : ' '}` + author.attributes.givenName}</a> 
+								))}
+							</div>
+							<ul class="flex flex-wrap items-center blogHome_cardItemContainer">
+								<li class="blogHome_cardItem">{new Date(blog.createdAt).toLocaleString("en-US", { day : "numeric", month : "long"})}</li>
+								{/*<li class="blogHome_cardItem">5 min read</li>
+								<li class="flex items-center blogHome_cardItem">
+									<a><div class="blogHome_cardItemBtn">Manufacturing</div></a>
+								</li>*/}
+							</ul>
+							<div class="blogDetails_CardTitle">
+								<a href={`/`+ blog.Meta.URL_slug}>{blog.Title}</a>
+								<span class="icon relative top-0">
+									<span class="relative blogDetails_CardTitleIcon">
+										<img class="w-full h-full" src={RightArrow} alt="cup-icon" />
+									</span>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		))}
 	</div>
 </div>
 
@@ -133,12 +191,92 @@ const { page } = Astro.props
 	document.addEventListener('DOMContentLoaded', function () {
 		const db = document.getElementById(`detailedBlog`);
 		const tags = db.querySelectorAll("h2");
+
 		for (const tag of tags) {
 			var div = document.getElementById("blog_StickyItemContainer");
 			var aTag = document.createElement('a');
 			aTag.setAttribute('href', `#`+ tag.id);
-			aTag.innerText = tag.innerHTML;
+			aTag.innerHTML = `<img class="itemImg opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` + tag.innerHTML;
 			div.appendChild(aTag);
+
+			var divMd = document.getElementById("blog_StickyItemContainerMd");
+			var aTagMd = document.createElement('a');
+			aTagMd.setAttribute('href', `#`+ tag.id);
+			aTagMd.setAttribute('class', `truncate`);
+			aTagMd.innerHTML = `<img class="itemImgMd" src="/images/bookGreen.svg" alt="arrow">` + tag.innerHTML;
+			divMd.appendChild(aTagMd);
 		};
+
+		const stickyItemCon = document.getElementById(`blog_StickyItemContainer`);
+		const blogSticky = document.getElementById("blogContent_StickyContainer");
+		const blog_StickyHeader = document.getElementById("blog_StickyHeader");
+		const blogStickyAtag = stickyItemCon.querySelectorAll("a");
+		const blogStickyImg = stickyItemCon.querySelectorAll(".itemImg");
+
+		document.addEventListener("scroll", (e) => {
+			for (var i = 0; i < tags.length; i++) { 
+				var scrolled = document.scrollingElement.scrollTop;
+			 	var position = tags[i].offsetTop;
+
+			 	if ( i > 0 ) {
+				   	if(scrolled > position - 300){
+				   		blogStickyAtag[i].classList.add('font-bold');
+				   		blogStickyAtag[i-1].classList.remove('font-bold');
+				   		blogStickyImg[i].classList.remove('opacity-0');
+				   		blogStickyImg[i-1].classList.add('opacity-0');
+			    	}
+				    else{
+				    	blogStickyAtag[i].classList.remove('font-bold');
+				    	blogStickyImg[i].classList.add('opacity-0');
+				    }
+				}
+				else{
+			    	if(scrolled > position - 300){
+				   		blogStickyAtag[i].classList.add('font-bold');
+				   		blogStickyImg[i].classList.remove('opacity-0');
+			    	}
+				    else{
+				    	blogStickyAtag[i].classList.remove('font-bold');
+				    	blogStickyImg[i].classList.add('opacity-0');
+				    }
+			    }
+			}
+		});
+
+		const stickyItemConMd = document.getElementById(`blog_StickyItemContainerMd`);
+		const blogStickyMdAtag = stickyItemConMd.querySelectorAll("a");
+
+		const mq = window.matchMedia( "(max-width: 767.98px)" );
+
+		if (mq.matches) {
+			document.addEventListener("scroll", (e) => {
+
+				for (var i = 0; i < tags.length; i++) { 
+					var scrolled = document.scrollingElement.scrollTop;
+				 	var position = tags[i].offsetTop;
+
+				 	if ( i > 0 ) {
+					   	if(scrolled > position - 1){
+					   		blogStickyMdAtag[i].style.display = "inline-flex";
+					   		blogStickyMdAtag[i-1].style.display = "none";
+
+				    	}
+					    else{
+					    	blogStickyMdAtag[i].style.display = "none";
+
+					    }
+					}
+					else{
+				    	if(scrolled > position - 1){
+					   		blogStickyMdAtag[i].style.display = "inline-flex";
+
+				    	}
+					    else{
+					    	blogStickyMdAtag[i].style.display = "none";
+					    }
+				    }
+				}
+			});
+		}
 	});
 </script>
