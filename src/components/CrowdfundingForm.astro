@@ -11,7 +11,18 @@ import { Markdown } from 'astro/components';
 
 const { page, locale } = Astro.props
 
+const { href: originURL } = Astro.canonicalURL
+
+const { Perk: perk, Price_EUR_excl_VAT: price } = page
 ---
+
+<style>
+    select#country {
+        border: none;
+        border-right: 1rem solid transparent;
+        outline: solid 1px var(--default-color);
+    }
+</style>
 
 <!-- Hero Section -->
 <div class="hero overflow-hidden relative">
@@ -52,7 +63,7 @@ const { page, locale } = Astro.props
 <!-- Form Section -->
 <div class="wrapper formSec">
     <div class="formContainer" role="main">
-        <form action="https://dilmahtea.me/stripe" method="POST">
+        <form action="https://scripts.dilmahtea.me/pay" method="POST">
             <div class="formGrid1Container">
                 <div class="inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7 pb-0.5">
                     <h2 class="header-default color-default">{ locale == "nl" ? "Basis gegevens" : "Basic info" }</h2>
@@ -104,12 +115,7 @@ const { page, locale } = Astro.props
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
                             required>
                             <option value="" disabled selected>{locale == "nl" ? "Selecteer jouw land":"Select or type your country" }</option>
-                            <option value="Netherlands">Netherlands</option>
-                            <option value="Kenya">Kenya</option>
-                            <option value="India">India</option>
-                            <option value="Srilanka">Srilanka</option>
-                            <option value="Bangladesh">Bangladesh</option>
-                            <option value="Indonesia">Indonesia</option>
+                            <option value="Netherlands" selected>Netherlands</option>
                         </select>
                     </div>
 
@@ -134,17 +140,15 @@ const { page, locale } = Astro.props
                             placeholder={ locale=="nl" ? "Vul je plaatsnaam in" : "Enter your postal code" } />
                     </div>
 
-                    <input type="text" id="perk" name="perk"
-                        class="hidden block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                        value={page.Perk} hidden />
-                    <input type="text" id="locale" name="locale"
-                        class="hidden block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                        value={locale} hidden />
+                    <input type="hidden" id="perk" name="perk" value={perk} />
+                    <input type="hidden" id="locale" name="locale" value={locale} />
+                    <input type="hidden" id="origin_url" name="origin_url" value={originURL} />
+                    <input type="hidden" id="plan_name" name="plan_name" value={page.Title} />
+                    <input type="hidden" id="price" name="price" value={price} />
                 </div>
 
-                <slot />
                 <div>
-                    <input type="submit" class="cursor-pointer formBtn" value={ locale=="nl" ? "Betalen" : "Pay" } />
+                    <input type="submit" class="cursor-pointer formBtn" value={ locale=="nl" ? "Naar betaalgegevens" : "To payment details" } />
                 </div>
             </div>
         </form>
