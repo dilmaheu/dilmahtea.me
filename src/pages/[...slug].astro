@@ -192,14 +192,16 @@ export async function getStaticPaths() {
     if (localizedBlogsPages.length > 0) {
       const localizedBlogsObj = {
         availableLocales: blogsPagesLocales,
-        type: `blogDetails`
+        type: `blogDetails`,
+        allBlogs: allBlogs
       }
       localizedBlogsPages = createPages(localizedBlogsPages, localizedBlogsObj)
       localizedBlogsPages.forEach((lclPage) => allBlogs.push(lclPage))
     }
     const defaultBlogsObj = {
       availableLocales: blogsPagesLocales,
-      type: `blogDetails`
+      type: `blogDetails`,
+      allBlogs: allBlogs
     }
     const defaultBlogsPage = createPages(page.attributes, defaultBlogsObj)
     allBlogs.push(defaultBlogsPage)

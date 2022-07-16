@@ -4,14 +4,18 @@ import LeafImg from '/images/greenLeaf5.webp';
 import LeafImg1 from '/images/greenLeaf.webp';
 import CupIcon from '/images/cup.svg';
 import CupGreenIcon from '/images/cupGreen.svg';
-import penIcon from '/images/pen.svg';
-import penGreenIcon from '/images/penGreen.svg';
 
 import { Markdown } from 'astro/components';
 
 const url = `${import.meta.env.CloudImg_URL}`;
 
 const { page } = Astro.props
+
+// const blogs = page.allBlogs.data.filter((val) => val.attributes.locale == page.locale)
+
+// const allBlogs = page.allBlogs.data.filter((val) => val.attributes.locale == page.locale).map(val => val.attributes)
+
+// const blog1 = blogs[1].attributes;
 
 const blogs = page.allBlogs.filter((val) => val.props.page.locale == page.locale).map(val => val.props.page)
 const allBlogs = page.allBlogs.filter((val) => val.props.page.locale == page.locale).map(val => val.props.page)
@@ -21,7 +25,7 @@ const blog1 = allBlogs[0];
 
 <!-- Hero Section -->
 
-<div class="hero sm:overflow-hidden relative">
+<div class="hero overflow-hidden relative">
 
 	<!-- Background -->
 	<div class="w-full absolute bottom-0">
