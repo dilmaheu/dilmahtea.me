@@ -11,6 +11,9 @@ import { Markdown } from 'astro/components';
 
 const { page, locale } = Astro.props
 
+const { href: originURL } = Astro.canonicalURL
+
+const { Perk: perk, Price_EUR_excl_VAT: price } = page
 ---
 
 <style>
@@ -137,12 +140,13 @@ const { page, locale } = Astro.props
                             placeholder={ locale=="nl" ? "Vul je plaatsnaam in" : "Enter your postal code" } />
                     </div>
 
-                    <input type="hidden" id="perk" name="perk" value={page.Perk} />
+                    <input type="hidden" id="perk" name="perk" value={perk} />
                     <input type="hidden" id="locale" name="locale" value={locale} />
+                    <input type="hidden" id="origin_url" name="origin_url" value={originURL} />
                     <input type="hidden" id="plan_name" name="plan_name" value={page.Title} />
+                    <input type="hidden" id="price" name="price" value={price} />
                 </div>
 
-                <slot />
                 <div>
                     <input type="submit" class="cursor-pointer formBtn" value={ locale=="nl" ? "Naar betaalgegevens" : "To payment details" } />
                 </div>
