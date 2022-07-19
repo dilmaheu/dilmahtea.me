@@ -119,24 +119,14 @@ if (nofollow === true) { noFollow = "nofollow" };
 					window.location.pathname = newPath
 				}
 			}
-			// Select button 1 on click function
-			const selectLang1 = document.getElementById(`selectLang1`)
-			const selectLang2 = document.getElementById(`selectLang2`)
-			if (selectLang1) {
-				selectLang1.addEventListener("click", function () {
-					const buttonLang = selectLang1.querySelector('div:last-child').innerHTML.toLowerCase()
-					localStorage.setItem(`locale`, buttonLang)
-					redirectPath(buttonLang)
-				}, false)
-			}
-			// Select button 2 on click function
-			if (selectLang2) {
-				document.getElementById(`selectLang2`).addEventListener("click", function () {
-					const buttonLang = selectLang2.querySelector('div:last-child').innerHTML.toLowerCase()
-					localStorage.setItem(`locale`, buttonLang)
-					redirectPath(buttonLang)
-				}, false)
-			}
+
+			document.querySelectorAll(".lang-selector").forEach(langSelector => {
+				langSelector.addEventListener("click", () => {
+					const locale = langSelector.querySelector('.lang').textContent.toLowerCase()
+					localStorage.setItem(`locale`, locale)
+					redirectPath(locale)
+				})			
+			})
 		});
 	</script>
 </body>

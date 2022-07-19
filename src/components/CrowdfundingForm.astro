@@ -103,7 +103,7 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page
                 <div class="grid grid-cols-1 md:grid-cols-2 formGrid">
                     <div class="formInputContainer">
                         <label for="country">{ locale == "nl" ? "Land" : "Country" }</label>
-                        <select id="country" name="country"
+                        <select value="India" id="country" name="country"
                             class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
                             style="border: none; border-right: 1rem solid transparent; outline: solid 1px var(--default-color);"
                             required>
@@ -150,3 +150,23 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page
         </form>
     </div>
 </div>
+
+<script>
+  const params = new URLSearchParams(location.search)
+
+  Array.from(params.entries()).forEach(([param, value]) => {
+    if (param === 'country') {
+      const option = document.querySelector(`option[value="${value}"]`)
+
+      if (option) {
+        option.selected = true
+      }
+    } else {
+      const input = document.querySelector(`input[name="${param}"]`)
+
+      if (input) {
+        input.value = value || ''
+      }
+    }
+  })
+</script>
