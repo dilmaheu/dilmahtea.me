@@ -107,17 +107,6 @@ const initialProgress = `0%`,
 	</div>
 </div>
 
-<script defer define:vars={{ initialProgress, finalProgress, animationDuration }}>
-  const progressBar = document.querySelector('.progress-bar')
-
-  progressBar.animate(
-    { width: [initialProgress, finalProgress] },
-    animationDuration,
-  ).onfinish = () => {
-    progressBar.style.width = finalProgress
-  }
-</script>
-
 <!-- Blob Image  Mobile view -->
 
 <div class="block sm:hidden relative -mt-20 z-20 w-full">
@@ -139,13 +128,16 @@ const initialProgress = `0%`,
 
 			<div class="absolute inset-0 z-50 w-auto flex justify-center mx-auto wrapper">
 				<div class="progressContent">
-					<div class="progeressHeader">€0</div>
+					<div class="progeressHeader">€<span class="total-amount-raised">{totalAmountRaised}</span></div>
 					<div class="flex flex-wrap gap-x-1.5 justify-between">
 						<div class="progeressTxt">{page.Heading_goal}</div>
-						<div class="progeressTxt"><span class="progeressTxtNum">0</span> {page.Heading_supporters}</div>
+						<div class="progeressTxt"><span class="progeressTxtNum">{supportersCount}</span> {page.Heading_supporters}</div>
 					</div>
 					<div class="mt-1 sm:mt-2 md:mt-3 w-full bg-default-light-gray rounded-full">
-					  <div class="bg-default-green rounded-full py-1.5" style="width: 0%"></div>
+						<div
+						style="width: 0%"
+						class="progress-bar bg-default-green rounded-full py-1.5">
+						</div>
 					</div>
 				</div>
 			</div>
@@ -153,6 +145,18 @@ const initialProgress = `0%`,
 	</div>
 </div>
 
+<script defer define:vars={{ initialProgress, finalProgress, animationDuration }}>
+  const progressBars = document.querySelectorAll('.progress-bar')
+
+  progressBars.forEach((progressBar) => {
+	progressBar.animate(
+		{ width: [initialProgress, finalProgress] },
+		animationDuration,
+	).onfinish = () => {
+		progressBar.style.width = finalProgress
+	}
+  })
+</script>
 
 <!-- Plans Section -->
 
