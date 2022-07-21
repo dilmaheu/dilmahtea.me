@@ -10,18 +10,16 @@ import { Markdown } from 'astro/components';
 const url = `${import.meta.env.CloudImg_URL}`;
 const { page } = Astro.props
 
-// const { supportersCount, totalAmountRaised } = await fetch(
-//   'https://scripts.dilmahtea.me/crowdfunding-stats',
-// ).then(res => res.json())
+const { supportersCount, totalAmountRaised } = await fetch(
+  'https://scripts.dilmahtea.me/crowdfunding-stats',
+).then(res => res.json())
 
-// const goal = 100000,
-//   progress = totalAmountRaised / goal
+const goal = 100000,
+  progress = totalAmountRaised / goal
 
-// const initialProgress = `0%`,
-//   finalProgress = `${progress * 100}%`,
-//   animationDuration = 1000
-
-// const onloadAnimationHandler = `this.animate({ width: [${initialProgress}, ${finalProgress}] }, ${animationDuration}).onfinish = () => { this.style.width = ${finalProgress} }`
+const initialProgress = `0%`,
+  finalProgress = `${progress * 100}%`,
+  animationDuration = 1000
 ---
 
 <!-- Hero Section -->
@@ -91,16 +89,15 @@ const { page } = Astro.props
 
 				<div class="absolute inset-0 z-50 w-auto flex justify-center mx-auto progressContentContainer">
 					<div class="progressContent">
-						<div class="progeressHeader">€<span class="total-amount-raised">0</span></div>
+						<div class="progeressHeader">€<span class="total-amount-raised">{totalAmountRaised}</span></div>
 						<div class="flex flex-wrap gap-x-1.5 justify-between">
 							<div class="progeressTxt">{page.Heading_goal}</div>
-							<div class="progeressTxt"><span class="progeressTxtNum">0</span> {page.Heading_supporters}</div>
+							<div class="progeressTxt"><span class="progeressTxtNum">{supportersCount}</span> {page.Heading_supporters}</div>
 						</div>
 						<div class="mt-1 sm:mt-2 md:mt-3 w-full bg-default-light-gray rounded-full">
 						  <div
 						  	style="width: 0%"
-						  	onload={""}
-						  	class="progress-percentage bg-default-green rounded-full py-1.5">
+						  	class="progress-bar bg-default-green rounded-full py-1.5">
 						  </div>
 						</div>
 					</div>
@@ -110,32 +107,14 @@ const { page } = Astro.props
 	</div>
 </div>
 
-<script>
-  const { supportersCount, totalAmountRaised } = await fetch(
-    'https://scripts.dilmahtea.me/crowdfunding-stats',
-  ).then(res => res.json())
+<script defer define:vars={{ initialProgress, finalProgress, animationDuration }}>
+  const progressBar = document.querySelector('.progress-bar')
 
-  const qs = document.querySelector.bind(document)
-
-  const supportersCountContainer = qs('.progeressTxtNum'),
-    totalAmountRaisedContainer = qs('.total-amount-raised'),
-    progressPercentageContainer = qs('.progress-percentage')
-
-  const goal = 100000,
-    progress = totalAmountRaised / goal
-
-  supportersCountContainer.innerText = supportersCount
-  totalAmountRaisedContainer.innerText = totalAmountRaised
-
-  const initialProgress = `0%`,
-    finalProgress = `${progress * 100}%`,
-    animationDuration = 1000
-
-  progressPercentageContainer.animate(
+  progressBar.animate(
     { width: [initialProgress, finalProgress] },
     animationDuration,
   ).onfinish = () => {
-    progressPercentageContainer.style.width = finalProgress
+    progressBar.style.width = finalProgress
   }
 </script>
 
