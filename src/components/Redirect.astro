@@ -22,7 +22,7 @@
             } else {
                 const checkRegex = RegExp(`/${preferredLocale}/`)
                 if (!checkRegex.test(window.location.pathname)) {
-                    newPath = `/${preferredLocale}${window.location.pathname.replace(/^\/\w{2}/g, '')}`
+                    newPath = `${preferredLocale == "en" ? "" : `/${preferredLocale}`}${window.location.pathname.replace(/^\/\w{2}/g, '')}`
                     window.location.pathname = newPath
                 }
             }
