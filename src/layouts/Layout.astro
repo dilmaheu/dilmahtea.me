@@ -18,7 +18,7 @@ interface Props {
 	meta: any
 	recurData: any
 	metaImage: string
-	availableLocales: (string | null)[]
+	availableLocales: string[]
 }
 
 const { meta, locale, recurData, availableLocales, metaImage } = Astro.props as Props
@@ -29,20 +29,18 @@ const image = metaImage;
 const canonicalURL = meta.Canonical_link;
 const slugURL = meta.URL_slug
 
-
 let noIndex = '';
 if (noindex === true) { noIndex = "noindex" };
 let noFollow = '';
 if (nofollow === true) { noFollow = "nofollow" };
-
 ---
 
 <html lang={locale}>
 
 <head>
 	<MainHead {title} {description} {noIndex} {noFollow} {image} {locale} {canonicalURL} {slugURL} {availableLocales} />
-	{(availableLocales.includes(locale) && locale != "en") ?
-	<Redirect />: null}
+
+	<Redirect />
 </head>
 
 <body>
@@ -66,6 +64,7 @@ if (nofollow === true) { noFollow = "nofollow" };
 					x.style.display = "block";
 				}
 			}, false);
+
 			// Nav Close button
 			document.getElementById("sidebarClose").addEventListener("click", function () {
 				var x = document.getElementById("sidebar");
@@ -76,52 +75,60 @@ if (nofollow === true) { noFollow = "nofollow" };
 					x.style.display = "block";
 				}
 			}, false);
+
 			// Language button toggle
 			document.getElementById("langBtn").addEventListener("click", function () {
-				var x = document.getElementById("dropdownMenu");
-				var y = document.getElementById("langBtn");
-				if (x.style.display == "block") {
-					x.style.display = "none";
-					y.style.borderRadius = "25px";
+				const langBtn = document.getElementById("langBtn"),
+					dropdownMenu = document.getElementById("dropdownMenu");
+
+				if (dropdownMenu.style.display == "block") {
+					dropdownMenu.style.display = "none";
+					langBtn.style.borderRadius = "25px";
 				} else {
-					x.style.display = "block";
-					y.style.borderRadius = "25px 25px 0 0";
+					dropdownMenu.style.display = "block";
+					langBtn.style.borderRadius = "25px 25px 0 0";
 				}
 			}, false);
+
 			// Language button toggle small
 			document.getElementById("langBtnSm").addEventListener("click", function () {
-				var x = document.getElementById("dropdownMenuSm");
-				var y = document.getElementById("langBtnSm");
-				if (x.style.display == "block") {
-					x.style.display = "none";
-					y.style.borderRadius = "25px";
+				const langBtn = document.getElementById("langBtnSm"),
+					dropdownMenu = document.getElementById("dropdownMenuSm");
+
+				if (dropdownMenu.style.display == "block") {
+					dropdownMenu.style.display = "none";
+					langBtn.style.borderRadius = "25px";
 				} else {
-					x.style.display = "block";
-					y.style.borderRadius = "25px 25px 0 0";
+					dropdownMenu.style.display = "block";
+					langBtn.style.borderRadius = "25px 25px 0 0";
 				}
 			}, false);
+
 			// Language button event listeners
 			// Getting current locale
 			const locale = document.documentElement.lang
+
 			// Redirect function
 			const redirectPath = (newLocale) => {
 				let newPath
-				if (newLocale == 'en') {
-					newPath = window.location.pathname.replace(/^\/\w{2}/g, '')
-					window.location.pathname = newPath
-				} else if ((newLocale == "nl" || newLocale == "de") && locale == "en") {
-					newPath = `/${newLocale}${window.location.pathname}`
-					window.location.pathname = newPath
+
+				if (locale == "en") {
+					newPath = `/${newLocale}${location.pathname}`
 				} else {
-					newPath = `/${newLocale}${window.location.pathname.replace(/^\/\w{2}/g, '')}`
-					window.location.pathname = newPath
+					const [, , ...urlParts] = location.pathname.split("/")
+
+					newPath = `/${newLocale === 'en' ? '' : `${newLocale}/`}${urlParts.join('/')}`
 				}
+
+				location.pathname = newPath
 			}
 
 			document.querySelectorAll(".lang-selector").forEach(langSelector => {
 				langSelector.addEventListener("click", () => {
 					const locale = langSelector.querySelector('.lang').textContent.toLowerCase()
+
 					localStorage.setItem(`locale`, locale)
+
 					redirectPath(locale)
 				})			
 			})
