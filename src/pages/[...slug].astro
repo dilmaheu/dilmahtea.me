@@ -31,12 +31,8 @@ export async function getStaticPaths() {
     }).then(response => response.json());
 
   // Get all locales
-  const getAllLocales = arr => {
-    if (arr.length > 0) return arr.map(home =>
-      home.attributes.locale.substring(0, 2)
-    );
-    return []
-  }
+  const getAllLocales = (arr = []) =>
+    arr.map(home => home.attributes.locale.substring(0, 2))
 
   // Create Pages Function
   const createPages = (arrOrObj, obj) =>
@@ -47,7 +43,6 @@ export async function getStaticPaths() {
             slug:
               obj.type == "plan"
                 ? obj.slug
-                // : `${page.attributes.locale.substring(0, 2)}${obj.type != "home"
                 : `${page.attributes.locale.substring(0, 2)}${page.attributes.Meta.URL_slug != "/"
                   ? "/" + page.attributes.Meta.URL_slug
                   : ""
@@ -69,10 +64,7 @@ export async function getStaticPaths() {
           slug:
             obj.type == "plan"
               ? obj.slug
-              : // : obj.type == "home"
-              //   ? arrOrObj.locale.substring(0, 2)
-              //   : arrOrObj.Meta.URL_slug
-              arrOrObj.Meta.URL_slug == "/"
+              : arrOrObj.Meta.URL_slug == "/"
                 ? undefined
                 : arrOrObj.Meta.URL_slug == "crowdfunding"
                   ? `${arrOrObj.locale.substring(0, 2)}/crowdfunding`
@@ -242,19 +234,23 @@ const {
   page, recurData
 } = Astro.props
 
+const { availableLocales, Meta: meta } = page
+
+const locale = page.locale.substring(0, 2)
 ---
 
-<Layout locale={page.locale.substring(0,2)} availableLocales={page.availableLocales} meta={page.Meta} recurData={recurData}
+<Layout locale={locale} availableLocales={availableLocales} meta={meta} recurData={recurData}
   metaImage={page.Intro_blob != null && (page.Intro_blob.data != null) ? page.Intro_blob.data.attributes.provider_metadata.public_id 
     : page.Block_blob != null && (page.Block_blob.data != null) ? page.Block_blob.data.attributes.provider_metadata.public_id 
     : recurData.OpenGraph_default.data.attributes.provider_metadata.public_id
   }>
+  
   {page.type == `home` ?
-  <Home {page} /> : page.type == `basicPages` ?
-  <BasicPage {page} /> : page.type == `blog` ?
-  <Blog {page} /> : page.type == `blogDetails` ?
-  <BlogDetails {page} /> : page.type == `confirm` ?
-  <Confirmation {page} />:
-  <CrowdfundingForm {page} locale={page.locale.substring(0,2)} />
+    <Home {page} /> : page.type == `basicPages` ?
+    <BasicPage {page} /> : page.type == `blog` ?
+    <Blog {page} /> : page.type == `blogDetails` ?
+    <BlogDetails {page} /> : page.type == `confirm` ?
+    <Confirmation {page} />:
+    <CrowdfundingForm {page} locale={locale} />
   }
 </Layout>
