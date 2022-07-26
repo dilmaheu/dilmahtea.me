@@ -11,7 +11,9 @@ import Markdown from '@astrojs/markdown-component';
 
 const { page, locale } = Astro.props
 
-const { href: originURL } = Astro.canonicalURL
+const canonicalURL = new URL(Astro.url.pathname, Astro.site).href
+
+const { href: originURL } = canonicalURL
 
 const { Perk: perk, Price_EUR_excl_VAT: price } = page
 ---
