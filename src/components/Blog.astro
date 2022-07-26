@@ -11,16 +11,9 @@ const url = `${import.meta.env.CloudImg_URL}`;
 
 const { page } = Astro.props
 
-// const blogs = page.allBlogs.data.filter((val) => val.attributes.locale == page.locale)
-
-// const allBlogs = page.allBlogs.data.filter((val) => val.attributes.locale == page.locale).map(val => val.attributes)
-
-// const blog1 = blogs[1].attributes;
-
-const blogs = page.allBlogs.filter((val) => val.props.page.locale == page.locale).map(val => val.props.page)
 const allBlogs = page.allBlogs.filter((val) => val.props.page.locale == page.locale).map(val => val.props.page)
-const blog1 = allBlogs[0];
 
+const [firstBlog] = allBlogs;
 ---
 
 <!-- Hero Section -->
@@ -48,27 +41,27 @@ const blog1 = allBlogs[0];
 				<div>
 					<div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
 						<div class="flex flex-wrap font-bold blogHome_heroAuth">
-							{blog1.authors.data.map((author, idx) => (
+							{firstBlog.authors.data.map((author, idx) => (
 								<a href="">{`${ idx > 0 ? ', ' : ' '}` + author.attributes.givenName}</a> 
 							))}
 						</div>
 						<ul class="flex flex-wrap items-center">
-							<li class="blogHome_HdItem">{new Date(blog1.createdAt).toLocaleString("en-US", { day : "numeric", month : "long"})}</li>
+							<li class="blogHome_HdItem">{new Date(firstBlog.createdAt).toLocaleString("en-US", { day : "numeric", month : "long"})}</li>
 							<!-- <li class="blogHome_HdItem">5 min read</li>
 							<li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li> -->
 						</ul>
 					</div>
 					<h1 class="blogHome_heroTitle">
-						<a href={`/`+ blog1.Meta.URL_slug}>{blog1.Title}</a>
+						<a href={`/`+ firstBlog.Meta.URL_slug}>{firstBlog.Title}</a>
 						<span class="icon relative top-0">
 							<span class="relative headingInlineIcon">
 								<img class="w-full h-full" src={CupIcon} alt="cup-icon" />
 							</span>
 						</span>
 					</h1>
-					<a href={`/`+ blog1.Meta.URL_slug}>
+					<a href={`/`+ firstBlog.Meta.URL_slug}>
 						<div class="prose max-w-none blogHome_heroTxt">
-							<Markdown>{blog1.Intro_text}</Markdown>
+							<Markdown>{firstBlog.Intro_text}</Markdown>
 						</div>
 					</a>
 				</div>
@@ -87,8 +80,8 @@ const blog1 = allBlogs[0];
 							d="M617.8,0S213.3.3,60.8.8C-7.9,85.7-4.5,186,5.3,329.5,15.7,482.7,89,543.8,331.2,543.8c185.2,0,233.9-51.5,286.6-79.8Z" />
 					</clipPath>
 				</defs>
-				<image class="hidden lg:block w-auto h-full" x="-10%" height="100%" width="100%" href={ url +  blog1.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#heroImgFrame2)"></image>
-				<image class="block lg:hidden w-auto h-full" x="-20%" height="100%" width="100%" href={ url +  blog1.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#heroImgFrame2)"></image>
+				<image class="hidden lg:block w-auto h-full" x="-10%" height="100%" width="100%" href={ url +  firstBlog.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#heroImgFrame2)"></image>
+				<image class="block lg:hidden w-auto h-full" x="-20%" height="100%" width="100%" href={ url +  firstBlog.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#heroImgFrame2)"></image>
 			</svg>
 		</div>
 	</div>
@@ -105,7 +98,7 @@ const blog1 = allBlogs[0];
 						d="M375,21.4V283.8s-35.1,6.5-84.6,6.5c-25.5,0-51.2-1.1-76.9-2.1-30.8-1.3-61.6-2.6-92-2-14.4.2-29.5.9-44,1.5-34.4,1.5-65.7,2.9-77.5-1.5V21.4C23.2,7.1,55.3,0,105.7,0c28.3,0,62,6.7,91.6,12.6,23.3,4.6,44.1,8.8,57.7,8.8,9.6,0,22.5-1.9,36.4-4C322.9,12.8,359.7,7.4,375,21.4Z" />
 				</clipPath>
 			</defs>
-			<image class="h-full w-auto" height="100%" width="100%" href={ url +  blog1.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#heroImgFrame3)"></image>
+			<image class="h-full w-auto" height="100%" width="100%" href={ url + firstBlog.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#heroImgFrame3)"></image>
 		</svg>
 	</div>
 </div>
