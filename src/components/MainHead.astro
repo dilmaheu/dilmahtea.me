@@ -14,30 +14,18 @@ export interface Props {
 const { title, description, noIndex, noFollow, image, locale, canonicalURL, slugURL, availableLocales } = Astro.props as Props;
 const url = `${import.meta.env.CloudImg_URL}`;
 const domain = Astro.site.origin;
-let slugLink: string | URL;
-let availableLang: (string | null)[];
+
+const alternateLocales = ["en", ...availableLocales].filter(lcl => lcl !== locale)
+
 let canonicalLink =
-  domain + (canonicalURL == "/" ? "" : "/" + canonicalURL) + "/";
+  domain + (canonicalURL == '/' ? '' : '/' + canonicalURL) + '/'
 
-if (locale == "en") {
-  slugLink = domain + (slugURL == "/" ? "" : "/" + slugURL) + "/";
-} else {
-  slugLink =
-    domain + "/" + locale + (slugURL == "/" ? "" : "/" + slugURL) + "/";
-}
-
-// Hreflang available links
-if(availableLocales.includes("nl") && availableLocales.includes("de")){  
-  availableLang = ["en", "nl", "de"]
-}else if(availableLocales.includes("nl")){
-  availableLang = ["en", "nl"]
-}else if(availableLocales.includes("de")){
-  availableLang = ["en", "de"]
-}
-// Remove current locale
-if (availableLang.indexOf(locale, 0) > -1) {
-  availableLang.splice(availableLang.indexOf(locale, 0), 1);
-}
+let slugLink =
+  domain +
+  '/' +
+  (locale === 'en' ? '' : locale) +
+  (slugURL == '/' ? '' : '/' + slugURL) +
+  '/'
 ---
 <meta charset="UTF-8" />
 <title>{title}</title>
@@ -59,24 +47,21 @@ if (availableLang.indexOf(locale, 0) > -1) {
 <!-- SEO -->
 <link rel="canonical" href={canonicalLink} />
 <link href={slugLink} hreflang={locale} />
+
 {
-  availableLang.map((altLocale) =>
-    altLocale == "en" ? (
-      <link
-        rel="alternate"
-        href={domain + (slugURL == "/" ? "" : "/" + slugURL) + "/"}
-        hreflang={altLocale}
-      />
-    ) : (
-      <link
-        rel="alternate"
-        href={
-          domain + "/" + altLocale + (slugURL == "/" ? "" : "/" + slugURL) + "/"
-        }
-        hreflang={altLocale}
-      />
-    )
-  )
+  alternateLocales.map(alternateLocale => (
+    <link
+      rel="alternate"
+      href={
+        domain +
+        '/' +
+        (alternateLocale === 'en' ? '' : alternateLocale) +
+        (slugURL == '/' ? '' : '/' + slugURL) +
+        '/'
+      }
+      hreflang={alternateLocale}
+    />
+  ))
 }
 
 <!-- OpenGraph -->
