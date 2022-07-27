@@ -3,15 +3,37 @@ import UKImg from "/images/UK.svg";
 import GerImg from "/images/germany.svg";
 import NLImg from "/images/netherlands.svg";
 
-const { locale } = Astro.props
+const { lang, locale, localizations } = Astro.props
+
+const langCode = lang.toUpperCase(),
+    preferredLocale = locale.toUpperCase()
+
+const localization = localizations[langCode]
+
+let language
+
+switch (preferredLocale) {
+    case 'EN':
+        language = 'English'
+        break
+    case 'NL':
+        language = 'Dutch'
+        break
+    case 'DE':
+        language = 'German'
+        break
+}
+
+const localLang = localization[language]
 ---
 
 <li class="block">
-    <a style="cursor: pointer;" class="lang-selector hover:bg-gray-300 flex flex-wrap gap-x-1.5 md:gap-x-3 items-center dropdownItem">
+    <a style="cursor: pointer;"
+        class="lang-selector hover:bg-gray-300 flex flex-wrap gap-x-1.5 md:gap-x-3 items-center dropdownItem">
         <!-- <div class="langIcon rounded-full overflow-hidden">
             <img src={locale=="en" ? UKImg : locale=="nl" ? NLImg : GerImg } class="w-full h-full object-cover"
                 alt="brand-logo">
         </div> -->
-        <span class="lang">{locale.toUpperCase()}</span>
+        <span class="lang" lang={lang}>{langCode} ({localLang})</span>
     </a>
 </li>

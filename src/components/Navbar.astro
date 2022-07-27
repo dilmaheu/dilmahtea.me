@@ -5,6 +5,8 @@ import UKImg from "/images/UK.svg";
 import GerImg from "/images/germany.svg";
 import NLImg from "/images/netherlands.svg";
 
+import LocalizationsQuery from '../queries/LocalizationsQuery.js'
+
 interface Props {
     locale: string
     availableLocales: (string | null)[]
@@ -13,6 +15,35 @@ interface Props {
 const { locale, availableLocales } = Astro.props
 
 const selectorLangs = ["en", ...availableLocales].filter((lcl) => lcl != locale)
+
+const localizationsData = await fetch(import.meta.env.DB_URL, {
+  method: 'POST',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
+  },
+  body: JSON.stringify({
+    query: LocalizationsQuery,
+  }),
+}).then(res => res.json())
+
+const localizations = {};
+
+localizationsData.data.localizations.data.forEach((localization) => {
+    const {
+        Code,
+        English,
+        Dutch,
+        German
+    } = localization.attributes
+
+    localizations[Code] = {
+        English,
+        Dutch,
+        German
+    }
+})
 ---
 
 <nav class="wrapper mx-auto z-50 relative">
@@ -54,7 +85,7 @@ const selectorLangs = ["en", ...availableLocales].filter((lcl) => lcl != locale)
                         </div>
                     </div>
                     <ul id="dropdownMenu" class="absolute rounded hidden overflow-hidden dropdown-menu">
-                        {selectorLangs.map((lcl) => <LangButton locale={lcl} />)}
+                        {selectorLangs.map((lang) => <LangButton lang={lang} locale={locale} localizations={localizations} />)}
                     </ul>
                 </div>
             </div>
@@ -94,7 +125,7 @@ const selectorLangs = ["en", ...availableLocales].filter((lcl) => lcl != locale)
                     </div>
                 </div>
                 <ul id="dropdownMenuSm" class="absolute rounded hidden overflow-hidden dropdown-menu">
-                    {selectorLangs.map((locale) => <LangButton locale={locale} />)}
+                    {selectorLangs.map((lang) => <LangButton lang={lang} locale={locale} localizations={localizations} />)}
                 </ul>
             </div>
             <div id="sidebarClose" class="cursor-pointer">
