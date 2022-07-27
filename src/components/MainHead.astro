@@ -6,13 +6,14 @@ export interface Props {
   noFollow: string;
   image?: string;
   locale: string;
-  canonicalURL?: string | URL;
+  canonicalURL?: string;
   slugURL: string | URL;
   availableLocales: (string | null)[]
 }
+
 const { title, description, noIndex, noFollow, image, locale, canonicalURL, slugURL, availableLocales } = Astro.props as Props;
 const url = `${import.meta.env.CloudImg_URL}`;
-const domain = Astro.canonicalURL.origin;
+const domain = Astro.site.origin;
 let slugLink: string | URL;
 let availableLang: (string | null)[];
 let canonicalLink =
@@ -44,8 +45,7 @@ if (availableLang.indexOf(locale, 0) > -1) {
 <meta name="keywords" content="" />
 <meta name="description" content={description} />
 <meta name="author" content="Dilmah" />
-<meta name="robots" content={noIndex} />
-<meta name="robots" content={noFollow} />
+<meta name="robots" content={noIndex.length == 7 &&(noFollow.length == 8) ? "noindex, nofollow" : noIndex.length == 7 ? "noindex" : noFollow.length == 8 ? "nofollow" :  "all"} />
 
 <!-- Sitemap -->
 <!-- <link rel="sitemap" href= /> -->

@@ -11,6 +11,12 @@ interface Props {
 }
 
 const { locale, availableLocales } = Astro.props
+
+const selectorLangs = [...availableLocales]
+
+if (locale !== "en") {
+    selectorLangs.push("en")
+}
 ---
 
 <nav class="wrapper mx-auto z-50 relative">
@@ -53,13 +59,9 @@ const { locale, availableLocales } = Astro.props
                     </div>
                     <ul id="dropdownMenu" class="absolute rounded hidden overflow-hidden dropdown-menu">
                         {
-                        availableLocales.filter((lcl) => lcl != locale).map((lcl, index) =>
-                        <LangButton locale={lcl} />)}
-                        { availableLocales.length > 1 && locale != "en" ?
-                        <LangButton locale="en" />: null
-                        }
-                        { availableLocales.length
-                        < 2 && locale !="en" ? <LangButton locale="en" />: null
+                            selectorLangs
+                                .filter((lcl) => lcl != locale)
+                                .map((lcl) => <LangButton locale={lcl} />)
                         }
                     </ul>
                 </div>
@@ -101,13 +103,9 @@ const { locale, availableLocales } = Astro.props
                 </div>
                 <ul id="dropdownMenuSm" class="absolute rounded hidden overflow-hidden dropdown-menu">
                     {
-                    availableLocales.filter((lcl) => lcl != locale).map((lcl, index) =>
-                    <LangButton locale={lcl} />)}
-                    { availableLocales.length > 1 && locale != "en" ?
-                    <LangButton locale="en" />: null
-                    }
-                    { availableLocales.length
-                    < 2 && locale !="en" ? <LangButton locale="en" />: null
+                        selectorLangs
+                            .filter((lcl) => lcl != locale)
+                            .map((lcl) => <LangButton locale={lcl} />)
                     }
                 </ul>
             </div>
