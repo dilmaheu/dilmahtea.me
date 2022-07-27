@@ -23,7 +23,8 @@ const errorDefaultPage = await fetch(`${import.meta.env.DB_URL}`, {
 const error = errorDefaultPage.data.basicPages.data
 const errorPage = error.filter((val) => val.attributes.Meta.URL_slug == "404")
 
-const page = errorPage[0].attributes
+const page = errorPage[0].attributes,
+  locale = page.locale.substring(0, 2)
 
 const availableLocales = page.localizations.data.map((localized) =>
   localized.attributes.locale.substring(0, 2)
@@ -33,7 +34,7 @@ const availableLocales = page.localizations.data.map((localized) =>
 const recurData = errorDefaultPage.data.recurringElement.data.attributes;
 ---
 
-<Layout locale={page.locale.substring(0, 2)} availableLocales={availableLocales} meta={page.Meta} recurData={recurData}
+<Layout locale={locale} availableLocales={availableLocales} meta={page.Meta} recurData={recurData}
   metaImage={page.Block_blob != null && (page.Block_blob.data != null) ? page.Block_blob.data.attributes.provider_metadata.public_id 
     : recurData.OpenGraph_default.data.attributes.provider_metadata.public_id}>
   <Error page={page} />

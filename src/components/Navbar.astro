@@ -12,11 +12,7 @@ interface Props {
 
 const { locale, availableLocales } = Astro.props
 
-const selectorLangs = [...availableLocales]
-
-if (locale !== "en") {
-    selectorLangs.push("en")
-}
+const selectorLangs = ["en", ...availableLocales].filter((lcl) => lcl != locale)
 ---
 
 <nav class="wrapper mx-auto z-50 relative">
@@ -58,11 +54,7 @@ if (locale !== "en") {
                         </div>
                     </div>
                     <ul id="dropdownMenu" class="absolute rounded hidden overflow-hidden dropdown-menu">
-                        {
-                            selectorLangs
-                                .filter((lcl) => lcl != locale)
-                                .map((lcl) => <LangButton locale={lcl} />)
-                        }
+                        {selectorLangs.map((lcl) => <LangButton locale={lcl} />)}
                     </ul>
                 </div>
             </div>
@@ -102,11 +94,7 @@ if (locale !== "en") {
                     </div>
                 </div>
                 <ul id="dropdownMenuSm" class="absolute rounded hidden overflow-hidden dropdown-menu">
-                    {
-                        selectorLangs
-                            .filter((lcl) => lcl != locale)
-                            .map((lcl) => <LangButton locale={lcl} />)
-                    }
+                    {selectorLangs.map((locale) => <LangButton locale={locale} />)}
                 </ul>
             </div>
             <div id="sidebarClose" class="cursor-pointer">

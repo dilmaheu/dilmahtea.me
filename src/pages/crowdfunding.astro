@@ -29,7 +29,8 @@ const allPlans = crowdfundingDefaultPage.data.crowdfundingPlans.data.map(
 	(val) => val.attributes
 );
 
-const page = { ...homePage, allPlans };
+const page = { ...homePage, allPlans },
+	locale = page.locale.substring(0, 2)
 
 const availableLocales = page.localizations.data.map((localized) =>
 	localized.attributes.locale.substring(0, 2)
@@ -39,7 +40,7 @@ const availableLocales = page.localizations.data.map((localized) =>
 const recurData = crowdfundingDefaultPage.data.recurringElement.data.attributes;
 ---
 
-<Layout locale={page.locale.substring(0, 2)} availableLocales={availableLocales} meta={page.Meta} recurData={recurData}
+<Layout locale={locale} availableLocales={availableLocales} meta={page.Meta} recurData={recurData}
 	metaImage={page.Intro_blob.data.attributes.provider_metadata.public_id}>
 	<Home page={page} />
 </Layout>
