@@ -27,4 +27,15 @@
 
         location.pathname = newPath
     }
+
+    // localize links on navigation
+    document.addEventListener('click', ({ target }) => {
+        if (preferredLocale !== 'en') {
+            const link = target.closest('a')
+
+            if (link) {
+                link.href = '/' + preferredLocale + link.pathname
+            }
+        }
+    })
 </script>
