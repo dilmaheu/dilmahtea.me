@@ -3,37 +3,34 @@ import UKImg from "/images/UK.svg";
 import GerImg from "/images/germany.svg";
 import NLImg from "/images/netherlands.svg";
 
-const { lang, locale, localizations } = Astro.props
+const { lang, localizations } = Astro.props
 
-const langCode = lang.toUpperCase(),
-    preferredLocale = locale.toUpperCase()
+const langCode = lang.toUpperCase()
 
-const localization = localizations[langCode]
-
-let language
-
-switch (preferredLocale) {
-    case 'EN':
-        language = 'English'
-        break
-    case 'NL':
-        language = 'Dutch'
-        break
-    case 'DE':
-        language = 'German'
-        break
-}
-
-const localLang = localization[language]
+const localization = localizations[langCode],
+    localNameOfEnglish = localization['English'],
+    localNameOfDutch = localization['Dutch'],
+    localNameOfGerman = localization['German']
 ---
 
 <li class="block">
-    <a style="cursor: pointer;"
-        class="lang-selector hover:bg-gray-300 flex flex-wrap gap-x-1.5 md:gap-x-3 items-center dropdownItem">
-        <!-- <div class="langIcon rounded-full overflow-hidden">
-            <img src={locale=="en" ? UKImg : locale=="nl" ? NLImg : GerImg } class="w-full h-full object-cover"
-                alt="brand-logo">
-        </div> -->
-        <span class="lang" lang={lang}>{langCode} ({localLang})</span>
+    <a
+      style="cursor: pointer;"
+      class:list={[
+        lang,
+        'lang-selector hover:bg-gray-300 flex flex-wrap gap-x-1.5 md:gap-x-3 items-center dropdownItem',
+      ]}
+    >
+      <!-- <div class="langIcon rounded-full overflow-hidden">
+        <img
+          src={lang == 'en' ? UKImg : lang == 'nl' ? NLImg : GerImg}
+          class="w-full h-full object-cover"
+          alt="brand-logo"
+        />
+      </div> -->
+  
+      <span class="lang">
+        {langCode} (<span class="en hidden">{localNameOfEnglish}</span><span class="nl hidden">{localNameOfDutch}</span><span class="de hidden">{localNameOfGerman}</span>)
+      </span>
     </a>
-</li>
+  </li>

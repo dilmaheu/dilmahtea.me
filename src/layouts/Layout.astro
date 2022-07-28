@@ -125,7 +125,8 @@ if (nofollow === true) { noFollow = "nofollow" };
 
 			document.querySelectorAll(".lang-selector").forEach(langSelector => {
 				langSelector.addEventListener("click", () => {
-					const { lang: locale } = langSelector.querySelector('.lang')
+					// @ts-ignore
+					const locale = langSelector.querySelector('.lang').innerText.toLowerCase().substring(0, 2)
 
 					localStorage.setItem(`locale`, locale)
 
