@@ -111,13 +111,15 @@ if (nofollow === true) { noFollow = "nofollow" };
 			// Redirect function
 			const redirectPath = (newLocale) => {
 				let newPath
+				const localizedPathPattern = /^\/(nl|de)(\/[^]*)?$/,
+					localeUrlPrefix = newLocale === 'en' ? '' : `/${newLocale}`
 
-				if (locale == "en") {
-					newPath = `/${newLocale}${location.pathname}`
-				} else {
+				if (localizedPathPattern.test(location.pathname)) {
 					const [, , ...urlParts] = location.pathname.split("/")
 
-					newPath = `/${newLocale === 'en' ? '' : `${newLocale}/`}${urlParts.join('/')}`
+					newPath = localeUrlPrefix + '/' + urlParts.join('/')
+				} else {
+					newPath = localeUrlPrefix + location.pathname
 				}
 
 				location.pathname = newPath
