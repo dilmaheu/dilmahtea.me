@@ -45,7 +45,7 @@ if (nofollow === true) { noFollow = "nofollow" };
 
 <body>
 	<div>
-		<Navbar locale={locale} availableLocales={availableLocales} />
+		<Navbar locale={locale} availableLocales={availableLocales} sidebarFooterText={recurData.Footer_text} />
 		<main>
 			<slot />
 		</main>
@@ -55,45 +55,45 @@ if (nofollow === true) { noFollow = "nofollow" };
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
 			// Nav Open button
-			document.getElementById("sidebarOpen").addEventListener("click", function () {
-				var x = document.getElementById("sidebar");
-				if (x.style.display === "block") {
-					x.style.display = "none";
-				}   
-				else {
-					x.style.display = "block";
-				}
-			}, false);
+            document.getElementById("sidebarOpen").addEventListener("click", function () {
+                var x = document.getElementById("sidebar");
+                var y = document.getElementById("navigation");
+                var p = document.getElementById("sidebarOpen");
+                var q = document.getElementById("sidebarClose");
 
-			// Nav Close button
-			document.getElementById("sidebarClose").addEventListener("click", function () {
-				var x = document.getElementById("sidebar");
-				if (x.style.display === "block") {
-					x.style.display = "none";
-				}   
-				else {
-					x.style.display = "block";
-				}
-			}, false);
+                x.style.display = "block";
+                p.style.display = "none";
+                q.style.display = "block";
+                y.style.backgroundImage = "url(/images/navBg.webp)";
+                document.body.style.overflowY = 'hidden';
+            }, false);
+            // Nav Close button
+            document.getElementById("sidebarClose").addEventListener("click", function () {
+                var x = document.getElementById("sidebar");
+                var y = document.getElementById("navigation");
+                var p = document.getElementById("sidebarOpen");
+                var q = document.getElementById("sidebarClose");
+
+                if (y.style.position === "fixed") {
+                    x.style.display = "none";
+                    p.style.display = "block";
+                    q.style.display = "none";
+                    y.style.backgroundImage = "url(/images/navBg.webp)";
+                    document.body.style.overflowY = 'visible';
+                }   
+                else {
+                    x.style.display = "none";
+                    p.style.display = "block";
+                    q.style.display = "none";
+                    y.style.background = "transparent";
+                    document.body.style.overflowY = 'visible';
+                }
+            }, false);
 
 			// Language button toggle
 			document.getElementById("langBtn").addEventListener("click", function () {
 				const langBtn = document.getElementById("langBtn"),
 					dropdownMenu = document.getElementById("dropdownMenu");
-
-				if (dropdownMenu.style.display == "block") {
-					dropdownMenu.style.display = "none";
-					langBtn.style.borderRadius = "25px";
-				} else {
-					dropdownMenu.style.display = "block";
-					langBtn.style.borderRadius = "25px 25px 0 0";
-				}
-			}, false);
-
-			// Language button toggle small
-			document.getElementById("langBtnSm").addEventListener("click", function () {
-				const langBtn = document.getElementById("langBtnSm"),
-					dropdownMenu = document.getElementById("dropdownMenuSm");
 
 				if (dropdownMenu.style.display == "block") {
 					dropdownMenu.style.display = "none";

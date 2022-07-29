@@ -10,9 +10,10 @@ import LocalizationsQuery from '../queries/LocalizationsQuery.js'
 interface Props {
     locale: string
     availableLocales: (string | null)[]
+    sidebarFooterText : string
 }
 
-const { locale, availableLocales } = Astro.props
+const { locale, availableLocales, sidebarFooterText } = Astro.props
 
 const selectorLangs = ["en", ...availableLocales]
 
@@ -44,6 +45,11 @@ localizationsData.data.localizations.data.forEach((localization) => {
         German
     }
 })
+
+const footerText = sidebarFooterText.replaceAll(
+    '<current_year>',
+    new Date().getFullYear(),
+)
 ---
 
 <nav class="wrapper mx-auto z-50 relative">
@@ -59,7 +65,7 @@ localizationsData.data.localizations.data.forEach((localization) => {
             </div>
         </div>
 
-        <div class="hidden sm:block">
+        <div class="flex items-center">
             <div class="flex items-center">
                 <!-- <div class="relative search">
                     <div class="flex absolute right-0 items-center justify-center pointer-events-none searchIcnContainer">
@@ -90,74 +96,53 @@ localizationsData.data.localizations.data.forEach((localization) => {
                     </ul>
                 </div>
             </div>
-        </div>
 
-        <div id="sidebarOpen" class="block sm:hidden cursor-pointer">
-            <svg class="w-full h-full" viewBox="0 0 22.4 19.2">
-                <path
-                    d="M0,17.6a1.6,1.6,0,0,0,.5,1.1,1.6,1.6,0,0,0,1.1.5H20.8a1.6,1.6,0,0,0,0-3.2H1.6a1.6,1.6,0,0,0-1.1.5A1.6,1.6,0,0,0,0,17.6Zm0-8a1.6,1.6,0,0,0,.5,1.1,1.6,1.6,0,0,0,1.1.5h9.6a1.6,1.6,0,0,0,0-3.2H1.6a1.6,1.6,0,0,0-1.1.5A1.6,1.6,0,0,0,0,9.6Zm0-8A1.6,1.6,0,0,0,.5,2.7a1.6,1.6,0,0,0,1.1.5H20.8a1.6,1.6,0,0,0,1.1-.5,1.6,1.6,0,0,0,.5-1.1A1.6,1.6,0,0,0,21.9.5,1.6,1.6,0,0,0,20.8,0H1.6A1.6,1.6,0,0,0,.5.5,1.6,1.6,0,0,0,0,1.6Z"
-                    style="fill:#e3dfde;fill-rule:evenodd" />
-            </svg>
+            <div class="block sm:hidden">
+                <div id="sidebarOpen" class="block sm:hidden cursor-pointer">
+                    <svg class="w-full h-full" viewBox="0 0 22.4 19.2"><path d="M0,17.6a1.6,1.6,0,0,0,.5,1.1,1.6,1.6,0,0,0,1.1.5H20.8a1.6,1.6,0,0,0,0-3.2H1.6a1.6,1.6,0,0,0-1.1.5A1.6,1.6,0,0,0,0,17.6Zm0-8a1.6,1.6,0,0,0,.5,1.1,1.6,1.6,0,0,0,1.1.5h9.6a1.6,1.6,0,0,0,0-3.2H1.6a1.6,1.6,0,0,0-1.1.5A1.6,1.6,0,0,0,0,9.6Zm0-8A1.6,1.6,0,0,0,.5,2.7a1.6,1.6,0,0,0,1.1.5H20.8a1.6,1.6,0,0,0,1.1-.5,1.6,1.6,0,0,0,.5-1.1A1.6,1.6,0,0,0,21.9.5,1.6,1.6,0,0,0,20.8,0H1.6A1.6,1.6,0,0,0,.5.5,1.6,1.6,0,0,0,0,1.6Z" style="fill:#e3dfde;fill-rule:evenodd"/></svg>
+                </div>
+                <div id="sidebarClose" class="cursor-pointer">
+                    <svg class="w-auto h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.2 19.2"><path d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z" style="fill:#e3dfde;fill-rule:evenodd"/></svg>
+                </div>
+            </div>
         </div>
     </div>
 </nav>
 
 <div id="sidebar">
-    <div class="flex justify-between items-center">
-        <div class="my-auto">
-            <a href="/"><img src={Brand} class="brandLogo" alt="brand-logo" /></a>
-        </div>
-
-        <div class="flex items-center" style="margin-left: 20px;">
-            <div id="dropdown" class="dropdown text-sm lg:text-base font-bold relative noselect">
-                <div id="langBtnSm"
-                    class="flex items-center justify-between gap-x-1.5 md:gap-x-3 font-bold focus:outline-none langBtn">
-                    <!-- <div class="langIcon rounded-full overflow-hidden">
-                        <img src={locale=="en" ? UKImg : locale=="nl" ? NLImg : GerImg} class="w-full h-full object-cover"
-                            alt="brand-logo">
-                    </div> -->
-                    <div class="preferred-locale font-bold">{locale.toUpperCase()}</div>
-
-                    <div class="w-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7">
-                            <path class="cls-1"
-                                d="M.3.3A.6.6,0,0,1,.9,0a.9.9,0,0,1,.6.3L5.8,4.6,10.2.3a.6.6,0,0,1,.6-.3l.6.3a.8.8,0,0,1,.2.6.7.7,0,0,1-.2.6l-5,4.9a.6.6,0,0,1-.6.3.9.9,0,0,1-.6-.3L.3,1.5A.9.9,0,0,1,0,.9.6.6,0,0,1,.3.3Z"
-                                fill="#2B4B50" />
-                        </svg>
-                    </div>
-                </div>
-                <ul id="dropdownMenuSm" class="absolute rounded hidden overflow-hidden dropdown-menu">
-                    {selectorLangs.map((lang) => <LangButton lang={lang} localizations={localizations} />)}
-                </ul>
-            </div>
-            <div id="sidebarClose" class="cursor-pointer">
-                <svg class="w-auto h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.2 19.2">
-                    <path
-                        d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
-                        style="fill:#e3dfde;fill-rule:evenodd" />
-                </svg>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="mt-10">
+    <div class="grid content-between h-full sidebarContainer">
         <!-- <div class="relative search">
             <div class="flex absolute right-0 items-center justify-center pointer-events-none searchIcnContainer">
                 <svg class="searchIcn"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.8 25.8"><path d="M24.8,24.8l-5.7-5.7m3.2-7.5a10.7,10.7,0,0,1-3.2,7.5,10.7,10.7,0,0,1-7.5,3.2,10.7,10.7,0,0,1-7.5-3.2,10.6,10.6,0,0,1,15-15,10.7,10.7,0,0,1,3.2,7.5Z" style="fill:none;stroke:#D0D2D0;stroke-linecap:round;stroke-width:2px"/></svg>
             </div>
             <input type="text" id="search-navbar" class="block w-full bg-gray-5 focus:outline-none searchInput" placeholder="Search tea stories">
         </div> -->
-        <div class="flex mr-auto my-auto navMenuItem">
+        <div class="flex navMenuItem">
             <ul>
                 <li><a class="navItem" href="/crowdfunding">Crowdfunding</a></li>
                 <!-- <li><a class="navItem" href="/">Blog</a></li> -->
             </ul>
         </div>
+
+        <div class="sidebarfooter">{footerText}</div>
     </div>
 </div>
+<div class="block sm:hidden py-11"></div>
 
 <script is:inline>
+    window.onscroll = function(){
+        var top = window.pageYOffset || document.documentElement.scrollTop;
+        var x = document.getElementById("navigation");
+        if (top > 70) {
+            x.style.backgroundImage = "url(/images/navBg.webp)";
+            x.style.position = "fixed";
+        }
+        else {
+            x.style.background = "transparent";
+            x.style.position = "absolute";
+        }
+    };
+
     document.querySelectorAll('.preferred-locale').forEach(dropdown => {
         dropdown.textContent = preferredLocale.toUpperCase()
     })
