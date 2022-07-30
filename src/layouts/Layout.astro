@@ -92,7 +92,10 @@ const footerText = recurData.Footer_text.replaceAll(
             p.style.display = "none";
             q.style.display = "block";
             y.style.backgroundImage = "url(/images/navBg.webp)";
-            document.body.style.overflowY = "hidden";
+
+            document.body.style.width = "100%";
+            document.body.style.position = "fixed";
+            document.body.style.overflowY = "scroll";
           },
           false
         );
@@ -105,22 +108,29 @@ const footerText = recurData.Footer_text.replaceAll(
             var p = document.getElementById("sidebarOpen");
             var q = document.getElementById("sidebarClose");
 
-            if (y.style.position === "fixed") {
-              x.style.display = "none";
-              p.style.display = "block";
-              q.style.display = "none";
-              y.style.backgroundImage = "url(/images/navBg.webp)";
-              document.body.style.overflowY = "visible";
-            } else {
-              x.style.display = "none";
-              p.style.display = "block";
-              q.style.display = "none";
-              y.style.background = "transparent";
-              document.body.style.overflowY = "visible";
-            }
+            x.style.display = "none";
+            p.style.display = "block";
+            q.style.display = "none";
+            y.style.background = "transparent";
+
+            document.body.style.width = "auto";
+            document.body.style.position = "static";
+            document.body.style.overflowY = "auto";
           },
           false
         );
+
+        window.addEventListener('resize', () => {
+          if (window.innerWidth > 639) {
+            document.body.style.width = "auto";
+            document.body.style.position = "static";
+            document.body.style.overflowY = "auto";
+          } else {
+            document.body.style.width = "100%";
+            document.body.style.position = "fixed";
+            document.body.style.overflowY = "scroll";
+          }
+        })
 
         // Language button toggle
         document.getElementById("langBtn").addEventListener(
