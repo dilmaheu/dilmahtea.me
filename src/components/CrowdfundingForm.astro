@@ -1,171 +1,283 @@
 ---
-import '../styles/global.css';
-import '../styles/styles.css';
+import "../styles/global.css";
+import "../styles/styles.css";
 
-import HeaderBG from '/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp';
-import CupIcon from '/images/cup.svg';
-import CupIconG from '/images/cupLightgreen.svg';
-import LoveIcon from '/images/love.svg';
-import FlowerIconG from '/images/flowerLightgreen.svg';
-import MD from '@astrojs/markdown-component';
+import HeaderBG from "/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp";
+import CupIcon from "/images/cup.svg";
+import CupIconG from "/images/cupLightgreen.svg";
+import LoveIcon from "/images/love.svg";
+import FlowerIconG from "/images/flowerLightgreen.svg";
+import MD from "@astrojs/markdown-component";
 
-const { page, locale } = Astro.props
+const { page, locale } = Astro.props;
 
-const { href: originURL } = new URL(Astro.url.pathname, Astro.site)
+const { href: originURL } = new URL(Astro.url.pathname, Astro.site);
 
-const { Perk: perk, Price_EUR_excl_VAT: price } = page
+const { Perk: perk, Price_EUR_excl_VAT: price } = page;
 ---
 
 <!-- Hero Section -->
 <div class="hero overflow-hidden relative">
-    <!-- Background -->
-    <div class="w-full absolute bottom-0">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1056.7 660.3" class="heroCurve1">
-            <defs>
-                <clipPath id="heroImgFrame">
-                    <path class="path"
-                        d="M1056.7,0V619.7c-31,16.2-92.5,40.6-182,40.6H855.8c-24.8,0-49-.9-72.9-2.4-32.8-1.6-65.2-3.8-98-6-65.8-4.4-133.1-9-208.2-9-79.4,0-147.5,5.1-210.1,9.8-53,3.9-102.1,7.6-150.7,7.6h-13C9.3,657.9,0,631.4,0,631.4V0Z" />
-                </clipPath>
-            </defs>
-            <image class="h-full w-auto" height="100%" width="100%" href={HeaderBG} clip-path="url(#heroImgFrame)">
-            </image>
-        </svg>
-    </div>
+  <!-- Background -->
+  <div class="w-full absolute bottom-0">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 1056.7 660.3"
+      class="heroCurve1"
+    >
+      <defs>
+        <clipPath id="heroImgFrame">
+          <path
+            class="path"
+            d="M1056.7,0V619.7c-31,16.2-92.5,40.6-182,40.6H855.8c-24.8,0-49-.9-72.9-2.4-32.8-1.6-65.2-3.8-98-6-65.8-4.4-133.1-9-208.2-9-79.4,0-147.5,5.1-210.1,9.8-53,3.9-102.1,7.6-150.7,7.6h-13C9.3,657.9,0,631.4,0,631.4V0Z"
+          ></path>
+        </clipPath>
+      </defs>
+      <image
+        class="h-full w-auto"
+        height="100%"
+        width="100%"
+        href={HeaderBG}
+        clip-path="url(#heroImgFrame)"
+      >
+      </image>
+    </svg>
+  </div>
 
-    <!-- Text content -->
-    <div class="relative z-30 flex flex-wrap justify-center h-full wrapper HeroTxtContainer">
-        <div class="w-full md:w-9/12 lg:w-7/12 sm:text-center sm:justify-center HeroTxtContent" role="banner">
-            <div>
-                <div class="hidden sm:block mx-auto formHeroCupIcon">
-                    <img class="w-full h-full color-default" src={CupIcon} alt="love-icon" />
-                </div>
-                <div class="block sm:hidden mx-auto heroLoveIcon">
-                    <img class="w-full h-full" src={LoveIcon} alt="love-icon" />
-                </div>
-
-                <h1 class="BasicHeroTitle">{page.Title}</h1>
-                <div class="pt-7 mt-0.5 prose max-w-none BasicHeroTxt">
-                    <MD>{page.Intro_text}</MD>
-                </div>
-            </div>
+  <!-- Text content -->
+  <div
+    class="relative z-30 flex flex-wrap justify-center h-full wrapper HeroTxtContainer"
+  >
+    <div
+      class="w-full md:w-9/12 lg:w-7/12 sm:text-center sm:justify-center HeroTxtContent"
+      role="banner"
+    >
+      <div>
+        <div class="hidden sm:block mx-auto formHeroCupIcon">
+          <img class="w-full h-full color-default" src={CupIcon} alt="love-icon"
+          />
         </div>
+        <div class="block sm:hidden mx-auto heroLoveIcon">
+          <img class="w-full h-full" src={LoveIcon} alt="love-icon" />
+        </div>
+
+        <h1 class="BasicHeroTitle">{page.Title}</h1>
+        <div class="pt-7 mt-0.5 prose max-w-none BasicHeroTxt">
+          <MD>{page.Intro_text}</MD>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Form Section -->
 <div class="wrapper formSec">
-    <div class="formContainer" role="main">
-        <form action="https://pay.scripts.dilmahtea.me" method="POST">
-            <div class="formGrid1Container">
-                <div class="inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7 pb-0.5">
-                    <h2 class="header-default color-default">{ locale == "nl" ? "Basis gegevens" : "Basic info" }</h2>
-                    <img class="formSecHeaderIcon" src={CupIconG} alt="tea-leaf-icon" />
-                </div>
+  <div class="formContainer" role="main">
+    <form action="https://pay.scripts.dilmahtea.me" method="POST">
+      <div class="formGrid1Container">
+        <div
+          class="inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7 pb-0.5"
+        >
+          <h2 class="header-default color-default">
+            {locale == "nl" ? "Basis gegevens" : "Basic info"}
+          </h2>
+          <img class="formSecHeaderIcon" src={CupIconG} alt="tea-leaf-icon" />
+        </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 formGrid">
-                    <div class="formInputContainer">
-                        <label for="first_name">{ locale == "nl" ? "Voornaam": "First Name" }</label>
-                        <input type="text" id="first_name" name="first_name"
-                            class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder={ locale=="nl" ? "Voornaam" : "First Name" } required />
-                    </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 formGrid">
+          <div class="formInputContainer">
+            <label for="first_name"
+              >{locale == "nl" ? "Voornaam" : "First Name"}
+            </label>
+            <input
+              type="text"
+              id="first_name"
+              name="first_name"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              placeholder={locale == "nl" ? "Voornaam" : "First Name"}
+              required
+            />
+          </div>
 
-                    <div class="formInputContainer">
-                        <label for="last_name">{ locale == "nl" ? "Achternaam" : "Last Name" }</label>
-                        <input type="text" id="last_name" name="last_name"
-                            class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder={ locale=="nl" ? "Achternaam" : "Last Name" } required />
-                    </div>
+          <div class="formInputContainer">
+            <label for="last_name"
+              >{locale == "nl" ? "Achternaam" : "Last Name"}
+            </label>
+            <input
+              type="text"
+              id="last_name"
+              name="last_name"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              placeholder={locale == "nl" ? "Achternaam" : "Last Name"}
+              required
+            />
+          </div>
 
-                    <div class="formInputContainer">
-                        <label for="email">{ locale == "nl" ? "E-mailadres" : "Email Address" }</label>
-                        <input type="email" id="email" name="email"
-                            class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder={ locale=="nl" ? "Vul je e-mailadres in" : "Enter your email address" } required />
-                    </div>
+          <div class="formInputContainer">
+            <label for="email"
+              >{locale == "nl" ? "E-mailadres" : "Email Address"}
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              placeholder={locale == "nl"
+                ? "Vul je e-mailadres in"
+                : "Enter your email address"}
+              required
+            />
+          </div>
 
-                    <div class="formInputContainer">
-                        <label for="favorite_tea">{ locale == "nl" ? "Favoriete thee" : "Favourite Tea" }</label>
-                        <input type="text" id="favorite_tea" name="favorite_tea"
-                            class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder={ locale=="nl" ? "Earl Grey" : "Black Tea" } required />
-                    </div>
-                </div>
-            </div>
+          <div class="formInputContainer">
+            <label for="favorite_tea"
+              >{locale == "nl" ? "Favoriete thee" : "Favourite Tea"}
+            </label>
+            <input
+              type="text"
+              id="favorite_tea"
+              name="favorite_tea"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              placeholder={locale == "nl" ? "Earl Grey" : "Black Tea"}
+              required
+            />
+          </div>
+        </div>
+      </div>
 
-            <div class="formGrid2Container">
-                <div class="inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7">
-                    <h3 class="header-default color-default">{ locale == "nl" ? "Factuurgegevens" : "Billing details" }
-                    </h3>
-                    <img class="formSecHeaderIcon" src={FlowerIconG} alt="tea-leaf-icon" />
-                </div>
+      <div class="formGrid2Container">
+        <div class="inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7">
+          <h3 class="header-default color-default">
+            {locale == "nl" ? "Factuurgegevens" : "Billing details"}
+          </h3>
+          <img class="formSecHeaderIcon" src={FlowerIconG} alt="tea-leaf-icon"
+          />
+        </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 formGrid">
-                    <div class="formInputContainer">
-                        <label for="country">{ locale == "nl" ? "Land" : "Country" }</label>
-                        <select id="country" name="country"
-                            class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            required>
-                            <option value="" disabled >{locale == "nl" ? "Selecteer jouw land":"Select or type your country" }</option>
-                            <option value="Netherlands" selected>{locale == "nl" ? "Nederland":"Netherlands" }</option>
-                        </select>
-                    </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 formGrid">
+          <div class="formInputContainer">
+            <label for="country">{locale == "nl" ? "Land" : "Country"}</label>
+            <select
+              id="country"
+              name="country"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              required
+            >
+              <option value="" disabled
+                >{locale == "nl"
+                  ? "Selecteer jouw land"
+                  : "Select or type your country"}
+              </option>
+              <option value="Netherlands" selected
+                >{locale == "nl" ? "Nederland" : "Netherlands"}
+              </option>
+            </select>
+          </div>
 
-                    <div class="formInputContainer">
-                        <label for="city">{locale == "nl" ? "Plaatsnaam" : "City" }</label>
-                        <input type="text" id="city" name="city"
-                            class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder={locale=="nl" ? "Vul je plaatsnaam in" :"Enter your city address" } required />
-                    </div>
+          <div class="formInputContainer">
+            <label for="city">{locale == "nl" ? "Plaatsnaam" : "City"}</label>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              placeholder={locale == "nl"
+                ? "Vul je plaatsnaam in"
+                : "Enter your city address"}
+              required
+            />
+          </div>
 
-                    <div class="formInputContainer">
-                        <label for="street">{ locale == "nl" ? "Straat en huisnummer":"Street and house number" }</label>
-                        <input type="text" id="street" name="street"
-                            class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder={ locale=="nl" ? "Vul je straat en huisnummer in" :"Enter your street address" } required />
-                    </div>
+          <div class="formInputContainer">
+            <label for="street"
+              >{locale == "nl"
+                ? "Straat en huisnummer"
+                : "Street and house number"}
+            </label>
+            <input
+              type="text"
+              id="street"
+              name="street"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              placeholder={locale == "nl"
+                ? "Vul je straat en huisnummer in"
+                : "Enter your street address"}
+              required
+            />
+          </div>
 
-                    <div class="formInputContainer">
-                        <label for="postal_code">{locale == "nl" ? "Postcode" : "Postal Code" }</label>
-                        <input type="text" id="postal_code" name="postal_code"
-                            class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
-                            placeholder={ locale=="nl" ? "Vul je postcode in" : "Enter your postal code" } required />
-                    </div>
+          <div class="formInputContainer">
+            <label for="postal_code"
+              >{locale == "nl" ? "Postcode" : "Postal Code"}
+            </label>
+            <input
+              type="text"
+              id="postal_code"
+              name="postal_code"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              placeholder={locale == "nl"
+                ? "Vul je postcode in"
+                : "Enter your postal code"}
+              required
+            />
+          </div>
 
-                    <input type="hidden" id="perk" name="perk" value={perk} required />
-                    <input type="hidden" id="locale" name="locale" value={locale} required />
-                    <input type="hidden" id="origin_url" name="origin_url" value={originURL} required />
+          <input type="hidden" id="perk" name="perk" value={perk} required />
+          <input type="hidden" id="locale" name="locale" value={locale} required
+          />
+          <input
+            type="hidden"
+            id="origin_url"
+            name="origin_url"
+            value={originURL}
+            required
+          />
 
-                    <script is:inline>document.currentScript.previousElementSibling.value = location.href</script>
+          <script is:inline>
+            document.currentScript.previousElementSibling.value = location.href;
+          </script>
 
-                    <input type="hidden" id="plan_name" name="plan_name" value={page.Title} required />
-                    <input type="hidden" id="price" name="price" value={price} required />
-                </div>
+          <input
+            type="hidden"
+            id="plan_name"
+            name="plan_name"
+            value={page.Title}
+            required
+          />
+          <input type="hidden" id="price" name="price" value={price} required />
+        </div>
 
-                <div>
-                    <input type="submit" class="cursor-pointer formBtn" value={ locale=="nl" ? "Naar betaalgegevens" : "To payment details" } required />
-                </div>
-            </div>
-        </form>
-    </div>
+        <div>
+          <input
+            type="submit"
+            class="cursor-pointer formBtn"
+            value={locale == "nl"
+              ? "Naar betaalgegevens"
+              : "To payment details"}
+            required
+          />
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script>
-  const params = new URLSearchParams(location.search)
+  const params = new URLSearchParams(location.search);
 
   Array.from(params.entries()).forEach(([param, value]) => {
-    if (param === 'country') {
-      const option = document.querySelector(`option[value="${value}"]`)
+    if (param === "country") {
+      const option = document.querySelector(`option[value="${value}"]`);
 
       if (option) {
-        option.selected = true
+        option.selected = true;
       }
     } else {
-      const input = document.querySelector(`input[name="${param}"]`)
+      const input = document.querySelector(`input[name="${param}"]`);
 
       if (input) {
-        input.value = value || ''
+        input.value = value || "";
       }
     }
-  })
+  });
 </script>

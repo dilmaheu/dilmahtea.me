@@ -1,53 +1,55 @@
 <script is:inline>
-    /* Redirection Script */
-    // Placed in head as it should run before everything else
+  /* Redirection Script */
+  // Placed in head as it should run before everything else
 
-    const allLocales = ["en", "nl", "de"], // List available locales
-        browserLocale = navigator.language.substring(0, 2) // get browser locale
-    
-    let preferredLocale = localStorage.getItem('locale') // locale stored in browser storage
+  const allLocales = ["en", "nl", "de"], // List available locales
+    browserLocale = navigator.language.substring(0, 2); // get browser locale
 
-    if (preferredLocale == null) { // if no stored locale use browser locale if it exists in the list
-        preferredLocale = allLocales.includes(browserLocale) ? browserLocale : "en"
+  let preferredLocale = localStorage.getItem("locale"); // locale stored in browser storage
 
-        localStorage.setItem(`locale`, preferredLocale)
+  if (preferredLocale == null) {
+    // if no stored locale use browser locale if it exists in the list
+    preferredLocale = allLocales.includes(browserLocale) ? browserLocale : "en";
+
+    localStorage.setItem(`locale`, preferredLocale);
+  }
+
+  const firstVisit = !sessionStorage.getItem("locale");
+
+  // redirect users to their preferred locale on first visit of the session
+  if (firstVisit) {
+    const docLocale = document.documentElement.lang; // get document locale
+
+    if (docLocale !== preferredLocale) {
+      const preferredLocalePrefix =
+        "/" + preferredLocale === "en" ? "" : preferredLocale;
+
+      let preferredLocaleUrl;
+
+      if (docLocale === "en") {
+        preferredLocaleUrl = preferredLocalePrefix + location.pathname;
+      } else {
+        const [, , ...urlParts] = location.pathname.split("/");
+
+        preferredLocaleUrl = preferredLocalePrefix + urlParts.join("/");
+      }
+
+      location.pathname = preferredLocaleUrl;
+
+      sessionStorage.setItem("locale", preferredLocale);
     }
 
-    const firstVisit = !sessionStorage.getItem('locale')
+    sessionStorage.setItem("locale", preferredLocale);
+  }
 
-    // redirect users to their preferred locale on first visit of the session
-    if (firstVisit) {
-        const docLocale = document.documentElement.lang // get document locale
+  // localize links on navigation
+  document.addEventListener("click", ({ target }) => {
+    if (preferredLocale !== "en") {
+      const link = target.closest("a");
 
-        if (docLocale !== preferredLocale) {
-            const preferredLocalePrefix = '/' + preferredLocale === 'en' ? '' : preferredLocale
-
-            let preferredLocaleUrl
-
-            if (docLocale === 'en') {
-                preferredLocaleUrl = preferredLocalePrefix + location.pathname
-            } else {
-                const [, , ...urlParts] = location.pathname.split('/')
-
-                preferredLocaleUrl = preferredLocalePrefix + urlParts.join('/')
-            }
-
-            location.pathname = preferredLocaleUrl
-
-            sessionStorage.setItem('locale', preferredLocale)
-        }
-
-        sessionStorage.setItem('locale', preferredLocale)
+      if (link && link.pathname !== location.pathname) {
+        link.href = "/" + preferredLocale + link.pathname;
+      }
     }
-
-    // localize links on navigation
-    document.addEventListener('click', ({ target }) => {
-        if (preferredLocale !== 'en') {
-            const link = target.closest('a')
-
-            if (link && link.pathname !== location.pathname) {
-                link.href = '/' + preferredLocale + link.pathname
-            }
-        }
-    })
+  });
 </script>

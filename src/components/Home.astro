@@ -1,242 +1,358 @@
 ---
-import MainBG from '/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp';
-import Sec3BG from '/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash_flop.webp';
-import CupIcon from '/images/cup.svg';
-import FlowerIcon from '/images/flower.svg';
-import LoveGreenIcon from '/images/loveGreen.svg';
-import PlanCards from './PlanCards.astro';
-import Markdown from '@astrojs/markdown-component';
+import MainBG from "/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp";
+import Sec3BG from "/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash_flop.webp";
+import CupIcon from "/images/cup.svg";
+import FlowerIcon from "/images/flower.svg";
+import LoveGreenIcon from "/images/loveGreen.svg";
+import PlanCards from "./PlanCards.astro";
+import Markdown from "@astrojs/markdown-component";
 
 const url = `${import.meta.env.CloudImg_URL}`;
-const { page } = Astro.props
+const { page } = Astro.props;
 
 const { supportersCount, totalAmountRaised } = await fetch(
-  'https://crowdfunding-stats.scripts.dilmahtea.me',
-).then(res => res.json())
+  "https://crowdfunding-stats.scripts.dilmahtea.me"
+).then((res) => res.json());
 
 const goal = 100000,
-  progress = totalAmountRaised / goal
+  progress = totalAmountRaised / goal;
 
 const initialProgress = `0%`,
   finalProgress = `${progress * 100}%`,
-  animationDuration = 1000
+  animationDuration = 1000;
 ---
 
 <!-- Hero Section -->
-
 <div class="hero overflow-hidden relative">
+  <!-- Background -->
+  <div class=" w-full absolute bottom-0">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 1056.7 660.3"
+      class="heroCurve1"
+    >
+      <defs>
+        <clipPath id="heroImgFrame">
+          <path
+            d="M1056.7,0V619.7c-31,16.2-92.5,40.6-182,40.6H855.8c-24.8,0-49-.9-72.9-2.4-32.8-1.6-65.2-3.8-98-6-65.8-4.4-133.1-9-208.2-9-79.4,0-147.5,5.1-210.1,9.8-53,3.9-102.1,7.6-150.7,7.6h-13C9.3,657.9,0,631.4,0,631.4V0Z"
+          ></path>
+        </clipPath>
+      </defs>
+      <image
+        class="h-full w-auto"
+        height="100%"
+        width="100%"
+        href={MainBG}
+        clip-path="url(#heroImgFrame)"></image>
+    </svg>
+  </div>
 
-	<!-- Background -->
-	<div class=" w-full absolute bottom-0">
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1056.7 660.3" class="heroCurve1">
-			<defs>
-				<clipPath id="heroImgFrame">
-					<path d="M1056.7,0V619.7c-31,16.2-92.5,40.6-182,40.6H855.8c-24.8,0-49-.9-72.9-2.4-32.8-1.6-65.2-3.8-98-6-65.8-4.4-133.1-9-208.2-9-79.4,0-147.5,5.1-210.1,9.8-53,3.9-102.1,7.6-150.7,7.6h-13C9.3,657.9,0,631.4,0,631.4V0Z"/>
-				</clipPath>
-			</defs>
-			<image class="h-full w-auto" height="100%" width="100%" href={MainBG} clip-path="url(#heroImgFrame)"></image>
-		</svg>
-	</div>
+  <!-- Text content -->
 
+  <div class="relative h-full wrapper z-30 HeroTxtContainer">
+    <div class="sm:w-1/2 lg:w-7/12 HeroTxtContent" role="banner">
+      <div class="flex flex-wrap">
+        <h1 class="heroTitle">
+          {page.Title}
+          <span class="icon relative top-0">
+            <span class="relative headingInlineIcon">
+              <img class="w-full h-full" src={CupIcon} alt="cup-icon" />
+            </span>
+          </span>
+        </h1>
+        <div class="prose max-w-none heroTxt">
+          <Markdown>{page.Intro_text}</Markdown>
+        </div>
+        <a href={page.Heading_button_link}>
+          <div
+            class=" flex items-center justify-center font-bold text-center heroBtn"
+          >
+            <span class="icon relative top-0">
+              <span class="relative heroBtnIcon">
+                <img class="w-full h-full" src={LoveGreenIcon} alt="cup-icon" />
+              </span>
+            </span>
+            {page.Heading_button_text}
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
 
-	<!-- Text content -->
+  <!-- Blob Image  Desktop view-->
 
-	<div class="relative h-full wrapper z-30 HeroTxtContainer">
-		<div class="sm:w-1/2 lg:w-7/12 HeroTxtContent" role="banner">
-			<div class="flex flex-wrap">
-				<h1 class="heroTitle">{page.Title}
-					<span class="icon relative top-0">
-						<span class="relative headingInlineIcon">
-							<img class="w-full h-full" src={CupIcon} alt="cup-icon" />
-						</span>
-					</span>
-				</h1>
-				<div class="prose max-w-none heroTxt">
-					<Markdown>{page.Intro_text}</Markdown>
-				</div>
-				<a href={page.Heading_button_link}>
-					<div class=" flex items-center justify-center font-bold text-center heroBtn">
-						<span class="icon relative top-0">
-							<span class="relative heroBtnIcon">
-								<img class="w-full h-full" src={LoveGreenIcon} alt="cup-icon" />
-							</span>
-						</span>
-						{page.Heading_button_text}
-					</div>
-				</a>
-			</div>
-		</div>
-	</div>
+  <div class="hidden sm:block absolute z-20 h-full heroCurve2Container">
+    <div class="w-full h-full relative">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 644 502"
+        class="h-full w-full"
+      >
+        <defs>
+          <clipPath id="heroImgFrame2">
+            <path
+              d="M644,.2S186.2-.3,33.5.2c-68.7,78.4-12,171.6-2.2,304.1C41.7,445.7,114.9,502,357.3,502c185.3,0,234-47.4,286.7-73.5Z"
+            ></path>
+          </clipPath>
+        </defs>
+        <image
+          class="w-auto h-full"
+          style=""
+          height="100%"
+          width="100%"
+          href={url +
+            page.Intro_blob.data.attributes.provider_metadata.public_id +
+            `/cms`}
+          clip-path="url(#heroImgFrame2)"></image>
+      </svg>
 
-	<!-- Blob Image  Desktop view-->
+      <div class="absolute bottom-0 w-full progressContainer">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 613.1 202.1"
+          class="relative z-40 bottom-0"
+        >
+          <path
+            d="M613.1,0V128.5c-52.7,26.1-101.4,73.6-286.7,73.6C84,202.1,10.8,145.7.3,4.3L0,0Z"
+            style="fill:#020202;fill-opacity:0.75;fill-rule:evenodd"></path>
+        </svg>
 
-	<div class="hidden sm:block absolute z-20 h-full heroCurve2Container">
-		<div class="w-full h-full relative">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 644 502" class="h-full w-full">
-				<defs>
-					<clipPath id="heroImgFrame2">
-						<path
-							d="M644,.2S186.2-.3,33.5.2c-68.7,78.4-12,171.6-2.2,304.1C41.7,445.7,114.9,502,357.3,502c185.3,0,234-47.4,286.7-73.5Z" />
-					</clipPath>
-				</defs>
-				<image class="w-auto h-full" style="" height="100%" width="100%" href={ url +  page.Intro_blob.data.attributes.provider_metadata.public_id + `/cms`} clip-path="url(#heroImgFrame2)"></image>
-			</svg>
-
-			<div class="absolute bottom-0 w-full progressContainer">
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 613.1 202.1" class="relative z-40 bottom-0">
-					<path d="M613.1,0V128.5c-52.7,26.1-101.4,73.6-286.7,73.6C84,202.1,10.8,145.7.3,4.3L0,0Z" style="fill:#020202;fill-opacity:0.75;fill-rule:evenodd" />
-				</svg>
-
-				<div class="absolute inset-0 z-50 w-auto flex justify-center mx-auto progressContentContainer">
-					<div class="progressContent">
-						<div class="progeressHeader">€<span class="total-amount-raised">{totalAmountRaised}</span></div>
-						<div class="flex flex-wrap gap-x-1.5 justify-between">
-							<div class="progeressTxt">{page.Heading_goal}</div>
-							<div class="progeressTxt"><span class="progeressTxtNum">{supportersCount}</span> {page.Heading_supporters}</div>
-						</div>
-						<div class="mt-1 sm:mt-2 md:mt-3 w-full bg-default-light-gray rounded-full">
-						  <div
-						  	style="width: 0%"
-						  	class="progress-bar bg-default-green rounded-full py-1.5">
-						  </div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+        <div
+          class="absolute inset-0 z-50 w-auto flex justify-center mx-auto progressContentContainer"
+        >
+          <div class="progressContent">
+            <div class="progeressHeader">
+              €<span class="total-amount-raised">{totalAmountRaised}</span>
+            </div>
+            <div class="flex flex-wrap gap-x-1.5 justify-between">
+              <div class="progeressTxt">{page.Heading_goal}</div>
+              <div class="progeressTxt">
+                <span class="progeressTxtNum">{supportersCount}</span>
+                {page.Heading_supporters}
+              </div>
+            </div>
+            <div
+              class="mt-1 sm:mt-2 md:mt-3 w-full bg-default-light-gray rounded-full"
+            >
+              <div
+                style="width: 0%"
+                class="progress-bar bg-default-green rounded-full py-1.5"
+              >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Blob Image  Mobile view -->
 
 <div class="block sm:hidden relative -mt-20 z-20 w-full">
-	<div class="heroCurve3Container relative">
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 290.3" class="h-full w-full">
-			<defs>
-				<clipPath id="heroImgFrame3">
-					<path
-						d="M375,21.4V283.8s-35.1,6.5-84.6,6.5c-25.5,0-51.2-1.1-76.9-2.1-30.8-1.3-61.6-2.6-92-2-14.4.2-29.5.9-44,1.5-34.4,1.5-65.7,2.9-77.5-1.5V21.4C23.2,7.1,55.3,0,105.7,0c28.3,0,62,6.7,91.6,12.6,23.3,4.6,44.1,8.8,57.7,8.8,9.6,0,22.5-1.9,36.4-4C322.9,12.8,359.7,7.4,375,21.4Z" />
-				</clipPath>
-			</defs>
-			<image class="h-full w-auto" height="100%" width="100%" href={url + page.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#heroImgFrame3)"></image>
-		</svg>
+  <div class="heroCurve3Container relative">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 375 290.3"
+      class="h-full w-full"
+    >
+      <defs>
+        <clipPath id="heroImgFrame3">
+          <path
+            d="M375,21.4V283.8s-35.1,6.5-84.6,6.5c-25.5,0-51.2-1.1-76.9-2.1-30.8-1.3-61.6-2.6-92-2-14.4.2-29.5.9-44,1.5-34.4,1.5-65.7,2.9-77.5-1.5V21.4C23.2,7.1,55.3,0,105.7,0c28.3,0,62,6.7,91.6,12.6,23.3,4.6,44.1,8.8,57.7,8.8,9.6,0,22.5-1.9,36.4-4C322.9,12.8,359.7,7.4,375,21.4Z"
+          ></path>
+        </clipPath>
+      </defs>
+      <image
+        class="h-full w-auto"
+        height="100%"
+        width="100%"
+        href={url +
+          page.Intro_blob.data.attributes.provider_metadata.public_id +
+          `/small`}
+        clip-path="url(#heroImgFrame3)"></image>
+    </svg>
 
-		<div class="absolute bottom-0 w-full progressContainer">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 130.6" class="relative z-40 bottom-0">
-				<path d="M0,0H375V124.1s-35.1,6.5-84.6,6.5c-25.5,0-51.2-1.1-76.9-2.1-30.8-1.3-61.6-2.6-92-2.1-14.4.3-29.5,1-44,1.6-34.4,1.5-65.7,2.9-77.5-1.6Z" style="fill-opacity:0.75;fill-rule:evenodd" />
-			</svg>
+    <div class="absolute bottom-0 w-full progressContainer">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 375 130.6"
+        class="relative z-40 bottom-0"
+      >
+        <path
+          d="M0,0H375V124.1s-35.1,6.5-84.6,6.5c-25.5,0-51.2-1.1-76.9-2.1-30.8-1.3-61.6-2.6-92-2.1-14.4.3-29.5,1-44,1.6-34.4,1.5-65.7,2.9-77.5-1.6Z"
+          style="fill-opacity:0.75;fill-rule:evenodd"></path>
+      </svg>
 
-			<div class="absolute inset-0 z-50 w-auto flex justify-center mx-auto wrapper">
-				<div class="progressContent">
-					<div class="progeressHeader">€<span class="total-amount-raised">{totalAmountRaised}</span></div>
-					<div class="flex flex-wrap gap-x-1.5 justify-between">
-						<div class="progeressTxt">{page.Heading_goal}</div>
-						<div class="progeressTxt"><span class="progeressTxtNum">{supportersCount}</span> {page.Heading_supporters}</div>
-					</div>
-					<div class="mt-1 sm:mt-2 md:mt-3 w-full bg-default-light-gray rounded-full">
-						<div
-						style="width: 0%"
-						class="progress-bar bg-default-green rounded-full py-1.5">
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+      <div
+        class="absolute inset-0 z-50 w-auto flex justify-center mx-auto wrapper"
+      >
+        <div class="progressContent">
+          <div class="progeressHeader">
+            €<span class="total-amount-raised">{totalAmountRaised}</span>
+          </div>
+          <div class="flex flex-wrap gap-x-1.5 justify-between">
+            <div class="progeressTxt">{page.Heading_goal}</div>
+            <div class="progeressTxt">
+              <span class="progeressTxtNum">{supportersCount}</span>
+              {page.Heading_supporters}
+            </div>
+          </div>
+          <div
+            class="mt-1 sm:mt-2 md:mt-3 w-full bg-default-light-gray rounded-full"
+          >
+            <div
+              style="width: 0%"
+              class="progress-bar bg-default-green rounded-full py-1.5"
+            >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<script defer define:vars={{ initialProgress, finalProgress, animationDuration }}>
-  const progressBars = document.querySelectorAll('.progress-bar')
+<script
+  defer
+  define:vars={{ initialProgress, finalProgress, animationDuration }}
+>
+  const progressBars = document.querySelectorAll(".progress-bar");
 
   progressBars.forEach((progressBar) => {
-	progressBar.animate(
-		{ width: [initialProgress, finalProgress] },
-		animationDuration,
-	).onfinish = () => {
-		progressBar.style.width = finalProgress
-	}
-  })
+    progressBar.animate(
+      { width: [initialProgress, finalProgress] },
+      animationDuration
+    ).onfinish = () => {
+      progressBar.style.width = finalProgress;
+    };
+  });
 </script>
 
 <!-- Plans Section -->
 
 <div class="wrapper planSec" role="main">
-	<h2 class="header-default color-default" id="plans">{page.Heading_plans}</h2>
-	<PlanCards allPlans={page.allPlans} />
+  <h2 class="header-default color-default" id="plans">{page.Heading_plans}</h2>
+  <PlanCards allPlans={page.allPlans} />
 </div>
-
 
 <!-- Info Section -->
 
 <div class="crowdHomeInfo overflow-hidden relative">
+  <!-- Background -->
+  <div class="absolute z-10 -top-10 sm:top-0 -left-0.5 w-screen h-full">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="none"
+      viewBox="0 0 1056.7 660.3"
+      class="h-full w-screen"
+    >
+      <defs>
+        <clipPath id="crowdHomeInfoImgFrame">
+          <path
+            d="M1056.5,36.1S1016.2-3.2,894.8.2C770.2,3.7,636.1,32.3,511.5,29.1,402.6,26.3,252.1,11.9,143.3,18.4,77.2,22.3,0,36.1,0,36.1V637.5s33.5,22.8,164.7,22.8c64,0,143.2-7.6,203.6-17.6,63.3-10.4,170.1-11.5,243.6-11.5,77.7,0,211.8,24.2,332.8,6.3s111.8-46.8,111.8-46.8V36.1Z"
+          ></path>
+        </clipPath>
+      </defs>
+      <image
+        class="h-full w-auto"
+        height="100%"
+        width="100%"
+        href={Sec3BG}
+        clip-path="url(#crowdHomeInfoImgFrame)"></image>
+    </svg>
+  </div>
 
-	<!-- Background -->
-	<div class="absolute z-10 -top-10 sm:top-0 -left-0.5 w-screen h-full">
-		<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 1056.7 660.3"
-			class="h-full w-screen">
-			<defs>
-				<clipPath id="crowdHomeInfoImgFrame">
-					<path
-						d="M1056.5,36.1S1016.2-3.2,894.8.2C770.2,3.7,636.1,32.3,511.5,29.1,402.6,26.3,252.1,11.9,143.3,18.4,77.2,22.3,0,36.1,0,36.1V637.5s33.5,22.8,164.7,22.8c64,0,143.2-7.6,203.6-17.6,63.3-10.4,170.1-11.5,243.6-11.5,77.7,0,211.8,24.2,332.8,6.3s111.8-46.8,111.8-46.8V36.1Z" />
-				</clipPath>
-			</defs>
-			<image class="h-full w-auto" height="100%" width="100%" href={Sec3BG} clip-path="url(#crowdHomeInfoImgFrame)"></image>
-		</svg>
-	</div>
+  <!-- Blob Image  Desktop view-->
 
-	<!-- Blob Image  Desktop view-->
+  <div
+    class="hidden sm:block absolute left-0 z-20 w-full sm:w-1/2 h-full items-center"
+  >
+    <div class="w-auto h-full crowdHomeInfo_Curve1">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 1020 696.3"
+        class="w-auto h-full"
+      >
+        <defs>
+          <clipPath id="crowdHomeInfo_ImgFrame1">
+            <path
+              d="M1020,344.2c0,1.7,0,3.4-.1,5.1v4.5a19.3,19.3,0,0,0-.1,2.4c-.1,2.4-.1,4.8-.2,7.2s-.1,2.6-.1,3.9a24.4,24.4,0,0,0-.1,2.7c-.6,12.8-1.3,24.3-2.3,33.8-7.1,79.7-12.3,192.7-166.2,254.7-84.2,33.9-156.3,37.9-226.7,34.5-47.1-2.2-93.5-7.7-142.3-9.7-11.7-.5-23.6-.8-35.7-.8-83,0-165.9,14.1-238.9,13.8-47.6-.2-91.1-6.7-127.3-27.5-91.6-52.5-61.9-211.3-61.9-331.1C18.1,275.6,5.3,235,1.2,192.8v-.3A195.2,195.2,0,0,1,0,169.6c-.1-26.2,4.3-54.4,18.1-89.8C42.3,17.5,108.2,2.7,192.3,2.4c72.4-.3,158.3,10.1,242.6,10.1,7.2,0,14.9-.2,23.1-.5,44.4-1.8,102.7-7.8,164.9-10.6C722.5-3,832.1.9,910.5,44.1c84.4,46.5,106.2,172.7,109.2,269,0,2.1.1,4.2.1,6.3s.1,3,.1,4.4.1,4.5.1,6.7Z"
+            ></path>
+          </clipPath>
+        </defs>
+        <image
+          class="hidden lg:block  w-auto h-full"
+          height="100%"
+          width="100%"
+          href={url +
+            page.Block_blob.data.attributes.provider_metadata.public_id +
+            `/cms`}
+          clip-path="url(#crowdHomeInfo_ImgFrame1)"></image>
+        <image
+          class="block lg:hidden w-auto h-full"
+          height="100%"
+          width="100%"
+          x="20%"
+          href={url +
+            page.Block_blob.data.attributes.provider_metadata.public_id +
+            `/cms`}
+          clip-path="url(#crowdHomeInfo_ImgFrame1)"></image>
+      </svg>
+    </div>
+  </div>
 
-	<div class="hidden sm:block absolute left-0 z-20 w-full sm:w-1/2 h-full items-center">
-		<div class="w-auto h-full crowdHomeInfo_Curve1">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 696.3" class="w-auto h-full">
-				<defs>
-			        <clipPath id="crowdHomeInfo_ImgFrame1">
-			            <path
-							d="M1020,344.2c0,1.7,0,3.4-.1,5.1v4.5a19.3,19.3,0,0,0-.1,2.4c-.1,2.4-.1,4.8-.2,7.2s-.1,2.6-.1,3.9a24.4,24.4,0,0,0-.1,2.7c-.6,12.8-1.3,24.3-2.3,33.8-7.1,79.7-12.3,192.7-166.2,254.7-84.2,33.9-156.3,37.9-226.7,34.5-47.1-2.2-93.5-7.7-142.3-9.7-11.7-.5-23.6-.8-35.7-.8-83,0-165.9,14.1-238.9,13.8-47.6-.2-91.1-6.7-127.3-27.5-91.6-52.5-61.9-211.3-61.9-331.1C18.1,275.6,5.3,235,1.2,192.8v-.3A195.2,195.2,0,0,1,0,169.6c-.1-26.2,4.3-54.4,18.1-89.8C42.3,17.5,108.2,2.7,192.3,2.4c72.4-.3,158.3,10.1,242.6,10.1,7.2,0,14.9-.2,23.1-.5,44.4-1.8,102.7-7.8,164.9-10.6C722.5-3,832.1.9,910.5,44.1c84.4,46.5,106.2,172.7,109.2,269,0,2.1.1,4.2.1,6.3s.1,3,.1,4.4.1,4.5.1,6.7Z" />
-			        </clipPath>
-				</defs>
-			    <image class="hidden lg:block  w-auto h-full" height="100%" width="100%" href={ url +  page.Block_blob.data.attributes.provider_metadata.public_id + `/cms`} clip-path="url(#crowdHomeInfo_ImgFrame1)"></image>
-			    <image class="block lg:hidden w-auto h-full" height="100%" width="100%" x="20%" href={ url +  page.Block_blob.data.attributes.provider_metadata.public_id + `/cms`} clip-path="url(#crowdHomeInfo_ImgFrame1)"></image>
-			</svg>
-		</div>
-	</div>
+  <!-- Text content -->
 
-	<!-- Text content -->
-
-	<div class="relative h-full wrapper z-30" role="complementary">
-		<div class="w-full h-full justify-end flex flex-wrap">
-			<div class="w-full sm:w-1/2 h-full flex sm:items-center crowdHomeInfoContent">
-				<div class="relative">
-					<h2 class="header-default crowdHomeInfoHeader">{page.Heading_block}
-						<span class="icon relative top-2">
-							<span class="relative headingInlineIcon">
-								<img class="w-full h-full" src={FlowerIcon} alt="flower-icon" />
-							</span>
-						</span>
-					</h2>
-					<div class="pt-0.5 mt-7 sm:mt-12 prose max-w-none crowdHomeInfoTxt">
-						<Markdown>{page.Block_text}</Markdown>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="relative h-full wrapper z-30" role="complementary">
+    <div class="w-full h-full justify-end flex flex-wrap">
+      <div
+        class="w-full sm:w-1/2 h-full flex sm:items-center crowdHomeInfoContent"
+      >
+        <div class="relative">
+          <h2 class="header-default crowdHomeInfoHeader">
+            {page.Heading_block}
+            <span class="icon relative top-2">
+              <span class="relative headingInlineIcon">
+                <img class="w-full h-full" src={FlowerIcon} alt="flower-icon" />
+              </span>
+            </span>
+          </h2>
+          <div class="pt-0.5 mt-7 sm:mt-12 prose max-w-none crowdHomeInfoTxt">
+            <Markdown>{page.Block_text}</Markdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Blob Image  Mobile view-->
 
 <div class="block sm:hidden relative -mt-28 z-20 w-full">
-	<div class="w-screen">
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 238" class="h-full w-full">
-			<defs>
-				<clipPath id="crowdHomeInfoImgFrame2">
-					<path
-						d="M105.7,0C55.3,0,23.2,5.1,0,15.3V230.9c16.8,10.9,73.1,1.5,121.5,0,55.8-1.7,113,7.1,168.9,7.1,49.5,0,84.6-11,84.6-11V15.3c-22.1-14.4-88.8,0-120,0S156.2,0,105.7,0Z" />
-				</clipPath>
-			</defs>
-			<image class="h-auto w-full" height="100%" width="100%" href={url + page.Block_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#crowdHomeInfoImgFrame2)"></image>
-		</svg>
-	</div>
+  <div class="w-screen">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 375 238"
+      class="h-full w-full"
+    >
+      <defs>
+        <clipPath id="crowdHomeInfoImgFrame2">
+          <path
+            d="M105.7,0C55.3,0,23.2,5.1,0,15.3V230.9c16.8,10.9,73.1,1.5,121.5,0,55.8-1.7,113,7.1,168.9,7.1,49.5,0,84.6-11,84.6-11V15.3c-22.1-14.4-88.8,0-120,0S156.2,0,105.7,0Z"
+          ></path>
+        </clipPath>
+      </defs>
+      <image
+        class="h-auto w-full"
+        height="100%"
+        width="100%"
+        href={url +
+          page.Block_blob.data.attributes.provider_metadata.public_id +
+          `/small`}
+        clip-path="url(#crowdHomeInfoImgFrame2)"></image>
+    </svg>
+  </div>
 </div>
 
 <div class="separator"></div>

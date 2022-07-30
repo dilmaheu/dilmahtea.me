@@ -3,45 +3,48 @@ import UKImg from "/images/UK.svg";
 import GerImg from "/images/germany.svg";
 import NLImg from "/images/netherlands.svg";
 
-const { lang, localizations } = Astro.props
+const { lang, localizations } = Astro.props;
 
-const langCode = lang.toUpperCase()
+const langCode = lang.toUpperCase();
 
 const localization = localizations[langCode],
-    localNameOfEnglish = localization['English'],
-    localNameOfDutch = localization['Dutch'],
-    localNameOfDeutsch = localization['Deutsch']
+  localNameOfEnglish = localization["English"],
+  localNameOfDutch = localization["Dutch"],
+  localNameOfDeutsch = localization["Deutsch"];
 
-const englishNameOfLang = lang === 'en' ? 'English' : lang === 'nl' ? 'Dutch' : 'Deutsch'
+const englishNameOfLang =
+  lang === "en" ? "English" : lang === "nl" ? "Dutch" : "Deutsch";
 ---
 
 <style>
-    .lang-selector {
-        font-family: Roboto;
-        font-weight: 700;
-        width: 100%;
-    }
+  .lang-selector {
+    font-family: Roboto;
+    font-weight: 700;
+    width: 100%;
+  }
 </style>
 
 <li class="block">
-    <button
-      lang={lang}
-      style="cursor: pointer; text-align: left;"
-      class:list={[
-        lang,
-        'lang-selector hover:bg-gray-300 flex flex-wrap gap-x-1.5 md:gap-x-3 items-center dropdownItem',
-      ]}
-    >
-      <!-- <div class="langIcon rounded-full overflow-hidden">
+  <button
+    lang={lang}
+    style="cursor: pointer; text-align: left;"
+    class:list={[
+      lang,
+      "lang-selector hover:bg-gray-300 flex flex-wrap gap-x-1.5 md:gap-x-3 items-center dropdownItem",
+    ]}
+  >
+    <!-- <div class="langIcon rounded-full overflow-hidden">
         <img
           src={lang == 'en' ? UKImg : lang == 'nl' ? NLImg : GerImg}
           class="w-full h-full object-cover"
           alt="brand-logo"
         />
       </div> -->
-  
-      <span class="lang">
-        <span class="en hidden">{localNameOfEnglish}</span><span class="nl hidden">{localNameOfDutch}</span><span class="de hidden">{localNameOfDeutsch}</span> / {englishNameOfLang}
-      </span>
-    </button>
-  </li>
+
+    <span class="lang">
+      <span class="en hidden">{localNameOfEnglish}</span><span class="nl hidden"
+        >{localNameOfDutch}
+      </span><span class="de hidden">{localNameOfDeutsch}</span> / {englishNameOfLang}
+    </span>
+  </button>
+</li>

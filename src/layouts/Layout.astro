@@ -1,12 +1,12 @@
 ---
 // Style Imports
-import '../styles/global.css';
-import '../styles/styles.css';
+import "../styles/global.css";
+import "../styles/styles.css";
 // Component Imports
-import MainHead from '../components/MainHead.astro';
-import Navbar from '../components/Navbar.astro';
-import Footer from '../components/Footer.astro';
-import Redirect from '../components/Redirect.astro';
+import MainHead from "../components/MainHead.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import Redirect from "../components/Redirect.astro";
 
 /**
  * This file is used as a re-usable component that is the layout
@@ -14,136 +14,164 @@ import Redirect from '../components/Redirect.astro';
  */
 
 interface Props {
-	locale: string
-	meta: any
-	recurData: any
-	metaImage: string
-	availableLocales: string[]
+  locale: string;
+  meta: any;
+  recurData: any;
+  metaImage: string;
+  availableLocales: string[];
 }
 
-const { meta, locale, recurData, availableLocales, metaImage } = Astro.props as Props
-let { noindex, nofollow } = meta
-const title = meta.HTML_Title
-const description = meta.Meta_description
+const { meta, locale, recurData, availableLocales, metaImage } =
+  Astro.props as Props;
+let { noindex, nofollow } = meta;
+const title = meta.HTML_Title;
+const description = meta.Meta_description;
 const image = metaImage;
 const canonicalURL = meta.Canonical_link;
-const slugURL = meta.URL_slug
+const slugURL = meta.URL_slug;
 
-let noIndex = '';
-if (noindex === true) { noIndex = "noindex" };
-let noFollow = '';
-if (nofollow === true) { noFollow = "nofollow" };
+let noIndex = "";
+if (noindex === true) {
+  noIndex = "noindex";
+}
+let noFollow = "";
+if (nofollow === true) {
+  noFollow = "nofollow";
+}
 
 const footerText = recurData.Footer_text.replaceAll(
-    '<current_year>',
-    `<noscript>${new Date().getFullYear()}</noscript><script>document.write(new Date().getFullYear().toString())</script>`,
-)
+  "<current_year>",
+  `<noscript>${new Date().getFullYear()}</noscript><script>document.write(new Date().getFullYear().toString())</script>`
+);
 ---
 
 <html lang={locale}>
+  <head>
+    <Redirect />
 
-<head>
-	<Redirect />
-	
-	<MainHead {title} {description} {noIndex} {noFollow} {image} {locale} {canonicalURL} {slugURL} {availableLocales} />
-</head>
+    <MainHead
+      {title}
+      {description}
+      {noIndex}
+      {noFollow}
+      {image}
+      {locale}
+      {canonicalURL}
+      {slugURL}
+      {availableLocales}
+    />
+  </head>
 
-<body>
-	<div>
-		<Navbar locale={locale} availableLocales={availableLocales} footerText={footerText} />
+  <body>
+    <div>
+      <Navbar
+        locale={locale}
+        availableLocales={availableLocales}
+        footerText={footerText}
+      />
 
-		<main>
-			<slot />
-		</main>
+      <main>
+        <slot />
+      </main>
 
-		<Footer footerText={footerText} />
-	</div>
+      <Footer footerText={footerText} />
+    </div>
 
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			// Nav Open button
-            document.getElementById("sidebarOpen").addEventListener("click", function () {
-                var x = document.getElementById("sidebar");
-                var y = document.getElementById("navigation");
-                var p = document.getElementById("sidebarOpen");
-                var q = document.getElementById("sidebarClose");
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Nav Open button
+        document.getElementById("sidebarOpen").addEventListener(
+          "click",
+          function () {
+            var x = document.getElementById("sidebar");
+            var y = document.getElementById("navigation");
+            var p = document.getElementById("sidebarOpen");
+            var q = document.getElementById("sidebarClose");
 
-                x.style.display = "block";
-                p.style.display = "none";
-                q.style.display = "block";
-                y.style.backgroundImage = "url(/images/navBg.webp)";
-                document.body.style.overflowY = 'hidden';
-            }, false);
-            // Nav Close button
-            document.getElementById("sidebarClose").addEventListener("click", function () {
-                var x = document.getElementById("sidebar");
-                var y = document.getElementById("navigation");
-                var p = document.getElementById("sidebarOpen");
-                var q = document.getElementById("sidebarClose");
+            x.style.display = "block";
+            p.style.display = "none";
+            q.style.display = "block";
+            y.style.backgroundImage = "url(/images/navBg.webp)";
+            document.body.style.overflowY = "hidden";
+          },
+          false
+        );
+        // Nav Close button
+        document.getElementById("sidebarClose").addEventListener(
+          "click",
+          function () {
+            var x = document.getElementById("sidebar");
+            var y = document.getElementById("navigation");
+            var p = document.getElementById("sidebarOpen");
+            var q = document.getElementById("sidebarClose");
 
-                if (y.style.position === "fixed") {
-                    x.style.display = "none";
-                    p.style.display = "block";
-                    q.style.display = "none";
-                    y.style.backgroundImage = "url(/images/navBg.webp)";
-                    document.body.style.overflowY = 'visible';
-                }   
-                else {
-                    x.style.display = "none";
-                    p.style.display = "block";
-                    q.style.display = "none";
-                    y.style.background = "transparent";
-                    document.body.style.overflowY = 'visible';
-                }
-            }, false);
+            if (y.style.position === "fixed") {
+              x.style.display = "none";
+              p.style.display = "block";
+              q.style.display = "none";
+              y.style.backgroundImage = "url(/images/navBg.webp)";
+              document.body.style.overflowY = "visible";
+            } else {
+              x.style.display = "none";
+              p.style.display = "block";
+              q.style.display = "none";
+              y.style.background = "transparent";
+              document.body.style.overflowY = "visible";
+            }
+          },
+          false
+        );
 
-			// Language button toggle
-			document.getElementById("langBtn").addEventListener("click", function () {
-				const langBtn = document.getElementById("langBtn"),
-					dropdownMenu = document.getElementById("dropdownMenu");
+        // Language button toggle
+        document.getElementById("langBtn").addEventListener(
+          "click",
+          function () {
+            const langBtn = document.getElementById("langBtn"),
+              dropdownMenu = document.getElementById("dropdownMenu");
 
-				if (dropdownMenu.style.display == "block") {
-					dropdownMenu.style.display = "none";
-					langBtn.style.borderRadius = "25px";
-				} else {
-					dropdownMenu.style.display = "block";
-					langBtn.style.borderRadius = "25px 25px 0 0";
-				}
-			}, false);
+            if (dropdownMenu.style.display == "block") {
+              dropdownMenu.style.display = "none";
+              langBtn.style.borderRadius = "25px";
+            } else {
+              dropdownMenu.style.display = "block";
+              langBtn.style.borderRadius = "25px 25px 0 0";
+            }
+          },
+          false
+        );
 
-			// Language button event listeners
-			// Getting current locale
-			const locale = document.documentElement.lang
+        // Language button event listeners
+        // Getting current locale
+        const locale = document.documentElement.lang;
 
-			// Redirect function
-			const redirectPath = (newLocale) => {
-				let newPath
-				const localizedPathPattern = /^\/(nl|de)(\/[^]*)?$/,
-					localeUrlPrefix = newLocale === 'en' ? '' : `/${newLocale}`
+        // Redirect function
+        const redirectPath = (newLocale) => {
+          let newPath;
+          const localizedPathPattern = /^\/(nl|de)(\/[^]*)?$/,
+            localeUrlPrefix = newLocale === "en" ? "" : `/${newLocale}`;
 
-				if (localizedPathPattern.test(location.pathname)) {
-					const [, , ...urlParts] = location.pathname.split("/")
+          if (localizedPathPattern.test(location.pathname)) {
+            const [, , ...urlParts] = location.pathname.split("/");
 
-					newPath = localeUrlPrefix + '/' + urlParts.join('/')
-				} else {
-					newPath = localeUrlPrefix + location.pathname
-				}
+            newPath = localeUrlPrefix + "/" + urlParts.join("/");
+          } else {
+            newPath = localeUrlPrefix + location.pathname;
+          }
 
-				location.pathname = newPath
-			}
+          location.pathname = newPath;
+        };
 
-			document.querySelectorAll(".lang-selector").forEach(langSelector => {
-				langSelector.addEventListener("click", () => {
-					// @ts-ignore
-					const { lang: locale } = langSelector
+        document.querySelectorAll(".lang-selector").forEach((langSelector) => {
+          langSelector.addEventListener("click", () => {
+            // @ts-ignore
+            const { lang: locale } = langSelector;
 
-					localStorage.setItem(`locale`, locale)
+            localStorage.setItem(`locale`, locale);
 
-					redirectPath(locale)
-				})			
-			})
-		});
-	</script>
-</body>
-
+            redirectPath(locale);
+          });
+        });
+      });
+    </script>
+  </body>
 </html>

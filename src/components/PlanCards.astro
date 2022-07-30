@@ -1,35 +1,48 @@
 ---
-import LeafImg from '/images/greenLeaf.webp';
-import Markdown from '@astrojs/markdown-component';
+import LeafImg from "/images/greenLeaf.webp";
+import Markdown from "@astrojs/markdown-component";
 
-const { allPlans } = Astro.props
+const { allPlans } = Astro.props;
 
 const url = Astro.site.origin + `/images/`;
 ---
 
-<div class="w-full grid md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-10 justify-items-center mx-auto" role="list"
-	aria-label="Plans">
-	{allPlans.map(plan => (
-	<div class="PlanCard" role="listitem" aria-label={`Plan ${plan.Title}`}>
-		<div class="inline-flex items-end gap-x-3.5">
-			<h3 class="text-xl alice">{plan.Title}</h3>
-			<div class="PlanCardIcon">
-				<img class="w-full h-full" src={url + plan.TitleIcon_Name + `.svg`} alt="icon"  />
-			</div>
-		</div>
-		<div class="PlanCardPrice pb-6 mb-0.5">&#8364;{plan.Price_EUR_excl_VAT}</div>
-		<div class="text-lg pb-6 mb-0.5">{plan.Intro_text}</div>
-		<div class="prose max-w-none mb-5 PlanCardList">
-			<Markdown>{plan.List}</Markdown>
-		</div>
-		<a href={plan?.slug ? `/${plan.slug}` : `/plans/${plan.Title.toLowerCase()}` } class="flex">
-			<div class="font-bold text-center PlanCardBtn">{plan.Button_text}</div>
-		</a>
-	</div>
-	))}
+<div
+  class="w-full grid md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-10 justify-items-center mx-auto"
+  role="list"
+  aria-label="Plans"
+>
+  {allPlans.map((plan) => (
+    <div class="PlanCard" role="listitem" aria-label={`Plan ${plan.Title}`}>
+      <div class="inline-flex items-end gap-x-3.5">
+        <h3 class="text-xl alice">{plan.Title}</h3>
+        <div class="PlanCardIcon">
+          <img
+            class="w-full h-full"
+            src={url + plan.TitleIcon_Name + `.svg`}
+            alt="icon"
+          />
+        </div>
+      </div>
+      <div class="PlanCardPrice pb-6 mb-0.5">
+        &#8364;{plan.Price_EUR_excl_VAT}
+      </div>
+      <div class="text-lg pb-6 mb-0.5">{plan.Intro_text}</div>
+      <div class="prose max-w-none mb-5 PlanCardList">
+        <Markdown>{plan.List}</Markdown>
+      </div>
+      <a
+        href={
+          plan?.slug ? `/${plan.slug}` : `/plans/${plan.Title.toLowerCase()}`
+        }
+        class="flex"
+      >
+        <div class="font-bold text-center PlanCardBtn">{plan.Button_text}</div>
+      </a>
+    </div>
+  ))}
 </div>
 
-
 <div class="hidden xl:block relative -mt-20 -ml-12 planSecLeafImg">
-	<img class="w-full h-full" src={LeafImg} alt="tea-leaf-image">
+  <img class="w-full h-full" src={LeafImg} alt="tea-leaf-image" />
 </div>
