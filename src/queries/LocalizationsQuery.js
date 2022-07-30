@@ -6,7 +6,7 @@ const LocalizationsQuery = `
           Code
           English
           Dutch
-          German
+          Deutsch
         }
       }
     }

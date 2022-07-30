@@ -35,15 +35,17 @@ localizationsData.data.localizations.data.forEach((localization) => {
         Code,
         English,
         Dutch,
-        German
+        Deutsch
     } = localization.attributes
 
     localizations[Code] = {
         English,
         Dutch,
-        German
+        Deutsch
     }
 })
+
+const localizedNameOfLocale = locale === 'en' ? 'English' : locale === 'nl' ? 'Nederlands' : 'Deutsch'
 ---
 
 <nav class="wrapper mx-auto z-50 relative">
@@ -75,7 +77,7 @@ localizationsData.data.localizations.data.forEach((localization) => {
                             <img src={locale=="en" ? UKImg : locale=="nl" ? NLImg : GerImg} class="w-full h-full object-cover"
                                 alt="brand-logo">
                         </div> -->
-                        <div class="preferred-locale font-bold">{locale.toUpperCase()}</div>
+                        <div class="preferred-locale font-bold">{localizedNameOfLocale}</div>
 
                         <div class="w-3">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7">
@@ -116,7 +118,7 @@ localizationsData.data.localizations.data.forEach((localization) => {
                         <img src={locale=="en" ? UKImg : locale=="nl" ? NLImg : GerImg} class="w-full h-full object-cover"
                             alt="brand-logo">
                     </div> -->
-                    <div class="preferred-locale font-bold">{locale.toUpperCase()}</div>
+                    <div class="preferred-locale font-bold">{localizedNameOfLocale}</div>
 
                     <div class="w-3">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7">
@@ -158,11 +160,29 @@ localizationsData.data.localizations.data.forEach((localization) => {
 </div>
 
 <script is:inline>
-    document.querySelectorAll('.preferred-locale').forEach(dropdown => {
-        dropdown.textContent = preferredLocale.toUpperCase()
-    })
+  document.querySelectorAll('.preferred-locale').forEach(dropdown => {
+    let localizedNameInPreferredLocale
 
-    document.querySelectorAll(`.lang-selector.${preferredLocale}, .lang-selector .${preferredLocale}`).forEach(selector => {
-        selector.classList.toggle('hidden')
+    switch (preferredLocale) {
+      case 'en':
+        localizedNameInPreferredLocale = 'English'
+        break
+      case 'nl':
+        localizedNameInPreferredLocale = 'Nederlands'
+        break
+      case 'de':
+        localizedNameInPreferredLocale = 'Deutsch'
+        break
+    }
+
+    dropdown.textContent = localizedNameInPreferredLocale
+  })
+
+  document
+    .querySelectorAll(
+      `.lang-selector.${preferredLocale}, .lang-selector .${preferredLocale}`,
+    )
+    .forEach(selector => {
+      selector.classList.toggle('hidden')
     })
 </script>
