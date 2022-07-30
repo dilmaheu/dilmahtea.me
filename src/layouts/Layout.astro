@@ -33,6 +33,11 @@ let noIndex = '';
 if (noindex === true) { noIndex = "noindex" };
 let noFollow = '';
 if (nofollow === true) { noFollow = "nofollow" };
+
+const footerText = recurData.Footer_text.replaceAll(
+    '<current_year>',
+    `<noscript>${new Date().getFullYear()}</noscript><script>document.write(new Date().getFullYear().toString())</script>`,
+)
 ---
 
 <html lang={locale}>
@@ -45,11 +50,13 @@ if (nofollow === true) { noFollow = "nofollow" };
 
 <body>
 	<div>
-		<Navbar locale={locale} availableLocales={availableLocales} sidebarFooterText={recurData.Footer_text} />
+		<Navbar locale={locale} availableLocales={availableLocales} footerText={footerText} />
+
 		<main>
 			<slot />
 		</main>
-		<Footer recurData={recurData} />
+
+		<Footer footerText={footerText} />
 	</div>
 
 	<script>

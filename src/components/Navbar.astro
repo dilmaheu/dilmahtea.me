@@ -9,10 +9,10 @@ import LocalizationsQuery from '../queries/LocalizationsQuery.js'
 interface Props {
     locale: string
     availableLocales: (string | null)[]
-    sidebarFooterText: string
+    footerText: string
 }
 
-const { locale, availableLocales, sidebarFooterText } = Astro.props
+const { locale, availableLocales, footerText } = Astro.props
 
 const selectorLangs = ["en", ...availableLocales]
 
@@ -45,11 +45,6 @@ localizationsData.data.localizations.data.forEach((localization) => {
 })
 
 const docLocale = locale === 'en' ? 'English' : locale === 'nl' ? 'Nederlands' : 'Deutsch'
-
-const footerText = sidebarFooterText.replaceAll(
-    '<current_year>',
-    new Date().getFullYear(),
-)
 ---
 
 <div id="navigation">
@@ -134,7 +129,7 @@ const footerText = sidebarFooterText.replaceAll(
                 </ul>
             </div>
 
-            <div class="sidebarfooter">{footerText}</div>
+            <div class="sidebarfooter" set:html={footerText}></div>
         </div>
     </div>
 </div>

@@ -4,12 +4,11 @@ import LeafImg from "/images/greenLeaf2.webp";
 import LeafImg1 from "/images/greenLeaf3.webp";
 import FooterBg from "/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash_footer.webp";
 
-const { recurData } = Astro.props as Props
+declare interface Props {
+	footerText: string
+}
 
-const footerText = recurData.Footer_text.replaceAll(
-	'<current_year>',
-	new Date().getFullYear(),
-)
+const { footerText } = Astro.props as Props
 ---
 
 <footer class="relative">
@@ -60,7 +59,7 @@ const footerText = recurData.Footer_text.replaceAll(
 					
 
 				<div class="w-full flex justify-center mt-auto">
-					<p class="text-center copyrightTxt">{footerText}</p>
+					<p class="text-center copyrightTxt" set:html={footerText}></p>
 				</div>
 			</div>
 		</div>
