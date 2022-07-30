@@ -13,6 +13,32 @@
         localStorage.setItem(`locale`, preferredLocale)
     }
 
+    const firstVisit = !sessionStorage.getItem('locale')
+
+    if (firstVisit) {
+        const docLocale = document.documentElement.lang // get document locale
+
+        if (docLocale !== preferredLocale) {
+            const preferredLocalePrefix = '/' + preferredLocale === 'en' ? '' : preferredLocale
+
+            let preferredLocaleUrl
+
+            if (docLocale === 'en') {
+                preferredLocaleUrl = preferredLocalePrefix + location.pathname
+            } else {
+                const [, , ...urlParts] = location.pathname.split('/')
+
+                preferredLocaleUrl = preferredLocalePrefix + urlParts.join('/')
+            }
+
+            location.pathname = preferredLocaleUrl
+
+            sessionStorage.setItem('locale', preferredLocale)
+        }
+
+        sessionStorage.setItem('locale', preferredLocale)
+    }
+
     // localize links on navigation
     document.addEventListener('click', ({ target }) => {
         if (preferredLocale !== 'en') {
