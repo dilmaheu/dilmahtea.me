@@ -1,282 +1,390 @@
 ---
-import MainBG from '/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp';
-import CupIcon from '/images/cup.svg';
-import CupGreenIcon from '/images/cupGreen.svg';
-import RightArrow from '/images/rightArrow.svg';
+import MainBG from "/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp";
+import CupIcon from "/images/cup.svg";
+import CupGreenIcon from "/images/cupGreen.svg";
+import RightArrow from "/images/rightArrow.svg";
 
-import Markdown from '@astrojs/markdown-component';
+import Markdown from "@astrojs/markdown-component";
 
 const url = `${import.meta.env.CloudImg_URL}`;
 
-const { page } = Astro.props
+const { page } = Astro.props;
 
-const allBlogs = page.allBlogs.filter((val) => val.props.page.locale == page.locale).map(val => val.props.page);
-const recentBlogs = allBlogs.filter((val) => val.Meta.URL_slug != page.Meta.URL_slug);
+const allBlogs = page.allBlogs
+  .filter((val) => val.props.page.locale == page.locale)
+  .map((val) => val.props.page);
+const recentBlogs = allBlogs.filter(
+  (val) => val.Meta.URL_slug != page.Meta.URL_slug
+);
 ---
 
 <!-- Hero Section -->
-
 <div class="hero overflow-hidden relative">
+  <!-- Background -->
+  <div class="w-full absolute bottom-0">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 1056.7 660.3"
+      class="heroCurve1"
+    >
+      <defs>
+        <clipPath id="heroImgFrame">
+          <path
+            d="M1056.7,0V619.7c-31,16.2-92.5,40.6-182,40.6H855.8c-24.8,0-49-.9-72.9-2.4-32.8-1.6-65.2-3.8-98-6-65.8-4.4-133.1-9-208.2-9-79.4,0-147.5,5.1-210.1,9.8-53,3.9-102.1,7.6-150.7,7.6h-13C9.3,657.9,0,631.4,0,631.4V0Z"
+          ></path>
+        </clipPath>
+      </defs>
+      <image
+        class="h-full w-auto"
+        height="100%"
+        width="100%"
+        href={MainBG}
+        clip-path="url(#heroImgFrame)"></image>
+    </svg>
+  </div>
 
-	<!-- Background -->
-	<div class="w-full absolute bottom-0">
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1056.7 660.3" class="heroCurve1">
-			<defs>
-				<clipPath id="heroImgFrame">
-					<path d="M1056.7,0V619.7c-31,16.2-92.5,40.6-182,40.6H855.8c-24.8,0-49-.9-72.9-2.4-32.8-1.6-65.2-3.8-98-6-65.8-4.4-133.1-9-208.2-9-79.4,0-147.5,5.1-210.1,9.8-53,3.9-102.1,7.6-150.7,7.6h-13C9.3,657.9,0,631.4,0,631.4V0Z"/>
-				</clipPath>
-			</defs>
-			<image class="h-full w-auto" height="100%" width="100%" href={MainBG} clip-path="url(#heroImgFrame)"></image>
-		</svg>
-	</div>
+  <!-- Text content -->
 
+  <div class="relative h-full wrapper z-30 HeroTxtContainer">
+    <div
+      class="sm:w-8/12 md:w-7/12 HeroTxtContent BlogDetails_HeroTxtContent"
+      role="banner"
+    >
+      <div class="flex flex-wrap items-start">
+        <div>
+          <div class="flex flex-wrap gap-x-2.5 blogDetails_heroAuthContainer">
+            <div class="flex relative">
+              {page.authors.data.map((author, idx) => (
+                <div
+                  class={
+                    idx > 0
+                      ? "blogDetails_authImg relative -ml-5"
+                      : "blogDetails_authImg"
+                  }
+                >
+                  <img
+                    src={
+                      url +
+                      author.attributes.Profile_picture.data.attributes
+                        .provider_metadata.public_id +
+                      `/authBlob`
+                    }
+                    alt={
+                      author.attributes.Profile_picture.data.attributes
+                        .alternativeText
+                    }
+                  />
+                </div>
+              ))}
+            </div>
 
-	<!-- Text content -->
-
-	<div class="relative h-full wrapper z-30 HeroTxtContainer">
-		<div class="sm:w-8/12 md:w-7/12 HeroTxtContent BlogDetails_HeroTxtContent" role="banner">
-			<div class="flex flex-wrap items-start">
-				<div>
-					<div class="flex flex-wrap gap-x-2.5 blogDetails_heroAuthContainer">
-						<div class="flex relative">
-							{page.authors.data.map((author, idx) => (
-								<div class={ idx > 0 ? "blogDetails_authImg relative -ml-5" : "blogDetails_authImg"} >
-									<img src={ url +  author.attributes.Profile_picture.data.attributes.provider_metadata.public_id + `/authBlob`} alt={author.attributes.Profile_picture.data.attributes.alternativeText} />
-								</div>
-							))}
-						</div>
-						
-						<div class="grid content-between">
-							<div class="flex flex-wrap font-bold blogDetails_heroAuth">
-								{page.authors.data.map((author, idx) => (
-									<a>{`${ idx > 0 ? ', ' : ' '}` + author.attributes.givenName}</a> 
-								))}
-							</div>
-							<ul class="flex flex-wrap items-center">
-								<li class="blogHome_HdItem">{new Date(page.createdAt).toLocaleString("en-US", { day : "numeric", month : "long"})}</li>
-								<!-- <li class="blogHome_HdItem">5 min read</li>
+            <div class="grid content-between">
+              <div class="flex flex-wrap font-bold blogDetails_heroAuth">
+                {page.authors.data.map((author, idx) => (
+                  <a>
+                    {`${idx > 0 ? ", " : " "}` + author.attributes.givenName}
+                  </a>
+                ))}
+              </div>
+              <ul class="flex flex-wrap items-center">
+                <li class="blogHome_HdItem">
+                  {new Date(page.createdAt).toLocaleString("en-US", {
+                    day: "numeric",
+                    month: "long",
+                  })}
+                </li>
+                <!-- <li class="blogHome_HdItem">5 min read</li>
 								<li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li> -->
-							</ul>
-						</div>
-					</div>
-						
+              </ul>
+            </div>
+          </div>
 
-					<h1 class="blogDetails_heroTitle">
-						<a >{page.Title}</a>
-						<span class="icon relative top-0">
-							<span class="relative headingInlineIcon">
-								<img class="w-full h-full" src={CupIcon} alt="cup-icon" />
-							</span>
-						</span>
-					</h1>
-					<a>
-						<div class="prose max-w-none blogDetails_heroTxt">
-							<Markdown>{page.Intro_text}</Markdown>
-						</div>
-					</a>
-				</div>
-			</div>
-		</div>
-	</div>
+          <h1 class="blogDetails_heroTitle">
+            <a>{page.Title}</a>
+            <span class="icon relative top-0">
+              <span class="relative headingInlineIcon">
+                <img class="w-full h-full" src={CupIcon} alt="cup-icon" />
+              </span>
+            </span>
+          </h1>
+          <a>
+            <div class="prose max-w-none blogDetails_heroTxt">
+              <Markdown>{page.Intro_text}</Markdown>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-	<!-- Blob Image  Desktop view-->
+  <!-- Blob Image  Desktop view-->
 
-	<div class="hidden sm:block absolute z-20 h-full heroCurve2Container BlogHeroCurveContainer">
-		<div class="w-full h-full relative">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 617.8 543.8" class="h-full w-full">
-				<defs>
-					<clipPath id="heroImgFrame2">
-						<path
-							d="M617.8,0S213.3.3,60.8.8C-7.9,85.7-4.5,186,5.3,329.5,15.7,482.7,89,543.8,331.2,543.8c185.2,0,233.9-51.5,286.6-79.8Z" />
-					</clipPath>
-				</defs>
-				<image class="w-auto h-full" style="" height="100%" width="100%" href={ url +  page.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#heroImgFrame2)"></image>
-			</svg>
-		</div>
-	</div>
+  <div
+    class="hidden sm:block absolute z-20 h-full heroCurve2Container BlogHeroCurveContainer"
+  >
+    <div class="w-full h-full relative">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 617.8 543.8"
+        class="h-full w-full"
+      >
+        <defs>
+          <clipPath id="heroImgFrame2">
+            <path
+              d="M617.8,0S213.3.3,60.8.8C-7.9,85.7-4.5,186,5.3,329.5,15.7,482.7,89,543.8,331.2,543.8c185.2,0,233.9-51.5,286.6-79.8Z"
+            ></path>
+          </clipPath>
+        </defs>
+        <image
+          class="w-auto h-full"
+          style=""
+          height="100%"
+          width="100%"
+          href={url +
+            page.Intro_blob.data.attributes.provider_metadata.public_id +
+            `/small`}
+          clip-path="url(#heroImgFrame2)"></image>
+      </svg>
+    </div>
+  </div>
 </div>
 
 <!-- Blob Image Mobile view -->
 
 <div class="block sm:hidden relative -mt-20 z-20 w-full">
-	<div class="heroCurve3Container relative">
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 290.3" class="h-full w-full">
-			<defs>
-				<clipPath id="heroImgFrame3">
-					<path
-						d="M375,21.4V283.8s-35.1,6.5-84.6,6.5c-25.5,0-51.2-1.1-76.9-2.1-30.8-1.3-61.6-2.6-92-2-14.4.2-29.5.9-44,1.5-34.4,1.5-65.7,2.9-77.5-1.5V21.4C23.2,7.1,55.3,0,105.7,0c28.3,0,62,6.7,91.6,12.6,23.3,4.6,44.1,8.8,57.7,8.8,9.6,0,22.5-1.9,36.4-4C322.9,12.8,359.7,7.4,375,21.4Z" />
-				</clipPath>
-			</defs>
-			<image class="h-full w-auto" height="100%" width="100%" href={ url +  page.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path="url(#heroImgFrame3)"></image>
-		</svg>
-	</div>
+  <div class="heroCurve3Container relative">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 375 290.3"
+      class="h-full w-full"
+    >
+      <defs>
+        <clipPath id="heroImgFrame3">
+          <path
+            d="M375,21.4V283.8s-35.1,6.5-84.6,6.5c-25.5,0-51.2-1.1-76.9-2.1-30.8-1.3-61.6-2.6-92-2-14.4.2-29.5.9-44,1.5-34.4,1.5-65.7,2.9-77.5-1.5V21.4C23.2,7.1,55.3,0,105.7,0c28.3,0,62,6.7,91.6,12.6,23.3,4.6,44.1,8.8,57.7,8.8,9.6,0,22.5-1.9,36.4-4C322.9,12.8,359.7,7.4,375,21.4Z"
+          ></path>
+        </clipPath>
+      </defs>
+      <image
+        class="h-full w-auto"
+        height="100%"
+        width="100%"
+        href={url +
+          page.Intro_blob.data.attributes.provider_metadata.public_id +
+          `/small`}
+        clip-path="url(#heroImgFrame3)"></image>
+    </svg>
+  </div>
 </div>
 
 <!-- Blog Section -->
 <div class="blogContentContainer" role="main">
-	<div class="block md:hidden sticky -top-0.5 overflow-hiden self-start" id="blogContent_StickyContainerMd">
-		<div class="wrapper">
-			<div id="blog_StickyItemContainerMd"></div>
-		</div>
-	</div>
-	<div class="wrapper w-full flex flex-wrap">
-		<div class="md:w-8/12 order-2 md:order-1">
-			<div class="prose max-w-none basicInfoSecTxt detailedBlog" id="detailedBlog">
-				<Markdown>{page.Block_text}</Markdown>
-			</div>
-		</div>
-		<div class="md:w-4/12 order-1 md:order-2 blogContent_StickyContainer md:sticky top-0 overflow-hiden self-start" id="blogContent_StickyContainer">
-			<h3 id="blog_StickyHeader">Chapters</h3>
-			<div id="blog_StickyItemContainer"></div>
-		</div>
-
-	</div>
+  <div
+    class="block md:hidden sticky -top-0.5 overflow-hiden self-start"
+    id="blogContent_StickyContainerMd"
+  >
+    <div class="wrapper">
+      <div id="blog_StickyItemContainerMd"></div>
+    </div>
+  </div>
+  <div class="wrapper w-full flex flex-wrap">
+    <div class="md:w-8/12 order-2 md:order-1">
+      <div
+        class="prose max-w-none basicInfoSecTxt detailedBlog"
+        id="detailedBlog"
+      >
+        <Markdown>{page.Block_text}</Markdown>
+      </div>
+    </div>
+    <div
+      class="md:w-4/12 order-1 md:order-2 blogContent_StickyContainer md:sticky top-0 overflow-hiden self-start"
+      id="blogContent_StickyContainer"
+    >
+      <h3 id="blog_StickyHeader">Chapters</h3>
+      <div id="blog_StickyItemContainer"></div>
+    </div>
+  </div>
 </div>
 
 <div class="wrapper">
-	<h2 class="blogDetails_recentTitle">Explore the world of kindness</h2>
+  <h2 class="blogDetails_recentTitle">Explore the world of kindness</h2>
 
-	<div class="w-full grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 mx-auto justify-items-center sm:justify-items-start blogDetails_CardsContainer" role="list" aria-label="Kindness Items">
-		{recentBlogs.slice(0, 3).map((blog, idx) => (
-			<div class="blogDetails_Card" role="listitem" aria-label="Kindness Item">
-				<div class="relative">
-					<div>
-						<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 423.3 559.8" class="blogDetails_cardBg"><path d="M419.2,306.4c-1.2,40.4,0,72.6,0,93.6,0,176.6-12.5,158-197.8,158S2.1,587.1,2.1,410c0-58.7.1-86,.3-97.5-.1-1.2-.2-3.1-.3-6.1v-.3C-2.2,194.8-1.3,81.5,17.9,43.2,43.3-7.3,151.7,1.5,217.2,1.5c91.3,0,173.8-18.8,194.3,78.1,19.3,91,9.6,163.8,7.7,226.8Z" fill="#273E3F"/></svg>
-					</div>
-					<div class="absolute inset-0 z-30">
-						<div class="w-full">
-						
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 423.3 306.1" class="h-full w-full">
-								<defs>
-									<clipPath id={`blogDetails_Card` + idx}>
-										<path
-											d="M419.2,306.1H2.1C-2.2,194.8-1.3,81.5,17.9,43.2,43.3-7.3,151.7,1.5,217.2,1.5c91.3,0,173.8-18.8,194.3,78.1C430.7,170.5,421.1,243.2,419.2,306.1Z" />
-									</clipPath></defs>
-								<a href={`/`+ blog.Meta.URL_slug}>
-									<image class="h-full w-auto" height="100%" width="100%" href={ url +  blog.Intro_blob.data.attributes.provider_metadata.public_id + `/small`} clip-path={`url(#` + `blogDetails_Card` + idx + `)`}></image>
-								</a>
-							</svg>
-						</div>
+  <div
+    class="w-full grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 mx-auto justify-items-center sm:justify-items-start blogDetails_CardsContainer"
+    role="list"
+    aria-label="Kindness Items"
+  >
+    {recentBlogs.slice(0, 3).map((blog, idx) => (
+      <div class="blogDetails_Card" role="listitem" aria-label="Kindness Item">
+        <div class="relative">
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+              viewBox="0 0 423.3 559.8"
+              class="blogDetails_cardBg"
+            >
+              <path
+                d="M419.2,306.4c-1.2,40.4,0,72.6,0,93.6,0,176.6-12.5,158-197.8,158S2.1,587.1,2.1,410c0-58.7.1-86,.3-97.5-.1-1.2-.2-3.1-.3-6.1v-.3C-2.2,194.8-1.3,81.5,17.9,43.2,43.3-7.3,151.7,1.5,217.2,1.5c91.3,0,173.8-18.8,194.3,78.1,19.3,91,9.6,163.8,7.7,226.8Z"
+                fill="#273E3F"
+              />
+            </svg>
+          </div>
+          <div class="absolute inset-0 z-30">
+            <div class="w-full">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 423.3 306.1"
+                class="h-full w-full"
+              >
+                <defs>
+                  <clipPath id={`blogDetails_Card` + idx}>
+                    <path d="M419.2,306.1H2.1C-2.2,194.8-1.3,81.5,17.9,43.2,43.3-7.3,151.7,1.5,217.2,1.5c91.3,0,173.8-18.8,194.3,78.1C430.7,170.5,421.1,243.2,419.2,306.1Z" />
+                  </clipPath>
+                </defs>
+                <a href={`/` + blog.Meta.URL_slug}>
+                  <image
+                    class="h-full w-auto"
+                    height="100%"
+                    width="100%"
+                    href={
+                      url +
+                      blog.Intro_blob.data.attributes.provider_metadata
+                        .public_id +
+                      `/small`
+                    }
+                    clip-path={`url(#` + `blogDetails_Card` + idx + `)`}
+                  />
+                </a>
+              </svg>
+            </div>
 
-						<div class="blogDetails_CardConentConatiner">
-							<div class="flex flex-wrap font-bold blogDetails_cardAuth">
-								{blog.authors.data.map((author, idx) => (
-									<a>{`${ idx > 0 ? ', ' : ' '}` + author.attributes.givenName}</a> 
-								))}
-							</div>
-							<ul class="flex flex-wrap items-center blogHome_cardItemContainer">
-								<li class="blogHome_cardItem">{new Date(blog.createdAt).toLocaleString("en-US", { day : "numeric", month : "long"})}</li>
-								{/*<li class="blogHome_cardItem">5 min read</li>
+            <div class="blogDetails_CardConentConatiner">
+              <div class="flex flex-wrap font-bold blogDetails_cardAuth">
+                {blog.authors.data.map((author, idx) => (
+                  <a>
+                    {`${idx > 0 ? ", " : " "}` + author.attributes.givenName}
+                  </a>
+                ))}
+              </div>
+              <ul class="flex flex-wrap items-center blogHome_cardItemContainer">
+                <li class="blogHome_cardItem">
+                  {new Date(blog.createdAt).toLocaleString("en-US", {
+                    day: "numeric",
+                    month: "long",
+                  })}
+                </li>
+                {/*<li class="blogHome_cardItem">5 min read</li>
 								<li class="flex items-center blogHome_cardItem">
 									<a><div class="blogHome_cardItemBtn">Manufacturing</div></a>
 								</li>*/}
-							</ul>
-							<div class="blogDetails_CardTitle">
-								<a href={`/`+ blog.Meta.URL_slug}>{blog.Title}</a>
-								<span class="icon relative top-0">
-									<span class="relative blogDetails_CardTitleIcon">
-										<img class="w-full h-full" src={RightArrow} alt="cup-icon" />
-									</span>
-								</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		))}
-	</div>
+              </ul>
+              <div class="blogDetails_CardTitle">
+                <a href={`/` + blog.Meta.URL_slug}>{blog.Title}</a>
+                <span class="icon relative top-0">
+                  <span class="relative blogDetails_CardTitleIcon">
+                    <img
+                      class="w-full h-full"
+                      src={RightArrow}
+                      alt="cup-icon"
+                    />
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
 </div>
 
 <script is:inline>
-	document.addEventListener('DOMContentLoaded', function () {
-		const db = document.getElementById(`detailedBlog`);
-		const tags = db.querySelectorAll("h2");
+  document.addEventListener("DOMContentLoaded", function () {
+    const db = document.getElementById(`detailedBlog`);
+    const tags = db.querySelectorAll("h2");
 
-		for (const tag of tags) {
-			var div = document.getElementById("blog_StickyItemContainer");
-			var aTag = document.createElement('a');
-			aTag.setAttribute('href', `#`+ tag.id);
-			aTag.innerHTML = `<img class="itemImg opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` + tag.innerHTML;
-			div.appendChild(aTag);
+    for (const tag of tags) {
+      var div = document.getElementById("blog_StickyItemContainer");
+      var aTag = document.createElement("a");
+      aTag.setAttribute("href", `#` + tag.id);
+      aTag.innerHTML =
+        `<img class="itemImg opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` +
+        tag.innerHTML;
+      div.appendChild(aTag);
 
-			var divMd = document.getElementById("blog_StickyItemContainerMd");
-			var aTagMd = document.createElement('a');
-			aTagMd.setAttribute('href', `#`+ tag.id);
-			aTagMd.setAttribute('class', `truncate`);
-			aTagMd.innerHTML = `<img class="itemImgMd" src="/images/bookGreen.svg" alt="arrow">` + tag.innerHTML;
-			divMd.appendChild(aTagMd);
-		};
+      var divMd = document.getElementById("blog_StickyItemContainerMd");
+      var aTagMd = document.createElement("a");
+      aTagMd.setAttribute("href", `#` + tag.id);
+      aTagMd.setAttribute("class", `truncate`);
+      aTagMd.innerHTML =
+        `<img class="itemImgMd" src="/images/bookGreen.svg" alt="arrow">` +
+        tag.innerHTML;
+      divMd.appendChild(aTagMd);
+    }
 
-		const stickyItemCon = document.getElementById(`blog_StickyItemContainer`);
-		const blogSticky = document.getElementById("blogContent_StickyContainer");
-		const blog_StickyHeader = document.getElementById("blog_StickyHeader");
-		const blogStickyAtag = stickyItemCon.querySelectorAll("a");
-		const blogStickyImg = stickyItemCon.querySelectorAll(".itemImg");
+    const stickyItemCon = document.getElementById(`blog_StickyItemContainer`);
+    const blogSticky = document.getElementById("blogContent_StickyContainer");
+    const blog_StickyHeader = document.getElementById("blog_StickyHeader");
+    const blogStickyAtag = stickyItemCon.querySelectorAll("a");
+    const blogStickyImg = stickyItemCon.querySelectorAll(".itemImg");
 
-		document.addEventListener("scroll", (e) => {
-			for (var i = 0; i < tags.length; i++) { 
-				var scrolled = document.scrollingElement.scrollTop;
-			 	var position = tags[i].offsetTop;
+    document.addEventListener("scroll", (e) => {
+      for (var i = 0; i < tags.length; i++) {
+        var scrolled = document.scrollingElement.scrollTop;
+        var position = tags[i].offsetTop;
 
-			 	if ( i > 0 ) {
-				   	if(scrolled > position - 300){
-				   		blogStickyAtag[i].classList.add('font-bold');
-				   		blogStickyAtag[i-1].classList.remove('font-bold');
-				   		blogStickyImg[i].classList.remove('opacity-0');
-				   		blogStickyImg[i-1].classList.add('opacity-0');
-			    	}
-				    else{
-				    	blogStickyAtag[i].classList.remove('font-bold');
-				    	blogStickyImg[i].classList.add('opacity-0');
-				    }
-				}
-				else{
-			    	if(scrolled > position - 300){
-				   		blogStickyAtag[i].classList.add('font-bold');
-				   		blogStickyImg[i].classList.remove('opacity-0');
-			    	}
-				    else{
-				    	blogStickyAtag[i].classList.remove('font-bold');
-				    	blogStickyImg[i].classList.add('opacity-0');
-				    }
-			    }
-			}
-		});
+        if (i > 0) {
+          if (scrolled > position - 300) {
+            blogStickyAtag[i].classList.add("font-bold");
+            blogStickyAtag[i - 1].classList.remove("font-bold");
+            blogStickyImg[i].classList.remove("opacity-0");
+            blogStickyImg[i - 1].classList.add("opacity-0");
+          } else {
+            blogStickyAtag[i].classList.remove("font-bold");
+            blogStickyImg[i].classList.add("opacity-0");
+          }
+        } else {
+          if (scrolled > position - 300) {
+            blogStickyAtag[i].classList.add("font-bold");
+            blogStickyImg[i].classList.remove("opacity-0");
+          } else {
+            blogStickyAtag[i].classList.remove("font-bold");
+            blogStickyImg[i].classList.add("opacity-0");
+          }
+        }
+      }
+    });
 
-		const stickyItemConMd = document.getElementById(`blog_StickyItemContainerMd`);
-		const blogStickyMdAtag = stickyItemConMd.querySelectorAll("a");
+    const stickyItemConMd = document.getElementById(
+      `blog_StickyItemContainerMd`
+    );
+    const blogStickyMdAtag = stickyItemConMd.querySelectorAll("a");
 
-		const mq = window.matchMedia( "(max-width: 767.98px)" );
+    const mq = window.matchMedia("(max-width: 767.98px)");
 
-		if (mq.matches) {
-			document.addEventListener("scroll", (e) => {
+    if (mq.matches) {
+      document.addEventListener("scroll", (e) => {
+        for (var i = 0; i < tags.length; i++) {
+          var scrolled = document.scrollingElement.scrollTop;
+          var position = tags[i].offsetTop;
 
-				for (var i = 0; i < tags.length; i++) { 
-					var scrolled = document.scrollingElement.scrollTop;
-				 	var position = tags[i].offsetTop;
-
-				 	if ( i > 0 ) {
-					   	if(scrolled > position - 1){
-					   		blogStickyMdAtag[i].style.display = "inline-flex";
-					   		blogStickyMdAtag[i-1].style.display = "none";
-
-				    	}
-					    else{
-					    	blogStickyMdAtag[i].style.display = "none";
-
-					    }
-					}
-					else{
-				    	if(scrolled > position - 1){
-					   		blogStickyMdAtag[i].style.display = "inline-flex";
-
-				    	}
-					    else{
-					    	blogStickyMdAtag[i].style.display = "none";
-					    }
-				    }
-				}
-			});
-		}
-	});
+          if (i > 0) {
+            if (scrolled > position - 1) {
+              blogStickyMdAtag[i].style.display = "inline-flex";
+              blogStickyMdAtag[i - 1].style.display = "none";
+            } else {
+              blogStickyMdAtag[i].style.display = "none";
+            }
+          } else {
+            if (scrolled > position - 1) {
+              blogStickyMdAtag[i].style.display = "inline-flex";
+            } else {
+              blogStickyMdAtag[i].style.display = "none";
+            }
+          }
+        }
+      });
+    }
+  });
 </script>

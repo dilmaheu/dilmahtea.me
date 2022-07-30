@@ -20,11 +20,11 @@ const errorDefaultPage = await fetch(`${import.meta.env.DB_URL}`, {
 }).then((response) => response.json());
 
 // saving it's page attributes like meta and other components
-const error = errorDefaultPage.data.basicPages.data
-const errorPage = error.filter((val) => val.attributes.Meta.URL_slug == "404")
+const error = errorDefaultPage.data.basicPages.data;
+const errorPage = error.filter((val) => val.attributes.Meta.URL_slug == "404");
 
 const page = errorPage[0].attributes,
-  locale = page.locale.substring(0, 2)
+  locale = page.locale.substring(0, 2);
 
 const availableLocales = page.localizations.data.map((localized) =>
   localized.attributes.locale.substring(0, 2)
@@ -34,8 +34,14 @@ const availableLocales = page.localizations.data.map((localized) =>
 const recurData = errorDefaultPage.data.recurringElement.data.attributes;
 ---
 
-<Layout locale={locale} availableLocales={availableLocales} meta={page.Meta} recurData={recurData}
-  metaImage={page.Block_blob != null && (page.Block_blob.data != null) ? page.Block_blob.data.attributes.provider_metadata.public_id 
-    : recurData.OpenGraph_default.data.attributes.provider_metadata.public_id}>
+<Layout
+  locale={locale}
+  availableLocales={availableLocales}
+  meta={page.Meta}
+  recurData={recurData}
+  metaImage={page.Block_blob != null && page.Block_blob.data != null
+    ? page.Block_blob.data.attributes.provider_metadata.public_id
+    : recurData.OpenGraph_default.data.attributes.provider_metadata.public_id}
+>
   <Error page={page} />
 </Layout>
