@@ -7,13 +7,11 @@ import CupIcon from '/images/cup.svg';
 import CupIconG from '/images/cupLightgreen.svg';
 import LoveIcon from '/images/love.svg';
 import FlowerIconG from '/images/flowerLightgreen.svg';
-import Markdown from '@astrojs/markdown-component';
+import MD from '@astrojs/markdown-component';
 
 const { page, locale } = Astro.props
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site).href
-
-const { href: originURL } = canonicalURL
+const { href: originURL } = new URL(Astro.url.pathname, Astro.site)
 
 const { Perk: perk, Price_EUR_excl_VAT: price } = page
 ---
@@ -47,7 +45,7 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page
 
                 <h1 class="BasicHeroTitle">{page.Title}</h1>
                 <div class="pt-7 mt-0.5 prose max-w-none BasicHeroTxt">
-                    <Markdown>{page.Intro_text}</Markdown>
+                    <MD>{page.Intro_text}</MD>
                 </div>
             </div>
         </div>
