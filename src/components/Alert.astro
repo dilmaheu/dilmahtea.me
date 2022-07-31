@@ -82,7 +82,7 @@ const { default: alertSVG } = await import(
     <span class="alert-message-text">{message}</span>
   </div>
 
-  <button onclick="this.parentElement.style.display = 'none'">
+  <button>
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none">
       <path
         fill-rule="evenodd"
@@ -91,3 +91,16 @@ const { default: alertSVG } = await import(
     </svg>
   </button>
 </div>
+
+<script>
+  const alertCloseButtons = document.querySelectorAll(".alert button");
+
+  alertCloseButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      button.parentElement.animate(
+        { right: ["10vmin", "-100%"] },
+        1000
+      ).onfinish = () => (button.parentElement.style.display = "none");
+    });
+  });
+</script>
