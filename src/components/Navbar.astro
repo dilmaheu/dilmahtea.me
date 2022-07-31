@@ -147,14 +147,14 @@ const docLocale =
 
 <script is:inline>
   window.onscroll = function () {
-    var top = window.pageYOffset || document.documentElement.scrollTop;
-    var x = document.getElementById("navigation");
+    const top = window.pageYOffset || document.documentElement.scrollTop;
+    const navigation = document.getElementById("navigation");
     if (top > 70) {
-      x.style.backgroundImage = "url(/images/navBg.webp)";
-      x.style.position = "fixed";
-    } else {
-      x.style.background = "transparent";
-      x.style.position = "absolute";
+      navigation.style.backgroundImage = "url(/images/navBg.webp)";
+      navigation.style.position = "fixed";
+    } else if (document.body.style.position !== "fixed") {
+      navigation.style.background = "transparent";
+      navigation.style.position = "absolute";
     }
   };
 
@@ -183,16 +183,16 @@ const docLocale =
     .forEach((selector) => {
       selector.classList.toggle("hidden");
     });
-  
-  document.addEventListener('click', ({ target }) => {
-    const dropdown = document.querySelector('#dropdown')
-      langButton = document.querySelector('#langBtn'),
-      dropdownMenu = document.querySelector("#dropdownMenu")
+
+  document.addEventListener("click", ({ target }) => {
+    const dropdown = document.querySelector("#dropdown");
+    (langButton = document.querySelector("#langBtn")),
+      (dropdownMenu = document.querySelector("#dropdownMenu"));
 
     if (!dropdown.contains(target)) {
-      if (dropdownMenu.style.display === 'block') {
-        langButton.click()
+      if (dropdownMenu.style.display === "block") {
+        langButton.click();
       }
     }
-  })
+  });
 </script>

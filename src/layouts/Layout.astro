@@ -87,55 +87,60 @@ const footerText = recurData.Footer_text.replaceAll(
     </div>
 
     <script>
-      // Nav Open button
-      document.getElementById("sidebarOpen").addEventListener(
-        "click",
-        function () {
-          var x = document.getElementById("sidebar");
-          var y = document.getElementById("navigation");
-          var p = document.getElementById("sidebarOpen");
-          var q = document.getElementById("sidebarClose");
+      const sidebar = document.getElementById("sidebar"),
+        navigation = document.getElementById("navigation"),
+        sidebarOpen = document.getElementById("sidebarOpen"),
+        sidebarClose = document.getElementById("sidebarClose");
 
-          x.style.display = "block";
-          p.style.display = "none";
-          q.style.display = "block";
-          y.style.backgroundImage = "url(/images/navBg.webp)";
+      sidebarOpen.addEventListener(
+        "click",
+        () => {
+          sidebar.style.display = "block";
+          navigation.style.backgroundImage = "url(/images/navBg.webp)";
+          sidebarOpen.style.display = "none";
+          sidebarClose.style.display = "block";
 
           document.body.style.width = "100%";
+          document.body.style.top = `-${window.scrollY}px`;
           document.body.style.position = "fixed";
           document.body.style.overflowY = "scroll";
         },
         false
       );
 
-      // Nav Close button
-      document.getElementById("sidebarClose").addEventListener(
+      sidebarClose.addEventListener(
         "click",
-        function () {
-          var x = document.getElementById("sidebar");
-          var y = document.getElementById("navigation");
-          var p = document.getElementById("sidebarOpen");
-          var q = document.getElementById("sidebarClose");
+        () => {
+          const scrollYPosition = parseInt(
+            document.body.style.top.slice(1, -2)
+          );
 
-          x.style.display = "none";
-          p.style.display = "block";
-          q.style.display = "none";
-          y.style.background = "transparent";
+          sidebar.style.display = "none";
+          navigation.style.background = "transparent";
+          sidebarOpen.style.display = "block";
+          sidebarClose.style.display = "none";
 
           document.body.style.width = "auto";
           document.body.style.position = "static";
           document.body.style.overflowY = "auto";
+
+          window.scrollTo(0, scrollYPosition);
         },
         false
       );
 
       window.addEventListener("resize", () => {
         if (window.innerWidth > 639) {
+          const scrollYPosition = window.scrollY;
+
           document.body.style.width = "auto";
           document.body.style.position = "static";
           document.body.style.overflowY = "auto";
-        } else {
+
+          window.scrollTo(0, scrollYPosition);
+        } else if (sidebarClose.style.display === "block") {
           document.body.style.width = "100%";
+          document.body.style.top = `-${window.scrollY}px`;
           document.body.style.position = "fixed";
           document.body.style.overflowY = "scroll";
         }
