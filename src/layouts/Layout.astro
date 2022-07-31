@@ -195,17 +195,20 @@ const footerText = recurData.Footer_text.replaceAll(
 
       if (localeExists === "false") {
         const translationNotFoundAlert = document.querySelector(
-          ".translation-not-found-alert .alert"
-        );
+            ".translation-not-found-alert .alert"
+          ),
+          animationDuration =
+            window.innerWidth > 1000 ? 1000 : window.innerWidth;
 
         // @ts-ignore
         translationNotFoundAlert.style.display = "flex";
 
         // @ts-ignore
-        translationNotFoundAlert.animate({
-          right: ["-100%", "10vmin"],
+        translationNotFoundAlert.animate(
+          { right: ["-100%", "10vmin"] },
+          animationDuration
           // @ts-ignore
-        }, 1000).onfinish = () => (translationNotFoundAlert.style.right = "10vmin");
+        ).onfinish = () => (translationNotFoundAlert.style.right = "10vmin");
       }
     </script>
   </body>

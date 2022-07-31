@@ -93,13 +93,14 @@ const { default: alertSVG } = await import(
 </div>
 
 <script>
-  const alertCloseButtons = document.querySelectorAll(".alert button");
+  const alertCloseButtons = document.querySelectorAll(".alert button"),
+    animationDuration = window.innerWidth > 1000 ? 1000 : window.innerWidth;
 
   alertCloseButtons.forEach((button) => {
     button.addEventListener("click", () => {
       button.parentElement.animate(
         { right: ["10vmin", "-100%"] },
-        1000
+        animationDuration
       ).onfinish = () => (button.parentElement.style.display = "none");
     });
   });
