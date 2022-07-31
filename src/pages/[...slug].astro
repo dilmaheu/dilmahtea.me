@@ -386,9 +386,12 @@ try {
 
     const [, , ...urlParts] = location.pathname.split("/");
 
-    preferredLocaleUrl =
-      preferredLocalePrefix + urlParts.join("/") + "?localeExists=false";
+    const preferredLocaleUrl = new URL(
+      location.origin + "/" + preferredLocalePrefix + urlParts.join("/")
+    );
 
-    location.pathname = preferredLocaleUrl;
+    preferredLocaleUrl.searchParams.append("localeExists", "false");
+
+    location.href = preferredLocaleUrl.toString();
   </script>
 )}
