@@ -92,6 +92,27 @@ const footerText = recurData.Footer_text.replaceAll(
         sidebarOpen = document.getElementById("sidebarOpen"),
         sidebarClose = document.getElementById("sidebarClose");
 
+      function disableScrolling() {
+        Object.assign(document.body.style, {
+          width: "100%",
+          top: `-${window.scrollY}px`,
+          position: "fixed",
+          overflowY: "scroll",
+        });
+      }
+
+      function enableScrolling() {
+        const scrollYPosition = parseInt(document.body.style.top.slice(1, -2));
+
+        Object.assign(document.body.style, {
+          width: "auto",
+          position: "static",
+          overflowY: "auto",
+        });
+
+        window.scrollTo(0, scrollYPosition);
+      }
+
       sidebarOpen.addEventListener(
         "click",
         () => {
@@ -100,10 +121,7 @@ const footerText = recurData.Footer_text.replaceAll(
           sidebarOpen.style.display = "none";
           sidebarClose.style.display = "block";
 
-          document.body.style.width = "100%";
-          document.body.style.top = `-${window.scrollY}px`;
-          document.body.style.position = "fixed";
-          document.body.style.overflowY = "scroll";
+          disableScrolling();
         },
         false
       );
@@ -111,38 +129,21 @@ const footerText = recurData.Footer_text.replaceAll(
       sidebarClose.addEventListener(
         "click",
         () => {
-          const scrollYPosition = parseInt(
-            document.body.style.top.slice(1, -2)
-          );
-
           sidebar.style.display = "none";
           navigation.style.background = "transparent";
           sidebarOpen.style.display = "block";
           sidebarClose.style.display = "none";
 
-          document.body.style.width = "auto";
-          document.body.style.position = "static";
-          document.body.style.overflowY = "auto";
-
-          window.scrollTo(0, scrollYPosition);
+          enableScrolling();
         },
         false
       );
 
       window.addEventListener("resize", () => {
         if (window.innerWidth > 639) {
-          const scrollYPosition = window.scrollY;
-
-          document.body.style.width = "auto";
-          document.body.style.position = "static";
-          document.body.style.overflowY = "auto";
-
-          window.scrollTo(0, scrollYPosition);
+          enableScrolling();
         } else if (sidebarClose.style.display === "block") {
-          document.body.style.width = "100%";
-          document.body.style.top = `-${window.scrollY}px`;
-          document.body.style.position = "fixed";
-          document.body.style.overflowY = "scroll";
+          disableScrolling();
         }
       });
 

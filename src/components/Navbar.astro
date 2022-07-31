@@ -147,14 +147,19 @@ const docLocale =
 
 <script is:inline>
   window.onscroll = function () {
-    const top = window.pageYOffset || document.documentElement.scrollTop;
-    const navigation = document.getElementById("navigation");
+    const top = window.pageYOffset || document.documentElement.scrollTop,
+      navigation = document.getElementById("navigation");
+
     if (top > 70) {
-      navigation.style.backgroundImage = "url(/images/navBg.webp)";
-      navigation.style.position = "fixed";
+      Object.assign(navigation.style, {
+        position: "fixed",
+        backgroundImage: "url(/images/navBg.webp)",
+      });
     } else if (document.body.style.position !== "fixed") {
-      navigation.style.background = "transparent";
-      navigation.style.position = "absolute";
+      Object.assign(navigation.style, {
+        position: "absolute",
+        background: "transparent",
+      });
     }
   };
 
