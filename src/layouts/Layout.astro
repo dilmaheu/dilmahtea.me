@@ -7,6 +7,7 @@ import MainHead from "../components/MainHead.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import Redirect from "../components/Redirect.astro";
+import Alert from "../components/Alert.astro";
 
 /**
  * This file is used as a re-usable component that is the layout
@@ -77,111 +78,132 @@ const footerText = recurData.Footer_text.replaceAll(
       <Footer footerText={footerText} />
     </div>
 
+    <div class="translation-not-found-alert">
+      <Alert
+        type="error"
+        alert="Translation Not Found"
+        message="This content is not available in your requested locale"
+      />
+    </div>
+
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // Nav Open button
-        document.getElementById("sidebarOpen").addEventListener(
-          "click",
-          function () {
-            var x = document.getElementById("sidebar");
-            var y = document.getElementById("navigation");
-            var p = document.getElementById("sidebarOpen");
-            var q = document.getElementById("sidebarClose");
+      // Nav Open button
+      document.getElementById("sidebarOpen").addEventListener(
+        "click",
+        function () {
+          var x = document.getElementById("sidebar");
+          var y = document.getElementById("navigation");
+          var p = document.getElementById("sidebarOpen");
+          var q = document.getElementById("sidebarClose");
 
-            x.style.display = "block";
-            p.style.display = "none";
-            q.style.display = "block";
-            y.style.backgroundImage = "url(/images/navBg.webp)";
+          x.style.display = "block";
+          p.style.display = "none";
+          q.style.display = "block";
+          y.style.backgroundImage = "url(/images/navBg.webp)";
 
-            document.body.style.width = "100%";
-            document.body.style.position = "fixed";
-            document.body.style.overflowY = "scroll";
-          },
-          false
-        );
-        // Nav Close button
-        document.getElementById("sidebarClose").addEventListener(
-          "click",
-          function () {
-            var x = document.getElementById("sidebar");
-            var y = document.getElementById("navigation");
-            var p = document.getElementById("sidebarOpen");
-            var q = document.getElementById("sidebarClose");
+          document.body.style.width = "100%";
+          document.body.style.position = "fixed";
+          document.body.style.overflowY = "scroll";
+        },
+        false
+      );
 
-            x.style.display = "none";
-            p.style.display = "block";
-            q.style.display = "none";
-            y.style.background = "transparent";
+      // Nav Close button
+      document.getElementById("sidebarClose").addEventListener(
+        "click",
+        function () {
+          var x = document.getElementById("sidebar");
+          var y = document.getElementById("navigation");
+          var p = document.getElementById("sidebarOpen");
+          var q = document.getElementById("sidebarClose");
 
-            document.body.style.width = "auto";
-            document.body.style.position = "static";
-            document.body.style.overflowY = "auto";
-          },
-          false
-        );
+          x.style.display = "none";
+          p.style.display = "block";
+          q.style.display = "none";
+          y.style.background = "transparent";
 
-        window.addEventListener('resize', () => {
-          if (window.innerWidth > 639) {
-            document.body.style.width = "auto";
-            document.body.style.position = "static";
-            document.body.style.overflowY = "auto";
+          document.body.style.width = "auto";
+          document.body.style.position = "static";
+          document.body.style.overflowY = "auto";
+        },
+        false
+      );
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 639) {
+          document.body.style.width = "auto";
+          document.body.style.position = "static";
+          document.body.style.overflowY = "auto";
+        } else {
+          document.body.style.width = "100%";
+          document.body.style.position = "fixed";
+          document.body.style.overflowY = "scroll";
+        }
+      });
+
+      // Language button toggle
+      document.getElementById("langBtn").addEventListener(
+        "click",
+        function () {
+          const langBtn = document.getElementById("langBtn"),
+            dropdownMenu = document.getElementById("dropdownMenu");
+
+          if (dropdownMenu.style.display == "block") {
+            dropdownMenu.style.display = "none";
+            langBtn.style.borderRadius = "25px";
           } else {
-            document.body.style.width = "100%";
-            document.body.style.position = "fixed";
-            document.body.style.overflowY = "scroll";
+            dropdownMenu.style.display = "block";
+            langBtn.style.borderRadius = "25px 25px 0 0";
           }
-        })
+        },
+        false
+      );
 
-        // Language button toggle
-        document.getElementById("langBtn").addEventListener(
-          "click",
-          function () {
-            const langBtn = document.getElementById("langBtn"),
-              dropdownMenu = document.getElementById("dropdownMenu");
+      // Redirect function
+      const redirectPath = (newLocale) => {
+        let newPath;
+        const localizedPathPattern = /^\/(nl|de)(\/[^]*)?$/,
+          localeUrlPrefix = newLocale === "en" ? "" : `/${newLocale}`;
 
-            if (dropdownMenu.style.display == "block") {
-              dropdownMenu.style.display = "none";
-              langBtn.style.borderRadius = "25px";
-            } else {
-              dropdownMenu.style.display = "block";
-              langBtn.style.borderRadius = "25px 25px 0 0";
-            }
-          },
-          false
-        );
+        if (localizedPathPattern.test(location.pathname)) {
+          const [, , ...urlParts] = location.pathname.split("/");
 
-        // Language button event listeners
-        // Getting current locale
-        const locale = document.documentElement.lang;
+          newPath = localeUrlPrefix + "/" + urlParts.join("/");
+        } else {
+          newPath = localeUrlPrefix + location.pathname;
+        }
 
-        // Redirect function
-        const redirectPath = (newLocale) => {
-          let newPath;
-          const localizedPathPattern = /^\/(nl|de)(\/[^]*)?$/,
-            localeUrlPrefix = newLocale === "en" ? "" : `/${newLocale}`;
+        location.pathname = newPath;
+      };
 
-          if (localizedPathPattern.test(location.pathname)) {
-            const [, , ...urlParts] = location.pathname.split("/");
+      document.querySelectorAll(".lang-selector").forEach((langSelector) => {
+        langSelector.addEventListener("click", () => {
+          // @ts-ignore
+          const { lang: locale } = langSelector;
 
-            newPath = localeUrlPrefix + "/" + urlParts.join("/");
-          } else {
-            newPath = localeUrlPrefix + location.pathname;
-          }
+          localStorage.setItem(`locale`, locale);
 
-          location.pathname = newPath;
-        };
-
-        document.querySelectorAll(".lang-selector").forEach((langSelector) => {
-          langSelector.addEventListener("click", () => {
-            // @ts-ignore
-            const { lang: locale } = langSelector;
-
-            localStorage.setItem(`locale`, locale);
-
-            redirectPath(locale);
-          });
+          redirectPath(locale);
         });
       });
+
+      const searchParams = Object.fromEntries(
+        new URL(location.href).searchParams
+      );
+
+      const { localeExists } = searchParams;
+
+      if (localeExists === "false") {
+        const translationNotFoundAlert = document.querySelector(
+          ".translation-not-found-alert .alert"
+        );
+
+        translationNotFoundAlert.style.display = "flex";
+
+        translationNotFoundAlert.animate({
+          right: ["-100%", "10vmin"],
+        }, 1000).onfinish = () => (translationNotFoundAlert.style.right = "10vmin");
+      }
     </script>
   </body>
 </html>

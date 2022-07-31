@@ -7,7 +7,9 @@ declare interface Props {
 
 const { alert, message, type } = Astro.props as Props;
 
-const { default: alertSVG } = await import(`../../public/images/alerts/${type}-alert.svg?raw`)
+const { default: alertSVG } = await import(
+  `../../public/images/alerts/${type}-alert.svg?raw`
+);
 ---
 
 <style lang="scss">
@@ -21,12 +23,12 @@ const { default: alertSVG } = await import(`../../public/images/alerts/${type}-a
   .alert {
     z-index: 100;
     position: fixed;
-    display: flex;
+    display: none;
     justify-content: space-evenly;
     align-items: center;
     border-radius: 15px;
     bottom: 10vmin;
-    right: 10vmin;
+    right: -100%;
     padding: 1rem;
     gap: 1.125rem;
 
@@ -63,11 +65,16 @@ const { default: alertSVG } = await import(`../../public/images/alerts/${type}-a
       font-size: 14px;
       line-height: 16px;
     }
+
+    @media screen and (max-width: 639px) {
+      bottom: 7.5vmin;
+      transform: scale(0.75, 0.75) translate(15vmin, 2.5vmin);
+    }
   }
 </style>
 
 <div class={`alert alert-${type}`}>
-  <Fragment set:html={alertSVG} />
+  <div><Fragment set:html={alertSVG} /></div>
 
   <div>
     <h5 class="alert-text">{alert}</h5>
