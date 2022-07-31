@@ -422,6 +422,14 @@ const AllPagesQuery = `
         }
       }
     }
+
+    i18NLocales {
+      data {
+        attributes {
+          code
+        }
+      }
+    }
   }
 `;
 
