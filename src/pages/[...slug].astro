@@ -126,7 +126,7 @@ export async function getStaticPaths() {
 
     const locales = allLocalizedPlans.map(({ attributes }) => {
       const { locale } = attributes;
-      
+
       ({ Title } = attributes);
 
       return locale;
@@ -368,5 +368,27 @@ try {
     )}
   </Layout>
 ) : (
-  "404"
+  <script is:inline>
+    const allLocales = ["en", "nl", "de", "es"], // List available locales
+      browserLocale = navigator.language.substring(0, 2); // get browser locale
+
+    let preferredLocale = localStorage.getItem("locale"); // locale stored in browser storage
+
+    if (preferredLocale == null) {
+      // if no stored locale use browser locale if it exists in the list
+      preferredLocale = allLocales.includes(browserLocale) ? browserLocale : "en";
+
+      localStorage.setItem(`locale`, preferredLocale);
+    }
+
+    const preferredLocalePrefix =
+      "/" + preferredLocale === "en" ? "" : preferredLocale + "/";
+
+    const [, , ...urlParts] = location.pathname.split("/");
+
+    preferredLocaleUrl =
+      preferredLocalePrefix + urlParts.join("/") + "?localeExists=false";
+
+    location.pathname = preferredLocaleUrl;
+  </script>
 )}
