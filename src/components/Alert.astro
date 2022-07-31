@@ -1,0 +1,86 @@
+---
+declare interface Props {
+  alert: string;
+  message: string;
+  type: "error" | "warning" | "info" | "success";
+}
+
+const { alert, message, type } = Astro.props as Props;
+
+const { default: alertSVG } = await import(`../../public/images/alerts/${type}-alert.svg?raw`)
+---
+
+<style lang="scss">
+  $alert-error-bg-color: #f9eae9;
+  $alert-warning-bg-color: #faf2e5;
+  $alert-info-bg-color: #e7eef9;
+  $alert-success-bg-color: #e9f9ef;
+  $alert-text-color: #000;
+  $alert-message-text-color: rgba(71, 71, 71, 0.7);
+
+  .alert {
+    z-index: 100;
+    position: fixed;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    border-radius: 15px;
+    bottom: 10vmin;
+    right: 10vmin;
+    padding: 1rem;
+    gap: 1.125rem;
+
+    &.alert-error {
+      background-color: $alert-error-bg-color;
+    }
+
+    &.alert-warning {
+      background-color: $alert-warning-bg-color;
+    }
+
+    &.alert-info {
+      background-color: $alert-info-bg-color;
+    }
+
+    &.alert-success {
+      background-color: $alert-success-bg-color;
+    }
+
+    .alert-text {
+      color: $alert-text-color;
+      font-family: "Alice";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 21px;
+    }
+
+    .alert-message-text {
+      color: $alert-message-text-color;
+      font-family: "Roboto";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 16px;
+    }
+  }
+</style>
+
+<div class={`alert alert-${type}`}>
+  <Fragment set:html={alertSVG} />
+
+  <div>
+    <h5 class="alert-text">{alert}</h5>
+
+    <span class="alert-message-text">{message}</span>
+  </div>
+
+  <button>
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none">
+      <path
+        fill-rule="evenodd"
+        d="M4.3 4.3a1 1 0 0 1 1.4 0L10 8.6l4.3-4.3a1 1 0 1 1 1.4 1.4L11.4 10l4.3 4.3a1 1 0 0 1-1.4 1.4L10 11.4l-4.3 4.3a1 1 0 0 1-1.4-1.4L8.6 10 4.3 5.7a1 1 0 0 1 0-1.4Z"
+        fill="#4c4847"></path>
+    </svg>
+  </button>
+</div>
