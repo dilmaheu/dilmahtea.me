@@ -110,7 +110,28 @@ const footerText = recurData.Footer_text.replaceAll(
           overflowY: "auto",
         });
 
-        window.scrollTo(0, scrollYPosition);
+        try {
+          window.scrollTo({
+            top: scrollYPosition,
+            // @ts-ignore
+            behavior: "instant",
+          });
+        } catch (error) {
+          const rootElement = document.querySelector(":root");
+
+          const currentRootScrollBehavior = rootElement.style.scrollBehavior
+
+          // @ts-ignore
+          rootElement.style.scrollBehavior = "auto";
+
+          window.scrollTo({
+            top: scrollYPosition,
+            behavior: "auto",
+          });
+
+          // @ts-ignore
+          rootElement.style.scrollBehavior = currentRootScrollBehavior;
+        }
       }
 
       sidebarOpen.addEventListener(
