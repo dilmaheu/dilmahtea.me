@@ -384,13 +384,16 @@ try {
     // disable first-visit redirection on next visits
     sessionStorage.setItem(`locale`, preferredLocale);
 
-    const preferredLocalePrefix =
-      "/" + preferredLocale === "en" ? "" : preferredLocale + "/";
+    const currentLocale = location.pathname.split("/")[1],
+      nextLocalePrefix =
+        currentLocale === preferredLocale || preferredLocale === "en"
+          ? "/"
+          : "/" + preferredLocale + "/";
 
     const [, , ...urlParts] = location.pathname.split("/");
 
     const preferredLocaleUrl = new URL(
-      location.origin + "/" + preferredLocalePrefix + urlParts.join("/")
+      location.origin + nextLocalePrefix + urlParts.join("/")
     );
 
     preferredLocaleUrl.searchParams.append("localeExists", "false");
