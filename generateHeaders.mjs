@@ -29,7 +29,7 @@ const CSPHeaders = await Promise.all(
           ? "/*"
           : path === "./dist/index.html"
           ? "/"
-          : path.slice(6, -11);
+          : path.slice(6, -11) + '/';
 
       const nonces = scripts.map((script) => {
         const nonce = crypto.randomUUID();
