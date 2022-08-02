@@ -67,7 +67,9 @@ const CSPHeaders = await Promise.all(
       CSPHeader,
     };
   })
-);
+)
+  // put 404 page csp header at end
+  .reverse();
 
 const _headersFileContent = CSPHeaders.map(
   ({ route, CSPHeader }) => `${route}\n  Content-Security-Policy: ${CSPHeader}`
