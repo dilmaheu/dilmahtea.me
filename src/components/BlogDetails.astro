@@ -94,7 +94,7 @@ const recentBlogs = allBlogs.filter(
                   })}
                 </li>
                 <!-- <li class="blogHome_HdItem">5 min read</li>
-								<li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li> -->
+                <li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li> -->
               </ul>
             </div>
           </div>
@@ -179,12 +179,36 @@ const recentBlogs = allBlogs.filter(
 
 <!-- Blog Section -->
 <div class="blogContentContainer" role="main">
-  <div
-    class="block md:hidden sticky -top-0.5 overflow-hiden self-start"
+  <div 
+    class="block md:hidden sticky overflow-hiden self-start" 
     id="blogContent_StickyContainerMd"
   >
-    <div class="wrapper">
-      <div id="blog_StickyItemContainerMd"></div>
+    <div 
+      id="blog_StickyDropdownContainer" 
+      class="wrapper text-sm lg:text-base font-bold relative noselect"
+    >
+      <div 
+        id="blogStickyBtn" 
+        class="flex items-center justify-between gap-x-1.5 md:gap-x-3 font-bold focus:outline-none"
+      >
+        <div id="blog_StickyDropdown" class="flex">
+          <div>
+            <img class="blog_StickyItemHeaderImgMd" src="/images/bookGreen.svg" alt="arrow" />
+          </div>
+          <div id="blog_StickyDropdownHeaderTop">Chapters</div>
+          <div id="blog_StickyDropdownHeader">Chapters</div>
+          <ul id="blog_StickyItemContainerMd"></ul>
+        </div>
+        <div class="w-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7" id="StickyDropdpwnIcon">
+            <path class="cls-1"
+              d="M.3.3A.6.6,0,0,1,.9,0a.9.9,0,0,1,.6.3L5.8,4.6,10.2.3a.6.6,0,0,1,.6-.3l.6.3a.8.8,0,0,1,.2.6.7.7,0,0,1-.2.6l-5,4.9a.6.6,0,0,1-.6.3.9.9,0,0,1-.6-.3L.3,1.5A.9.9,0,0,1,0,.9.6.6,0,0,1,.3.3Z"
+              fill="#2B4B50" 
+            />
+          </svg>
+        </div>
+      </div>
+      <div id="blog_StickyDropdownItem"></div>
     </div>
   </div>
   <div class="wrapper w-full flex flex-wrap">
@@ -275,9 +299,9 @@ const recentBlogs = allBlogs.filter(
                   })}
                 </li>
                 {/*<li class="blogHome_cardItem">5 min read</li>
-								<li class="flex items-center blogHome_cardItem">
-									<a><div class="blogHome_cardItemBtn">Manufacturing</div></a>
-								</li>*/}
+                <li class="flex items-center blogHome_cardItem">
+                  <a><div class="blogHome_cardItemBtn">Manufacturing</div></a>
+                </li>*/}
               </ul>
               <div class="blogDetails_CardTitle">
                 <a href={`/` + blog.Meta.URL_slug}>{blog.Title}</a>
@@ -300,91 +324,266 @@ const recentBlogs = allBlogs.filter(
 </div>
 
 <script is:inline>
-  document.addEventListener("DOMContentLoaded", function () {
-    const db = document.getElementById(`detailedBlog`);
+  document.addEventListener('DOMContentLoaded', function () {
+    // creating blog chapters
+    const db = document.getElementById("detailedBlog");
     const tags = db.querySelectorAll("h2");
 
     for (const tag of tags) {
+      // chapters in desktop screen
       var div = document.getElementById("blog_StickyItemContainer");
       var aTag = document.createElement("a");
-      aTag.setAttribute("href", `#` + tag.id);
-      aTag.innerHTML =
-        `<img class="itemImg opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` +
-        tag.innerHTML;
+      aTag.setAttribute("href", "#"+ tag.id);
+      aTag.innerHTML = `<img class="blog_StickyItemImg opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` + tag.innerHTML;
       div.appendChild(aTag);
 
+      // sticky active chapter heading in mobile screen
       var divMd = document.getElementById("blog_StickyItemContainerMd");
-      var aTagMd = document.createElement("a");
-      aTagMd.setAttribute("href", `#` + tag.id);
-      aTagMd.setAttribute("class", `truncate`);
-      aTagMd.innerHTML =
-        `<img class="itemImgMd" src="/images/bookGreen.svg" alt="arrow">` +
-        tag.innerHTML;
-      divMd.appendChild(aTagMd);
-    }
+      var liTagMd = document.createElement("li");
+      liTagMd.setAttribute("class", "truncate");
+      liTagMd.innerHTML = tag.innerHTML;
+      divMd.appendChild(liTagMd);
 
-    const stickyItemCon = document.getElementById(`blog_StickyItemContainer`);
-    const blogSticky = document.getElementById("blogContent_StickyContainer");
-    const blog_StickyHeader = document.getElementById("blog_StickyHeader");
+      // sticky button chapters in mobile screen
+      var dropdownDiv = document.getElementById("blog_StickyDropdownItem");
+      var dropdownATag = document.createElement("a");
+      dropdownATag.setAttribute("href", "#"+ tag.id);
+      dropdownATag.setAttribute("class", "flex items-center pt-6 font-normal color-default-80");
+      dropdownATag.innerHTML = `<img class="blog_StickyItemImgMd opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` + tag.innerHTML;
+      dropdownDiv.appendChild(dropdownATag);
+    };
+
+    // highlight active blog section header desktop screen
+    const stickyItemCon = document.getElementById("blog_StickyItemContainer");
     const blogStickyAtag = stickyItemCon.querySelectorAll("a");
-    const blogStickyImg = stickyItemCon.querySelectorAll(".itemImg");
+    const blogStickyImg = stickyItemCon.querySelectorAll(".blog_StickyItemImg");
+
+    const dropdownStickyItemCon = document.getElementById("blog_StickyDropdownItem");
+    const dropdownStickyAtag = dropdownStickyItemCon.querySelectorAll("a");
+    const dropdownStickyImg = dropdownStickyItemCon.querySelectorAll(".blog_StickyItemImgMd");
 
     document.addEventListener("scroll", (e) => {
-      for (var i = 0; i < tags.length; i++) {
+      for (var i = 0; i < tags.length; i++) { 
         var scrolled = document.scrollingElement.scrollTop;
         var position = tags[i].offsetTop;
 
-        if (i > 0) {
-          if (scrolled > position - 300) {
-            blogStickyAtag[i].classList.add("font-bold");
-            blogStickyAtag[i - 1].classList.remove("font-bold");
-            blogStickyImg[i].classList.remove("opacity-0");
-            blogStickyImg[i - 1].classList.add("opacity-0");
-          } else {
-            blogStickyAtag[i].classList.remove("font-bold");
-            blogStickyImg[i].classList.add("opacity-0");
+        if ( i > 0 ) {
+            if(scrolled > position - 300){
+              blogStickyAtag[i].classList.add('font-bold');
+              blogStickyAtag[i-1].classList.remove('font-bold');
+              blogStickyImg[i].classList.remove('opacity-0');
+              blogStickyImg[i-1].classList.add('opacity-0');
+
+              dropdownStickyAtag[i].classList.add("font-medium", "color-default");
+              dropdownStickyAtag[i-1].classList.remove("font-medium", "color-default");
+              dropdownStickyImg[i].classList.remove('opacity-0');
+              dropdownStickyImg[i-1].classList.add('opacity-0');
+            }else{
+              blogStickyAtag[i].classList.remove('font-bold');
+              blogStickyImg[i].classList.add('opacity-0');
+
+              dropdownStickyAtag[i].classList.remove("font-medium", "color-default");
+              dropdownStickyImg[i].classList.add('opacity-0');
+            }
+        }else{
+            if(scrolled > position - 300){
+              blogStickyAtag[i].classList.add('font-bold');
+              blogStickyImg[i].classList.remove('opacity-0');
+
+              dropdownStickyAtag[i].classList.add("font-medium", "color-default");
+              dropdownStickyImg[i].classList.remove('opacity-0');
+            }else{
+              blogStickyAtag[i].classList.remove('font-bold');
+              blogStickyImg[i].classList.add('opacity-0');
+
+              dropdownStickyAtag[i].classList.remove("font-medium", "color-default");
+              dropdownStickyImg[i].classList.add('opacity-0');
+            }
           }
-        } else {
-          if (scrolled > position - 300) {
-            blogStickyAtag[i].classList.add("font-bold");
-            blogStickyImg[i].classList.remove("opacity-0");
-          } else {
-            blogStickyAtag[i].classList.remove("font-bold");
-            blogStickyImg[i].classList.add("opacity-0");
-          }
-        }
       }
     });
 
-    const stickyItemConMd = document.getElementById(
-      `blog_StickyItemContainerMd`
-    );
-    const blogStickyMdAtag = stickyItemConMd.querySelectorAll("a");
+    
 
-    const mq = window.matchMedia("(max-width: 767.98px)");
-
-    if (mq.matches) {
+    const mqMd = window.matchMedia("(max-width: 767.98px)");
+    if (mqMd.matches) {
+      // show active blog section header name top on sticky in mobile screen
       document.addEventListener("scroll", (e) => {
-        for (var i = 0; i < tags.length; i++) {
-          var scrolled = document.scrollingElement.scrollTop;
-          var position = tags[i].offsetTop;
+        const stickyItemConMd = document.getElementById("blog_StickyItemContainerMd");
+        const blogStickyMdAtag = stickyItemConMd.querySelectorAll("li");
+        const dropdownContainer = document.getElementById("blog_StickyDropdownContainer");
+        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
+        var scrolled = document.scrollingElement.scrollTop;
+        const db = document.getElementById("detailedBlog");
+        dbPosition = db.offsetTop;
 
-          if (i > 0) {
-            if (scrolled > position - 1) {
-              blogStickyMdAtag[i].style.display = "inline-flex";
-              blogStickyMdAtag[i - 1].style.display = "none";
-            } else {
-              blogStickyMdAtag[i].style.display = "none";
+        if(scrolled > dbPosition + 1){
+          dropdownContainer.style.display = "block";
+        }else{
+          dropdownContainer.style.display = "none";
+        }
+
+        for (var i = 0; i < tags.length; i++) { 
+          var position = tags[i].offsetTop;
+          if ( i > 0 ) {
+              if(scrolled > position - 40){
+                blogStickyMdAtag[i].style.display = "inline-flex";
+                blogStickyMdAtag[i-1].style.display = "none";
+              }else{
+                blogStickyMdAtag[i].style.display = "none";
+              }
+          }else{
+              if(scrolled > position - 40){
+                blogStickyMdAtag[i].style.display = "inline-flex";
+              }else{
+                blogStickyMdAtag[i].style.display = "none";
+              }
             }
-          } else {
-            if (scrolled > position - 1) {
-              blogStickyMdAtag[i].style.display = "inline-flex";
-            } else {
-              blogStickyMdAtag[i].style.display = "none";
-            }
-          }
         }
       });
+
+      // sticky chapters heading toggle by "Chapters" when toggling stcky button
+      document.addEventListener("scroll", (e) => {
+        var scrolled = document.scrollingElement.scrollTop;
+        const db = document.getElementById(`detailedBlog`);
+        dbPosition = db.offsetTop;
+        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
+        dropdownHeaderTop = document.getElementById("blog_StickyDropdownHeaderTop");
+        dropdownHeaderItem = document.getElementById("blog_StickyItemContainerMd");
+        const firstTag = db.querySelector("h2");
+
+          if(scrolled > dbPosition - 40){
+            if(dropdownHeader.style.display == "block"){
+              dropdownHeaderTop.style.display = "none";
+            }else if(scrolled > firstTag.offsetTop - 40){
+              dropdownHeaderTop.style.display = "none";
+            }else{
+              dropdownHeaderTop.style.display = "block";
+            }
+          }else{
+            dropdownHeaderTop.style.display = "block";
+          }
+      });
     }
+    const mqSm = window.matchMedia("(max-width: 639.98px)");
+    if (mqSm.matches) {
+      // show active blog section header name top on sticky in mobile screen
+      document.addEventListener("scroll", (e) => {
+        const stickyItemConMd = document.getElementById("blog_StickyItemContainerMd");
+        const blogStickyMdAtag = stickyItemConMd.querySelectorAll("li");
+        const dropdownContainer = document.getElementById("blog_StickyDropdownContainer");
+        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
+        var scrolled = document.scrollingElement.scrollTop;
+        const db = document.getElementById("detailedBlog");
+        dbPosition = db.offsetTop;
+
+        if(scrolled > dbPosition - 50){
+          dropdownContainer.style.display = "block";
+        }else{
+          dropdownContainer.style.display = "none";
+        }
+        for (var i = 0; i < tags.length; i++) { 
+          var position = tags[i].offsetTop;
+
+          if ( i > 0 ) {
+              if(scrolled > position - 120){
+                blogStickyMdAtag[i].style.display = "inline-flex";
+                blogStickyMdAtag[i-1].style.display = "none";
+              }else{
+                blogStickyMdAtag[i].style.display = "none";
+              }
+          }else{
+              if(scrolled > position - 120){
+                blogStickyMdAtag[i].style.display = "inline-flex";
+              }else{
+                blogStickyMdAtag[i].style.display = "none";
+              }
+            }
+        }
+      });
+
+      // sticky chapters heading toggle by "Chapters" when toggling stcky button
+      document.addEventListener("scroll", (e) => {
+        var scrolled = document.scrollingElement.scrollTop;
+        const db = document.getElementById(`detailedBlog`);
+        dbPosition = db.offsetTop;
+        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
+        dropdownHeaderTop = document.getElementById("blog_StickyDropdownHeaderTop");
+        dropdownHeaderItem = document.getElementById("blog_StickyItemContainerMd");
+        
+        const firstTag = db.querySelector("h2");
+
+        if(scrolled > dbPosition - 120){
+            if(dropdownHeader.style.display == "block"){
+              dropdownHeaderTop.style.display = "none";
+            }else if(scrolled > firstTag.offsetTop - 120){
+              dropdownHeaderTop.style.display = "none";
+            }else{
+              dropdownHeaderTop.style.display = "block";
+            }
+          }else{
+            dropdownHeaderTop.style.display = "block";
+          }
+      });
+    }
+
+    //sticky chapters button toggle
+    document.getElementById("blogStickyBtn").addEventListener("click", function () {
+      const dropdownItem = document.getElementById("blog_StickyDropdownItem");
+        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
+        dropdownHeaderItem = document.getElementById("blog_StickyItemContainerMd");
+        dropdpwnIcon = document.getElementById("StickyDropdpwnIcon");
+
+      if(dropdownHeader.style.display == "none"){
+        if (dropdownItem.style.display == "block") {
+          dropdownItem.style.display = "none";
+          dropdownHeader.style.display = "block";
+          dropdownHeaderItem.style.display = "grid";
+          dropdpwnIcon.style.transform = "rotate(0deg)";
+        }else {
+          dropdownItem.style.display = "block";
+          dropdownHeaderItem.style.display = "none";
+          dropdownHeader.style.display = "block";
+          dropdpwnIcon.style.transform = "rotate(180deg)";
+        }
+      }else{
+        if (dropdownItem.style.display == "block") {
+          dropdownItem.style.display = "none";
+          dropdownHeader.style.display = "none";
+          dropdownHeaderItem.style.display = "grid";
+          dropdpwnIcon.style.transform = "rotate(0deg)";
+        }else {
+          dropdownItem.style.display = "block";
+          dropdownHeaderItem.style.display = "none";
+          dropdownHeader.style.display = "block";
+          dropdpwnIcon.style.transform = "rotate(180deg)";
+        }
+      }
+        
+    }, false);
+
+    // blog reading progress bar
+    document.addEventListener("scroll", (e) => {
+      var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+
+      const contentHeight  =  document.querySelector(".detailedBlog").offsetHeight
+      const contentOffssetTop =  document.querySelector(".detailedBlog").offsetTop
+
+      var scrolled = (winScroll / height) * 100;
+      let ScrollBarWidth
+      const diff=  winScroll - contentOffssetTop
+      if(diff <= 0){
+        ScrollBarWidth=0
+      }else{
+       //check if we hav reached div bottom 
+        if( (winScroll +100) <= (contentOffssetTop + contentHeight)  ){
+          ScrollBarWidth=(diff /contentHeight)*100
+        }else{
+          ScrollBarWidth=100
+        }
+      }
+      document.getElementById("sticky_p_bar").style.width = ScrollBarWidth + "%";
+    });
   });
 </script>
