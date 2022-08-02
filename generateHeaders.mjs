@@ -7,7 +7,7 @@ const htmlFilePaths = await globby("./dist/**/*.html");
 
 const commonPolicies = {
   "default-src": ["'none'"],
-  "style-src": ["'unsafe-inline'"],
+  "style-src": ["'self'", "'unsafe-inline'"],
   "img-src": ["'self'", "https://dilmahtea.me"],
   "font-src": ["'self'"],
   "worker-src": ["blob:"],
