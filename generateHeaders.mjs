@@ -59,6 +59,9 @@ const CSPHeaders = await Promise.all(
       `<meta http-equiv="Content-Security-Policy" content="${CSPHeader}">`
     );
 
+    // overwrite html to add generated csp header & nonces
+    await fs.writeFile(path, document.documentElement.outerHTML);
+
     return {
       route,
       CSPHeader,
@@ -70,4 +73,5 @@ const _headersFileContent = CSPHeaders.map(
   ({ route, CSPHeader }) => `${route}\n  Content-Security-Policy: ${CSPHeader}`
 ).join("\n\n");
 
+// write generated headers to _headers file
 await fs.writeFile("./dist/_headers", _headersFileContent);
