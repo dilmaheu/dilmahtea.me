@@ -77,4 +77,4 @@ const _headersFileContent = CSPHeaders.map(
 ).join("\n\n");
 
 // write generated headers to _headers file
-await fs.writeFile("./dist/_headers", _headersFileContent);
+// await fs.writeFile("./dist/_headers", _headersFileContent);
