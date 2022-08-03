@@ -71,12 +71,46 @@ const footerText = recurData.Footer_text.replaceAll(
   </head>
 
   <body>
-    <div class="translation-not-found-alert">
+    <div class="translation-not-found-notification">
       <TopNotification type="error" closingEnabled={true}>
         Translation Not Found. This content is not available in your requested
         locale
       </TopNotification>
     </div>
+
+    <script is:inline>
+      const searchParams = Object.fromEntries(
+        new URL(location.href).searchParams
+      );
+
+      const { localeExists } = searchParams;
+
+      if (localeExists === "false") {
+        const translationNotFoundNotification =
+          document.currentScript.previousElementSibling.firstElementChild;
+
+        // @ts-ignore
+        translationNotFoundNotification.style.display = "flex";
+
+        window.removeTopNotification = (topNotification) => {
+          const { height: notificationHeight } =
+            topNotification.getBoundingClientRect();
+
+          topNotification.animate(
+            {
+              top: ["0px", `-${notificationHeight}px`],
+            },
+            100
+          ).onfinish = () => {
+            topNotification.style.display = "none";
+          };
+        };
+
+        setTimeout(() => {
+          removeTopNotification(translationNotFoundNotification);
+        }, 7500);
+      }
+    </script>
 
     <div>
       <Navbar
@@ -219,31 +253,6 @@ const footerText = recurData.Footer_text.replaceAll(
           redirectPath(locale);
         });
       });
-
-      const searchParams = Object.fromEntries(
-        new URL(location.href).searchParams
-      );
-
-      const { localeExists } = searchParams;
-
-      if (localeExists === "false") {
-        const translationNotFoundAlert = document.querySelector(
-          ".translation-not-found-alert .notification"
-        );
-
-        // @ts-ignore
-        translationNotFoundAlert.style.display = "flex";
-
-        // const animationDuration =
-        //   window.innerWidth > 1000 ? 1000 : window.innerWidth;
-
-        // // @ts-ignore
-        // translationNotFoundAlert.animate(
-        //   { right: ["-100%", "10vmin"] },
-        //   animationDuration
-        //   // @ts-ignore
-        // ).onfinish = () => (translationNotFoundAlert.style.right = "10vmin");
-      }
     </script>
   </body>
 </html>

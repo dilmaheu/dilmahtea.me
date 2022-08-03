@@ -27,6 +27,7 @@ if (type !== "default") {
   .notification {
     display: none;
     padding: 1rem;
+    position: relative;
     font-family: "Roboto";
     font-style: normal;
     font-weight: 400;
@@ -96,19 +97,12 @@ if (type !== "default") {
     ".notification .close-button"
   );
 
-  // const animationDuration = window.innerWidth > 1000 ? 1000 : window.innerWidth;
-
   notificationCloseButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      button.parentElement.style.display = "none";
-
-      // button.parentElement.animate(
-      //   { right: ["10vmin", "-100%"] },
-      //   animationDuration
-      // ).onfinish = () => {
-      //   button.parentElement.style.right = "10vmin";
-      //   button.parentElement.style.display = "none";
-      // };
+      // @ts-ignore
+      removeTopNotification(
+        button.parentElement
+      ); /* this function is declared in the Layout.astro file */
     });
   });
 </script>
