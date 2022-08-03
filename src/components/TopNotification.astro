@@ -1,110 +1,114 @@
 ---
+import fs from "fs/promises";
+
 declare interface Props {
-  alert: string;
-  message: string;
-  type: "error" | "warning" | "info" | "success";
+  type?: "error" | "warning" | "info" | "success" | "default";
+  closingEnabled?: boolean;
 }
 
-const { alert, message, type } = Astro.props as Props;
+const { type = "default", closingEnabled = false } = Astro.props as Props;
 
-const { default: alertSVG } = await import(
-  `../../public/images/notifications/${type}.svg?raw`
-);
+if (type !== "default") {
+  var notificationSVG = await fs.readFile(
+    `./public/images/notifications/${type}.svg`,
+    "utf8"
+  );
+}
 ---
 
 <style lang="scss">
-  $alert-error-bg-color: #f9eae9;
-  $alert-warning-bg-color: #faf2e5;
-  $alert-info-bg-color: #e7eef9;
-  $alert-success-bg-color: #e9f9ef;
-  $alert-text-color: #000;
-  $alert-message-text-color: rgba(71, 71, 71, 0.7);
+  $notification-error-bg-color: #f9eae9;
+  $notification-warning-bg-color: #faf2e5;
+  $notification-info-bg-color: #e7eef9;
+  $notification-success-bg-color: #e9f9ef;
+  $notification-default-bg-color: #fbf7f7;
+  $notification-default-text-color: #000000;
 
-  .alert {
-    z-index: 100;
-    position: fixed;
+  .notification {
     display: none;
-    justify-content: space-evenly;
-    align-items: center;
-    border-radius: 15px;
-    bottom: 10vmin;
-    right: -100%;
     padding: 1rem;
-    gap: 1.125rem;
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 18.75px;
+    color: $notification-default-text-color;
 
-    &.alert-error {
-      background-color: $alert-error-bg-color;
+    &.notification-error {
+      background-color: $notification-error-bg-color;
     }
 
-    &.alert-warning {
-      background-color: $alert-warning-bg-color;
+    &.notification-warning {
+      background-color: $notification-warning-bg-color;
     }
 
-    &.alert-info {
-      background-color: $alert-info-bg-color;
+    &.notification-info {
+      background-color: $notification-info-bg-color;
     }
 
-    &.alert-success {
-      background-color: $alert-success-bg-color;
+    &.notification-success {
+      background-color: $notification-success-bg-color;
     }
 
-    .alert-text {
-      color: $alert-text-color;
-      font-family: "Alice";
-      font-style: normal;
-      font-weight: 400;
-      font-size: 18px;
-      line-height: 21px;
-    }
-
-    .alert-message-text {
-      color: $alert-message-text-color;
-      font-family: "Roboto";
-      font-style: normal;
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 16px;
-    }
-
-    @media screen and (max-width: 639px) {
-      bottom: 7.5vmin;
-      transform: scale(0.75, 0.75) translate(15vmin, 2.5vmin);
+    > div {
+      display: flex;
+      gap: 1.125rem;
+      margin: 0 auto;
+      align-items: center;
+      justify-content: space-evenly;
     }
   }
 </style>
 
-<div class={`alert alert-${type}`}>
-  <div><Fragment set:html={alertSVG} /></div>
-
+<div class={`notification notification-${type}`}>
   <div>
-    <h5 class="alert-text">{alert}</h5>
+    {notificationSVG && (
+      <div>
+        <Fragment set:html={notificationSVG} />
+      </div>
+    )}
 
-    <span class="alert-message-text">{message}</span>
+    <div>
+      <slot />
+    </div>
   </div>
 
-  <button>
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none">
-      <path
-        fill-rule="evenodd"
-        d="M4.3 4.3a1 1 0 0 1 1.4 0L10 8.6l4.3-4.3a1 1 0 1 1 1.4 1.4L11.4 10l4.3 4.3a1 1 0 0 1-1.4 1.4L10 11.4l-4.3 4.3a1 1 0 0 1-1.4-1.4L8.6 10 4.3 5.7a1 1 0 0 1 0-1.4Z"
-        fill="#4c4847"></path>
-    </svg>
-  </button>
+  {closingEnabled && (
+    <button class="close-button">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        fill="none"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M4.3 4.3a1 1 0 0 1 1.4 0L10 8.6l4.3-4.3a1 1 0 1 1 1.4 1.4L11.4 10l4.3 4.3a1 1 0 0 1-1.4 1.4L10 11.4l-4.3 4.3a1 1 0 0 1-1.4-1.4L8.6 10 4.3 5.7a1 1 0 0 1 0-1.4Z"
+          fill="#4c4847"
+        />
+      </svg>
+    </button>
+  )}
 </div>
 
 <script>
-  const alertCloseButtons = document.querySelectorAll(".alert button"),
-    animationDuration = window.innerWidth > 1000 ? 1000 : window.innerWidth;
+  const notificationCloseButtons = document.querySelectorAll(
+    ".notification .close-button"
+  );
 
-  alertCloseButtons.forEach((button) => {
+  // const animationDuration = window.innerWidth > 1000 ? 1000 : window.innerWidth;
+
+  notificationCloseButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      button.parentElement.animate(
-        { right: ["10vmin", "-100%"] },
-        animationDuration
-      ).onfinish = () => {
-        button.parentElement.style.right = "10vmin";
-        button.parentElement.style.display = "none";
-      };
+      button.parentElement.style.display = "none";
+
+      // button.parentElement.animate(
+      //   { right: ["10vmin", "-100%"] },
+      //   animationDuration
+      // ).onfinish = () => {
+      //   button.parentElement.style.right = "10vmin";
+      //   button.parentElement.style.display = "none";
+      // };
     });
   });
 </script>
