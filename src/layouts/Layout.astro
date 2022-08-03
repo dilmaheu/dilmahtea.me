@@ -242,7 +242,8 @@ const footerText = recurData.Footer_text.replaceAll(
           newPath = localeUrlPrefix + location.pathname;
         }
 
-        location.pathname = newPath;
+        // remove query params from the url if any
+        location.href = newPath.replace(location.search, "");
       };
 
       document.querySelectorAll(".lang-selector").forEach((langSelector) => {
