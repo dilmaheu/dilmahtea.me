@@ -16,60 +16,66 @@ const commonPolicies = {
 };
 
 const CSPHeaders = await Promise.all(
-  htmlFilePaths
-    .map(async (path) => {
-      const htmlContent = await fs.readFile(path, "utf8");
+  htmlFilePaths.map(async (path) => {
+    const htmlContent = await fs.readFile(path, "utf8");
 
-      const { document } = await parseHTML(htmlContent);
+    const { document } = await parseHTML(htmlContent);
 
-      const scripts = document.querySelectorAll("script");
+    const previousDocumentOuterHTML = document.documentElement.outerHTML;
 
-      const route =
-        path === "./dist/404.html"
-          ? "/*"
-          : path === "./dist/index.html"
-          ? "/"
-          : path.slice(6, -11) + '/';
+    const scripts = document.querySelectorAll("script");
 
-      const nonces = scripts.map((script) => {
-        const nonce = crypto.randomUUID();
+    const route =
+      path === "./dist/404.html"
+        ? "/*"
+        : path === "./dist/index.html"
+        ? "/"
+        : path.slice(6, -11) + "/";
 
-        script.setAttribute("nonce", nonce);
+    const nonces = scripts.map((script) => {
+      const nonce = crypto.randomUUID();
 
-        return `'nonce-${nonce}'`;
-      });
+      script.setAttribute("nonce", nonce);
 
-      const policies = {
-        ...commonPolicies,
-        "script-src": ["'self'", "https://static.openreplay.com", ...nonces],
-      };
+      return `'nonce-${nonce}'`;
+    });
 
-      const CSPHeader = Object.keys(policies)
-        .map((directive) => {
-          const values = policies[directive];
+    const policies = {
+      ...commonPolicies,
+      "script-src": ["'self'", "https://static.openreplay.com", ...nonces],
+    };
 
-          const policy =
-            values.length === 0
-              ? directive
-              : `${directive} ${values.join(" ")}`;
+    const CSPHeader = Object.keys(policies)
+      .map((directive) => {
+        const values = policies[directive];
 
-          return policy;
-        })
-        .join("; ");
+        const policy =
+          values.length === 0 ? directive : `${directive} ${values.join(" ")}`;
 
-      document.head.insertAdjacentHTML(
-        "beforeend",
-        `<meta http-equiv="Content-Security-Policy" content="${CSPHeader}">`
-      );
+        return policy;
+      })
+      .join("; ");
 
-      // overwrite html to add generated csp header & nonces
-      await fs.writeFile(path, document.documentElement.outerHTML);
+    document.head.insertAdjacentHTML(
+      "beforeend",
+      `<meta http-equiv="Content-Security-Policy" content="${CSPHeader}">`
+    );
 
-      return {
-        route,
-        CSPHeader,
-      };
-    })
+    const newDocumentOuterHTML = document.documentElement.outerHTML;
+
+    const newHTMLContent = htmlContent.replace(
+      previousDocumentOuterHTML,
+      newDocumentOuterHTML
+    );
+
+    // overwrite html to add generated csp header & nonces
+    await fs.writeFile(path, newHTMLContent);
+
+    return {
+      route,
+      CSPHeader,
+    };
+  })
 );
 
 const _headersFileContent = CSPHeaders.map(
