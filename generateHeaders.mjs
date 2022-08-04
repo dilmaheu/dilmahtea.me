@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import crypto from "crypto";
 import { globby } from "globby";
 import { parseHTML } from "linkedom";
+import permissionsPolicy from "./src/store/permissionsPolicy.js";
 
 const htmlFilePaths = await globby("./dist/**/*.html");
 
@@ -81,7 +82,9 @@ const CSPHeaders = await Promise.all(
 const _headersFileContent = CSPHeaders.map(
   ({ route, CSPHeader }) =>
     `${route}\n  ${
-      route === "/*" ? "" : `! Content-Security-Policy\n  `
+      route === "/*"
+        ? `Permissions-Policy: ${permissionsPolicy}`
+        : `! Content-Security-Policy\n  `
     }Content-Security-Policy: ${CSPHeader}`
 ).join("\n\n");
 
