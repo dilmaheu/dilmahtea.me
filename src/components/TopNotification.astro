@@ -8,6 +8,10 @@ declare interface Props {
 
 const { type = "default", closingEnabled = false } = Astro.props as Props;
 
+if (type === "error" && closingEnabled === true) {
+  throw Error("Error notifications can't have closing functionality enabled");
+}
+
 if (type !== "default") {
   var notificationSVG = await fs.readFile(
     `./public/images/notifications/${type}.svg`,
