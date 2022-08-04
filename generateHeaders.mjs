@@ -78,19 +78,12 @@ const CSPHeaders = await Promise.all(
   })
 );
 
-// // put rules for 404 url pattern at end
-// const order_correctedCSPHeaders = [...CSPHeaders.slice(1), CSPHeaders[0]];
-
-// const _headersFileContent = order_correctedCSPHeaders
-//   .map(
-//     ({ route, CSPHeader }) =>
-//       `${route}\n  Content-Security-Policy: ${CSPHeader}`
-//   )
-//   .join("\n\n");
-
 const _headersFileContent = CSPHeaders.map(
-  ({ route, CSPHeader }) => `${route}\n  Content-Security-Policy: ${CSPHeader}`
+  ({ route, CSPHeader }) =>
+    `${route}\n  ${
+      route === "/*" ? "" : `! Content-Security-Policy\n  `
+    }Content-Security-Policy: ${CSPHeader}`
 ).join("\n\n");
 
-// // write generated headers to _headers file
-// await fs.writeFile("./dist/_headers", _headersFileContent);
+// write generated headers to _headers file
+await fs.writeFile("./dist/_headers", _headersFileContent);
