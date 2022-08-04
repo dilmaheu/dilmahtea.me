@@ -81,7 +81,12 @@ const CSPHeaders = await Promise.all(
   })
 );
 
-const _headersFileContent = `/*\n  Permissions-Policy: ${PermissionsPolicy}`;
+const PermissionsPolicyHeaderRule = `/*\n  Permissions-Policy: ${PermissionsPolicy}`,
+  CSPHeaderRules = CSPHeaders.map(
+    ({ route, CSPHeader }) =>
+      `${route}\n  Content-Security-Policy: ${CSPHeader}`
+  ).join("\n\n"),
+  _headersFileContent = PermissionsPolicyHeaderRule + "\n\n" + CSPHeaderRules;
 
 // write generated headers to _headers file
 await fs.writeFile("./dist/_headers", _headersFileContent);
