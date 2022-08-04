@@ -2,11 +2,13 @@ import fs from "fs/promises";
 import crypto from "crypto";
 import { globby } from "globby";
 import { parseHTML } from "linkedom";
-import permissionsPolicy from "./src/store/permissionsPolicy.js";
+import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
 
 const htmlFilePaths = await globby("./dist/**/*.html");
 
-const commonPolicies = {
+/* CSP = Content Security Policy */
+
+const sharedCSP = {
   "default-src": ["'none'"],
   "style-src": ["'self'", "'unsafe-inline'"],
   "img-src": ["'self'", "https://dilmahtea.me"],
@@ -28,7 +30,7 @@ const CSPHeaders = await Promise.all(
 
     const route =
       path === "./dist/404.html"
-        ? "/*"
+        ? "/404"
         : path === "./dist/index.html"
         ? "/"
         : path.slice(6, -11) + "/";
@@ -42,7 +44,7 @@ const CSPHeaders = await Promise.all(
     });
 
     const policies = {
-      ...commonPolicies,
+      ...sharedCSP,
       "script-src": ["'self'", "https://static.openreplay.com", ...nonces],
     };
 
@@ -79,7 +81,7 @@ const CSPHeaders = await Promise.all(
   })
 );
 
-const _headersFileContent = `/*\n  Permissions-Policy: ${permissionsPolicy}`;
+const _headersFileContent = `/*\n  Permissions-Policy: ${PermissionsPolicy}`;
 
 // write generated headers to _headers file
 await fs.writeFile("./dist/_headers", _headersFileContent);

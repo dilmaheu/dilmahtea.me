@@ -1,5 +1,5 @@
 import { defineConfig } from "astro/config";
-import permissionsPolicy from "./src/store/permissionsPolicy.js";
+import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
 
 export default defineConfig({
   site: "https://dilmahtea.me",
@@ -9,10 +9,7 @@ export default defineConfig({
         name: "add-permissions-policy-header",
         configureServer: (server) => {
           server.middlewares.use((_req, res, next) => {
-            res.setHeader(
-              "Permissions-Policy",
-              permissionsPolicy
-            );
+            res.setHeader("Permissions-Policy", PermissionsPolicy);
             next();
           });
         },
