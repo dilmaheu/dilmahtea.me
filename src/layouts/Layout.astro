@@ -106,9 +106,15 @@ const footerText = recurData.Footer_text.replaceAll(
           };
         };
 
-        setTimeout(() => {
-          removeTopNotification(translationNotFoundNotification);
-        }, 7500);
+        const isNotErrorNotification =
+          !translationNotFoundNotification.classList.contains(
+            "notification-error"
+          );
+
+        isNotErrorNotification &&
+          setTimeout(() => {
+            removeTopNotification(translationNotFoundNotification);
+          }, 7500);
       }
     </script>
 
