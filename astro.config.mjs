@@ -1,5 +1,5 @@
 import { defineConfig } from "astro/config";
-import permissionsPolicy from "./src/store/permissionsPolicy";
+import permissionsPolicy from "./src/store/permissionsPolicy.js";
 
 export default defineConfig({
   site: "https://dilmahtea.me",
