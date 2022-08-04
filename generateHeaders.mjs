@@ -79,13 +79,10 @@ const CSPHeaders = await Promise.all(
   })
 );
 
-const _headersFileContent = CSPHeaders.map(
-  ({ route, CSPHeader }) =>
-    `${route}\n  ${
-      route === "/*"
-        ? `Permissions-Policy: ${permissionsPolicy}`
-        : `! Content-Security-Policy\n  `
-    }Content-Security-Policy: ${CSPHeader}`
+const _headersFileContent = CSPHeaders.map(({ route, CSPHeader }) =>
+  route === "/*"
+    ? `${route}\n  Permissions-Policy: ${permissionsPolicy}\n  Content-Security-Policy: ${CSPHeader}`
+    : `${route}\n  ! Content-Security-Policy\n\n${route}\n  Content-Security-Policy: ${CSPHeader}`
 ).join("\n\n");
 
 // write generated headers to _headers file
