@@ -1,46 +1,23 @@
 ---
 import Brand from "/logo.svg";
 import LangButton from "./LangButton.astro";
-import UKImg from "/images/UK.svg";
-import GerImg from "/images/germany.svg";
-import NLImg from "/images/netherlands.svg";
-import LocalizationsQuery from "../queries/LocalizationsQuery.js";
+import getLocalesData from "../utils/getLocalesData";
+
+// import UKImg from "/images/UK.svg";
+// import GerImg from "/images/germany.svg";
+// import NLImg from "/images/netherlands.svg";
 
 interface Props {
   locale: string;
-  availableLocales: (string | null)[];
   footerText: string;
 }
 
-const { locale, availableLocales, footerText } = Astro.props;
+const { locale, footerText } = Astro.props;
 
-const selectorLangs = ["en", ...availableLocales];
+const { locales, languages, localeNamesData } = await getLocalesData();
 
-const localizationsData = await fetch(import.meta.env.DB_URL, {
-  method: "POST",
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
-  },
-  body: JSON.stringify({
-    query: LocalizationsQuery,
-  }),
-}).then((res) => res.json());
-
-const localizations = {};
-
-localizationsData.data.localizations.data.forEach((localization) => {
-  const { Code, English, Dutch, Deutsch } = localization.attributes;
-  localizations[Code] = {
-    English,
-    Dutch,
-    Deutsch,
-  };
-});
-
-const docLocale =
-  locale === "en" ? "English" : locale === "nl" ? "Nederlands" : "Deutsch";
+const docLang = languages[locales.indexOf(locale)],
+  localDocLang = localeNamesData[docLang][docLang];
 ---
 
 <div id="navigation">
@@ -78,7 +55,7 @@ const docLocale =
                                 <img src={locale=="en" ? UKImg : locale=="nl" ? NLImg : GerImg} class="w-full h-full object-cover"
                                     alt="brand-logo">
                             </div> -->
-              <div class="preferred-locale font-bold">{docLocale}</div>
+              <div class="preferred-locale font-bold">{localDocLang}</div>
 
               <div class="w-3">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7">
@@ -93,9 +70,25 @@ const docLocale =
               id="dropdownMenu"
               class="absolute rounded hidden overflow-hidden dropdown-menu"
             >
-              {selectorLangs.map((lang) => (
-                <LangButton lang={lang} localizations={localizations} />
-              ))}
+              {languages.map((language) => {
+                const locale = locales[languages.indexOf(language)],
+                  langEnglishName = localeNamesData.English[language];
+
+                const localLangNames = {
+                  English: localeNamesData.English[language],
+                  Dutch: localeNamesData.Dutch[language],
+                  German: localeNamesData.German[language],
+                  Spanish: localeNamesData.Spanish[language],
+                };
+
+                return (
+                  <LangButton
+                    locale={locale}
+                    localLangNames={localLangNames}
+                    langEnglishName={langEnglishName}
+                  />
+                );
+              })}
             </ul>
           </div>
         </div>
@@ -145,7 +138,13 @@ const docLocale =
 </div>
 <div class="block sm:hidden py-11"></div>
 
-<script is:inline>
+<script
+  is:inline
+  define:vars={{
+    locales,
+    languages,
+  }}
+>
   window.onscroll = function () {
     const top = window.pageYOffset || document.documentElement.scrollTop,
       navigation = document.getElementById("navigation");
@@ -164,21 +163,14 @@ const docLocale =
   };
 
   document.querySelectorAll(".preferred-locale").forEach((dropdown) => {
-    let localizedNameInPreferredLocale;
+    const preferredLanguage =
+      languages[
+        locales.indexOf(
+          preferredLocale /* preferredLocale is declared in the Redirect.astro component */
+        )
+      ];
 
-    switch (preferredLocale) {
-      case "en":
-        localizedNameInPreferredLocale = "English";
-        break;
-      case "nl":
-        localizedNameInPreferredLocale = "Nederlands";
-        break;
-      case "de":
-        localizedNameInPreferredLocale = "Deutsch";
-        break;
-    }
-
-    dropdown.textContent = localizedNameInPreferredLocale;
+    dropdown.textContent = preferredLanguage;
   });
 
   document

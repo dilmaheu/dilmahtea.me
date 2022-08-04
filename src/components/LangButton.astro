@@ -3,17 +3,7 @@ import UKImg from "/images/UK.svg";
 import GerImg from "/images/germany.svg";
 import NLImg from "/images/netherlands.svg";
 
-const { lang, localizations } = Astro.props;
-
-const langCode = lang.toUpperCase();
-
-const localization = localizations[langCode],
-  localNameOfEnglish = localization["English"],
-  localNameOfDutch = localization["Dutch"],
-  localNameOfDeutsch = localization["Deutsch"];
-
-const englishNameOfLang =
-  lang === "en" ? "English" : lang === "nl" ? "Dutch" : "Deutsch";
+const { locale, localLangNames, langEnglishName } = Astro.props;
 ---
 
 <style>
@@ -26,10 +16,10 @@ const englishNameOfLang =
 
 <li class="block">
   <button
-    lang={lang}
+    lang={locale}
     style="cursor: pointer;"
     class:list={[
-      lang,
+      locale,
       "lang-selector hover:bg-gray-300 flex flex-wrap gap-x-1.5 md:gap-x-3 items-center dropdownItem",
     ]}
   >
@@ -42,9 +32,11 @@ const englishNameOfLang =
       </div> -->
 
     <span class="lang">
-      <span class="en hidden">{localNameOfEnglish}</span><span class="nl hidden"
-        >{localNameOfDutch}
-      </span><span class="de hidden">{localNameOfDeutsch}</span> / {englishNameOfLang}
+      <span class="en hidden">{localLangNames.English}</span><span class="nl hidden"
+        >{localLangNames.Dutch}
+      </span><span class="de hidden">{localLangNames.German}</span><span class="es hidden"
+        >{localLangNames.Spanish}
+      </span> / {langEnglishName}
     </span>
   </button>
 </li>
