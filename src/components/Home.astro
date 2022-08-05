@@ -6,6 +6,7 @@ import FlowerIcon from "/images/flower.svg";
 import LoveGreenIcon from "/images/loveGreen.svg";
 import PlanCards from "./PlanCards.astro";
 import Markdown from "@astrojs/markdown-component";
+import UpdateHeroTopMargin from "./UpdateHeroTopMargin.astro";
 
 const url = `${import.meta.env.CloudImg_URL}`;
 const { page } = Astro.props;
@@ -24,6 +25,8 @@ const initialProgress = `0%`,
 
 <!-- Hero Section -->
 <div class="hero overflow-hidden relative">
+  <UpdateHeroTopMargin />
+
   <!-- Background -->
   <div class=" w-full absolute bottom-0">
     <svg
@@ -146,22 +149,6 @@ const initialProgress = `0%`,
     </div>
   </div>
 </div>
-
-<script is:inline>
-  const hero = document.querySelector(".hero"),
-    navigation = document.querySelector("#navigation");
-
-  const updateHeroTopMargin = () => {
-    hero.style.marginTop = `-${
-      navigation.getBoundingClientRect().height *
-      (window.innerWidth < 640 ? 2 : 1)
-    }px`;
-  };
-
-  updateHeroTopMargin();
-  
-  window.addEventListener("resize", updateHeroTopMargin);
-</script>
 
 <!-- Blob Image  Mobile view -->
 
