@@ -176,15 +176,27 @@ const footerText = recurData.Footer_text.replaceAll(
         }
       }
 
+      const updateSidebarTopPosition = () => {
+        sidebar.style.top = `${navigation.getBoundingClientRect().bottom}px`;
+      };
+
+      window.addEventListener("resize", updateSidebarTopPosition);
+
       sidebarOpen.addEventListener(
         "click",
         () => {
+          window.removeEventListener("resize", updateSidebarTopPosition);
+
+          updateSidebarTopPosition();
+
           sidebar.style.display = "block";
-          navigation.style.backgroundImage = "url(/images/navBg.webp)";
           sidebarOpen.style.display = "none";
           sidebarClose.style.display = "block";
+          navigation.style.backgroundImage = "url(/images/navBg.webp)";
 
           disableScrolling();
+
+          window.addEventListener("resize", updateSidebarTopPosition);
         },
         false
       );
@@ -193,9 +205,9 @@ const footerText = recurData.Footer_text.replaceAll(
         "click",
         () => {
           sidebar.style.display = "none";
-          navigation.style.background = "transparent";
           sidebarOpen.style.display = "block";
           sidebarClose.style.display = "none";
+          navigation.style.background = "transparent";
 
           enableScrolling();
         },
@@ -205,8 +217,12 @@ const footerText = recurData.Footer_text.replaceAll(
       window.addEventListener("resize", () => {
         if (window.innerWidth > 639) {
           enableScrolling();
+
+          window.removeEventListener("resize", updateSidebarTopPosition);
         } else if (sidebarClose.style.display === "block") {
           disableScrolling();
+
+          window.addEventListener("resize", updateSidebarTopPosition);
         }
       });
 
