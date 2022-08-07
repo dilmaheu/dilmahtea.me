@@ -25,8 +25,6 @@ const CSPHeaders = await Promise.all(
 
     const { document } = await parseHTML(htmlContent);
 
-    const previousDocumentOuterHTML = document.documentElement.outerHTML;
-
     const scripts = document.querySelectorAll("script");
 
     const route =
@@ -64,16 +62,6 @@ const CSPHeaders = await Promise.all(
       "beforeend",
       `<meta http-equiv="Content-Security-Policy" content="${header}">`
     );
-
-    const newDocumentOuterHTML = document.documentElement.outerHTML;
-
-    const newHTMLContent = htmlContent.replace(
-      previousDocumentOuterHTML,
-      newDocumentOuterHTML
-    );
-
-    // overwrite html to add generated csp header & nonces
-    await fs.writeFile(path, newHTMLContent);
 
     return {
       route,
