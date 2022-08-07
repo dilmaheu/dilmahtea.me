@@ -86,16 +86,14 @@ const _headersFileContent =
 // write generated headers to _headers file
 await fs.writeFile("./dist/_headers", _headersFileContent);
 
-console.log(process.env)
+const { ZONE_ID, RULESET_ID, API_TOKEN } = process.env;
 
-console.log(globalThis)
-
-const endpoint = `https://api.cloudflare.com/client/v4/zones/${context.env.ZONE_ID}/rulesets/${context.env.RULESET_ID}`;
+const endpoint = `https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/rulesets/${RULESET_ID}`;
 
 const response = await fetch(endpoint, {
   method: "PUT",
   headers: {
-    Authorization: `Bearer ${context.env.API_TOKEN}`,
+    Authorization: `Bearer ${API_TOKEN}`,
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
