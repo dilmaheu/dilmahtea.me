@@ -34,7 +34,7 @@ const CSPHeaders = await Promise.all(
         ? "/"
         : path.slice(6, -11) + "/";
 
-    const nonces = scripts.map((script) => {
+    const nonces = [...scripts].map((script) => {
       const nonce = crypto.randomUUID();
 
       script.setAttribute("nonce", nonce);
@@ -91,7 +91,7 @@ const { ZONE_ID, RULESET_ID, API_TOKEN } = process.env;
 
 const endpoint = `https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/rulesets/${RULESET_ID}`;
 
-const response = await fetch(endpoint, {
+await fetch(endpoint, {
   method: "PUT",
   headers: {
     Authorization: `Bearer ${API_TOKEN}`,
@@ -117,5 +117,3 @@ const response = await fetch(endpoint, {
     ],
   }),
 }).then((res) => res.json());
-
-console.log(response);
