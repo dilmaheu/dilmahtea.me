@@ -1,37 +1,32 @@
 ---
 import Layout from "../layouts/Layout.astro";
-
-// getting the graphql query for fetch api
-import AllPagesQuery from "../queries/AllPagesQuery";
-
-// getting the Eror component
-import Error from "../components/Error.astro";
+import NotFound from "../components/NotFound.astro";
+import NotFoundPagesQuery from "../queries/NotFoundPagesQuery";
 
 // fetching the error page
-const errorDefaultPage = await fetch(`${import.meta.env.DB_URL}`, {
+const notFoundPagesData = await fetch(`${import.meta.env.DB_URL}`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
     Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
   },
   body: JSON.stringify({
-    query: AllPagesQuery,
+    query: NotFoundPagesQuery,
   }),
 }).then((response) => response.json());
 
 // saving it's page attributes like meta and other components
-const error = errorDefaultPage.data.basicPages.data;
-const errorPage = error.filter((val) => val.attributes.Meta.URL_slug == "404");
+const notFoundPages = notFoundPagesData.data.basicPages.data;
 
-const page = errorPage[0].attributes,
-  locale = page.locale.substring(0, 2);
+const locale = 'en',
+ page = notFoundPages.find(page => page.attributes.locale === locale).attributes
 
 const availableLocales = page.localizations.data.map((localized) =>
   localized.attributes.locale.substring(0, 2)
 );
 
 // saving footer text
-const recurData = errorDefaultPage.data.recurringElement.data.attributes;
+const recurData = notFoundPagesData.data.recurringElement.data.attributes;
 ---
 
 <Layout
@@ -43,5 +38,5 @@ const recurData = errorDefaultPage.data.recurringElement.data.attributes;
     ? page.Block_blob.data.attributes.provider_metadata.public_id
     : recurData.OpenGraph_default.data.attributes.provider_metadata.public_id}
 >
-  <Error page={page} />
+  <NotFound page={page} />
 </Layout>
