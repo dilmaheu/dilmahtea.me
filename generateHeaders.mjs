@@ -1,3 +1,4 @@
+import "dotenv/config";
 import fs from "fs/promises";
 import crypto from "crypto";
 import fetch from "node-fetch";
