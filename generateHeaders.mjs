@@ -30,7 +30,7 @@ const CSPHeaders = await Promise.all(
 
     const route =
       path === "./dist/404.html"
-        ? "/404"
+        ? "/*"
         : path === "./dist/index.html"
         ? "/"
         : path.slice(6, -11) + "/";
@@ -48,7 +48,7 @@ const CSPHeaders = await Promise.all(
       "script-src": ["'self'", "https://static.openreplay.com", ...nonces],
     };
 
-    const CSPHeader = Object.keys(policies)
+    const header = Object.keys(policies)
       .map((directive) => {
         const values = policies[directive];
 
@@ -61,7 +61,7 @@ const CSPHeaders = await Promise.all(
 
     document.head.insertAdjacentHTML(
       "beforeend",
-      `<meta http-equiv="Content-Security-Policy" content="${CSPHeader}">`
+      `<meta http-equiv="Content-Security-Policy" content="${header}">`
     );
 
     const newDocumentOuterHTML = document.documentElement.outerHTML;
@@ -76,12 +76,18 @@ const CSPHeaders = await Promise.all(
 
     return {
       route,
-      CSPHeader,
+      header,
     };
   })
 );
 
-const _headersFileContent = `/*\n  Permissions-Policy: ${PermissionsPolicy}`;
+const _headersFileContent =
+  `/*\n  Permissions-Policy: ${PermissionsPolicy}\n\n` +
+  CSPHeaders.filter(({ route }) => route !== "/*")
+    .map(
+      ({ route, header }) => `${route}\n  Content-Security-Policy: ${header}`
+    )
+    .join("\n\n");
 
 // write generated headers to _headers file
 await fs.writeFile("./dist/_headers", _headersFileContent);
