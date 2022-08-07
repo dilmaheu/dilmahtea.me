@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import crypto from "crypto";
+import fetch from "node-fetch";
 import { globby } from "globby";
 import { parseHTML } from "linkedom";
 import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
@@ -81,9 +82,14 @@ const CSPHeaders = await Promise.all(
   })
 );
 
+const { header: defaultCSPHeader } = CSPHeaders.find(
+    ({ route }) => route === "/*"
+  ),
+  routeSpecificCSPHeaders = CSPHeaders.filter(({ route }) => route !== "/*");
+
 const _headersFileContent =
   `/*\n  Permissions-Policy: ${PermissionsPolicy}\n\n` +
-  CSPHeaders.filter(({ route }) => route !== "/*")
+  routeSpecificCSPHeaders
     .map(
       ({ route, header }) => `${route}\n  Content-Security-Policy: ${header}`
     )
@@ -91,3 +97,36 @@ const _headersFileContent =
 
 // write generated headers to _headers file
 await fs.writeFile("./dist/_headers", _headersFileContent);
+
+const { ZONE_ID, RULESET_ID, API_TOKEN } = process.env;
+
+const endpoint = `https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/rulesets/${RULESET_ID}`;
+
+const response = await fetch(endpoint, {
+  method: "PUT",
+  headers: {
+    Authorization: `Bearer ${API_TOKEN}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    rules: [
+      {
+        expression: `(not http.request.uri.path in {${routeSpecificCSPHeaders
+          .map(({ route }) => `"${route}"`)
+          .join(" ")}})`,
+        description: "Default Content-Security-Policy Header",
+        action: "rewrite",
+        action_parameters: {
+          headers: {
+            "Content-Security-Policy": {
+              operation: "set",
+              value: defaultCSPHeader,
+            },
+          },
+        },
+      },
+    ],
+  }),
+}).then((res) => res.json());
+
+console.log(response);
