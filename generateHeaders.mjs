@@ -1,4 +1,3 @@
-import "dotenv/config";
 import fs from "fs/promises";
 import crypto from "crypto";
 import fetch from "node-fetch";
@@ -87,14 +86,12 @@ const _headersFileContent =
 // write generated headers to _headers file
 await fs.writeFile("./dist/_headers", _headersFileContent);
 
-const { ZONE_ID, RULESET_ID, API_TOKEN } = process.env;
-
-const endpoint = `https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/rulesets/${RULESET_ID}`;
+const endpoint = `https://api.cloudflare.com/client/v4/zones/${env.ZONE_ID}/rulesets/${env.RULESET_ID}`;
 
 const response = await fetch(endpoint, {
   method: "PUT",
   headers: {
-    Authorization: `Bearer ${API_TOKEN}`,
+    Authorization: `Bearer ${env.API_TOKEN}`,
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
