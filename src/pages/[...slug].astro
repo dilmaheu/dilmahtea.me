@@ -63,16 +63,15 @@ export async function getStaticPaths() {
             },
           };
         })
-      : {
+      :{
           params: {
-            slug:
-              obj.type == "plan"
+            slug : obj.type == "plan"
                 ? obj.slug
                 : arrOrObj.Meta.URL_slug == "/"
                 ? undefined
                 : arrOrObj.Meta.URL_slug == "crowdfunding"
                 ? `${arrOrObj.locale.substring(0, 2)}/crowdfunding`
-                : arrOrObj.Meta.URL_slug, // URL slug to be used
+                : arrOrObj.Meta.URL_slug // URL slug to be used
           },
           props: {
             // Props
@@ -171,17 +170,43 @@ export async function getStaticPaths() {
     }
   });
 
-  // Saving all Localized home pages
-  let allLocalizedHomePages =
+  // Getting crowdfunding pages
+  let allCrowdfundingPages = [];
+
+  let allLocalizedCrowdfundingPages =
     allPages.data.crowdfundingHome.data.attributes.localizations.data;
-  const allHomeLocales = getAllLocales(allLocalizedHomePages);
-  allLocalizedHomePages = allLocalizedHomePages.map((homePage) => {
+
+  const crowdfundingLocales = getAllLocales(allLocalizedCrowdfundingPages);
+
+  // The default Crowdfunding page
+  let defaultCrowdfundingPage = allPages.data.crowdfundingHome.data.attributes;
+
+  const allCrowdfundingPlans =  allPages.data.crowdfundingPlans.data.map(
+  (val) => val.attributes
+);
+  
+  const defaultCrowdfundingHomeObj = {
+    availableLocales: crowdfundingLocales,
+    type: `crowdfunding`,
+    allPlans: allCrowdfundingPlans,
+  };
+
+  console.log(defaultCrowdfundingPage)
+
+  defaultCrowdfundingPage = createPages(defaultCrowdfundingPage, defaultCrowdfundingHomeObj);
+
+  allCrowdfundingPages.push(defaultCrowdfundingPage);
+
+  // Saving all Localized crowdfunding pages
+  const allCrowdfundingPagesLocales = getAllLocales(allLocalizedCrowdfundingPages);
+
+  allLocalizedCrowdfundingPages = allLocalizedCrowdfundingPages.map((homePage) => {
     const currentPlans = allPlans
       .filter((val) => val?.props?.page?.locale == homePage.attributes.locale)
       .map((val) => val.props.page);
     const homeObj = {
-      type: "home",
-      availableLocales: allHomeLocales,
+      type: "crowdfunding",
+      availableLocales: allCrowdfundingPagesLocales,
       allPlans: currentPlans,
     };
     let localizedHome = createPages(homePage.attributes, homeObj);
@@ -190,7 +215,7 @@ export async function getStaticPaths() {
 
   let canonicalURL;
 
-  const locales = allLocalizedHomePages.map(({ params }) => {
+  const locales = allLocalizedCrowdfundingPages.map(({ params }) => {
     const { slug } = params;
 
     canonicalURL = slug.substring(2);
@@ -203,13 +228,15 @@ export async function getStaticPaths() {
   allLocales.forEach((locale) => {
     if (locale !== "en" && !locales.includes(locale)) {
       // @ts-ignore
-      allLocalizedHomePages.push({
+      allLocalizedCrowdfundingPages.push({
         params: {
           slug: locale + canonicalURL,
         },
       });
     }
   });
+
+  allCrowdfundingPages.push(...allLocalizedCrowdfundingPages)
 
   // The default Basic pages
   let allBasicPages = [];
@@ -318,7 +345,7 @@ export async function getStaticPaths() {
 
   // return all pages altogether each with the right return format
   return [
-    ...allLocalizedHomePages,
+    ...allCrowdfundingPages,
     ...allConfirmations,
     ...allPlans,
     ...allBasicPages,
