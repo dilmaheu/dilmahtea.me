@@ -15,7 +15,7 @@ const sharedCSP = {
   "img-src": ["'self'", "https://dilmahtea.me"],
   "font-src": ["'self'"],
   "worker-src": ["blob:"],
-  "connect-src": ["https://api.openreplay.com"],
+  "connect-src": ["'self'", "https://api.openreplay.com"],
   "upgrade-insecure-requests": [],
 };
 
@@ -59,7 +59,10 @@ const CSPHeaders = await Promise.all(
       .join("; ");
 
     // overwrite html to add generated csp header & nonces
-    await fs.writeFile(path, `<!DOCTYPE html>\n${document.documentElement.outerHTML}`);
+    await fs.writeFile(
+      path,
+      `<!DOCTYPE html>\n${document.documentElement.outerHTML}`
+    );
 
     return {
       route,
