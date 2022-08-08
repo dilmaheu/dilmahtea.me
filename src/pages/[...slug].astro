@@ -11,6 +11,9 @@ import CrowdfundingForm from "../components/CrowdfundingForm.astro";
 import BasicPage from "../components/BasicPage.astro";
 import Blog from "../components/Blog.astro";
 import BlogDetails from "../components/BlogDetails.astro";
+import SetPreferredLocale from "../components/SetPreferredLocale.astro";
+import DefaultRouteRedirect from "../components/DefaultRouteRedirect.astro";
+import TranslationNotFoundRedirect from "../components/TranslationNotFoundRedirect.astro";
 
 /**
  * This file is used for all the other pages
@@ -393,38 +396,11 @@ const { defaultRoute, translationNotFound } = Astro.props,
 ---
 
 {isRedirectionNecessary ? (
-  <script is:inline>
-    const allLocales = ["en", "nl", "de", "es"], // List available locales
-      browserLocale = navigator.language.substring(0, 2); // get browser locale
+  <Fragment>
+    <SetPreferredLocale />
 
-    let preferredLocale = localStorage.getItem("locale"); // locale stored in browser storage
-
-    if (preferredLocale == null) {
-      // if no stored locale use browser locale if it exists in the list
-      preferredLocale = allLocales.includes(browserLocale) ? browserLocale : "en";
-
-      localStorage.setItem(`locale`, preferredLocale);
-    }
-
-    // disable first-visit redirection on next visits
-    sessionStorage.setItem(`locale`, preferredLocale);
-
-    const currentLocale = location.pathname.split("/")[1],
-      nextLocalePrefix =
-        currentLocale === preferredLocale || preferredLocale === "en"
-          ? "/"
-          : "/" + preferredLocale + "/";
-
-    const [, , ...urlParts] = location.pathname.split("/");
-
-    const preferredLocaleUrl = new URL(
-      location.origin + nextLocalePrefix + urlParts.join("/")
-    );
-
-    preferredLocaleUrl.searchParams.append("localeExists", "false");
-
-    location.href = preferredLocaleUrl.toString();
-  </script>
+    {defaultRoute ? <DefaultRouteRedirect /> : <TranslationNotFoundRedirect />}
+  </Fragment>
 ) : (
   () => {
     const { page, recurData } = Astro.props,

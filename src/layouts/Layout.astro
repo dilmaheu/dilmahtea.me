@@ -6,8 +6,8 @@ import "../styles/styles.css";
 import MainHead from "../components/MainHead.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
-import Redirect from "../components/Redirect.astro";
 import TopNotification from "../components/TopNotification.astro";
+import SetPreferredLocale from "../components/SetPreferredLocale.astro";
 
 /**
  * This file is used as a re-usable component that is the layout
@@ -55,7 +55,7 @@ const footerText = recurData.Footer_text.replaceAll(
       />
     )}
 
-    <Redirect />
+    <SetPreferredLocale />
 
     <MainHead
       {title}
@@ -247,20 +247,11 @@ const footerText = recurData.Footer_text.replaceAll(
 
       // Redirect function
       const redirectPath = (newLocale) => {
-        let newPath;
-        const localizedPathPattern = /^\/(nl|de)(\/[^]*)?$/,
-          localeUrlPrefix = newLocale === "en" ? "" : `/${newLocale}`;
+        const currentLocale = location.pathname.split("/")[1];
 
-        if (localizedPathPattern.test(location.pathname)) {
-          const [, , ...urlParts] = location.pathname.split("/");
-
-          newPath = localeUrlPrefix + "/" + urlParts.join("/");
-        } else {
-          newPath = localeUrlPrefix + location.pathname;
-        }
-
-        // remove query params from the url if any
-        location.href = newPath.replace(location.search, "");
+        location.href = location.pathname
+          .replace(`/${currentLocale}/`, `/${newLocale}/`)
+          .replace(location.search, "");
       };
 
       document.querySelectorAll(".lang-selector").forEach((langSelector) => {
