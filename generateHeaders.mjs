@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import crypto from "crypto";
 import fetch from "node-fetch";
 import { globby } from "globby";
-import { parseHTML } from "linkedom";
+import { JSDOM } from "jsdom";
 import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
 
 const htmlFilePaths = await globby("./dist/**/*.html");
@@ -23,7 +23,7 @@ const CSPHeaders = await Promise.all(
   htmlFilePaths.map(async (path) => {
     const htmlContent = await fs.readFile(path, "utf8");
 
-    const { document } = await parseHTML(htmlContent);
+    const { document } = new JSDOM(htmlContent).window;
 
     const scripts = document.querySelectorAll("script");
 
