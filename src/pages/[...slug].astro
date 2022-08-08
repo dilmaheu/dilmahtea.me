@@ -5,12 +5,15 @@ import Layout from "../layouts/Layout.astro";
 import AllPagesQuery from "../queries/AllPagesQuery";
 
 // Getting the Confirmation and Home components to create pages
-import Home from "../components/Home.astro";
-import Confirmation from "../components/Confirmation.astro";
-import CrowdfundingForm from "../components/CrowdfundingForm.astro";
-import BasicPage from "../components/BasicPage.astro";
 import Blog from "../components/Blog.astro";
+import HowTo from "../components/HowTo.astro";
+import Homepage from "../components/Homepage.astro";
+import BasicPage from "../components/BasicPage.astro";
 import BlogDetails from "../components/BlogDetails.astro";
+import HowToDetails from "../components/HowToDetails.astro";
+import Confirmation from "../components/Confirmation.astro";
+import Crowdfunding from "../components/Crowdfunding.astro";
+import CrowdfundingForm from "../components/CrowdfundingForm.astro";
 import SetPreferredLocale from "../components/SetPreferredLocale.astro";
 import DefaultRouteRedirect from "../components/DefaultRouteRedirect.astro";
 import TranslationNotFoundRedirect from "../components/TranslationNotFoundRedirect.astro";
@@ -354,6 +357,93 @@ export async function getStaticPaths() {
     allLocalizedBlogHome.forEach((page) => allBlogHome.push(page));
   }
 
+  // Getting HowTo details pages
+  let allHowTos = [];
+  // Mapping all localized HowTo details pages into a new array that returns an object that generates the paths
+  allPages.data.howTos.data.forEach((page) => {
+    let localizedHowTosPages = page.attributes.localizations.data;
+    const howTosPagesLocales = getAllLocales(localizedHowTosPages);
+    if (localizedHowTosPages.length > 0) {
+      const localizedHowTosObj = {
+        availableLocales: howTosPagesLocales,
+        type: "howToDetails",
+        allHowTos: allHowTos,
+      };
+      localizedHowTosPages = createPages(
+        localizedHowTosPages,
+        localizedHowTosObj
+      );
+      localizedHowTosPages.forEach((lclPage) => allHowTos.push(lclPage));
+    }
+    const defaultBlogsObj = {
+      availableLocales: howTosPagesLocales,
+      type: "howToDetails",
+      allHowTos: allHowTos,
+    };
+    const defaultBlogsPage = createPages(page.attributes, defaultBlogsObj);
+    allHowTos.push(defaultBlogsPage);
+  });
+
+  // Getting HowTo home page
+  let allHowToHome = [];
+  let allLocalizedHowToHome =
+    allPages.data.homeHowTo.data.attributes.localizations.data;
+  const howToHomeLocales = getAllLocales(allLocalizedHowToHome);
+  // The default Blog home page
+  let defaultHowToHome = allPages.data.homeHowTo.data.attributes;
+  const defaultHowToHomeObj = {
+    availableLocales: howToHomeLocales,
+    type: "howTo",
+    allHowTos: allHowTos,
+  };
+  defaultHowToHome = createPages(defaultHowToHome, defaultHowToHomeObj);
+  allHowToHome.push(defaultHowToHome);
+
+  // First check if there are any localized HowTo home pages if not do nothing
+  if (allLocalizedHowToHome.length > 0) {
+    const localizedHowToHomeObj = {
+      availableLocales: howToHomeLocales,
+      type: "howTo",
+      allHowTos: allHowTos,
+    };
+    allLocalizedHowToHome = createPages(
+      allLocalizedHowToHome,
+      localizedHowToHomeObj
+    );
+    allLocalizedHowToHome.forEach((page) => allHowToHome.push(page));
+  }
+
+  // Getting home page
+  let allHomepage = [];
+  let allLocalizedHomepage =
+    allPages.data.homepage.data.attributes.localizations.data;
+  const HomepageLocales = getAllLocales(allLocalizedHomepage);
+  // The default Blog home page
+  let defaultHomepage = allPages.data.homepage.data.attributes;
+  const defaultHomepageObj = {
+    availableLocales: HomepageLocales,
+    type: "homepage",
+    allBlogs: allBlogs,
+    allHowTos: allHowTos,
+  };
+  defaultHomepage = createPages(defaultHomepage, defaultHomepageObj);
+  allHomepage.push(defaultHomepage);
+
+  // First check if there are any localized home pages if not do nothing
+  if (allLocalizedHomepage.length > 0) {
+    const localizedHomepageObj = {
+      availableLocales: HomepageLocales,
+      type: "homepage",
+      allBlogs: allBlogs,
+      allHowTos: allHowTos,
+    };
+    allLocalizedHomepage = createPages(
+      allLocalizedHomepage,
+      localizedHomepageObj
+    );
+    allLocalizedHomepage.forEach((page) => allHomepage.push(page));
+  }
+
   const allPagesRoutingData = [
     ...allCrowdfundingPages,
     ...allConfirmations,
@@ -361,6 +451,9 @@ export async function getStaticPaths() {
     ...allBasicPages,
     ...allBlogHome,
     ...allBlogs,
+    ...allHowToHome,
+    ...allHowTos,
+    ...allHomepage,
   ];
 
   allPagesRoutingData.forEach((page) => {
@@ -424,14 +517,20 @@ const { defaultRoute, translationNotFound } = Astro.props,
                 .public_id
         }
       >
-        {page.type == `crowdfunding` ? (
-          <Home page={page} />
+        {page.type == `homepage` ? (
+          <Homepage page={page} />
+        ) : page.type == `crowdfunding` ? (
+          <Crowdfunding page={page} />
         ) : page.type == `basicPages` ? (
           <BasicPage page={page} />
         ) : page.type == `blog` ? (
           <Blog page={page} />
         ) : page.type == `blogDetails` ? (
           <BlogDetails page={page} />
+        ) : page.type == `howTo` ? (
+          <HowTo page={page} />
+        ) : page.type == `howToDetails` ? (
+          <HowToDetails page={page} />
         ) : page.type == `confirm` ? (
           <Confirmation page={page} />
         ) : (

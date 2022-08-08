@@ -12,13 +12,20 @@ const url = `${import.meta.env.CloudImg_URL}`;
 
 const { page } = Astro.props;
 
-const allBlogs = page.allBlogs
+const allContent = page.allBlogs
+  .concat(page.allHowTos);
+
+const allBlogs = allContent
 .filter((val) => val?.props?.page?.locale == page.locale)
   .map((val) => val.props.page);
 
-allBlogs.sort((a, b) => {
-  return new Date(b.createdAt) - new Date(a.createdAt); 
-})
+function sortFunction(a,b){  
+  var dateA = new Date(a.date).getTime();
+  var dateB = new Date(b.date).getTime();
+  return dateA > dateB ? 1 : -1;  
+};
+
+allBlogs.sort(sortFunction)
 
 const [firstBlog] = allBlogs;
 ---
@@ -26,7 +33,7 @@ const [firstBlog] = allBlogs;
 <!-- Hero Section -->
 <div class="hero overflow-hidden relative">
   <UpdateHeroTopMargin />
-
+  
   <!-- Background -->
   <div class="w-full absolute bottom-0">
     <svg
@@ -178,23 +185,23 @@ const [firstBlog] = allBlogs;
               : "relative w-full sm:w-1/2 order-1 sm:order-2 blogHome_blogCurveContainer"
           }
         >
-          {/*Blog Image Desktop view */}
+          <a href={`/` + blog.Meta.URL_slug}>
+            {/*Blog Image Desktop view */}
 
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 565 500"
-            class={
-              idx % 2 == 0
-                ? "hidden sm:block blogHome_blogCurveL"
-                : "hidden sm:block blogHome_blogCurveR"
-            }
-          >
-            <defs>
-              <clipPath id="basicInfoSec_ImgFrame1">
-                <path d="M291.8,3.8c-88.5,0-235-7.9-269.3,37.3S1.2,247.5,9.6,368.2,102.7,500,298.4,500c160.9,0,211.2-31.8,252.1-141.4C567.9,312,577,197.4,534.2,63.9,506.5-22.6,415,3.8,291.8,3.8Z" />
-              </clipPath>
-            </defs>
-            <a href={`/` + blog.Meta.URL_slug}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 565 500"
+              class={
+                idx % 2 == 0
+                  ? "hidden sm:block blogHome_blogCurveL"
+                  : "hidden sm:block blogHome_blogCurveR"
+              }
+            >
+              <defs>
+                <clipPath id="basicInfoSec_ImgFrame1">
+                  <path d="M291.8,3.8c-88.5,0-235-7.9-269.3,37.3S1.2,247.5,9.6,368.2,102.7,500,298.4,500c160.9,0,211.2-31.8,252.1-141.4C567.9,312,577,197.4,534.2,63.9,506.5-22.6,415,3.8,291.8,3.8Z" />
+                </clipPath>
+              </defs>
               <image
                 class="w-auto h-full"
                 height="100%"
@@ -206,24 +213,21 @@ const [firstBlog] = allBlogs;
                   `/small`
                 }
                 clip-path="url(#basicInfoSec_ImgFrame1)"
-              >
-              </image>
-            </a>
-          </svg>
+              />
+            </svg>
 
-          {/* Blog Image Mobile view */}
+            {/* Blog Image Mobile view */}
 
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 912 499"
-            class="block sm:hidden"
-          >
-            <defs>
-              <clipPath id="basicInfoSec_ImgFrame1sm">
-                <path d="M470.9,3.8C328.1,3.8,91.7-4.1,36.3,41S1.9,247,15.5,367.5,165.7,499,481.7,499c259.7,0,340.9-31.7,406.9-141.1,28-46.5,42.8-160.9-26.2-294.1C817.6-22.6,669.9,3.8,470.9,3.8Z" />
-              </clipPath>
-            </defs>
-            <a href={`/` + blog.Meta.URL_slug}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 912 499"
+              class="block sm:hidden"
+            >
+              <defs>
+                <clipPath id="basicInfoSec_ImgFrame1sm">
+                  <path d="M470.9,3.8C328.1,3.8,91.7-4.1,36.3,41S1.9,247,15.5,367.5,165.7,499,481.7,499c259.7,0,340.9-31.7,406.9-141.1,28-46.5,42.8-160.9-26.2-294.1C817.6-22.6,669.9,3.8,470.9,3.8Z" />
+                </clipPath>
+              </defs>
               <image
                 class="w-full h-auto"
                 height="100%"
@@ -234,12 +238,9 @@ const [firstBlog] = allBlogs;
                   `/small`
                 }
                 clip-path="url(#basicInfoSec_ImgFrame1sm)"
-              >
-              </image>
-            </a>
-          </svg>
+              />
+            </svg>
 
-          <a href={`/` + blog.Meta.URL_slug}>
             <div
               class={
                 idx % 2 == 0
