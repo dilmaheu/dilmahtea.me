@@ -5,6 +5,7 @@ import Layout from "../layouts/Layout.astro";
 import AllPagesQuery from "../queries/AllPagesQuery";
 
 // Getting the Confirmation and Home components to create pages
+import Homepage from "../components/Homepage.astro";
 import Home from "../components/Home.astro";
 import Confirmation from "../components/Confirmation.astro";
 import CrowdfundingForm from "../components/CrowdfundingForm.astro";
@@ -370,6 +371,37 @@ export async function getStaticPaths() {
     );
     allLocalizedHowToHome.forEach((page) => allHowToHome.push(page));
   }
+  
+  // Getting home page
+  let allHomepage = [];
+  let allLocalizedHomepage =
+    allPages.data.homepage.data.attributes.localizations.data;
+  const HomepageLocales = getAllLocales(allLocalizedHomepage);
+  // The default Blog home page
+  let defaultHomepage = allPages.data.homepage.data.attributes;
+  const defaultHomepageObj = {
+    availableLocales: HomepageLocales,
+    type: "homepage",
+    allBlogs: allBlogs,
+    allHowTos: allHowTos,
+  };
+  defaultHomepage = createPages(defaultHomepage, defaultHomepageObj);
+  allHomepage.push(defaultHomepage);
+
+  // First check if there are any localized home pages if not do nothing
+  if (allLocalizedHomepage.length > 0) {
+    const localizedHomepageObj = {
+      availableLocales: HomepageLocales,
+      type: "homepage",
+      allBlogs: allBlogs,
+      allHowTos: allHowTos,
+    };
+    allLocalizedHomepage = createPages(
+      allLocalizedHomepage,
+      localizedHomepageObj
+    );
+    allLocalizedHomepage.forEach((page) => allHomepage.push(page));
+  }
 
   // return all pages altogether each with the right return format
   return [
@@ -381,6 +413,7 @@ export async function getStaticPaths() {
     ...allBlogs,
     ...allHowToHome,
     ...allHowTos,
+    ...allHomepage,
   ];
 }
 
@@ -410,7 +443,9 @@ try {
             .public_id
     }
   >
-    {page.type == `home` ? (
+    {page.type == `homepage` ? (
+      <Homepage page={page} />
+    ): page.type == `home` ? (
       <Home page={page} />
     ) : page.type == `basicPages` ? (
       <BasicPage page={page} />
