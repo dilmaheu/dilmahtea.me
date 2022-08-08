@@ -173,6 +173,19 @@ const docLang = languages[locales.indexOf(locale)],
       selector.classList.toggle("hidden");
     });
 
+  const activeLangSelectors = document.querySelectorAll(
+      ".lang-selector:not(.hidden)"
+    ),
+    sortedLangSelectors = [...activeLangSelectors].sort(
+      (nextSelector, currentSelector) =>
+        nextSelector.innerText.localeCompare(currentSelector.innerText, "en")
+    );
+
+  sortedLangSelectors.forEach((langSelector, i) => {
+    i !== sortedLangSelectors.length - 1 &&
+      langSelector.after(sortedLangSelectors[i + 1]);
+  });
+
   document.addEventListener("click", ({ target }) => {
     const dropdown = document.querySelector("#dropdown");
     (langButton = document.querySelector("#langBtn")),
