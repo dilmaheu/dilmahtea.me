@@ -3,7 +3,10 @@ import UKImg from "/images/UK.svg";
 import GerImg from "/images/germany.svg";
 import NLImg from "/images/netherlands.svg";
 
-const { locale, localLangNames, langEnglishName } = Astro.props;
+const { locales, language, languages, localeNamesData } = Astro.props;
+
+const lang = locales[languages.indexOf(language)],
+  langEnglishName = localeNamesData.English[language];
 ---
 
 <style>
@@ -16,10 +19,10 @@ const { locale, localLangNames, langEnglishName } = Astro.props;
 
 <li class="block">
   <button
-    lang={locale}
+    lang={lang}
     style="cursor: pointer;"
     class:list={[
-      locale,
+      lang,
       "lang-selector hover:bg-gray-300 flex flex-wrap gap-x-1.5 md:gap-x-3 items-center dropdownItem",
     ]}
   >
@@ -32,11 +35,16 @@ const { locale, localLangNames, langEnglishName } = Astro.props;
       </div> -->
 
     <span class="lang">
-      <span class="en hidden">{localLangNames.English}</span><span class="nl hidden"
-        >{localLangNames.Dutch}
-      </span><span class="de hidden">{localLangNames.German}</span><span class="es hidden"
-        >{localLangNames.Spanish}
-      </span> / {langEnglishName}
+      {Object.keys(localeNamesData).map((lang) => {
+        const locale = locales[languages.indexOf(lang)],
+          localLocaleNames = localeNamesData[lang];
+
+        return (
+          <span class={`${locale} hidden`}>{localLocaleNames[language]}</span>
+        );
+      })}
+
+      / {langEnglishName}
     </span>
   </button>
 </li>

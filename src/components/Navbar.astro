@@ -71,25 +71,14 @@ const docLang = languages[locales.indexOf(locale)],
               id="dropdownMenu"
               class="absolute rounded hidden overflow-hidden dropdown-menu"
             >
-              {languages.map((language) => {
-                const locale = locales[languages.indexOf(language)],
-                  langEnglishName = localeNamesData.English[language];
-
-                const localLangNames = {
-                  English: localeNamesData.English[language],
-                  Dutch: localeNamesData.Dutch[language],
-                  German: localeNamesData.German[language],
-                  Spanish: localeNamesData.Spanish[language],
-                };
-
-                return (
-                  <LangButton
-                    locale={locale}
-                    localLangNames={localLangNames}
-                    langEnglishName={langEnglishName}
-                  />
-                );
-              })}
+              {languages.map((language) => (
+                <LangButton
+                  locales={locales}
+                  language={language}
+                  languages={languages}
+                  localeNamesData={localeNamesData}
+                />
+              ))}
             </ul>
           </div>
         </div>

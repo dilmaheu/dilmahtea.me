@@ -1,17 +1,27 @@
-const i18nLocalesQuery = `
+const i18nQuery = `
   {
-    i18NLocales {
+    i18Ns {
       data {
         attributes {
           code
-          name
+          locale
+          language
+          localizations {
+            data {
+              attributes {
+                code
+                locale
+                language
+              }
+            }
+          }
         }
       }
     }
   }
 `;
 
-const i18nLocalesData = await fetch(import.meta.env.DB_URL, {
+const { data: i18nData } = await fetch(import.meta.env.DB_URL, {
   method: "POST",
   headers: {
     Accept: "application/json",
@@ -19,54 +29,46 @@ const i18nLocalesData = await fetch(import.meta.env.DB_URL, {
     Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
   },
   body: JSON.stringify({
-    query: i18nLocalesQuery,
+    query: i18nQuery,
   }),
 }).then((res) => res.json());
 
-const i18nLocales = i18nLocalesData.data.i18NLocales.data.map((localeData) => {
-  const locale = localeData.attributes.code,
-    language = localeData.attributes.name.split(" ")[0];
+const allI18NEntries = [];
 
-  return {
-    locale,
-    language,
-  };
+i18nData.i18Ns.data.forEach(({ attributes }) => {
+  allI18NEntries.push(attributes);
+
+  attributes.localizations.data.forEach(({ attributes }) => {
+    allI18NEntries.push(attributes);
+  });
 });
 
-const locales = i18nLocales.map(({ locale }) => locale.substring(0, 2)),
-  languages = i18nLocales.map(({ language }) => language);
+const locales = [],
+  languages = [];
 
-const localeNamesQuery = `{
-${i18nLocales.map(
-  ({ locale, language }) => `
-    ${language}: localeName (locale: "${locale}") {
-      data {
-        attributes {
-          Dutch
-          English
-          German
-          Spanish
-        }
-      }
-    }
-`
-)}
-}`;
+allI18NEntries
+  .filter(({ locale }) => locale === "en")
+  .forEach(({ code, language }) => {
+    locales.push(code.toLowerCase());
+    languages.push(language);
+  });
 
-const { data: localeNamesData } = await fetch(import.meta.env.DB_URL, {
-  method: "POST",
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
-  },
-  body: JSON.stringify({
-    query: localeNamesQuery,
-  }),
-}).then((res) => res.json());
+const localeNamesData = {};
 
-languages.map((lang) => {
-  localeNamesData[lang] = localeNamesData[lang].data.attributes;
+languages.forEach((language, i) => {
+  const localLocaleNames = {};
+
+  const locale = locales[i];
+
+  allI18NEntries
+    .filter((entry) => entry.locale.substring(0, 2) === locale)
+    .forEach(({ code, language: translation }) => {
+      const language = languages[locales.indexOf(code.toLowerCase())];
+
+      localLocaleNames[language] = translation;
+    });
+
+  localeNamesData[language] = localLocaleNames;
 });
 
 export default function getLocalesData() {
