@@ -74,7 +74,9 @@ export async function getStaticPaths() {
                 : arrOrObj.Meta.URL_slug == "/"
                 ? undefined
                 : arrOrObj.Meta.URL_slug == "crowdfunding"
-                ? `${arrOrObj.locale.substring(0, 2)}/crowdfunding`
+                ? arrOrObj.locale.substring(0, 2) === "en"
+                  ? "crowdfunding"
+                  : `${arrOrObj.locale.substring(0, 2)}/crowdfunding`
                 : arrOrObj.Meta.URL_slug, // URL slug to be used
           },
           props: {
