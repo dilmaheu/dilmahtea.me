@@ -63,15 +63,16 @@ export async function getStaticPaths() {
             },
           };
         })
-      :{
+      : {
           params: {
-            slug : obj.type == "plan"
+            slug:
+              obj.type == "plan"
                 ? obj.slug
                 : arrOrObj.Meta.URL_slug == "/"
                 ? undefined
                 : arrOrObj.Meta.URL_slug == "crowdfunding"
                 ? `${arrOrObj.locale.substring(0, 2)}/crowdfunding`
-                : arrOrObj.Meta.URL_slug // URL slug to be used
+                : arrOrObj.Meta.URL_slug, // URL slug to be used
           },
           props: {
             // Props
@@ -181,37 +182,42 @@ export async function getStaticPaths() {
   // The default Crowdfunding page
   let defaultCrowdfundingPage = allPages.data.crowdfundingHome.data.attributes;
 
-  const allCrowdfundingPlans =  allPages.data.crowdfundingPlans.data.map(
-  (val) => val.attributes
-);
-  
+  const allCrowdfundingPlans = allPages.data.crowdfundingPlans.data.map(
+    (val) => val.attributes
+  );
+
   const defaultCrowdfundingHomeObj = {
     availableLocales: crowdfundingLocales,
     type: `crowdfunding`,
     allPlans: allCrowdfundingPlans,
   };
 
-  console.log(defaultCrowdfundingPage)
-
-  defaultCrowdfundingPage = createPages(defaultCrowdfundingPage, defaultCrowdfundingHomeObj);
+  defaultCrowdfundingPage = createPages(
+    defaultCrowdfundingPage,
+    defaultCrowdfundingHomeObj
+  );
 
   allCrowdfundingPages.push(defaultCrowdfundingPage);
 
   // Saving all Localized crowdfunding pages
-  const allCrowdfundingPagesLocales = getAllLocales(allLocalizedCrowdfundingPages);
+  const allCrowdfundingPagesLocales = getAllLocales(
+    allLocalizedCrowdfundingPages
+  );
 
-  allLocalizedCrowdfundingPages = allLocalizedCrowdfundingPages.map((homePage) => {
-    const currentPlans = allPlans
-      .filter((val) => val?.props?.page?.locale == homePage.attributes.locale)
-      .map((val) => val.props.page);
-    const homeObj = {
-      type: "crowdfunding",
-      availableLocales: allCrowdfundingPagesLocales,
-      allPlans: currentPlans,
-    };
-    let localizedHome = createPages(homePage.attributes, homeObj);
-    return localizedHome;
-  });
+  allLocalizedCrowdfundingPages = allLocalizedCrowdfundingPages.map(
+    (homePage) => {
+      const currentPlans = allPlans
+        .filter((val) => val?.props?.page?.locale == homePage.attributes.locale)
+        .map((val) => val.props.page);
+      const homeObj = {
+        type: "crowdfunding",
+        availableLocales: allCrowdfundingPagesLocales,
+        allPlans: currentPlans,
+      };
+      let localizedHome = createPages(homePage.attributes, homeObj);
+      return localizedHome;
+    }
+  );
 
   let canonicalURL;
 
@@ -236,7 +242,7 @@ export async function getStaticPaths() {
     }
   });
 
-  allCrowdfundingPages.push(...allLocalizedCrowdfundingPages)
+  allCrowdfundingPages.push(...allLocalizedCrowdfundingPages);
 
   // The default Basic pages
   let allBasicPages = [];
@@ -386,40 +392,41 @@ const { defaultRoute, translationNotFound } = Astro.props,
   isRedirectionNecessary = defaultRoute || translationNotFound;
 ---
 
-{
-  isRedirectionNecessary
-    ? (<script is:inline>
-      const allLocales = ["en", "nl", "de", "es"], // List available locales
-        browserLocale = navigator.language.substring(0, 2); // get browser locale
+{isRedirectionNecessary ? (
+  <script is:inline>
+    const allLocales = ["en", "nl", "de", "es"], // List available locales
+      browserLocale = navigator.language.substring(0, 2); // get browser locale
 
-      let preferredLocale = localStorage.getItem("locale"); // locale stored in browser storage
+    let preferredLocale = localStorage.getItem("locale"); // locale stored in browser storage
 
-      if (preferredLocale == null) {
-        // if no stored locale use browser locale if it exists in the list
-        preferredLocale = allLocales.includes(browserLocale) ? browserLocale : "en";
+    if (preferredLocale == null) {
+      // if no stored locale use browser locale if it exists in the list
+      preferredLocale = allLocales.includes(browserLocale) ? browserLocale : "en";
 
-        localStorage.setItem(`locale`, preferredLocale);
-      }
+      localStorage.setItem(`locale`, preferredLocale);
+    }
 
-      // disable first-visit redirection on next visits
-      sessionStorage.setItem(`locale`, preferredLocale);
+    // disable first-visit redirection on next visits
+    sessionStorage.setItem(`locale`, preferredLocale);
 
-      const currentLocale = location.pathname.split("/")[1],
-        nextLocalePrefix =
-          currentLocale === preferredLocale || preferredLocale === "en"
-            ? "/"
-            : "/" + preferredLocale + "/";
+    const currentLocale = location.pathname.split("/")[1],
+      nextLocalePrefix =
+        currentLocale === preferredLocale || preferredLocale === "en"
+          ? "/"
+          : "/" + preferredLocale + "/";
 
-      const [, , ...urlParts] = location.pathname.split("/");
+    const [, , ...urlParts] = location.pathname.split("/");
 
-      const preferredLocaleUrl = new URL(
-        location.origin + nextLocalePrefix + urlParts.join("/")
-      );
+    const preferredLocaleUrl = new URL(
+      location.origin + nextLocalePrefix + urlParts.join("/")
+    );
 
-      preferredLocaleUrl.searchParams.append("localeExists", "false");
+    preferredLocaleUrl.searchParams.append("localeExists", "false");
 
-      location.href = preferredLocaleUrl.toString();
-    </script>) : ((() => {
+    location.href = preferredLocaleUrl.toString();
+  </script>
+) : (
+  () => {
     const { page, recurData } = Astro.props,
       { availableLocales, Meta: meta } = page,
       locale = page.locale.substring(0, 2);
@@ -454,5 +461,5 @@ const { defaultRoute, translationNotFound } = Astro.props,
         )}
       </Layout>
     );
-  }))
-}
+  }
+)}
