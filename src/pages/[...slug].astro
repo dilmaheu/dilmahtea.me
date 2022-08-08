@@ -11,6 +11,8 @@ import CrowdfundingForm from "../components/CrowdfundingForm.astro";
 import BasicPage from "../components/BasicPage.astro";
 import Blog from "../components/Blog.astro";
 import BlogDetails from "../components/BlogDetails.astro";
+import HowTo from "../components/HowTo.astro";
+import HowToDetails from "../components/HowToDetails.astro";
 
 /**
  * This file is used for all the other pages
@@ -316,6 +318,59 @@ export async function getStaticPaths() {
     allLocalizedBlogHome.forEach((page) => allBlogHome.push(page));
   }
 
+  // Getting HowTo details pages
+  let allHowTos = [];
+  // Mapping all localized HowTo details pages into a new array that returns an object that generates the paths
+  allPages.data.howTos.data.forEach((page) => {
+    let localizedHowTosPages = page.attributes.localizations.data;
+    const howTosPagesLocales = getAllLocales(localizedHowTosPages);
+    if (localizedHowTosPages.length > 0) {
+      const localizedHowTosObj = {
+        availableLocales: howTosPagesLocales,
+        type: "howToDetails",
+        allHowTos: allHowTos,
+      };
+      localizedHowTosPages = createPages(localizedHowTosPages, localizedHowTosObj);
+      localizedHowTosPages.forEach((lclPage) => allHowTos.push(lclPage));
+    }
+    const defaultBlogsObj = {
+      availableLocales: howTosPagesLocales,
+      type: "howToDetails",
+      allHowTos: allHowTos,
+    };
+    const defaultBlogsPage = createPages(page.attributes, defaultBlogsObj);
+    allHowTos.push(defaultBlogsPage);
+  });
+  
+  // Getting HowTo home page
+  let allHowToHome = [];
+  let allLocalizedHowToHome =
+    allPages.data.homeHowTo.data.attributes.localizations.data;
+  const howToHomeLocales = getAllLocales(allLocalizedHowToHome);
+  // The default Blog home page
+  let defaultHowToHome = allPages.data.homeHowTo.data.attributes;
+  const defaultHowToHomeObj = {
+    availableLocales: howToHomeLocales,
+    type: "howTo",
+    allHowTos: allHowTos,
+  };
+  defaultHowToHome = createPages(defaultHowToHome, defaultHowToHomeObj);
+  allHowToHome.push(defaultHowToHome);
+
+  // First check if there are any localized HowTo home pages if not do nothing
+  if (allLocalizedHowToHome.length > 0) {
+    const localizedHowToHomeObj = {
+      availableLocales: howToHomeLocales,
+      type: "howTo",
+      allHowTos: allHowTos,
+    };
+    allLocalizedHowToHome = createPages(
+      allLocalizedHowToHome,
+      localizedHowToHomeObj
+    );
+    allLocalizedHowToHome.forEach((page) => allHowToHome.push(page));
+  }
+
   // return all pages altogether each with the right return format
   return [
     ...allLocalizedHomePages,
@@ -324,6 +379,8 @@ export async function getStaticPaths() {
     ...allBasicPages,
     ...allBlogHome,
     ...allBlogs,
+    ...allHowToHome,
+    ...allHowTos,
   ];
 }
 
@@ -361,6 +418,10 @@ try {
       <Blog page={page} />
     ) : page.type == `blogDetails` ? (
       <BlogDetails page={page} />
+    ) : page.type == `howTo` ? (
+      <HowTo page={page} />
+    ) : page.type == `howToDetails` ? (
+      <HowToDetails page={page} />
     ) : page.type == `confirm` ? (
       <Confirmation page={page} />
     ) : (
