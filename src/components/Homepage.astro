@@ -12,20 +12,19 @@ const url = `${import.meta.env.CloudImg_URL}`;
 
 const { page } = Astro.props;
 
-const allContent = page.allBlogs
-  .concat(page.allHowTos);
+const allContent = page.allBlogs.concat(page.allHowTos);
 
 const allBlogs = allContent
-.filter((val) => val?.props?.page?.locale == page.locale)
+  .filter((val) => val?.props?.page?.locale == page.locale)
   .map((val) => val.props.page);
 
-function sortFunction(a,b){  
+function sortFunction(a, b) {
   var dateA = new Date(a.date).getTime();
   var dateB = new Date(b.date).getTime();
-  return dateA > dateB ? 1 : -1;  
-};
+  return dateA > dateB ? 1 : -1;
+}
 
-allBlogs.sort(sortFunction)
+allBlogs.sort(sortFunction);
 
 const [firstBlog] = allBlogs;
 ---
@@ -33,7 +32,7 @@ const [firstBlog] = allBlogs;
 <!-- Hero Section -->
 <div class="hero overflow-hidden relative">
   <UpdateHeroTopMargin />
-  
+
   <!-- Background -->
   <div class="w-full absolute bottom-0">
     <svg

@@ -13,12 +13,12 @@ const url = `${import.meta.env.CloudImg_URL}`;
 const { page } = Astro.props;
 
 const allBlogs = page.allBlogs
-.filter((val) => val?.props?.page?.locale == page.locale)
+  .filter((val) => val?.props?.page?.locale == page.locale)
   .map((val) => val.props.page);
 
 allBlogs.sort((a, b) => {
-  return new Date(b.createdAt) - new Date(a.createdAt); 
-})
+  return new Date(b.createdAt) - new Date(a.createdAt);
+});
 
 const [firstBlog] = allBlogs;
 ---
@@ -206,8 +206,7 @@ const [firstBlog] = allBlogs;
                   `/small`
                 }
                 clip-path="url(#basicInfoSec_ImgFrame1)"
-              >
-              </image>
+              ></image>
             </a>
           </svg>
 
@@ -234,8 +233,7 @@ const [firstBlog] = allBlogs;
                   `/small`
                 }
                 clip-path="url(#basicInfoSec_ImgFrame1sm)"
-              >
-              </image>
+              ></image>
             </a>
           </svg>
 
