@@ -9,6 +9,7 @@ import Footer from "../components/Footer.astro";
 import TopNotification from "../components/TopNotification.astro";
 import SetPreferredLocale from "../components/SetPreferredLocale.astro";
 import NotificationsObserver from "../components/NotificationsObserver.astro";
+import getLangNotAvailableNotification from "../utils/getLangNotAvailableNotification";
 
 /**
  * This file is used as a re-usable component that is the layout
@@ -45,6 +46,8 @@ const footerText = recurData.Footer_text.replaceAll(
   "<current_year>",
   `<noscript>${new Date().getFullYear()}</noscript><script>document.write(new Date().getFullYear().toString())</script>`
 );
+
+const langNotAvailableNotification = getLangNotAvailableNotification();
 ---
 
 <html lang={locale}>
@@ -75,15 +78,7 @@ const footerText = recurData.Footer_text.replaceAll(
 
   <body>
     <div class="translation-not-found-notification">
-      <TopNotification
-        type="error"
-        notification={{
-          en: "English",
-          "nl-NL": "Nederlands",
-          de: "Deutchse",
-          es: "Espanol",
-        }}
-      >
+      <TopNotification type="error" notification={langNotAvailableNotification}>
         <div class="text-center">
           <notification></notification>
         </div>
