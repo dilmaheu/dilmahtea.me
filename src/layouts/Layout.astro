@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import TopNotification from "../components/TopNotification.astro";
 import SetPreferredLocale from "../components/SetPreferredLocale.astro";
+import NotificationsObserver from "../components/NotificationsObserver.astro";
 
 /**
  * This file is used as a re-usable component that is the layout
@@ -55,6 +56,8 @@ const footerText = recurData.Footer_text.replaceAll(
       />
     )}
 
+    <NotificationsObserver />
+
     <SetPreferredLocale />
 
     <MainHead
@@ -72,10 +75,17 @@ const footerText = recurData.Footer_text.replaceAll(
 
   <body>
     <div class="translation-not-found-notification">
-      <TopNotification type="error">
+      <TopNotification
+        type="error"
+        notification={{
+          en: "English",
+          "nl-NL": "Nederlands",
+          de: "Deutchse",
+          es: "Espanol",
+        }}
+      >
         <div class="text-center">
-          Translation Not Found. This content is not available in your requested
-          locale
+          <notification></notification>
         </div>
       </TopNotification>
     </div>

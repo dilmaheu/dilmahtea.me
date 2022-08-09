@@ -1,12 +1,18 @@
 ---
 import fs from "fs/promises";
+import { parseHTML } from "linkedom";
 
 declare interface Props {
   type?: "error" | "warning" | "info" | "success" | "default";
   closingEnabled?: boolean;
+  notification?: Record<string, any>;
 }
 
-const { type = "default", closingEnabled = false } = Astro.props as Props;
+const {
+  type = "default",
+  closingEnabled = false,
+  notification,
+} = Astro.props as Props;
 
 if (type === "error" && closingEnabled === true) {
   throw Error("Error notifications can't have closing functionality enabled");
@@ -18,6 +24,21 @@ if (type !== "default") {
     "utf8"
   );
 }
+
+const defaultSlotHTML = await Astro.slots.render("default");
+
+const { document: defaultSlotDocument } = await parseHTML(defaultSlotHTML);
+
+const notificationPlaceholder =
+  defaultSlotDocument.querySelector("notification");
+
+const notificationsHTML = Object.keys(notification)
+  .map((lang) => `<span class="${lang} hidden">${notification[lang]}</span>`)
+  .join("");
+
+notificationPlaceholder.outerHTML = notificationsHTML;
+
+const notificationContentHTML = defaultSlotDocument.documentElement.outerHTML;
 ---
 
 <style lang="scss">
@@ -73,8 +94,8 @@ if (type !== "default") {
       </div>
     )}
 
-    <div>
-      <slot />
+    <div class="notification-content">
+      <Fragment set:html={notificationContentHTML} />
     </div>
   </div>
 
