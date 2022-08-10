@@ -357,6 +357,19 @@ export async function getStaticPaths() {
     allLocalizedBlogHome.forEach((page) => allBlogHome.push(page));
   }
 
+  const allHomepages = allBlogHome.map((blogHome) => {
+    const homepage = structuredClone(blogHome);
+
+    const { slug } = homepage.params;
+
+    homepage.params.slug =
+      slug === "blog" ? undefined : homepage.params.slug.slice(0, -5);
+
+    return homepage;
+  });
+
+  allBlogHome.push(...allHomepages);
+
   // Getting HowTo details pages
   let allHowTos = [];
   // Mapping all localized HowTo details pages into a new array that returns an object that generates the paths
@@ -413,36 +426,36 @@ export async function getStaticPaths() {
     allLocalizedHowToHome.forEach((page) => allHowToHome.push(page));
   }
 
-  // Getting home page
-  let allHomepage = [];
-  let allLocalizedHomepage =
-    allPages.data.homepage.data.attributes.localizations.data;
-  const HomepageLocales = getAllLocales(allLocalizedHomepage);
-  // The default Blog home page
-  let defaultHomepage = allPages.data.homepage.data.attributes;
-  const defaultHomepageObj = {
-    availableLocales: HomepageLocales,
-    type: "homepage",
-    allBlogs: allBlogs,
-    allHowTos: allHowTos,
-  };
-  defaultHomepage = createPages(defaultHomepage, defaultHomepageObj);
-  allHomepage.push(defaultHomepage);
+  // // Getting home page
+  // let allHomepage = [];
+  // let allLocalizedHomepage =
+  //   allPages.data.homepage.data.attributes.localizations.data;
+  // const HomepageLocales = getAllLocales(allLocalizedHomepage);
+  // // The default Blog home page
+  // let defaultHomepage = allPages.data.homepage.data.attributes;
+  // const defaultHomepageObj = {
+  //   availableLocales: HomepageLocales,
+  //   type: "homepage",
+  //   allBlogs: allBlogs,
+  //   allHowTos: allHowTos,
+  // };
+  // defaultHomepage = createPages(defaultHomepage, defaultHomepageObj);
+  // allHomepage.push(defaultHomepage);
 
-  // First check if there are any localized home pages if not do nothing
-  if (allLocalizedHomepage.length > 0) {
-    const localizedHomepageObj = {
-      availableLocales: HomepageLocales,
-      type: "homepage",
-      allBlogs: allBlogs,
-      allHowTos: allHowTos,
-    };
-    allLocalizedHomepage = createPages(
-      allLocalizedHomepage,
-      localizedHomepageObj
-    );
-    allLocalizedHomepage.forEach((page) => allHomepage.push(page));
-  }
+  // // First check if there are any localized home pages if not do nothing
+  // if (allLocalizedHomepage.length > 0) {
+  //   const localizedHomepageObj = {
+  //     availableLocales: HomepageLocales,
+  //     type: "homepage",
+  //     allBlogs: allBlogs,
+  //     allHowTos: allHowTos,
+  //   };
+  //   allLocalizedHomepage = createPages(
+  //     allLocalizedHomepage,
+  //     localizedHomepageObj
+  //   );
+  //   allLocalizedHomepage.forEach((page) => allHomepage.push(page));
+  // }
 
   const allPagesRoutingData = [
     ...allCrowdfundingPages,
@@ -453,7 +466,7 @@ export async function getStaticPaths() {
     ...allBlogs,
     ...allHowToHome,
     ...allHowTos,
-    ...allHomepage,
+    // ...allHomepage,
   ];
 
   allPagesRoutingData.forEach((page) => {
