@@ -33,7 +33,12 @@ const notificationPlaceholder =
   defaultSlotDocument.querySelector("notification");
 
 const notificationsHTML = Object.keys(notification)
-  .map((lang) => `<span class="${lang} hidden">${notification[lang]}</span>`)
+  .map(
+    (lang) =>
+      `<span class="${lang === "nl-NL" ? "nl" : lang} hidden">${
+        notification[lang]
+      }</span>`
+  )
   .join("");
 
 notificationPlaceholder.outerHTML = notificationsHTML;
