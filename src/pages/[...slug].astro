@@ -357,6 +357,19 @@ export async function getStaticPaths() {
     allLocalizedBlogHome.forEach((page) => allBlogHome.push(page));
   }
 
+  const allHomepages = allBlogHome.map((blogHome) => {
+    const homepage = structuredClone(blogHome);
+
+    const { slug } = homepage.params;
+
+    homepage.params.slug =
+      slug === "blog" ? undefined : homepage.params.slug.slice(0, -5);
+
+    return homepage;
+  });
+
+  allBlogHome.push(...allHomepages);
+
   // Getting HowTo details pages
   let allHowTos = [];
   // Mapping all localized HowTo details pages into a new array that returns an object that generates the paths
