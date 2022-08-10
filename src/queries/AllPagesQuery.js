@@ -58,6 +58,23 @@ const AllPagesQuery = `
       data {
         id
         attributes {
+          locale
+          Perk
+          Title
+          TitleIcon_Name
+          Title_icon {
+            data {
+              id
+              attributes {
+                name
+                alternativeText
+              }
+            }
+          }
+          Price_EUR_excl_VAT
+          Intro_text
+          List
+          Button_text
           localizations {
             data {
               attributes {
@@ -82,22 +99,6 @@ const AllPagesQuery = `
               }
             }
           }
-          locale
-          Perk
-          Title
-          Title_icon {
-            data {
-              id
-              attributes {
-                name
-                alternativeText
-              }
-            }
-          }
-          Price_EUR_excl_VAT
-          Intro_text
-          List
-          Button_text
         }
       }
     }
