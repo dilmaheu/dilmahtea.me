@@ -12,7 +12,7 @@ const htmlFilePaths = await globby("./dist/**/*.html");
 const sharedCSP = {
   "default-src": ["'none'"],
   "style-src": ["'self'", "'unsafe-inline'"],
-  "img-src": ["'self'", "https://dilmahtea.me"],
+  "img-src": ["'self'", "https://dilmahtea.me", "https://imagedelivery.net"],
   "font-src": ["'self'"],
   "worker-src": ["blob:"],
   "connect-src": ["'self'", "https://api.openreplay.com"],
