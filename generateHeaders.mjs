@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import crypto from "crypto";
 import fetch from "node-fetch";
 import { globby } from "globby";
-import { JSDOM } from "jsdom";
+import { parseHTML } from "linkedom";
 import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
 
 const htmlFilePaths = await globby("./dist/**/*.html");
@@ -23,7 +23,7 @@ const CSPHeaders = await Promise.all(
   htmlFilePaths.map(async (path) => {
     const htmlContent = await fs.readFile(path, "utf8");
 
-    const { document } = new JSDOM(htmlContent).window;
+    const { document } = await parseHTML(htmlContent);
 
     const scripts = document.querySelectorAll("script");
 
@@ -59,10 +59,7 @@ const CSPHeaders = await Promise.all(
       .join("; ");
 
     // overwrite html to add generated csp header & nonces
-    await fs.writeFile(
-      path,
-      `<!DOCTYPE html>\n${document.documentElement.outerHTML}`
-    );
+    await fs.writeFile(path, document.toString());
 
     return {
       route,
