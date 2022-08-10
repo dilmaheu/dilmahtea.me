@@ -357,7 +357,7 @@ export async function getStaticPaths() {
     allLocalizedBlogHome.forEach((page) => allBlogHome.push(page));
   }
 
-  const allHomepages = allBlogHome.map((blogHome) => {
+  const allHomepages = allBlogHome.forEach((blogHome) => {
     const homepage = structuredClone(blogHome);
 
     const { slug } = homepage.params;
@@ -365,10 +365,8 @@ export async function getStaticPaths() {
     homepage.params.slug =
       slug === "blog" ? undefined : homepage.params.slug.slice(0, -5);
 
-    return homepage;
+    allBlogHome.push(homepage);
   });
-
-  allBlogHome.push(...allHomepages);
 
   // Getting HowTo details pages
   let allHowTos = [];
