@@ -2,16 +2,49 @@
 import UKImg from "/images/UK.svg";
 import GerImg from "/images/germany.svg";
 import NLImg from "/images/netherlands.svg";
-const { id, locale } = Astro.props
 
+const { locales, language, languages, localeNamesData } = Astro.props;
+
+const lang = locales[languages.indexOf(language)],
+  langEnglishName = localeNamesData.English[language];
 ---
 
+<style>
+  .lang-selector {
+    font-family: Roboto;
+    font-weight: 700;
+    width: 100%;
+  }
+</style>
+
 <li class="block">
-    <a style="cursor: pointer;" class="lang-selector hover:bg-gray-300 flex flex-wrap gap-x-1.5 md:gap-x-3 items-center dropdownItem">
-        <!-- <div class="langIcon rounded-full overflow-hidden">
-            <img src={locale=="en" ? UKImg : locale=="nl" ? NLImg : GerImg } class="w-full h-full object-cover"
-                alt="brand-logo">
-        </div> -->
-        <span class="lang">{locale.toUpperCase()}</span>
-    </a>
+  <button
+    lang={lang}
+    style="cursor: pointer;"
+    class:list={[
+      lang,
+      "lang-selector hover:bg-gray-300 flex flex-wrap gap-x-1.5 md:gap-x-3 items-center dropdownItem",
+    ]}
+  >
+    <!-- <div class="langIcon rounded-full overflow-hidden">
+        <img
+          src={lang == 'en' ? UKImg : lang == 'nl' ? NLImg : GerImg}
+          class="w-full h-full object-cover"
+          alt="brand-logo"
+        />
+      </div> -->
+
+    <span class="lang">
+      {Object.keys(localeNamesData).map((lang) => {
+        const locale = locales[languages.indexOf(lang)],
+          localLocaleNames = localeNamesData[lang];
+
+        return (
+          <span class={`${locale} hidden`}>{localLocaleNames[language]}</span>
+        );
+      })}
+
+      / {langEnglishName}
+    </span>
+  </button>
 </li>

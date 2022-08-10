@@ -1,12 +1,15 @@
 ---
 // Style Imports
-import '../styles/global.css';
-import '../styles/styles.css';
+import "../styles/global.css";
+import "../styles/styles.css";
 // Component Imports
-import MainHead from '../components/MainHead.astro';
-import Navbar from '../components/Navbar.astro';
-import Footer from '../components/Footer.astro';
-import Redirect from '../components/Redirect.astro';
+import MainHead from "../components/MainHead.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import TopNotification from "../components/TopNotification.astro";
+import SetPreferredLocale from "../components/SetPreferredLocale.astro";
+import NotificationsObserver from "../components/NotificationsObserver.astro";
+import getLangNotAvailableNotification from "../utils/getLangNotAvailableNotification";
 
 /**
  * This file is used as a re-usable component that is the layout
@@ -14,119 +17,258 @@ import Redirect from '../components/Redirect.astro';
  */
 
 interface Props {
-	locale: string
-	meta: any
-	recurData: any
-	metaImage: string
-	availableLocales: (string | null)[]
+  locale: string;
+  meta: any;
+  recurData: any;
+  metaImage: string;
+  availableLocales: string[];
 }
 
-const { meta, locale, recurData, availableLocales, metaImage } = Astro.props as Props
-let { noindex, nofollow } = meta
-const title = meta.HTML_Title
-const description = meta.Meta_description
+const { meta, locale, recurData, availableLocales, metaImage } =
+  Astro.props as Props;
+let { noindex, nofollow } = meta;
+const title = meta.HTML_Title;
+const description = meta.Meta_description;
 const image = metaImage;
 const canonicalURL = meta.Canonical_link;
-const slugURL = meta.URL_slug
+const slugURL = meta.URL_slug;
 
+let noIndex = "";
+if (noindex === true) {
+  noIndex = "noindex";
+}
+let noFollow = "";
+if (nofollow === true) {
+  noFollow = "nofollow";
+}
 
-let noIndex = '';
-if (noindex === true) { noIndex = "noindex" };
-let noFollow = '';
-if (nofollow === true) { noFollow = "nofollow" };
+const footerText = recurData.Footer_text.replaceAll(
+  "<current_year>",
+  `<noscript>${new Date().getFullYear()}</noscript><script>document.write(new Date().getFullYear().toString())</script>`
+);
 
+const langNotAvailableNotification = getLangNotAvailableNotification();
 ---
 
 <html lang={locale}>
+  <head>
+    {import.meta.env.DEV && (
+      /* the below content-security-policy header is only for use on the development server */ <meta
+        http-equiv="Content-Security-Policy"
+        content="default-src 'none'; style-src 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://static.openreplay.com; img-src 'self' https://dilmahtea.me; font-src 'self'; worker-src blob:; connect-src 'self' wss: https://api.openreplay.com;"
+      />
+    )}
 
-<head>
-	<MainHead {title} {description} {noIndex} {noFollow} {image} {locale} {canonicalURL} {slugURL} {availableLocales} />
-	{(availableLocales.includes(locale) && locale != "en") ?
-	<Redirect />: null}
-</head>
+    <NotificationsObserver />
 
-<body>
-	<div>
-		<Navbar locale={locale} availableLocales={availableLocales} />
-		<main>
-			<slot />
-		</main>
-		<Footer recurData={recurData} />
-	</div>
+    <SetPreferredLocale />
 
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			// Nav Open button
-			document.getElementById("sidebarOpen").addEventListener("click", function () {
-				var x = document.getElementById("sidebar");
-				if (x.style.display === "block") {
-					x.style.display = "none";
-				}   
-				else {
-					x.style.display = "block";
-				}
-			}, false);
-			// Nav Close button
-			document.getElementById("sidebarClose").addEventListener("click", function () {
-				var x = document.getElementById("sidebar");
-				if (x.style.display === "block") {
-					x.style.display = "none";
-				}   
-				else {
-					x.style.display = "block";
-				}
-			}, false);
-			// Language button toggle
-			document.getElementById("langBtn").addEventListener("click", function () {
-				var x = document.getElementById("dropdownMenu");
-				var y = document.getElementById("langBtn");
-				if (x.style.display == "block") {
-					x.style.display = "none";
-					y.style.borderRadius = "25px";
-				} else {
-					x.style.display = "block";
-					y.style.borderRadius = "25px 25px 0 0";
-				}
-			}, false);
-			// Language button toggle small
-			document.getElementById("langBtnSm").addEventListener("click", function () {
-				var x = document.getElementById("dropdownMenuSm");
-				var y = document.getElementById("langBtnSm");
-				if (x.style.display == "block") {
-					x.style.display = "none";
-					y.style.borderRadius = "25px";
-				} else {
-					x.style.display = "block";
-					y.style.borderRadius = "25px 25px 0 0";
-				}
-			}, false);
-			// Language button event listeners
-			// Getting current locale
-			const locale = document.documentElement.lang
-			// Redirect function
-			const redirectPath = (newLocale) => {
-				let newPath
-				if (newLocale == 'en') {
-					newPath = window.location.pathname.replace(/^\/\w{2}/g, '')
-					window.location.pathname = newPath
-				} else if ((newLocale == "nl" || newLocale == "de") && locale == "en") {
-					newPath = `/${newLocale}${window.location.pathname}`
-					window.location.pathname = newPath
-				} else {
-					newPath = `/${newLocale}${window.location.pathname.replace(/^\/\w{2}/g, '')}`
-					window.location.pathname = newPath
-				}
-			}
+    <MainHead
+      {title}
+      {description}
+      {noIndex}
+      {noFollow}
+      {image}
+      {locale}
+      {canonicalURL}
+      {slugURL}
+      {availableLocales}
+    />
+  </head>
 
-			document.querySelectorAll(".lang-selector").forEach(langSelector => {
-				langSelector.addEventListener("click", () => {
-					const locale = langSelector.querySelector('.lang').textContent.toLowerCase()
-					localStorage.setItem(`locale`, locale)
-					redirectPath(locale)
-				})			
-			})
-		});
-	</script>
-</body>
+  <body>
+    <div class="translation-not-found-notification">
+      <TopNotification type="error" notification={langNotAvailableNotification}>
+        <div class="text-center">
+          <notification></notification>
+        </div>
+      </TopNotification>
+    </div>
 
+    <script is:inline>
+      const searchParams = Object.fromEntries(
+        new URL(location.href).searchParams
+      );
+
+      const { localeExists } = searchParams;
+
+      if (localeExists === "false") {
+        const translationNotFoundNotification =
+          document.currentScript.previousElementSibling.firstElementChild;
+
+        // @ts-ignore
+        translationNotFoundNotification.style.display = "flex";
+
+        const animationDuration =
+          window.innerWidth > 1000 ? 300 : window.innerWidth / (10 / 3);
+
+        window.removeTopNotification = (topNotification) => {
+          topNotification.animate(
+            { left: ["0vw", `-100vw`] },
+            animationDuration
+          ).onfinish = () => {
+            topNotification.style.display = "none";
+          };
+        };
+
+        const isNotErrorNotification =
+          !translationNotFoundNotification.classList.contains(
+            "notification-error"
+          );
+
+        isNotErrorNotification &&
+          setTimeout(() => {
+            removeTopNotification(translationNotFoundNotification);
+          }, 7500);
+      }
+    </script>
+
+    <div>
+      <Navbar locale={locale} footerText={footerText} />
+
+      <main>
+        <slot />
+      </main>
+
+      <Footer footerText={footerText} />
+    </div>
+
+    <script>
+      const sidebar = document.getElementById("sidebar"),
+        navigation = document.getElementById("navigation"),
+        sidebarOpen = document.getElementById("sidebarOpen"),
+        sidebarClose = document.getElementById("sidebarClose");
+
+      function disableScrolling() {
+        Object.assign(document.body.style, {
+          width: "100%",
+          top: `-${window.scrollY}px`,
+          position: "fixed",
+          overflowY: "scroll",
+        });
+      }
+
+      function enableScrolling() {
+        const scrollYPosition = parseInt(document.body.style.top.slice(1, -2));
+
+        Object.assign(document.body.style, {
+          width: "auto",
+          position: "static",
+          overflowY: "auto",
+        });
+
+        try {
+          window.scrollTo({
+            top: scrollYPosition,
+            // @ts-ignore
+            behavior: "instant",
+          });
+        } catch (error) {
+          const rootElement = document.querySelector(":root");
+
+          // @ts-ignore
+          const currentRootScrollBehavior = rootElement.style.scrollBehavior;
+
+          // @ts-ignore
+          rootElement.style.scrollBehavior = "auto";
+
+          window.scrollTo({
+            top: scrollYPosition,
+            behavior: "auto",
+          });
+
+          // @ts-ignore
+          rootElement.style.scrollBehavior = currentRootScrollBehavior;
+        }
+      }
+
+      const updateSidebarTopPosition = () => {
+        sidebar.style.top = `${navigation.getBoundingClientRect().bottom}px`;
+      };
+
+      window.addEventListener("resize", updateSidebarTopPosition);
+
+      sidebarOpen.addEventListener(
+        "click",
+        () => {
+          window.removeEventListener("resize", updateSidebarTopPosition);
+
+          updateSidebarTopPosition();
+
+          sidebar.style.display = "block";
+          sidebarOpen.style.display = "none";
+          sidebarClose.style.display = "block";
+          navigation.style.backgroundImage = "url(/images/navBg.webp)";
+
+          disableScrolling();
+
+          window.addEventListener("resize", updateSidebarTopPosition);
+        },
+        false
+      );
+
+      sidebarClose.addEventListener(
+        "click",
+        () => {
+          sidebar.style.display = "none";
+          sidebarOpen.style.display = "block";
+          sidebarClose.style.display = "none";
+          navigation.style.background = "transparent";
+
+          enableScrolling();
+        },
+        false
+      );
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 639) {
+          enableScrolling();
+
+          window.removeEventListener("resize", updateSidebarTopPosition);
+        } else if (sidebarClose.style.display === "block") {
+          disableScrolling();
+
+          window.addEventListener("resize", updateSidebarTopPosition);
+        }
+      });
+
+      // Language button toggle
+      document.getElementById("langBtn").addEventListener(
+        "click",
+        function () {
+          const langBtn = document.getElementById("langBtn"),
+            dropdownMenu = document.getElementById("dropdownMenu");
+
+          if (dropdownMenu.style.display == "block") {
+            dropdownMenu.style.display = "none";
+            langBtn.style.borderRadius = "25px";
+          } else {
+            dropdownMenu.style.display = "block";
+            langBtn.style.borderRadius = "25px 25px 0 0";
+          }
+        },
+        false
+      );
+
+      // Redirect function
+      const redirectPath = (newLocale) => {
+        const currentLocale = location.pathname.split("/")[1];
+
+        location.href = location.pathname
+          .replace(`/${currentLocale}/`, `/${newLocale}/`)
+          .replace(location.search, "");
+      };
+
+      document.querySelectorAll(".lang-selector").forEach((langSelector) => {
+        langSelector.addEventListener("click", () => {
+          // @ts-ignore
+          const { lang: locale } = langSelector;
+
+          localStorage.setItem(`locale`, locale);
+
+          redirectPath(locale);
+        });
+      });
+    </script>
+  </body>
 </html>

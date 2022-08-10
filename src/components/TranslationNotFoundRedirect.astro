@@ -1,0 +1,15 @@
+<script is:inline>
+  const [, currentLocale, ...urlParts] = location.pathname.split("/"),
+    nextLocale =
+      currentLocale === preferredLocale
+        ? "en"
+        : preferredLocale /* preferredLocale is defined in SetPreferredLocale.astro */,
+    nextLocalePrefix = "/" + nextLocale + "/",
+    preferredLocaleUrl = new URL(
+      location.origin + nextLocalePrefix + urlParts.join("/")
+    );
+
+  preferredLocaleUrl.searchParams.append("localeExists", "false");
+
+  location.href = preferredLocaleUrl.toString();
+</script>

@@ -1,16 +1,22 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
 
 // All pages graphql query to be used with fetch
-import AllPagesQuery from '../queries/AllPagesQuery'
+import AllPagesQuery from "../queries/AllPagesQuery";
 
 // Getting the Confirmation and Home components to create pages
-import Home from '../components/Home.astro';
-import Confirmation from '../components/Confirmation.astro';
-import CrowdfundingForm from '../components/CrowdfundingForm.astro';
-import BasicPage from '../components/BasicPage.astro';
-import Blog from '../components/Blog.astro';
-import BlogDetails from '../components/BlogDetails.astro';
+import Blog from "../components/Blog.astro";
+import HowTo from "../components/HowTo.astro";
+import Homepage from "../components/Homepage.astro";
+import BasicPage from "../components/BasicPage.astro";
+import BlogDetails from "../components/BlogDetails.astro";
+import HowToDetails from "../components/HowToDetails.astro";
+import Confirmation from "../components/Confirmation.astro";
+import Crowdfunding from "../components/Crowdfunding.astro";
+import CrowdfundingForm from "../components/CrowdfundingForm.astro";
+import SetPreferredLocale from "../components/SetPreferredLocale.astro";
+import DefaultRouteRedirect from "../components/DefaultRouteRedirect.astro";
+import TranslationNotFoundRedirect from "../components/TranslationNotFoundRedirect.astro";
 
 /**
  * This file is used for all the other pages
@@ -18,243 +24,519 @@ import BlogDetails from '../components/BlogDetails.astro';
 
 // Using getStaticPaths to generate each path
 export async function getStaticPaths() {
-  const allPages = await fetch(`${import.meta.env.DB_URL}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${import.meta.env.ACCESS_TOKEN}`
-      },
-      body: JSON.stringify({
-        query: AllPagesQuery,
-      })
-    }).then(response => response.json());
+  const allPages = await fetch(`${import.meta.env.DB_URL}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
+    },
+    body: JSON.stringify({
+      query: AllPagesQuery,
+    }),
+  }).then((response) => response.json());
+
+  const allLocales = allPages.data.i18NLocales.data.map(({ attributes }) =>
+    attributes.code.substring(0, 2)
+  );
 
   // Get all locales
-  const getAllLocales = arr => {
-    if (arr.length > 0) return arr.map(home =>
-      home.attributes.locale.substring(0, 2)
-    );
-    return []
-  }
+  const getAllLocales = (arr = []) =>
+    arr.map((home) => home.attributes.locale.substring(0, 2));
 
   // Create Pages Function
-  const createPages = (arrOrObj, obj) =>
-    Array.isArray(arrOrObj)
+  const createPages = (arrOrObj, obj) => {
+    const staticPaths = Array.isArray(arrOrObj)
       ? arrOrObj.map((page) => {
-        return {
+          return {
+            params: {
+              slug:
+                obj.type == "plan"
+                  ? obj.slug
+                  : `${page.attributes.locale.substring(0, 2)}${
+                      page.attributes.Meta.URL_slug != "/"
+                        ? "/" + page.attributes.Meta.URL_slug
+                        : ""
+                    }`, // URL slug to be used
+            },
+            props: {
+              // Props
+              recurData: allPages.data.recurringElement.data.attributes, // recurring data
+              page: {
+                // page object where empty its attributes and give it a type
+                ...page.attributes,
+                ...obj,
+              },
+            },
+          };
+        })
+      : {
           params: {
             slug:
               obj.type == "plan"
                 ? obj.slug
-                // : `${page.attributes.locale.substring(0, 2)}${obj.type != "home"
-                : `${page.attributes.locale.substring(0, 2)}${page.attributes.Meta.URL_slug != "/"
-                  ? "/" + page.attributes.Meta.URL_slug
-                  : ""
-                }`, // URL slug to be used
+                : arrOrObj.Meta.URL_slug == "/"
+                ? undefined
+                : arrOrObj.Meta.URL_slug == "crowdfunding"
+                ? arrOrObj.locale.substring(0, 2) === "en"
+                  ? "crowdfunding"
+                  : `${arrOrObj.locale.substring(0, 2)}/crowdfunding`
+                : arrOrObj.Meta.URL_slug, // URL slug to be used
           },
           props: {
             // Props
             recurData: allPages.data.recurringElement.data.attributes, // recurring data
             page: {
               // page object where empty its attributes and give it a type
-              ...page.attributes,
+              ...arrOrObj,
               ...obj,
             },
           },
         };
-      })
-      : {
-        params: {
-          slug:
-            obj.type == "plan"
-              ? obj.slug
-              : // : obj.type == "home"
-              //   ? arrOrObj.locale.substring(0, 2)
-              //   : arrOrObj.Meta.URL_slug
-              arrOrObj.Meta.URL_slug == "/"
-                ? undefined
-                : arrOrObj.Meta.URL_slug == "crowdfunding"
-                  ? `${arrOrObj.locale.substring(0, 2)}/crowdfunding`
-                  : arrOrObj.Meta.URL_slug, // URL slug to be used
-        },
-        props: {
-          // Props
-          recurData: allPages.data.recurringElement.data.attributes, // recurring data
-          page: {
-            // page object where empty its attributes and give it a type
-            ...arrOrObj,
-            ...obj,
-          },
-        },
-      };
+
+    if (Array.isArray(staticPaths)) {
+      let canonicalURL;
+
+      const locales = staticPaths.map(({ params }) => {
+        const { slug } = params;
+
+        canonicalURL = slug.substring(2);
+
+        const locale = params.slug.substring(0, 2);
+
+        return locale;
+      });
+
+      allLocales.forEach((locale) => {
+        if (locale !== "en" && !locales.includes(locale)) {
+          // @ts-ignore
+          staticPaths.push({
+            params: {
+              slug: locale + canonicalURL,
+            },
+          });
+        }
+      });
+    }
+
+    return staticPaths;
+  };
 
   let allPlans = [];
   const formMeta = allPages.data.crowdfundingForm.data.attributes.Meta;
 
   // All plans
   allPages.data.crowdfundingPlans.data.forEach((plan) => {
-    const newPlan = { ...plan.attributes }
-    const planLocales = getAllLocales(plan.attributes.localizations.data)
-    const allLocalizedPlans = plan.attributes.localizations.data
-    delete newPlan.localizations
+    const newPlan = { ...plan.attributes };
+    const planLocales = getAllLocales(plan.attributes.localizations.data);
+    const allLocalizedPlans = plan.attributes.localizations.data;
+
+    let Title;
+
+    const locales = allLocalizedPlans.map(({ attributes }) => {
+      const { locale } = attributes;
+
+      ({ Title } = attributes);
+
+      return locale;
+    });
+
+    allLocales.forEach((locale) => {
+      if (locale !== "en" && !locales.includes(locale)) {
+        // @ts-ignore
+        allPlans.push({
+          params: {
+            slug: locale + "/plans/" + Title.toLowerCase(),
+          },
+        });
+      }
+    });
+
+    delete newPlan.localizations;
     const planObj = {
-      slug: `plans/${plan.attributes.Title.toLowerCase()}`,
+      slug: `plans/${Title.toLowerCase()}`,
       Perk: newPlan.Perk,
       Meta: formMeta,
-      type: 'plan',
-      availableLocales: planLocales
-    }
-    const defaultPlan = createPages(newPlan, planObj)
-    allPlans.push(defaultPlan)
+      type: "plan",
+      availableLocales: planLocales,
+    };
+    const defaultPlan = createPages(newPlan, planObj);
+    allPlans.push(defaultPlan);
     if (plan.attributes.localizations.data.length > 0) {
       allLocalizedPlans.forEach((localizedPlan) => {
         const localizedPlanObj = {
-          slug: `${localizedPlan.attributes.locale.substring(0, 2)}/plans/${newPlan.Title.toLowerCase()}`,
+          slug: `${localizedPlan.attributes.locale.substring(
+            0,
+            2
+          )}/plans/${Title.toLowerCase()}`,
           Perk: newPlan.Perk,
           Meta: formMeta,
-          type: 'plan',
-          availableLocales: planLocales
-        }
-        const lclPlan = createPages(localizedPlan.attributes, localizedPlanObj)
-        allPlans.push(lclPlan)
-      })
+          type: "plan",
+          availableLocales: planLocales,
+        };
+        const lclPlan = createPages(localizedPlan.attributes, localizedPlanObj);
+        allPlans.push(lclPlan);
+      });
     }
-  })
+  });
 
-  // Saving all Localized home pages
-  let allLocalizedHomePages = allPages.data.crowdfundingHome.data.attributes.localizations.data;
-  const allHomeLocales = getAllLocales(allLocalizedHomePages)
-  allLocalizedHomePages = allLocalizedHomePages.map((homePage) => {
-    const currentPlans = allPlans.filter((val) => val.props.page.locale == homePage.attributes.locale).map(val => val.props.page)
-    const homeObj = {
-      type: 'home',
-      availableLocales: allHomeLocales,
-      allPlans: currentPlans
+  // Getting crowdfunding pages
+  let allCrowdfundingPages = [];
+
+  let allLocalizedCrowdfundingPages =
+    allPages.data.crowdfundingHome.data.attributes.localizations.data;
+
+  const crowdfundingLocales = getAllLocales(allLocalizedCrowdfundingPages);
+
+  // The default Crowdfunding page
+  let defaultCrowdfundingPage = allPages.data.crowdfundingHome.data.attributes;
+
+  const allCrowdfundingPlans = allPages.data.crowdfundingPlans.data.map(
+    (val) => val.attributes
+  );
+
+  const defaultCrowdfundingHomeObj = {
+    availableLocales: crowdfundingLocales,
+    type: `crowdfunding`,
+    allPlans: allCrowdfundingPlans,
+  };
+
+  defaultCrowdfundingPage = createPages(
+    defaultCrowdfundingPage,
+    defaultCrowdfundingHomeObj
+  );
+
+  allCrowdfundingPages.push(defaultCrowdfundingPage);
+
+  // Saving all Localized crowdfunding pages
+  const allCrowdfundingPagesLocales = getAllLocales(
+    allLocalizedCrowdfundingPages
+  );
+
+  allLocalizedCrowdfundingPages = allLocalizedCrowdfundingPages.map(
+    (homePage) => {
+      const currentPlans = allPlans
+        .filter((val) => val?.props?.page?.locale == homePage.attributes.locale)
+        .map((val) => val.props.page);
+      const homeObj = {
+        type: "crowdfunding",
+        availableLocales: allCrowdfundingPagesLocales,
+        allPlans: currentPlans,
+      };
+      let localizedHome = createPages(homePage.attributes, homeObj);
+      return localizedHome;
     }
-    let localizedHome = createPages(homePage.attributes, homeObj)
-    return localizedHome
-  })
+  );
+
+  let canonicalURL;
+
+  const locales = allLocalizedCrowdfundingPages.map(({ params }) => {
+    const { slug } = params;
+
+    canonicalURL = slug.substring(2);
+
+    const locale = params.slug.substring(0, 2);
+
+    return locale;
+  });
+
+  allLocales.forEach((locale) => {
+    if (locale !== "en" && !locales.includes(locale)) {
+      // @ts-ignore
+      allLocalizedCrowdfundingPages.push({
+        params: {
+          slug: locale + canonicalURL,
+        },
+      });
+    }
+  });
+
+  allCrowdfundingPages.push(...allLocalizedCrowdfundingPages);
 
   // The default Basic pages
-  let allBasicPages = []
+  let allBasicPages = [];
   // Mapping all localized basic pages into a new array that returns an object that generates the paths
   allPages.data.basicPages.data.forEach((page) => {
-    let localizedPages = page.attributes.localizations.data
-    const basicPagesLocales = getAllLocales(localizedPages)
+    let localizedPages = page.attributes.localizations.data;
+    const basicPagesLocales = getAllLocales(localizedPages);
     if (localizedPages.length > 0) {
       const lclObj = {
         availableLocales: basicPagesLocales,
-        type: `basicPages`
-      }
-      localizedPages = createPages(localizedPages, lclObj)
-      localizedPages.forEach((lclPage) => allBasicPages.push(lclPage))
+        type: `basicPages`,
+      };
+      localizedPages = createPages(localizedPages, lclObj);
+      localizedPages.forEach((lclPage) => allBasicPages.push(lclPage));
     }
     const pageObj = {
       availableLocales: basicPagesLocales,
-      type: `basicPages`
-    }
-    const defaultBasicPage = createPages(page.attributes, pageObj)
-    allBasicPages.push(defaultBasicPage)
-  })
+      type: `basicPages`,
+    };
+    const defaultBasicPage = createPages(page.attributes, pageObj);
+    allBasicPages.push(defaultBasicPage);
+  });
 
   // Getting Confirmation pages
-  let allConfirmations = []
-  let allLocalizedConfirmation = allPages.data.crowdfundingPaymentConfirmation.data.attributes.localizations.data;
-  const confirmationLocales = getAllLocales(allLocalizedConfirmation)
+  let allConfirmations = [];
+  let allLocalizedConfirmation =
+    allPages.data.crowdfundingPaymentConfirmation.data.attributes.localizations
+      .data;
+  const confirmationLocales = getAllLocales(allLocalizedConfirmation);
   // The default confirmation page
-  let defaultConfirmation = allPages.data.crowdfundingPaymentConfirmation.data.attributes;
+  let defaultConfirmation =
+    allPages.data.crowdfundingPaymentConfirmation.data.attributes;
   const defaultConfirmObj = {
     availableLocales: confirmationLocales,
-    type: `confirm`
-  }
+    type: `confirm`,
+  };
 
-  defaultConfirmation = createPages(defaultConfirmation, defaultConfirmObj)
-  allConfirmations.push(defaultConfirmation)
+  defaultConfirmation = createPages(defaultConfirmation, defaultConfirmObj);
+  allConfirmations.push(defaultConfirmation);
 
   // First check if there are any localized confirmation pages if not do nothing
   if (allLocalizedConfirmation.length > 0) {
     const localizedConfirmObj = {
       availableLocales: confirmationLocales,
-      type: 'confirm'
-    }
-    allLocalizedConfirmation = createPages(allLocalizedConfirmation, localizedConfirmObj)
-    allLocalizedConfirmation.forEach(page => allConfirmations.push(page))
+      type: "confirm",
+    };
+    allLocalizedConfirmation = createPages(
+      allLocalizedConfirmation,
+      localizedConfirmObj
+    );
+    allLocalizedConfirmation.forEach((page) => allConfirmations.push(page));
   }
 
-
   // Getting blog details pages
-  let allBlogs = []
+  let allBlogs = [];
   // Mapping all localized blog details pages into a new array that returns an object that generates the paths
   allPages.data.blogs.data.forEach((page) => {
-    let localizedBlogsPages = page.attributes.localizations.data
-    const blogsPagesLocales = getAllLocales(localizedBlogsPages)
+    let localizedBlogsPages = page.attributes.localizations.data;
+    const blogsPagesLocales = getAllLocales(localizedBlogsPages);
     if (localizedBlogsPages.length > 0) {
       const localizedBlogsObj = {
         availableLocales: blogsPagesLocales,
         type: `blogDetails`,
-        allBlogs: allBlogs
-      }
-      localizedBlogsPages = createPages(localizedBlogsPages, localizedBlogsObj)
-      localizedBlogsPages.forEach((lclPage) => allBlogs.push(lclPage))
+        allBlogs: allBlogs,
+      };
+      localizedBlogsPages = createPages(localizedBlogsPages, localizedBlogsObj);
+      localizedBlogsPages.forEach((lclPage) => allBlogs.push(lclPage));
     }
     const defaultBlogsObj = {
       availableLocales: blogsPagesLocales,
       type: `blogDetails`,
-      allBlogs: allBlogs
-    }
-    const defaultBlogsPage = createPages(page.attributes, defaultBlogsObj)
-    allBlogs.push(defaultBlogsPage)
-  })
+      allBlogs: allBlogs,
+    };
+    const defaultBlogsPage = createPages(page.attributes, defaultBlogsObj);
+    allBlogs.push(defaultBlogsPage);
+  });
 
   // Getting Blog home pages
-  let allBlogHome = []
-  let allLocalizedBlogHome = allPages.data.homeBlog.data.attributes.localizations.data;
-  const blogHomeLocales = getAllLocales(allLocalizedBlogHome)
+  let allBlogHome = [];
+  let allLocalizedBlogHome =
+    allPages.data.homeBlog.data.attributes.localizations.data;
+  const blogHomeLocales = getAllLocales(allLocalizedBlogHome);
   // The default Blog home page
   let defaultBlogHome = allPages.data.homeBlog.data.attributes;
   const defaultBlogHomeObj = {
     availableLocales: blogHomeLocales,
     type: `blog`,
-    allBlogs: allBlogs
-  }
-  defaultBlogHome = createPages(defaultBlogHome, defaultBlogHomeObj)
-  allBlogHome.push(defaultBlogHome)
+    allBlogs: allBlogs,
+  };
+  defaultBlogHome = createPages(defaultBlogHome, defaultBlogHomeObj);
+  allBlogHome.push(defaultBlogHome);
 
   // First check if there are any localized Blog home pages if not do nothing
   if (allLocalizedBlogHome.length > 0) {
     const localizedBlogHomeObj = {
       availableLocales: blogHomeLocales,
-      type: 'blog',
-      allBlogs: allBlogs
+      type: "blog",
+      allBlogs: allBlogs,
     };
-    allLocalizedBlogHome = createPages(allLocalizedBlogHome, localizedBlogHomeObj)
-    allLocalizedBlogHome.forEach(page => allBlogHome.push(page))
+    allLocalizedBlogHome = createPages(
+      allLocalizedBlogHome,
+      localizedBlogHomeObj
+    );
+    allLocalizedBlogHome.forEach((page) => allBlogHome.push(page));
   }
 
+  // Getting HowTo details pages
+  let allHowTos = [];
+  // Mapping all localized HowTo details pages into a new array that returns an object that generates the paths
+  allPages.data.howTos.data.forEach((page) => {
+    let localizedHowTosPages = page.attributes.localizations.data;
+    const howTosPagesLocales = getAllLocales(localizedHowTosPages);
+    if (localizedHowTosPages.length > 0) {
+      const localizedHowTosObj = {
+        availableLocales: howTosPagesLocales,
+        type: "howToDetails",
+        allHowTos: allHowTos,
+      };
+      localizedHowTosPages = createPages(
+        localizedHowTosPages,
+        localizedHowTosObj
+      );
+      localizedHowTosPages.forEach((lclPage) => allHowTos.push(lclPage));
+    }
+    const defaultBlogsObj = {
+      availableLocales: howTosPagesLocales,
+      type: "howToDetails",
+      allHowTos: allHowTos,
+    };
+    const defaultBlogsPage = createPages(page.attributes, defaultBlogsObj);
+    allHowTos.push(defaultBlogsPage);
+  });
 
-  // return all pages altogether each with the right return format
-  return [...allLocalizedHomePages, ...allConfirmations, ...allPlans, ...allBasicPages, ...allBlogHome, ...allBlogs]
+  // Getting HowTo home page
+  let allHowToHome = [];
+  let allLocalizedHowToHome =
+    allPages.data.homeHowTo.data.attributes.localizations.data;
+  const howToHomeLocales = getAllLocales(allLocalizedHowToHome);
+  // The default Blog home page
+  let defaultHowToHome = allPages.data.homeHowTo.data.attributes;
+  const defaultHowToHomeObj = {
+    availableLocales: howToHomeLocales,
+    type: "howTo",
+    allHowTos: allHowTos,
+  };
+  defaultHowToHome = createPages(defaultHowToHome, defaultHowToHomeObj);
+  allHowToHome.push(defaultHowToHome);
+
+  // First check if there are any localized HowTo home pages if not do nothing
+  if (allLocalizedHowToHome.length > 0) {
+    const localizedHowToHomeObj = {
+      availableLocales: howToHomeLocales,
+      type: "howTo",
+      allHowTos: allHowTos,
+    };
+    allLocalizedHowToHome = createPages(
+      allLocalizedHowToHome,
+      localizedHowToHomeObj
+    );
+    allLocalizedHowToHome.forEach((page) => allHowToHome.push(page));
+  }
+
+  // Getting home page
+  let allHomepage = [];
+  let allLocalizedHomepage =
+    allPages.data.homepage.data.attributes.localizations.data;
+  const HomepageLocales = getAllLocales(allLocalizedHomepage);
+  // The default Blog home page
+  let defaultHomepage = allPages.data.homepage.data.attributes;
+  const defaultHomepageObj = {
+    availableLocales: HomepageLocales,
+    type: "homepage",
+    allBlogs: allBlogs,
+    allHowTos: allHowTos,
+  };
+  defaultHomepage = createPages(defaultHomepage, defaultHomepageObj);
+  allHomepage.push(defaultHomepage);
+
+  // First check if there are any localized home pages if not do nothing
+  if (allLocalizedHomepage.length > 0) {
+    const localizedHomepageObj = {
+      availableLocales: HomepageLocales,
+      type: "homepage",
+      allBlogs: allBlogs,
+      allHowTos: allHowTos,
+    };
+    allLocalizedHomepage = createPages(
+      allLocalizedHomepage,
+      localizedHomepageObj
+    );
+    allLocalizedHomepage.forEach((page) => allHomepage.push(page));
+  }
+
+  const allPagesRoutingData = [
+    ...allCrowdfundingPages,
+    ...allConfirmations,
+    ...allPlans,
+    ...allBasicPages,
+    ...allBlogHome,
+    ...allBlogs,
+    ...allHowToHome,
+    ...allHowTos,
+    ...allHomepage,
+  ];
+
+  allPagesRoutingData.forEach((page) => {
+    if (!page.props) {
+      page.props = {
+        translationNotFound: true,
+      };
+    }
+
+    if (page.params.slug === undefined) {
+      page.params.slug = "en";
+
+      allPagesRoutingData.push({
+        params: { slug: undefined },
+        props: { defaultRoute: true },
+      });
+    } else if (!allLocales.includes(page.params.slug.substring(0, 2))) {
+      const { slug } = page.params,
+        newSlug = `en/${slug}`;
+
+      page.params.slug = newSlug;
+
+      allPagesRoutingData.push({
+        params: { slug },
+        props: { defaultRoute: true },
+      });
+    }
+  });
+
+  return allPagesRoutingData;
 }
 
-// Get each pages props from Astro
-const {
-  page, recurData
-} = Astro.props
-
+const { defaultRoute, translationNotFound } = Astro.props,
+  isRedirectionNecessary = defaultRoute || translationNotFound;
 ---
 
-<Layout locale={page.locale.substring(0,2)} availableLocales={page.availableLocales} meta={page.Meta} recurData={recurData}
-  metaImage={page.Intro_blob != null && (page.Intro_blob.data != null) ? page.Intro_blob.data.attributes.provider_metadata.public_id 
-    : page.Block_blob != null && (page.Block_blob.data != null) ? page.Block_blob.data.attributes.provider_metadata.public_id 
-    : recurData.OpenGraph_default.data.attributes.provider_metadata.public_id
-  }>
-  {page.type == `home` ?
-  <Home {page} /> : page.type == `basicPages` ?
-  <BasicPage {page} /> : page.type == `blog` ?
-  <Blog {page} /> : page.type == `blogDetails` ?
-  <BlogDetails {page} /> : page.type == `confirm` ?
-  <Confirmation {page} />:
-  <CrowdfundingForm {page} locale={page.locale.substring(0,2)} />
+{isRedirectionNecessary ? (
+  <Fragment>
+    <SetPreferredLocale />
+
+    {defaultRoute ? <DefaultRouteRedirect /> : <TranslationNotFoundRedirect />}
+  </Fragment>
+) : (
+  () => {
+    const { page, recurData } = Astro.props,
+      { availableLocales, Meta: meta } = page,
+      locale = page.locale.substring(0, 2);
+
+    return (
+      <Layout
+        locale={locale}
+        availableLocales={availableLocales}
+        meta={meta}
+        recurData={recurData}
+        metaImage={
+          page.Intro_blob != null && page.Intro_blob.data != null
+            ? page.Intro_blob.data.attributes.provider_metadata.public_id
+            : page.Block_blob != null && page.Block_blob.data != null
+            ? page.Block_blob.data.attributes.provider_metadata.public_id
+            : recurData.OpenGraph_default.data.attributes.provider_metadata
+                .public_id
+        }
+      >
+        {page.type == `homepage` ? (
+          <Homepage page={page} />
+        ) : page.type == `crowdfunding` ? (
+          <Crowdfunding page={page} />
+        ) : page.type == `basicPages` ? (
+          <BasicPage page={page} />
+        ) : page.type == `blog` ? (
+          <Blog page={page} />
+        ) : page.type == `blogDetails` ? (
+          <BlogDetails page={page} />
+        ) : page.type == `howTo` ? (
+          <HowTo page={page} />
+        ) : page.type == `howToDetails` ? (
+          <HowToDetails page={page} />
+        ) : page.type == `confirm` ? (
+          <Confirmation page={page} />
+        ) : (
+          <CrowdfundingForm page={page} locale={locale} />
+        )}
+      </Layout>
+    );
   }
-</Layout>
+)}

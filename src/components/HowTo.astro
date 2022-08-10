@@ -12,15 +12,15 @@ const url = `${import.meta.env.CloudImg_URL}`;
 
 const { page } = Astro.props;
 
-const allBlogs = page.allBlogs
+const allHowTos = page.allHowTos
   .filter((val) => val?.props?.page?.locale == page.locale)
   .map((val) => val.props.page);
 
-allBlogs.sort((a, b) => {
+allHowTos.sort((a, b) => {
   return new Date(b.createdAt) - new Date(a.createdAt);
 });
 
-const [firstBlog] = allBlogs;
+const [firstHowTo] = allHowTos;
 ---
 
 <!-- Hero Section -->
@@ -61,7 +61,7 @@ const [firstBlog] = allBlogs;
         <div>
           <div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
             <div class="flex flex-wrap font-bold blogHome_heroAuth">
-              {firstBlog.authors.data.map((author, idx) => (
+              {firstHowTo.authors.data.map((author, idx) => (
                 <a href="/">
                   {`${idx > 0 ? ", " : " "}` + author.attributes.givenName}
                 </a>
@@ -69,7 +69,7 @@ const [firstBlog] = allBlogs;
             </div>
             <ul class="flex flex-wrap items-center">
               <li class="blogHome_HdItem">
-                {new Date(firstBlog.createdAt).toLocaleString("en-US", {
+                {new Date(firstHowTo.createdAt).toLocaleString("en-US", {
                   day: "numeric",
                   month: "long",
                 })}
@@ -79,16 +79,16 @@ const [firstBlog] = allBlogs;
             </ul>
           </div>
           <h1 class="blogHome_heroTitle">
-            <a href={`/` + firstBlog.Meta.URL_slug}>{firstBlog.Title}</a>
+            <a href={`/` + firstHowTo.Meta.URL_slug}>{firstHowTo.Title}</a>
             <span class="icon relative top-0">
               <span class="relative headingInlineIcon">
                 <img class="w-full h-full" src={CupIcon} alt="cup-icon" />
               </span>
             </span>
           </h1>
-          <a href={`/` + firstBlog.Meta.URL_slug}>
+          <a href={`/` + firstHowTo.Meta.URL_slug}>
             <div class="prose max-w-none blogHome_heroTxt">
-              <Markdown>{firstBlog.Intro_text}</Markdown>
+              <Markdown>{firstHowTo.Intro_text}</Markdown>
             </div>
           </a>
         </div>
@@ -120,7 +120,7 @@ const [firstBlog] = allBlogs;
           height="100%"
           width="100%"
           href={url +
-            firstBlog.Intro_blob.data.attributes.provider_metadata.public_id +
+            firstHowTo.Intro_blob.data.attributes.provider_metadata.public_id +
             `/small`}
           clip-path="url(#heroImgFrame2)"></image>
         <image
@@ -129,7 +129,7 @@ const [firstBlog] = allBlogs;
           height="100%"
           width="100%"
           href={url +
-            firstBlog.Intro_blob.data.attributes.provider_metadata.public_id +
+            firstHowTo.Intro_blob.data.attributes.provider_metadata.public_id +
             `/small`}
           clip-path="url(#heroImgFrame2)"></image>
       </svg>
@@ -158,18 +158,18 @@ const [firstBlog] = allBlogs;
         height="100%"
         width="100%"
         href={url +
-          firstBlog.Intro_blob.data.attributes.provider_metadata.public_id +
+          firstHowTo.Intro_blob.data.attributes.provider_metadata.public_id +
           `/small`}
         clip-path="url(#heroImgFrame3)"></image>
     </svg>
   </div>
 </div>
 
-<!-- Blog Section -->
+<!-- How to Section -->
 
 <div class="wrapper blogHome_blogs">
   <div class="blogHome_blogsContainer">
-    {allBlogs.slice(1).map((blog, idx) => (
+    {allHowTos.slice(1).map((howTo, idx) => (
       <div class="flex flex-wrap items-center blogHome_blogContaier">
         <div
           class={
@@ -178,7 +178,7 @@ const [firstBlog] = allBlogs;
               : "relative w-full sm:w-1/2 order-1 sm:order-2 blogHome_blogCurveContainer"
           }
         >
-          {/*Blog Image Desktop view */}
+          {/*How to Image Desktop view */}
 
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -194,7 +194,7 @@ const [firstBlog] = allBlogs;
                 <path d="M291.8,3.8c-88.5,0-235-7.9-269.3,37.3S1.2,247.5,9.6,368.2,102.7,500,298.4,500c160.9,0,211.2-31.8,252.1-141.4C567.9,312,577,197.4,534.2,63.9,506.5-22.6,415,3.8,291.8,3.8Z" />
               </clipPath>
             </defs>
-            <a href={`/` + blog.Meta.URL_slug}>
+            <a href={`/` + howTo.Meta.URL_slug}>
               <image
                 class="w-auto h-full"
                 height="100%"
@@ -202,7 +202,7 @@ const [firstBlog] = allBlogs;
                 x="-15%"
                 href={
                   url +
-                  blog.Intro_blob.data.attributes.provider_metadata.public_id +
+                  howTo.Intro_blob.data.attributes.provider_metadata.public_id +
                   `/small`
                 }
                 clip-path="url(#basicInfoSec_ImgFrame1)"
@@ -210,7 +210,7 @@ const [firstBlog] = allBlogs;
             </a>
           </svg>
 
-          {/* Blog Image Mobile view */}
+          {/* How to Image Mobile view */}
 
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -222,14 +222,14 @@ const [firstBlog] = allBlogs;
                 <path d="M470.9,3.8C328.1,3.8,91.7-4.1,36.3,41S1.9,247,15.5,367.5,165.7,499,481.7,499c259.7,0,340.9-31.7,406.9-141.1,28-46.5,42.8-160.9-26.2-294.1C817.6-22.6,669.9,3.8,470.9,3.8Z" />
               </clipPath>
             </defs>
-            <a href={`/` + blog.Meta.URL_slug}>
+            <a href={`/` + howTo.Meta.URL_slug}>
               <image
                 class="w-full h-auto"
                 height="100%"
                 width="100%"
                 href={
                   url +
-                  blog.Intro_blob.data.attributes.provider_metadata.public_id +
+                  howTo.Intro_blob.data.attributes.provider_metadata.public_id +
                   `/small`
                 }
                 clip-path="url(#basicInfoSec_ImgFrame1sm)"
@@ -237,7 +237,7 @@ const [firstBlog] = allBlogs;
             </a>
           </svg>
 
-          <a href={`/` + blog.Meta.URL_slug}>
+          <a href={`/` + howTo.Meta.URL_slug}>
             <div
               class={
                 idx % 2 == 0
@@ -274,7 +274,7 @@ const [firstBlog] = allBlogs;
           >
             <div>
               <div class="flex flex-wrap font-bold blogHome_blogAuth">
-                {blog.authors.data.map((author, idx) => (
+                {howTo.authors.data.map((author, idx) => (
                   <a href="/">
                     {`${idx > 0 ? ", " : " "}` + author.attributes.givenName}
                   </a>
@@ -282,7 +282,7 @@ const [firstBlog] = allBlogs;
               </div>
               <ul class="flex flex-wrap items-center gap-y-1">
                 <li class="blogHome_blogItem">
-                  {new Date(blog.createdAt).toLocaleString("en-US", {
+                  {new Date(howTo.createdAt).toLocaleString("en-US", {
                     day: "numeric",
                     month: "long",
                   })}
@@ -292,7 +292,7 @@ const [firstBlog] = allBlogs;
               </ul>
 
               <h1 class="blogHome_blogTitle">
-                <a href={`/` + blog.Meta.URL_slug}>{blog.Title}</a>
+                <a href={`/` + howTo.Meta.URL_slug}>{howTo.Title}</a>
                 <span class="icon relative top-0">
                   <span class="relative headingInlineIcon">
                     <img
@@ -303,9 +303,9 @@ const [firstBlog] = allBlogs;
                   </span>
                 </span>
               </h1>
-              <a href={`/` + blog.Meta.URL_slug}>
+              <a href={`/` + howTo.Meta.URL_slug}>
                 <div class="prose max-w-none blogHome_blogTxt">
-                  <Markdown>{blog.Intro_text}</Markdown>
+                  <Markdown>{howTo.Intro_text}</Markdown>
                 </div>
               </a>
             </div>

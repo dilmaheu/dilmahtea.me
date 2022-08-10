@@ -3,15 +3,15 @@
 import HeaderBG from "/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp";
 import CupIcon from "/images/cup.svg";
 import LoveIcon from "/images/love.svg";
-import TwitterIcon from "/images/twitter.svg";
-import FacebookIcon from "/images/facebook.svg";
-import LinkIcon from "/images/link.svg";
 
 import Markdown from "@astrojs/markdown-component";
 import UpdateHeroTopMargin from "./UpdateHeroTopMargin.astro";
 
 const url = `${import.meta.env.CloudImg_URL}`;
 const { page } = Astro.props;
+
+const pageIntro_text = page.Intro_text.split("\n")[0];
+const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, "");
 ---
 
 <!-- Hero Section -->
@@ -34,7 +34,7 @@ const { page } = Astro.props;
         </clipPath>
       </defs>
       <image
-        class="w-auto h-full"
+        class="h-full w-auto"
         height="100%"
         width="100%"
         href={HeaderBG}
@@ -60,30 +60,35 @@ const { page } = Astro.props;
 
         <h1 class="BasicHeroTitle">{page.Title}</h1>
         <div class="pt-7 mt-0.5 prose max-w-none BasicHeroTxt">
-          <Markdown>{page.Intro_text}</Markdown>
-        </div>
-
-        <div class="inline-flex flex-wrap basicIconsContainer hidden">
-          <div class="basicIcons">
-            <img class="w-full h-full" src={TwitterIcon} alt="love-icon" />
-          </div>
-          <div class="basicIcons">
-            <img class="w-full h-full" src={FacebookIcon} alt="love-icon" />
-          </div>
-          <div class="basicIcons">
-            <img class="w-full h-full" src={LinkIcon} alt="love-icon" />
-          </div>
+          <Markdown>{pageIntro_text}</Markdown>
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Error Intro description -->
+<div
+  class={pageAdvancedIntro_text.length > 1
+    ? "block wrapper basicIntrodescription"
+    : "hidden"}
+>
+  <div class="prose max-w-none basicInfoSecTxt">
+    <Markdown>{pageAdvancedIntro_text}</Markdown>
+  </div>
+</div>
+
 <!-- Information Section -->
-<div class="basicInfoSec overflow-hidden relative">
+<div
+  class={page.Block_blob.data != null
+    ? "basicInfoSec overflow-hidden relative"
+    : "overflow-hidden relative"}
+>
   <!-- Blob Image  Desktop view-->
   <div
-    class="hidden sm:block absolute left-0 z-20 w-full sm:w-1/2 h-full items-center"
+    class={page.Block_blob.data != null
+      ? "hidden sm:block absolute left-0 z-20 w-full sm:w-1/2 h-full items-center"
+      : "hidden"}
   >
     <div class="w-auto h-full basicInfoSec_Curve1">
       <svg
@@ -98,39 +103,58 @@ const { page } = Astro.props;
             ></path>
           </clipPath>
         </defs>
+
         <image
           class="hidden lg:block  w-auto h-full"
           height="100%"
           width="100%"
-          href={url +
-            page.Block_blob.data.attributes.provider_metadata.public_id +
-            `/cms`}
+          href={page.Block_blob.data == null
+            ? ""
+            : url +
+              page.Block_blob.data.attributes.provider_metadata.public_id +
+              `/cms`}
           clip-path="url(#basicInfoSec_ImgFrame1)"></image>
         <image
           class="block lg:hidden w-auto h-full"
           height="100%"
           width="100%"
           x="20%"
-          href={url +
-            page.Block_blob.data.attributes.provider_metadata.public_id +
-            `/cms`}
+          href={page.Block_blob.data == null
+            ? ""
+            : url +
+              page.Block_blob.data.attributes.provider_metadata.public_id +
+              `/cms`}
           clip-path="url(#basicInfoSec_ImgFrame1)"></image>
       </svg>
     </div>
   </div>
 
   <!-- Text content -->
-  <div class="h-full wrapper z-30 basicInfoSecContentContainer">
-    <div class="w-full h-full justify-end flex flex-wrap">
+  <div
+    class={page.Block_blob.data != null
+      ? "h-full wrapper z-30 basicInfoSecContentContainer"
+      : "wrapper z-30 basicInfoSecContentContainer"}
+  >
+    <div
+      class={page.Block_blob.data != null
+        ? "w-full h-full justify-end flex flex-wrap"
+        : "w-full justify-end flex flex-wrap"}
+    >
       <div
-        class="w-full sm:w-1/2 h-full flex sm:items-center basicInfoSecContent"
+        class={page.Block_blob.data != null
+          ? "w-full sm:w-1/2 h-full flex sm:items-center basicInfoSecContent"
+          : "w-full h-full"}
         role="complementary"
       >
         <div class="relative">
           <h2 class="header-default basicHeader color-default">
             {page.Heading_block}
           </h2>
-          <div class="pt-0.5 mt-7 prose max-w-none basicInfoSecTxt">
+          <div
+            class={page.Block_blob.data != null
+              ? "pt-0.5 mt-7 prose max-w-none LineClamp5 basicInfoSecTxt"
+              : "pt-0.5 mt-7 prose max-w-none basicInfoSecTxt"}
+          >
             <Markdown>{page.Block_text}</Markdown>
           </div>
         </div>
@@ -140,7 +164,7 @@ const { page } = Astro.props;
 </div>
 
 <!-- Blob Image  Mobile view-->
-<div class="block sm:hidden w-full">
+<div class={page.Block_blob.data != null ? "block sm:hidden w-full" : "hidden"}>
   <div class="w-screen basicInfoSec_Curve">
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -158,9 +182,11 @@ const { page } = Astro.props;
         class="w-auto h-full"
         height="100%"
         width="100%"
-        href={url +
-          page.Block_blob.data.attributes.provider_metadata.public_id +
-          `/small`}
+        href={page.Block_blob.data == null
+          ? ""
+          : url +
+            page.Block_blob.data.attributes.provider_metadata.public_id +
+            `/small`}
         clip-path="url(#basicInfoSec_ImgFrame2)"></image>
     </svg>
   </div>

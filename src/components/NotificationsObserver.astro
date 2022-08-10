@@ -1,0 +1,25 @@
+<script is:inline>
+  const notificationsObserver = new MutationObserver(function (
+    mutationRecords
+  ) {
+    // check if any notification is added
+    const documentHasNewNotifications = mutationRecords.some((record) =>
+      record.target?.classList?.contains("notification-content")
+    );
+
+    if (documentHasNewNotifications) {
+      const { target: topmostTarget } = mutationRecords[0];
+
+      topmostTarget
+        .querySelectorAll(
+          `.notification .notification-content .${preferredLocale}`
+        )
+        .forEach((notification) => notification.classList.remove("hidden"));
+    }
+  });
+
+  notificationsObserver.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+</script>

@@ -8,44 +8,52 @@ export interface Props {
   locale: string;
   canonicalURL?: string;
   slugURL: string | URL;
-  availableLocales: (string | null)[]
+  availableLocales: (string | null)[];
 }
 
-const { title, description, noIndex, noFollow, image, locale, canonicalURL, slugURL, availableLocales } = Astro.props as Props;
+const {
+  title,
+  description,
+  noIndex,
+  noFollow,
+  image,
+  locale,
+  canonicalURL,
+  slugURL,
+  availableLocales,
+} = Astro.props as Props;
 const url = `${import.meta.env.CloudImg_URL}`;
 const domain = Astro.site.origin;
-let slugLink: string | URL;
-let availableLang: (string | null)[];
-let canonicalLink =
-  domain + (canonicalURL == "/" ? "" : "/" + canonicalURL) + "/";
 
-if (locale == "en") {
-  slugLink = domain + (slugURL == "/" ? "" : "/" + slugURL) + "/";
-} else {
-  slugLink =
-    domain + "/" + locale + (slugURL == "/" ? "" : "/" + slugURL) + "/";
-}
-
-// Hreflang available links
-if(availableLocales.includes("nl") && availableLocales.includes("de")){  
-  availableLang = ["en", "nl", "de"]
-}else if(availableLocales.includes("nl")){
-  availableLang = ["en", "nl"]
-}else if(availableLocales.includes("de")){
-  availableLang = ["en", "de"]
-}
-// Remove current locale
-if (availableLang.indexOf(locale, 0) > -1) {
-  availableLang.splice(availableLang.indexOf(locale, 0), 1);
-}
+const alternateLocales = ["en", ...availableLocales].filter(
+    (lcl) => lcl !== locale
+  ),
+  canonicalHref =
+    domain + (canonicalURL == "/" ? "" : "/" + canonicalURL) + "/",
+  documentHref =
+    domain +
+    "/" +
+    (locale === "en" ? "" : locale) +
+    (slugURL == "/" ? "" : "/" + slugURL) +
+    "/";
 ---
+
 <meta charset="UTF-8" />
 <title>{title}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="keywords" content="" />
 <meta name="description" content={description} />
 <meta name="author" content="Dilmah" />
-<meta name="robots" content={noIndex.length == 7 &&(noFollow.length == 8) ? "noindex, nofollow" : noIndex.length == 7 ? "noindex" : noFollow.length == 8 ? "nofollow" :  "all"} />
+<meta
+  name="robots"
+  content={noIndex.length == 7 && noFollow.length == 8
+    ? "noindex, nofollow"
+    : noIndex.length == 7
+    ? "noindex"
+    : noFollow.length == 8
+    ? "nofollow"
+    : "all"}
+/>
 
 <!-- Sitemap -->
 <!-- <link rel="sitemap" href= /> -->
@@ -56,68 +64,88 @@ if (availableLang.indexOf(locale, 0) > -1) {
 <!-- Favicon -->
 <link rel="icon" href="/favicon.svg" />
 <!-- SEO -->
-<link rel="canonical" href={canonicalLink} />
-<link href={slugLink} hreflang={locale} />
-{
-  availableLang.map((altLocale) =>
-    altLocale == "en" ? (
-      <link
-        rel="alternate"
-        href={domain + (slugURL == "/" ? "" : "/" + slugURL) + "/"}
-        hreflang={altLocale}
-      />
-    ) : (
-      <link
-        rel="alternate"
-        href={
-          domain + "/" + altLocale + (slugURL == "/" ? "" : "/" + slugURL) + "/"
-        }
-        hreflang={altLocale}
-      />
-    )
-  )
-}
+<link rel="canonical" href={canonicalHref} />
+<link href={documentHref} hreflang={locale} />
+
+{alternateLocales.map((alternateLocale) => (
+  <link
+    rel="alternate"
+    href={
+      domain +
+      "/" +
+      (alternateLocale === "en" ? "" : alternateLocale) +
+      (slugURL == "/" ? "" : "/" + slugURL) +
+      "/"
+    }
+    hreflang={alternateLocale}
+  />
+))}
 
 <!-- OpenGraph -->
 <meta property="og:locale" content={locale} />
 <meta property="og:type" content="website" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:url" content={slugLink} />
+<meta property="og:url" content={documentHref} />
 <meta property="og:site_name" content="Dilmah" />
 <meta property="og:image" content={url + image + `/opengraph`} />
 
 <!-- Twitter -->
-<meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
 <meta property="twitter:domain" content="dilmahtea.me" />
-<meta property="twitter:url" content={slugLink} />
+<meta property="twitter:url" content={documentHref} />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={url + image + `/twittercard`} />
 
-<script defer data-domain="dilmahtea.me" data-api="/rpcq/event" src="/rpcq/script.js"></script>
+<script
+  defer
+  data-domain="dilmahtea.me"
+  data-api="/rpcq/event"
+  src="/rpcq/script.js"
+>
+
+</script>
 
 <!-- OpenReplay Tracking Code -->
 <script>
-    var initOpts = {
-      projectKey: "IjHJ0NTxwL2YHDk9TDnR",
-      defaultInputMode: 0,
-      obscureTextNumbers: false,
-      obscureTextEmails: true,
+  var initOpts = {
+    projectKey: "IjHJ0NTxwL2YHDk9TDnR",
+    defaultInputMode: 0,
+    obscureTextNumbers: false,
+    obscureTextEmails: true,
+  };
+  var startOpts = { userID: "" };
+  (function (A, s, a, y, e, r) {
+    r = window.OpenReplay = [e, r, y, [s - 1, e]];
+    s = document.createElement("script");
+    s.src = A;
+    s.async = !a;
+    document.getElementsByTagName("head")[0].appendChild(s);
+    r.start = function (v) {
+      r.push([0]);
     };
-    var startOpts = { userID: "" };
-    (function(A,s,a,y,e,r){
-      r=window.OpenReplay=[e,r,y,[s-1, e]];
-      s=document.createElement('script');s.src=A;s.async=!a;
-      document.getElementsByTagName('head')[0].appendChild(s);
-      r.start=function(v){r.push([0])};
-      r.stop=function(v){r.push([1])};
-      r.setUserID=function(id){r.push([2,id])};
-      r.setUserAnonymousID=function(id){r.push([3,id])};
-      r.setMetadata=function(k,v){r.push([4,k,v])};
-      r.event=function(k,p,i){r.push([5,k,p,i])};
-      r.issue=function(k,p){r.push([6,k,p])};
-      r.isActive=function(){return false};
-      r.getSessionToken=function(){};
-    })("//static.openreplay.com/latest/openreplay.js",1,0,initOpts,startOpts);
+    r.stop = function (v) {
+      r.push([1]);
+    };
+    r.setUserID = function (id) {
+      r.push([2, id]);
+    };
+    r.setUserAnonymousID = function (id) {
+      r.push([3, id]);
+    };
+    r.setMetadata = function (k, v) {
+      r.push([4, k, v]);
+    };
+    r.event = function (k, p, i) {
+      r.push([5, k, p, i]);
+    };
+    r.issue = function (k, p) {
+      r.push([6, k, p]);
+    };
+    r.isActive = function () {
+      return false;
+    };
+    r.getSessionToken = function () {};
+  })("//static.openreplay.com/latest/openreplay.js", 1, 0, initOpts, startOpts);
 </script>
