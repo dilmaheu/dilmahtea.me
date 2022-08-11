@@ -136,10 +136,18 @@ const docLang = languages[locales.indexOf(locale)],
     languages,
   }}
 >
+  const navigation = document.getElementById("navigation"),
+    navigationBottom = navigation.getBoundingClientRect().bottom,
+    translationNotFoundNotification = document.querySelector(
+      ".translation-not-found-notification"
+    );
+
   window.onscroll = function () {
     const top = window.pageYOffset || document.documentElement.scrollTop,
-      navigation = document.getElementById("navigation"),
-      navigationBottom = navigation.getBoundingClientRect().bottom;
+      translationNotFoundNotificationHeight =
+        translationNotFoundNotification.getBoundingClientRect().height;
+
+    navigation.style.top = `${translationNotFoundNotificationHeight}px`;
 
     if (top > navigationBottom) {
       navigation.style.backgroundImage = "url(/images/navBg.webp)";
