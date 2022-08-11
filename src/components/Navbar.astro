@@ -10,11 +10,20 @@ import getLocalesData from "../utils/getLocalesData";
 interface Props {
   locale: string;
   footerText: string;
+  availableLocales: string[];
 }
 
-const { locale, footerText } = Astro.props;
+const { locale, footerText, availableLocales } = Astro.props;
 
 const { locales, languages, localeNamesData } = getLocalesData();
+
+const availableLanguages = [];
+
+locales.forEach((locale, index) => {
+  if ([...availableLocales].includes(locale)) {
+    availableLanguages.push(languages[index]);
+  }
+});
 
 const docLang = languages[locales.indexOf(locale)],
   localDocLang = localeNamesData[docLang][docLang];
@@ -71,7 +80,7 @@ const docLang = languages[locales.indexOf(locale)],
               id="dropdownMenu"
               class="absolute rounded hidden overflow-hidden dropdown-menu"
             >
-              {languages.map((language) => (
+              {availableLanguages.map((language) => (
                 <LangButton
                   locales={locales}
                   language={language}
