@@ -8,24 +8,24 @@ import getLocalesData from "../utils/getLocalesData";
 // import NLImg from "/images/netherlands.svg";
 
 interface Props {
-  locale: string;
+  docLocale: string;
   footerText: string;
   availableLocales: string[];
 }
 
-const { locale, footerText, availableLocales } = Astro.props;
+const { docLocale, footerText, availableLocales } = Astro.props as Props;
 
 const { locales, languages, localeNamesData } = getLocalesData();
 
 const availableLanguages = [];
 
 locales.forEach((locale, index) => {
-  if ([...availableLocales].includes(locale)) {
+  if (locale !== docLocale && [...availableLocales].includes(locale)) {
     availableLanguages.push(languages[index]);
   }
 });
 
-const docLang = languages[locales.indexOf(locale)],
+const docLang = languages[locales.indexOf(docLocale)],
   localDocLang = localeNamesData[docLang][docLang];
 ---
 
@@ -83,6 +83,7 @@ const docLang = languages[locales.indexOf(locale)],
               {availableLanguages.map((language) => (
                 <LangButton
                   locales={locales}
+                  docLang={docLang}
                   language={language}
                   languages={languages}
                   localeNamesData={localeNamesData}
@@ -176,13 +177,13 @@ const docLang = languages[locales.indexOf(locale)],
     dropdown.textContent = preferredLanguage;
   });
 
-  document
-    .querySelectorAll(
-      `.lang-selector.${preferredLocale}, .lang-selector .${preferredLocale}`
-    )
-    .forEach((selector) => {
-      selector.classList.toggle("hidden");
-    });
+  // document
+  //   .querySelectorAll(
+  //     `.lang-selector.${preferredLocale}, .lang-selector .${preferredLocale}`
+  //   )
+  //   .forEach((selector) => {
+  //     selector.classList.toggle("hidden");
+  //   });
 
   const activeLangSelectors = document.querySelectorAll(
       ".lang-selector:not(.hidden)"

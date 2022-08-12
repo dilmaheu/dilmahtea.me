@@ -3,7 +3,7 @@ import UKImg from "/images/UK.svg";
 import GerImg from "/images/germany.svg";
 import NLImg from "/images/netherlands.svg";
 
-const { locales, language, languages, localeNamesData } = Astro.props;
+const { locales, docLang, language, languages, localeNamesData } = Astro.props;
 
 const lang = locales[languages.indexOf(language)],
   localLanguageName = localeNamesData[language][language];
@@ -35,16 +35,7 @@ const lang = locales[languages.indexOf(language)],
       </div> -->
 
     <span class="lang">
-      {Object.keys(localeNamesData).map((lang) => {
-        const locale = locales[languages.indexOf(lang)],
-          localLocaleNames = localeNamesData[lang];
-
-        return (
-          <span class={`${locale} hidden`}>{localLocaleNames[language]}</span>
-        );
-      })}
-
-      / {localLanguageName}
+      {localeNamesData[docLang][language]} / {localLanguageName}
     </span>
   </button>
 </li>
