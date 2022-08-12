@@ -1,15 +1,17 @@
 const langNotAvailableNotificationQuery = `
   {
-    notification {
+    notifications(filters: { Title: { eq: "language_not_available" } }) {
       data {
         attributes {
           locale
-          language_not_available
+          Type
+          Content
+          Closing_Enabled
           localizations {
             data {
               attributes {
                 locale
-                language_not_available
+                Content
               }
             }
           }
@@ -34,22 +36,28 @@ const { data: langNotAvailableNotificationData } = await fetch(
   }
 ).then((res) => res.json());
 
-const langNotAvailableNotification = {};
+const localizedNotifications = {};
 
 const {
   locale: defaultLocale,
-  language_not_available: defaultNotification,
+  Type,
+  Closing_Enabled,
+  Content: defaultNotification,
   localizations,
-} = langNotAvailableNotificationData.notification.data.attributes;
+} = langNotAvailableNotificationData.notifications.data[0].attributes;
 
-langNotAvailableNotification[defaultLocale] = defaultNotification;
+localizedNotifications[defaultLocale] = defaultNotification;
 
 localizations.data.forEach(({ attributes }) => {
-  const { locale, language_not_available: notification } = attributes;
+  const { locale, Content: notification } = attributes;
 
-  langNotAvailableNotification[locale] = notification;
+  localizedNotifications[locale] = notification;
 });
 
 export default function getLangNotAvailableNotification() {
-  return langNotAvailableNotification;
+  return {
+    Type,
+    Closing_Enabled,
+    localizedNotifications,
+  };
 }

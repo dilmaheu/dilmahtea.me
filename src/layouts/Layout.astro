@@ -47,7 +47,8 @@ const footerText = recurData.Footer_text.replaceAll(
   `<noscript>${new Date().getFullYear()}</noscript><script>document.write(new Date().getFullYear().toString())</script>`
 );
 
-const langNotAvailableNotification = getLangNotAvailableNotification();
+const { Type: notificationType, localizedNotifications } =
+  getLangNotAvailableNotification();
 ---
 
 <html lang={locale}>
@@ -86,7 +87,10 @@ const langNotAvailableNotification = getLangNotAvailableNotification();
 
   <body>
     <div class="translation-not-found-notification">
-      <TopNotification type="error" notification={langNotAvailableNotification}>
+      <TopNotification
+        type={notificationType}
+        notification={localizedNotifications}
+      >
         <div class="text-center">
           <notification></notification>
         </div>
