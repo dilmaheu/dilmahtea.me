@@ -98,13 +98,10 @@ const { Type: notificationType, localizedNotifications } =
     </div>
 
     <script is:inline>
-      const searchParams = Object.fromEntries(
-        new URL(location.href).searchParams
-      );
-
-      const { localeExists } = searchParams;
-
-      if (localeExists === "false") {
+      if (
+        showTranslationNotFoundError
+        /* showTranslationNotFoundError is declared in TranslationNotFoundRedirect.astro */
+      ) {
         const translationNotFoundNotification =
           document.currentScript.previousElementSibling.firstElementChild;
 
