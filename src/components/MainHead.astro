@@ -25,17 +25,9 @@ const {
 const url = `${import.meta.env.CloudImg_URL}`;
 const domain = Astro.site.origin;
 
-const alternateLocales = ["en", ...availableLocales].filter(
-    (lcl) => lcl !== locale
-  ),
-  canonicalHref =
-    domain + (canonicalURL == "/" ? "" : "/" + canonicalURL) + "/",
-  documentHref =
-    domain +
-    "/" +
-    (locale === "en" ? "" : locale) +
-    (slugURL == "/" ? "" : "/" + slugURL) +
-    "/";
+const alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
+  documentHref = `${domain}/${locale}/${slugURL === "/" ? "" : slugURL}/`,
+  canonicalHref = `${domain}/en/${canonicalURL === "/" ? "" : canonicalURL}/`;
 ---
 
 <meta charset="UTF-8" />
@@ -63,6 +55,7 @@ const alternateLocales = ["en", ...availableLocales].filter(
 
 <!-- Favicon -->
 <link rel="icon" href="/favicon.svg" />
+
 <!-- SEO -->
 <link rel="canonical" href={canonicalHref} />
 <link href={documentHref} hreflang={locale} />
@@ -70,14 +63,8 @@ const alternateLocales = ["en", ...availableLocales].filter(
 {alternateLocales.map((alternateLocale) => (
   <link
     rel="alternate"
-    href={
-      domain +
-      "/" +
-      (alternateLocale === "en" ? "" : alternateLocale) +
-      (slugURL == "/" ? "" : "/" + slugURL) +
-      "/"
-    }
     hreflang={alternateLocale}
+    href={`${domain}/${alternateLocale}/${slugURL === "/" ? "" : slugURL}/`}
   />
 ))}
 
