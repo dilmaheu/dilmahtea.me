@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import TopNotification from "../components/TopNotification.astro";
 import SetPreferredLocale from "../components/SetPreferredLocale.astro";
+import NotificationAnimations from "../components/NotificationAnimations.astro";
 import getLangNotAvailableNotification from "../utils/getLangNotAvailableNotification";
 import TranslationNotFoundNotificationsObserver from "../components/TranslationNotFoundNotificationsObserver.astro";
 
@@ -60,9 +61,11 @@ const { Type: notificationType, localizedNotifications } =
       />
     )}
 
-    <TranslationNotFoundNotificationsObserver />
-
     <SetPreferredLocale />
+
+    <NotificationAnimations />
+
+    <TranslationNotFoundNotificationsObserver />
 
     <MainHead
       {title}
@@ -105,30 +108,9 @@ const { Type: notificationType, localizedNotifications } =
         const translationNotFoundNotification =
           document.currentScript.previousElementSibling.firstElementChild;
 
-        // @ts-ignore
         translationNotFoundNotification.style.display = "flex";
 
-        const animationDuration =
-          window.innerWidth > 1000 ? 300 : window.innerWidth / (10 / 3);
-
-        window.removeTopNotification = (topNotification) => {
-          topNotification.animate(
-            { left: ["0vw", `-100vw`] },
-            animationDuration
-          ).onfinish = () => {
-            topNotification.style.display = "none";
-          };
-        };
-
-        const isNotErrorNotification =
-          !translationNotFoundNotification.classList.contains(
-            "notification-error"
-          );
-
-        isNotErrorNotification &&
-          setTimeout(() => {
-            removeTopNotification(translationNotFoundNotification);
-          }, 7500);
+        removeTopNotification(translationNotFoundNotification);
       }
     </script>
 
