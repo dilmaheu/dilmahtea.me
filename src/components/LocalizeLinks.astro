@@ -1,0 +1,21 @@
+---
+import { parseHTML } from "linkedom";
+
+declare interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props as Props;
+
+const documentBodyHTML = await Astro.slots.render("default");
+
+const { document: documentBody } = await parseHTML(documentBodyHTML);
+
+const documentLinks = documentBody.querySelectorAll("a");
+
+[...documentLinks].forEach((link) => {
+  link.href = "/" + locale + link.href;
+});
+---
+
+<Fragment set:html={documentBody.toString()} />
