@@ -8,8 +8,8 @@ import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import TopNotification from "../components/TopNotification.astro";
 import SetPreferredLocale from "../components/SetPreferredLocale.astro";
-import NotificationsObserver from "../components/NotificationsObserver.astro";
 import getLangNotAvailableNotification from "../utils/getLangNotAvailableNotification";
+import TranslationNotFoundNotificationsObserver from "../components/TranslationNotFoundNotificationsObserver.astro";
 
 /**
  * This file is used as a re-usable component that is the layout
@@ -60,7 +60,7 @@ const { Type: notificationType, localizedNotifications } =
       />
     )}
 
-    <NotificationsObserver />
+    <TranslationNotFoundNotificationsObserver />
 
     <SetPreferredLocale />
 
@@ -99,8 +99,8 @@ const { Type: notificationType, localizedNotifications } =
 
     <script is:inline>
       if (
-        showTranslationNotFoundError
-        /* showTranslationNotFoundError is declared in TranslationNotFoundRedirect.astro */
+        requestedLocale
+        /* requestedLocale is declared in TranslationNotFoundRedirect.astro */
       ) {
         const translationNotFoundNotification =
           document.currentScript.previousElementSibling.firstElementChild;
