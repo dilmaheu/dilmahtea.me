@@ -39,7 +39,7 @@ const notificationsHTML = Object.keys(notification)
 
 notificationPlaceholder.outerHTML = notificationsHTML;
 
-const notificationContentHTML = defaultSlotDocument.documentElement.outerHTML;
+const notificationContentHTML = defaultSlotDocument.toString();
 ---
 
 <style lang="scss">
@@ -126,9 +126,9 @@ const notificationContentHTML = defaultSlotDocument.documentElement.outerHTML;
   notificationCloseButtons.forEach((button) => {
     button.addEventListener("click", () => {
       // @ts-ignore
-      removeTopNotification(
+      slideOutTopNotification(
         button.parentElement
-      ); /* this function is declared in the Layout.astro file */
+      ); /* slideOutTopNotification is declared in NotificationAnimations.astro */
     });
   });
 </script>

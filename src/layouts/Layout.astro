@@ -2,14 +2,17 @@
 // Style Imports
 import "../styles/global.css";
 import "../styles/styles.css";
+
 // Component Imports
-import MainHead from "../components/MainHead.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
+import MainHead from "../components/MainHead.astro";
+import LocalizeLinks from "../components/LocalizeLinks.astro";
 import TopNotification from "../components/TopNotification.astro";
 import SetPreferredLocale from "../components/SetPreferredLocale.astro";
-import NotificationsObserver from "../components/NotificationsObserver.astro";
+import NotificationAnimations from "../components/NotificationAnimations.astro";
 import getLangNotAvailableNotification from "../utils/getLangNotAvailableNotification";
+import TranslationNotFoundNotificationsObserver from "../components/TranslationNotFoundNotificationsObserver.astro";
 
 /**
  * This file is used as a re-usable component that is the layout
@@ -60,9 +63,11 @@ const { Type: notificationType, localizedNotifications } =
       />
     )}
 
-    <NotificationsObserver />
-
     <SetPreferredLocale />
+
+    <NotificationAnimations />
+
+    <TranslationNotFoundNotificationsObserver />
 
     <MainHead
       {title}
@@ -85,203 +90,188 @@ const { Type: notificationType, localizedNotifications } =
     </style>
   </head>
 
-  <body>
-    <div class="translation-not-found-notification">
-      <TopNotification
-        type={notificationType}
-        notification={localizedNotifications}
-      >
-        <div class="text-center">
-          <notification></notification>
-        </div>
-      </TopNotification>
-    </div>
+  <LocalizeLinks locale={locale}>
+    <body>
+      <div class="translation-not-found-notification">
+        <TopNotification
+          type={notificationType}
+          notification={localizedNotifications}
+        >
+          <div class="text-center">
+            <notification></notification>
+          </div>
+        </TopNotification>
+      </div>
 
-    <script is:inline>
-      if (
-        showTranslationNotFoundError
-        /* showTranslationNotFoundError is declared in TranslationNotFoundRedirect.astro */
-      ) {
-        const translationNotFoundNotification =
-          document.currentScript.previousElementSibling.firstElementChild;
+      <script is:inline>
+        if (
+          requestedLocale
+          /* requestedLocale is declared in TranslationNotFoundRedirect.astro */
+        ) {
+          const translationNotFoundNotification =
+            document.currentScript.previousElementSibling.firstElementChild;
 
-        // @ts-ignore
-        translationNotFoundNotification.style.display = "flex";
+          translationNotFoundNotification.style.display = "flex";
 
-        const animationDuration =
-          window.innerWidth > 1000 ? 300 : window.innerWidth / (10 / 3);
+          removeTopNotification(translationNotFoundNotification);
+        }
+      </script>
 
-        window.removeTopNotification = (topNotification) => {
-          topNotification.animate(
-            { left: ["0vw", `-100vw`] },
-            animationDuration
-          ).onfinish = () => {
-            topNotification.style.display = "none";
-          };
-        };
+      <div>
+        <Navbar
+          docLocale={locale}
+          footerText={footerText}
+          availableLocales={availableLocales}
+        />
 
-        const isNotErrorNotification =
-          !translationNotFoundNotification.classList.contains(
-            "notification-error"
+        <main>
+          <slot />
+        </main>
+
+        <Footer footerText={footerText} />
+      </div>
+
+      <script>
+        const sidebar = document.getElementById("sidebar"),
+          navigation = document.getElementById("navigation"),
+          sidebarOpen = document.getElementById("sidebarOpen"),
+          sidebarClose = document.getElementById("sidebarClose");
+
+        function disableScrolling() {
+          Object.assign(document.body.style, {
+            width: "100%",
+            top: `-${window.scrollY}px`,
+            position: "fixed",
+            overflowY: "scroll",
+          });
+        }
+
+        function enableScrolling() {
+          const scrollYPosition = parseInt(
+            document.body.style.top.slice(1, -2)
           );
 
-        isNotErrorNotification &&
-          setTimeout(() => {
-            removeTopNotification(translationNotFoundNotification);
-          }, 7500);
-      }
-    </script>
+          Object.assign(document.body.style, {
+            width: "auto",
+            position: "static",
+            overflowY: "auto",
+          });
 
-    <div>
-      <Navbar
-        docLocale={locale}
-        footerText={footerText}
-        availableLocales={availableLocales}
-      />
+          try {
+            window.scrollTo({
+              top: scrollYPosition,
+              // @ts-ignore
+              behavior: "instant",
+            });
+          } catch (error) {
+            const rootElement = document.querySelector(":root");
 
-      <main>
-        <slot />
-      </main>
-
-      <Footer footerText={footerText} />
-    </div>
-
-    <script>
-      const sidebar = document.getElementById("sidebar"),
-        navigation = document.getElementById("navigation"),
-        sidebarOpen = document.getElementById("sidebarOpen"),
-        sidebarClose = document.getElementById("sidebarClose");
-
-      function disableScrolling() {
-        Object.assign(document.body.style, {
-          width: "100%",
-          top: `-${window.scrollY}px`,
-          position: "fixed",
-          overflowY: "scroll",
-        });
-      }
-
-      function enableScrolling() {
-        const scrollYPosition = parseInt(document.body.style.top.slice(1, -2));
-
-        Object.assign(document.body.style, {
-          width: "auto",
-          position: "static",
-          overflowY: "auto",
-        });
-
-        try {
-          window.scrollTo({
-            top: scrollYPosition,
             // @ts-ignore
-            behavior: "instant",
-          });
-        } catch (error) {
-          const rootElement = document.querySelector(":root");
+            const currentRootScrollBehavior = rootElement.style.scrollBehavior;
 
-          // @ts-ignore
-          const currentRootScrollBehavior = rootElement.style.scrollBehavior;
+            // @ts-ignore
+            rootElement.style.scrollBehavior = "auto";
 
-          // @ts-ignore
-          rootElement.style.scrollBehavior = "auto";
+            window.scrollTo({
+              top: scrollYPosition,
+              behavior: "auto",
+            });
 
-          window.scrollTo({
-            top: scrollYPosition,
-            behavior: "auto",
-          });
-
-          // @ts-ignore
-          rootElement.style.scrollBehavior = currentRootScrollBehavior;
-        }
-      }
-
-      const updateSidebarTopPosition = () => {
-        sidebar.style.top = `${navigation.getBoundingClientRect().bottom}px`;
-      };
-
-      window.addEventListener("resize", updateSidebarTopPosition);
-
-      sidebarOpen.addEventListener(
-        "click",
-        () => {
-          window.removeEventListener("resize", updateSidebarTopPosition);
-
-          updateSidebarTopPosition();
-
-          sidebar.style.display = "block";
-          sidebarOpen.style.display = "none";
-          sidebarClose.style.display = "block";
-          navigation.style.backgroundImage = "url(/images/navBg.webp)";
-
-          disableScrolling();
-
-          window.addEventListener("resize", updateSidebarTopPosition);
-        },
-        false
-      );
-
-      sidebarClose.addEventListener(
-        "click",
-        () => {
-          sidebar.style.display = "none";
-          sidebarOpen.style.display = "block";
-          sidebarClose.style.display = "none";
-          navigation.style.background = "transparent";
-
-          enableScrolling();
-        },
-        false
-      );
-
-      window.addEventListener("resize", () => {
-        if (window.innerWidth > 639) {
-          enableScrolling();
-
-          window.removeEventListener("resize", updateSidebarTopPosition);
-        } else if (sidebarClose.style.display === "block") {
-          disableScrolling();
-
-          window.addEventListener("resize", updateSidebarTopPosition);
-        }
-      });
-
-      // Language button toggle
-      document.getElementById("langBtn").addEventListener(
-        "click",
-        function () {
-          const langBtn = document.getElementById("langBtn"),
-            dropdownMenu = document.getElementById("dropdownMenu");
-
-          if (dropdownMenu.style.display == "block") {
-            dropdownMenu.style.display = "none";
-            langBtn.style.borderRadius = "25px";
-          } else {
-            dropdownMenu.style.display = "block";
-            langBtn.style.borderRadius = "25px 25px 0 0";
+            // @ts-ignore
+            rootElement.style.scrollBehavior = currentRootScrollBehavior;
           }
-        },
-        false
-      );
+        }
 
-      // Redirect function
-      const redirectPath = (newLocale) => {
-        const currentLocale = location.pathname.split("/")[1];
+        const updateSidebarTopPosition = () => {
+          sidebar.style.top = `${navigation.getBoundingClientRect().bottom}px`;
+        };
 
-        location.href = location.pathname
-          .replace(`/${currentLocale}/`, `/${newLocale}/`)
-          .replace(location.search, "");
-      };
+        window.addEventListener("resize", updateSidebarTopPosition);
 
-      document.querySelectorAll(".lang-selector").forEach((langSelector) => {
-        langSelector.addEventListener("click", () => {
-          // @ts-ignore
-          const { lang: locale } = langSelector;
+        sidebarOpen.addEventListener(
+          "click",
+          () => {
+            window.removeEventListener("resize", updateSidebarTopPosition);
 
-          localStorage.setItem(`locale`, locale);
+            updateSidebarTopPosition();
 
-          redirectPath(locale);
+            sidebar.style.display = "block";
+            sidebarOpen.style.display = "none";
+            sidebarClose.style.display = "block";
+            navigation.style.backgroundImage = "url(/images/navBg.webp)";
+
+            disableScrolling();
+
+            window.addEventListener("resize", updateSidebarTopPosition);
+          },
+          false
+        );
+
+        sidebarClose.addEventListener(
+          "click",
+          () => {
+            sidebar.style.display = "none";
+            sidebarOpen.style.display = "block";
+            sidebarClose.style.display = "none";
+            navigation.style.background = "transparent";
+
+            enableScrolling();
+          },
+          false
+        );
+
+        window.addEventListener("resize", () => {
+          if (window.innerWidth > 639) {
+            enableScrolling();
+
+            window.removeEventListener("resize", updateSidebarTopPosition);
+          } else if (sidebarClose.style.display === "block") {
+            disableScrolling();
+
+            window.addEventListener("resize", updateSidebarTopPosition);
+          }
         });
-      });
-    </script>
-  </body>
+
+        // Language button toggle
+        document.getElementById("langBtn").addEventListener(
+          "click",
+          function () {
+            const langBtn = document.getElementById("langBtn"),
+              dropdownMenu = document.getElementById("dropdownMenu");
+
+            if (dropdownMenu.style.display == "block") {
+              dropdownMenu.style.display = "none";
+              langBtn.style.borderRadius = "25px";
+            } else {
+              dropdownMenu.style.display = "block";
+              langBtn.style.borderRadius = "25px 25px 0 0";
+            }
+          },
+          false
+        );
+
+        // Redirect function
+        const redirectPath = (newLocale) => {
+          const currentLocale = location.pathname.split("/")[1];
+
+          location.href = location.pathname
+            .replace(`/${currentLocale}/`, `/${newLocale}/`)
+            .replace(location.search, "");
+        };
+
+        document.querySelectorAll(".lang-selector").forEach((langSelector) => {
+          langSelector.addEventListener("click", () => {
+            // @ts-ignore
+            const { lang: locale } = langSelector;
+
+            localStorage.setItem(`locale`, locale);
+
+            redirectPath(locale);
+          });
+        });
+      </script>
+
+
+    </body>
+  </LocalizeLinks>
 </html>
