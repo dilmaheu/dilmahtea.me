@@ -511,12 +511,13 @@ const { defaultRoute, translationNotFound } = Astro.props,
       { availableLocales, Meta: meta } = page,
       locale = page.locale.substring(0, 2);
 
-    const availableLocalesIncludingEnglish = ["en", ...availableLocales];
+    // include EN to availableLocales
+    availableLocales.unshift("en");
 
     return (
       <Layout
         locale={locale}
-        availableLocales={availableLocalesIncludingEnglish}
+        availableLocales={availableLocales}
         meta={meta}
         recurData={recurData}
         metaImage={
