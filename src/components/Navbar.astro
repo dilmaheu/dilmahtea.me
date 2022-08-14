@@ -8,15 +8,24 @@ import getLocalesData from "../utils/getLocalesData";
 // import NLImg from "/images/netherlands.svg";
 
 interface Props {
-  locale: string;
+  docLocale: string;
   footerText: string;
+  availableLocales: string[];
 }
 
-const { locale, footerText } = Astro.props;
+const { docLocale, footerText, availableLocales } = Astro.props as Props;
 
 const { locales, languages, localeNamesData } = getLocalesData();
 
-const docLang = languages[locales.indexOf(locale)],
+const availableLanguages = [];
+
+locales.forEach((locale, index) => {
+  if (locale !== docLocale && [...availableLocales].includes(locale)) {
+    availableLanguages.push(languages[index]);
+  }
+});
+
+const docLang = languages[locales.indexOf(docLocale)],
   localDocLang = localeNamesData[docLang][docLang];
 ---
 
@@ -71,9 +80,10 @@ const docLang = languages[locales.indexOf(locale)],
               id="dropdownMenu"
               class="absolute rounded hidden overflow-hidden dropdown-menu"
             >
-              {languages.map((language) => (
+              {availableLanguages.map((language) => (
                 <LangButton
                   locales={locales}
+                  docLang={docLang}
                   language={language}
                   languages={languages}
                   localeNamesData={localeNamesData}
@@ -136,10 +146,18 @@ const docLang = languages[locales.indexOf(locale)],
     languages,
   }}
 >
+  const navigation = document.getElementById("navigation"),
+    navigationBottom = navigation.getBoundingClientRect().bottom,
+    translationNotFoundNotification = document.querySelector(
+      ".translation-not-found-notification"
+    );
+
   window.onscroll = function () {
     const top = window.pageYOffset || document.documentElement.scrollTop,
-      navigation = document.getElementById("navigation"),
-      navigationBottom = navigation.getBoundingClientRect().bottom;
+      translationNotFoundNotificationHeight =
+        translationNotFoundNotification.getBoundingClientRect().height;
+
+    navigation.style.top = `${translationNotFoundNotificationHeight}px`;
 
     if (top > navigationBottom) {
       navigation.style.backgroundImage = "url(/images/navBg.webp)";
@@ -159,13 +177,13 @@ const docLang = languages[locales.indexOf(locale)],
     dropdown.textContent = preferredLanguage;
   });
 
-  document
-    .querySelectorAll(
-      `.lang-selector.${preferredLocale}, .lang-selector .${preferredLocale}`
-    )
-    .forEach((selector) => {
-      selector.classList.toggle("hidden");
-    });
+  // document
+  //   .querySelectorAll(
+  //     `.lang-selector.${preferredLocale}, .lang-selector .${preferredLocale}`
+  //   )
+  //   .forEach((selector) => {
+  //     selector.classList.toggle("hidden");
+  //   });
 
   const activeLangSelectors = document.querySelectorAll(
       ".lang-selector:not(.hidden)"

@@ -1,4 +1,6 @@
 <script is:inline>
+  let showTranslationNotFoundError = false;
+
   const notificationsObserver = new MutationObserver(function (
     mutationRecords
   ) {
@@ -10,11 +12,21 @@
     if (documentHasNewNotifications) {
       const { target: topmostTarget } = mutationRecords[0];
 
-      topmostTarget
-        .querySelectorAll(
-          `.notification .notification-content .${preferredLocale}`
-        )
-        .forEach((notification) => notification.classList.remove("hidden"));
+      const searchParams = Object.fromEntries(
+        new URL(location.href).searchParams
+      );
+
+      const { requestedLocale } = searchParams;
+
+      if (typeof requestedLocale === "string" && requestedLocale.length === 2) {
+        topmostTarget
+          .querySelectorAll(
+            `.notification .notification-content .${requestedLocale}`
+          )
+          .forEach((notification) => notification.classList.remove("hidden"));
+
+        showTranslationNotFoundError = true;
+      }
     }
   });
 

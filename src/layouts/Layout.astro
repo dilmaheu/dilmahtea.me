@@ -47,7 +47,8 @@ const footerText = recurData.Footer_text.replaceAll(
   `<noscript>${new Date().getFullYear()}</noscript><script>document.write(new Date().getFullYear().toString())</script>`
 );
 
-const langNotAvailableNotification = getLangNotAvailableNotification();
+const { Type: notificationType, localizedNotifications } =
+  getLangNotAvailableNotification();
 ---
 
 <html lang={locale}>
@@ -74,11 +75,22 @@ const langNotAvailableNotification = getLangNotAvailableNotification();
       {slugURL}
       {availableLocales}
     />
+
+    <style lang="scss">
+      .translation-not-found-notification {
+        top: 0;
+        z-index: 1000;
+        position: sticky;
+      }
+    </style>
   </head>
 
   <body>
     <div class="translation-not-found-notification">
-      <TopNotification type="error" notification={langNotAvailableNotification}>
+      <TopNotification
+        type={notificationType}
+        notification={localizedNotifications}
+      >
         <div class="text-center">
           <notification></notification>
         </div>
@@ -86,13 +98,10 @@ const langNotAvailableNotification = getLangNotAvailableNotification();
     </div>
 
     <script is:inline>
-      const searchParams = Object.fromEntries(
-        new URL(location.href).searchParams
-      );
-
-      const { localeExists } = searchParams;
-
-      if (localeExists === "false") {
+      if (
+        showTranslationNotFoundError
+        /* showTranslationNotFoundError is declared in TranslationNotFoundRedirect.astro */
+      ) {
         const translationNotFoundNotification =
           document.currentScript.previousElementSibling.firstElementChild;
 
@@ -124,7 +133,11 @@ const langNotAvailableNotification = getLangNotAvailableNotification();
     </script>
 
     <div>
-      <Navbar locale={locale} footerText={footerText} />
+      <Navbar
+        docLocale={locale}
+        footerText={footerText}
+        availableLocales={availableLocales}
+      />
 
       <main>
         <slot />

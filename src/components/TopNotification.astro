@@ -3,22 +3,18 @@ import fs from "fs/promises";
 import { parseHTML } from "linkedom";
 
 declare interface Props {
-  type?: "error" | "warning" | "info" | "success" | "default";
+  type?: "Error" | "Warning" | "Info" | "Success" | "Default";
   closingEnabled?: boolean;
   notification?: Record<string, any>;
 }
 
-const {
-  type = "default",
-  closingEnabled = false,
-  notification,
-} = Astro.props as Props;
+const { type, closingEnabled, notification } = Astro.props as Props;
 
-if (type === "error" && closingEnabled === true) {
+if (type === "Error" && closingEnabled === true) {
   throw Error("Error notifications can't have closing functionality enabled");
 }
 
-if (type !== "default") {
+if (type !== "Default") {
   var notificationSVG = await fs.readFile(
     `./public/images/notifications/${type}.svg`,
     "utf8"
@@ -91,7 +87,7 @@ const notificationContentHTML = defaultSlotDocument.documentElement.outerHTML;
   }
 </style>
 
-<div class={`notification notification-${type}`}>
+<div class={`notification notification-${type.toLowerCase()}`}>
   <div>
     {notificationSVG && (
       <div>

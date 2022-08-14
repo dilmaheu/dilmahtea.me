@@ -503,8 +503,6 @@ const { defaultRoute, translationNotFound } = Astro.props,
 
 {isRedirectionNecessary ? (
   <Fragment>
-    <SetPreferredLocale />
-
     {defaultRoute ? <DefaultRouteRedirect /> : <TranslationNotFoundRedirect />}
   </Fragment>
 ) : (
@@ -513,10 +511,12 @@ const { defaultRoute, translationNotFound } = Astro.props,
       { availableLocales, Meta: meta } = page,
       locale = page.locale.substring(0, 2);
 
+    const availableLocalesIncludingEnglish = ["en", ...availableLocales];
+
     return (
       <Layout
         locale={locale}
-        availableLocales={availableLocales}
+        availableLocales={availableLocalesIncludingEnglish}
         meta={meta}
         recurData={recurData}
         metaImage={
