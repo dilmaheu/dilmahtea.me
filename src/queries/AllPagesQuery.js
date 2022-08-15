@@ -18,6 +18,17 @@ const AllPagesQuery = `
               }
             }
           }
+          localizations {
+            data {
+              attributes {
+                locale
+                Footer_text
+                Company_name
+                Company_address
+                Company_email
+              }
+            }
+          }
         }
       }
     }
