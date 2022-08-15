@@ -5,7 +5,11 @@ import { globby } from "globby";
 import { parseHTML } from "linkedom";
 import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
 
-const htmlFilePaths = await globby("./dist/**/*.html");
+const htmlFilePaths = await globby([
+    "./dist/**/*.html",
+    "!./dist/**/404/index.html",
+  ]),
+  _404HtmlFilePaths = await globby("./dist/**/404/index.html");
 
 /* CSP = Content Security Policy */
 
@@ -114,3 +118,11 @@ await fetch(endpoint, {
     ],
   }),
 }).then((res) => res.json());
+
+/* rewrite html file paths of 404 routes */
+_404HtmlFilePaths.forEach((path) => {
+  const newPath = path.replace(/404\/index.html$/, "404.html");
+
+  fs.rename(path, newPath);
+  fs.rm(path.slice(0, -11), { recursive: true, force: true });
+});
