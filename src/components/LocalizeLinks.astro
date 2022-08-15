@@ -14,7 +14,11 @@ const { document: documentBody } = await parseHTML(documentBodyHTML);
 const documentLinks = documentBody.querySelectorAll("a");
 
 [...documentLinks].forEach((link) => {
-  link.href = "/" + locale + link.href;
+  const href = link.getAttribute("href");
+
+  if (!href.startsWith("#")) {
+    link.href = "/" + locale + href;
+  }
 });
 ---
 
