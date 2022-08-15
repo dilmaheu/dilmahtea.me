@@ -147,7 +147,6 @@ const docLang = languages[locales.indexOf(docLocale)],
   }}
 >
   const navigation = document.getElementById("navigation"),
-    navigationBottom = navigation.getBoundingClientRect().bottom,
     translationNotFoundNotification = document.querySelector(
       ".translation-not-found-notification"
     );
@@ -159,7 +158,7 @@ const docLang = languages[locales.indexOf(docLocale)],
 
     navigation.style.top = `${translationNotFoundNotificationHeight}px`;
 
-    if (top > navigationBottom) {
+    if (top > 0) {
       navigation.style.backgroundImage = "url(/images/navBg.webp)";
     } else if (document.body.style.position !== "fixed") {
       navigation.style.background = "transparent";
