@@ -270,8 +270,11 @@ export async function getStaticPaths() {
       availableLocales: basicPagesLocales,
       type: `basicPages`,
     };
-    const defaultBasicPage = createPages(page.attributes, pageObj);
-    allBasicPages.push(defaultBasicPage);
+
+    if (page.attributes.Meta.URL_slug !== "404") {
+      const defaultBasicPage = createPages(page.attributes, pageObj);
+      allBasicPages.push(defaultBasicPage);
+    }
   });
 
   // Getting Confirmation pages
