@@ -9,7 +9,7 @@ import UpdateHeroTopMargin from "./UpdateHeroTopMargin.astro";
 
 const url = `${import.meta.env.CloudImg_URL}`;
 
-const { page } = Astro.props;
+const { page, recurData } = Astro.props;
 
 const allHowTos = page.allHowTos
   .filter((val) => val?.props?.page?.locale == page.locale)
@@ -102,7 +102,7 @@ const recentHowTos = allHowTos.filter(
                   })}
                 </li>
                 <!-- <li class="blogHome_HdItem">5 min read</li>
-								<li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li> -->
+                <li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li> -->
               </ul>
             </div>
           </div>
@@ -185,13 +185,13 @@ const recentHowTos = allHowTos.filter(
   </div>
 </div>
 
-<!-- Blog Section -->
+<!-- How to Section -->
 
 <div class="wrapper flex relative z-20 -top-10 lg:-top-16 xl:-top-24">
   <div class="how_headerSteps">
     <h2 class="how_headerStepsHeading text-center sm:text-left">
       {page.Method.length}
-      Practices to follow
+      {recurData.text_practices_to_follow}
     </h2>
     <div class="howTo_headerStepsContainer">
       <div
@@ -230,8 +230,8 @@ const recentHowTos = allHowTos.filter(
               alt="arrow"
             />
           </div>
-          <div id="blog_StickyDropdownHeaderTop">Practices</div>
-          <div id="blog_StickyDropdownHeader">Practices</div>
+          <div id="blog_StickyDropdownHeaderTop">{recurData.text_practices}</div>
+          <div id="blog_StickyDropdownHeader">{recurData.text_practices}</div>
           <ul id="blog_StickyItemContainerMd"></ul>
         </div>
         <div class="w-3">
@@ -311,14 +311,14 @@ const recentHowTos = allHowTos.filter(
       class="md:w-4/12 order-1 md:order-2 blogContent_StickyContainer md:sticky top-0 overflow-hiden self-start"
       id="blogContent_StickyContainer"
     >
-      <h3 id="blog_StickyHeader">Practices</h3>
+      <h3 id="blog_StickyHeader">{recurData.text_practices}</h3>
       <div id="blog_StickyItemContainer"></div>
     </div>
   </div>
 </div>
 
 <div class="wrapper">
-  <h2 class="blogDetails_recentTitle">Explore the world of kindness</h2>
+  <h2 class={recentHowTos.length < 1 ? "hidden" : "blogDetails_recentTitle"}>{recurData.text_explore_the_world_of_kindness}</h2>
 
   <div
     class="w-full grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 mx-auto justify-items-center sm:justify-items-start blogDetails_CardsContainer"
@@ -386,9 +386,9 @@ const recentHowTos = allHowTos.filter(
                   })}
                 </li>
                 {/*<li class="blogHome_cardItem">5 min read</li>
-								<li class="flex items-center blogHome_cardItem">
-									<a href="#"><div class="blogHome_cardItemBtn">Manufacturing</div></a>
-								</li>*/}
+                <li class="flex items-center blogHome_cardItem">
+                  <a href="#"><div class="blogHome_cardItemBtn">Manufacturing</div></a>
+                </li>*/}
               </ul>
               <div class="blogDetails_CardTitle">
                 <a href={`/` + howTo.Meta.URL_slug}>{howTo.Title}</a>
@@ -412,14 +412,14 @@ const recentHowTos = allHowTos.filter(
 
 <script is:inline>
   document.addEventListener("DOMContentLoaded", function () {
-    // creating blog chapters
+    // creating howto practices
     const hsd = document.getElementById("howToStepDetails");
     const tags = hsd.querySelectorAll("h2");
 
     console.log(tags);
 
     for (const tag of tags) {
-      // chapters in desktop screen
+      // practices in desktop screen
       var div = document.getElementById("blog_StickyItemContainer");
       var aTag = document.createElement("a");
       aTag.setAttribute("href", "#" + tag.id);
@@ -428,14 +428,14 @@ const recentHowTos = allHowTos.filter(
         tag.id;
       div.appendChild(aTag);
 
-      // sticky active chapter heading in mobile screen
+      // sticky active practice heading in mobile screen
       var divMd = document.getElementById("blog_StickyItemContainerMd");
       var liTagMd = document.createElement("li");
       liTagMd.setAttribute("class", "truncate");
       liTagMd.innerHTML = tag.id;
       divMd.appendChild(liTagMd);
 
-      // sticky button chapters in mobile screen
+      // sticky button practices in mobile screen
       var dropdownDiv = document.getElementById("blog_StickyDropdownItem");
       var dropdownATag = document.createElement("a");
       dropdownATag.setAttribute("href", "#" + tag.id);
@@ -449,7 +449,7 @@ const recentHowTos = allHowTos.filter(
       dropdownDiv.appendChild(dropdownATag);
     }
 
-    // highlight active blog section header desktop screen
+    // highlight active practice section header desktop screen
     const stickyItemCon = document.getElementById("blog_StickyItemContainer");
     const blogStickyAtag = stickyItemCon.querySelectorAll("a");
     const blogStickyImg = stickyItemCon.querySelectorAll(".blog_StickyItemImg");
@@ -514,7 +514,7 @@ const recentHowTos = allHowTos.filter(
 
     const mqMd = window.matchMedia("(max-width: 767.98px)");
     if (mqMd.matches) {
-      // show active blog section header name top on sticky in mobile screen
+      // show active practice header name top on sticky in mobile screen
       document.addEventListener("scroll", (e) => {
         const stickyItemConMd = document.getElementById(
           "blog_StickyItemContainerMd"
@@ -556,7 +556,7 @@ const recentHowTos = allHowTos.filter(
         }
       });
 
-      // sticky chapters heading toggle by "Chapters" when toggling stcky button
+      // sticky practices heading toggle by "Practices" when toggling stcky button
       document.addEventListener("scroll", (e) => {
         var scrolled = document.scrollingElement.scrollTop;
         const hsd = document.getElementById("howToStepDetails");
@@ -585,7 +585,7 @@ const recentHowTos = allHowTos.filter(
     }
     const mqSm = window.matchMedia("(max-width: 639.98px)");
     if (mqSm.matches) {
-      // show active blog section header name top on sticky in mobile screen
+      // show active practice header name top on sticky in mobile screen
       document.addEventListener("scroll", (e) => {
         const stickyItemConMd = document.getElementById(
           "blog_StickyItemContainerMd"
@@ -627,7 +627,7 @@ const recentHowTos = allHowTos.filter(
         }
       });
 
-      // sticky chapters heading toggle by "Chapters" when toggling stcky button
+      // sticky Practices heading toggle by "Practices" when toggling stcky button
       document.addEventListener("scroll", (e) => {
         var scrolled = document.scrollingElement.scrollTop;
         const hsd = document.getElementById("howToStepDetails");
@@ -656,7 +656,7 @@ const recentHowTos = allHowTos.filter(
       });
     }
 
-    //sticky chapters button toggle
+    //sticky Practices button toggle
     document.getElementById("blogStickyBtn").addEventListener(
       "click",
       function () {
@@ -696,7 +696,7 @@ const recentHowTos = allHowTos.filter(
       false
     );
 
-    // blog reading progress bar
+    // Practices reading progress bar
     document.addEventListener("scroll", (e) => {
       var winScroll =
         document.body.scrollTop || document.documentElement.scrollTop;
