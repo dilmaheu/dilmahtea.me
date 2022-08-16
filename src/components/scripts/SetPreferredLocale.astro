@@ -1,5 +1,18 @@
-<script is:inline>
-  const { lang: preferredLocale } = document.documentElement;
+---
+import getLocalesData from "../../utils/getLocalesData";
 
-  localStorage.setItem("locale", preferredLocale);
+const { locales } = await getLocalesData();
+---
+
+<script is:inline define:vars={{ locales }}>
+  const browserLocale = navigator.language.substring(0, 2); // get browser locale
+
+  let preferredLocale = localStorage.getItem("locale"); // locale stored in browser storage
+
+  if (preferredLocale == null) {
+    // if preferredLocale is not set already locale use browser locale if it exists in the list
+    preferredLocale = locales.includes(browserLocale) ? browserLocale : "en";
+
+    localStorage.setItem(`locale`, preferredLocale);
+  }
 </script>

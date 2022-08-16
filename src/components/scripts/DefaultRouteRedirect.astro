@@ -1,20 +1,12 @@
 ---
-import getLocalesData from "../../utils/getLocalesData";
-
-const { locales } = await getLocalesData();
+import SetPreferredLocale from "./SetPreferredLocale.astro";
 ---
 
-<script is:inline defind:vars={{ locales }}>
-  const browserLocale = navigator.language.substring(0, 2); // get browser locale
+<SetPreferredLocale />
 
-  let preferredLocale = localStorage.getItem("locale"); // locale stored in browser storage
-
-  if (preferredLocale == null) {
-    // if no stored locale use browser locale if it exists in the list
-    preferredLocale = locales.includes(browserLocale) ? browserLocale : "en";
-
-    localStorage.setItem(`locale`, preferredLocale);
-  }
-
-  location.pathname = location.pathname.replace("/", `/${preferredLocale}/`);
+<script is:inline>
+  location.pathname = location.pathname.replace(
+    "/",
+    `/${preferredLocale}/` /* preferredLocale is defined in SetPreferredLocale.astro */
+  );
 </script>

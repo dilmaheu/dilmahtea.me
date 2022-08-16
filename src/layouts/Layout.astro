@@ -7,9 +7,8 @@ import Footer from "../components/Footer.astro";
 import MainHead from "../components/MainHead.astro";
 import LocalizeLinks from "../components/LocalizeLinks.astro";
 import TopNotification from "../components/TopNotification.astro";
-import SetPreferredLocale from "../components/scripts/SetPreferredLocale.astro";
-import NotificationAnimations from "../components/scripts/NotificationAnimations.astro";
 import getLangNotAvailableNotification from "../utils/getLangNotAvailableNotification";
+import NotificationAnimations from "../components/scripts/NotificationAnimations.astro";
 import TranslationNotFoundNotificationsObserver from "../components/scripts/TranslationNotFoundNotificationsObserver.astro";
 
 /**
@@ -61,7 +60,11 @@ const { Type: notificationType, localizedNotifications } =
       />
     )}
 
-    <SetPreferredLocale />
+    <script is:inline>
+      const { lang: documentLocale } = document.documentElement;
+
+      localStorage.setItem("locale", documentLocale);
+    </script>
 
     <NotificationAnimations />
 
