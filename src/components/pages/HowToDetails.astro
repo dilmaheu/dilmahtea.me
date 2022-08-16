@@ -1,25 +1,25 @@
 ---
-import MainBG from "/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp";
 import CupIcon from "/images/cup.svg";
 import CupGreenIcon from "/images/cupGreen.svg";
 import RightArrow from "/images/rightArrow.svg";
+import MainBG from "/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp";
 
 import Markdown from "@astrojs/markdown-component";
-import UpdateHeroTopMargin from "./UpdateHeroTopMargin.astro";
+import UpdateHeroTopMargin from "../scripts/UpdateHeroTopMargin.astro";
 
 const url = `${import.meta.env.CloudImg_URL}`;
 
 const { page, recurData } = Astro.props;
 
-const allBlogs = page.allBlogs
+const allHowTos = page.allHowTos
   .filter((val) => val?.props?.page?.locale == page.locale)
   .map((val) => val.props.page);
 
-allBlogs.sort((a, b) => {
+allHowTos.sort((a, b) => {
   return new Date(b.createdAt) - new Date(a.createdAt);
 });
 
-const recentBlogs = allBlogs.filter(
+const recentHowTos = allHowTos.filter(
   (val) => val.Meta.URL_slug != page.Meta.URL_slug
 );
 ---
@@ -174,7 +174,7 @@ const recentBlogs = allBlogs.filter(
         </clipPath>
       </defs>
       <image
-        class="h-full w-full"
+        class="h-full w-auto"
         height="100%"
         width="100%"
         href={url +
@@ -185,10 +185,33 @@ const recentBlogs = allBlogs.filter(
   </div>
 </div>
 
-<!-- Blog Section -->
-<div class="blogContentContainer" role="main">
+<!-- How to Section -->
+
+<div class="wrapper flex relative z-20 -top-10 lg:-top-16 xl:-top-24">
+  <div class="how_headerSteps">
+    <h2 class="how_headerStepsHeading text-center sm:text-left">
+      {page.Method.length}
+      {recurData.text_practices_to_follow}
+    </h2>
+    <div class="howTo_headerStepsContainer">
+      <div
+        class="flex flex-wrap justify-center sm:justify-start gap-x-5 gap-y-2.5"
+      >
+        {page.Method.map((method) => (
+          <a href={`#` + method.Method_title.replaceAll(" ", "-")}>
+            <div class="flex items-center cursor-pointer howTo_headerStepItem">
+              {method.Method_title}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="blogContentContainer z-30" role="main">
   <div
-    class="block md:hidden sticky overflow-hiden self-start"
+    class="block md:hidden sticky overflow-hiden self-start z-30"
     id="blogContent_StickyContainerMd"
   >
     <div
@@ -207,8 +230,10 @@ const recentBlogs = allBlogs.filter(
               alt="arrow"
             />
           </div>
-          <div id="blog_StickyDropdownHeaderTop">{recurData.text_chapter}</div>
-          <div id="blog_StickyDropdownHeader">{recurData.text_chapter}</div>
+          <div id="blog_StickyDropdownHeaderTop">
+            {recurData.text_practices}
+          </div>
+          <div id="blog_StickyDropdownHeader">{recurData.text_practices}</div>
           <ul id="blog_StickyItemContainerMd"></ul>
         </div>
         <div class="w-3">
@@ -229,33 +254,93 @@ const recentBlogs = allBlogs.filter(
     <div id="sticky_p_bar"></div>
   </div>
   <div class="wrapper w-full flex flex-wrap">
-    <div class="md:w-8/12 order-2 md:order-1">
-      <div
-        class="prose max-w-none basicInfoSecTxt detailedBlog"
-        id="detailedBlog"
-      >
-        <Markdown>{page.Block_text}</Markdown>
-      </div>
+    <div
+      class="md:w-8/12 order-2 md:order-1 relative z-20 md:-mt-10 lg:-mt-16 xl:-mt-24"
+      id="howToStepDetails"
+    >
+      {page.Method.map((method) => (
+        <div>
+          <h2
+            class="HowToMethodHead"
+            id={method.Method_title.replaceAll(" ", "-")}
+          >
+            {method.Method_title}
+          </h2>
+          {method.Steps.map((step, idx) => (
+            <div class="howToStepContainer">
+              <h3 class="howToStepTitle">
+                {idx + 1}.{step.Step_title}
+              </h3>
+              <div class="howToStepTxt">
+                <Markdown>{step.Step_text}</Markdown>
+              </div>
+
+              <div
+                class={
+                  step.Step_blob.data == null ? "hidden" : "stepImgContainer"
+                }
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 1080 578.5"
+                  class="h-auto w-full"
+                >
+                  <defs>
+                    <clipPath
+                      id={step.Step_title.replaceAll(" ", "-") + "Img" + idx}
+                    >
+                      <path d="M557.7,4.4C388.5,4.4,108.5-4.7,42.9,47.5S2.2,286.3,18.3,426s178,152.5,552.1,152.5c307.5,0,403.7-36.8,481.9-163.6,33.2-53.9,50.7-186.5-31.1-341C968.3-26.1,793.3,4.4,557.7,4.4Z" />
+                    </clipPath>
+                  </defs>
+                  <image
+                    class="h-auto w-full"
+                    height="100%"
+                    width="100%"
+                    href={
+                      step.Step_blob.data == null
+                        ? ""
+                        : url +
+                          step.Step_blob.data.attributes.provider_metadata
+                            .public_id +
+                          `/small`
+                    }
+                    clip-path={
+                      "url(#" +
+                      step.Step_title.replaceAll(" ", "-") +
+                      "Img" +
+                      idx +
+                      ")"
+                    }
+                  />
+                </svg>
+              </div>
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
+
     <div
       class="md:w-4/12 order-1 md:order-2 blogContent_StickyContainer md:sticky top-0 overflow-hiden self-start"
       id="blogContent_StickyContainer"
     >
-      <h3 id="blog_StickyHeader">{recurData.text_chapter}</h3>
+      <h3 id="blog_StickyHeader">{recurData.text_practices}</h3>
       <div id="blog_StickyItemContainer"></div>
     </div>
   </div>
 </div>
 
 <div class="wrapper">
-  <h2 class={recentBlogs.length < 1 ? "hidden" : "blogDetails_recentTitle"}>{recurData.text_explore_the_world_of_kindness}</h2>
+  <h2 class={recentHowTos.length < 1 ? "hidden" : "blogDetails_recentTitle"}>
+    {recurData.text_explore_the_world_of_kindness}
+  </h2>
 
   <div
     class="w-full grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 mx-auto justify-items-center sm:justify-items-start blogDetails_CardsContainer"
     role="list"
     aria-label="Kindness Items"
   >
-    {recentBlogs.slice(0, 3).map((blog, idx) => (
+    {recentHowTos.slice(0, 3).map((howTo, idx) => (
       <div class="blogDetails_Card" role="listitem" aria-label="Kindness Item">
         <div class="relative">
           <div>
@@ -283,14 +368,14 @@ const recentBlogs = allBlogs.filter(
                     <path d="M419.2,306.1H2.1C-2.2,194.8-1.3,81.5,17.9,43.2,43.3-7.3,151.7,1.5,217.2,1.5c91.3,0,173.8-18.8,194.3,78.1C430.7,170.5,421.1,243.2,419.2,306.1Z" />
                   </clipPath>
                 </defs>
-                <a href={`/` + blog.Meta.URL_slug}>
+                <a href={`/` + howTo.Meta.URL_slug}>
                   <image
                     class="h-full w-auto"
                     height="100%"
                     width="100%"
                     href={
                       url +
-                      blog.Intro_blob.data.attributes.provider_metadata
+                      howTo.Intro_blob.data.attributes.provider_metadata
                         .public_id +
                       `/small`
                     }
@@ -302,7 +387,7 @@ const recentBlogs = allBlogs.filter(
 
             <div class="blogDetails_CardConentConatiner">
               <div class="flex flex-wrap font-bold blogDetails_cardAuth">
-                {blog.authors.data.map((author, idx) => (
+                {howTo.authors.data.map((author, idx) => (
                   <a href="#">
                     {`${idx > 0 ? ", " : " "}` + author.attributes.givenName}
                   </a>
@@ -310,7 +395,7 @@ const recentBlogs = allBlogs.filter(
               </div>
               <ul class="flex flex-wrap items-center blogHome_cardItemContainer">
                 <li class="blogHome_cardItem">
-                  {new Date(blog.createdAt).toLocaleString("en-US", {
+                  {new Date(howTo.createdAt).toLocaleString("en-US", {
                     day: "numeric",
                     month: "long",
                   })}
@@ -321,7 +406,7 @@ const recentBlogs = allBlogs.filter(
                 </li>*/}
               </ul>
               <div class="blogDetails_CardTitle">
-                <a href={`/` + blog.Meta.URL_slug}>{blog.Title}</a>
+                <a href={`/` + howTo.Meta.URL_slug}>{howTo.Title}</a>
                 <span class="icon relative top-0">
                   <span class="relative blogDetails_CardTitleIcon">
                     <img
@@ -342,53 +427,28 @@ const recentBlogs = allBlogs.filter(
 
 <script is:inline>
   document.addEventListener("DOMContentLoaded", function () {
-    // creating blog chapters
-    const db = document.getElementById("detailedBlog");
-    const tags = db.querySelectorAll("h2");
-    const img = db.querySelectorAll("img");
-
-    for (var i = 0; i < img.length; i++) {
-      img[i].outerHTML = `<svg
-            class="blogDetailedImgContainer"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 1080 578.5"
-            class="h-auto w-full"
-          >
-          <defs>
-            <clipPath id=${"blogDetailedImg" + [i]}>
-              <path
-                d="M557.7,4.4C388.5,4.4,108.5-4.7,42.9,47.5S2.2,286.3,18.3,426s178,152.5,552.1,152.5c307.5,0,403.7-36.8,481.9-163.6,33.2-53.9,50.7-186.5-31.1-341C968.3-26.1,793.3,4.4,557.7,4.4Z"
-              ></path>
-            </clipPath>
-          </defs>
-          <image
-            class="h-auto w-full"
-            height="100%"
-            width="100%"
-            href=${img[i].currentSrc}
-            clip-path=${"url(#blogDetailedImg" + [i] + ")"}>
-          </image>
-        </svg>`;
-    }
+    // creating howto practices
+    const hsd = document.getElementById("howToStepDetails");
+    const tags = hsd.querySelectorAll("h2");
 
     for (const tag of tags) {
-      // chapters in desktop screen
+      // practices in desktop screen
       var div = document.getElementById("blog_StickyItemContainer");
       var aTag = document.createElement("a");
       aTag.setAttribute("href", "#" + tag.id);
       aTag.innerHTML =
         `<img class="blog_StickyItemImg opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` +
-        tag.innerHTML;
+        tag.id.replaceAll("-", " ");
       div.appendChild(aTag);
 
-      // sticky active chapter heading in mobile screen
+      // sticky active practice heading in mobile screen
       var divMd = document.getElementById("blog_StickyItemContainerMd");
       var liTagMd = document.createElement("li");
       liTagMd.setAttribute("class", "truncate");
-      liTagMd.innerHTML = tag.innerHTML;
+      liTagMd.innerHTML = tag.id.replaceAll("-", " ");
       divMd.appendChild(liTagMd);
 
-      // sticky button chapters in mobile screen
+      // sticky button practices in mobile screen
       var dropdownDiv = document.getElementById("blog_StickyDropdownItem");
       var dropdownATag = document.createElement("a");
       dropdownATag.setAttribute("href", "#" + tag.id);
@@ -398,11 +458,11 @@ const recentBlogs = allBlogs.filter(
       );
       dropdownATag.innerHTML =
         `<img class="blog_StickyItemImgMd opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` +
-        tag.innerHTML;
+        tag.id.replaceAll("-", " ");
       dropdownDiv.appendChild(dropdownATag);
     }
 
-    // highlight active blog section header desktop screen
+    // highlight active practice section header desktop screen
     const stickyItemCon = document.getElementById("blog_StickyItemContainer");
     const blogStickyAtag = stickyItemCon.querySelectorAll("a");
     const blogStickyImg = stickyItemCon.querySelectorAll(".blog_StickyItemImg");
@@ -467,7 +527,7 @@ const recentBlogs = allBlogs.filter(
 
     const mqMd = window.matchMedia("(max-width: 767.98px)");
     if (mqMd.matches) {
-      // show active blog section header name top on sticky in mobile screen
+      // show active practice header name top on sticky in mobile screen
       document.addEventListener("scroll", (e) => {
         const stickyItemConMd = document.getElementById(
           "blog_StickyItemContainerMd"
@@ -478,11 +538,11 @@ const recentBlogs = allBlogs.filter(
         );
         dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
         var scrolled = document.scrollingElement.scrollTop;
-        const db = document.getElementById("detailedBlog");
+        const hsd = document.getElementById("howToStepDetails");
         stickyProgress = document.getElementById("sticky_p_bar");
-        dbPosition = db.offsetTop;
+        hsdPosition = hsd.offsetTop;
 
-        if (scrolled > dbPosition + 1) {
+        if (scrolled > hsdPosition + 1) {
           dropdownContainer.style.display = "block";
           stickyProgress.style.display = "block";
         } else {
@@ -509,11 +569,11 @@ const recentBlogs = allBlogs.filter(
         }
       });
 
-      // sticky chapters heading toggle by "Chapters" when toggling stcky button
+      // sticky practices heading toggle by "Practices" when toggling stcky button
       document.addEventListener("scroll", (e) => {
         var scrolled = document.scrollingElement.scrollTop;
-        const db = document.getElementById(`detailedBlog`);
-        dbPosition = db.offsetTop;
+        const hsd = document.getElementById("howToStepDetails");
+        hsdPosition = hsd.offsetTop;
         dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
         dropdownHeaderTop = document.getElementById(
           "blog_StickyDropdownHeaderTop"
@@ -521,9 +581,9 @@ const recentBlogs = allBlogs.filter(
         dropdownHeaderItem = document.getElementById(
           "blog_StickyItemContainerMd"
         );
-        const firstTag = db.querySelector("h2");
+        const firstTag = hsd.querySelector("h2");
 
-        if (scrolled > dbPosition - 40) {
+        if (scrolled > hsdPosition - 40) {
           if (dropdownHeader.style.display == "block") {
             dropdownHeaderTop.style.display = "none";
           } else if (scrolled > firstTag.offsetTop - 40) {
@@ -538,7 +598,7 @@ const recentBlogs = allBlogs.filter(
     }
     const mqSm = window.matchMedia("(max-width: 639.98px)");
     if (mqSm.matches) {
-      // show active blog section header name top on sticky in mobile screen
+      // show active practice header name top on sticky in mobile screen
       document.addEventListener("scroll", (e) => {
         const stickyItemConMd = document.getElementById(
           "blog_StickyItemContainerMd"
@@ -549,11 +609,11 @@ const recentBlogs = allBlogs.filter(
         );
         dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
         var scrolled = document.scrollingElement.scrollTop;
-        const db = document.getElementById("detailedBlog");
+        const hsd = document.getElementById("howToStepDetails");
         stickyProgress = document.getElementById("sticky_p_bar");
-        dbPosition = db.offsetTop;
+        hsdPosition = hsd.offsetTop;
 
-        if (scrolled > dbPosition - 50) {
+        if (scrolled > hsdPosition - 50) {
           dropdownContainer.style.display = "block";
           stickyProgress.style.display = "block";
         } else {
@@ -580,11 +640,11 @@ const recentBlogs = allBlogs.filter(
         }
       });
 
-      // sticky chapters heading toggle by "Chapters" when toggling stcky button
+      // sticky Practices heading toggle by "Practices" when toggling stcky button
       document.addEventListener("scroll", (e) => {
         var scrolled = document.scrollingElement.scrollTop;
-        const db = document.getElementById(`detailedBlog`);
-        dbPosition = db.offsetTop;
+        const hsd = document.getElementById("howToStepDetails");
+        hsdPosition = hsd.offsetTop;
         dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
         dropdownHeaderTop = document.getElementById(
           "blog_StickyDropdownHeaderTop"
@@ -593,9 +653,9 @@ const recentBlogs = allBlogs.filter(
           "blog_StickyItemContainerMd"
         );
 
-        const firstTag = db.querySelector("h2");
+        const firstTag = hsd.querySelector("h2");
 
-        if (scrolled > dbPosition - 120) {
+        if (scrolled > hsdPosition - 120) {
           if (dropdownHeader.style.display == "block") {
             dropdownHeaderTop.style.display = "none";
           } else if (scrolled > firstTag.offsetTop - 120) {
@@ -609,7 +669,7 @@ const recentBlogs = allBlogs.filter(
       });
     }
 
-    //sticky chapters button toggle
+    //sticky Practices button toggle
     document.getElementById("blogStickyBtn").addEventListener(
       "click",
       function () {
@@ -649,7 +709,7 @@ const recentBlogs = allBlogs.filter(
       false
     );
 
-    // blog reading progress bar
+    // Practices reading progress bar
     document.addEventListener("scroll", (e) => {
       var winScroll =
         document.body.scrollTop || document.documentElement.scrollTop;
@@ -658,9 +718,9 @@ const recentBlogs = allBlogs.filter(
         document.documentElement.clientHeight;
 
       const contentHeight =
-        document.querySelector(".detailedBlog").offsetHeight;
+        document.querySelector("#howToStepDetails").offsetHeight;
       const contentOffssetTop =
-        document.querySelector(".detailedBlog").offsetTop;
+        document.querySelector("#howToStepDetails").offsetTop;
 
       var scrolled = (winScroll / height) * 100;
       let ScrollBarWidth;
