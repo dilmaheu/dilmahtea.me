@@ -22,9 +22,12 @@ const requestPath = Astro.url.pathname;
 let page = _404PagesData.data.basicPages.data[0].attributes,
   recurData = _404PagesData.data.recurringElement.data.attributes;
 
-const availableLocales = page.localizations.data.map(({ attributes }) =>
-  attributes.locale.substring(0, 2)
-);
+const availableLocales = [
+  "en",
+  ...page.localizations.data.map(({ attributes }) =>
+    attributes.locale.substring(0, 2)
+  ),
+];
 
 let [, locale] = requestPath.match(/^\/([a-z]{2})\//) ?? [];
 
