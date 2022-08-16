@@ -198,7 +198,7 @@ const recentHowTos = allHowTos.filter(
         class="flex flex-wrap justify-center sm:justify-start gap-x-5 gap-y-2.5"
       >
         {page.Method.map((method) => (
-          <a href={`#` + method.Method_title}>
+          <a href={`#` + method.Method_title.replaceAll(' ', '-')}>
             <div class="flex items-center cursor-pointer howTo_headerStepItem">
               {method.Method_title}
             </div>
@@ -258,7 +258,7 @@ const recentHowTos = allHowTos.filter(
     >
       {page.Method.map((method) => (
         <div>
-          <h2 class="HowToMethodHead" id={method.Method_title}>
+          <h2 class="HowToMethodHead" id={method.Method_title.replaceAll(' ', '-')}>
             {method.Method_title}
           </h2>
           {method.Steps.map((step, idx) => (
@@ -281,7 +281,7 @@ const recentHowTos = allHowTos.filter(
                   class="h-auto w-full"
                 >
                   <defs>
-                    <clipPath id="stepImg">
+                    <clipPath id={step.Step_title.replaceAll(' ', '-') + "Img" + idx}>
                       <path d="M557.7,4.4C388.5,4.4,108.5-4.7,42.9,47.5S2.2,286.3,18.3,426s178,152.5,552.1,152.5c307.5,0,403.7-36.8,481.9-163.6,33.2-53.9,50.7-186.5-31.1-341C968.3-26.1,793.3,4.4,557.7,4.4Z" />
                     </clipPath>
                   </defs>
@@ -297,7 +297,7 @@ const recentHowTos = allHowTos.filter(
                             .public_id +
                           `/small`
                     }
-                    clip-path="url(#stepImg)"
+                    clip-path={"url(#" + step.Step_title.replaceAll(' ', '-') + "Img" + idx + ")"}
                   />
                 </svg>
               </div>
@@ -416,8 +416,6 @@ const recentHowTos = allHowTos.filter(
     const hsd = document.getElementById("howToStepDetails");
     const tags = hsd.querySelectorAll("h2");
 
-    console.log(tags);
-
     for (const tag of tags) {
       // practices in desktop screen
       var div = document.getElementById("blog_StickyItemContainer");
@@ -425,14 +423,14 @@ const recentHowTos = allHowTos.filter(
       aTag.setAttribute("href", "#" + tag.id);
       aTag.innerHTML =
         `<img class="blog_StickyItemImg opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` +
-        tag.id;
+        tag.id.replaceAll('-', ' ');
       div.appendChild(aTag);
 
       // sticky active practice heading in mobile screen
       var divMd = document.getElementById("blog_StickyItemContainerMd");
       var liTagMd = document.createElement("li");
       liTagMd.setAttribute("class", "truncate");
-      liTagMd.innerHTML = tag.id;
+      liTagMd.innerHTML = tag.id.replaceAll('-', ' ');
       divMd.appendChild(liTagMd);
 
       // sticky button practices in mobile screen
@@ -445,7 +443,7 @@ const recentHowTos = allHowTos.filter(
       );
       dropdownATag.innerHTML =
         `<img class="blog_StickyItemImgMd opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` +
-        tag.id;
+        tag.id.replaceAll('-', ' ');
       dropdownDiv.appendChild(dropdownATag);
     }
 
