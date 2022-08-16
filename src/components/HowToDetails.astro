@@ -258,7 +258,7 @@ const recentHowTos = allHowTos.filter(
     >
       {page.Method.map((method) => (
         <div>
-          <h2 class="HowToMethodHead" id={method.Method_title}>
+          <h2 class="HowToMethodHead" id={method.Method_title.replaceAll(' ', '-')}>
             {method.Method_title}
           </h2>
           {method.Steps.map((step, idx) => (
@@ -415,10 +415,6 @@ const recentHowTos = allHowTos.filter(
     // creating howto practices
     const hsd = document.getElementById("howToStepDetails");
     const tags = hsd.querySelectorAll("h2");
-
-    for (var i = 0; i < tags.length; i++) {
-      tags[i].setAttribute("id", tags[i].id.replaceAll(' ', '-'));
-    }
 
     for (const tag of tags) {
       // practices in desktop screen
