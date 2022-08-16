@@ -4,7 +4,7 @@ import NotFound from "../components/NotFound.astro";
 import NotFoundPagesQuery from "../queries/NotFoundPagesQuery";
 
 // fetching the error page
-const notFoundPagesData = await fetch(`${import.meta.env.DB_URL}`, {
+const _404PagesData = await fetch(`${import.meta.env.DB_URL}`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -16,19 +16,33 @@ const notFoundPagesData = await fetch(`${import.meta.env.DB_URL}`, {
 }).then((response) => response.json());
 
 // saving it's page attributes like meta and other components
-const notFoundPages = notFoundPagesData.data.basicPages.data;
+const requestPath = Astro.url.pathname;
 
-const locale = "en",
-  page = notFoundPages.find(
-    (page) => page.attributes.locale === locale
-  ).attributes;
+let page = _404PagesData.data.basicPages.data[0].attributes,
+  recurData = _404PagesData.data.recurringElement.data.attributes;
 
-const availableLocales = page.localizations.data.map((localized) =>
-  localized.attributes.locale.substring(0, 2)
+const availableLocales = page.localizations.data.map(({ attributes }) =>
+  attributes.locale.substring(0, 2)
 );
 
-// saving footer text
-const recurData = notFoundPagesData.data.recurringElement.data.attributes;
+let [, locale] = requestPath.match(/^\/([a-z]{2})\//) ?? [];
+
+if (!locale || !availableLocales.includes(locale)) locale = "en";
+
+if (locale !== "en") {
+  page = page.localizations.data.find(
+    ({ attributes }) => attributes.locale === locale
+  ).attributes;
+
+  recurData = {
+    // include OpenGraph_default data to non-english recurring elements
+    OpenGraph_default: recurData.OpenGraph_default,
+    // localize recurring elements
+    ...recurData.localizations.data.find(
+      ({ attributes }) => attributes.locale.substring(0, 2) === locale
+    ).attributes,
+  };
+}
 ---
 
 <Layout
