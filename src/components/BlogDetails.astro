@@ -9,7 +9,7 @@ import UpdateHeroTopMargin from "./UpdateHeroTopMargin.astro";
 
 const url = `${import.meta.env.CloudImg_URL}`;
 
-const { page } = Astro.props;
+const { page, recurData } = Astro.props;
 
 const allBlogs = page.allBlogs
   .filter((val) => val?.props?.page?.locale == page.locale)
@@ -207,8 +207,8 @@ const recentBlogs = allBlogs.filter(
               alt="arrow"
             />
           </div>
-          <div id="blog_StickyDropdownHeaderTop">Chapters</div>
-          <div id="blog_StickyDropdownHeader">Chapters</div>
+          <div id="blog_StickyDropdownHeaderTop">{recurData.text_chapter}</div>
+          <div id="blog_StickyDropdownHeader">{recurData.text_chapter}</div>
           <ul id="blog_StickyItemContainerMd"></ul>
         </div>
         <div class="w-3">
@@ -241,14 +241,14 @@ const recentBlogs = allBlogs.filter(
       class="md:w-4/12 order-1 md:order-2 blogContent_StickyContainer md:sticky top-0 overflow-hiden self-start"
       id="blogContent_StickyContainer"
     >
-      <h3 id="blog_StickyHeader">Chapters</h3>
+      <h3 id="blog_StickyHeader">{recurData.text_chapter}</h3>
       <div id="blog_StickyItemContainer"></div>
     </div>
   </div>
 </div>
 
 <div class="wrapper">
-  <h2 class="blogDetails_recentTitle">Explore the world of kindness</h2>
+  <h2 class={recentBlogs.length < 1 ? "hidden" : "blogDetails_recentTitle"}>{recurData.text_explore_the_world_of_kindness}</h2>
 
   <div
     class="w-full grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 mx-auto justify-items-center sm:justify-items-start blogDetails_CardsContainer"
