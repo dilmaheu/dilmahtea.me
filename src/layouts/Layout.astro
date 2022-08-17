@@ -60,11 +60,13 @@ const { Type: notificationType, localizedNotifications } =
       />
     )}
 
-    <script is:inline>
-      const { lang: documentLocale } = document.documentElement;
-
-      localStorage.setItem("locale", documentLocale);
-    </script>
+    {slugURL !== "404" && (
+      <script is:inline define:vars={{ availableLocales }}>
+        const preferredLocale = document.documentElement.lang;
+        localStorage.setItem("locale", preferredLocale); window.preferredLocale
+        = preferredLocale; window.availableLocales = availableLocales;
+      </script>
+    )}
 
     <NotificationAnimations />
 
@@ -253,11 +255,16 @@ const { Type: notificationType, localizedNotifications } =
 
         // Redirect function
         const redirectPath = (newLocale) => {
-          const currentLocale = location.pathname.split("/")[1];
+          let [, locale] = location.pathname.match(/^\/([a-z]{2})\//) ?? [];
 
-          location.href = location.pathname
-            .replace(`/${currentLocale}/`, `/${newLocale}/`)
-            .replace(location.search, "");
+          location.href = (
+            `/${newLocale}/` +
+            // availableLocales is defined in SetPreferredLocale.astro
+            // @ts-ignore
+            (!availableLocales.includes(locale)
+              ? location.pathname
+              : location.pathname.slice(4))
+          ).replace(location.search, "");
         };
 
         document.querySelectorAll(".lang-selector").forEach((langSelector) => {
