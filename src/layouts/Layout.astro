@@ -257,14 +257,13 @@ const { Type: notificationType, localizedNotifications } =
         const redirectPath = (newLocale) => {
           let [, locale] = location.pathname.match(/^\/([a-z]{2})\//) ?? [];
 
-          location.href = (
+          location.href =
             `/${newLocale}/` +
             // availableLocales is defined in SetPreferredLocale.astro
             // @ts-ignore
             (!availableLocales.includes(locale)
               ? location.pathname
-              : location.pathname.slice(4))
-          ).replace(location.search, "");
+              : location.pathname.slice(4));
         };
 
         document.querySelectorAll(".lang-selector").forEach((langSelector) => {
