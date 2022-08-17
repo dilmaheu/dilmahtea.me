@@ -15,9 +15,8 @@ const allHowTos = page.allHowTos
   .filter((val) => val?.props?.page?.locale == page.locale)
   .map((val) => val.props.page);
 
-allHowTos.sort((a, b) => {
-  return new Date(b.createdAt) - new Date(a.createdAt);
-});
+// @ts-ignore
+allHowTos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
 const recentHowTos = allHowTos.filter(
   (val) => val.Meta.URL_slug != page.Meta.URL_slug
