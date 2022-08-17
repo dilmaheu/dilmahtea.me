@@ -1,10 +1,9 @@
 ---
 import CupIcon from "/images/cup.svg";
-import CupGreenIcon from "/images/cupGreen.svg";
 import RightArrow from "/images/rightArrow.svg";
-import MainBG from "/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp";
 
 import Markdown from "@astrojs/markdown-component";
+import HeroBackground from "../HeroBackground.astro";
 import UpdateHeroTopMargin from "../scripts/UpdateHeroTopMargin.astro";
 
 const url = `${import.meta.env.CloudImg_URL}`;
@@ -27,28 +26,7 @@ const recentHowTos = allHowTos.filter(
 <div class="hero overflow-hidden relative">
   <UpdateHeroTopMargin />
 
-  <!-- Background -->
-  <div class="w-full absolute bottom-0">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 1056.7 660.3"
-      class="heroCurve1"
-    >
-      <defs>
-        <clipPath id="heroImgFrame">
-          <path
-            d="M1056.7,0V619.7c-31,16.2-92.5,40.6-182,40.6H855.8c-24.8,0-49-.9-72.9-2.4-32.8-1.6-65.2-3.8-98-6-65.8-4.4-133.1-9-208.2-9-79.4,0-147.5,5.1-210.1,9.8-53,3.9-102.1,7.6-150.7,7.6h-13C9.3,657.9,0,631.4,0,631.4V0Z"
-          ></path>
-        </clipPath>
-      </defs>
-      <image
-        class="h-full w-auto"
-        height="100%"
-        width="100%"
-        href={MainBG}
-        clip-path="url(#heroImgFrame)"></image>
-    </svg>
-  </div>
+  <HeroBackground />
 
   <!-- Text content -->
 
@@ -61,44 +39,50 @@ const recentHowTos = allHowTos.filter(
         <div>
           <div class="flex flex-wrap gap-x-2.5 blogDetails_heroAuthContainer">
             <div class="flex relative">
-              {page.authors.data.map((author, idx) => (
-                <div
-                  class={
-                    idx > 0
-                      ? "blogDetails_authImg relative -ml-5"
-                      : "blogDetails_authImg"
-                  }
-                >
-                  <img
-                    src={
-                      url +
-                      author.attributes.Profile_picture.data.attributes
-                        .provider_metadata.public_id +
-                      `/authBlob`
+              {
+                page.authors.data.map((author, idx) => (
+                  <div
+                    class={
+                      idx > 0
+                        ? "blogDetails_authImg relative -ml-5"
+                        : "blogDetails_authImg"
                     }
-                    alt={
-                      author.attributes.Profile_picture.data.attributes
-                        .alternativeText
-                    }
-                  />
-                </div>
-              ))}
+                  >
+                    <img
+                      src={
+                        url +
+                        author.attributes.Profile_picture.data.attributes
+                          .provider_metadata.public_id +
+                        `/authBlob`
+                      }
+                      alt={
+                        author.attributes.Profile_picture.data.attributes
+                          .alternativeText
+                      }
+                    />
+                  </div>
+                ))
+              }
             </div>
 
             <div class="grid content-between">
               <div class="flex flex-wrap font-bold blogDetails_heroAuth">
-                {page.authors.data.map((author, idx) => (
-                  <a href="#">
-                    {`${idx > 0 ? ", " : " "}` + author.attributes.givenName}
-                  </a>
-                ))}
+                {
+                  page.authors.data.map((author, idx) => (
+                    <a href="#">
+                      {`${idx > 0 ? ", " : " "}` + author.attributes.givenName}
+                    </a>
+                  ))
+                }
               </div>
               <ul class="flex flex-wrap items-center">
                 <li class="blogHome_HdItem">
-                  {new Date(page.createdAt).toLocaleString("en-US", {
-                    day: "numeric",
-                    month: "long",
-                  })}
+                  {
+                    new Date(page.createdAt).toLocaleString("en-US", {
+                      day: "numeric",
+                      month: "long",
+                    })
+                  }
                 </li>
                 <!-- <li class="blogHome_HdItem">5 min read</li>
                 <li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li> -->
@@ -148,9 +132,10 @@ const recentHowTos = allHowTos.filter(
           height="100%"
           width="100%"
           href={url +
-            page.Intro_blob.data.attributes.provider_metadata.public_id +
-            `/small`}
-          clip-path="url(#heroImgFrame2)"></image>
+          page.Intro_blob.data.attributes.provider_metadata.public_id +
+          `/small`}
+          clip-path="url(#heroImgFrame2)"
+        />
       </svg>
     </div>
   </div>
@@ -177,9 +162,10 @@ const recentHowTos = allHowTos.filter(
         height="100%"
         width="100%"
         href={url +
-          page.Intro_blob.data.attributes.provider_metadata.public_id +
-          `/small`}
-        clip-path="url(#heroImgFrame3)"></image>
+        page.Intro_blob.data.attributes.provider_metadata.public_id +
+        `/small`}
+        clip-path="url(#heroImgFrame3)"
+      />
     </svg>
   </div>
 </div>
@@ -196,13 +182,15 @@ const recentHowTos = allHowTos.filter(
       <div
         class="flex flex-wrap justify-center sm:justify-start gap-x-5 gap-y-2.5"
       >
-        {page.Method.map((method) => (
-          <a href={`#` + method.Method_title.replaceAll(" ", "-")}>
-            <div class="flex items-center cursor-pointer howTo_headerStepItem">
-              {method.Method_title}
-            </div>
-          </a>
-        ))}
+        {
+          page.Method.map((method) => (
+            <a href={`#` + method.Method_title.replaceAll(" ", "-")}>
+              <div class="flex items-center cursor-pointer howTo_headerStepItem">
+                {method.Method_title}
+              </div>
+            </a>
+          ))
+        }
       </div>
     </div>
   </div>
@@ -257,66 +245,68 @@ const recentHowTos = allHowTos.filter(
       class="md:w-8/12 order-2 md:order-1 relative z-20 md:-mt-10 lg:-mt-16 xl:-mt-24"
       id="howToStepDetails"
     >
-      {page.Method.map((method) => (
-        <div>
-          <h2
-            class="HowToMethodHead"
-            id={method.Method_title.replaceAll(" ", "-")}
-          >
-            {method.Method_title}
-          </h2>
-          {method.Steps.map((step, idx) => (
-            <div class="howToStepContainer">
-              <h3 class="howToStepTitle">
-                {idx + 1}.{step.Step_title}
-              </h3>
-              <div class="howToStepTxt">
-                <Markdown>{step.Step_text}</Markdown>
-              </div>
+      {
+        page.Method.map((method) => (
+          <div>
+            <h2
+              class="HowToMethodHead"
+              id={method.Method_title.replaceAll(" ", "-")}
+            >
+              {method.Method_title}
+            </h2>
+            {method.Steps.map((step, idx) => (
+              <div class="howToStepContainer">
+                <h3 class="howToStepTitle">
+                  {idx + 1}.{step.Step_title}
+                </h3>
+                <div class="howToStepTxt">
+                  <Markdown>{step.Step_text}</Markdown>
+                </div>
 
-              <div
-                class={
-                  step.Step_blob.data == null ? "hidden" : "stepImgContainer"
-                }
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 1080 578.5"
-                  class="h-auto w-full"
+                <div
+                  class={
+                    step.Step_blob.data == null ? "hidden" : "stepImgContainer"
+                  }
                 >
-                  <defs>
-                    <clipPath
-                      id={step.Step_title.replaceAll(" ", "-") + "Img" + idx}
-                    >
-                      <path d="M557.7,4.4C388.5,4.4,108.5-4.7,42.9,47.5S2.2,286.3,18.3,426s178,152.5,552.1,152.5c307.5,0,403.7-36.8,481.9-163.6,33.2-53.9,50.7-186.5-31.1-341C968.3-26.1,793.3,4.4,557.7,4.4Z" />
-                    </clipPath>
-                  </defs>
-                  <image
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 1080 578.5"
                     class="h-auto w-full"
-                    height="100%"
-                    width="100%"
-                    href={
-                      step.Step_blob.data == null
-                        ? ""
-                        : url +
-                          step.Step_blob.data.attributes.provider_metadata
-                            .public_id +
-                          `/small`
-                    }
-                    clip-path={
-                      "url(#" +
-                      step.Step_title.replaceAll(" ", "-") +
-                      "Img" +
-                      idx +
-                      ")"
-                    }
-                  />
-                </svg>
+                  >
+                    <defs>
+                      <clipPath
+                        id={step.Step_title.replaceAll(" ", "-") + "Img" + idx}
+                      >
+                        <path d="M557.7,4.4C388.5,4.4,108.5-4.7,42.9,47.5S2.2,286.3,18.3,426s178,152.5,552.1,152.5c307.5,0,403.7-36.8,481.9-163.6,33.2-53.9,50.7-186.5-31.1-341C968.3-26.1,793.3,4.4,557.7,4.4Z" />
+                      </clipPath>
+                    </defs>
+                    <image
+                      class="h-auto w-full"
+                      height="100%"
+                      width="100%"
+                      href={
+                        step.Step_blob.data == null
+                          ? ""
+                          : url +
+                            step.Step_blob.data.attributes.provider_metadata
+                              .public_id +
+                            `/small`
+                      }
+                      clip-path={
+                        "url(#" +
+                        step.Step_title.replaceAll(" ", "-") +
+                        "Img" +
+                        idx +
+                        ")"
+                      }
+                    />
+                  </svg>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      ))}
+            ))}
+          </div>
+        ))
+      }
     </div>
 
     <div
@@ -339,88 +329,94 @@ const recentHowTos = allHowTos.filter(
     role="list"
     aria-label="Kindness Items"
   >
-    {recentHowTos.slice(0, 3).map((howTo, idx) => (
-      <div class="blogDetails_Card" role="listitem" aria-label="Kindness Item">
-        <div class="relative">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="none"
-              viewBox="0 0 423.3 559.8"
-              class="blogDetails_cardBg"
-            >
-              <path
-                d="M419.2,306.4c-1.2,40.4,0,72.6,0,93.6,0,176.6-12.5,158-197.8,158S2.1,587.1,2.1,410c0-58.7.1-86,.3-97.5-.1-1.2-.2-3.1-.3-6.1v-.3C-2.2,194.8-1.3,81.5,17.9,43.2,43.3-7.3,151.7,1.5,217.2,1.5c91.3,0,173.8-18.8,194.3,78.1,19.3,91,9.6,163.8,7.7,226.8Z"
-                fill="#273E3F"
-              />
-            </svg>
-          </div>
-          <div class="absolute inset-0 z-30">
-            <div class="w-full">
+    {
+      recentHowTos.slice(0, 3).map((howTo, idx) => (
+        <div
+          class="blogDetails_Card"
+          role="listitem"
+          aria-label="Kindness Item"
+        >
+          <div class="relative">
+            <div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 423.3 306.1"
-                class="h-full w-full"
+                preserveAspectRatio="none"
+                viewBox="0 0 423.3 559.8"
+                class="blogDetails_cardBg"
               >
-                <defs>
-                  <clipPath id={`blogDetails_Card` + idx}>
-                    <path d="M419.2,306.1H2.1C-2.2,194.8-1.3,81.5,17.9,43.2,43.3-7.3,151.7,1.5,217.2,1.5c91.3,0,173.8-18.8,194.3,78.1C430.7,170.5,421.1,243.2,419.2,306.1Z" />
-                  </clipPath>
-                </defs>
-                <a href={`/` + howTo.Meta.URL_slug}>
-                  <image
-                    class="h-full w-auto"
-                    height="100%"
-                    width="100%"
-                    href={
-                      url +
-                      howTo.Intro_blob.data.attributes.provider_metadata
-                        .public_id +
-                      `/small`
-                    }
-                    clip-path={`url(#` + `blogDetails_Card` + idx + `)`}
-                  />
-                </a>
+                <path
+                  d="M419.2,306.4c-1.2,40.4,0,72.6,0,93.6,0,176.6-12.5,158-197.8,158S2.1,587.1,2.1,410c0-58.7.1-86,.3-97.5-.1-1.2-.2-3.1-.3-6.1v-.3C-2.2,194.8-1.3,81.5,17.9,43.2,43.3-7.3,151.7,1.5,217.2,1.5c91.3,0,173.8-18.8,194.3,78.1,19.3,91,9.6,163.8,7.7,226.8Z"
+                  fill="#273E3F"
+                />
               </svg>
             </div>
-
-            <div class="blogDetails_CardConentConatiner">
-              <div class="flex flex-wrap font-bold blogDetails_cardAuth">
-                {howTo.authors.data.map((author, idx) => (
-                  <a href="#">
-                    {`${idx > 0 ? ", " : " "}` + author.attributes.givenName}
+            <div class="absolute inset-0 z-30">
+              <div class="w-full">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 423.3 306.1"
+                  class="h-full w-full"
+                >
+                  <defs>
+                    <clipPath id={`blogDetails_Card` + idx}>
+                      <path d="M419.2,306.1H2.1C-2.2,194.8-1.3,81.5,17.9,43.2,43.3-7.3,151.7,1.5,217.2,1.5c91.3,0,173.8-18.8,194.3,78.1C430.7,170.5,421.1,243.2,419.2,306.1Z" />
+                    </clipPath>
+                  </defs>
+                  <a href={`/` + howTo.Meta.URL_slug}>
+                    <image
+                      class="h-full w-auto"
+                      height="100%"
+                      width="100%"
+                      href={
+                        url +
+                        howTo.Intro_blob.data.attributes.provider_metadata
+                          .public_id +
+                        `/small`
+                      }
+                      clip-path={`url(#` + `blogDetails_Card` + idx + `)`}
+                    />
                   </a>
-                ))}
+                </svg>
               </div>
-              <ul class="flex flex-wrap items-center blogHome_cardItemContainer">
-                <li class="blogHome_cardItem">
-                  {new Date(howTo.createdAt).toLocaleString("en-US", {
-                    day: "numeric",
-                    month: "long",
-                  })}
-                </li>
-                {/*<li class="blogHome_cardItem">5 min read</li>
+
+              <div class="blogDetails_CardConentConatiner">
+                <div class="flex flex-wrap font-bold blogDetails_cardAuth">
+                  {howTo.authors.data.map((author, idx) => (
+                    <a href="#">
+                      {`${idx > 0 ? ", " : " "}` + author.attributes.givenName}
+                    </a>
+                  ))}
+                </div>
+                <ul class="flex flex-wrap items-center blogHome_cardItemContainer">
+                  <li class="blogHome_cardItem">
+                    {new Date(howTo.createdAt).toLocaleString("en-US", {
+                      day: "numeric",
+                      month: "long",
+                    })}
+                  </li>
+                  {/*<li class="blogHome_cardItem">5 min read</li>
                 <li class="flex items-center blogHome_cardItem">
                   <a href="#"><div class="blogHome_cardItemBtn">Manufacturing</div></a>
                 </li>*/}
-              </ul>
-              <div class="blogDetails_CardTitle">
-                <a href={`/` + howTo.Meta.URL_slug}>{howTo.Title}</a>
-                <span class="icon relative top-0">
-                  <span class="relative blogDetails_CardTitleIcon">
-                    <img
-                      class="w-full h-full"
-                      src={RightArrow}
-                      alt="cup-icon"
-                    />
+                </ul>
+                <div class="blogDetails_CardTitle">
+                  <a href={`/` + howTo.Meta.URL_slug}>{howTo.Title}</a>
+                  <span class="icon relative top-0">
+                    <span class="relative blogDetails_CardTitleIcon">
+                      <img
+                        class="w-full h-full"
+                        src={RightArrow}
+                        alt="cup-icon"
+                      />
+                    </span>
                   </span>
-                </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    ))}
+      ))
+    }
   </div>
 </div>
 

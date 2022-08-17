@@ -4,9 +4,9 @@ import LoveIcon from "/images/love.svg";
 import LinkIcon from "/images/link.svg";
 import TwitterIcon from "/images/twitter.svg";
 import FacebookIcon from "/images/facebook.svg";
-import HeaderBG from "/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp";
 
 import Markdown from "@astrojs/markdown-component";
+import HeroBackground from "../HeroBackground.astro";
 import UpdateHeroTopMargin from "../scripts/UpdateHeroTopMargin.astro";
 
 const url = `${import.meta.env.CloudImg_URL}`;
@@ -17,29 +17,7 @@ const { page } = Astro.props;
 <div class="hero overflow-hidden relative">
   <UpdateHeroTopMargin />
 
-  <!-- Background -->
-  <div class=" w-full absolute bottom-0">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 1056.7 660.3"
-      class="heroCurve1"
-    >
-      <defs>
-        <clipPath id="heroImgFrame">
-          <path
-            class="path"
-            d="M1056.7,0V619.7c-31,16.2-92.5,40.6-182,40.6H855.8c-24.8,0-49-.9-72.9-2.4-32.8-1.6-65.2-3.8-98-6-65.8-4.4-133.1-9-208.2-9-79.4,0-147.5,5.1-210.1,9.8-53,3.9-102.1,7.6-150.7,7.6h-13C9.3,657.9,0,631.4,0,631.4V0Z"
-          ></path>
-        </clipPath>
-      </defs>
-      <image
-        class="w-auto h-full"
-        height="100%"
-        width="100%"
-        href={HeaderBG}
-        clip-path="url(#heroImgFrame)"></image>
-    </svg>
-  </div>
+  <HeroBackground />
 
   <!-- Text content -->
   <div
@@ -98,22 +76,24 @@ const { page } = Astro.props;
           </clipPath>
         </defs>
         <image
-          class="hidden lg:block  w-auto h-full"
+          class="hidden lg:block w-auto h-full"
           height="100%"
           width="100%"
           href={url +
-            page.Block_blob.data.attributes.provider_metadata.public_id +
-            `/cms`}
-          clip-path="url(#basicInfoSec_ImgFrame1)"></image>
+          page.Block_blob.data.attributes.provider_metadata.public_id +
+          `/cms`}
+          clip-path="url(#basicInfoSec_ImgFrame1)"
+        />
         <image
           class="block lg:hidden w-auto h-full"
           height="100%"
           width="100%"
           x="20%"
           href={url +
-            page.Block_blob.data.attributes.provider_metadata.public_id +
-            `/cms`}
-          clip-path="url(#basicInfoSec_ImgFrame1)"></image>
+          page.Block_blob.data.attributes.provider_metadata.public_id +
+          `/cms`}
+          clip-path="url(#basicInfoSec_ImgFrame1)"
+        />
       </svg>
     </div>
   </div>
@@ -158,9 +138,10 @@ const { page } = Astro.props;
         height="100%"
         width="100%"
         href={url +
-          page.Block_blob.data.attributes.provider_metadata.public_id +
-          `/small`}
-        clip-path="url(#basicInfoSec_ImgFrame2)"></image>
+        page.Block_blob.data.attributes.provider_metadata.public_id +
+        `/small`}
+        clip-path="url(#basicInfoSec_ImgFrame2)"
+      />
     </svg>
   </div>
 </div>

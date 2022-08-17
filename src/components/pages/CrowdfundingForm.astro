@@ -6,9 +6,9 @@ import CupIcon from "/images/cup.svg";
 import LoveIcon from "/images/love.svg";
 import CupIconG from "/images/cupLightgreen.svg";
 import FlowerIconG from "/images/flowerLightgreen.svg";
-import HeaderBG from "/images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash.webp";
 
-import MD from "@astrojs/markdown-component";
+import Markdown from "@astrojs/markdown-component";
+import HeroBackground from "../HeroBackground.astro";
 import UpdateHeroTopMargin from "../scripts/UpdateHeroTopMargin.astro";
 
 const { page, locale } = Astro.props;
@@ -22,22 +22,7 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
 <div class="hero overflow-hidden relative">
   <UpdateHeroTopMargin />
 
-  <!-- Background -->
-  <svg height="0" width="0"
-    ><defs
-      ><clipPath id="hero-curve-1" clipPathUnits="objectBoundingBox"
-        ><path
-          d="M1 0v.939A.27.27 0 0 1 .828 1H.81A1.462 1.462 0 0 1 .648.987C.586.981.522.974.451.974.376.974.312.981.252.988.202.994.156 1 .11 1H.097C.009.996 0 .956 0 .956V0"
-        ></path>
-      </clipPath>
-    </defs>
-  </svg>
-
-  <img
-    src={HeaderBG}
-    class="w-full h-full absolute"
-    style="clip-path: url(#hero-curve-1);"
-  />
+  <HeroBackground />
 
   <!-- Text content -->
   <div
@@ -58,7 +43,7 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
 
         <h1 class="BasicHeroTitle">{page.Title}</h1>
         <div class="pt-7 mt-0.5 prose max-w-none BasicHeroTxt">
-          <MD>{page.Intro_text}</MD>
+          <Markdown>{page.Intro_text}</Markdown>
         </div>
       </div>
     </div>
