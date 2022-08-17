@@ -23,30 +23,21 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
   <UpdateHeroTopMargin />
 
   <!-- Background -->
-  <div class="w-full absolute bottom-0">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 1056.7 660.3"
-      class="heroCurve1"
-    >
-      <defs>
-        <clipPath id="heroImgFrame">
-          <path
-            class="path"
-            d="M1056.7,0V619.7c-31,16.2-92.5,40.6-182,40.6H855.8c-24.8,0-49-.9-72.9-2.4-32.8-1.6-65.2-3.8-98-6-65.8-4.4-133.1-9-208.2-9-79.4,0-147.5,5.1-210.1,9.8-53,3.9-102.1,7.6-150.7,7.6h-13C9.3,657.9,0,631.4,0,631.4V0Z"
-          ></path>
-        </clipPath>
-      </defs>
-      <image
-        class="h-full w-auto"
-        height="100%"
-        width="100%"
-        href={HeaderBG}
-        clip-path="url(#heroImgFrame)"
-      >
-      </image>
-    </svg>
-  </div>
+  <svg height="0" width="0"
+    ><defs
+      ><clipPath id="hero-curve-1" clipPathUnits="objectBoundingBox"
+        ><path
+          d="M1 0v.939A.27.27 0 0 1 .828 1H.81A1.462 1.462 0 0 1 .648.987C.586.981.522.974.451.974.376.974.312.981.252.988.202.994.156 1 .11 1H.097C.009.996 0 .956 0 .956V0"
+        ></path>
+      </clipPath>
+    </defs>
+  </svg>
+
+  <img
+    src={HeaderBG}
+    class="w-full h-full absolute"
+    style="clip-path: url(#hero-curve-1);"
+  />
 
   <!-- Text content -->
   <div
@@ -167,10 +158,12 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
               class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
               required
             >
-              <option value="" disabled
-                >{locale == "nl"
-                  ? "Selecteer jouw land"
-                  : "Select or type your country"}
+              <option value="" disabled>
+                {
+                  locale == "nl"
+                    ? "Selecteer jouw land"
+                    : "Select or type your country"
+                }
               </option>
               <option value="Netherlands" selected
                 >{locale == "nl" ? "Nederland" : "Netherlands"}
@@ -193,10 +186,12 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
           </div>
 
           <div class="formInputContainer">
-            <label for="street"
-              >{locale == "nl"
-                ? "Straat en huisnummer"
-                : "Street and house number"}
+            <label for="street">
+              {
+                locale == "nl"
+                  ? "Straat en huisnummer"
+                  : "Street and house number"
+              }
             </label>
             <input
               type="text"
@@ -274,12 +269,14 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
       const option = document.querySelector(`option[value="${value}"]`);
 
       if (option) {
+        // @ts-ignore
         option.selected = true;
       }
     } else {
       const input = document.querySelector(`input[name="${param}"]`);
 
       if (input) {
+        // @ts-ignore
         input.value = value || "";
       }
     }
