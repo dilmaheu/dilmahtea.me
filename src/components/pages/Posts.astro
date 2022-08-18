@@ -13,21 +13,14 @@ const url = `${import.meta.env.CloudImg_URL}`;
 
 const { page } = Astro.props;
 
-const allContent = page.allBlogs.concat(page.allHowTos);
-
-const allContents = allContent
+const posts = page.posts
   .filter((val) => val?.props?.page?.locale == page.locale)
   .map((val) => val.props.page);
 
-function sortFunction(a, b) {
-  var dateA = new Date(a.date).getTime();
-  var dateB = new Date(b.date).getTime();
-  return dateA > dateB ? 1 : -1;
-}
+// @ts-ignore
+posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-allContents.sort(sortFunction);
-
-const [firstContent] = allContents;
+const [firstPost] = posts;
 ---
 
 <!-- Hero Section -->
@@ -48,37 +41,48 @@ const [firstContent] = allContents;
           <div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
             <div class="flex flex-wrap font-bold blogHome_heroAuth">
               {
-                firstContent.authors.data.map((author, idx) => (
+                firstPost.authors.data.map((author, idx) => (
                   <a href="#">
                     {`${idx > 0 ? ", " : " "}` + author.attributes.givenName}
                   </a>
                 ))
               }
             </div>
+
             <ul class="flex flex-wrap items-center">
               <li class="blogHome_HdItem">
                 {
-                  new Date(firstContent.createdAt).toLocaleString("en-US", {
+                  new Date(firstPost.createdAt).toLocaleString("en-US", {
                     day: "numeric",
                     month: "long",
                   })
                 }
               </li>
-              <!-- <li class="blogHome_HdItem">5 min read</li>
-              <li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li> -->
+
+              {
+                /*
+                  <li class="blogHome_blogItem">5 min read</li>
+                  <li class="blogHome_blogItem">
+                    <a class="blogHome_blogItemBtn">Manufacturing</a>
+                  </li>                   
+                */
+              }
             </ul>
           </div>
+
           <h1 class="blogHome_heroTitle">
-            <a href={`/` + firstContent.Meta.URL_slug}>{firstContent.Title}</a>
+            <a href={`/` + firstPost.Meta.URL_slug}>{firstPost.Title}</a>
+
             <span class="icon relative top-0">
               <span class="relative headingInlineIcon">
                 <img class="w-full h-full" src={CupIcon} alt="cup-icon" />
               </span>
             </span>
           </h1>
-          <a href={`/` + firstContent.Meta.URL_slug}>
+
+          <a href={`/` + firstPost.Meta.URL_slug}>
             <div class="prose max-w-none blogHome_heroTxt">
-              <Markdown>{firstContent.Intro_text}</Markdown>
+              <Markdown>{firstPost.Intro_text}</Markdown>
             </div>
           </a>
         </div>
@@ -98,7 +102,7 @@ const [firstContent] = allContents;
 
     <img
       src={url +
-      firstContent.Intro_blob.data.attributes.provider_metadata.public_id +
+      firstPost.Intro_blob.data.attributes.provider_metadata.public_id +
       `/small`}
       class="w-full h-full relative"
       style="right: -15%; object-fit:cover; clip-path: url(#heroImgFrame2)"
@@ -116,7 +120,7 @@ const [firstContent] = allContents;
 
   <img
     src={url +
-    firstContent.Intro_blob.data.attributes.provider_metadata.public_id +
+    firstPost.Intro_blob.data.attributes.provider_metadata.public_id +
     `/small`}
     class="w-full h-full"
     style="clip-path: url(#heroImgFrame3);"
@@ -133,7 +137,7 @@ const [firstContent] = allContents;
     />
 
     {
-      allContents.slice(1).map((content, idx) => {
+      posts.slice(1).map((post, idx) => {
         const even = idx % 2 === 0;
 
         return (
@@ -145,11 +149,11 @@ const [firstContent] = allContents;
               ]}
             >
               <div class={even ? "blogHome_blogCurveL" : "blogHome_blogCurveR"}>
-                <a href={`/` + content.Meta.URL_slug}>
+                <a href={`/` + post.Meta.URL_slug}>
                   <img
                     src={
                       url +
-                      content.Intro_blob.data.attributes.provider_metadata
+                      post.Intro_blob.data.attributes.provider_metadata
                         .public_id +
                       `/small`
                     }
@@ -195,26 +199,33 @@ const [firstContent] = allContents;
               >
                 <div>
                   <div class="flex flex-wrap font-bold blogHome_blogAuth">
-                    {content.authors.data.map((author, idx) => (
+                    {post.authors.data.map((author, idx) => (
                       <a href="#">
                         {`${idx > 0 ? ", " : " "}` +
                           author.attributes.givenName}
                       </a>
                     ))}
                   </div>
+
                   <ul class="flex flex-wrap items-center gap-y-1">
                     <li class="blogHome_blogItem">
-                      {new Date(content.createdAt).toLocaleString("en-US", {
+                      {new Date(post.createdAt).toLocaleString("en-US", {
                         day: "numeric",
                         month: "long",
                       })}
                     </li>
-                    {/*<li class="blogHome_blogItem">5 min read</li>
-                <li class="blogHome_blogItem"><a class="blogHome_blogItemBtn">Manufacturing</a></li>*/}
+
+                    {/*
+                      <li class="blogHome_blogItem">5 min read</li>
+                      <li class="blogHome_blogItem">
+                        <a class="blogHome_blogItemBtn">Manufacturing</a>
+                      </li>
+                    */}
                   </ul>
 
                   <h1 class="blogHome_blogTitle">
-                    <a href={`/` + content.Meta.URL_slug}>{content.Title}</a>
+                    <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+
                     <span class="icon relative top-0">
                       <span class="relative headingInlineIcon">
                         <img
@@ -225,9 +236,10 @@ const [firstContent] = allContents;
                       </span>
                     </span>
                   </h1>
-                  <a href={`/` + content.Meta.URL_slug}>
+
+                  <a href={`/` + post.Meta.URL_slug}>
                     <div class="prose max-w-none blogHome_blogTxt">
-                      <Markdown>{content.Intro_text}</Markdown>
+                      <Markdown>{post.Intro_text}</Markdown>
                     </div>
                   </a>
                 </div>
