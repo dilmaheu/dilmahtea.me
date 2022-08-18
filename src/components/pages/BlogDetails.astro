@@ -41,13 +41,12 @@ const recentBlogs = allBlogs.filter(
           <div class="flex flex-wrap gap-x-2.5 blogDetails_heroAuthContainer">
             <div class="flex relative">
               {
-                page.authors.data.map((author, idx) => (
+                page.authors.data.map((author, index) => (
                   <div
-                    class={
-                      idx > 0
-                        ? "blogDetails_authImg relative -ml-5"
-                        : "blogDetails_authImg"
-                    }
+                    class:list={[
+                      "blogDetails_authImg",
+                      index > 0 && "relative -ml-5",
+                    ]}
                   >
                     <img
                       src={
@@ -69,13 +68,15 @@ const recentBlogs = allBlogs.filter(
             <div class="grid content-between">
               <div class="flex flex-wrap font-bold blogDetails_heroAuth">
                 {
-                  page.authors.data.map((author, idx) => (
+                  page.authors.data.map((author, index) => (
                     <a href="#">
-                      {`${idx > 0 ? ", " : " "}` + author.attributes.givenName}
+                      {`${index > 0 ? ", " : " "}` +
+                        author.attributes.givenName}
                     </a>
                   ))
                 }
               </div>
+
               <ul class="flex flex-wrap items-center">
                 <li class="blogHome_HdItem">
                   {
@@ -85,20 +86,29 @@ const recentBlogs = allBlogs.filter(
                     })
                   }
                 </li>
-                <!-- <li class="blogHome_HdItem">5 min read</li>
-                <li class="blogHome_HdItem"><a class="blogHome_HdItemBtn">Manufacturing</a></li> -->
+
+                {
+                  /*
+                    <li class="blogHome_cardItem">5 min read</li>
+                    <li class="flex items-center blogHome_cardItem">
+                      <a href="#"><div class="blogHome_cardItemBtn">Manufacturing</div></a>
+                    </li>
+                  */
+                }
               </ul>
             </div>
           </div>
 
           <h1 class="blogDetails_heroTitle">
             <a href="#">{page.Title}</a>
+
             <span class="icon relative top-0">
               <span class="relative headingInlineIcon">
                 <img class="w-full h-full" src={CupIcon} alt="cup-icon" />
               </span>
             </span>
           </h1>
+
           <a href="#">
             <div class="prose max-w-none blogDetails_heroTxt">
               <Markdown>{page.Intro_text}</Markdown>
