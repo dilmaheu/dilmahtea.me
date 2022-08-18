@@ -1,6 +1,7 @@
 ---
 import CupIcon from "/images/cup.svg";
 import LoveIcon from "/images/love.svg";
+import ClipPath from "../ClipPath.astro";
 import Markdown from "@astrojs/markdown-component";
 import HeroBackground from "../HeroBackground.astro";
 import UpdateHeroTopMargin from "../scripts/UpdateHeroTopMargin.astro";
@@ -61,51 +62,33 @@ const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, "");
     : "overflow-hidden relative"}
 >
   <!-- Blob Image  Desktop view-->
-  <div
-    class={page.Block_blob.data != null
-      ? "hidden sm:block absolute left-0 z-20 w-full sm:w-1/2 h-full items-center"
-      : "hidden"}
-  >
-    <div class="w-auto h-full basicInfoSec_Curve1">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 922.6 696.3"
-        class="w-auto h-full"
-      >
-        <defs>
-          <clipPath id="basicInfoSec_ImgFrame1">
-            <path
-              d="M922.6,181.8v6.3c-.6,41.3-13.9,83.3-27.1,121.9-6.8,19.9-13.6,38.8-18.6,56.3-23.2,82.6-45.4,185.4-113.2,273.9h0l-5.1,6.5c-19.3,24.2-65.9,38.6-124.1,45.3-30.7,3.5-64.6,4.8-99.4,4.1-139.9,2.6-285.7-23.9-387.7-81.4C103,589.8,67,559,43.1,522.3h0a296.7,296.7,0,0,1-26.6-61.6h0C-16.6,353.5-.3,215,69.6,110.1,134.7,12.5,218.2-3,316.1.4c21.6.8,43.1,1.2,64.6.9,15.3-.2,32.3-.2,44.1.2,26.5.9,53.5,2.3,81.5,3l30,.2c48.6,0,101.8-3.7,153.8-.8,37.6,2.2,74.5,7.7,108.7,20.6q7.2,2.8,14.4,6a213.5,213.5,0,0,1,63.7,43.8C910.1,107.2,921.9,144.2,922.6,181.8Z"
-            ></path>
-          </clipPath>
-        </defs>
 
-        <image
-          class="hidden lg:block w-auto h-full"
-          height="100%"
-          width="100%"
-          href={page.Block_blob.data == null
-            ? ""
-            : url +
+  {
+    page.Block_blob.data !== null && (
+      <div
+        class={
+          "hidden sm:block absolute left-0 z-20 w-full sm:w-1/2 h-full items-center basicInfoSec_Curve1"
+        }
+      >
+        <div class="w-auto h-full basicInfoSec_Curve1">
+          <ClipPath
+            id="basicInfoSec_ImgFrame1"
+            path="M1 .494V.507A.019.028 0 0 0 1 .51v.016A.024.035 0 0 0 1 .53L.998.579C.991.693.986.856.835.945a.362.362 0 0 1-.222.05C.567.992.521.984.473.981L.438.98C.357.98.275 1 .204 1A.19.19 0 0 1 .079.961C-.011.886.018.658.018.485.018.396.005.337.001.277A.191.28 0 0 1 0 .244C0 .206.004.166.018.115.041.025.106.004.189.003c.071 0 .155.015.238.015L.45.017C.494.014.551.006.612.002.708-.004.816.001.893.063.976.13.997.311 1 .449v.025"
+          />
+
+          <img
+            src={
+              url +
               page.Block_blob.data.attributes.provider_metadata.public_id +
-              `/cms`}
-          clip-path="url(#basicInfoSec_ImgFrame1)"
-        />
-        <image
-          class="block lg:hidden w-auto h-full"
-          height="100%"
-          width="100%"
-          x="20%"
-          href={page.Block_blob.data == null
-            ? ""
-            : url +
-              page.Block_blob.data.attributes.provider_metadata.public_id +
-              `/cms`}
-          clip-path="url(#basicInfoSec_ImgFrame1)"
-        />
-      </svg>
-    </div>
-  </div>
+              `/cms`
+            }
+            class="h-full w-full relative"
+            style="left: -20px; object-fit: cover; clip-path: url(#basicInfoSec_ImgFrame1)"
+          />
+        </div>
+      </div>
+    )
+  }
 
   <!-- Text content -->
   <div
