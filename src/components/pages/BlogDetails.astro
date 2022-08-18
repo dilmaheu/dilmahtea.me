@@ -3,6 +3,7 @@ import CupIcon from "/images/cup.svg";
 import RightArrow from "/images/rightArrow.svg";
 
 import ClipPath from "../ClipPath.astro";
+import ClipImages from "../ClipImages.astro";
 import Markdown from "@astrojs/markdown-component";
 import HeroBackground from "../HeroBackground.astro";
 import UpdateHeroTopMargin from "../scripts/UpdateHeroTopMargin.astro";
@@ -206,12 +207,14 @@ const recentBlogs = allBlogs.filter(
         path="M.516.008C.36.008.1-.008.04.082S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1.005.624 1.021.395.945.128.897-.045.734.008.516.008"
       />
 
-      <div
-        class="prose max-w-none basicInfoSecTxt detailedBlog"
-        id="detailedBlog"
-      >
-        <Markdown>{page.Block_text}</Markdown>
-      </div>
+      <ClipImages
+        ><div
+          class="prose max-w-none basicInfoSecTxt detailedBlog"
+          id="detailedBlog"
+        >
+          <Markdown>{page.Block_text}</Markdown>
+        </div>
+      </ClipImages>
     </div>
     <div
       class="md:w-4/12 order-1 md:order-2 blogContent_StickyContainer md:sticky top-0 overflow-hiden self-start"
@@ -321,15 +324,6 @@ const recentBlogs = allBlogs.filter(
     // creating blog chapters
     const db = document.getElementById("detailedBlog");
     const tags = db.querySelectorAll("h2");
-    const img = db.querySelectorAll("img");
-
-    for (var i = 0; i < img.length; i++) {
-      img[i].outerHTML = `<img
-        src="${img[i].currentSrc}"
-        class="w-full h-full"
-        style="clip-path: url(#content-images-curve);"
-      />`;
-    }
 
     for (const tag of tags) {
       // chapters in desktop screen
