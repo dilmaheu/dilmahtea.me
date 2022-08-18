@@ -201,6 +201,11 @@ const recentBlogs = allBlogs.filter(
   </div>
   <div class="wrapper w-full flex flex-wrap">
     <div class="md:w-8/12 order-2 md:order-1">
+      <ClipPath
+        id="content-images-curve"
+        path="M.516.008C.36.008.1-.008.04.082S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1.005.624 1.021.395.945.128.897-.045.734.008.516.008"
+      />
+
       <div
         class="prose max-w-none basicInfoSecTxt detailedBlog"
         id="detailedBlog"
@@ -319,27 +324,11 @@ const recentBlogs = allBlogs.filter(
     const img = db.querySelectorAll("img");
 
     for (var i = 0; i < img.length; i++) {
-      img[i].outerHTML = `<svg
-            class="blogDetailedImgContainer"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 1080 578.5"
-            class="h-auto w-full"
-          >
-          <defs>
-            <clipPath id=${"blogDetailedImg" + [i]}>
-              <path
-                d="M557.7,4.4C388.5,4.4,108.5-4.7,42.9,47.5S2.2,286.3,18.3,426s178,152.5,552.1,152.5c307.5,0,403.7-36.8,481.9-163.6,33.2-53.9,50.7-186.5-31.1-341C968.3-26.1,793.3,4.4,557.7,4.4Z"
-              ></path>
-            </clipPath>
-          </defs>
-          <image
-            class="h-auto w-full"
-            height="100%"
-            width="100%"
-            href=${img[i].currentSrc}
-            clip-path=${"url(#blogDetailedImg" + [i] + ")"}>
-          </image>
-        </svg>`;
+      img[i].outerHTML = `<img
+        src="${img[i].currentSrc}"
+        class="w-full h-full"
+        style="clip-path: url(#content-images-curve);"
+      />`;
     }
 
     for (const tag of tags) {
