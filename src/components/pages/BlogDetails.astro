@@ -2,6 +2,7 @@
 import CupIcon from "/images/cup.svg";
 import RightArrow from "/images/rightArrow.svg";
 
+import ClipPath from "../ClipPath.astro";
 import Markdown from "@astrojs/markdown-component";
 import HeroBackground from "../HeroBackground.astro";
 import UpdateHeroTopMargin from "../scripts/UpdateHeroTopMargin.astro";
@@ -111,33 +112,20 @@ const recentBlogs = allBlogs.filter(
   <!-- Blob Image  Desktop view-->
 
   <div
-    class="hidden sm:block absolute z-20 h-full heroCurve2Container BlogHeroCurveContainer"
+    class="h-full hidden sm:block absolute z-20 heroCurve2Container BlogHeroCurveContainer"
   >
-    <div class="w-full h-full relative">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 617.8 543.8"
-        class="h-full w-full"
-      >
-        <defs>
-          <clipPath id="heroImgFrame2">
-            <path
-              d="M617.8,0S213.3.3,60.8.8C-7.9,85.7-4.5,186,5.3,329.5,15.7,482.7,89,543.8,331.2,543.8c185.2,0,233.9-51.5,286.6-79.8Z"
-            ></path>
-          </clipPath>
-        </defs>
-        <image
-          class="w-auto h-full"
-          style=""
-          height="100%"
-          width="100%"
-          href={url +
-          page.Intro_blob.data.attributes.provider_metadata.public_id +
-          `/small`}
-          clip-path="url(#heroImgFrame2)"
-        />
-      </svg>
-    </div>
+    <ClipPath
+      id="heroImgFrame2"
+      path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
+    />
+
+    <img
+      src={url +
+      page.Intro_blob.data.attributes.provider_metadata.public_id +
+      `/small`}
+      class="w-full h-full relative"
+      style="right: -15%; object-fit:cover; clip-path: url(#heroImgFrame2)"
+    />
   </div>
 </div>
 
