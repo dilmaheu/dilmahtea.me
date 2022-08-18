@@ -121,34 +121,26 @@ const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, "");
   </div>
 </div>
 
-<!-- Blob Image  Mobile view-->
-<div class={page.Block_blob.data != null ? "block sm:hidden w-full" : "hidden"}>
-  <div class="w-screen basicInfoSec_Curve">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 375 287"
-      class="h-full w-full"
-    >
-      <defs>
-        <clipPath id="basicInfoSec_ImgFrame2">
-          <path
-            d="M269.3,0C319.7,0,351.8,6.1,375,18.4V278.5c-16.8,13-73.1,1.7-121.5,0-55.8-2.1-113,8.5-168.9,8.5C35.1,287,0,273.7,0,273.7V18.4c22.1-17.3,88.8,0,120,0S218.8,0,269.3,0Z"
-          ></path>
-        </clipPath>
-      </defs>
-      <image
-        class="w-auto h-full"
-        height="100%"
-        width="100%"
-        href={page.Block_blob.data == null
-          ? ""
-          : url +
-            page.Block_blob.data.attributes.provider_metadata.public_id +
-            `/small`}
-        clip-path="url(#basicInfoSec_ImgFrame2)"
+{
+  page.Block_blob.data !== null && (
+    // Blob Image - Mobile view
+    <div class="block sm:hidden w-screen basicInfoSec_Curve">
+      <ClipPath
+        id="basicInfoSec_ImgFrame2"
+        path="M.282 0C.147 0 .062.021 0 .064V.97c.045.046.195.006.324 0C.473.963.625 1 .774 1A.561.561 0 0 0 1 .954v-.89c-.059-.061-.237 0-.32 0S.417 0 .282 0"
       />
-    </svg>
-  </div>
-</div>
+
+      <img
+        src={
+          url +
+          page.Block_blob.data.attributes.provider_metadata.public_id +
+          `/small`
+        }
+        class="h-full w-full"
+        style="clip-path: url(#basicInfoSec_ImgFrame2)"
+      />
+    </div>
+  )
+}
 
 <div class="separatorSm"></div>
