@@ -128,148 +128,152 @@ const [firstContent] = allContents;
 <div class="wrapper blogHome_blogs">
   <div class="blogHome_blogsContainer">
     {
-      allContents.slice(1).map((content, idx) => (
-        <div class="flex flex-wrap items-center blogHome_blogContaier">
-          <div
-            class={
-              idx % 2 == 0
-                ? "relative w-full sm:w-1/2 order-1 blogHome_blogCurveContainer"
-                : "relative w-full sm:w-1/2 order-1 sm:order-2 blogHome_blogCurveContainer"
-            }
-          >
-            <a href={`/` + content.Meta.URL_slug}>
-              {/*Content Image Desktop view */}
+      allContents.slice(1).map((content, idx) => {
+        const even = idx % 2 === 0;
 
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 565 500"
-                class={
-                  idx % 2 == 0
-                    ? "hidden sm:block blogHome_blogCurveL"
-                    : "hidden sm:block blogHome_blogCurveR"
-                }
-              >
-                <defs>
-                  <clipPath id={"basicInfoSec_ImgFrame" + idx}>
-                    <path d="M291.8,3.8c-88.5,0-235-7.9-269.3,37.3S1.2,247.5,9.6,368.2,102.7,500,298.4,500c160.9,0,211.2-31.8,252.1-141.4C567.9,312,577,197.4,534.2,63.9,506.5-22.6,415,3.8,291.8,3.8Z" />
-                  </clipPath>
-                </defs>
-                <image
-                  class="w-auto h-full"
-                  height="100%"
-                  width="100%"
-                  x="-15%"
-                  href={
-                    url +
-                    content.Intro_blob.data.attributes.provider_metadata
-                      .public_id +
-                    `/small`
-                  }
-                  clip-path={"url(#basicInfoSec_ImgFrame" + idx + ")"}
-                />
-              </svg>
+        return (
+          <div class="flex flex-wrap items-center blogHome_blogContaier">
+            <div
+              class:list={[
+                !even && "sm:order-2",
+                "relative w-full sm:w-1/2 order-1 blogHome_blogCurveContainer",
+              ]}
+            >
+              <a href={`/` + content.Meta.URL_slug}>
+                {/*Content Image Desktop view */}
 
-              {/* Content Image Mobile view */}
-
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 912 499"
-                class="block sm:hidden"
-              >
-                <defs>
-                  <clipPath id={"basicInfoSec_ImgFrameSm" + idx}>
-                    <path d="M470.9,3.8C328.1,3.8,91.7-4.1,36.3,41S1.9,247,15.5,367.5,165.7,499,481.7,499c259.7,0,340.9-31.7,406.9-141.1,28-46.5,42.8-160.9-26.2-294.1C817.6-22.6,669.9,3.8,470.9,3.8Z" />
-                  </clipPath>
-                </defs>
-                <image
-                  class="w-full h-auto"
-                  height="100%"
-                  width="100%"
-                  href={
-                    url +
-                    content.Intro_blob.data.attributes.provider_metadata
-                      .public_id +
-                    `/small`
-                  }
-                  clip-path={"url(#basicInfoSec_ImgFrameSm" + idx + ")"}
-                />
-              </svg>
-
-              <div
-                class={
-                  idx % 2 == 0
-                    ? "absolute z-20 blogLeafL_container"
-                    : "absolute z-20 blogLeafR_container"
-                }
-              >
-                <div class="blogLeaf">
-                  <img
-                    class="w-full h-full"
-                    src={idx % 2 == 0 ? LeafImg : LeafImg1}
-                    alt="tea-leaf-image"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 565 500"
+                  class:list={[
+                    "hidden sm:block",
+                    even ? "blogHome_blogCurveL" : "blogHome_blogCurveR",
+                  ]}
+                >
+                  <defs>
+                    <clipPath id={"basicInfoSec_ImgFrame" + idx}>
+                      <path d="M291.8,3.8c-88.5,0-235-7.9-269.3,37.3S1.2,247.5,9.6,368.2,102.7,500,298.4,500c160.9,0,211.2-31.8,252.1-141.4C567.9,312,577,197.4,534.2,63.9,506.5-22.6,415,3.8,291.8,3.8Z" />
+                    </clipPath>
+                  </defs>
+                  <image
+                    class="w-auto h-full"
+                    height="100%"
+                    width="100%"
+                    x="-15%"
+                    href={
+                      url +
+                      content.Intro_blob.data.attributes.provider_metadata
+                        .public_id +
+                      `/small`
+                    }
+                    clip-path={"url(#basicInfoSec_ImgFrame" + idx + ")"}
                   />
+                </svg>
+
+                {/* Content Image Mobile view */}
+
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 912 499"
+                  class="block sm:hidden"
+                >
+                  <defs>
+                    <clipPath id={"basicInfoSec_ImgFrameSm" + idx}>
+                      <path d="M470.9,3.8C328.1,3.8,91.7-4.1,36.3,41S1.9,247,15.5,367.5,165.7,499,481.7,499c259.7,0,340.9-31.7,406.9-141.1,28-46.5,42.8-160.9-26.2-294.1C817.6-22.6,669.9,3.8,470.9,3.8Z" />
+                    </clipPath>
+                  </defs>
+                  <image
+                    class="w-full h-auto"
+                    height="100%"
+                    width="100%"
+                    href={
+                      url +
+                      content.Intro_blob.data.attributes.provider_metadata
+                        .public_id +
+                      `/small`
+                    }
+                    clip-path={"url(#basicInfoSec_ImgFrameSm" + idx + ")"}
+                  />
+                </svg>
+
+                <div
+                  class:list={[
+                    "absolute z-20",
+                    idx % 2 === 0
+                      ? "blogLeafL_container"
+                      : "blogLeafR_container",
+                  ]}
+                >
+                  <div class="blogLeaf">
+                    <img
+                      alt="tea-leaf-image"
+                      class="w-full h-full"
+                      src={even ? LeafImg : LeafImg1}
+                    />
+                  </div>
                 </div>
-              </div>
-            </a>
-          </div>
+              </a>
+            </div>
 
-          {/*Text content*/}
+            {/*Text content*/}
 
-          <div
-            class={
-              idx % 2 == 0
-                ? "w-full sm:w-1/2 order-2 h-full"
-                : "w-full sm:w-1/2  order-2 sm:order-1 h-full"
-            }
-          >
             <div
               class={
                 idx % 2 == 0
-                  ? "flex flex-wrap blogHome_blogTxtContaierL"
-                  : "flex flex-wrap blogHome_blogTxtContaierR"
+                  ? "w-full sm:w-1/2 order-2 h-full"
+                  : "w-full sm:w-1/2  order-2 sm:order-1 h-full"
               }
             >
-              <div>
-                <div class="flex flex-wrap font-bold blogHome_blogAuth">
-                  {content.authors.data.map((author, idx) => (
-                    <a href="#">
-                      {`${idx > 0 ? ", " : " "}` + author.attributes.givenName}
-                    </a>
-                  ))}
-                </div>
-                <ul class="flex flex-wrap items-center gap-y-1">
-                  <li class="blogHome_blogItem">
-                    {new Date(content.createdAt).toLocaleString("en-US", {
-                      day: "numeric",
-                      month: "long",
-                    })}
-                  </li>
-                  {/*<li class="blogHome_blogItem">5 min read</li>
-                <li class="blogHome_blogItem"><a class="blogHome_blogItemBtn">Manufacturing</a></li>*/}
-                </ul>
-
-                <h1 class="blogHome_blogTitle">
-                  <a href={`/` + content.Meta.URL_slug}>{content.Title}</a>
-                  <span class="icon relative top-0">
-                    <span class="relative headingInlineIcon">
-                      <img
-                        class="w-full h-full"
-                        src={CupGreenIcon}
-                        alt="cup-icon"
-                      />
-                    </span>
-                  </span>
-                </h1>
-                <a href={`/` + content.Meta.URL_slug}>
-                  <div class="prose max-w-none blogHome_blogTxt">
-                    <Markdown>{content.Intro_text}</Markdown>
+              <div
+                class={
+                  idx % 2 == 0
+                    ? "flex flex-wrap blogHome_blogTxtContaierL"
+                    : "flex flex-wrap blogHome_blogTxtContaierR"
+                }
+              >
+                <div>
+                  <div class="flex flex-wrap font-bold blogHome_blogAuth">
+                    {content.authors.data.map((author, idx) => (
+                      <a href="#">
+                        {`${idx > 0 ? ", " : " "}` +
+                          author.attributes.givenName}
+                      </a>
+                    ))}
                   </div>
-                </a>
+                  <ul class="flex flex-wrap items-center gap-y-1">
+                    <li class="blogHome_blogItem">
+                      {new Date(content.createdAt).toLocaleString("en-US", {
+                        day: "numeric",
+                        month: "long",
+                      })}
+                    </li>
+                    {/*<li class="blogHome_blogItem">5 min read</li>
+                <li class="blogHome_blogItem"><a class="blogHome_blogItemBtn">Manufacturing</a></li>*/}
+                  </ul>
+
+                  <h1 class="blogHome_blogTitle">
+                    <a href={`/` + content.Meta.URL_slug}>{content.Title}</a>
+                    <span class="icon relative top-0">
+                      <span class="relative headingInlineIcon">
+                        <img
+                          class="w-full h-full"
+                          src={CupGreenIcon}
+                          alt="cup-icon"
+                        />
+                      </span>
+                    </span>
+                  </h1>
+                  <a href={`/` + content.Meta.URL_slug}>
+                    <div class="prose max-w-none blogHome_blogTxt">
+                      <Markdown>{content.Intro_text}</Markdown>
+                    </div>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))
+        );
+      })
     }
   </div>
 </div>
