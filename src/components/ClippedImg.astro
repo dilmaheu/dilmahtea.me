@@ -1,0 +1,21 @@
+---
+import ClipPathSVG from "./ClipPathSVG.astro";
+
+declare interface Props {
+  id: string;
+  path: string;
+  src: string;
+  className?: string;
+  style?: string;
+}
+
+const { id, src, className, style = "", path } = Astro.props as Props;
+---
+
+<ClipPathSVG id={id} path={path} />
+
+<img
+  src={src}
+  style={`${style}clip-path: url(#${id})`}
+  class:list={["w-full h-full", className]}
+/>
