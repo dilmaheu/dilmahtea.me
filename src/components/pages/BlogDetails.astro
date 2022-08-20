@@ -3,7 +3,6 @@ import CupIcon from "/images/cup.svg";
 import RightArrow from "/images/rightArrow.svg";
 
 import ClipPath from "../ClipPath.astro";
-import ClipImages from "../ClipImages.astro";
 import Markdown from "@astrojs/markdown-component";
 import HeroBackground from "../HeroBackground.astro";
 import UpdateHeroTopMargin from "../scripts/UpdateHeroTopMargin.astro";
@@ -207,14 +206,18 @@ const recentBlogs = allBlogs.filter(
         path="M.516.008C.36.008.1-.008.04.082S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1.005.624 1.021.395.945.128.897-.045.734.008.516.008"
       />
 
-      <ClipImages
-        ><div
-          class="prose max-w-none basicInfoSecTxt detailedBlog"
-          id="detailedBlog"
-        >
-          <Markdown>{page.Block_text}</Markdown>
-        </div>
-      </ClipImages>
+      <style is:inline>
+        #detailedBlog img {
+          clip-path: url(#content-images-curve);
+        }
+      </style>
+
+      <div
+        class="prose max-w-none basicInfoSecTxt detailedBlog"
+        id="detailedBlog"
+      >
+        <Markdown>{page.Block_text}</Markdown>
+      </div>
     </div>
     <div
       class="md:w-4/12 order-1 md:order-2 blogContent_StickyContainer md:sticky top-0 overflow-hiden self-start"
