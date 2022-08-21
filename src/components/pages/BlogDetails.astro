@@ -2,6 +2,7 @@
 import CupIcon from "@images/cup.svg";
 import RightArrow from "@images/rightArrow.svg";
 
+import Chapters from "../Chapters.astro";
 import ClippedImg from "../ClippedImg.astro";
 import ClipPathSVG from "../ClipPathSVG.astro";
 import Markdown from "@astrojs/markdown-component";
@@ -173,7 +174,11 @@ const recentBlogs = allBlogs.filter(
           </div>
           <div id="blog_StickyDropdownHeaderTop">{recurData.text_chapter}</div>
           <div id="blog_StickyDropdownHeader">{recurData.text_chapter}</div>
-          <ul id="blog_StickyItemContainerMd"></ul>
+          <ul id="blog_StickyItemContainerMd">
+            <Chapters type="list">
+              <Markdown>{page.Block_text}</Markdown>
+            </Chapters>
+          </ul>
         </div>
         <div class="w-3">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7">
@@ -184,7 +189,11 @@ const recentBlogs = allBlogs.filter(
           </svg>
         </div>
       </div>
-      <div id="blog_StickyDropdownItem"></div>
+      <div id="blog_StickyDropdownItem">
+        <Chapters type="mobile">
+          <Markdown>{page.Block_text}</Markdown>
+        </Chapters>
+      </div>
     </div>
     <div id="sticky_p_bar"></div>
   </div>
@@ -215,7 +224,11 @@ const recentBlogs = allBlogs.filter(
       id="blogContent_StickyContainer"
     >
       <h3 id="blog_StickyHeader">{recurData.text_chapter}</h3>
-      <div id="blog_StickyItemContainer"></div>
+      <div id="blog_StickyItemContainer">
+        <Chapters>
+          <Markdown>{page.Block_text}</Markdown>
+        </Chapters>
+      </div>
     </div>
   </div>
 </div>
@@ -320,37 +333,6 @@ const recentBlogs = allBlogs.filter(
   // creating blog chapters
   const db = document.getElementById("detailedBlog");
   const tags = db.querySelectorAll("h2");
-
-  for (const tag of tags) {
-    // chapters in desktop screen
-    var div = document.getElementById("blog_StickyItemContainer");
-    var aTag = document.createElement("a");
-    aTag.setAttribute("href", "#" + tag.id);
-    aTag.innerHTML =
-      `<img class="blog_StickyItemImg opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` +
-      tag.innerHTML;
-    div.appendChild(aTag);
-
-    // sticky active chapter heading in mobile screen
-    var divMd = document.getElementById("blog_StickyItemContainerMd");
-    var liTagMd = document.createElement("li");
-    liTagMd.setAttribute("class", "truncate");
-    liTagMd.innerHTML = tag.innerHTML;
-    divMd.appendChild(liTagMd);
-
-    // sticky button chapters in mobile screen
-    var dropdownDiv = document.getElementById("blog_StickyDropdownItem");
-    var dropdownATag = document.createElement("a");
-    dropdownATag.setAttribute("href", "#" + tag.id);
-    dropdownATag.setAttribute(
-      "class",
-      "flex items-center pt-6 font-normal color-default-80"
-    );
-    dropdownATag.innerHTML =
-      `<img class="blog_StickyItemImgMd opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` +
-      tag.innerHTML;
-    dropdownDiv.appendChild(dropdownATag);
-  }
 
   // highlight active blog section header desktop screen
   const stickyItemCon = document.getElementById("blog_StickyItemContainer");

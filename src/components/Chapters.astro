@@ -1,0 +1,44 @@
+---
+import { parseHTML } from "linkedom";
+import rightArrowGreen from "@images/rightArrowGreen.svg";
+
+declare interface Props {
+  type?: "desktop" | "mobile" | "list";
+}
+
+const { type = "desktop" } = Astro.props as Props;
+
+const contentHTML = await Astro.slots.render("default");
+
+const { document: contentDocument } = await parseHTML(contentHTML);
+
+const headings = contentDocument.querySelectorAll("h2");
+---
+
+{
+  [...headings].map(({ id, innerText }, index) =>
+    type === "list" ? (
+      <li class="truncate">
+        <Fragment set:text={innerText} />
+      </li>
+    ) : (
+      <a
+        href={"#" + id}
+        class={
+          type === "mobile" &&
+          "flex items-center pt-6 font-normal color-default-80"
+        }
+      >
+        <img
+          src={rightArrowGreen}
+          alt="Green Right Arrow"
+          class:list={[
+            "opacity-0",
+            type === "mobile" ? "blog_StickyItemImgMd" : "blog_StickyItemImg",
+          ]}
+        />
+        <Fragment set:text={innerText} />
+      </a>
+    )
+  )
+}
