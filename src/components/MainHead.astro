@@ -1,4 +1,6 @@
 ---
+import favicon from "@images/favicon.svg";
+
 export interface Props {
   title: string;
   description: string;
@@ -54,19 +56,21 @@ const alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
 {/* <link rel="alternate" type="application/rss+xml" href="" /> */}
 
 {/* Favicon */}
-<link rel="icon" href="/favicon.svg" />
+<link rel="icon" href={favicon} />
 
 {/* SEO */}
 <link rel="canonical" href={canonicalHref} />
 <link href={documentHref} hreflang={locale} />
 
-{alternateLocales.map((alternateLocale) => (
-  <link
-    rel="alternate"
-    hreflang={alternateLocale}
-    href={`${domain}/${alternateLocale}/${slugURL === "/" ? "" : slugURL}/`}
-  />
-))}
+{
+  alternateLocales.map((alternateLocale) => (
+    <link
+      rel="alternate"
+      hreflang={alternateLocale}
+      href={`${domain}/${alternateLocale}/${slugURL === "/" ? "" : slugURL}/`}
+    />
+  ))
+}
 
 {/* OpenGraph */}
 <meta property="og:locale" content={locale} />
@@ -90,9 +94,7 @@ const alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
   data-domain="dilmahtea.me"
   data-api="/rpcq/event"
   src="/rpcq/script.js"
->
-
-</script>
+></script>
 
 <!-- OpenReplay Tracking Code -->
 <script>
