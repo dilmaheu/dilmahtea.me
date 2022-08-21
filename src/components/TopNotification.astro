@@ -89,33 +89,37 @@ const notificationContentHTML = defaultSlotDocument.toString();
 
 <div class={`notification notification-${type.toLowerCase()}`}>
   <div>
-    {notificationSVG && (
-      <div>
-        <Fragment set:html={notificationSVG} />
-      </div>
-    )}
+    {
+      notificationSVG && (
+        <div>
+          <Fragment set:html={notificationSVG} />
+        </div>
+      )
+    }
 
     <div class="notification-content">
       <Fragment set:html={notificationContentHTML} />
     </div>
   </div>
 
-  {closingEnabled && (
-    <button class="close-button">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="15"
-        height="14"
-        fill="none"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M.3.4A1.2 1.2 0 0 1 2 .4l5 5 5-5A1.2 1.2 0 1 1 13.7 2l-5 5 5 5a1.2 1.2 0 0 1-1.7 1.7l-5-5-5 5A1.2 1.2 0 0 1 .3 12l5-5-5-5A1.2 1.2 0 0 1 .3.4Z"
-          fill="#4c4847"
-        />
-      </svg>
-    </button>
-  )}
+  {
+    closingEnabled && (
+      <button class="close-button">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="15"
+          height="14"
+          fill="none"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M.3.4A1.2 1.2 0 0 1 2 .4l5 5 5-5A1.2 1.2 0 1 1 13.7 2l-5 5 5 5a1.2 1.2 0 0 1-1.7 1.7l-5-5-5 5A1.2 1.2 0 0 1 .3 12l5-5-5-5A1.2 1.2 0 0 1 .3.4Z"
+            fill="#4c4847"
+          />
+        </svg>
+      </button>
+    )
+  }
 </div>
 
 <script>
