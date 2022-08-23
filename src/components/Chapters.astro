@@ -24,16 +24,17 @@ const headings = contentDocument.querySelectorAll("h2");
     ) : (
       <a
         href={"#" + id}
-        class={
-          type === "mobile" &&
-          "flex items-center pt-6 font-normal color-default-80"
-        }
+        class:list={[
+          index === 0 && "active",
+          type !== "mobile"
+            ? "chapter-link"
+            : "chapter-link-sm flex items-center pt-6 font-normal color-default-80",
+        ]}
       >
         <img
           src={rightArrowGreen}
           alt="Green Right Arrow"
           class:list={[
-            "opacity-0",
             type === "mobile" ? "blog_StickyItemImgMd" : "blog_StickyItemImg",
           ]}
         />

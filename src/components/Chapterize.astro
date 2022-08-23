@@ -1,0 +1,25 @@
+---
+import { parseHTML } from "linkedom";
+
+declare interface Props {}
+
+const {} = Astro.props as Props;
+
+let contentHTML = await Astro.slots.render("default");
+
+const { document: contentDocument } = await parseHTML(contentHTML);
+
+const headings = contentDocument.querySelectorAll("h2");
+
+headings.forEach((heading, i) => {
+  contentHTML = contentHTML.replace(
+    heading.outerHTML,
+    (i === 0 ? "" : "</div>") + "<div class='chapter'>" + heading.outerHTML
+  );
+});
+
+// @ts-ignore
+contentHTML += "</div>";
+---
+
+<Fragment set:html={contentHTML} />

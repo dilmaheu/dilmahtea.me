@@ -4,6 +4,7 @@ import BookGreen from "@images/bookGreen.svg";
 import RightArrow from "@images/rightArrow.svg";
 
 import Chapters from "../Chapters.astro";
+import Chapterize from "../Chapterize.astro";
 import ClippedImg from "../ClippedImg.astro";
 import ClipPathSVG from "../ClipPathSVG.astro";
 import Markdown from "@astrojs/markdown-component";
@@ -25,6 +26,27 @@ const recentBlogs = allBlogs.filter(
   (val) => val.Meta.URL_slug != page.Meta.URL_slug
 );
 ---
+
+<style is:inline>
+  .chapter-link img,
+  .chapter-link-sm img {
+    opacity: 0;
+  }
+
+  .chapter-link.active img,
+  .chapter-link-sm.active img {
+    opacity: 1;
+  }
+
+  .chapter-link.active {
+    font-weight: 700;
+  }
+
+  .chapter-link-sm.active {
+    font-weight: 500;
+    color: rgba(43, 75, 80, 0.8);
+  }
+</style>
 
 <!-- Hero Section -->
 <div class="hero overflow-hidden relative">
@@ -214,7 +236,9 @@ const recentBlogs = allBlogs.filter(
         class="prose max-w-none basicInfoSecTxt detailedBlog"
         id="detailedBlog"
       >
-        <Markdown>{page.Block_text}</Markdown>
+        <Chapterize>
+          <Markdown>{page.Block_text}</Markdown>
+        </Chapterize>
       </div>
     </div>
     <div
@@ -328,72 +352,46 @@ const recentBlogs = allBlogs.filter(
 </div>
 
 <script>
-  // creating blog chapters
-  const db = document.getElementById("detailedBlog");
-  const tags = db.querySelectorAll("h2");
+  const detailedBlog = document.getElementById("detailedBlog"),
+    headings = detailedBlog.querySelectorAll("h2"),
+    chapters = [...detailedBlog.querySelectorAll(".chapter")],
+    stickyItemContainer = document.getElementById("blog_StickyItemContainer"),
+    blogStickyAtag = stickyItemContainer.querySelectorAll("a"),
+    blogStickyImg = stickyItemContainer.querySelectorAll(".blog_StickyItemImg"),
+    dropdownStickyItemCon = document.getElementById("blog_StickyDropdownItem"),
+    dropdownStickyAtag = dropdownStickyItemCon.querySelectorAll("a"),
+    dropdownStickyImg = dropdownStickyItemCon.querySelectorAll(
+      ".blog_StickyItemImgMd"
+    );
+
+  const isOnScreen = (element) => {
+    const { top, bottom } = element.getBoundingClientRect(),
+      // consider an element on screen only if it's at least 50px on screen
+      safeAreaHeight = 50;
+
+    if (top < window.innerHeight - safeAreaHeight && bottom > 0) return true;
+
+    return false;
+  };
+
+  const styleActiveChapter = () => {
+    const { length, [length - 1]: activeChapter = chapters[0] } =
+      chapters.filter((chapter) => isOnScreen(chapter));
+
+    const chapterIndex = chapters.indexOf(activeChapter);
+
+    [...blogStickyAtag, ...dropdownStickyAtag].forEach((link) =>
+      link.classList.remove("active")
+    );
+
+    blogStickyAtag[chapterIndex].classList.add("active");
+    dropdownStickyAtag[chapterIndex].classList.add("active");
+  };
+
+  styleActiveChapter();
 
   // highlight active blog section header desktop screen
-  const stickyItemCon = document.getElementById("blog_StickyItemContainer");
-  const blogStickyAtag = stickyItemCon.querySelectorAll("a");
-  const blogStickyImg = stickyItemCon.querySelectorAll(".blog_StickyItemImg");
-
-  const dropdownStickyItemCon = document.getElementById(
-    "blog_StickyDropdownItem"
-  );
-  const dropdownStickyAtag = dropdownStickyItemCon.querySelectorAll("a");
-  const dropdownStickyImg = dropdownStickyItemCon.querySelectorAll(
-    ".blog_StickyItemImgMd"
-  );
-
-  document.addEventListener("scroll", (e) => {
-    for (var i = 0; i < tags.length; i++) {
-      var scrolled = document.scrollingElement.scrollTop;
-      var position = tags[i].offsetTop;
-
-      if (i > 0) {
-        if (scrolled > position - 300) {
-          blogStickyAtag[i].classList.add("font-bold");
-          blogStickyAtag[i - 1].classList.remove("font-bold");
-          blogStickyImg[i].classList.remove("opacity-0");
-          blogStickyImg[i - 1].classList.add("opacity-0");
-
-          dropdownStickyAtag[i].classList.add("font-medium", "color-default");
-          dropdownStickyAtag[i - 1].classList.remove(
-            "font-medium",
-            "color-default"
-          );
-          dropdownStickyImg[i].classList.remove("opacity-0");
-          dropdownStickyImg[i - 1].classList.add("opacity-0");
-        } else {
-          blogStickyAtag[i].classList.remove("font-bold");
-          blogStickyImg[i].classList.add("opacity-0");
-
-          dropdownStickyAtag[i].classList.remove(
-            "font-medium",
-            "color-default"
-          );
-          dropdownStickyImg[i].classList.add("opacity-0");
-        }
-      } else {
-        if (scrolled > position - 300) {
-          blogStickyAtag[i].classList.add("font-bold");
-          blogStickyImg[i].classList.remove("opacity-0");
-
-          dropdownStickyAtag[i].classList.add("font-medium", "color-default");
-          dropdownStickyImg[i].classList.remove("opacity-0");
-        } else {
-          blogStickyAtag[i].classList.remove("font-bold");
-          blogStickyImg[i].classList.add("opacity-0");
-
-          dropdownStickyAtag[i].classList.remove(
-            "font-medium",
-            "color-default"
-          );
-          dropdownStickyImg[i].classList.add("opacity-0");
-        }
-      }
-    }
-  });
+  document.addEventListener("scroll", styleActiveChapter);
 
   const mqMd = window.matchMedia("(max-width: 767.98px)");
   if (mqMd.matches) {
@@ -422,8 +420,8 @@ const recentBlogs = allBlogs.filter(
         stickyProgress.style.display = "none";
       }
 
-      for (var i = 0; i < tags.length; i++) {
-        var position = tags[i].offsetTop;
+      for (var i = 0; i < headings.length; i++) {
+        var position = headings[i].offsetTop;
         if (i > 0) {
           if (scrolled > position - 40) {
             blogStickyMdAtag[i].style.display = "inline-flex";
@@ -496,8 +494,8 @@ const recentBlogs = allBlogs.filter(
         dropdownContainer.style.display = "none";
         stickyProgress.style.display = "none";
       }
-      for (var i = 0; i < tags.length; i++) {
-        var position = tags[i].offsetTop;
+      for (var i = 0; i < headings.length; i++) {
+        var position = headings[i].offsetTop;
 
         if (i > 0) {
           if (scrolled > position - 120) {
@@ -597,8 +595,8 @@ const recentBlogs = allBlogs.filter(
       document.documentElement.scrollHeight -
       document.documentElement.clientHeight;
 
-    const contentOffssetTop = db.offsetTop,
-      contentHeight = db.offsetHeight;
+    const contentOffssetTop = detailedBlog.offsetTop,
+      contentHeight = detailedBlog.offsetHeight;
 
     var scrolled = (winScroll / height) * 100;
     let ScrollBarWidth;
