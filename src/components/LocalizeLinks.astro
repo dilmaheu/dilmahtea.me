@@ -1,5 +1,8 @@
 ---
 import { parseHTML } from "linkedom";
+import getLocalesData from "src/utils/getLocalesData";
+
+const { locales } = getLocalesData();
 
 declare interface Props {
   locale: string;
@@ -17,7 +20,24 @@ const documentLinks = documentBody.querySelectorAll("a");
   const href = link.getAttribute("href");
 
   if (!href.startsWith("#")) {
-    link.href = "/" + locale + href;
+    const origin = "https://dilmahtea.me",
+      url = new URL(href, origin);
+
+    // check if link is internal
+    if (url.origin === origin) {
+      const href = url.href.replace(origin, ""),
+        localizedLinkRegex = new RegExp(
+          `^/(${locales.map((locale) => locale).join("|")})/`
+        );
+
+      // check if link is already localized
+      if (localizedLinkRegex.test(href)) {
+        link.href = href;
+      } else {
+        // localize unlocalized link
+        link.href = "/" + locale + href;
+      }
+    }
   }
 });
 ---
