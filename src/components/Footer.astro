@@ -1,10 +1,10 @@
 ---
 import Brand from "@images/logo.svg";
+import ClipPathSVG from "./ClipPathSVG.astro";
 import LeafImg from "@images/greenLeaf2.webp";
 import LeafImg1 from "@images/greenLeaf3.webp";
+import shouldDisplayExperimentals from "src/utils/shouldDisplayExperimentals";
 import FooterBg from "@images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash_footer.webp";
-
-import ClipPathSVG from "./ClipPathSVG.astro";
 
 declare interface Props {
   footerText: string;
@@ -59,7 +59,7 @@ const { footerText } = Astro.props as Props;
               <a href="/blog">Blog</a>
             </div>
             <div class="footerItem">
-              <!-- <a href="/howto">How-to</a> -->
+              {shouldDisplayExperimentals() && <a href="/howto">How-to</a>}
             </div>
           </div>
         </div>

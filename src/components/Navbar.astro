@@ -2,6 +2,7 @@
 import Brand from "@images/logo.svg";
 import LangButton from "./LangButton.astro";
 import getLocalesData from "../utils/getLocalesData";
+import shouldDisplayExperimentals from "src/utils/shouldDisplayExperimentals";
 
 interface Props {
   docLocale: string;
@@ -40,7 +41,13 @@ const docLang = languages[locales.indexOf(docLocale)],
         <div class="flex mr-auto my-auto navMenuItem">
           <a class="navItem" href="/crowdfunding">Crowdfunding</a>
           <a class="navItem" href="/blog">Blog</a>
-          <!-- <a class="navItem" href="/howto">How-to</a> -->
+          {
+            shouldDisplayExperimentals() && (
+              <a class="navItem" href="/howto">
+                How-to
+              </a>
+            )
+          }
         </div>
       </div>
 
@@ -172,7 +179,15 @@ const docLang = languages[locales.indexOf(docLocale)],
         <ul>
           <li><a class="navItem" href="/crowdfunding">Crowdfunding</a></li>
           <li><a class="navItem" href="/blog">Blog</a></li>
-          <!-- <li><a class="navItem" href="/howto">How-to</a></li> -->
+          {
+            shouldDisplayExperimentals() && (
+              <li>
+                <a class="navItem" href="/howto">
+                  How-to
+                </a>
+              </li>
+            )
+          }
         </ul>
       </div>
 

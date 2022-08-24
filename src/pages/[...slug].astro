@@ -1,10 +1,9 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-// All pages graphql query to be used with fetch
 import AllPagesQuery from "../queries/AllPagesQuery";
 
-// Getting the Confirmation and Home components to create pages
+import shouldDisplayExperimentals from "src/utils/shouldDisplayExperimentals";
 
 import Posts from "../components/pages/Posts.astro";
 import BasicPage from "../components/pages/BasicPage.astro";
@@ -444,8 +443,9 @@ export async function getStaticPaths() {
     const localizedHomepageObj = {
       availableLocales: HomepageLocales,
       type: "homepage",
-      // posts: [...allBlogs, ...allHowTos],
-      posts: allBlogs,
+      posts: shouldDisplayExperimentals()
+        ? [...allBlogs, ...allHowTos]
+        : allBlogs,
     };
     allLocalizedHomepage = createPages(
       allLocalizedHomepage,
