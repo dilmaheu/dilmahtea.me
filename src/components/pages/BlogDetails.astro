@@ -176,7 +176,7 @@ const recentBlogs = allBlogs.filter(
 <!-- Blog Section -->
 <div class="blogContentContainer" role="main">
   <div
-    class="block md:hidden sticky overflow-hiden self-start"
+    class="hidden md:hidden sticky overflow-hiden self-start"
     id="blogContent_StickyContainerMd"
   >
     <div
@@ -192,13 +192,7 @@ const recentBlogs = allBlogs.filter(
             <img class="blog_StickyItemHeaderImgMd" src={BookGreen} alt="arrow"
             />
           </div>
-          <div id="blog_StickyDropdownHeaderTop">{recurData.text_chapter}</div>
           <div id="blog_StickyDropdownHeader">{recurData.text_chapter}</div>
-          <ul id="blog_StickyItemContainerMd">
-            <Chapters type="list">
-              <Markdown>{page.Block_text}</Markdown>
-            </Chapters>
-          </ul>
         </div>
         <div class="w-3">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7">
@@ -209,7 +203,7 @@ const recentBlogs = allBlogs.filter(
           </svg>
         </div>
       </div>
-      <div id="blog_StickyDropdownItem">
+      <div id="blog_StickyDropdownItem" class="hidden">
         <Chapters type="mobile">
           <Markdown>{page.Block_text}</Markdown>
         </Chapters>
@@ -217,8 +211,9 @@ const recentBlogs = allBlogs.filter(
     </div>
     <div id="sticky_p_bar"></div>
   </div>
-  <div class="wrapper w-full flex flex-wrap">
-    <div class="md:w-8/12 order-2 md:order-1">
+
+  <div class="wrapper w-full flex flex-wrap flex-col-reverse md:flex-row">
+    <div class="md:w-8/12">
       <ClipPathSVG
         id="content-images-curve"
         path="M.516.008C.36.008.1-.008.04.082S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1.005.624 1.021.395.945.128.897-.045.734.008.516.008"
@@ -241,8 +236,9 @@ const recentBlogs = allBlogs.filter(
         </Chapterize>
       </div>
     </div>
+
     <div
-      class="md:w-4/12 order-1 md:order-2 blogContent_StickyContainer md:sticky top-0 overflow-hiden self-start"
+      class="md:w-4/12 blogContent_StickyContainer md:sticky top-0 overflow-hiden self-start"
       id="blogContent_StickyContainer"
     >
       <h3 id="blog_StickyHeader">{recurData.text_chapter}</h3>
@@ -352,17 +348,18 @@ const recentBlogs = allBlogs.filter(
 </div>
 
 <script>
-  const detailedBlog = document.getElementById("detailedBlog"),
-    headings = detailedBlog.querySelectorAll("h2"),
-    chapters = [...detailedBlog.querySelectorAll(".chapter")],
-    stickyItemContainer = document.getElementById("blog_StickyItemContainer"),
-    blogStickyAtag = stickyItemContainer.querySelectorAll("a"),
-    blogStickyImg = stickyItemContainer.querySelectorAll(".blog_StickyItemImg"),
-    dropdownStickyItemCon = document.getElementById("blog_StickyDropdownItem"),
-    dropdownStickyAtag = dropdownStickyItemCon.querySelectorAll("a"),
-    dropdownStickyImg = dropdownStickyItemCon.querySelectorAll(
-      ".blog_StickyItemImgMd"
-    );
+  const query = document.querySelector.bind(document),
+    queryAll = document.querySelectorAll.bind(document),
+    detailedBlog = query("#detailedBlog"),
+    chapters = [...queryAll("#detailedBlog .chapter")],
+    firstHeading = query("#detailedBlog h2"),
+    stickyHeader = query("#blogContent_StickyContainerMd"),
+    stickyHeaderTop = query("#blog_StickyDropdownHeader"),
+    stickyHeaderProgressBar = query("#sticky_p_bar"),
+    stickyDropdownToggle = query("#blogStickyBtn"),
+    chapterLinks = queryAll("#blog_StickyItemContainer a"),
+    stickyChapterLinksContainer = query("#blog_StickyDropdownItem"),
+    stickyChapterLinks = queryAll("#blog_StickyDropdownItem a");
 
   const isOnScreen = (element) => {
     const { top, bottom } = element.getBoundingClientRect(),
@@ -375,242 +372,42 @@ const recentBlogs = allBlogs.filter(
   };
 
   const styleActiveChapter = () => {
+    // find active chapter
     const { length, [length - 1]: activeChapter = chapters[0] } =
-      chapters.filter((chapter) => isOnScreen(chapter));
+        chapters.filter((chapter) => isOnScreen(chapter)),
+      chapterIndex = chapters.indexOf(activeChapter),
+      activeChapterHeading = activeChapter.querySelector("h2");
 
-    const chapterIndex = chapters.indexOf(activeChapter);
-
-    [...blogStickyAtag, ...dropdownStickyAtag].forEach((link) =>
+    [...chapterLinks, ...stickyChapterLinks].forEach((link) =>
       link.classList.remove("active")
     );
 
-    blogStickyAtag[chapterIndex].classList.add("active");
-    dropdownStickyAtag[chapterIndex].classList.add("active");
+    // highlight active chapter link
+    chapterLinks[chapterIndex].classList.add("active");
+    stickyChapterLinks[chapterIndex].classList.add("active");
+
+    const displayStickyHeader = scrollY > firstHeading.offsetTop;
+
+    if (displayStickyHeader) {
+      stickyHeaderTop.textContent = activeChapterHeading.textContent;
+
+      const readPixels = scrollY - detailedBlog.offsetTop,
+        detailedBlogHeight = detailedBlog.getBoundingClientRect().height,
+        progress = (readPixels / detailedBlogHeight) * 100;
+
+      // update progress meter
+      stickyHeaderProgressBar.style.width = `${progress}%`;
+    }
+
+    // display sticky header
+    stickyHeader.classList[displayStickyHeader ? "remove" : "add"]("hidden");
   };
 
   styleActiveChapter();
 
-  // highlight active blog section header desktop screen
   document.addEventListener("scroll", styleActiveChapter);
 
-  const mqMd = window.matchMedia("(max-width: 767.98px)");
-  if (mqMd.matches) {
-    // show active blog section header name top on sticky in mobile screen
-    document.addEventListener("scroll", (e) => {
-      const stickyItemConMd = document.getElementById(
-        "blog_StickyItemContainerMd"
-      );
-      const blogStickyMdAtag = stickyItemConMd.querySelectorAll("li");
-      const dropdownContainer = document.getElementById(
-        "blog_StickyDropdownContainer"
-      );
-      const dropdownHeader = document.getElementById(
-        "blog_StickyDropdownHeader"
-      );
-      var scrolled = document.scrollingElement.scrollTop;
-      const db = document.getElementById("detailedBlog");
-      const stickyProgress = document.getElementById("sticky_p_bar");
-      const dbPosition = db.offsetTop;
-
-      if (scrolled > dbPosition + 1) {
-        dropdownContainer.style.display = "block";
-        stickyProgress.style.display = "block";
-      } else {
-        dropdownContainer.style.display = "none";
-        stickyProgress.style.display = "none";
-      }
-
-      for (var i = 0; i < headings.length; i++) {
-        var position = headings[i].offsetTop;
-        if (i > 0) {
-          if (scrolled > position - 40) {
-            blogStickyMdAtag[i].style.display = "inline-flex";
-            blogStickyMdAtag[i - 1].style.display = "none";
-          } else {
-            blogStickyMdAtag[i].style.display = "none";
-          }
-        } else {
-          if (scrolled > position - 40) {
-            blogStickyMdAtag[i].style.display = "inline-flex";
-          } else {
-            blogStickyMdAtag[i].style.display = "none";
-          }
-        }
-      }
-    });
-
-    // sticky chapters heading toggle by "Chapters" when toggling stcky button
-    document.addEventListener("scroll", (e) => {
-      var scrolled = document.scrollingElement.scrollTop;
-      const db = document.getElementById(`detailedBlog`);
-      const dbPosition = db.offsetTop;
-      const dropdownHeader = document.getElementById(
-        "blog_StickyDropdownHeader"
-      );
-      const dropdownHeaderTop = document.getElementById(
-        "blog_StickyDropdownHeaderTop"
-      );
-      const dropdownHeaderItem = document.getElementById(
-        "blog_StickyItemContainerMd"
-      );
-      const firstTag = db.querySelector("h2");
-
-      if (scrolled > dbPosition - 40) {
-        if (dropdownHeader.style.display == "block") {
-          dropdownHeaderTop.style.display = "none";
-        } else if (scrolled > firstTag.offsetTop - 40) {
-          dropdownHeaderTop.style.display = "none";
-        } else {
-          dropdownHeaderTop.style.display = "block";
-        }
-      } else {
-        dropdownHeaderTop.style.display = "block";
-      }
-    });
-  }
-  const mqSm = window.matchMedia("(max-width: 639.98px)");
-  if (mqSm.matches) {
-    // show active blog section header name top on sticky in mobile screen
-    document.addEventListener("scroll", (e) => {
-      const stickyItemConMd = document.getElementById(
-        "blog_StickyItemContainerMd"
-      );
-      const blogStickyMdAtag = stickyItemConMd.querySelectorAll("li");
-      const dropdownContainer = document.getElementById(
-        "blog_StickyDropdownContainer"
-      );
-      const dropdownHeader = document.getElementById(
-        "blog_StickyDropdownHeader"
-      );
-      var scrolled = document.scrollingElement.scrollTop;
-      const db = document.getElementById("detailedBlog");
-      const stickyProgress = document.getElementById("sticky_p_bar");
-      const dbPosition = db.offsetTop;
-
-      if (scrolled > dbPosition - 50) {
-        dropdownContainer.style.display = "block";
-        stickyProgress.style.display = "block";
-      } else {
-        dropdownContainer.style.display = "none";
-        stickyProgress.style.display = "none";
-      }
-      for (var i = 0; i < headings.length; i++) {
-        var position = headings[i].offsetTop;
-
-        if (i > 0) {
-          if (scrolled > position - 120) {
-            blogStickyMdAtag[i].style.display = "inline-flex";
-            blogStickyMdAtag[i - 1].style.display = "none";
-          } else {
-            blogStickyMdAtag[i].style.display = "none";
-          }
-        } else {
-          if (scrolled > position - 120) {
-            blogStickyMdAtag[i].style.display = "inline-flex";
-          } else {
-            blogStickyMdAtag[i].style.display = "none";
-          }
-        }
-      }
-    });
-
-    // sticky chapters heading toggle by "Chapters" when toggling stcky button
-    document.addEventListener("scroll", (e) => {
-      var scrolled = document.scrollingElement.scrollTop;
-      const db = document.getElementById(`detailedBlog`);
-      const dbPosition = db.offsetTop;
-      const dropdownHeader = document.getElementById(
-        "blog_StickyDropdownHeader"
-      );
-      const dropdownHeaderTop = document.getElementById(
-        "blog_StickyDropdownHeaderTop"
-      );
-      const dropdownHeaderItem = document.getElementById(
-        "blog_StickyItemContainerMd"
-      );
-
-      const firstTag = db.querySelector("h2");
-
-      if (scrolled > dbPosition - 120) {
-        if (dropdownHeader.style.display == "block") {
-          dropdownHeaderTop.style.display = "none";
-        } else if (scrolled > firstTag.offsetTop - 120) {
-          dropdownHeaderTop.style.display = "none";
-        } else {
-          dropdownHeaderTop.style.display = "block";
-        }
-      } else {
-        dropdownHeaderTop.style.display = "block";
-      }
-    });
-  }
-
-  //sticky chapters button toggle
-  document.getElementById("blogStickyBtn").addEventListener(
-    "click",
-    function () {
-      const dropdownItem = document.getElementById("blog_StickyDropdownItem");
-      const dropdownHeader = document.getElementById(
-        "blog_StickyDropdownHeader"
-      );
-      const dropdownHeaderItem = document.getElementById(
-        "blog_StickyItemContainerMd"
-      );
-      const dropdpwnIcon = document.getElementById("StickyDropdpwnIcon");
-
-      if (dropdownHeader.style.display == "none") {
-        if (dropdownItem.style.display == "block") {
-          dropdownItem.style.display = "none";
-          dropdownHeader.style.display = "block";
-          dropdownHeaderItem.style.display = "grid";
-          dropdpwnIcon.style.transform = "rotate(0deg)";
-        } else {
-          dropdownItem.style.display = "block";
-          dropdownHeaderItem.style.display = "none";
-          dropdownHeader.style.display = "block";
-          dropdpwnIcon.style.transform = "rotate(180deg)";
-        }
-      } else {
-        if (dropdownItem.style.display == "block") {
-          dropdownItem.style.display = "none";
-          dropdownHeader.style.display = "none";
-          dropdownHeaderItem.style.display = "grid";
-          dropdpwnIcon.style.transform = "rotate(0deg)";
-        } else {
-          dropdownItem.style.display = "block";
-          dropdownHeaderItem.style.display = "none";
-          dropdownHeader.style.display = "block";
-          dropdpwnIcon.style.transform = "rotate(180deg)";
-        }
-      }
-    },
-    false
-  );
-
-  // blog reading progress bar
-  document.addEventListener("scroll", (e) => {
-    var winScroll =
-      document.body.scrollTop || document.documentElement.scrollTop;
-    var height =
-      document.documentElement.scrollHeight -
-      document.documentElement.clientHeight;
-
-    const contentOffssetTop = detailedBlog.offsetTop,
-      contentHeight = detailedBlog.offsetHeight;
-
-    var scrolled = (winScroll / height) * 100;
-    let ScrollBarWidth;
-    const diff = winScroll - contentOffssetTop;
-    if (diff <= 0) {
-      ScrollBarWidth = 0;
-    } else {
-      //check if we hav reached div bottom
-      if (winScroll + 100 <= contentOffssetTop + contentHeight) {
-        ScrollBarWidth = (diff / contentHeight) * 100;
-      } else {
-        ScrollBarWidth = 100;
-      }
-    }
-    document.getElementById("sticky_p_bar").style.width = ScrollBarWidth + "%";
+  stickyDropdownToggle.addEventListener("click", () => {
+    stickyChapterLinksContainer.classList.toggle("hidden");
   });
 </script>
