@@ -16,7 +16,13 @@ const htmlFilePaths = await globby([
 const sharedCSP = {
   "default-src": ["'none'"],
   "style-src": ["'self'", "'unsafe-inline'"],
-  "img-src": ["'self'", "https://dilmahtea.me", "https://imagedelivery.net"],
+  "img-src": [
+    "'self'",
+    "https://dilmahtea.me",
+    "https://imagedelivery.net",
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23a7bcbc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E",
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23a0b0b0'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E",
+  ],
   "font-src": ["'self'"],
   "worker-src": ["blob:"],
   "connect-src": ["'self'", "https://api.openreplay.com"],
