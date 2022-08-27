@@ -1,4 +1,5 @@
 import fs from "fs";
+import printMessage from "../utils/printMessage";
 
 const queryModules = import.meta.globEager("../queries/partials/*.js");
 
@@ -29,15 +30,27 @@ const { data } = await fetch(import.meta.env.DB_URL, {
   }),
 })
   .then(async (res) => {
-    const data = await res.text();
+    const data = await res.text(),
+      cacheDir = "./.cache/";
 
-    await fs.promises.writeFile("./.cache/CMS.json", data, "utf8");
+    fs.existsSync(cacheDir) || (await fs.promises.mkdir(cacheDir));
+    await fs.promises.writeFile(cacheDir + "CMS.json", data, "utf8");
+
+    printMessage(
+      "info",
+      "Successfully fetched data from CMS and saved it to the cache"
+    );
 
     return JSON.parse(data);
   })
   .catch(async (error) => {
     if (fs.existsSync("./.cache/CMS.json")) {
       const data = await fs.promises.readFile("./.cache/CMS.json", "utf8");
+
+      printMessage(
+        "error",
+        "Failed to fetch data from CMS, serving from the cache"
+      );
 
       return JSON.parse(data);
     }
