@@ -1,3 +1,5 @@
+import fs from "fs";
+
 const queryModules = import.meta.globEager("../queries/partials/*.js");
 
 const queryRegex = /^\s*{(.*)}\s*$/s;
@@ -25,7 +27,23 @@ const { data } = await fetch(import.meta.env.DB_URL, {
   body: JSON.stringify({
     query: fullQuery,
   }),
-}).then((res) => res.json());
+})
+  .then(async (res) => {
+    const data = await res.text();
+
+    await fs.promises.writeFile("./.cache/CMS.json", data, "utf8");
+
+    return JSON.parse(data);
+  })
+  .catch(async (error) => {
+    if (fs.existsSync("./.cache/CMS.json")) {
+      const data = await fs.promises.readFile("./.cache/CMS.json", "utf8");
+
+      return JSON.parse(data);
+    }
+
+    throw error;
+  });
 
 const CMS = {
   async get(contentType) {
