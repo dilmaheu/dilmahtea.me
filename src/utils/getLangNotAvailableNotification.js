@@ -1,40 +1,9 @@
-const langNotAvailableNotificationQuery = `
-  {
-    notifications(filters: { Title: { eq: "language_not_available" } }) {
-      data {
-        attributes {
-          locale
-          Type
-          Content
-          Closing_Enabled
-          localizations {
-            data {
-              attributes {
-                locale
-                Content
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import CMS from "../store/CMS";
 
-const { data: langNotAvailableNotificationData } = await fetch(
-  import.meta.env.DB_URL,
-  {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
-    },
-    body: JSON.stringify({
-      query: langNotAvailableNotificationQuery,
-    }),
-  }
-).then((res) => res.json());
+const notifications = await CMS.get("notifications"),
+  langNotAvailableNotification = notifications.data.find(
+    (notif) => (notif.attributes.Title = "language_not_available")
+  );
 
 const localizedNotifications = {};
 
@@ -44,7 +13,7 @@ const {
   Closing_Enabled,
   Content: defaultNotification,
   localizations,
-} = langNotAvailableNotificationData.notifications.data[0].attributes;
+} = langNotAvailableNotification.attributes;
 
 localizedNotifications[defaultLocale] = defaultNotification;
 

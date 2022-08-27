@@ -1,41 +1,10 @@
-const i18nQuery = `
-  {
-    i18Ns {
-      data {
-        attributes {
-          code
-          locale
-          language
-          localizations {
-            data {
-              attributes {
-                code
-                locale
-                language
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import CMS from "../store/CMS";
 
-const { data: i18nData } = await fetch(import.meta.env.DB_URL, {
-  method: "POST",
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
-  },
-  body: JSON.stringify({
-    query: i18nQuery,
-  }),
-}).then((res) => res.json());
+const { data: i18nData } = await CMS.get("i18Ns");
 
 const allI18NEntries = [];
 
-i18nData.i18Ns.data.forEach(({ attributes }) => {
+i18nData.forEach(({ attributes }) => {
   allI18NEntries.push(attributes);
 
   attributes.localizations.data.forEach(({ attributes }) => {

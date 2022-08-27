@@ -1,10 +1,8 @@
 ---
-import Layout from "../layouts/Layout.astro";
-
-import AllPagesQuery from "../queries/AllPagesQuery";
-
+import CMS from "src/store/CMS";
 import shouldDisplayExperimentals from "src/utils/shouldDisplayExperimentals";
 
+import Layout from "../layouts/Layout.astro";
 import Posts from "../components/pages/Posts.astro";
 import BasicPage from "../components/pages/BasicPage.astro";
 import BlogDetails from "../components/pages/BlogDetails.astro";
@@ -20,18 +18,9 @@ import TranslationNotFoundRedirect from "../components/scripts/TranslationNotFou
 
 // Using getStaticPaths to generate each path
 export async function getStaticPaths() {
-  const allPages = await fetch(`${import.meta.env.DB_URL}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
-    },
-    body: JSON.stringify({
-      query: AllPagesQuery,
-    }),
-  }).then((response) => response.json());
+  const data = await CMS.get("all");
 
-  const allLocales = allPages.data.i18NLocales.data.map(({ attributes }) =>
+  const allLocales = data.i18NLocales.data.map(({ attributes }) =>
     attributes.code.substring(0, 2)
   );
 
@@ -56,7 +45,7 @@ export async function getStaticPaths() {
             },
             props: {
               // Props
-              recurData: allPages.data.recurringElement.data.attributes, // recurring data
+              recurData: data.recurringElement.data.attributes, // recurring data
               page: {
                 // page object where empty its attributes and give it a type
                 ...page.attributes,
@@ -80,7 +69,7 @@ export async function getStaticPaths() {
           },
           props: {
             // Props
-            recurData: allPages.data.recurringElement.data.attributes, // recurring data
+            recurData: data.recurringElement.data.attributes, // recurring data
             page: {
               // page object where empty its attributes and give it a type
               ...arrOrObj,
@@ -118,10 +107,10 @@ export async function getStaticPaths() {
   };
 
   let allPlans = [];
-  const formMeta = allPages.data.crowdfundingForm.data.attributes.Meta;
+  const formMeta = data.crowdfundingForm.data.attributes.Meta;
 
   // All plans
-  allPages.data.crowdfundingPlans.data.forEach((plan) => {
+  data.crowdfundingPlans.data.forEach((plan) => {
     const newPlan = { ...plan.attributes };
     const planLocales = getAllLocales(plan.attributes.localizations.data);
     const allLocalizedPlans = plan.attributes.localizations.data;
@@ -179,14 +168,14 @@ export async function getStaticPaths() {
   let allCrowdfundingPages = [];
 
   let allLocalizedCrowdfundingPages =
-    allPages.data.crowdfundingHome.data.attributes.localizations.data;
+    data.crowdfundingHome.data.attributes.localizations.data;
 
   const crowdfundingLocales = getAllLocales(allLocalizedCrowdfundingPages);
 
   // The default Crowdfunding page
-  let defaultCrowdfundingPage = allPages.data.crowdfundingHome.data.attributes;
+  let defaultCrowdfundingPage = data.crowdfundingHome.data.attributes;
 
-  const allCrowdfundingPlans = allPages.data.crowdfundingPlans.data.map(
+  const allCrowdfundingPlans = data.crowdfundingPlans.data.map(
     (val) => val.attributes
   );
 
@@ -251,7 +240,7 @@ export async function getStaticPaths() {
   // The default Basic pages
   let allBasicPages = [];
   // Mapping all localized basic pages into a new array that returns an object that generates the paths
-  allPages.data.basicPages.data.forEach((page) => {
+  data.basicPages.data.forEach((page) => {
     let localizedPages = page.attributes.localizations.data;
     const basicPagesLocales = getAllLocales(localizedPages);
     if (localizedPages.length > 0) {
@@ -276,12 +265,11 @@ export async function getStaticPaths() {
   // Getting Confirmation pages
   let allConfirmations = [];
   let allLocalizedConfirmation =
-    allPages.data.crowdfundingPaymentConfirmation.data.attributes.localizations
-      .data;
+    data.crowdfundingPaymentConfirmation.data.attributes.localizations.data;
   const confirmationLocales = getAllLocales(allLocalizedConfirmation);
   // The default confirmation page
   let defaultConfirmation =
-    allPages.data.crowdfundingPaymentConfirmation.data.attributes;
+    data.crowdfundingPaymentConfirmation.data.attributes;
   const defaultConfirmObj = {
     availableLocales: confirmationLocales,
     type: `confirm`,
@@ -306,7 +294,7 @@ export async function getStaticPaths() {
   // Getting blog details pages
   let allBlogs = [];
   // Mapping all localized blog details pages into a new array that returns an object that generates the paths
-  allPages.data.blogs.data.forEach((page) => {
+  data.blogs.data.forEach((page) => {
     let localizedBlogsPages = page.attributes.localizations.data;
     const blogsPagesLocales = getAllLocales(localizedBlogsPages);
     if (localizedBlogsPages.length > 0) {
@@ -329,11 +317,10 @@ export async function getStaticPaths() {
 
   // Getting Blog home pages
   let allBlogHome = [];
-  let allLocalizedBlogHome =
-    allPages.data.homeBlog.data.attributes.localizations.data;
+  let allLocalizedBlogHome = data.homeBlog.data.attributes.localizations.data;
   const blogHomeLocales = getAllLocales(allLocalizedBlogHome);
   // The default Blog home page
-  let defaultBlogHome = allPages.data.homeBlog.data.attributes;
+  let defaultBlogHome = data.homeBlog.data.attributes;
   const defaultBlogHomeObj = {
     availableLocales: blogHomeLocales,
     type: `blog`,
@@ -370,7 +357,7 @@ export async function getStaticPaths() {
   // Getting HowTo details pages
   let allHowTos = [];
   // Mapping all localized HowTo details pages into a new array that returns an object that generates the paths
-  allPages.data.howTos.data.forEach((page) => {
+  data.howTos.data.forEach((page) => {
     let localizedHowTosPages = page.attributes.localizations.data;
     const howTosPagesLocales = getAllLocales(localizedHowTosPages);
     if (localizedHowTosPages.length > 0) {
@@ -396,11 +383,10 @@ export async function getStaticPaths() {
 
   // Getting HowTo home page
   let allHowToHome = [];
-  let allLocalizedHowToHome =
-    allPages.data.homeHowTo.data.attributes.localizations.data;
+  let allLocalizedHowToHome = data.homeHowTo.data.attributes.localizations.data;
   const howToHomeLocales = getAllLocales(allLocalizedHowToHome);
   // The default Blog home page
-  let defaultHowToHome = allPages.data.homeHowTo.data.attributes;
+  let defaultHowToHome = data.homeHowTo.data.attributes;
   const defaultHowToHomeObj = {
     availableLocales: howToHomeLocales,
     type: "howTo",
@@ -425,11 +411,10 @@ export async function getStaticPaths() {
 
   // Getting home page
   let allHomepage = [];
-  let allLocalizedHomepage =
-    allPages.data.homepage.data.attributes.localizations.data;
+  let allLocalizedHomepage = data.homepage.data.attributes.localizations.data;
   const HomepageLocales = getAllLocales(allLocalizedHomepage);
   // The default Blog home page
-  let defaultHomepage = allPages.data.homepage.data.attributes;
+  let defaultHomepage = data.homepage.data.attributes;
   const defaultHomepageObj = {
     availableLocales: HomepageLocales,
     type: "homepage",

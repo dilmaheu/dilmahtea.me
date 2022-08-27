@@ -1,30 +1,25 @@
 ---
+import CMS from "src/store/CMS";
 import Layout from "../layouts/Layout.astro";
 import BasicPage from "../components/pages/BasicPage.astro";
-import NotFoundPagesQuery from "../queries/NotFoundPagesQuery";
 import SetPreferredLocale from "../components/scripts/SetPreferredLocale.astro";
 
 // fetching the error page
-const _404PagesData = await fetch(`${import.meta.env.DB_URL}`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
-  },
-  body: JSON.stringify({
-    query: NotFoundPagesQuery,
-  }),
-}).then((response) => response.json());
+const basicPagesData = await CMS.get("basicPages");
+
+let recurringElements = await CMS.get("recurringElement").then(
+    ({ data }) => data.attributes
+  ),
+  { attributes: _404Page } = basicPagesData.data.find(
+    ({ attributes }) => attributes.Meta.URL_slug === "404"
+  );
 
 // saving it's page attributes like meta and other components
 const requestPath = Astro.url.pathname;
 
-let page = _404PagesData.data.basicPages.data[0].attributes,
-  recurData = _404PagesData.data.recurringElement.data.attributes;
-
 const availableLocales = [
   "en",
-  ...page.localizations.data.map(({ attributes }) =>
+  ..._404Page.localizations.data.map(({ attributes }) =>
     attributes.locale.substring(0, 2)
   ),
 ];
@@ -34,15 +29,13 @@ let [, locale] = requestPath.match(/^\/([a-z]{2})\//) ?? [];
 if (!(locale && availableLocales.includes(locale))) locale = "en";
 
 if (locale !== "en") {
-  page = page.localizations.data.find(
+  _404Page = _404Page.localizations.data.find(
     ({ attributes }) => attributes.locale.substring(0, 2) === locale
   ).attributes;
 
-  recurData = {
-    // include OpenGraph_default data to non-english recurring elements
-    OpenGraph_default: recurData.OpenGraph_default,
+  recurringElements = {
     // localize recurring elements
-    ...recurData.localizations.data.find(
+    ...recurringElements.localizations.data.find(
       ({ attributes }) => attributes.locale.substring(0, 2) === locale
     ).attributes,
   };
@@ -66,11 +59,12 @@ if (locale !== "en") {
 <Layout
   locale={locale}
   availableLocales={availableLocales}
-  meta={page.Meta}
-  recurData={recurData}
-  metaImage={page.Block_blob != null && page.Block_blob.data != null
-    ? page.Block_blob.data.attributes.provider_metadata.public_id
-    : recurData.OpenGraph_default.data.attributes.provider_metadata.public_id}
+  meta={_404Page.Meta}
+  recurData={recurringElements}
+  metaImage={_404Page.Block_blob != null && _404Page.Block_blob.data != null
+    ? _404Page.Block_blob.data.attributes.provider_metadata.public_id
+    : recurringElements.OpenGraph_default.data.attributes.provider_metadata
+        .public_id}
 >
-  <BasicPage page={page} />
+  <BasicPage page={_404Page} />
 </Layout>
