@@ -46,7 +46,7 @@ const CSPHeaders = await Promise.all(
       const hash = crypto
         .createHash("sha256")
         .update(textContent)
-        .digest("hex");
+        .digest("base64");
 
       const source = `'sha256-${hash}'`;
 
