@@ -3,6 +3,7 @@ import CupIcon from "@images/cup.svg";
 import BookGreen from "@images/bookGreen.svg";
 import RightArrow from "@images/rightArrow.svg";
 
+import Chapters from "../Chapters.astro";
 import ClippedImg from "../ClippedImg.astro";
 import ClipPathSVG from "../ClipPathSVG.astro";
 import Markdown from "@astrojs/markdown-component";
@@ -23,7 +24,38 @@ allHowTos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 const recentHowTos = allHowTos.filter(
   (val) => val.Meta.URL_slug != page.Meta.URL_slug
 );
+
+const practicesHeadingsHTML = page.Method.map(
+  (method) =>
+    `<h2
+      class="HowToMethodHead"
+      id="${method.Method_title.replaceAll(" ", "-")}"
+    >
+      ${method.Method_title}
+    </h2>`
+).join("\n");
 ---
+
+<style is:inline>
+  .chapter-link img,
+  .chapter-link-sm img {
+    opacity: 0;
+  }
+
+  .chapter-link.active img,
+  .chapter-link-sm.active img {
+    opacity: 1;
+  }
+
+  .chapter-link.active {
+    font-weight: 700;
+  }
+
+  .chapter-link-sm.active {
+    font-weight: 500;
+    color: rgba(43, 75, 80, 0.8);
+  }
+</style>
 
 <!-- Hero Section -->
 <div class="hero overflow-hidden relative">
@@ -177,7 +209,7 @@ const recentHowTos = allHowTos.filter(
 
 <div class="blogContentContainer z-30" role="main">
   <div
-    class="block md:hidden sticky overflow-hiden self-start z-30"
+    class="hidden md:hidden sticky overflow-hidden self-start z-30"
     id="blogContent_StickyContainerMd"
   >
     <div
@@ -190,10 +222,7 @@ const recentHowTos = allHowTos.filter(
       >
         <div id="blog_StickyDropdown" class="flex">
           <div>
-            <img
-              class="blog_StickyItemHeaderImgMd"
-              src={BookGreen}
-              alt="arrow"
+            <img class="blog_StickyItemHeaderImgMd" src={BookGreen} alt="arrow"
             />
           </div>
           <div id="blog_StickyDropdownHeaderTop">
@@ -211,14 +240,19 @@ const recentHowTos = allHowTos.filter(
           </svg>
         </div>
       </div>
-      <div id="blog_StickyDropdownItem"></div>
+
+      <div id="blog_StickyDropdownItem" class="hidden">
+        <Chapters type="mobile">
+          <Fragment set:html={practicesHeadingsHTML} />
+        </Chapters>
+      </div>
     </div>
     <div id="sticky_p_bar"></div>
   </div>
   <div class="wrapper w-full flex flex-wrap">
     <div
       class="md:w-8/12 order-2 md:order-1 relative z-20 md:-mt-10 lg:-mt-16 xl:-mt-24"
-      id="howToStepDetails"
+      id="detailedBlog"
     >
       <ClipPathSVG
         id="content-images-curve"
@@ -227,7 +261,7 @@ const recentHowTos = allHowTos.filter(
 
       {
         page.Method.map((method) => (
-          <div>
+          <div class="chapter">
             <h2
               class="HowToMethodHead"
               id={method.Method_title.replaceAll(" ", "-")}
@@ -269,7 +303,11 @@ const recentHowTos = allHowTos.filter(
       id="blogContent_StickyContainer"
     >
       <h3 id="blog_StickyHeader">{recurData.text_practices}</h3>
-      <div id="blog_StickyItemContainer"></div>
+      <div id="blog_StickyItemContainer">
+        <Chapters>
+          <Fragment set:html={practicesHeadingsHTML} />
+        </Chapters>
+      </div>
     </div>
   </div>
 </div>
@@ -369,318 +407,67 @@ const recentHowTos = allHowTos.filter(
   </div>
 </div>
 
-<script is:inline>
-  document.addEventListener("DOMContentLoaded", function () {
-    // creating howto practices
-    const hsd = document.getElementById("howToStepDetails");
-    const tags = hsd.querySelectorAll("h2");
+<script defer>
+  const query = document.querySelector.bind(document),
+    queryAll = document.querySelectorAll.bind(document),
+    container = query("#detailedBlog"),
+    chapters = [...queryAll("#detailedBlog .chapter")],
+    firstHeading = query("#detailedBlog h2"),
+    stickyHeader = query("#blogContent_StickyContainerMd"),
+    stickyHeaderTop = query("#blog_StickyDropdownHeader"),
+    stickyHeaderProgressBar = query("#sticky_p_bar"),
+    stickyDropdownToggle = query("#blogStickyBtn"),
+    chapterLinks = queryAll("#blog_StickyItemContainer a"),
+    stickyChapterLinksContainer = query("#blog_StickyDropdownItem"),
+    stickyChapterLinks = queryAll("#blog_StickyDropdownItem a");
 
-    for (const tag of tags) {
-      // practices in desktop screen
-      var div = document.getElementById("blog_StickyItemContainer");
-      var aTag = document.createElement("a");
-      aTag.setAttribute("href", "#" + tag.id);
-      aTag.innerHTML =
-        `<img class="blog_StickyItemImg opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` +
-        tag.id.replaceAll("-", " ");
-      div.appendChild(aTag);
+  const isOnScreen = (element) => {
+    const { top, bottom } = element.getBoundingClientRect(),
+      // consider an element on screen only if it's at least 50px on screen
+      safeAreaHeight = 50;
 
-      // sticky active practice heading in mobile screen
-      var divMd = document.getElementById("blog_StickyItemContainerMd");
-      var liTagMd = document.createElement("li");
-      liTagMd.setAttribute("class", "truncate");
-      liTagMd.innerHTML = tag.id.replaceAll("-", " ");
-      divMd.appendChild(liTagMd);
+    if (top < window.innerHeight - safeAreaHeight && bottom > 0) return true;
 
-      // sticky button practices in mobile screen
-      var dropdownDiv = document.getElementById("blog_StickyDropdownItem");
-      var dropdownATag = document.createElement("a");
-      dropdownATag.setAttribute("href", "#" + tag.id);
-      dropdownATag.setAttribute(
-        "class",
-        "flex items-center pt-6 font-normal color-default-80"
-      );
-      dropdownATag.innerHTML =
-        `<img class="blog_StickyItemImgMd opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` +
-        tag.id.replaceAll("-", " ");
-      dropdownDiv.appendChild(dropdownATag);
-    }
+    return false;
+  };
 
-    // highlight active practice section header desktop screen
-    const stickyItemCon = document.getElementById("blog_StickyItemContainer");
-    const blogStickyAtag = stickyItemCon.querySelectorAll("a");
-    const blogStickyImg = stickyItemCon.querySelectorAll(".blog_StickyItemImg");
+  const styleActiveChapter = () => {
+    // find active chapter
+    const { length, [length - 1]: activeChapter = chapters[0] } =
+        chapters.filter((chapter) => isOnScreen(chapter)),
+      chapterIndex = chapters.indexOf(activeChapter),
+      activeChapterHeading = activeChapter.querySelector("h2");
 
-    const dropdownStickyItemCon = document.getElementById(
-      "blog_StickyDropdownItem"
-    );
-    const dropdownStickyAtag = dropdownStickyItemCon.querySelectorAll("a");
-    const dropdownStickyImg = dropdownStickyItemCon.querySelectorAll(
-      ".blog_StickyItemImgMd"
+    [...chapterLinks, ...stickyChapterLinks].forEach((link) =>
+      link.classList.remove("active")
     );
 
-    document.addEventListener("scroll", (e) => {
-      for (var i = 0; i < tags.length; i++) {
-        var scrolled = document.scrollingElement.scrollTop;
-        var position = tags[i].offsetTop;
+    // highlight active chapter link
+    chapterLinks[chapterIndex].classList.add("active");
+    stickyChapterLinks[chapterIndex].classList.add("active");
 
-        if (i > 0) {
-          if (scrolled > position - 300) {
-            blogStickyAtag[i].classList.add("font-bold");
-            blogStickyAtag[i - 1].classList.remove("font-bold");
-            blogStickyImg[i].classList.remove("opacity-0");
-            blogStickyImg[i - 1].classList.add("opacity-0");
+    const displayStickyHeader = firstHeading.getBoundingClientRect().y < 0;
 
-            dropdownStickyAtag[i].classList.add("font-medium", "color-default");
-            dropdownStickyAtag[i - 1].classList.remove(
-              "font-medium",
-              "color-default"
-            );
-            dropdownStickyImg[i].classList.remove("opacity-0");
-            dropdownStickyImg[i - 1].classList.add("opacity-0");
-          } else {
-            blogStickyAtag[i].classList.remove("font-bold");
-            blogStickyImg[i].classList.add("opacity-0");
+    if (displayStickyHeader) {
+      stickyHeaderTop.textContent = activeChapterHeading.textContent;
 
-            dropdownStickyAtag[i].classList.remove(
-              "font-medium",
-              "color-default"
-            );
-            dropdownStickyImg[i].classList.add("opacity-0");
-          }
-        } else {
-          if (scrolled > position - 300) {
-            blogStickyAtag[i].classList.add("font-bold");
-            blogStickyImg[i].classList.remove("opacity-0");
+      const readPixels = scrollY - container.offsetTop,
+        detailedBlogHeight = container.getBoundingClientRect().height,
+        progress = (readPixels / detailedBlogHeight) * 100;
 
-            dropdownStickyAtag[i].classList.add("font-medium", "color-default");
-            dropdownStickyImg[i].classList.remove("opacity-0");
-          } else {
-            blogStickyAtag[i].classList.remove("font-bold");
-            blogStickyImg[i].classList.add("opacity-0");
-
-            dropdownStickyAtag[i].classList.remove(
-              "font-medium",
-              "color-default"
-            );
-            dropdownStickyImg[i].classList.add("opacity-0");
-          }
-        }
-      }
-    });
-
-    const mqMd = window.matchMedia("(max-width: 767.98px)");
-    if (mqMd.matches) {
-      // show active practice header name top on sticky in mobile screen
-      document.addEventListener("scroll", (e) => {
-        const stickyItemConMd = document.getElementById(
-          "blog_StickyItemContainerMd"
-        );
-        const blogStickyMdAtag = stickyItemConMd.querySelectorAll("li");
-        const dropdownContainer = document.getElementById(
-          "blog_StickyDropdownContainer"
-        );
-        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
-        var scrolled = document.scrollingElement.scrollTop;
-        const hsd = document.getElementById("howToStepDetails");
-        stickyProgress = document.getElementById("sticky_p_bar");
-        hsdPosition = hsd.offsetTop;
-
-        if (scrolled > hsdPosition + 1) {
-          dropdownContainer.style.display = "block";
-          stickyProgress.style.display = "block";
-        } else {
-          dropdownContainer.style.display = "none";
-          stickyProgress.style.display = "none";
-        }
-
-        for (var i = 0; i < tags.length; i++) {
-          var position = tags[i].offsetTop;
-          if (i > 0) {
-            if (scrolled > position - 40) {
-              blogStickyMdAtag[i].style.display = "inline-flex";
-              blogStickyMdAtag[i - 1].style.display = "none";
-            } else {
-              blogStickyMdAtag[i].style.display = "none";
-            }
-          } else {
-            if (scrolled > position - 40) {
-              blogStickyMdAtag[i].style.display = "inline-flex";
-            } else {
-              blogStickyMdAtag[i].style.display = "none";
-            }
-          }
-        }
-      });
-
-      // sticky practices heading toggle by "Practices" when toggling stcky button
-      document.addEventListener("scroll", (e) => {
-        var scrolled = document.scrollingElement.scrollTop;
-        const hsd = document.getElementById("howToStepDetails");
-        hsdPosition = hsd.offsetTop;
-        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
-        dropdownHeaderTop = document.getElementById(
-          "blog_StickyDropdownHeaderTop"
-        );
-        dropdownHeaderItem = document.getElementById(
-          "blog_StickyItemContainerMd"
-        );
-        const firstTag = hsd.querySelector("h2");
-
-        if (scrolled > hsdPosition - 40) {
-          if (dropdownHeader.style.display == "block") {
-            dropdownHeaderTop.style.display = "none";
-          } else if (scrolled > firstTag.offsetTop - 40) {
-            dropdownHeaderTop.style.display = "none";
-          } else {
-            dropdownHeaderTop.style.display = "block";
-          }
-        } else {
-          dropdownHeaderTop.style.display = "block";
-        }
-      });
-    }
-    const mqSm = window.matchMedia("(max-width: 639.98px)");
-    if (mqSm.matches) {
-      // show active practice header name top on sticky in mobile screen
-      document.addEventListener("scroll", (e) => {
-        const stickyItemConMd = document.getElementById(
-          "blog_StickyItemContainerMd"
-        );
-        const blogStickyMdAtag = stickyItemConMd.querySelectorAll("li");
-        const dropdownContainer = document.getElementById(
-          "blog_StickyDropdownContainer"
-        );
-        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
-        var scrolled = document.scrollingElement.scrollTop;
-        const hsd = document.getElementById("howToStepDetails");
-        stickyProgress = document.getElementById("sticky_p_bar");
-        hsdPosition = hsd.offsetTop;
-
-        if (scrolled > hsdPosition - 50) {
-          dropdownContainer.style.display = "block";
-          stickyProgress.style.display = "block";
-        } else {
-          dropdownContainer.style.display = "none";
-          stickyProgress.style.display = "none";
-        }
-        for (var i = 0; i < tags.length; i++) {
-          var position = tags[i].offsetTop;
-
-          if (i > 0) {
-            if (scrolled > position - 120) {
-              blogStickyMdAtag[i].style.display = "inline-flex";
-              blogStickyMdAtag[i - 1].style.display = "none";
-            } else {
-              blogStickyMdAtag[i].style.display = "none";
-            }
-          } else {
-            if (scrolled > position - 120) {
-              blogStickyMdAtag[i].style.display = "inline-flex";
-            } else {
-              blogStickyMdAtag[i].style.display = "none";
-            }
-          }
-        }
-      });
-
-      // sticky Practices heading toggle by "Practices" when toggling stcky button
-      document.addEventListener("scroll", (e) => {
-        var scrolled = document.scrollingElement.scrollTop;
-        const hsd = document.getElementById("howToStepDetails");
-        hsdPosition = hsd.offsetTop;
-        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
-        dropdownHeaderTop = document.getElementById(
-          "blog_StickyDropdownHeaderTop"
-        );
-        dropdownHeaderItem = document.getElementById(
-          "blog_StickyItemContainerMd"
-        );
-
-        const firstTag = hsd.querySelector("h2");
-
-        if (scrolled > hsdPosition - 120) {
-          if (dropdownHeader.style.display == "block") {
-            dropdownHeaderTop.style.display = "none";
-          } else if (scrolled > firstTag.offsetTop - 120) {
-            dropdownHeaderTop.style.display = "none";
-          } else {
-            dropdownHeaderTop.style.display = "block";
-          }
-        } else {
-          dropdownHeaderTop.style.display = "block";
-        }
-      });
+      // update progress meter
+      stickyHeaderProgressBar.style.width = `${progress}%`;
     }
 
-    //sticky Practices button toggle
-    document.getElementById("blogStickyBtn").addEventListener(
-      "click",
-      function () {
-        const dropdownItem = document.getElementById("blog_StickyDropdownItem");
-        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
-        dropdownHeaderItem = document.getElementById(
-          "blog_StickyItemContainerMd"
-        );
-        dropdpwnIcon = document.getElementById("StickyDropdpwnIcon");
+    // display sticky header
+    stickyHeader.classList[displayStickyHeader ? "remove" : "add"]("hidden");
+  };
 
-        if (dropdownHeader.style.display == "none") {
-          if (dropdownItem.style.display == "block") {
-            dropdownItem.style.display = "none";
-            dropdownHeader.style.display = "block";
-            dropdownHeaderItem.style.display = "grid";
-            dropdpwnIcon.style.transform = "rotate(0deg)";
-          } else {
-            dropdownItem.style.display = "block";
-            dropdownHeaderItem.style.display = "none";
-            dropdownHeader.style.display = "block";
-            dropdpwnIcon.style.transform = "rotate(180deg)";
-          }
-        } else {
-          if (dropdownItem.style.display == "block") {
-            dropdownItem.style.display = "none";
-            dropdownHeader.style.display = "none";
-            dropdownHeaderItem.style.display = "grid";
-            dropdpwnIcon.style.transform = "rotate(0deg)";
-          } else {
-            dropdownItem.style.display = "block";
-            dropdownHeaderItem.style.display = "none";
-            dropdownHeader.style.display = "block";
-            dropdpwnIcon.style.transform = "rotate(180deg)";
-          }
-        }
-      },
-      false
-    );
+  styleActiveChapter();
 
-    // Practices reading progress bar
-    document.addEventListener("scroll", (e) => {
-      var winScroll =
-        document.body.scrollTop || document.documentElement.scrollTop;
-      var height =
-        document.documentElement.scrollHeight -
-        document.documentElement.clientHeight;
+  document.addEventListener("scroll", styleActiveChapter);
 
-      const contentHeight =
-        document.querySelector("#howToStepDetails").offsetHeight;
-      const contentOffssetTop =
-        document.querySelector("#howToStepDetails").offsetTop;
-
-      var scrolled = (winScroll / height) * 100;
-      let ScrollBarWidth;
-      const diff = winScroll - contentOffssetTop;
-      if (diff <= 0) {
-        ScrollBarWidth = 0;
-      } else {
-        //check if we hav reached div bottom
-        if (winScroll + 100 <= contentOffssetTop + contentHeight) {
-          ScrollBarWidth = (diff / contentHeight) * 100;
-        } else {
-          ScrollBarWidth = 100;
-        }
-      }
-      document.getElementById("sticky_p_bar").style.width =
-        ScrollBarWidth + "%";
-    });
+  stickyDropdownToggle.addEventListener("click", () => {
+    stickyChapterLinksContainer.classList.toggle("hidden");
   });
 </script>
