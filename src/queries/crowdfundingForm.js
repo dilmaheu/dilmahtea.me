@@ -1,32 +1,34 @@
-const homepageQuery = `
+const crowdfundingFormQuery = `
   {
-    homepage {
+    crowdfundingForm {
       data {
         id
         attributes {
-          localizations {
-            data {
-              attributes {
-                locale
-                Meta {
-                  HTML_Title
-                  Meta_description
-                  noindex
-                  nofollow
-                  URL_slug
-                  Canonical_link
-                }
-              }
-            }
-          }
           locale
+          Title
+          Intro_text
           Meta {
+            URL_slug
             HTML_Title
             Meta_description
             noindex
             nofollow
-            URL_slug
-            Canonical_link
+          }
+          localizations {
+            data {
+              attributes {
+                locale
+                Title
+                Intro_text
+                Meta {
+                  URL_slug
+                  HTML_Title
+                  Meta_description
+                  noindex
+                  nofollow
+                }
+              }
+            }
           }
         }
       }
@@ -34,4 +36,4 @@ const homepageQuery = `
   }
 `;
 
-export default homepageQuery;
+export default crowdfundingFormQuery;

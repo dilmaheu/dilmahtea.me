@@ -1,7 +1,7 @@
 import fs from "fs";
 import printMessage from "../utils/printMessage";
 
-const queryModules = import.meta.globEager("../queries/partials/*.js");
+const queryModules = import.meta.globEager("../queries/*.js");
 
 const queryRegex = /^\s*{(.*)}\s*$/s;
 

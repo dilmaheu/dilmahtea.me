@@ -1,8 +1,8 @@
-const NotFoundPagesQuery = `
+const basicPagesQuery = `
   {
-    basicPages(locale: "en", filters: { Meta: { URL_slug: { eq: "404" } } }) {
+    basicPages {
       data {
-        id        
+        id
         attributes {
           locale
           Title
@@ -61,40 +61,7 @@ const NotFoundPagesQuery = `
         }
       }
     }
-
-    recurringElement {
-      data {
-        id
-        attributes {
-          Footer_text
-          Company_name
-          Company_address
-          Company_email
-          OpenGraph_default {
-            data {
-              attributes {
-                name
-                url
-                provider_metadata
-                alternativeText
-              }
-            }
-          }
-          localizations {
-            data {
-              attributes {
-                locale
-                Footer_text
-                Company_name
-                Company_address
-                Company_email
-              }
-            }
-          }
-        }
-      }
-    }
   }
 `;
 
-export default NotFoundPagesQuery;
+export default basicPagesQuery;
