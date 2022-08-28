@@ -43,17 +43,20 @@ const CSPHeaders = await Promise.all(
         ? "/"
         : path.slice(6, -11) + "/";
 
-    const nonces = [...scripts].map((script) => {
-      const nonce = crypto.randomUUID();
+    const hashes = [...scripts].map(({ textContent }) => {
+      const hash = crypto
+        .createHash("sha256")
+        .update(textContent)
+        .digest("hex");
 
-      script.setAttribute("nonce", nonce);
+      const source = `'sha256-${hash}'`;
 
-      return `'nonce-${nonce}'`;
+      return source;
     });
 
     const policies = {
       ...sharedCSP,
-      "script-src": ["'self'", "https://static.openreplay.com", ...nonces],
+      "script-src": ["'self'", "https://static.openreplay.com", ...hashes],
     };
 
     const header = Object.keys(policies)
