@@ -36,12 +36,11 @@ const CSPHeaders = await Promise.all(
 
     const scripts = document.querySelectorAll("script");
 
-    const route =
-      path === "./dist/404.html"
-        ? "/*"
-        : path === "./dist/index.html"
-        ? "/"
-        : path.slice(6, -11) + "/";
+    const route = path.endsWith("/404.html")
+      ? "/*"
+      : path === "./dist/index.html"
+      ? "/"
+      : path.slice(6, -11) + "/";
 
     const hashes = [...scripts].map(({ textContent }) => {
       const hash = crypto
