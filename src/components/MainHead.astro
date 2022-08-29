@@ -1,5 +1,6 @@
 ---
 import favicon from "@images/favicon.svg";
+import shouldDisplayExperimentals from "src/utils/shouldDisplayExperimentals";
 
 export interface Props {
   title: string;
@@ -90,12 +91,16 @@ const alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={url + image + `/twittercard`} />
 
-<script
-  defer
-  data-domain="dilmahtea.me"
-  data-api="/rpcq/event"
-  src="/rpcq/script.js"
-></script>
+{
+  !shouldDisplayExperimentals() && (
+    <script
+      defer
+      data-domain="dilmahtea.me"
+      data-api="/rpcq/event"
+      src="/rpcq/script.js"
+    />
+  )
+}
 
 <!-- OpenReplay Tracking Code -->
 <script>
