@@ -3,6 +3,7 @@ import Brand from "@images/logo.svg";
 import LangButton from "./LangButton.astro";
 import getLocalesData from "../utils/getLocalesData";
 import shouldDisplayExperimentals from "src/utils/shouldDisplayExperimentals";
+import LangSelectors from "./LangSelectors.astro";
 
 interface Props {
   docLocale: string;
@@ -103,17 +104,13 @@ const docLang = languages[locales.indexOf(docLocale)],
               id="dropdownMenu"
               class="absolute rounded hidden overflow-hidden dropdown-menu"
             >
-              {
-                availableLanguages.map((language) => (
-                  <LangButton
-                    locales={locales}
-                    docLang={docLang}
-                    language={language}
-                    languages={languages}
-                    localeNamesData={localeNamesData}
-                  />
-                ))
-              }
+              <LangSelectors
+                locales={locales}
+                docLang={docLang}
+                languages={languages}
+                localeNamesData={localeNamesData}
+                availableLanguages={availableLanguages}
+              />
             </ul>
           </div>
         </div>
@@ -232,19 +229,6 @@ const docLang = languages[locales.indexOf(docLocale)],
       ];
 
     dropdown.textContent = preferredLanguage;
-  });
-
-  const activeLangSelectors = document.querySelectorAll(
-      ".lang-selector:not(.hidden)"
-    ),
-    sortedLangSelectors = [...activeLangSelectors].sort(
-      (nextSelector, currentSelector) =>
-        nextSelector.innerText.localeCompare(currentSelector.innerText, "en")
-    );
-
-  sortedLangSelectors.forEach((langSelector, i) => {
-    i !== sortedLangSelectors.length - 1 &&
-      langSelector.after(sortedLangSelectors[i + 1]);
   });
 
   document.addEventListener("click", ({ target }) => {
