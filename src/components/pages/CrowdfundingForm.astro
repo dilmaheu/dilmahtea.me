@@ -251,19 +251,17 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
 
   Array.from(params.entries()).forEach(([param, value]) => {
     if (param === "country") {
-      const option = document.querySelector(`option[value="${value}"]`);
+      const country = document.querySelector(
+        `select[name="country"] option[value="${value}"]`
+      );
 
-      if (option) {
-        // @ts-ignore
-        option.selected = true;
-      }
+      // @ts-ignore
+      if (country) country.selected = true;
     } else {
       const input = document.querySelector(`input[name="${param}"]`);
 
-      if (input) {
-        // @ts-ignore
-        input.value = value || "";
-      }
+      // @ts-ignore
+      if (input) input.value = value || "";
     }
   });
 </script>
