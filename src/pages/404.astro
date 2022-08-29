@@ -45,10 +45,14 @@ if (locale !== "en") {
 <SetPreferredLocale />
 
 <script is:inline define:vars={{ availableLocales }}>
-  let [, locale] = location.pathname.match(/^\/([a-z]{2})\//) ?? [];
+  const localeRegex = new RegExp(
+    `^/(${availableLocales.map((locale) => locale).join("|")})/`
+  );
+
+  let [, locale] = location.pathname.match(localeRegex) ?? [];
 
   if (
-    (!locale || !availableLocales.includes(locale)) &&
+    !locale &&
     /* preferredLocale is defined in SetPreferredLocale.astro */
     preferredLocale !== "en"
   ) {
