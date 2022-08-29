@@ -1,9 +1,7 @@
 ---
 import Brand from "@images/logo.svg";
-import LangButton from "./LangButton.astro";
-import getLocalesData from "../utils/getLocalesData";
+import LangSelectorsDropdown from "./LangSelectorsDropdown.astro";
 import shouldDisplayExperimentals from "src/utils/shouldDisplayExperimentals";
-import LangSelectors from "./LangSelectors.astro";
 
 interface Props {
   docLocale: string;
@@ -12,19 +10,6 @@ interface Props {
 }
 
 const { docLocale, footerText, availableLocales } = Astro.props as Props;
-
-const { locales, languages, localeNamesData } = getLocalesData();
-
-const availableLanguages = [];
-
-locales.forEach((locale, index) => {
-  if (locale !== docLocale && [...availableLocales].includes(locale)) {
-    availableLanguages.push(languages[index]);
-  }
-});
-
-const docLang = languages[locales.indexOf(docLocale)],
-  localDocLang = localeNamesData[docLang][docLang];
 ---
 
 <div id="navigation">
@@ -81,38 +66,10 @@ const docLang = languages[locales.indexOf(docLocale)],
             </div> */
           }
 
-          <div
-            id="dropdown"
-            class="dropdown text-sm lg:text-base font-bold relative noselect"
-          >
-            <div
-              id="langBtn"
-              class="flex items-center justify-between gap-x-1.5 md:gap-x-3 font-bold focus:outline-none langBtn"
-            >
-              <div class="preferred-locale font-bold">{localDocLang}</div>
-
-              <div class="w-3">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7">
-                  <path
-                    class="cls-1"
-                    d="M.3.3A.6.6,0,0,1,.9,0a.9.9,0,0,1,.6.3L5.8,4.6,10.2.3a.6.6,0,0,1,.6-.3l.6.3a.8.8,0,0,1,.2.6.7.7,0,0,1-.2.6l-5,4.9a.6.6,0,0,1-.6.3.9.9,0,0,1-.6-.3L.3,1.5A.9.9,0,0,1,0,.9.6.6,0,0,1,.3.3Z"
-                    fill="#2B4B50"></path>
-                </svg>
-              </div>
-            </div>
-            <ul
-              id="dropdownMenu"
-              class="absolute rounded hidden overflow-hidden dropdown-menu"
-            >
-              <LangSelectors
-                locales={locales}
-                docLang={docLang}
-                languages={languages}
-                localeNamesData={localeNamesData}
-                availableLanguages={availableLanguages}
-              />
-            </ul>
-          </div>
+          <LangSelectorsDropdown
+            docLocale={docLocale}
+            availableLocales={availableLocales}
+          />
         </div>
 
         <div class="block sm:hidden sidebarMenuBtn">
@@ -194,52 +151,37 @@ const docLang = languages[locales.indexOf(docLocale)],
 </div>
 <div class="block sm:hidden py-11"></div>
 
-<script
-  is:inline
-  define:vars={{
-    locales,
-    languages,
-  }}
->
-  const navigation = document.getElementById("navigation"),
-    translationNotFoundNotification = document.querySelector(
-      ".translation-not-found-notification"
-    );
+<script is:inline>
+  {
+    const navigation = document.getElementById("navigation"),
+      translationNotFoundNotification = document.querySelector(
+        ".translation-not-found-notification"
+      );
 
-  window.addEventListener("scroll", () => {
-    const top = window.pageYOffset || document.documentElement.scrollTop,
-      translationNotFoundNotificationHeight =
-        translationNotFoundNotification.getBoundingClientRect().height;
+    window.addEventListener("scroll", () => {
+      const top = window.pageYOffset || document.documentElement.scrollTop,
+        translationNotFoundNotificationHeight =
+          translationNotFoundNotification.getBoundingClientRect().height;
 
-    navigation.style.top = `${translationNotFoundNotificationHeight}px`;
+      navigation.style.top = `${translationNotFoundNotificationHeight}px`;
 
-    if (top > 0) {
-      navigation.style.backgroundImage = "url(/bg-images/navBg.webp)";
-    } else if (document.body.style.position !== "fixed") {
-      navigation.style.background = "transparent";
-    }
-  });
-
-  document.querySelectorAll(".preferred-locale").forEach((dropdown) => {
-    const preferredLanguage =
-      languages[
-        locales.indexOf(
-          preferredLocale /* preferredLocale is declared in the Redirect.astro component */
-        )
-      ];
-
-    dropdown.textContent = preferredLanguage;
-  });
-
-  document.addEventListener("click", ({ target }) => {
-    const dropdown = document.querySelector("#dropdown"),
-      langButton = document.querySelector("#langBtn"),
-      dropdownMenu = document.querySelector("#dropdownMenu");
-
-    if (!dropdown.contains(target)) {
-      if (dropdownMenu.style.display === "block") {
-        langButton.click();
+      if (top > 0) {
+        navigation.style.backgroundImage = "url(/bg-images/navBg.webp)";
+      } else if (document.body.style.position !== "fixed") {
+        navigation.style.background = "transparent";
       }
-    }
-  });
+    });
+
+    document.addEventListener("click", ({ target }) => {
+      const dropdown = document.querySelector("#dropdown"),
+        langButton = document.querySelector("#langBtn"),
+        dropdownMenu = document.querySelector("#dropdownMenu");
+
+      if (!dropdown.contains(target)) {
+        if (dropdownMenu.style.display === "block") {
+          langButton.click();
+        }
+      }
+    });
+  }
 </script>
