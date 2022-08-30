@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
-import sitemap from '@astrojs/sitemap';
+import sitemap from "@astrojs/sitemap";
+import taiwlind from "@astrojs/tailwind";
 
 export default defineConfig({
   site: "https://dilmahtea.me",
@@ -11,13 +12,14 @@ export default defineConfig({
           return undefined;
         }
         if (/your-special-page/.test(item.url)) {
-          item.changefreq = 'daily';
+          item.changefreq = "daily";
           item.lastmod = new Date();
           item.priority = 0.9;
         }
         return item;
       },
-    })
+    }),
+    taiwlind(),
   ],
   vite: {
     plugins: [
