@@ -142,47 +142,6 @@ const { Type: notificationType, localizedNotifications } =
         <Footer footerText={footerText} />
       </div>
 
-      <script>
-        // Language button toggle
-        document.querySelector("#langBtn").addEventListener(
-          "click",
-          function () {
-            const langBtn = document.getElementById("langBtn"),
-              dropdownMenu = document.getElementById("dropdownMenu");
-
-            if (dropdownMenu.style.display == "block") {
-              dropdownMenu.style.display = "none";
-              langBtn.style.borderRadius = "25px";
-            } else {
-              dropdownMenu.style.display = "block";
-              langBtn.style.borderRadius = "25px 25px 0 0";
-            }
-          },
-          false
-        );
-
-        document.querySelectorAll(".lang-selector").forEach((langSelector) => {
-          langSelector.addEventListener("click", () => {
-            // @ts-ignore
-            const { lang: newLocale } = langSelector;
-
-            localStorage.setItem(`locale`, newLocale);
-
-            const localeRegex = new RegExp(
-              // @ts-ignore
-              `^/(${availableLocales.map((locale) => locale).join("|")})/`
-              // availableLocales is defined in SetPreferredLocale.astro
-            );
-
-            let [, locale] = location.pathname.match(localeRegex) ?? [];
-
-            location.href =
-              `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
-          });
-        });
-      </script>
-
-
     </body>
   </LocalizeLinks>
 </html>

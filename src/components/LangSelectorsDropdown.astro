@@ -21,11 +21,31 @@ localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
 );
 ---
 
-<style>
+<style lang="scss">
   .lang-selector {
-    font-family: Roboto;
+    font-family: "Roboto";
     font-weight: 700;
     width: 100%;
+  }
+
+  #dropdown {
+    #dropdownMenu {
+      display: none;
+    }
+
+    #langBtn {
+      border-radius: 25px;
+    }
+
+    &.dropdown-open {
+      #dropdownMenu {
+        display: block;
+      }
+
+      #langBtn {
+        border-radius: 25px 25px 0 0;
+      }
+    }
   }
 </style>
 
@@ -79,3 +99,36 @@ localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
     }
   </ul>
 </div>
+
+<script>
+  const dropdown = document.querySelector("#dropdown");
+
+  // toggle language selectors dropdown
+  document.addEventListener("click", ({ target }) => {
+    // @ts-ignore
+    dropdown.classList[dropdown.contains(target) ? "toggle" : "remove"](
+      "dropdown-open"
+    );
+  });
+
+  document.querySelectorAll(".lang-selector").forEach((langSelector) => {
+    // change & redirect to preferred locale
+    langSelector.addEventListener("click", () => {
+      // @ts-ignore
+      const { lang: newLocale } = langSelector;
+
+      localStorage.setItem(`locale`, newLocale);
+
+      const localeRegex = new RegExp(
+        // @ts-ignore
+        `^/(${availableLocales.map((locale) => locale).join("|")})/`
+        // availableLocales is defined in SetPreferredLocale.astro
+      );
+
+      let [, locale] = location.pathname.match(localeRegex) ?? [];
+
+      location.href =
+        `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
+    });
+  });
+</script>
