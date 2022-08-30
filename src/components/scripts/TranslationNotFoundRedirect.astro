@@ -1,11 +1,13 @@
 <script is:inline>
-  const { origin, pathname } = location,
-    currentLocale = pathname.slice(1, 3),
-    preferredLocaleUrl = new URL(
-      origin + pathname.replace(currentLocale, "en")
-    );
+  {
+    const { origin, pathname } = location,
+      currentLocale = pathname.slice(1, 3),
+      preferredLocaleUrl = new URL(
+        origin + pathname.replace(currentLocale, "en")
+      );
 
-  preferredLocaleUrl.searchParams.append("requestedLocale", currentLocale);
+    preferredLocaleUrl.searchParams.append("requestedLocale", currentLocale);
 
-  location.href = preferredLocaleUrl.toString();
+    location.href = preferredLocaleUrl.toString();
+  }
 </script>

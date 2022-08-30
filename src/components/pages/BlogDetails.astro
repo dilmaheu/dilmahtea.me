@@ -348,66 +348,68 @@ const recentBlogs = allBlogs.filter(
 </div>
 
 <script defer>
-  const query = document.querySelector.bind(document),
-    queryAll = document.querySelectorAll.bind(document),
-    detailedBlog = query("#detailedBlog"),
-    chapters = [...queryAll("#detailedBlog .chapter")],
-    firstHeading = query("#detailedBlog h2"),
-    stickyHeader = query("#blogContent_StickyContainerMd"),
-    stickyHeaderTop = query("#blog_StickyDropdownHeader"),
-    stickyHeaderProgressBar = query("#sticky_p_bar"),
-    stickyDropdownToggle = query("#blogStickyBtn"),
-    chapterLinks = queryAll("#blog_StickyItemContainer a"),
-    stickyChapterLinksContainer = query("#blog_StickyDropdownItem"),
-    stickyChapterLinks = queryAll("#blog_StickyDropdownItem a");
+  {
+    const query = document.querySelector.bind(document),
+      queryAll = document.querySelectorAll.bind(document),
+      detailedBlog = query("#detailedBlog"),
+      chapters = [...queryAll("#detailedBlog .chapter")],
+      firstHeading = query("#detailedBlog h2"),
+      stickyHeader = query("#blogContent_StickyContainerMd"),
+      stickyHeaderTop = query("#blog_StickyDropdownHeader"),
+      stickyHeaderProgressBar = query("#sticky_p_bar"),
+      stickyDropdownToggle = query("#blogStickyBtn"),
+      chapterLinks = queryAll("#blog_StickyItemContainer a"),
+      stickyChapterLinksContainer = query("#blog_StickyDropdownItem"),
+      stickyChapterLinks = queryAll("#blog_StickyDropdownItem a");
 
-  const isOnScreen = (element) => {
-    const { top, bottom } = element.getBoundingClientRect(),
-      // consider an element on screen only if it's at least 50px on screen
-      safeAreaHeight = 50;
+    const isOnScreen = (element) => {
+      const { top, bottom } = element.getBoundingClientRect(),
+        // consider an element on screen only if it's at least 50px on screen
+        safeAreaHeight = 50;
 
-    if (top < window.innerHeight - safeAreaHeight && bottom > 0) return true;
+      if (top < window.innerHeight - safeAreaHeight && bottom > 0) return true;
 
-    return false;
-  };
+      return false;
+    };
 
-  const styleActiveChapter = () => {
-    // find active chapter
-    const { length, [length - 1]: activeChapter = chapters[0] } =
-        chapters.filter((chapter) => isOnScreen(chapter)),
-      chapterIndex = chapters.indexOf(activeChapter),
-      activeChapterHeading = activeChapter.querySelector("h2");
+    const styleActiveChapter = () => {
+      // find active chapter
+      const { length, [length - 1]: activeChapter = chapters[0] } =
+          chapters.filter((chapter) => isOnScreen(chapter)),
+        chapterIndex = chapters.indexOf(activeChapter),
+        activeChapterHeading = activeChapter.querySelector("h2");
 
-    [...chapterLinks, ...stickyChapterLinks].forEach((link) =>
-      link.classList.remove("active")
-    );
+      [...chapterLinks, ...stickyChapterLinks].forEach((link) =>
+        link.classList.remove("active")
+      );
 
-    // highlight active chapter link
-    chapterLinks[chapterIndex].classList.add("active");
-    stickyChapterLinks[chapterIndex].classList.add("active");
+      // highlight active chapter link
+      chapterLinks[chapterIndex].classList.add("active");
+      stickyChapterLinks[chapterIndex].classList.add("active");
 
-    const displayStickyHeader = scrollY > firstHeading.offsetTop;
+      const displayStickyHeader = scrollY > firstHeading.offsetTop;
 
-    if (displayStickyHeader) {
-      stickyHeaderTop.textContent = activeChapterHeading.textContent;
+      if (displayStickyHeader) {
+        stickyHeaderTop.textContent = activeChapterHeading.textContent;
 
-      const readPixels = scrollY - detailedBlog.offsetTop,
-        detailedBlogHeight = detailedBlog.getBoundingClientRect().height,
-        progress = (readPixels / detailedBlogHeight) * 100;
+        const readPixels = scrollY - detailedBlog.offsetTop,
+          detailedBlogHeight = detailedBlog.getBoundingClientRect().height,
+          progress = (readPixels / detailedBlogHeight) * 100;
 
-      // update progress meter
-      stickyHeaderProgressBar.style.width = `${progress}%`;
-    }
+        // update progress meter
+        stickyHeaderProgressBar.style.width = `${progress}%`;
+      }
 
-    // display sticky header
-    stickyHeader.classList[displayStickyHeader ? "remove" : "add"]("hidden");
-  };
+      // display sticky header
+      stickyHeader.classList[displayStickyHeader ? "remove" : "add"]("hidden");
+    };
 
-  styleActiveChapter();
+    styleActiveChapter();
 
-  document.addEventListener("scroll", styleActiveChapter);
+    document.addEventListener("scroll", styleActiveChapter);
 
-  stickyDropdownToggle.addEventListener("click", () => {
-    stickyChapterLinksContainer.classList.toggle("hidden");
-  });
+    stickyDropdownToggle.addEventListener("click", () => {
+      stickyChapterLinksContainer.classList.toggle("hidden");
+    });
+  }
 </script>

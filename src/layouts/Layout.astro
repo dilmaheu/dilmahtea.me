@@ -116,15 +116,15 @@ const { Type: notificationType, localizedNotifications } =
 
       <script is:inline>
         if (
-          requestedLocale
-          /* requestedLocale is declared in TranslationNotFoundRedirect.astro */
+          window.requestedLocale /* requestedLocale is declared in TranslationNotFoundRedirect.astro */
         ) {
           const translationNotFoundNotification =
             document.currentScript.previousElementSibling.firstElementChild;
 
           translationNotFoundNotification.style.display = "flex";
 
-          removeTopNotification(translationNotFoundNotification);
+          // removeTopNotification is declared in NotificationAnimations.astro */
+          window.removeTopNotification(translationNotFoundNotification);
         }
       </script>
 
@@ -143,10 +143,11 @@ const { Type: notificationType, localizedNotifications } =
       </div>
 
       <script>
-        const sidebar = document.getElementById("sidebar"),
-          navigation = document.getElementById("navigation"),
-          sidebarOpen = document.getElementById("sidebarOpen"),
-          sidebarClose = document.getElementById("sidebarClose");
+        const query = document.querySelector.bind(document),
+          sidebar = query("#sidebar"),
+          navigation = query("#navigation"),
+          sidebarOpen = query("#sidebarOpen"),
+          sidebarClose = query("#sidebarClose");
 
         function disableScrolling() {
           Object.assign(document.body.style, {
@@ -175,10 +176,9 @@ const { Type: notificationType, localizedNotifications } =
               behavior: "instant",
             });
           } catch (error) {
-            const rootElement = document.querySelector(":root");
-
-            // @ts-ignore
-            const currentRootScrollBehavior = rootElement.style.scrollBehavior;
+            const rootElement = document.querySelector(":root"),
+              // @ts-ignore
+              currentRootScrollBehavior = rootElement.style.scrollBehavior;
 
             // @ts-ignore
             rootElement.style.scrollBehavior = "auto";
@@ -244,7 +244,7 @@ const { Type: notificationType, localizedNotifications } =
         });
 
         // Language button toggle
-        document.getElementById("langBtn").addEventListener(
+        document.querySelector("#langBtn").addEventListener(
           "click",
           function () {
             const langBtn = document.getElementById("langBtn"),
@@ -261,27 +261,23 @@ const { Type: notificationType, localizedNotifications } =
           false
         );
 
-        // Redirect function
-        const redirectPath = (newLocale) => {
-          let [, locale] = location.pathname.match(/^\/([a-z]{2})\//) ?? [];
-
-          location.href =
-            `/${newLocale}/` +
-            // availableLocales is defined in SetPreferredLocale.astro
-            // @ts-ignore
-            (!availableLocales.includes(locale)
-              ? location.pathname
-              : location.pathname.slice(4));
-        };
-
         document.querySelectorAll(".lang-selector").forEach((langSelector) => {
           langSelector.addEventListener("click", () => {
             // @ts-ignore
-            const { lang: locale } = langSelector;
+            const { lang: newLocale } = langSelector;
 
-            localStorage.setItem(`locale`, locale);
+            localStorage.setItem(`locale`, newLocale);
 
-            redirectPath(locale);
+            const localeRegex = new RegExp(
+              // @ts-ignore
+              `^/(${availableLocales.map((locale) => locale).join("|")})/`
+              // availableLocales is defined in SetPreferredLocale.astro
+            );
+
+            let [, locale] = location.pathname.match(localeRegex) ?? [];
+
+            location.href =
+              `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
           });
         });
       </script>

@@ -1,9 +1,19 @@
-<script is:inline>
+---
+import getLocalesData from "src/utils/getLocalesData";
+
+const { locales } = getLocalesData();
+---
+
+<script is:inline define:vars={{ locales }}>
   const searchParams = Object.fromEntries(new URL(location.href).searchParams);
 
   const { requestedLocale } = searchParams;
 
-  if (typeof requestedLocale === "string" && requestedLocale.length === 2) {
+  window.requestedLocale = locales.includes(requestedLocale)
+    ? requestedLocale
+    : null;
+
+  if (window.requestedLocale) {
     const notificationsObserver = new MutationObserver(function (
       mutationRecords
     ) {
@@ -20,8 +30,6 @@
             `.notification .notification-content .${requestedLocale}`
           )
           .forEach((notification) => notification.classList.remove("hidden"));
-
-        showTranslationNotFoundError = true;
       }
     });
 
