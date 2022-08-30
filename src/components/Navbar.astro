@@ -12,6 +12,40 @@ interface Props {
 const { docLocale, footerText, availableLocales } = Astro.props as Props;
 ---
 
+<style lang="scss">
+  #navigation {
+    background: transparent;
+
+    #sidebar {
+      display: none;
+    }
+
+    #sidebarOpen {
+      display: block;
+    }
+
+    #sidebarClose {
+      display: none;
+    }
+
+    &.sidebar-open {
+      background-image: url(/bg-images/navBg.webp);
+
+      #sidebar {
+        display: block;
+      }
+
+      #sidebarOpen {
+        display: none;
+      }
+
+      #sidebarClose {
+        display: block;
+      }
+    }
+  }
+</style>
+
 <div id="navigation">
   <nav class="wrapper mx-auto z-50 relative top-0">
     <div class="flex justify-between items-center paddingTop navbar">
@@ -184,4 +218,98 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
       }
     });
   }
+</script>
+
+<script>
+  const query = document.querySelector.bind(document),
+    sidebar = query("#sidebar"),
+    navigation = query("#navigation"),
+    sidebarOpen = query("#sidebarOpen"),
+    sidebarClose = query("#sidebarClose");
+
+  function disableScrolling() {
+    Object.assign(document.body.style, {
+      width: "100%",
+      top: `-${window.scrollY}px`,
+      position: "fixed",
+      overflowY: "scroll",
+    });
+  }
+
+  function enableScrolling() {
+    const scrollYPosition = parseInt(document.body.style.top.slice(1, -2));
+
+    Object.assign(document.body.style, {
+      width: "auto",
+      position: "static",
+      overflowY: "auto",
+    });
+
+    try {
+      window.scrollTo({
+        top: scrollYPosition,
+        // @ts-ignore
+        behavior: "instant",
+      });
+    } catch (error) {
+      const rootElement = document.querySelector(":root"),
+        // @ts-ignore
+        currentRootScrollBehavior = rootElement.style.scrollBehavior;
+
+      // @ts-ignore
+      rootElement.style.scrollBehavior = "auto";
+
+      window.scrollTo({
+        top: scrollYPosition,
+        behavior: "auto",
+      });
+
+      // @ts-ignore
+      rootElement.style.scrollBehavior = currentRootScrollBehavior;
+    }
+  }
+
+  const updateSidebarTopPosition = () => {
+    sidebar.style.top = `${navigation.getBoundingClientRect().bottom}px`;
+  };
+
+  window.addEventListener("resize", updateSidebarTopPosition);
+
+  sidebarOpen.addEventListener(
+    "click",
+    () => {
+      window.removeEventListener("resize", updateSidebarTopPosition);
+
+      updateSidebarTopPosition();
+
+      navigation.classList.add("sidebar-open");
+
+      disableScrolling();
+
+      window.addEventListener("resize", updateSidebarTopPosition);
+    },
+    false
+  );
+
+  sidebarClose.addEventListener(
+    "click",
+    () => {
+      navigation.classList.remove("sidebar-open");
+
+      enableScrolling();
+    },
+    false
+  );
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 639) {
+      enableScrolling();
+
+      window.removeEventListener("resize", updateSidebarTopPosition);
+    } else if (sidebarClose.style.display === "block") {
+      disableScrolling();
+
+      window.addEventListener("resize", updateSidebarTopPosition);
+    }
+  });
 </script>
