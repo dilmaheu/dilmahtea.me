@@ -210,6 +210,7 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 
 <script>
   const query = document.querySelector.bind(document),
+    rootElement = query(":root"),
     sidebar = query("#sidebar"),
     navigation = query("#navigation"),
     sidebarOpen = query("#sidebarOpen"),
@@ -240,11 +241,8 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
         behavior: "instant",
       });
     } catch (error) {
-      const rootElement = document.querySelector(":root"),
-        // @ts-ignore
-        currentRootScrollBehavior = rootElement.style.scrollBehavior;
+      const currentRootScrollBehavior = rootElement.style.scrollBehavior;
 
-      // @ts-ignore
       rootElement.style.scrollBehavior = "auto";
 
       window.scrollTo({
@@ -252,7 +250,6 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
         behavior: "auto",
       });
 
-      // @ts-ignore
       rootElement.style.scrollBehavior = currentRootScrollBehavior;
     }
   }
@@ -263,31 +260,23 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 
   window.addEventListener("resize", updateSidebarTopPosition);
 
-  sidebarOpen.addEventListener(
-    "click",
-    () => {
-      window.removeEventListener("resize", updateSidebarTopPosition);
+  sidebarOpen.addEventListener("click", () => {
+    window.removeEventListener("resize", updateSidebarTopPosition);
 
-      updateSidebarTopPosition();
+    updateSidebarTopPosition();
 
-      navigation.classList.add("sidebar-open");
+    navigation.classList.add("sidebar-open");
 
-      disableScrolling();
+    disableScrolling();
 
-      window.addEventListener("resize", updateSidebarTopPosition);
-    },
-    false
-  );
+    window.addEventListener("resize", updateSidebarTopPosition);
+  });
 
-  sidebarClose.addEventListener(
-    "click",
-    () => {
-      navigation.classList.remove("sidebar-open");
+  sidebarClose.addEventListener("click", () => {
+    navigation.classList.remove("sidebar-open");
 
-      enableScrolling();
-    },
-    false
-  );
+    enableScrolling();
+  });
 
   window.addEventListener("resize", () => {
     if (window.innerWidth > 639) {
