@@ -193,14 +193,13 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
       );
 
     window.addEventListener("scroll", () => {
-      const top = window.pageYOffset || document.documentElement.scrollTop,
-        translationNotFoundNotificationHeight =
-          translationNotFoundNotification.getBoundingClientRect().height;
+      const translationNotFoundNotificationHeight =
+        translationNotFoundNotification.getBoundingClientRect().height;
 
       // fix sticky navbar position if top notification is shown
       navigation.style.top = `${translationNotFoundNotificationHeight}px`;
 
-      if (top > 0) {
+      if (scrollY > 0) {
         navigation.style.backgroundImage = "url(/bg-images/navBg.webp)";
       } else if (document.body.style.position !== "fixed") {
         navigation.style.background = "transparent";
