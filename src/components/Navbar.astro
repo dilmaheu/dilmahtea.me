@@ -182,11 +182,14 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     sidebarClose = query("#sidebarClose");
 
   function disableScrolling() {
+    const overflowY =
+      visualViewport.height < document.body.offsetHeight ? "scroll" : "auto";
+
     Object.assign(document.body.style, {
+      overflowY,
       width: "100%",
-      top: `-${window.scrollY}px`,
       position: "fixed",
-      overflowY: "scroll",
+      top: `-${window.scrollY}px`,
     });
   }
 
@@ -195,8 +198,8 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 
     Object.assign(document.body.style, {
       width: "auto",
-      position: "static",
       overflowY: "auto",
+      position: "static",
     });
 
     try {
