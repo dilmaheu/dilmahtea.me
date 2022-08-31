@@ -413,14 +413,15 @@ const practicesHeadingsHTML = page.Method.map(
       queryAll = document.querySelectorAll.bind(document),
       container = query("#detailedBlog"),
       chapters = [...queryAll("#detailedBlog .chapter")],
-      firstHeading = query("#detailedBlog h2"),
+      [firstChapter] = chapters,
       stickyHeader = query("#blogContent_StickyContainerMd"),
       stickyHeaderTop = query("#blog_StickyDropdownHeader"),
       stickyHeaderProgressBar = query("#sticky_p_bar"),
       stickyDropdownToggle = query("#blogStickyBtn"),
       chapterLinks = queryAll("#blog_StickyItemContainer a"),
       stickyChapterLinksContainer = query("#blog_StickyDropdownItem"),
-      stickyChapterLinks = queryAll("#blog_StickyDropdownItem a");
+      stickyChapterLinks = queryAll("#blog_StickyDropdownItem a"),
+      navbar = query("#navigation");
 
     const isOnScreen = (element) => {
       const { top, bottom } = element.getBoundingClientRect(),
@@ -447,7 +448,10 @@ const practicesHeadingsHTML = page.Method.map(
       chapterLinks[chapterIndex].classList.add("active");
       stickyChapterLinks[chapterIndex].classList.add("active");
 
-      const displayStickyHeader = firstHeading.getBoundingClientRect().y < 0;
+      const displayStickyHeader =
+        firstChapter.getBoundingClientRect().y -
+          navbar.getBoundingClientRect().height <
+        0;
 
       if (displayStickyHeader) {
         stickyHeaderTop.textContent = activeChapterHeading.textContent;
