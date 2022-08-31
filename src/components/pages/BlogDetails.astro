@@ -351,7 +351,7 @@ const recentBlogs = allBlogs.filter(
   {
     const query = document.querySelector.bind(document),
       queryAll = document.querySelectorAll.bind(document),
-      detailedBlog = query("#detailedBlog"),
+      container = query("#detailedBlog"),
       chapters = [...queryAll("#detailedBlog .chapter")],
       firstHeading = query("#detailedBlog h2"),
       stickyHeader = query("#blogContent_StickyContainerMd"),
@@ -387,13 +387,13 @@ const recentBlogs = allBlogs.filter(
       chapterLinks[chapterIndex].classList.add("active");
       stickyChapterLinks[chapterIndex].classList.add("active");
 
-      const displayStickyHeader = scrollY > firstHeading.offsetTop;
+      const displayStickyHeader = firstHeading.getBoundingClientRect().y < 0;
 
       if (displayStickyHeader) {
         stickyHeaderTop.textContent = activeChapterHeading.textContent;
 
-        const readPixels = scrollY - detailedBlog.offsetTop,
-          detailedBlogHeight = detailedBlog.getBoundingClientRect().height,
+        const readPixels = scrollY - container.offsetTop,
+          detailedBlogHeight = container.getBoundingClientRect().height,
           progress = (readPixels / detailedBlogHeight) * 100;
 
         // update progress meter
