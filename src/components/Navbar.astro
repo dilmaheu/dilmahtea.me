@@ -12,40 +12,6 @@ interface Props {
 const { docLocale, footerText, availableLocales } = Astro.props as Props;
 ---
 
-<style lang="scss">
-  #navigation {
-    background: transparent;
-
-    #sidebar {
-      display: none;
-    }
-
-    #sidebarOpen {
-      display: block;
-    }
-
-    #sidebarClose {
-      display: none;
-    }
-
-    &.sidebar-open {
-      background-image: url(/bg-images/navBg.webp);
-
-      #sidebar {
-        display: block;
-      }
-
-      #sidebarOpen {
-        display: none;
-      }
-
-      #sidebarClose {
-        display: block;
-      }
-    }
-  }
-</style>
-
 <div id="navigation">
   <nav class="wrapper mx-auto z-50 relative top-0">
     <div class="flex justify-between items-center paddingTop navbar">
@@ -199,11 +165,10 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
       // fix sticky navbar position if top notification is shown
       navigation.style.top = `${translationNotFoundNotificationHeight}px`;
 
-      if (scrollY > 0) {
-        navigation.style.backgroundImage = "url(/bg-images/navBg.webp)";
-      } else if (document.body.style.position !== "fixed") {
-        navigation.style.background = "transparent";
-      }
+      navigation.style.backgroundImage =
+        scrollY > 0 || document.body.style.position === "fixed"
+          ? "url(/bg-images/navBg.webp)"
+          : "unset";
     });
   }
 </script>
@@ -265,7 +230,10 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 
     updateSidebarTopPosition();
 
-    navigation.classList.add("sidebar-open");
+    sidebar.style.display = "block";
+    sidebarOpen.style.display = "none";
+    sidebarClose.style.display = "block";
+    navigation.style.backgroundImage = "url(/bg-images/navBg.webp)";
 
     disableScrolling();
 
@@ -273,7 +241,10 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
   });
 
   sidebarClose.addEventListener("click", () => {
-    navigation.classList.remove("sidebar-open");
+    sidebar.style.display = "none";
+    sidebarOpen.style.display = "block";
+    sidebarClose.style.display = "none";
+    navigation.style.backgroundImage = "unset";
 
     enableScrolling();
   });
