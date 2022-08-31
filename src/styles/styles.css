@@ -1,32 +1,31 @@
-@font-face {
-  font-family: "Roboto";
-  font-display: swap;
-  src: url("/fonts/Roboto-Regular.ttf");
-  font-style: normal;
+@supports not (font-variation-settings: normal) {
+  @font-face {
+    font-family: "Roboto Flex";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("/fonts/roboto-flex-v8-latin-regular.woff2") format("woff2"),
+      url("/fonts/roboto-flex-v8-latin-regular.woff") format("woff");
+  }
 }
-@font-face {
-  font-family: "Roboto";
-  font-display: swap;
-  src: url("/fonts/Roboto-Medium.ttf");
-  font-weight: 500;
+
+@supports (font-variation-settings: normal) {
+  @font-face {
+    font-family: "Roboto Flex";
+    font-style: normal;
+    font-weight: 100 1000;
+    font-display: swap;
+    src: url("/fonts/roboto-flex-v8-variable.woff2") format("woff2-variations"),
+      url("/fonts/roboto-flex-v8-variable.woff2") format("woff2");
+  }
 }
-@font-face {
-  font-family: "Roboto";
-  font-display: swap;
-  src: url("/fonts/Roboto-Light.ttf");
-  font-weight: 600;
-}
-@font-face {
-  font-family: "Roboto";
-  font-display: swap;
-  src: url("/fonts/Roboto-Bold.ttf");
-  font-style: bold;
-  font-weight: 700;
-}
+
 @font-face {
   font-family: "Alice";
   font-display: swap;
   src: url("/fonts/Alice-Regular.ttf");
+  font-style: normal;
+  font-weight: 400;
 }
 :root {
   --default-color: #2b4b50;
@@ -56,7 +55,7 @@ body {
   max-width: 2050px;
   margin: 0 auto;
   background-color: var(--color-light-gray);
-  font-family: Roboto;
+  font-family: "Roboto Flex";
   color: var(--color-light-gray);
   box-shadow: 0 0 5px #787a91;
   overflow-x: hidden;
@@ -526,7 +525,7 @@ input[type="text"].searchInput::-webkit-input-placeholder {
   height: 28px;
 }
 .progressHeader {
-  font-family: "Roboto";
+  font-family: "Roboto Flex";
   font-weight: 700;
   font-size: clamp(28px, 2vw + 1px, 40px);
   line-height: 130%;
