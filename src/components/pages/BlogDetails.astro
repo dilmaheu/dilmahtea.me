@@ -388,20 +388,28 @@ const recentBlogs = allBlogs.filter(
       chapterLinks[chapterIndex].classList.add("active");
       stickyChapterLinks[chapterIndex].classList.add("active");
 
-      const displayStickyHeader =
-        firstChapter.getBoundingClientRect().y -
-          navbar.getBoundingClientRect().height <
-        0;
+      const navbarRect = navbar.getBoundingClientRect(),
+        displayStickyHeader =
+          window.innerWidth < 640 &&
+          firstChapter.getBoundingClientRect().y -
+            navbar.getBoundingClientRect().height <
+            0;
 
       if (displayStickyHeader) {
         stickyHeaderTop.textContent = activeChapterHeading.textContent;
 
-        const readPixels = scrollY - container.offsetTop,
-          detailedBlogHeight = container.getBoundingClientRect().height,
-          progress = (readPixels / detailedBlogHeight) * 100;
+        const containerRect = container.getBoundingClientRect(),
+          readPixels = Math.abs(containerRect.y - window.innerHeight),
+          detailedBlogHeight = containerRect.height,
+          minProgress =
+            ((window.innerHeight - navbarRect.height) / detailedBlogHeight) *
+            100,
+          progress = (readPixels / detailedBlogHeight) * 100,
+          correctedProgress =
+            ((progress - minProgress) / (100 - minProgress)) * 100;
 
         // update progress meter
-        stickyHeaderProgressBar.style.width = `${progress}%`;
+        stickyHeaderProgressBar.style.width = `${correctedProgress}%`;
       }
 
       // display sticky header
