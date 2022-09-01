@@ -152,8 +152,8 @@ const recentBlogs = allBlogs.filter(
     <ClippedImg
       id="heroImgFrame2"
       src={url +
-      page.Intro_blob.data.attributes.provider_metadata.public_id +
-      `/small`}
+        page.Intro_blob.data.attributes.provider_metadata.public_id +
+        `/small`}
       className="relative"
       style="right: -15%; object-fit:cover;"
       path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
@@ -167,8 +167,8 @@ const recentBlogs = allBlogs.filter(
   <ClippedImg
     id="heroImgFrame3"
     src={url +
-    page.Intro_blob.data.attributes.provider_metadata.public_id +
-    `/small`}
+      page.Intro_blob.data.attributes.provider_metadata.public_id +
+      `/small`}
     path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
   />
 </div>
@@ -189,7 +189,10 @@ const recentBlogs = allBlogs.filter(
       >
         <div id="blog_StickyDropdown" class="flex">
           <div>
-            <img class="blog_StickyItemHeaderImgMd" src={BookGreen} alt="arrow"
+            <img
+              class="blog_StickyItemHeaderImgMd"
+              src={BookGreen}
+              alt="arrow"
             />
           </div>
           <div id="blog_StickyDropdownHeaderTop">{recurData.text_chapter}</div>
@@ -422,6 +425,21 @@ const recentBlogs = allBlogs.filter(
 
     stickyDropdownToggle.addEventListener("click", () => {
       stickyChapterLinksContainer.classList.toggle("hidden");
+    });
+
+    // collapse dropdown when an item is clicked
+    stickyChapterLinks.forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        location.href = link.href;
+
+        stickyChapterLinksContainer.classList.add("hidden");
+
+        window.scrollTo({
+          top: scrollY - stickyHeaderProgressBar.getBoundingClientRect().bottom,
+        });
+      });
     });
   }
 </script>

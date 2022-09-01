@@ -484,5 +484,20 @@ const practicesHeadingsHTML = page.Method.map(
     stickyDropdownToggle.addEventListener("click", () => {
       stickyChapterLinksContainer.classList.toggle("hidden");
     });
+
+    // collapse dropdown when an item is clicked
+    stickyChapterLinks.forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        location.href = link.href;
+
+        stickyChapterLinksContainer.classList.add("hidden");
+
+        window.scrollTo({
+          top: scrollY - stickyHeaderProgressBar.getBoundingClientRect().bottom,
+        });
+      });
+    });
   }
 </script>
