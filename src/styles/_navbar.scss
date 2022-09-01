@@ -1,0 +1,168 @@
+@use "colors";
+@use "search";
+
+.brandLogo {
+  width: 100%;
+  height: 50px;
+}
+
+#navigation {
+  z-index: 999;
+}
+
+.navbar {
+  margin: 0 auto;
+}
+
+.navMenu {
+  margin-left: 60px;
+}
+
+.navMenuItem {
+  column-gap: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
+}
+
+.navItem {
+  font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.125rem);
+  font-weight: 500;
+  line-height: 150%;
+}
+
+.dropdown {
+  color: colors.$primary-color;
+}
+
+.dropdownItem {
+  background-color: colors.$lang-btn;
+  padding: 15px;
+}
+
+#dropdownMenu {
+  width: 100%;
+  border-top: 1px solid colors.$primary-color;
+  border-radius: 0 0 25px 25px;
+  font-size: 16px;
+}
+
+.langBtn {
+  background-color: colors.$lang-btn;
+  border-radius: 25px;
+  cursor: pointer;
+  padding: 15px;
+  height: 50px;
+  width: 175px;
+  max-width: 40vw;
+  font-size: 16px;
+}
+
+#sidebar {
+  z-index: 40;
+  display: none;
+  background-image: url(/bg-images/sidebar.webp);
+  background-size: cover;
+  background-position: 100% 100%;
+  border-radius: no-repeat;
+  position: fixed;
+  top: 88px;
+  right: 0;
+  height: 100%;
+  width: 305px;
+  padding-bottom: 88px;
+}
+
+.sidebarContainer {
+  padding: 26px 30px 36px;
+}
+
+.sidebarfooter {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 150%;
+}
+
+.sidebarMenuBtn {
+  margin-left: 18px;
+  height: 38px;
+  width: 38px;
+}
+
+#sidebarOpen,
+#sidebarClose {
+  height: 100%;
+  width: 100%;
+  user-select: none;
+}
+
+#sidebarClose {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  #navigation {
+    position: static !important;
+  }
+
+  #sidebar {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1023.98px) {
+  .brandLogo {
+    height: 46px;
+  }
+
+  #dropdown {
+    transform: scale(0.925);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .brandLogo {
+    height: 42px;
+  }
+
+  #dropdown {
+    transform: scale(0.85);
+  }
+}
+
+@media (max-width: 639.98px) {
+  .brandLogo {
+    height: 38px;
+  }
+
+  #dropdown {
+    transform: scale(0.775);
+  }
+
+  #navigation {
+    position: sticky;
+    height: 88px;
+    width: 100%;
+    top: 0;
+    background-position: 100% 100%;
+    background-size: cover;
+    display: block;
+  }
+
+  .navMenuItem ul li:first-child {
+    margin-top: 0;
+  }
+
+  .navMenuItem ul li {
+    margin-top: 10px;
+  }
+
+  .navItem {
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 150%;
+  }
+}
+
+@media (max-width: 325.98px) {
+  #sidebar {
+    width: 100%;
+  }
+}
