@@ -1,6 +1,5 @@
 import fs from "fs/promises";
 import crypto from "crypto";
-import fetch from "node-fetch";
 import { globby } from "globby";
 import { parseHTML } from "linkedom";
 import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
@@ -54,10 +53,9 @@ await Promise.all(
 
 const ContentSecurityPolicy = Object.keys(CSPRecord)
   .map((directive) => {
-    const values = CSPRecord[directive];
+    const sources = CSPRecord[directive];
 
-    const policy =
-      values.length === 0 ? directive : `${directive} ${values.join(" ")}`;
+    const policy = `${directive} ${sources.join(" ")}`;
 
     return policy;
   })
