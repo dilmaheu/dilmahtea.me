@@ -3,7 +3,7 @@ import { parseHTML } from "linkedom";
 import rightArrowGreen from "@images/rightArrowGreen.svg";
 
 declare interface Props {
-  type?: "desktop" | "mobile" | "list";
+  type?: "desktop" | "mobile";
 }
 
 const { type = "desktop" } = Astro.props as Props;
@@ -16,30 +16,24 @@ const headings = contentDocument.querySelectorAll("h2");
 ---
 
 {
-  [...headings].map(({ id, innerText }, index) =>
-    type === "list" ? (
-      <li class="truncate">
-        <Fragment set:text={innerText} />
-      </li>
-    ) : (
-      <a
-        href={"#" + id}
+  [...headings].map(({ id, innerText }, index) => (
+    <a
+      href={"#" + id}
+      class:list={[
+        index === 0 && "active",
+        type !== "mobile"
+          ? "chapter-link"
+          : "chapter-link-sm flex items-center pt-6 font-normal color-default-80",
+      ]}
+    >
+      <img
+        src={rightArrowGreen}
+        alt="Green Right Arrow"
         class:list={[
-          index === 0 && "active",
-          type !== "mobile"
-            ? "chapter-link"
-            : "chapter-link-sm flex items-center pt-6 font-normal color-default-80",
+          type === "mobile" ? "blog_StickyItemImgMd" : "blog_StickyItemImg",
         ]}
-      >
-        <img
-          src={rightArrowGreen}
-          alt="Green Right Arrow"
-          class:list={[
-            type === "mobile" ? "blog_StickyItemImgMd" : "blog_StickyItemImg",
-          ]}
-        />
-        <Fragment set:text={innerText} />
-      </a>
-    )
-  )
+      />
+      <Fragment set:text={innerText} />
+    </a>
+  ))
 }
