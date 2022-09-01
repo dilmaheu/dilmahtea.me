@@ -13,7 +13,7 @@ const htmlFilePaths = await globby([
 
 /* CSP = Content Security Policy */
 
-const sharedCSP = {
+const CSPRecord = {
   "default-src": ["'none'"],
   "style-src": ["'self'", "'unsafe-inline'"],
   "img-src": [
@@ -26,9 +26,10 @@ const sharedCSP = {
   "worker-src": ["blob:"],
   "connect-src": ["'self'", "https://api.openreplay.com"],
   "upgrade-insecure-requests": [],
+  "script-src": ["'self'", "https://static.openreplay.com"],
 };
 
-const CSPHeaders = await Promise.all(
+await Promise.all(
   htmlFilePaths.map(async (path) => {
     const htmlContent = await fs.readFile(path, "utf8");
 
@@ -36,13 +37,7 @@ const CSPHeaders = await Promise.all(
 
     const scripts = document.querySelectorAll("script");
 
-    const route = path.endsWith("/404.html")
-      ? "/*"
-      : path === "./dist/index.html"
-      ? "/"
-      : path.slice(6, -11) + "/";
-
-    const hashes = [...scripts].map(({ textContent }) => {
+    [...scripts].forEach(({ textContent }) => {
       const hash = crypto
         .createHash("sha256")
         .update(textContent)
@@ -50,81 +45,32 @@ const CSPHeaders = await Promise.all(
 
       const source = `'sha256-${hash}'`;
 
-      return source;
+      if (!CSPRecord["script-src"].includes(source)) {
+        CSPRecord["script-src"].push(source);
+      }
     });
-
-    const policies = {
-      ...sharedCSP,
-      "script-src": ["'self'", "https://static.openreplay.com", ...hashes],
-    };
-
-    const header = Object.keys(policies)
-      .map((directive) => {
-        const values = policies[directive];
-
-        const policy =
-          values.length === 0 ? directive : `${directive} ${values.join(" ")}`;
-
-        return policy;
-      })
-      .join("; ");
-
-    // overwrite html to add generated csp header & nonces
-    await fs.writeFile(path, document.toString());
-
-    return {
-      route,
-      header,
-    };
   })
 );
 
-const { header: defaultCSPHeader } = CSPHeaders.find(
-    ({ route }) => route === "/*"
-  ),
-  routeSpecificCSPHeaders = CSPHeaders.filter(({ route }) => route !== "/*");
+const ContentSecurityPolicy = Object.keys(CSPRecord)
+  .map((directive) => {
+    const values = CSPRecord[directive];
 
-const _headersFileContent =
-  `/*\n  Permissions-Policy: ${PermissionsPolicy}\n\n` +
-  routeSpecificCSPHeaders
-    .map(
-      ({ route, header }) => `${route}\n  Content-Security-Policy: ${header}`
-    )
-    .join("\n\n");
+    const policy =
+      values.length === 0 ? directive : `${directive} ${values.join(" ")}`;
+
+    return policy;
+  })
+  .join("; ");
+
+const _headersFileContent = `/*
+  Permissions-Policy: ${PermissionsPolicy}
+  
+  Content-Security-Policy: ${ContentSecurityPolicy}
+`;
 
 // write generated headers to _headers file
 await fs.writeFile("./dist/_headers", _headersFileContent);
-
-const { ZONE_ID, RULESET_ID, API_TOKEN } = process.env;
-
-const endpoint = `https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/rulesets/${RULESET_ID}`;
-
-await fetch(endpoint, {
-  method: "PUT",
-  headers: {
-    Authorization: `Bearer ${API_TOKEN}`,
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    rules: [
-      {
-        expression: `(not http.request.uri.path in {${routeSpecificCSPHeaders
-          .map(({ route }) => `"${route}"`)
-          .join(" ")}})`,
-        description: "Default Content-Security-Policy Header",
-        action: "rewrite",
-        action_parameters: {
-          headers: {
-            "Content-Security-Policy": {
-              operation: "set",
-              value: defaultCSPHeader,
-            },
-          },
-        },
-      },
-    ],
-  }),
-}).then((res) => res.json());
 
 /* rewrite html file paths of 404 routes */
 _404HtmlFilePaths.forEach((path) => {
