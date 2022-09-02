@@ -20,11 +20,23 @@ const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, "");
     color: colors.$light-gray;
   }
 
-  .basicInfoSecContent .basicInfoSecTxt {
+  .basicInfoSecTxt {
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
+  }
+
+  .basicHeroIcon {
+    @apply w-full object-contain;
+
+    height: clamp(40px, 6vw + 15px, 100px);
+  }
+
+  @media screen and (min-width: 640px) {
+    .basicInfoSec {
+      height: clamp(550px, 22vw + 420px, 820px);
+    }
   }
 </style>
 
@@ -64,7 +76,7 @@ const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, "");
 {
   pageAdvancedIntro_text.length > 1 && (
     // Intro description
-    <div class="block wrapper basicIntrodescription">
+    <div class="block wrapper pt-[100px]">
       <div class="prose max-w-none basicInfoSecTxt">
         <Markdown>{pageAdvancedIntro_text}</Markdown>
       </div>
@@ -76,11 +88,11 @@ const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, "");
   page.Block_blob.data !== null && (
     <Fragment>
       {/* Information Section */}
-      <div class="basicInfoSec overflow-hidden relative">
+      <div class="basicInfoSec h-full relative overflow-hidden">
         {/* Blob Image - Desktop view */}
         <div
           class={
-            "hidden sm:block absolute left-0 z-20 w-full sm:w-1/2 h-full items-center basicInfoSec_Curve1"
+            "hidden sm:block absolute left-0 z-20 w-full sm:w-1/2 h-full items-center absolute right-0 py-12 pr-6 lg:pr-24"
           }
         >
           <ClippedImg
@@ -97,14 +109,14 @@ const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, "");
         </div>
 
         {/* Text content */}
-        <div class="h-full wrapper z-30 basicInfoSecContentContainer">
+        <div class="h-full wrapper z-30 p-6 sm:px-0 sm:py-12">
           <div class="w-full h-full justify-end flex flex-wrap">
             <div
-              class="w-full sm:w-1/2 h-full flex sm:items-center basicInfoSecContent"
+              class="w-full sm:w-1/2 h-full flex sm:items-center px-0 sm:pl-[10px] sm:pr-24 "
               role="complementary"
             >
               <div class="relative">
-                <h2 class="heading-primary basicHeader text-primary">
+                <h2 class="heading-primary leading-[1.2] text-primary">
                   {page.Heading_block}
                 </h2>
 
@@ -118,7 +130,7 @@ const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, "");
       </div>
 
       {/* Blob Image - Mobile view */}
-      <div class="block sm:hidden w-screen basicInfoSec_Curve">
+      <div class="block sm:hidden w-screen">
         <ClippedImg
           id="basicInfoSec_ImgFrame2"
           src={
