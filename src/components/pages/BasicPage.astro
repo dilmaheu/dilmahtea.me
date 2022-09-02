@@ -13,9 +13,16 @@ const pageIntro_text = page.Intro_text.split("\n")[0];
 const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, "");
 ---
 
-<style>
+<style lang="scss">
   .BasicHeroTxt a {
     color: #e3dfde;
+  }
+
+  .basicInfoSecContent .basicInfoSecTxt {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
   }
 </style>
 
@@ -93,10 +100,10 @@ const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, "");
             role="complementary"
           >
             <div class="relative">
-              <h2 class="header-default basicHeader color-default">
+              <h2 class="heading-primary basicHeader color-default">
                 {page.Heading_block}
               </h2>
-              <div class="pt-0.5 mt-7 prose max-w-none LineClamp5 basicInfoSecTxt">
+              <div class="pt-0.5 mt-7 prose max-w-none basicInfoSecTxt">
                 <Markdown>{page.Block_text}</Markdown>
               </div>
             </div>

@@ -15,6 +15,14 @@ const { document: contentDocument } = await parseHTML(contentHTML);
 const headings = contentDocument.querySelectorAll("h2");
 ---
 
+<style lang="scss">
+  @use "src/styles/colors";
+
+  a {
+    color: colors.$sticky-dropdown-item;
+  }
+</style>
+
 {
   [...headings].map(({ id, innerText }, index) => (
     <a
@@ -23,7 +31,7 @@ const headings = contentDocument.querySelectorAll("h2");
         index === 0 && "active",
         type !== "mobile"
           ? "chapter-link"
-          : "chapter-link-sm flex items-center pt-6 font-normal color-default-80",
+          : "chapter-link-sm flex items-center pt-6 font-normal",
       ]}
     >
       <img
