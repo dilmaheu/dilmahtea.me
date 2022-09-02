@@ -6,6 +6,10 @@ export default {
   content: [`./**/*.{astro,html}`],
   theme: {
     extend: {
+      colors: {
+        primary: "#2b4b50",
+      },
+
       typography: () => ({
         DEFAULT: {
           css: {
