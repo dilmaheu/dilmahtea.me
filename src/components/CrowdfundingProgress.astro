@@ -3,6 +3,18 @@ const { goalText, supportersText, supportersCount, totalAmountRaised } =
   Astro.props;
 ---
 
+<style lang="scss">
+  @use "src/styles/colors";
+
+  .progress-bar {
+    background-color: colors.$light-gray;
+  }
+
+  .progress {
+    background-color: colors.$green;
+  }
+</style>
+
 <div class="progressContent relative">
   <div class="progressHeader">
     €<span class="total-amount-raised">{totalAmountRaised}</span>
@@ -17,10 +29,12 @@ const { goalText, supportersText, supportersCount, totalAmountRaised } =
     </div>
   </div>
 
-  <div class="mt-1 sm:mt-2 md:mt-3 w-full bg-default-light-gray rounded-full">
+  <div
+    class="mt-1 sm:mt-2 md:mt-3 w-full bg-default-light-gray rounded-full progress-bar"
+  >
     <div
       style="width: 0%"
-      class="progress-bar bg-default-green rounded-full py-1.5"
+      class="progress bg-default-green rounded-full py-1.5"
     >
     </div>
   </div>
