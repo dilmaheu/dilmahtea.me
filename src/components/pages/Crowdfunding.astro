@@ -9,6 +9,7 @@ import ClippedImg from "../ClippedImg.astro";
 import ClipPathSVG from "../ClipPathSVG.astro";
 import Markdown from "@astrojs/markdown-component";
 import HeroBackground from "../HeroBackground.astro";
+import CrowdfundingProgress from "../CrowdfundingProgress.astro";
 import UpdateHeroTopMargin from "../scripts/UpdateHeroTopMargin.astro";
 
 const url = `${import.meta.env.CloudImg_URL}`;
@@ -95,27 +96,12 @@ const initialProgress = `0%`,
           >
           </div>
 
-          <div class="progressContent relative">
-            <div class="progressHeader">
-              €<span class="total-amount-raised">{totalAmountRaised}</span>
-            </div>
-            <div class="flex flex-wrap gap-x-1.5 justify-between">
-              <div class="progeressTxt">{page.Heading_goal}</div>
-              <div class="progeressTxt">
-                <span class="progeressTxtNum">{supportersCount}</span>
-                {page.Heading_supporters}
-              </div>
-            </div>
-            <div
-              class="mt-1 sm:mt-2 md:mt-3 w-full bg-default-light-gray rounded-full"
-            >
-              <div
-                style="width: 0%"
-                class="progress-bar bg-default-green rounded-full py-1.5"
-              >
-              </div>
-            </div>
-          </div>
+          <CrowdfundingProgress
+            goalText={page.Heading_goal}
+            supportersText={page.Heading_supporters}
+            {supportersCount}
+            {totalAmountRaised}
+          />
         </div>
       </div>
     </div>
@@ -149,27 +135,12 @@ const initialProgress = `0%`,
       <div
         class="absolute inset-0 z-50 w-auto flex justify-center mx-auto wrapper"
       >
-        <div class="progressContent relative">
-          <div class="progressHeader">
-            €<span class="total-amount-raised">{totalAmountRaised}</span>
-          </div>
-          <div class="flex flex-wrap gap-x-1.5 justify-between">
-            <div class="progeressTxt">{page.Heading_goal}</div>
-            <div class="progeressTxt">
-              <span class="progeressTxtNum">{supportersCount}</span>
-              {page.Heading_supporters}
-            </div>
-          </div>
-          <div
-            class="mt-1 sm:mt-2 md:mt-3 w-full bg-default-light-gray rounded-full"
-          >
-            <div
-              style="width: 0%"
-              class="progress-bar bg-default-green rounded-full py-1.5"
-            >
-            </div>
-          </div>
-        </div>
+        <CrowdfundingProgress
+          goalText={page.Heading_goal}
+          supportersText={page.Heading_supporters}
+          {supportersCount}
+          {totalAmountRaised}
+        />
       </div>
     </div>
   </div>
