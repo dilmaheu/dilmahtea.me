@@ -434,7 +434,7 @@ const practicesHeadingsHTML = page.Method.map(
       chapterLinks[chapterIndex].classList.add("active");
       stickyChapterLinks[chapterIndex].classList.add("active");
 
-      const navbarRect = navbar.getBoundingClientRect(),
+      const { height: navbarHeight } = navbar.getBoundingClientRect(),
         displayStickyHeader =
           window.innerWidth < 640 &&
           firstChapter.getBoundingClientRect().y -
@@ -442,14 +442,15 @@ const practicesHeadingsHTML = page.Method.map(
             0;
 
       if (displayStickyHeader) {
+        stickyHeader.style.top = navbarHeight + "px";
+
         stickyHeaderTop.textContent = activeChapterHeading.textContent;
 
         const containerRect = container.getBoundingClientRect(),
           readPixels = Math.abs(containerRect.y - window.innerHeight),
           detailedBlogHeight = containerRect.height,
           minProgress =
-            ((window.innerHeight - navbarRect.height) / detailedBlogHeight) *
-            100,
+            ((window.innerHeight - navbarHeight) / detailedBlogHeight) * 100,
           progress = (readPixels / detailedBlogHeight) * 100,
           correctedProgress =
             ((progress - minProgress) / (100 - minProgress)) * 100;
