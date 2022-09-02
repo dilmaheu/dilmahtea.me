@@ -44,26 +44,22 @@ const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, "");
   </div>
 </div>
 
-<!-- Intro description -->
-<div
-  class={pageAdvancedIntro_text.length > 1
-    ? "block wrapper basicIntrodescription"
-    : "hidden"}
->
-  <div class="prose max-w-none basicInfoSecTxt">
-    <Markdown>{pageAdvancedIntro_text}</Markdown>
-  </div>
-</div>
+{
+  pageAdvancedIntro_text.length > 1 && (
+    // Intro description
+    <div class="block wrapper basicIntrodescription">
+      <div class="prose max-w-none basicInfoSecTxt">
+        <Markdown>{pageAdvancedIntro_text}</Markdown>
+      </div>
+    </div>
+  )
+}
 
-<!-- Information Section -->
-<div
-  class={page.Block_blob.data != null
-    ? "basicInfoSec overflow-hidden relative"
-    : "overflow-hidden relative"}
->
-  {
-    page.Block_blob.data !== null && (
-      // Blob Image - Desktop view
+{
+  page.Block_blob.data !== null && (
+    // Information Section
+    <div class="basicInfoSec overflow-hidden relative">
+      {/* Blob Image - Desktop view */}
       <div
         class={
           "hidden sm:block absolute left-0 z-20 w-full sm:w-1/2 h-full items-center basicInfoSec_Curve1"
@@ -81,42 +77,28 @@ const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, "");
           path="M1 .494V.507A.019.028 0 0 0 1 .51v.016A.024.035 0 0 0 1 .53L.998.579C.991.693.986.856.835.945a.362.362 0 0 1-.222.05C.567.992.521.984.473.981L.438.98C.357.98.275 1 .204 1A.19.19 0 0 1 .079.961C-.011.886.018.658.018.485.018.396.005.337.001.277A.191.28 0 0 1 0 .244C0 .206.004.166.018.115.041.025.106.004.189.003c.071 0 .155.015.238.015L.45.017C.494.014.551.006.612.002.708-.004.816.001.893.063.976.13.997.311 1 .449v.025"
         />
       </div>
-    )
-  }
 
-  <!-- Text content -->
-  <div
-    class={page.Block_blob.data != null
-      ? "h-full wrapper z-30 basicInfoSecContentContainer"
-      : "wrapper z-30 basicInfoSecContentContainer"}
-  >
-    <div
-      class={page.Block_blob.data != null
-        ? "w-full h-full justify-end flex flex-wrap"
-        : "w-full justify-end flex flex-wrap"}
-    >
-      <div
-        class={page.Block_blob.data != null
-          ? "w-full sm:w-1/2 h-full flex sm:items-center basicInfoSecContent"
-          : "w-full h-full"}
-        role="complementary"
-      >
-        <div class="relative">
-          <h2 class="header-default basicHeader color-default">
-            {page.Heading_block}
-          </h2>
+      {/* Text content */}
+      <div class="h-full wrapper z-30 basicInfoSecContentContainer">
+        <div class="w-full h-full justify-end flex flex-wrap">
           <div
-            class={page.Block_blob.data != null
-              ? "pt-0.5 mt-7 prose max-w-none LineClamp5 basicInfoSecTxt"
-              : "pt-0.5 mt-7 prose max-w-none basicInfoSecTxt"}
+            class="w-full sm:w-1/2 h-full flex sm:items-center basicInfoSecContent"
+            role="complementary"
           >
-            <Markdown>{page.Block_text}</Markdown>
+            <div class="relative">
+              <h2 class="header-default basicHeader color-default">
+                {page.Heading_block}
+              </h2>
+              <div class="pt-0.5 mt-7 prose max-w-none LineClamp5 basicInfoSecTxt">
+                <Markdown>{page.Block_text}</Markdown>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
+  )
+}
 
 {
   page.Block_blob.data !== null && (
