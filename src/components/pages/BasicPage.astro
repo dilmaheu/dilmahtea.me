@@ -8,7 +8,7 @@ const { page } = Astro.props;
 const { Title: title } = page,
   { CloudImg_URL: url } = import.meta.env,
   introText = page.Intro_text.split("\n")[0],
-  pageContent = page.Intro_text.replace(introText, "");
+  contentDescription = page.Intro_text.replace(introText, "");
 ---
 
 <style lang="scss">
@@ -29,11 +29,11 @@ const { Title: title } = page,
 <BasicPageHero {title} {introText} />
 
 {
-  pageContent.length > 1 && (
+  contentDescription.length > 1 && (
     // Intro description
     <div class="block wrapper pt-[100px]">
       <div class="prose max-w-none basicInfoSecTxt">
-        <Markdown>{pageContent}</Markdown>
+        <Markdown>{contentDescription}</Markdown>
       </div>
     </div>
   )
