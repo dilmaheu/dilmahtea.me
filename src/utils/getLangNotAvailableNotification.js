@@ -1,4 +1,4 @@
-import CMS from "../store/CMS";
+import CMS from "@store/CMS";
 
 const notifications = await CMS.get("notifications"),
   langNotAvailableNotification = notifications.data.find(

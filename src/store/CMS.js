@@ -1,5 +1,5 @@
 import fs from "fs";
-import printMessage from "../utils/printMessage";
+import printMessage from "@utils/printMessage";
 
 const queryModules = import.meta.globEager("../queries/*.js");
 

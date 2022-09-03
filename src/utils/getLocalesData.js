@@ -1,4 +1,4 @@
-import CMS from "../store/CMS";
+import CMS from "@store/CMS";
 
 const { data: i18nData } = await CMS.get("i18Ns");
 
