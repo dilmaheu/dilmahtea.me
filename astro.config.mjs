@@ -5,6 +5,7 @@ import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
 
 export default defineConfig({
   site: "https://dilmahtea.me",
+
   integrations: [
     sitemap({
       serialize(item) {
@@ -21,10 +22,11 @@ export default defineConfig({
     }),
     taiwlind(),
   ],
+
   vite: {
     plugins: [
       {
-        name: "add-permissions-policy-header",
+        name: "permissions-policy",
         configureServer: (server) => {
           server.middlewares.use((_req, res, next) => {
             res.setHeader("Permissions-Policy", PermissionsPolicy);
