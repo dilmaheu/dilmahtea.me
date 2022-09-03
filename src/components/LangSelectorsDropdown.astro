@@ -22,25 +22,39 @@ localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
 ---
 
 <style lang="scss">
+  @use "src/styles/colors";
+
   .lang-selector {
     @apply font-bold w-full;
+
+    background-color: colors.$light-gray;
   }
 
-  #dropdown {
-    #dropdownMenu {
-      display: none;
+  #lang-selector-dropdown {
+    color: colors.$primary-color;
+
+    @apply scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1];
+
+    #lang-selector-dropdown-menu {
+      @apply hidden w-full;
+
+      border-radius: 0 0 25px 25px;
+      border-top: 1px solid colors.$primary-color;
     }
 
-    #langBtn {
+    #lang-selector-button {
       border-radius: 25px;
+      background-color: colors.$light-gray;
+
+      @apply p-3.5 w-44 max-w-[40vw] cursor-pointer;
     }
 
     &.dropdown-open {
-      #dropdownMenu {
+      #lang-selector-dropdown-menu {
         display: block;
       }
 
-      #langBtn {
+      #lang-selector-button {
         border-radius: 25px 25px 0 0;
       }
     }
@@ -48,12 +62,13 @@ localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
 </style>
 
 <div
-  id="dropdown"
-  class="dropdown text-sm lg:text-base font-bold relative select-none"
+  id="lang-selector-dropdown"
+  class="text-sm lg:text-base font-bold relative select-none"
 >
   <div
-    id="langBtn"
-    class="flex items-center justify-between gap-x-1.5 md:gap-x-3 font-bold focus:outline-none langBtn"
+    role="button"
+    id="lang-selector-button"
+    class="flex items-center justify-between gap-x-1.5 md:gap-x-3 font-bold focus:outline-none"
   >
     <div class="font-bold">{docLang}</div>
 
@@ -68,8 +83,8 @@ localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
   </div>
 
   <ul
-    id="dropdownMenu"
-    class="absolute rounded hidden overflow-hidden dropdown-menu"
+    id="lang-selector-dropdown-menu"
+    class="absolute rounded hidden overflow-hidden"
   >
     {
       localizedAvailableLanguages.map((localizedLanguage, i) => {
@@ -84,7 +99,7 @@ localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
               style="cursor: pointer;"
               class:list={[
                 lang,
-                "lang-selector hover:bg-gray-300 flex flex-wrap gap-x-1.5 md:gap-x-3 items-center dropdownItem",
+                "lang-selector p-4 hover:bg-gray-300 flex flex-wrap items-center gap-x-1.5 md:gap-x-3",
               ]}
             >
               <span class="lang">
@@ -99,7 +114,7 @@ localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
 </div>
 
 <script>
-  const dropdown = document.querySelector("#dropdown");
+  const dropdown = document.querySelector("#lang-selector-dropdown");
 
   // toggle language selectors dropdown
   document.addEventListener("click", ({ target }) => {

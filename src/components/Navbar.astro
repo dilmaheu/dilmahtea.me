@@ -1,7 +1,7 @@
 ---
 import Brand from "@images/logo.svg";
-import LangSelectorsDropdown from "./LangSelectorsDropdown.astro";
-import shouldDisplayExperimentals from "src/utils/shouldDisplayExperimentals";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
 
 interface Props {
   docLocale: string;
@@ -12,36 +12,43 @@ interface Props {
 const { docLocale, footerText, availableLocales } = Astro.props as Props;
 ---
 
-<style>
-  .navbar {
-    padding-top: clamp(24px, 3vw, 56px);
+<style lang="scss">
+  .brand-logo {
+    height: clamp(38px, 5vw, 50px);
+  }
+
+  nav {
+    gap: clamp(10px, 1.5vw, 20px);
+
+    a {
+      @apply font-medium leading-normal text-[28px] sm:text-[clamp(0.875rem,1.5vw+0.1rem,1.125rem)];
+    }
   }
 </style>
 
-<div id="navigation">
-  <nav class="wrapper mx-auto z-50 relative top-0">
-    <div class="flex justify-between items-center navbar">
-      <div class="my-auto">
-        <a href="/">
-          <div class="brandLogo">
-            <img src={Brand} class="w-full h-full" alt="brand-logo" />
-          </div>
-        </a>
-      </div>
+<div
+  id="navigation"
+  class="sm:!static sticky !top-0 z-[999] w-full bg-cover bg-right-bottom"
+>
+  <div class="wrapper mx-auto z-50 relative top-0">
+    <div
+      class="navbar mx-auto flex justify-between items-center py-[clamp(20px,3vw,56px)]"
+    >
+      <a href="/" class="brand-logo my-auto">
+        <img src={Brand} class="w-full h-full" alt="Dilmah Tea | Brand Logo" />
+      </a>
 
-      <div class="hidden sm:block mr-auto my-auto navMenu">
-        <div class="flex mr-auto my-auto navMenuItem">
-          <a class="navItem" href="/crowdfunding">Crowdfunding</a>
-          <a class="navItem" href="/blog">Blog</a>
-          {
-            shouldDisplayExperimentals() && (
-              <a class="navItem" href="/howto">
-                How-to
-              </a>
-            )
-          }
-        </div>
-      </div>
+      <nav class="hidden sm:flex m-auto ml-14">
+        <a class="navItem" href="/crowdfunding">Crowdfunding</a>
+        <a class="navItem" href="/blog">Blog</a>
+        {
+          shouldDisplayExperimentals() && (
+            <a class="navItem" href="/howto">
+              How-to
+            </a>
+          )
+        }
+      </nav>
 
       <div class="flex items-center">
         <div class="flex items-center">
@@ -63,6 +70,7 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
                 fill-rule="evenodd"></path>
             </svg>
           </div>
+
           <div id="sidebarClose" class="cursor-pointer">
             <svg
               class="w-full h-full"
@@ -77,25 +85,21 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
         </div>
       </div>
     </div>
-  </nav>
+  </div>
 
   <div id="sidebar">
     <div class="grid content-between h-full sidebarContainer">
-      <div class="flex navMenuItem">
-        <ul>
-          <li><a class="navItem" href="/crowdfunding">Crowdfunding</a></li>
-          <li><a class="navItem" href="/blog">Blog</a></li>
-          {
-            shouldDisplayExperimentals() && (
-              <li>
-                <a class="navItem" href="/howto">
-                  How-to
-                </a>
-              </li>
-            )
-          }
-        </ul>
-      </div>
+      <nav class="flex flex-col">
+        <a class="navItem" href="/crowdfunding">Crowdfunding</a>
+        <a class="navItem" href="/blog">Blog</a>
+        {
+          shouldDisplayExperimentals() && (
+            <a class="navItem" href="/howto">
+              How-to
+            </a>
+          )
+        }
+      </nav>
 
       <div class="sidebarfooter" set:html={footerText}></div>
     </div>
