@@ -32,9 +32,18 @@ const initialProgress = `0%`,
 <style lang="scss">
   @use "src/styles/colors";
 
-  .crowdHomeInfoTxt,
-  .crowdHomeInfoTxt a {
-    color: colors.$light-gray;
+  .crowdHomeInfoTxt {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.5rem);
+
+    @apply leading-normal tracking-tight overflow-hidden;
+
+    &,
+    a {
+      color: colors.$light-gray;
+    }
   }
 </style>
 
@@ -173,7 +182,9 @@ const initialProgress = `0%`,
 </div>
 
 {/* Info Section */}
-<div class="crowdHomeInfo overflow-hidden relative">
+<div
+  class="h-[400px] sm:h-[clamp(400px,20vw+430px,840px)] overflow-hidden relative"
+>
   {/* Background  */}
   <div class="absolute z-10 -top-10 sm:top-0 -left-0.5 w-screen h-full">
     <ClippedImg
@@ -185,7 +196,7 @@ const initialProgress = `0%`,
 
   {/* Blob Image - Desktop View */}
   <div
-    class="hidden sm:block absolute left-0 z-20 w-full sm:w-1/2 h-full items-center crowdHomeInfo_Curve1"
+    class="hidden sm:block absolute left-0 z-20 w-full sm:w-1/2 h-full items-center absolute right-0 py-20 pr-6 lg:pr-12 pl-0"
   >
     <ClippedImg
       id="crowdHomeInfo_ImgFrame1"
@@ -202,10 +213,10 @@ const initialProgress = `0%`,
   <div class="relative h-full wrapper z-30" role="complementary">
     <div class="w-full h-full justify-end flex flex-wrap">
       <div
-        class="w-full sm:w-1/2 h-full flex sm:items-center crowdHomeInfoContent"
+        class="w-full sm:w-1/2 h-full flex sm:items-center py-6 sm:py-0 sm:pl-6 lg:pl-12"
       >
         <div class="relative">
-          <h2 class="heading-primary crowdHomeInfoHeader">
+          <h2 class="heading-primary leading-tight tracking-tight">
             {page.Heading_block}
             <span class="icon relative top-2">
               <span class="relative heading-inline-icon">
