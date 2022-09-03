@@ -1,0 +1,60 @@
+---
+import CupIcon from "@images/cup.svg";
+import LoveIcon from "@images/love.svg";
+import Markdown from "@astrojs/markdown-component";
+import HeroBackground from "@components/HeroBackground.astro";
+import UpdateHeroTopMargin from "@components/scripts/UpdateHeroTopMargin.astro";
+
+const { title, introText } = Astro.props;
+---
+
+<style lang="scss">
+  @use "src/styles/colors";
+
+  .hero-icon {
+    @apply w-full object-contain;
+
+    height: clamp(40px, 6vw + 15px, 100px);
+  }
+
+  .hero-text,
+  .hero-text a {
+    color: colors.$light-gray;
+    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem);
+  }
+</style>
+
+<div class="hero overflow-hidden relative">
+  <UpdateHeroTopMargin />
+
+  <HeroBackground />
+
+  <div
+    class="relative z-30 flex flex-wrap justify-center h-full wrapper HeroTxtContainer"
+  >
+    <div
+      class="w-full md:w-9/12 lg:w-7/12 text-center justify-center HeroTxtContent"
+      role="banner"
+    >
+      <div>
+        <img
+          class="hero-icon hidden sm:block w-full h-full mx-auto"
+          src={CupIcon}
+          alt="Cup"
+        />
+
+        <img
+          class="hero-icon block sm:hidden w-full h-full mx-auto"
+          src={LoveIcon}
+          alt="Love"
+        />
+
+        <h1 class="BasicHeroTitle">{title}</h1>
+
+        <div class="pt-7 mt-0.5 prose max-w-none hero-text">
+          <Markdown>{introText}</Markdown>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

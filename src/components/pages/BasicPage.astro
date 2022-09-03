@@ -1,37 +1,22 @@
 ---
-import CupIcon from "@images/cup.svg";
-import LoveIcon from "@images/love.svg";
-import ClippedImg from "../ClippedImg.astro";
 import Markdown from "@astrojs/markdown-component";
-import HeroBackground from "../HeroBackground.astro";
-import UpdateHeroTopMargin from "../scripts/UpdateHeroTopMargin.astro";
+import ClippedImg from "@components/ClippedImg.astro";
+import BasicPageHero from "@components/BasicPageHero.astro";
 
-const url = `${import.meta.env.CloudImg_URL}`;
 const { page } = Astro.props;
 
-const pageIntro_text = page.Intro_text.split("\n")[0];
-const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, "");
+const { Title: title } = page,
+  { CloudImg_URL: url } = import.meta.env,
+  introText = page.Intro_text.split("\n")[0],
+  pageContent = page.Intro_text.replace(introText, "");
 ---
 
 <style lang="scss">
-  @use "src/styles/colors";
-
-  .BasicHeroTxt,
-  .BasicHeroTxt a {
-    color: colors.$light-gray;
-  }
-
   .basicInfoSecTxt {
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
-  }
-
-  .basicHeroIcon {
-    @apply w-full object-contain;
-
-    height: clamp(40px, 6vw + 15px, 100px);
   }
 
   @media screen and (min-width: 640px) {
@@ -41,45 +26,14 @@ const pageAdvancedIntro_text = page.Intro_text.replace(pageIntro_text, "");
   }
 </style>
 
-{/* Hero Section */}
-<div class="hero overflow-hidden relative">
-  <UpdateHeroTopMargin />
-
-  <HeroBackground />
-
-  {/* Text Content */}
-  <div
-    class="relative z-30 flex flex-wrap justify-center h-full wrapper HeroTxtContainer"
-  >
-    <div
-      class="w-full md:w-9/12 lg:w-7/12 text-center justify-center HeroTxtContent"
-      role="banner"
-    >
-      <div>
-        <div class="hidden sm:block mx-auto basicHeroIcon">
-          <img class="w-full h-full" src={CupIcon} alt="love-icon" />
-        </div>
-
-        <div class="block sm:hidden mx-auto basicHeroIcon">
-          <img class="w-full h-full" src={LoveIcon} alt="love-icon" />
-        </div>
-
-        <h1 class="BasicHeroTitle">{page.Title}</h1>
-
-        <div class="pt-7 mt-0.5 prose max-w-none BasicHeroTxt">
-          <Markdown>{pageIntro_text}</Markdown>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<BasicPageHero {title} {introText} />
 
 {
-  pageAdvancedIntro_text.length > 1 && (
+  pageContent.length > 1 && (
     // Intro description
     <div class="block wrapper pt-[100px]">
       <div class="prose max-w-none basicInfoSecTxt">
-        <Markdown>{pageAdvancedIntro_text}</Markdown>
+        <Markdown>{pageContent}</Markdown>
       </div>
     </div>
   )

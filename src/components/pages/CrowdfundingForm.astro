@@ -7,6 +7,7 @@ import FlowerIconG from "@images/flowerLightgreen.svg";
 import Markdown from "@astrojs/markdown-component";
 import HeroBackground from "../HeroBackground.astro";
 import UpdateHeroTopMargin from "../scripts/UpdateHeroTopMargin.astro";
+import BasicPageHero from "@components/BasicPageHero.astro";
 
 const { page, locale } = Astro.props;
 
@@ -15,51 +16,7 @@ const { href: originURL } = new URL(Astro.url.pathname, Astro.site);
 const { Perk: perk, Price_EUR_excl_VAT: price } = page;
 ---
 
-<style lang="scss">
-  @use "src/styles/colors";
-
-  .BasicHeroTxt,
-  .BasicHeroTxt a {
-    color: colors.$light-gray;
-  }
-</style>
-
-{/* Hero Section */}
-<div class="hero overflow-hidden relative">
-  <UpdateHeroTopMargin />
-
-  <HeroBackground />
-
-  {/* Text Content */}
-  <div
-    class="relative z-30 flex flex-wrap justify-center h-full wrapper HeroTxtContainer"
-  >
-    <div
-      class="w-full md:w-9/12 lg:w-7/12 sm:text-center sm:justify-center HeroTxtContent"
-      role="banner"
-    >
-      <div>
-        <div class="hidden sm:block mx-auto formHeroCupIcon">
-          <img
-            class="w-full h-full text-primary"
-            src={CupIcon}
-            alt="love-icon"
-          />
-        </div>
-
-        <div class="block sm:hidden mx-auto heroLoveIcon">
-          <img class="w-full h-full" src={LoveIcon} alt="love-icon" />
-        </div>
-
-        <h1 class="BasicHeroTitle">{page.Title}</h1>
-
-        <div class="pt-7 mt-0.5 prose max-w-none BasicHeroTxt">
-          <Markdown>{page.Intro_text}</Markdown>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<BasicPageHero title={page.Title} introText={page.Intro_text} />
 
 {/* Form Section */}
 <div class="wrapper formSec">
