@@ -59,6 +59,58 @@ const practicesHeadingsHTML = page.Method.map(
   }
 </style>
 
+<style lang="scss">
+  @use "src/styles/colors";
+  @use "src/styles/typography";
+
+  .how_headerSteps {
+    @apply py-7 px-5 rounded-[10px];
+
+    background: colors.$howto-white;
+  }
+
+  .how_headerStepsHeading {
+    color: colors.$primary-color;
+    font-family: typography.$alice;
+
+    @apply text-[2rem] leading-[1.175];
+  }
+
+  .howTo_headerStepItem {
+    background: colors.$primary-color;
+
+    @apply py-[clamp(9px,1.5vw,18px)] px-[clamp(20px,3.125vw,38px)];
+    @apply text-white text-[1.125rem] leading-[1.325] max-w-[240px] min-h-[80px] rounded-[58px];
+  }
+
+  .HowToMethodHead {
+    color: colors.$howto-white;
+    font-family: typography.$alice;
+    background-color: colors.$primary-color;
+
+    @apply font-normal text-[2.25rem] leading-[1.3] rounded-[10px];
+    @apply py-[clamp(8px,1.25vw,10px)] px-[clamp(15px,2.5vw,32px)];
+  }
+
+  .howToStepContainer {
+    background-color: colors.$howto-white;
+
+    @apply my-[30px] rounded-[10px] px-9 py-[clamp(15px,2.875vw,36px)];
+  }
+
+  .howToStepTitle {
+    color: colors.$primary-color;
+
+    @apply font-medium text-[1.75rem] leading-tight tracking-tight;
+  }
+
+  .howToStepTxt {
+    color: colors.$dark;
+
+    @apply my-5 font-normal text-[1.25rem] leading-[1.75];
+  }
+</style>
+
 {/* Hero Section */}
 <div class="hero overflow-hidden relative">
   <UpdateHeroTopMargin />
@@ -178,7 +230,7 @@ const practicesHeadingsHTML = page.Method.map(
       {page.Method.length}
       {recurData.text_practices_to_follow}
     </h2>
-    <div class="howTo_headerStepsContainer">
+    <div class="mt-5">
       <div
         class="flex flex-wrap justify-center sm:justify-start gap-x-5 gap-y-2.5"
       >
@@ -268,7 +320,7 @@ const practicesHeadingsHTML = page.Method.map(
                 </div>
 
                 {step.Step_blob.data !== null && (
-                  <div class="stepImgContainer">
+                  <div class="mt-5">
                     <img
                       src={
                         url +
