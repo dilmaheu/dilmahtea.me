@@ -1,5 +1,5 @@
-import fs from "fs/promises";
 import crypto from "crypto";
+import fs from "fs/promises";
 import { globby } from "globby";
 import { parseHTML } from "linkedom";
 import PermissionsPolicy from "./src/store/PermissionsPolicy.js";

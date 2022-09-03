@@ -1,7 +1,7 @@
-import { defineConfig } from "astro/config";
-import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
 import sitemap from "@astrojs/sitemap";
 import taiwlind from "@astrojs/tailwind";
+import { defineConfig } from "astro/config";
+import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
 
 export default defineConfig({
   site: "https://dilmahtea.me",
