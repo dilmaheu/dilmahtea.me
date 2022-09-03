@@ -40,6 +40,27 @@ const { Title: title } = page,
 }
 
 {
+  page.Block_blob.data === null && page.Block_text && (
+    // Text content
+    <div
+      class="w-full h-full wrapper z-30 p-6 sm:px-0 sm:py-12"
+      role="complementary"
+    >
+      <h2 class="heading-primary leading-[1.2] text-primary">
+        {page.Heading_block}
+      </h2>
+
+      <div
+        class="pt-0.5 mt-7 prose max-w-none basicInfoSecTxt"
+        style="-webkit-line-clamp: unset;"
+      >
+        <Markdown>{page.Block_text}</Markdown>
+      </div>
+    </div>
+  )
+}
+
+{
   page.Block_blob.data !== null && (
     <Fragment>
       {/* Information Section */}
@@ -67,7 +88,7 @@ const { Title: title } = page,
         <div class="h-full wrapper z-30 p-6 sm:px-0 sm:py-12">
           <div class="w-full h-full justify-end flex flex-wrap">
             <div
-              class="w-full sm:w-1/2 h-full flex sm:items-center px-0 sm:pl-[10px] sm:pr-24 "
+              class="w-full sm:w-1/2 h-full flex sm:items-center px-0 sm:pl-[10px] sm:pr-24"
               role="complementary"
             >
               <div class="relative">
