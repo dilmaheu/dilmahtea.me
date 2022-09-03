@@ -13,6 +13,8 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 ---
 
 <style lang="scss">
+  @use "src/styles/colors";
+
   .brand-logo {
     height: clamp(38px, 5vw, 50px);
   }
@@ -23,6 +25,10 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     a {
       @apply font-medium leading-normal text-[28px] sm:text-[clamp(0.875rem,1.5vw+0.1rem,1.125rem)];
     }
+  }
+
+  #sidebar {
+    background-image: url(/bg-images/sidebar.webp);
   }
 </style>
 
@@ -58,8 +64,11 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
           />
         </div>
 
-        <div class="block sm:hidden sidebarMenuBtn">
-          <div id="sidebarOpen" class="block sm:hidden cursor-pointer">
+        <div class="block sm:hidden w-[38px] h-[38px] ml-[18px]">
+          <div
+            id="sidebarOpen"
+            class="block sm:hidden w-full h-full select-none cursor-pointer"
+          >
             <svg
               class="w-full h-full"
               xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +80,10 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
             </svg>
           </div>
 
-          <div id="sidebarClose" class="cursor-pointer">
+          <div
+            id="sidebarClose"
+            class="hidden w-full h-full select-none cursor-pointer"
+          >
             <svg
               class="w-full h-full"
               xmlns="http://www.w3.org/2000/svg"
@@ -87,8 +99,11 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     </div>
   </div>
 
-  <div id="sidebar">
-    <div class="grid content-between h-full sidebarContainer">
+  <div
+    id="sidebar"
+    class="hidden sm:!hidden pb-20 fixed right-0 z-[40] w-[300px] max-w-full h-full bg-cover bg-right-bottom bg-no-repeat"
+  >
+    <div class="grid content-between h-full py-[30px] pt-[26px] pb-9">
       <nav class="flex flex-col">
         <a class="navItem" href="/crowdfunding">Crowdfunding</a>
         <a class="navItem" href="/blog">Blog</a>
@@ -101,7 +116,8 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
         }
       </nav>
 
-      <div class="sidebarfooter" set:html={footerText}></div>
+      <div class="text-[12px] font-medium leading-normal" set:html={footerText}>
+      </div>
     </div>
   </div>
 </div>
