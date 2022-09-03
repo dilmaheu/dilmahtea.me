@@ -1,12 +1,6 @@
 ---
-import CupIcon from "@images/cup.svg";
-import LoveIcon from "@images/love.svg";
 import CupIconG from "@images/cupLightgreen.svg";
 import FlowerIconG from "@images/flowerLightgreen.svg";
-
-import Markdown from "@astrojs/markdown-component";
-import HeroBackground from "../HeroBackground.astro";
-import UpdateHeroTopMargin from "../scripts/UpdateHeroTopMargin.astro";
 import BasicPageHero from "@components/BasicPageHero.astro";
 
 const { page, locale } = Astro.props;
@@ -16,11 +10,56 @@ const { href: originURL } = new URL(Astro.url.pathname, Astro.site);
 const { Perk: perk, Price_EUR_excl_VAT: price } = page;
 ---
 
+<style lang="scss">
+  @use "src/styles/colors";
+
+  .form-heading-icon {
+    height: clamp(38px, 3.5vw + 6px, 58px);
+  }
+
+  .form-grid {
+    @apply mt-[30px] gap-x-[60px] lg:gap-x-[40px] gap-y-[50px];
+
+    label {
+      @apply text-[1.125rem];
+
+      color: colors.$input-label;
+
+      input,
+      select {
+        @apply rounded-[20px] bg-transparent;
+
+        border: 1px solid colors.$primary-color;
+      }
+
+      select {
+        &:required:invalid {
+          color: colors.$input;
+        }
+
+        option[value=""][disabled] {
+          display: none;
+        }
+      }
+
+      input:is([type="text"], [type="email"])::placeholder {
+        color: colors.$input;
+
+        @apply text-[1.125rem];
+      }
+    }
+  }
+
+  input[type="submit"] {
+    background-color: colors.$primary-color;
+  }
+</style>
+
 <BasicPageHero title={page.Title} introText={page.Intro_text} />
 
 {/* Form Section */}
-<div class="wrapper formSec">
-  <div class="formContainer" role="main">
+<div class="wrapper py-[100px]">
+  <div role="main" class="mx-auto pt-[30px] max-w-[940px]">
     <form action="https://pay.scripts.dilmahtea.me" method="POST">
       <div>
         <div
@@ -30,44 +69,44 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
             {locale === "nl" ? "Basis gegevens" : "Basic info"}
           </h2>
 
-          <img class="formSecHeaderIcon" src={CupIconG} alt="tea-leaf-icon" />
+          <img class="form-heading-icon" src={CupIconG} alt="tea-leaf-icon" />
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 formGrid">
-          <label class="formInputContainer">
+        <div class="grid grid-cols-1 md:grid-cols-2 form-grid">
+          <label class="">
             {locale === "nl" ? "Voornaam" : "First Name"}
 
             <input
               type="text"
               id="first_name"
               name="first_name"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
               placeholder={locale === "nl" ? "Voornaam" : "First Name"}
               required
             />
           </label>
 
-          <label class="formInputContainer">
+          <label class="">
             {locale === "nl" ? "Achternaam" : "Last Name"}
 
             <input
               type="text"
               id="last_name"
               name="last_name"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
               placeholder={locale === "nl" ? "Achternaam" : "Last Name"}
               required
             />
           </label>
 
-          <label class="formInputContainer">
+          <label class="">
             {locale === "nl" ? "E-mailadres" : "Email Address"}
 
             <input
               type="email"
               id="email"
               name="email"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
               placeholder={locale === "nl"
                 ? "Vul je e-mailadres in"
                 : "Enter your email address"}
@@ -75,14 +114,14 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
             />
           </label>
 
-          <label for="favorite_tea" class="formInputContainer">
+          <label class="">
             {locale === "nl" ? "Favoriete thee" : "Favourite Tea"}
 
             <input
               type="text"
               id="favorite_tea"
               name="favorite_tea"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
               placeholder={locale === "nl" ? "Earl Grey" : "Black Tea"}
               required
             />
@@ -90,27 +129,27 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
         </div>
       </div>
 
-      <div>
+      <div class="py-[50px]">
         <div class="inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7">
           <h3 class="heading-primary text-primary">
             {locale === "nl" ? "Factuurgegevens" : "Billing details"}
           </h3>
 
           <img
-            class="formSecHeaderIcon"
+            class="form-heading-icon"
             src={FlowerIconG}
             alt="tea-leaf-icon"
           />
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 formGrid">
-          <label class="formInputContainer">
+        <div class="grid grid-cols-1 md:grid-cols-2 form-grid">
+          <label class="">
             {locale === "nl" ? "Land" : "Country"}
 
             <select
               id="country"
               name="country"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
               required
             >
               <option value="" disabled>
@@ -127,14 +166,14 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
             </select>
           </label>
 
-          <label class="formInputContainer">
+          <label class="">
             {locale === "nl" ? "Plaatsnaam" : "City"}
 
             <input
               type="text"
               id="city"
               name="city"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
               placeholder={locale === "nl"
                 ? "Vul je plaatsnaam in"
                 : "Enter your city address"}
@@ -142,7 +181,7 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
             />
           </label>
 
-          <label class="formInputContainer">
+          <label class="">
             {
               locale === "nl"
                 ? "Straat en huisnummer"
@@ -153,7 +192,7 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
               type="text"
               id="street"
               name="street"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
               placeholder={locale === "nl"
                 ? "Vul je straat en huisnummer in"
                 : "Enter your street address"}
@@ -161,14 +200,14 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
             />
           </label>
 
-          <label class="formInputContainer">
+          <label class="">
             {locale === "nl" ? "Postcode" : "Postal Code"}
 
             <input
               type="text"
               id="postal_code"
               name="postal_code"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring formInput"
+              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
               placeholder={locale === "nl"
                 ? "Vul je postcode in"
                 : "Enter your postal code"}
@@ -212,7 +251,7 @@ const { Perk: perk, Price_EUR_excl_VAT: price } = page;
         <div>
           <input
             type="submit"
-            class="cursor-pointer formBtn"
+            class="cursor-pointer w-full md:w-[300px] mt-[70px] md:mt-[100px] py-[16px] px-[30px] text-[16px] font-bold rounded-[40px]"
             value={locale === "nl"
               ? "Naar betaalgegevens"
               : "To payment details"}
