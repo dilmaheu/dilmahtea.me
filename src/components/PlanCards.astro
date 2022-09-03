@@ -7,35 +7,88 @@ const { allPlans } = Astro.props;
 const url = Astro.site.origin + `/images/`;
 ---
 
+<style lang="scss">
+  @use "src/styles/colors";
+  @use "src/styles/typography";
+
+  .PlanCard {
+    padding: calc(2.5vw + 17.5px);
+    background-color: colors.$primary-color;
+
+    @apply w-full h-auto rounded-[45px] lg:rounded-[60px];
+  }
+
+  .PlanCardPrice {
+    font-size: 3.375rem;
+    font-family: typography.$alice;
+  }
+
+  .PlanCardList ul {
+    padding-left: 0;
+
+    li {
+      @apply inline-block pl-0 items-center text-[1.125rem];
+
+      &::before {
+        background-image: url(/bg-images/tick.svg);
+
+        @apply content-[""] inline-block w-[18px] h-[18px] mr-[10px] align-middle;
+      }
+    }
+  }
+
+  .PlanCardBtn {
+    color: colors.$primary-color;
+    background-color: colors.$light-gray;
+
+    @apply p-[17px] min-w-[140px] rounded-[20px];
+  }
+
+  .planSecLeafImg {
+    @apply w-[120px] h-full;
+
+    filter: drop-shadow(0px 8px 9px rgba(0, 0, 0, 0.5));
+  }
+</style>
+
 <div
   class="w-full grid md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-10 justify-items-center mx-auto"
   role="list"
   aria-label="Plans"
 >
-  {allPlans.map((plan) => (
-    <div class="PlanCard" role="listitem" aria-label={`Plan ${plan.Title}`}>
-      <div class="inline-flex items-end gap-x-3.5">
-        <h3 class="text-xl alice">{plan.Title}</h3>
-        <div class="PlanCardIcon">
-          <img
-            class="w-full h-full"
-            src={url + plan.TitleIcon_Name + `.svg`}
-            alt="icon"
-          />
+  {
+    allPlans.map((plan) => (
+      <div class="PlanCard" role="listitem" aria-label={`Plan ${plan.Title}`}>
+        <div class="inline-flex items-end gap-x-3.5">
+          <h3 class="text-xl alice">{plan.Title}</h3>
+
+          <div class="h-[35px] max-w-[35px]">
+            <img
+              class="w-full h-full"
+              src={url + plan.TitleIcon_Name + `.svg`}
+              alt="icon"
+            />
+          </div>
         </div>
+
+        <div class="PlanCardPrice pb-6 mb-0.5">
+          &#8364;{plan.Price_EUR_excl_VAT}
+        </div>
+
+        <div class="text-lg pb-6 mb-0.5">{plan.Intro_text}</div>
+
+        <div class="prose max-w-none mb-5 text-white PlanCardList">
+          <Markdown>{plan.List}</Markdown>
+        </div>
+
+        <a href={`/plans/${plan.Title.toLowerCase()}`} class="flex">
+          <div class="font-bold text-center PlanCardBtn">
+            {plan.Button_text}
+          </div>
+        </a>
       </div>
-      <div class="PlanCardPrice pb-6 mb-0.5">
-        &#8364;{plan.Price_EUR_excl_VAT}
-      </div>
-      <div class="text-lg pb-6 mb-0.5">{plan.Intro_text}</div>
-      <div class="prose max-w-none mb-5 text-white PlanCardList">
-        <Markdown>{plan.List}</Markdown>
-      </div>
-      <a href={`/plans/${plan.Title.toLowerCase()}`} class="flex">
-        <div class="font-bold text-center PlanCardBtn">{plan.Button_text}</div>
-      </a>
-    </div>
-  ))}
+    ))
+  }
 </div>
 
 <div class="hidden xl:block relative -mt-20 -ml-12 planSecLeafImg">
