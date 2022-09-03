@@ -14,19 +14,18 @@ import CrowdfundingProgress from "@components/CrowdfundingProgress.astro";
 
 import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
 
-const url = `${import.meta.env.CloudImg_URL}`;
-const { page } = Astro.props;
+const { page } = Astro.props,
+  { CloudImg_URL: url } = import.meta.env;
 
 const { supportersCount, totalAmountRaised } = await fetch(
   "https://crowdfunding-stats.scripts.dilmahtea.me"
 ).then((res) => res.json());
 
 const goal = 100000,
-  progress = totalAmountRaised / goal;
-
-const initialProgress = `0%`,
-  finalProgress = `${progress * 100}%`,
-  animationDuration = 1000;
+  initialProgress = `0%`,
+  animationDuration = 1000,
+  progress = totalAmountRaised / goal,
+  finalProgress = `${progress * 100}%`;
 ---
 
 <style lang="scss">
