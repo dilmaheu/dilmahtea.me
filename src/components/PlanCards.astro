@@ -2,9 +2,8 @@
 import LeafImg from "@images/greenLeaf.webp";
 import Markdown from "@astrojs/markdown-component";
 
-const { allPlans } = Astro.props;
-
-const url = Astro.site.origin + `/images/`;
+const { allPlans } = Astro.props,
+  imgSrcPrefix = Astro.site.origin + `/images/`;
 ---
 
 <style lang="scss">
@@ -65,7 +64,7 @@ const url = Astro.site.origin + `/images/`;
           <div class="h-[35px] max-w-[35px]">
             <img
               class="w-full h-full"
-              src={url + plan.TitleIcon_Name + `.svg`}
+              src={imgSrcPrefix + plan.TitleIcon_Name + `.svg`}
               alt="icon"
             />
           </div>

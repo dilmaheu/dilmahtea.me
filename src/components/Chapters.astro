@@ -6,13 +6,10 @@ declare interface Props {
   type?: "desktop" | "mobile";
 }
 
-const { type = "desktop" } = Astro.props as Props;
-
-const contentHTML = await Astro.slots.render("default");
-
-const { document: contentDocument } = await parseHTML(contentHTML);
-
-const headings = contentDocument.querySelectorAll("h2");
+const { type = "desktop" } = Astro.props as Props,
+  contentHTML = await Astro.slots.render("default"),
+  { document: contentDocument } = await parseHTML(contentHTML),
+  headings = contentDocument.querySelectorAll("h2");
 ---
 
 <style lang="scss">

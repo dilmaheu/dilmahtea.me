@@ -1,8 +1,10 @@
 ---
 import { parseHTML } from "linkedom";
-const contentHTML = await Astro.slots.render("default");
-const { document: contentBody } = await parseHTML(contentHTML);
-const contentImages = contentBody.querySelectorAll("#detailedBlog img");
+
+const contentHTML = await Astro.slots.render("default"),
+  { document: contentBody } = await parseHTML(contentHTML),
+  contentImages = contentBody.querySelectorAll("#detailedBlog img");
+
 [...contentImages].forEach((img) => {
   img.outerHTML = `<img
     src="${

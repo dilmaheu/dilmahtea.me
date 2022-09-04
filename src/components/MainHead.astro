@@ -25,10 +25,10 @@ const {
   slugURL,
   availableLocales,
 } = Astro.props as Props;
-const url = `${import.meta.env.CF_IMAGE_DELIVERY_ENDPOINT}`;
-const domain = Astro.site.origin;
 
-const alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
+const domain = Astro.site.origin,
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env,
+  alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
   documentHref = `${domain}/${locale}/${slugURL === "/" ? "" : slugURL}/`,
   canonicalHref = `${domain}/en/${canonicalURL === "/" ? "" : canonicalURL}/`;
 ---
@@ -85,7 +85,7 @@ const alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
 <meta property="og:description" content={description} />
 <meta property="og:url" content={documentHref} />
 <meta property="og:site_name" content="Dilmah" />
-<meta property="og:image" content={url + image + `/opengraph`} />
+<meta property="og:image" content={imgSrcPrefix + image + `/opengraph`} />
 
 {/* Twitter */}
 <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
@@ -93,7 +93,7 @@ const alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
 <meta property="twitter:url" content={documentHref} />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={url + image + `/twittercard`} />
+<meta name="twitter:image" content={imgSrcPrefix + image + `/twittercard`} />
 
 {
   !shouldDisplayExperimentals() && (

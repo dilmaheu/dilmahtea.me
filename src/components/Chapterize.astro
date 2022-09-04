@@ -1,15 +1,10 @@
 ---
 import { parseHTML } from "linkedom";
 
-declare interface Props {}
-
-const {} = Astro.props as Props;
-
 let contentHTML = await Astro.slots.render("default");
 
-const { document: contentDocument } = await parseHTML(contentHTML);
-
-const headings = contentDocument.querySelectorAll("h2");
+const { document: contentDocument } = await parseHTML(contentHTML),
+  headings = contentDocument.querySelectorAll("h2");
 
 headings.forEach((heading, i) => {
   contentHTML = contentHTML.replace(
@@ -18,7 +13,6 @@ headings.forEach((heading, i) => {
   );
 });
 
-// @ts-ignore
 contentHTML += "</div>";
 ---
 

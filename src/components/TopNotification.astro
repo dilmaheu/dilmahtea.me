@@ -21,12 +21,9 @@ if (type !== "Default") {
   );
 }
 
-const defaultSlotHTML = await Astro.slots.render("default");
-
-const { document: defaultSlotDocument } = await parseHTML(defaultSlotHTML);
-
-const notificationPlaceholder =
-  defaultSlotDocument.querySelector("notification");
+const defaultSlotHTML = await Astro.slots.render("default"),
+  { document: defaultSlotDocument } = await parseHTML(defaultSlotHTML),
+  notificationPlaceholder = defaultSlotDocument.querySelector("notification");
 
 const notificationsHTML = Object.keys(notification)
   .map(

@@ -8,13 +8,10 @@ declare interface Props {
   locale: string;
 }
 
-const { locale } = Astro.props as Props;
-
-const documentBodyHTML = await Astro.slots.render("default");
-
-const { document: documentBody } = await parseHTML(documentBodyHTML);
-
-const documentLinks = documentBody.querySelectorAll("a");
+const { locale } = Astro.props as Props,
+  documentBodyHTML = await Astro.slots.render("default"),
+  { document: documentBody } = await parseHTML(documentBodyHTML),
+  documentLinks = documentBody.querySelectorAll("a");
 
 [...documentLinks].forEach((link) => {
   const href = link.getAttribute("href");
