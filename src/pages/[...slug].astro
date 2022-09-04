@@ -97,43 +97,51 @@ export async function getStaticPaths() {
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const plansPages = getPages(crowdfundingPlans, (page, { Title }) => ({
-      type: "plan",
-      Meta: crowdfundingForm.data.attributes.Meta,
-      slug: `plans/${(Title || page.attributes.Title).toLowerCase()}`,
-    })),
-    crowdfundingPages = getPages(crowdfundingHome, () => ({
-      type: "crowdfunding",
-      allPlans: crowdfundingPlans.data.map(({ attributes }) => attributes),
-    })),
-    basicPages = getPages(basicPagesData, () => ({ type: "basic" })),
-    crowdfundingPaymentConfirmationPages = getPages(
-      crowdfundingPaymentConfirmation,
-      () => ({ type: "basic" })
-    ),
-    blogDetailsPages = getPages(blogs, (page, attributes) => ({
-      type: "blogDetails",
-      blogs: attributes.locale && getPosts(blogs, attributes.locale),
-    })),
-    howToDetailsPages = getPages(howTos, (page, { locale }) => ({
-      type: "howToDetails",
-      howTos: locale && getPosts(howTos, locale),
-    })),
-    blogPages = getPages(homeBlog, (page, { locale }) => ({
-      type: "blog",
-      posts: locale && getPosts(blogs, locale),
-    })),
-    howToPages = getPages(homeHowTo, (page, { locale }) => ({
-      type: "howTo",
-      posts: locale && getPosts(howTos, locale),
-    })),
-    homepagePages = getPages(homepage, (page, { locale }) => ({
-      type: "homepage",
-      posts:
-        locale &&
-        (!shouldDisplayExperimentals()
-          ? blogs
-          : [...getPosts(blogs, locale), ...getPosts(howTos, locale)]),
-    }));
+    type: "plan",
+    Meta: crowdfundingForm.data.attributes.Meta,
+    slug: `plans/${(Title || page.attributes.Title).toLowerCase()}`,
+  }));
+
+  const crowdfundingPages = getPages(crowdfundingHome, () => ({
+    type: "crowdfunding",
+    allPlans: crowdfundingPlans.data.map(({ attributes }) => attributes),
+  }));
+
+  const basicPages = getPages(basicPagesData, () => ({ type: "basic" }));
+
+  const crowdfundingPaymentConfirmationPages = getPages(
+    crowdfundingPaymentConfirmation,
+    () => ({ type: "basic" })
+  );
+
+  const blogDetailsPages = getPages(blogs, (page, attributes) => ({
+    type: "blogDetails",
+    blogs: attributes.locale && getPosts(blogs, attributes.locale),
+  }));
+
+  const howToDetailsPages = getPages(howTos, (page, { locale }) => ({
+    type: "howToDetails",
+    howTos: locale && getPosts(howTos, locale),
+  }));
+
+  const blogPages = getPages(homeBlog, (page, { locale }) => ({
+    type: "blog",
+    posts: locale && getPosts(blogs, locale),
+  }));
+
+  const howToPages = getPages(homeHowTo, (page, { locale }) => ({
+    type: "howTo",
+    posts: locale && getPosts(howTos, locale),
+  }));
+
+  const homepagePages = getPages(homepage, (page, { locale }) => ({
+    type: "homepage",
+    posts:
+      locale &&
+      (!shouldDisplayExperimentals()
+        ? blogs
+        : [...getPosts(blogs, locale), ...getPosts(howTos, locale)]),
+  }));
 
   return [
     ...plansPages,
