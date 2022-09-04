@@ -5,11 +5,9 @@ import BasicPage from "@pages/BasicPage.astro";
 import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 
 // fetching the error page
-const basicPagesData = await CMS.get("basicPages");
+const basicPagesData = CMS.get("basicPages");
 
-let recurringElements = await CMS.get("recurringElement").then(
-    ({ data }) => data.attributes
-  ),
+let recurringElements = CMS.get("recurringElement").data.attributes,
   { attributes: _404Page } = basicPagesData.data.find(
     ({ attributes }) => attributes.Meta.URL_slug === "404"
   );

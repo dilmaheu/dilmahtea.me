@@ -59,7 +59,7 @@ const { data } = await fetch(import.meta.env.DB_URL, {
   });
 
 const CMS = {
-  async get(contentType) {
+  get(contentType) {
     if (contentType === "all") return data;
 
     return data[contentType];

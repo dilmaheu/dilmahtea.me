@@ -16,15 +16,10 @@ const url = `${import.meta.env.CloudImg_URL}`;
 
 const { page, recurData } = Astro.props;
 
-const allHowTos = page.allHowTos
-  .filter((val) => val?.props?.page?.locale == page.locale)
-  .map((val) => val.props.page);
+const { howTos } = page;
 
-// @ts-ignore
-allHowTos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-const recentHowTos = allHowTos.filter(
-  (val) => val.Meta.URL_slug != page.Meta.URL_slug
+const recentHowTos = howTos.filter(
+  ({ Meta }) => Meta.URL_slug != page.Meta.URL_slug
 );
 
 const practicesHeadingsHTML = page.Method.map(

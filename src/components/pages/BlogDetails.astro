@@ -17,15 +17,10 @@ const url = `${import.meta.env.CloudImg_URL}`;
 
 const { page, recurData } = Astro.props;
 
-const allBlogs = page.allBlogs
-  .filter((val) => val?.props?.page?.locale == page.locale)
-  .map((val) => val.props.page);
+const { blogs } = page;
 
-// @ts-ignore
-allBlogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-const recentBlogs = allBlogs.filter(
-  (val) => val.Meta.URL_slug != page.Meta.URL_slug
+const recentBlogs = blogs.filter(
+  ({ Meta }) => Meta.URL_slug != page.Meta.URL_slug
 );
 ---
 

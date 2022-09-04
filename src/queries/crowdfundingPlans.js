@@ -25,6 +25,7 @@ const crowdfundingPlansQuery = `
             data {
               attributes {
                 locale
+                Perk
                 Title
                 TitleIcon_Name
                 Title_icon {
