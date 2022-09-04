@@ -12,13 +12,6 @@ const { Title: title } = page,
 ---
 
 <style lang="scss">
-  .basicInfoSecTxt {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-  }
-
   @media screen and (min-width: 640px) {
     .basicInfoSec {
       height: clamp(550px, 22vw + 420px, 820px);
@@ -32,7 +25,7 @@ const { Title: title } = page,
   contentDescription.length > 1 && (
     // Intro description
     <div class="block wrapper pt-[100px]">
-      <div class="prose max-w-none basicInfoSecTxt">
+      <div class="basicInfoSecTxt prose max-w-none line-clamp-5">
         <Markdown>{contentDescription}</Markdown>
       </div>
     </div>
@@ -50,10 +43,7 @@ const { Title: title } = page,
         {page.Heading_block}
       </h2>
 
-      <div
-        class="pt-0.5 mt-7 prose max-w-none basicInfoSecTxt"
-        style="-webkit-line-clamp: unset;"
-      >
+      <div class="pt-0.5 mt-7 prose max-w-none basicInfoSecTxt">
         <Markdown>{page.Block_text}</Markdown>
       </div>
     </div>

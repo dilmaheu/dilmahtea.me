@@ -31,18 +31,9 @@ const goal = 100000,
 <style lang="scss">
   @use "src/styles/colors";
 
-  .crowdHomeInfoTxt {
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.5rem);
-
-    @apply leading-normal tracking-tight overflow-hidden;
-
-    &,
-    a {
-      color: colors.$light-gray;
-    }
+  .crowdHomeInfoTxt,
+  .crowdHomeInfoTxt a {
+    color: colors.$light-gray;
   }
 </style>
 
@@ -223,7 +214,9 @@ const goal = 100000,
               </span>
             </span>
           </h2>
-          <div class="pt-0.5 mt-7 sm:mt-12 prose max-w-none crowdHomeInfoTxt">
+          <div
+            class="crowdHomeInfoTxt pt-0.5 mt-7 sm:mt-12 prose max-w-none line-clamp-5 leading-normal tracking-tight overflow-hidden"
+          >
             <Markdown>{page.Block_text}</Markdown>
           </div>
         </div>
