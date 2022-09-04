@@ -15,7 +15,7 @@ import CrowdfundingProgress from "@components/CrowdfundingProgress.astro";
 import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
 
 const { page } = Astro.props,
-  { CloudImg_URL: url } = import.meta.env;
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 
 const { supportersCount, totalAmountRaised } = await fetch(
   "https://crowdfunding-stats.scripts.dilmahtea.me"
@@ -83,7 +83,7 @@ const goal = 100000,
 
     <div class="w-full h-full relative" style="clip-path: url(#hero-curve-2);">
       <img
-        src={url +
+        src={imgSrcPrefix +
           page.Intro_blob.data.attributes.provider_metadata.public_id +
           `/cms`}
         style="height: 100%; width: 100%; position: relative; right: 50px; object-fit: cover;"
@@ -115,7 +115,7 @@ const goal = 100000,
   <div class="heroCurve3Container relative">
     <ClippedImg
       id="hero-curve-3"
-      src={url +
+      src={imgSrcPrefix +
         page.Intro_blob.data.attributes.provider_metadata.public_id +
         `/small`}
       path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
@@ -190,7 +190,7 @@ const goal = 100000,
   >
     <ClippedImg
       id="crowdHomeInfo_ImgFrame1"
-      src={url +
+      src={imgSrcPrefix +
         page.Block_blob.data.attributes.provider_metadata.public_id +
         `/cms`}
       className="relative"
@@ -230,7 +230,7 @@ const goal = 100000,
   <div class="w-screen">
     <ClippedImg
       id="crowdHomeInfoImgFrame2"
-      src={url +
+      src={imgSrcPrefix +
         page.Block_blob.data.attributes.provider_metadata.public_id +
         `/small`}
       path="M.282 0C.147 0 .062.021 0 .064V.97c.045.046.195.006.324 0C.473.963.625 1 .774 1A.561.561 0 0 0 1 .954v-.89c-.059-.061-.237 0-.32 0S.417 0 .282 0"

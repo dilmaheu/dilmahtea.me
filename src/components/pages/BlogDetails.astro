@@ -13,15 +13,12 @@ import HeroBackground from "@components/HeroBackground.astro";
 
 import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
 
-const url = `${import.meta.env.CloudImg_URL}`;
-
-const { page, recurData } = Astro.props;
-
-const { blogs } = page;
-
-const recentBlogs = blogs.filter(
-  ({ Meta }) => Meta.URL_slug != page.Meta.URL_slug
-);
+const { page, recurData } = Astro.props,
+  { blogs } = page,
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env,
+  recentBlogs = blogs.filter(
+    ({ Meta }) => Meta.URL_slug !== page.Meta.URL_slug
+  );
 ---
 
 <style is:inline>
@@ -71,7 +68,7 @@ const recentBlogs = blogs.filter(
                   >
                     <img
                       src={
-                        url +
+                        imgSrcPrefix +
                         author.attributes.Profile_picture.data.attributes
                           .provider_metadata.public_id +
                         `/authBlob`
@@ -137,7 +134,7 @@ const recentBlogs = blogs.filter(
   >
     <ClippedImg
       id="heroImgFrame2"
-      src={url +
+      src={imgSrcPrefix +
         page.Intro_blob.data.attributes.provider_metadata.public_id +
         `/small`}
       className="relative"
@@ -151,7 +148,7 @@ const recentBlogs = blogs.filter(
 <div class="block sm:hidden relative -mt-20 z-20 w-full heroCurve3Container">
   <ClippedImg
     id="heroImgFrame3"
-    src={url +
+    src={imgSrcPrefix +
       page.Intro_blob.data.attributes.provider_metadata.public_id +
       `/small`}
     path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
@@ -280,7 +277,7 @@ const recentBlogs = blogs.filter(
                 <a href={`/` + blog.Meta.URL_slug}>
                   <img
                     src={
-                      url +
+                      imgSrcPrefix +
                       blog.Intro_blob.data.attributes.provider_metadata
                         .public_id +
                       `/small`

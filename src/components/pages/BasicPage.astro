@@ -6,7 +6,7 @@ import BasicPageHero from "@components/BasicPageHero.astro";
 const { page } = Astro.props;
 
 const { Title: title } = page,
-  { CloudImg_URL: url } = import.meta.env,
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env,
   introText = page.Intro_text.split("\n")[0],
   contentDescription = page.Intro_text.replace(introText, "");
 ---
@@ -64,7 +64,7 @@ const { Title: title } = page,
           <ClippedImg
             id="basicInfoSec_ImgFrame1"
             src={
-              url +
+              imgSrcPrefix +
               page.Block_blob.data.attributes.provider_metadata.public_id +
               `/cms`
             }
@@ -100,7 +100,7 @@ const { Title: title } = page,
         <ClippedImg
           id="basicInfoSec_ImgFrame2"
           src={
-            url +
+            imgSrcPrefix +
             page.Block_blob.data.attributes.provider_metadata.public_id +
             `/small`
           }
