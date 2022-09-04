@@ -6,16 +6,19 @@ const { docLocale, availableLocales } = Astro.props,
   docLang = languages[locales.indexOf(docLocale)],
   availableLanguages = [];
 
+// get available alternate locales
 locales.forEach((locale, index) => {
   if (locale !== docLocale && [...availableLocales].includes(locale)) {
     availableLanguages.push(languages[index]);
   }
 });
 
+// get local names of available languages
 const localizedAvailableLanguages = availableLanguages.map(
   (language) => localeNamesData[docLang][language]
 );
 
+// sort lang selectors alphabetically
 localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
   nextLanguage.localeCompare(currentLanguage, "en-US")
 );

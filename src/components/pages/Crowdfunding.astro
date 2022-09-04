@@ -17,10 +17,12 @@ import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
 const { page } = Astro.props,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 
+// fetch crowdfunding stats from Cloudflare Worker
 const { supportersCount, totalAmountRaised } = await fetch(
   "https://crowdfunding-stats.scripts.dilmahtea.me"
 ).then((res) => res.json());
 
+// calculate crowdfunding progress percent
 const goal = 100000,
   initialProgress = `0%`,
   animationDuration = 1000,
