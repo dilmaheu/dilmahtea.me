@@ -3,7 +3,8 @@
     const { origin, pathname } = location,
       currentLocale = pathname.slice(1, 3),
       preferredLocaleUrl = new URL(
-        origin + pathname.replace(currentLocale, "en")
+        // preferredLocale is defined in SetPreferredLocale.astro
+        origin + pathname.replace(currentLocale, preferredLocale) 
       );
 
     preferredLocaleUrl.searchParams.append("requestedLocale", currentLocale);
