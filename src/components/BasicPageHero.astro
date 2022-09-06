@@ -10,11 +10,17 @@ const { title, introText } = Astro.props;
 
 <style lang="scss">
   @use "src/styles/colors";
+  @use "src/styles/typography";
 
   .hero-icon {
     @apply w-full object-contain;
 
     height: clamp(40px, 6vw + 15px, 100px);
+  }
+
+  .hero-title {
+    font-family: typography.$alice;
+    font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
   }
 
   .hero-text,
@@ -49,7 +55,7 @@ const { title, introText } = Astro.props;
           alt="Love"
         />
 
-        <h1 class="BasicHeroTitle">{title}</h1>
+        <h1 class="hero-title leading-tight tracking-tight">{title}</h1>
 
         <div class="pt-7 mt-0.5 prose max-w-none hero-text">
           <Markdown>{introText}</Markdown>
