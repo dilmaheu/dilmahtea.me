@@ -17,6 +17,85 @@ const { posts } = Astro.props.page,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 ---
 
+<style lang="scss">
+  @use "src/styles/colors";
+  @use "src/styles/typography";
+
+  .blogHome_heroAuth {
+    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
+  }
+
+  .blogHome_heroTitle {
+    font-family: typography.$alice;
+    font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
+  }
+
+  .blogHome_heroTitle,
+  .blogHome_blogTitle {
+    @apply leading-[1.2] underline decoration-[3px];
+  }
+
+  .blogHome_heroTxt {
+    color: colors.$light-gray;
+    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
+  }
+
+  .blogHome_HdItem {
+    font-size: clamp(0.625rem, 1.5vw + 0.01rem, 0.75rem);
+
+    @apply leading-normal before:content-[""] before:border-0;
+  }
+
+  .blogHome_blogItem {
+    font-size: clamp(0.625rem, 1.5vw + 0.01rem, 0.75rem);
+  }
+
+  .blogHome_blogAuth {
+    color: colors.$primary-color;
+    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
+  }
+
+  .blogHome_blogTitle {
+    color: colors.$dark;
+    font-family: typography.$alice;
+    font-size: clamp(1.75rem, 3.6vw + 0.01rem, 3.125rem);
+  }
+
+  .blogHome_blogTxt {
+    color: colors.$post-intro;
+    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem);
+  }
+
+  .blogLeafL_container {
+    @media (min-width: 476px) {
+      @apply left-[3%];
+    }
+
+    @apply -top-4 left-[7px] sm:-top-[9%] sm:left-[3.5%] lg:-top-[11%] lg:left-0 xl:-top-[46px] xl:left-[26px];
+  }
+
+  .blogLeafR_container {
+    @media (min-width: 476px) {
+      @apply left-0 bottom-0;
+    }
+
+    @apply -left-5 bottom-[7%] sm:left-[2%] md:left-[5%] lg:left-[68px] xl:left-[76px];
+  }
+
+  .blogLeaf {
+    height: clamp(55px, 8vw + 1px, 117px);
+    filter: drop-shadow(0px 8px 9px rgba(0, 0, 0, 0.5));
+  }
+
+  .BlogHeroCurveContainer {
+    padding-bottom: 110px;
+
+    @media (min-width: 825.98px) {
+      padding-bottom: 0;
+    }
+  }
+</style>
+
 {/* Hero Section */}
 <div class="hero overflow-hidden relative">
   <UpdateHeroTopMargin />
@@ -26,13 +105,15 @@ const { posts } = Astro.props.page,
   {/* Text Content */}
   <div class="relative h-full wrapper z-30 HeroTxtContainer">
     <div
-      class="sm:w-8/12 md:w-7/12 HeroTxtContent BlogHeroTxtContent"
+      class="HeroTxtContent sm:w-8/12 md:w-7/12 pt-[30px] sm:pt-5 md:pt-0"
       role="banner"
     >
       <div class="flex flex-wrap items-center">
         <div>
           <div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
-            <div class="flex flex-wrap font-bold blogHome_heroAuth">
+            <div
+              class="flex flex-wrap font-bold leading-normal blogHome_heroAuth"
+            >
               {
                 firstPost.authors.data.map((author, idx) => (
                   <a href="#">
@@ -54,7 +135,7 @@ const { posts } = Astro.props.page,
             </ul>
           </div>
 
-          <h1 class="blogHome_heroTitle">
+          <h1 class="blogHome_heroTitle pt-[10px] md:pt-5">
             <a href={`/` + firstPost.Meta.URL_slug}>{firstPost.Title}</a>
 
             <span class="icon relative top-0">
@@ -65,7 +146,9 @@ const { posts } = Astro.props.page,
           </h1>
 
           <a href={`/` + firstPost.Meta.URL_slug}>
-            <div class="prose max-w-none blogHome_heroTxt">
+            <div
+              class="blogHome_heroTxt prose max-w-none pt-[15px] sm:pt-3 md:pt-[15px] leading-[1.4] sm:leading-[1.2] md:leading-normal"
+            >
               <Markdown>{firstPost.Intro_text}</Markdown>
             </div>
           </a>
@@ -102,8 +185,8 @@ const { posts } = Astro.props.page,
 </div>
 
 {/* All Posts Section */}
-<div class="wrapper blogHome_blogs">
-  <div class="blogHome_blogsContainer">
+<div class="wrapper py-20">
+  <div class="flex flex-wrap items-center gap-y-20">
     <ClipPathSVG
       id="basicInfoSec_ImgFrame"
       path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
@@ -114,14 +197,20 @@ const { posts } = Astro.props.page,
         const even = idx % 2 === 0;
 
         return (
-          <div class="flex flex-wrap items-center blogHome_blogContaier">
+          <div class="flex flex-wrap items-center">
             <div
               class:list={[
                 !even && "sm:order-2",
-                "relative w-full sm:w-1/2 order-1 blogHome_blogCurveContainer",
+                "relative w-full sm:w-1/2 order-1 mb-4 sm:mb-0",
               ]}
             >
-              <div class={even ? "blogHome_blogCurveL" : "blogHome_blogCurveR"}>
+              <div
+                class={
+                  even
+                    ? "pr-0 sm:pr-5 md:pr-12 lg:pr-24"
+                    : "pl-0 sm:pl-5 md:pl-12 lg:pl-24"
+                }
+              >
                 <a href={`/` + post.Meta.URL_slug}>
                   <img
                     src={
@@ -142,7 +231,7 @@ const { posts } = Astro.props.page,
                         : "blogLeafR_container",
                     ]}
                   >
-                    <div class="blogLeaf">
+                    <div class="blogLeaf w-full">
                       <img
                         alt="tea-leaf-image"
                         class="w-full h-full"
@@ -155,7 +244,6 @@ const { posts } = Astro.props.page,
             </div>
 
             {/*Text content*/}
-
             <div
               class:list={[
                 !even && "sm:order-1",
@@ -165,13 +253,11 @@ const { posts } = Astro.props.page,
               <div
                 class:list={[
                   "flex flex-wrap",
-                  even
-                    ? "blogHome_blogTxtContaierL"
-                    : "blogHome_blogTxtContaierR",
+                  even ? "pr-0 sm:pr-5" : "pl-0 sm:pl-5",
                 ]}
               >
                 <div>
-                  <div class="flex flex-wrap font-bold blogHome_blogAuth">
+                  <div class="blogHome_blogAuth leading-normal flex flex-wrap font-bold">
                     {post.authors.data.map((author, idx) => (
                       <a href="#">
                         {`${idx > 0 ? ", " : " "}` +
@@ -181,7 +267,7 @@ const { posts } = Astro.props.page,
                   </div>
 
                   <ul class="flex flex-wrap items-center gap-y-1">
-                    <li class="blogHome_blogItem">
+                    <li class="blogHome_blogItem text-black leading-normal before:content-[''] before:border-0">
                       {new Date(post.createdAt).toLocaleString("en-US", {
                         day: "numeric",
                         month: "long",
@@ -189,7 +275,7 @@ const { posts } = Astro.props.page,
                     </li>
                   </ul>
 
-                  <h1 class="blogHome_blogTitle">
+                  <h1 class="blogHome_blogTitle pt-[5px] md:pt-2 lg:pt-[11px]">
                     <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
 
                     <span class="icon relative top-0">
@@ -204,7 +290,7 @@ const { posts } = Astro.props.page,
                   </h1>
 
                   <a href={`/` + post.Meta.URL_slug}>
-                    <div class="prose max-w-none blogHome_blogTxt">
+                    <div class="blogHome_blogTxt pt-5 leading-normal prose max-w-none">
                       <Markdown>{post.Intro_text}</Markdown>
                     </div>
                   </a>
