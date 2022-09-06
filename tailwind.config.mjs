@@ -15,6 +15,7 @@ export default {
         DEFAULT: {
           css: {
             "--tw-prose-headings": "#2b4b50",
+            "--tw-prose-links": "#2b4b50",
             "--tw-prose-bullets": "#2b4b50",
           },
         },
