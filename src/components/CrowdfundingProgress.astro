@@ -13,10 +13,30 @@ const { goalText, supportersText, supportersCount, totalAmountRaised } =
   .progress {
     background-color: colors.$crowdfunding-progress;
   }
+
+  .progressHeader {
+    line-height: 130%;
+    letter-spacing: -0.02em;
+    font-size: clamp(28px, 2vw + 1px, 40px);
+  }
+
+  .progressContent {
+    width: clamp(50px, 18vw + 120px, 400px);
+  }
+
+  .progeressTxt {
+    line-height: 140%;
+    color: rgba(227, 223, 222, 0.65);
+    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
+  }
+
+  .progeressTxtNum {
+    color: colors.$light-gray;
+  }
 </style>
 
-<div class="progressContent relative">
-  <div class="progressHeader">
+<div class="relative p-0 mx-auto w-full sm:mx-0 sm:w-auto sm:-ml-[60px] 2xl:ml-0">
+  <div class="progressHeader font-bold pt-[clamp(10px,7.5vw-9px,36px)] sm:pt-0">
     €<span class="total-amount-raised">{totalAmountRaised}</span>
   </div>
 
@@ -24,7 +44,10 @@ const { goalText, supportersText, supportersCount, totalAmountRaised } =
     <div class="progeressTxt">{goalText}</div>
 
     <div class="progeressTxt">
-      <span class="progeressTxtNum">{supportersCount}</span>
+      <span
+        class="progeressTxtNum text-[1.5rem] sm:text-[1.625rem] font-medium leading-none"
+        >{supportersCount}
+      </span>
       {supportersText}
     </div>
   </div>

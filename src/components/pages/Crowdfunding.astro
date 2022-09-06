@@ -33,9 +33,23 @@ const goal = 100000,
 <style lang="scss">
   @use "src/styles/colors";
 
+  .heroBtn {
+    color: colors.$primary-color;
+    background-color: colors.$light-gray;
+  }
+
   .crowdHomeInfoTxt,
   .crowdHomeInfoTxt a {
     color: colors.$light-gray;
+  }
+
+  .progressContentContainer {
+    @apply -ml-[60px] py-[min(4vw,60px)];
+
+    &,
+    .progressContainer {
+      @apply pl-0 sm:pl-[min(1.75vw+10px,32px)];
+    }
   }
 </style>
 
@@ -62,10 +76,10 @@ const goal = 100000,
         </div>
         <a href={page.Heading_button_link}>
           <div
-            class="flex items-center justify-center font-bold text-center heroBtn"
+            class="heroBtn flex items-center justify-center font-bold text-center rounded-full w-64 sm:w-44 md:w-64 p-4 sm:p-[10px] md:p-4 mt-10 sm:mt-2.5 md:mt-[clamp(40px,4vw+15px,70px)]"
           >
             <span class="icon relative top-0">
-              <span class="relative heroBtnIcon">
+              <span class="relative h-7">
                 <img class="w-full h-full" src={LoveGreenIcon} alt="cup-icon" />
               </span>
             </span>
@@ -95,9 +109,7 @@ const goal = 100000,
         <div
           class="inset-0 w-auto flex justify-center mx-auto progressContentContainer"
         >
-          <div
-            class="w-full h-full absolute top-0 left-0 progressContentContainerBackground"
-          >
+          <div class="w-full h-full absolute top-0 left-0 bg-black opacity-75">
           </div>
 
           <CrowdfundingProgress
@@ -114,7 +126,7 @@ const goal = 100000,
 
 {/* Blob Image - Mobile View */}
 <div class="block sm:hidden relative -mt-20 z-20 w-full">
-  <div class="heroCurve3Container relative">
+  <div class="heroCurve3Container w-full relative">
     <ClippedImg
       id="hero-curve-3"
       src={imgSrcPrefix +
