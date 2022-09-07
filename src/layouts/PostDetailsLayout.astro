@@ -19,24 +19,149 @@ const { page, posts, recurData, headingType } = Astro.props,
   );
 ---
 
-<style is:inline>
-  .chapter-link img,
-  .chapter-link-sm img {
-    opacity: 0;
+<style lang="scss" is:global>
+  #detailedBlog p a {
+    @apply px-1 no-underline bg-bottom bg-no-repeat transition-all;
+
+    background-size: 100% 50%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23a7bcbc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
+
+    &:hover {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23a0b0b0'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
+    }
+  }
+</style>
+
+<style lang="scss">
+  @use "src/styles/colors";
+  @use "src/styles/typography";
+
+  .blogDetails_heroAuth {
+    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
   }
 
-  .chapter-link.active img,
-  .chapter-link-sm.active img {
-    opacity: 1;
+  .blogDetails_heroTitle {
+    font-family: typography.$alice;
+    font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
+
+    @apply pt-4 sm:pt-2.5 md:pt-5 leading-[1.2] underline decoration-[3px];
   }
 
-  .chapter-link.active {
+  .blogDetails_heroTxt {
+    color: colors.$light-gray;
+    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
+
+    @apply pt-4 sm:pt-3 md:pt-4 leading-[1.4] sm:leading-[1.2] md:leading-normal line-clamp-5;
+  }
+
+  .blogHome_HdItem {
+    font-size: clamp(0.625rem, 1.5vw + 0.01rem, 0.75rem);
+
+    @apply leading-normal before:content-[""] before:border-0;
+  }
+
+  #blogContent_StickyContainer {
+    color: colors.$primary-color;
+
+    @apply mb-20 w-full md:w-auto pl-[clamp(24px,3.8vw+0.16px,50px)] lg:pl-[clamp(70px,11.3125vw-46px,128px)];
+  }
+
+  #blogContent_StickyContainerMd {
+    @apply w-full top-0 z-[998];
+
+    color: colors.$primary-color;
+    box-shadow: 0 4px 5px gray;
+    background: colors.$light-gray;
+  }
+
+  #sticky_p_bar {
+    @apply py-[2.5px] duration-150;
+
+    background: colors.$primary-color;
+    border-top-right-radius: 0.127rem;
+    border-bottom-right-radius: 0.157rem;
+  }
+
+  #blog_StickyHeader {
     font-weight: 700;
+    font-size: clamp(1.5rem, 2.2vw + 0.15rem, 2rem);
+    padding-bottom: clamp(1.25rem, 3.6vw + 0.01rem, 3.125rem);
   }
 
-  .chapter-link-sm.active {
-    font-weight: 500;
-    color: rgba(43, 75, 80, 0.8);
+  #blog_StickyItemContainer {
+    @apply grid leading-[1.2];
+
+    font-size: clamp(1.25rem, 1.2vw + 0.1rem, 1.5rem);
+    row-gap: clamp(1.25rem, 2.5vw + 0.25rem, 2.375rem);
+  }
+
+  #blog_StickyDropdownItem {
+    border-color: colors.$sticky-dropdown-border-top;
+
+    @apply max-h-[70vh] pt-[13px] pb-[35px] overflow-y-auto border-t border-solid;
+  }
+
+  .blog_StickyItemHeaderImgMd {
+    @apply w-[20px] h-full mr-[15px];
+  }
+
+  .blog_StickyItemImgMd {
+    @apply w-[15px] h-full mr-[10px];
+  }
+
+  .blogDetails_recentTitle {
+    margin-bottom: 25px;
+    color: colors.$primary-color;
+    font-family: typography.$alice;
+    font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
+  }
+
+  .blogDetails_CardsContainer {
+    @apply mb-[55px] gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)];
+  }
+
+  .blogDetails_Card {
+    @apply w-full max-w-[380px] sm:max-w-none;
+  }
+
+  .blogDetails_CardConentConatiner {
+    padding: clamp(20px, 6.4vw, 40px) clamp(24px, 3.8vw + 11.75px, 36px);
+
+    @media (min-width: 640px) {
+      padding: clamp(30px, 7.8125vw - 20px, 60px)
+        clamp(28px, 4.6875vw - 2px, 46px);
+    }
+
+    @media (min-width: 1024px) {
+      padding: clamp(30px, 8vw - 51.75px, 60px) clamp(28px, 4.8vw - 21px, 46px);
+    }
+  }
+
+  .blogHome_cardItemContainer {
+    @apply gap-y-1;
+  }
+
+  .blogDetails_cardAuth {
+    line-height: 150%;
+    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem);
+  }
+
+  .blogHome_cardItem {
+    font-size: clamp(0.625rem, 1.5vw + 0.01rem, 0.75rem);
+
+    @apply leading-[1.2] before:content-[""] before:border-0;
+  }
+
+  .blogDetails_CardTitle {
+    @apply mt-[15px] leading-[1.1];
+
+    font-family: typography.$alice;
+    font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
+  }
+
+  .blogDetails_CardTitleIcon {
+    width: auto;
+    height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
   }
 </style>
 
@@ -49,7 +174,7 @@ const { page, posts, recurData, headingType } = Astro.props,
   {/* Text Content */}
   <div class="relative h-full wrapper z-30 HeroTxtContainer">
     <div
-      class="sm:w-8/12 md:w-7/12 HeroTxtContent BlogDetails_HeroTxtContent"
+      class="HeroTxtContent sm:w-8/12 md:w-7/12 pt-8 sm:pt-5 md:pt-0"
       role="banner"
     >
       <div class="flex flex-wrap items-start">
@@ -60,8 +185,8 @@ const { page, posts, recurData, headingType } = Astro.props,
                 page.authors.data.map((author, index) => (
                   <div
                     class:list={[
-                      "blogDetails_authImg",
                       index > 0 && "relative -ml-5",
+                      "w-12 h-12 overflow-hidden rounded-full object-cover",
                     ]}
                   >
                     <img
@@ -75,6 +200,7 @@ const { page, posts, recurData, headingType } = Astro.props,
                         author.attributes.Profile_picture.data.attributes
                           .alternativeText
                       }
+                      class="w-full h-full"
                     />
                   </div>
                 ))
@@ -82,7 +208,9 @@ const { page, posts, recurData, headingType } = Astro.props,
             </div>
 
             <div class="grid content-between">
-              <div class="flex flex-wrap font-bold blogDetails_heroAuth">
+              <div
+                class="flex flex-wrap font-bold leading-normal blogDetails_heroAuth"
+              >
                 {
                   page.authors.data.map((author, index) => (
                     <a href="#">
@@ -155,7 +283,7 @@ const { page, posts, recurData, headingType } = Astro.props,
 <slot name="how-to-steps" />
 
 {/* Blog Section */}
-<div class="blogContentContainer" role="main">
+<div class="py-6 sm:py-12" role="main">
   <div
     class="hidden md:hidden sticky overflow-hidden self-start"
     id="blogContent_StickyContainerMd"
@@ -166,7 +294,7 @@ const { page, posts, recurData, headingType } = Astro.props,
     >
       <div
         id="blogStickyBtn"
-        class="flex items-center justify-between gap-x-1.5 md:gap-x-3 font-bold focus:outline-none"
+        class="flex items-center justify-between p-[15px] gap-x-1.5 md:gap-x-3 font-bold cursor-pointer focus:outline-none"
       >
         <div id="blog_StickyDropdown" class="flex">
           <div>
@@ -200,7 +328,7 @@ const { page, posts, recurData, headingType } = Astro.props,
     <div id="sticky_p_bar"></div>
   </div>
 
-  <div class="wrapper w-full flex flex-wrap flex-col-reverse md:flex-row">
+  <div class="wrapper w-full flex flex-col-reverse md:flex-row">
     <ClipPathSVG
       id="content-images-curve"
       path="M.516.008C.36.008.1-.008.04.082S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1.005.624 1.021.395.945.128.897-.045.734.008.516.008"
@@ -214,20 +342,22 @@ const { page, posts, recurData, headingType } = Astro.props,
       }
     </style>
 
-    <div id="detailedBlog" class="md:w-8/12">
+    <div id="detailedBlog" class="md:min-w-[66.666667%]">
       <slot name="post-details" />
     </div>
 
     <div
-      class="md:w-4/12 blogContent_StickyContainer md:sticky top-0 overflow-hidden self-start"
+      class="md:min-w-[33.333333%] md:sticky top-0 overflow-hidden self-start"
       id="blogContent_StickyContainer"
     >
-      <h3 id="blog_StickyHeader">{headingType}</h3>
+      <div class="w-full">
+        <h3 id="blog_StickyHeader">{headingType}</h3>
 
-      <div id="blog_StickyItemContainer">
-        <Chapters>
-          <slot name="chapters-source-html" />
-        </Chapters>
+        <div id="blog_StickyItemContainer">
+          <Chapters>
+            <slot name="chapters-source-html" />
+          </Chapters>
+        </div>
       </div>
     </div>
   </div>

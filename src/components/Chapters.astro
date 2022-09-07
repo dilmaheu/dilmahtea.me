@@ -16,7 +16,35 @@ const { type = "desktop" } = Astro.props as Props,
   @use "src/styles/colors";
 
   a {
+    @apply inline-flex items-center;
+
     color: colors.$sticky-dropdown-item;
+
+    img {
+      width: clamp(35px, 4.6875vw - 18.75px, 45px);
+      margin-right: clamp(10px, 4.6875vw - 43.75px, 20px);
+    }
+
+    &.chapter-link {
+      &:not(.active) img {
+        @apply md:opacity-0;
+      }
+
+      &.active {
+        @apply md:font-bold;
+      }
+    }
+
+    &.chapter-link-sm {
+      &:not(.active) img {
+        opacity: 0;
+      }
+
+      &.active {
+        font-weight: 500;
+        color: rgba(43, 75, 80, 0.8);
+      }
+    }
   }
 </style>
 
@@ -35,6 +63,7 @@ const { type = "desktop" } = Astro.props as Props,
         src={rightArrowGreen}
         alt="Green Right Arrow"
         class:list={[
+          "h-full",
           type === "mobile" ? "blog_StickyItemImgMd" : "blog_StickyItemImg",
         ]}
       />
