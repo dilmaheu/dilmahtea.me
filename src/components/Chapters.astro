@@ -49,11 +49,11 @@ const { type = "desktop" } = Astro.props as Props,
 </style>
 
 {
-  [...headings].map(({ id, innerText }, index) => (
+  [...headings].map(({ id, innerText }, i) => (
     <a
       href={"#" + id}
       class:list={[
-        index === 0 && "active",
+        i === 0 && "active",
         type !== "mobile"
           ? "chapter-link"
           : "chapter-link-sm flex items-center pt-6 font-normal",
@@ -64,7 +64,7 @@ const { type = "desktop" } = Astro.props as Props,
         alt="Green Right Arrow"
         class:list={[
           "h-full",
-          type === "mobile" ? "blog_StickyItemImgMd" : "blog_StickyItemImg",
+          type === "mobile" && "w-[15px] h-full mr-[10px]",
         ]}
       />
       <Fragment set:text={innerText} />
