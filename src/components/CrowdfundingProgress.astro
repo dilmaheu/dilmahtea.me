@@ -6,6 +6,22 @@ const { goalText, supportersText, supportersCount, totalAmountRaised } =
 <style lang="scss">
   @use "src/styles/colors";
 
+  .progress-header {
+    line-height: 130%;
+    letter-spacing: -0.02em;
+    font-size: clamp(28px, 2vw + 1px, 40px);
+  }
+
+  .progress-text {
+    line-height: 140%;
+    color: rgba(227, 223, 222, 0.65);
+    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
+  }
+
+  .supporters-count {
+    color: colors.$light-gray;
+  }
+
   .progress-bar {
     background-color: colors.$light-gray;
   }
@@ -14,50 +30,39 @@ const { goalText, supportersText, supportersCount, totalAmountRaised } =
     background-color: colors.$crowdfunding-progress;
   }
 
-  .progressHeader {
-    line-height: 130%;
-    letter-spacing: -0.02em;
-    font-size: clamp(28px, 2vw + 1px, 40px);
-  }
-
   .progressContent {
     width: clamp(50px, 18vw + 120px, 400px);
   }
-
-  .progeressTxt {
-    line-height: 140%;
-    color: rgba(227, 223, 222, 0.65);
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
-  }
-
-  .progeressTxtNum {
-    color: colors.$light-gray;
-  }
 </style>
 
-<div class="relative p-0 mx-auto w-full sm:mx-0 sm:w-auto sm:-ml-[60px] 2xl:ml-0">
-  <div class="progressHeader font-bold pt-[clamp(10px,7.5vw-9px,36px)] sm:pt-0">
+<div
+  class="relative w-full sm:w-auto p-0 mx-auto sm:mx-0 sm:-ml-[60px] 2xl:ml-0"
+>
+  <div
+    class="progress-header font-bold pt-[clamp(10px,7.5vw-9px,36px)] sm:pt-0"
+  >
     €<span class="total-amount-raised">{totalAmountRaised}</span>
   </div>
 
-  <div class="flex flex-wrap gap-x-1.5 justify-between">
-    <div class="progeressTxt">{goalText}</div>
+  <div class="flex flex-wrap justify-between gap-x-1.5 ">
+    <div class="progress-text">{goalText}</div>
 
-    <div class="progeressTxt">
+    <div class="progress-text">
       <span
-        class="progeressTxtNum text-[1.5rem] sm:text-[1.625rem] font-medium leading-none"
-        >{supportersCount}
+        class="supporters-count text-[1.5rem] sm:text-[1.625rem] font-medium leading-none"
+      >
+        {supportersCount}
       </span>
       {supportersText}
     </div>
   </div>
 
   <div
-    class="mt-1 sm:mt-2 md:mt-3 w-full bg-default-light-gray rounded-full progress-bar"
+    class="progress-bar bg-default-light-gray w-full mt-1 sm:mt-2 md:mt-3 rounded-full"
   >
     <div
       style="width: 0%"
-      class="progress bg-default-green rounded-full py-1.5"
+      class="progress bg-default-green py-1.5 rounded-full"
     >
     </div>
   </div>
