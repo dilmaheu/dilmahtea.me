@@ -23,10 +23,12 @@ const { title, introText } = Astro.props;
     font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
   }
 
-  .hero-text,
-  .hero-text a {
-    color: colors.$light-gray;
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem);
+  .hero-text {
+    &,
+    a {
+      color: colors.$light-gray;
+      font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem);
+    }
   }
 </style>
 
@@ -36,10 +38,10 @@ const { title, introText } = Astro.props;
   <HeroBackground />
 
   <div
-    class="relative z-30 flex flex-wrap justify-center h-full wrapper HeroTxtContainer"
+    class="hero-text-container wrapper relative h-full flex flex-wrap justify-center z-30"
   >
     <div
-      class="w-full md:w-9/12 lg:w-7/12 text-center justify-center HeroTxtContent"
+      class="hero-text-content w-full md:w-9/12 lg:w-7/12 text-center justify-center"
       role="banner"
     >
       <div>
@@ -57,7 +59,7 @@ const { title, introText } = Astro.props;
 
         <h1 class="hero-title leading-tight tracking-tight">{title}</h1>
 
-        <div class="pt-7 mt-0.5 prose max-w-none hero-text">
+        <div class="hero-text prose max-w-none pt-7 mt-0.5">
           <Markdown>{introText}</Markdown>
         </div>
       </div>
