@@ -28,37 +28,26 @@ localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
   @use "src/styles/colors";
 
   .lang-selector {
-    @apply font-bold w-full;
-
     background-color: colors.$light-gray;
   }
 
   #lang-selector-dropdown {
     color: colors.$primary-color;
 
-    @apply scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1];
-
-    #lang-selector-dropdown-menu {
-      @apply hidden w-full;
-
-      border-radius: 0 0 25px 25px;
-      border-top: 1px solid colors.$primary-color;
-    }
-
     #lang-selector-button {
       border-radius: 25px;
+      border-radius: 25px 25px 0 0;
       background-color: colors.$light-gray;
+    }
 
-      @apply p-3.5 w-44 max-w-[40vw] cursor-pointer;
+    #lang-selector-dropdown-menu {
+      border-radius: 0 0 25px 25px;
+      border-top: 1px solid colors.$primary-color;
     }
 
     &.dropdown-open {
       #lang-selector-dropdown-menu {
         display: block;
-      }
-
-      #lang-selector-button {
-        border-radius: 25px 25px 0 0;
       }
     }
   }
@@ -66,19 +55,18 @@ localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
 
 <div
   id="lang-selector-dropdown"
-  class="text-sm lg:text-base font-bold relative select-none"
+  class="relative font-bold text-sm lg:text-base select-none scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]"
 >
   <div
     role="button"
     id="lang-selector-button"
-    class="flex items-center justify-between gap-x-1.5 md:gap-x-3 font-bold focus:outline-none"
+    class="flex items-center justify-between w-44 p-3.5 gap-x-1.5 md:gap-x-3 max-w-[40vw] cursor-pointer font-bold focus:outline-none"
   >
     <div class="font-bold">{docLang}</div>
 
     <div class="w-3">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7">
         <path
-          class="cls-1"
           d="M.3.3A.6.6,0,0,1,.9,0a.9.9,0,0,1,.6.3L5.8,4.6,10.2.3a.6.6,0,0,1,.6-.3l.6.3a.8.8,0,0,1,.2.6.7.7,0,0,1-.2.6l-5,4.9a.6.6,0,0,1-.6.3.9.9,0,0,1-.6-.3L.3,1.5A.9.9,0,0,1,0,.9.6.6,0,0,1,.3.3Z"
           fill="#2B4B50"></path>
       </svg>
@@ -87,7 +75,7 @@ localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
 
   <ul
     id="lang-selector-dropdown-menu"
-    class="absolute rounded hidden overflow-hidden"
+    class="absolute hidden overflow-hidden w-full font-bold rounded"
   >
     {
       localizedAvailableLanguages.map((localizedLanguage, i) => {
@@ -101,7 +89,7 @@ localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
               lang={lang}
               class:list={[
                 lang,
-                "lang-selector p-4 cursor-pointer hover:bg-gray-300 flex flex-wrap items-center gap-x-1.5 md:gap-x-3",
+                "lang-selector flex flex-wrap items-center p-4 gap-x-1.5 md:gap-x-3 hover:bg-gray-300 cursor-pointer",
               ]}
             >
               <span class="lang">
