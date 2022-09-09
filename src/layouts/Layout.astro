@@ -27,26 +27,12 @@ interface Props {
 
 const { meta, locale, recurData, availableLocales, metaImage } =
   Astro.props as Props;
-let { noindex, nofollow } = meta;
-const title = meta.HTML_Title;
-const description = meta.Meta_description;
-const image = metaImage;
-const canonicalURL = meta.Canonical_link;
-const slugURL = meta.URL_slug;
 
-let noIndex = "";
-if (noindex === true) {
-  noIndex = "noindex";
-}
-let noFollow = "";
-if (nofollow === true) {
-  noFollow = "nofollow";
-}
-
-const footerText = recurData.Footer_text.replaceAll(
-  "<current_year>",
-  `${new Date().getFullYear()}`
-);
+const { URL_slug: slugURL } = meta,
+  footerText = recurData.Footer_text.replaceAll(
+    "<current_year>",
+    `${new Date().getFullYear()}`
+  );
 
 const { Type: notificationType, localizedNotifications } =
   getLangNotAvailableNotification();
@@ -82,15 +68,10 @@ const { Type: notificationType, localizedNotifications } =
     <NotificationsObserver />
 
     <MainHead
-      {title}
-      {description}
-      {noIndex}
-      {noFollow}
-      {image}
-      {locale}
-      {canonicalURL}
-      {slugURL}
-      {availableLocales}
+      meta={meta}
+      locale={locale}
+      metaImage={metaImage}
+      availableLocales={availableLocales}
     />
 
     <style lang="scss">
