@@ -13,8 +13,6 @@ const { allPlans } = Astro.props,
   .PlanCard {
     padding: calc(2.5vw + 17.5px);
     background-color: colors.$primary-color;
-
-    @apply w-full h-auto rounded-[45px] lg:rounded-[60px];
   }
 
   .PlanCardPrice {
@@ -39,25 +37,25 @@ const { allPlans } = Astro.props,
   .PlanCardBtn {
     color: colors.$primary-color;
     background-color: colors.$light-gray;
-
-    @apply p-[17px] min-w-[140px] rounded-[20px];
   }
 
   .planSecLeafImg {
-    @apply w-[120px] h-full;
-
     filter: drop-shadow(0px 8px 9px rgba(0, 0, 0, 0.5));
   }
 </style>
 
 <div
-  class="w-full grid md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-10 justify-items-center mx-auto"
   role="list"
   aria-label="Plans"
+  class="w-full grid md:grid-cols-2 xl:grid-cols-3 justify-center mx-auto gap-6 lg:gap-10"
 >
   {
     allPlans.map((plan) => (
-      <div class="PlanCard" role="listitem" aria-label={`Plan ${plan.Title}`}>
+      <div
+        role="listitem"
+        aria-label={`Plan ${plan.Title}`}
+        class="PlanCard w-full h-auto rounded-[45px] lg:rounded-[60px]"
+      >
         <div class="inline-flex items-end gap-x-3.5">
           <h3 class="text-xl alice">{plan.Title}</h3>
 
@@ -76,12 +74,12 @@ const { allPlans } = Astro.props,
 
         <div class="text-lg pb-6 mb-0.5">{plan.Intro_text}</div>
 
-        <div class="prose max-w-none mb-5 text-white PlanCardList">
+        <div class="PlanCardList prose max-w-none mb-5 text-white">
           <Markdown>{plan.List}</Markdown>
         </div>
 
         <a href={`/plans/${plan.Title.toLowerCase()}`} class="flex">
-          <div class="font-bold text-center PlanCardBtn">
+          <div class="PlanCardBtn font-bold text-center min-w-[140px] p-[17px] rounded-[20px]">
             {plan.Button_text}
           </div>
         </a>
@@ -90,6 +88,8 @@ const { allPlans } = Astro.props,
   }
 </div>
 
-<div class="hidden xl:block relative -mt-20 -ml-12 planSecLeafImg">
+<div
+  class="relative hidden xl:block h-full -mt-20 -ml-12 w-[120px] planSecLeafImg"
+>
   <img class="w-full h-full" src={LeafImg} alt="tea-leaf-image" />
 </div>
