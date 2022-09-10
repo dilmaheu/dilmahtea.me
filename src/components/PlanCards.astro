@@ -10,17 +10,17 @@ const { allPlans } = Astro.props,
   @use "src/styles/colors";
   @use "src/styles/typography";
 
-  .PlanCard {
+  .plan-card {
     padding: calc(2.5vw + 17.5px);
     background-color: colors.$primary-color;
   }
 
-  .PlanCardPrice {
+  .plan-price {
     font-size: 3.375rem;
     font-family: typography.$alice;
   }
 
-  .PlanCardList ul {
+  .plan-offerings ul {
     padding-left: 0;
 
     li {
@@ -34,12 +34,12 @@ const { allPlans } = Astro.props,
     }
   }
 
-  .PlanCardBtn {
+  .plan-button {
     color: colors.$primary-color;
     background-color: colors.$light-gray;
   }
 
-  .planSecLeafImg {
+  .plan-section-leaf {
     filter: drop-shadow(0px 8px 9px rgba(0, 0, 0, 0.5));
   }
 </style>
@@ -47,49 +47,50 @@ const { allPlans } = Astro.props,
 <div
   role="list"
   aria-label="Plans"
-  class="w-full grid md:grid-cols-2 xl:grid-cols-3 justify-center mx-auto gap-6 lg:gap-10"
+  class="w-full grid md:grid-cols-2 xl:grid-cols-3 justify-center gap-6 lg:gap-10"
 >
   {
     allPlans.map((plan) => (
       <div
         role="listitem"
         aria-label={`Plan ${plan.Title}`}
-        class="PlanCard w-full h-auto rounded-[45px] lg:rounded-[60px]"
+        class="plan-card w-full h-auto rounded-[45px] lg:rounded-[60px]"
       >
         <div class="inline-flex items-end gap-x-3.5">
           <h3 class="text-xl alice">{plan.Title}</h3>
 
-          <div class="h-[35px] max-w-[35px]">
-            <img
-              class="w-full h-full"
-              src={imgSrcPrefix + plan.TitleIcon_Name + `.svg`}
-              alt="icon"
-            />
-          </div>
+          <img
+            class="h-[35px] max-w-[35px]"
+            src={imgSrcPrefix + plan.TitleIcon_Name + `.svg`}
+            alt="icon"
+          />
         </div>
 
-        <div class="PlanCardPrice pb-6 mb-0.5">
+        <div class="plan-price pb-6 mb-0.5">
           &#8364;{plan.Price_EUR_excl_VAT}
         </div>
 
         <div class="text-lg pb-6 mb-0.5">{plan.Intro_text}</div>
 
-        <div class="PlanCardList prose max-w-none mb-5 text-white">
+        <div class="plan-offerings prose max-w-none mb-5 text-white">
           <Markdown>{plan.List}</Markdown>
         </div>
 
-        <a href={`/plans/${plan.Title.toLowerCase()}`} class="flex">
-          <div class="PlanCardBtn font-bold text-center min-w-[140px] p-[17px] rounded-[20px]">
-            {plan.Button_text}
-          </div>
+        <a
+          href={`/plans/${plan.Title.toLowerCase()}`}
+          class="plan-button inline-block font-bold text-center min-w-[140px] p-[17px] rounded-[20px]"
+        >
+          {plan.Button_text}
         </a>
       </div>
     ))
   }
 </div>
 
-<div
-  class="relative hidden xl:block h-full -mt-20 -ml-12 w-[120px] planSecLeafImg"
->
-  <img class="w-full h-full" src={LeafImg} alt="tea-leaf-image" />
-</div>
+<img
+  width="120"
+  height="115"
+  src={LeafImg}
+  alt="Tea Leaf"
+  class="plan-section-leaf hidden xl:block -mt-20 -ml-12"
+/>
