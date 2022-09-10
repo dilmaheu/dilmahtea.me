@@ -2,9 +2,10 @@
 import Logo from "@images/logo.svg";
 import LeafImg from "@images/greenLeaf3.webp";
 import LeafImgMd from "@images/greenLeaf2.webp";
+import FooterBackground from "@images/footer-background.webp";
+
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
-import FooterBackground from "@images/willian-justen-de-vasconcellos-_MMP5j_fCqw-unsplash_footer.webp";
 
 declare interface Props {
   footerText: string;
@@ -14,7 +15,7 @@ const { footerText } = Astro.props as Props;
 ---
 
 <style lang="scss">
-  .footer {
+  footer {
     height: clamp(230px, 35vw + 30px, 300px);
   }
 
@@ -48,67 +49,49 @@ const { footerText } = Astro.props as Props;
   }
 </style>
 
-<footer class="relative">
-  <div class="footer relative" role="contentinfo">
-    <ClipPathSVG
-      id="footer-curve"
-      path="M0 1V0h.918S.98.021.989.129c.01.12-.003.243-.007.367C.979.593 1.01.827.997 1"
-    />
+<footer class="relative" role="contentinfo">
+  <ClipPathSVG
+    id="footer-curve"
+    path="M0 1V0h.918S.98.021.989.129c.01.12-.003.243-.007.367C.979.593 1.01.827.997 1"
+  />
 
-    <ClipPathSVG
-      id="footer-curve-md"
-      path="M0 1V0h.956C.981.012 1 .081 1 .16S.995.318.981.458C.972.552.975.614.968.71.962.797.925 1 .882 1"
-    />
+  <ClipPathSVG
+    id="footer-curve-md"
+    path="M0 1V0h.956C.981.012 1 .081 1 .16S.995.318.981.458C.972.552.975.614.968.71.962.797.925 1 .882 1"
+  />
 
-    <img
-      src={FooterBackground}
-      class="footer-background absolute w-full h-full top-0 z-10 object-cover"
-    />
+  <img
+    src={FooterBackground}
+    class="footer-background absolute w-full h-full top-0 z-10 object-cover"
+  />
 
-    <div class="relative h-full z-20">
-      <div
-        class="wrapper h-full flex flex-wrap py-[clamp(24px,3vw+5.4pz,56px)]"
-      >
-        <div class="grid md:flex md:flex-wrap items-center gap-8 md:gap-14">
-          <a href="/" class="brand-logo">
-            <img
-              src={Logo}
-              class="w-full h-full"
-              alt="Dilmah Tea | Brand Logo"
-            />
-          </a>
+  <div
+    class="wrapper relative z-20 h-full flex flex-wrap py-[clamp(24px,3vw+6.4px,56px)]"
+  >
+    <div class="grid md:flex md:flex-wrap items-center gap-8 md:gap-14">
+      <a href="/" class="brand-logo">
+        <img src={Logo} class="w-full h-full" alt="Dilmah Tea | Brand Logo" />
+      </a>
 
-          <nav class="grid md:flex flex-wrap items-center gap-2.5 md:gap-5">
-            <a href="/crowdfunding">Crowdfunding</a>
+      <nav class="grid md:flex flex-wrap items-center gap-2.5 md:gap-5">
+        <a href="/crowdfunding">Crowdfunding</a>
 
-            <a href="/blog">Blog</a>
+        <a href="/blog">Blog</a>
 
-            {shouldDisplayExperimentals() && <a href="/howto">How-to</a>}
-          </nav>
-        </div>
-
-        <div class="w-full flex justify-center mt-auto">
-          <p class="copyright text-center" set:html={footerText}></p>
-        </div>
-      </div>
+        {shouldDisplayExperimentals() && <a href="/howto">How-to</a>}
+      </nav>
     </div>
 
-    <div
-      class="absolute flex mt-auto md:items-end -top-16 md:-top-1.5 right-0 z-30"
-    >
-      <div class="footer-leaf w-full">
-        <img
-          class="hidden md:block w-full h-full"
-          src={LeafImgMd}
-          alt="Tea Leaf"
-        />
-
-        <img
-          class="block md:hidden w-full h-full"
-          src={LeafImg}
-          alt="Tea Leaf"
-        />
-      </div>
+    <div class="w-full flex justify-center mt-auto">
+      <p class="copyright text-center" set:html={footerText}></p>
     </div>
+  </div>
+
+  <div
+    class="footer-leaf absolute z-30 flex md:items-end mt-auto -top-16 md:-top-1.5 right-0"
+  >
+    <img class="hidden md:block w-full h-full" src={LeafImgMd} alt="Tea Leaf" />
+
+    <img class="block md:hidden w-full h-full" src={LeafImg} alt="Tea Leaf" />
   </div>
 </footer>
