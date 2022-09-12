@@ -1,7 +1,7 @@
 ---
 import CupIcon from "@images/cup.svg";
 import LeafImg from "@images/greenLeaf5.webp";
-import LeafImg1 from "@images/greenLeaf.webp";
+import LeafImgRight from "@images/greenLeaf.webp";
 import CupGreenIcon from "@images/cupGreen.svg";
 
 import Markdown from "@astrojs/markdown-component";
@@ -21,52 +21,51 @@ const { posts } = Astro.props.page,
   @use "src/styles/colors";
   @use "src/styles/typography";
 
-  .blogHome_heroAuth {
+  .hero-post-author {
     font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
   }
 
-  .blogHome_heroTitle {
+  .hero-post-title {
     font-family: typography.$alice;
     font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
   }
 
-  .blogHome_heroTitle,
-  .blogHome_blogTitle {
+  .hero-post-title,
+  .post-title {
     @apply leading-[1.2] underline decoration-[3px];
   }
 
-  .blogHome_heroTxt {
+  .hero-text {
     color: colors.$light-gray;
     font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
   }
 
-  .blogHome_HdItem {
-    font-size: clamp(0.625rem, 1.5vw + 0.01rem, 0.75rem);
-
-    @apply leading-normal before:content-[""] before:border-0;
-  }
-
-  .blogHome_blogItem {
+  .post-publish-date {
     font-size: clamp(0.625rem, 1.5vw + 0.01rem, 0.75rem);
   }
 
-  .blogHome_blogAuth {
+  .post-author {
     color: colors.$primary-color;
     font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
   }
 
-  .blogHome_blogTitle {
+  .post-title {
     color: colors.$dark;
     font-family: typography.$alice;
     font-size: clamp(1.75rem, 3.6vw + 0.01rem, 3.125rem);
   }
 
-  .blogHome_blogTxt {
+  .post-intro {
     color: colors.$post-intro;
     font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem);
   }
 
-  .blogLeafL_container {
+  .post-leaf {
+    height: clamp(55px, 8vw + 1px, 117px);
+    filter: drop-shadow(0px 8px 9px rgba(0, 0, 0, 0.5));
+  }
+
+  .post-leaf-left {
     @apply -top-4 left-[7px];
 
     @media (min-width: 476px) {
@@ -78,7 +77,7 @@ const { posts } = Astro.props.page,
     }
   }
 
-  .blogLeafR_container {
+  .post-leaf-right {
     @apply -left-5 bottom-[7%];
 
     @media (min-width: 476px) {
@@ -88,11 +87,6 @@ const { posts } = Astro.props.page,
     & {
       @apply sm:left-[2%] md:left-[5%] lg:left-[68px] xl:left-[76px];
     }
-  }
-
-  .blogLeaf {
-    height: clamp(55px, 8vw + 1px, 117px);
-    filter: drop-shadow(0px 8px 9px rgba(0, 0, 0, 0.5));
   }
 </style>
 
@@ -105,62 +99,52 @@ const { posts } = Astro.props.page,
   {/* Text Content */}
   <div class="relative h-full wrapper z-30 hero-text-container">
     <div
-      class="hero-text-content sm:w-8/12 md:w-7/12 pt-[30px] sm:pt-5 md:pt-0"
       role="banner"
+      class="hero-text-content sm:w-8/12 md:w-7/12 pt-[30px] sm:pt-5 md:pt-0"
     >
-      <div class="flex flex-wrap items-center">
-        <div>
-          <div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
-            <div
-              class="flex flex-wrap font-bold leading-normal blogHome_heroAuth"
-            >
-              {
-                firstPost.authors.data.map((author, idx) => (
-                  <a href="#">
-                    {`${idx > 0 ? ", " : " "}` + author.attributes.givenName}
-                  </a>
-                ))
-              }
-            </div>
+      <div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
+        <div class="hero-post-author flex flex-wrap font-bold leading-normal">
+          {
+            firstPost.authors.data.map(({ attributes }, i) => (
+              <a href="#">{`${i > 0 ? ", " : " "}` + attributes.givenName}</a>
+            ))
+          }
+        </div>
 
-            <ul class="flex flex-wrap items-center">
-              <li class="blogHome_HdItem">
-                {
-                  new Date(firstPost.createdAt).toLocaleString("en-US", {
-                    day: "numeric",
-                    month: "long",
-                  })
-                }
-              </li>
-            </ul>
-          </div>
-
-          <h1 class="blogHome_heroTitle pt-[10px] md:pt-5">
-            <a href={`/` + firstPost.Meta.URL_slug}>{firstPost.Title}</a>
-
-            <span class="icon relative top-0">
-              <span class="relative heading-inline-icon">
-                <img class="w-full h-full" src={CupIcon} alt="cup-icon" />
-              </span>
-            </span>
-          </h1>
-
-          <a href={`/` + firstPost.Meta.URL_slug}>
-            <div
-              class="blogHome_heroTxt prose max-w-none pt-[15px] sm:pt-3 md:pt-[15px] leading-[1.4] sm:leading-[1.2] md:leading-normal"
-            >
-              <Markdown>{firstPost.Intro_text}</Markdown>
-            </div>
-          </a>
+        <div class="post-publish-date leading-normal">
+          {
+            new Date(firstPost.createdAt).toLocaleString("en-US", {
+              day: "numeric",
+              month: "long",
+            })
+          }
         </div>
       </div>
+
+      <h1 class="hero-post-title pt-[10px] md:pt-5">
+        <a href={`/` + firstPost.Meta.URL_slug}>{firstPost.Title}</a>
+
+        <span class="icon">
+          <img src={CupIcon} alt="Tea Cup" class="heading-inline-icon" />
+        </span>
+      </h1>
+
+      <a
+        href={`/` + firstPost.Meta.URL_slug}
+        class:list={[
+          "hero-text prose max-w-none",
+          "pt-[15px] sm:pt-3 md:pt-[15px] leading-[1.4] sm:leading-[1.2] md:leading-normal",
+        ]}
+      >
+        <Markdown>{firstPost.Intro_text}</Markdown>
+      </a>
     </div>
   </div>
 
   {/* Blob Image - Desktop View */}
   <div class="h-full hidden sm:block absolute z-20 hero-img-curve-container">
     <ClippedImg
-      id="heroImgFrame2"
+      id="hero-img-curve"
       src={imgSrcPrefix +
         firstPost.Intro_blob.data.attributes.provider_metadata.public_id +
         `/small`}
@@ -174,7 +158,7 @@ const { posts } = Astro.props.page,
 {/* Blob Image - Mobile View */}
 <div class="block sm:hidden relative -mt-20 z-20 w-full">
   <ClippedImg
-    id="heroImgFrame3"
+    id="hero-img-curve-sm"
     src={imgSrcPrefix +
       firstPost.Intro_blob.data.attributes.provider_metadata.public_id +
       `/small`}
@@ -183,121 +167,93 @@ const { posts } = Astro.props.page,
 </div>
 
 {/* All Posts Section */}
-<div class="wrapper py-20">
-  <div class="flex flex-wrap items-center gap-y-20">
-    <ClipPathSVG
-      id="basicInfoSec_ImgFrame"
-      path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-    />
+<div class="wrapper flex flex-wrap items-center gap-y-20 py-20">
+  <ClipPathSVG
+    id="post-img-curve"
+    path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+  />
 
-    {
-      posts.slice(1).map((post, idx) => {
-        const even = idx % 2 === 0;
+  {
+    posts.slice(1).map((post, index) => {
+      const even = index % 2 === 0;
 
-        return (
-          <div class="flex flex-wrap items-center">
-            <div
-              class:list={[
-                !even && "sm:order-2",
-                "relative w-full sm:w-1/2 order-1 mb-4 sm:mb-0",
-              ]}
-            >
-              <div
-                class={
-                  even
-                    ? "pr-0 sm:pr-5 md:pr-12 lg:pr-24"
-                    : "pl-0 sm:pl-5 md:pl-12 lg:pl-24"
+      return (
+        <div class="flex flex-wrap items-center">
+          <div
+            class:list={[
+              "relative w-full sm:w-1/2 order-1 mb-4 sm:mb-0",
+              even
+                ? "pr-0 sm:pr-5 md:pr-12 lg:pr-24"
+                : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
+            ]}
+          >
+            <a href={`/` + post.Meta.URL_slug}>
+              <img
+                src={
+                  imgSrcPrefix +
+                  post.Intro_blob.data.attributes.provider_metadata.public_id +
+                  `/small`
                 }
-              >
-                <a href={`/` + post.Meta.URL_slug}>
-                  <img
-                    src={
-                      imgSrcPrefix +
-                      post.Intro_blob.data.attributes.provider_metadata
-                        .public_id +
-                      `/small`
-                    }
-                    class="w-full h-full"
-                    style="clip-path: url(#basicInfoSec_ImgFrame);"
-                  />
+                class="w-full h-full"
+                style="clip-path: url(#post-img-curve);"
+              />
 
-                  <div
-                    class:list={[
-                      "absolute z-20",
-                      idx % 2 === 0
-                        ? "blogLeafL_container"
-                        : "blogLeafR_container",
-                    ]}
-                  >
-                    <div class="blogLeaf w-full">
-                      <img
-                        alt="tea-leaf-image"
-                        class="w-full h-full"
-                        src={even ? LeafImg : LeafImg1}
-                      />
-                    </div>
-                  </div>
-                </a>
-              </div>
-            </div>
-
-            {/*Text content*/}
-            <div
-              class:list={[
-                !even && "sm:order-1",
-                "w-full sm:w-1/2 order-2 h-full",
-              ]}
-            >
-              <div
+              <img
+                alt="Tea Leaf"
                 class:list={[
-                  "flex flex-wrap",
-                  even ? "pr-0 sm:pr-5" : "pl-0 sm:pl-5",
+                  "post-leaf absolute z-20",
+                  even ? "post-leaf-left" : "post-leaf-right",
                 ]}
-              >
-                <div>
-                  <div class="blogHome_blogAuth leading-normal flex flex-wrap font-bold">
-                    {post.authors.data.map((author, idx) => (
-                      <a href="#">
-                        {`${idx > 0 ? ", " : " "}` +
-                          author.attributes.givenName}
-                      </a>
-                    ))}
-                  </div>
+                src={even ? LeafImg : LeafImgRight}
+              />
+            </a>
+          </div>
 
-                  <ul class="flex flex-wrap items-center gap-y-1">
-                    <li class="blogHome_blogItem text-black leading-normal before:content-[''] before:border-0">
-                      {new Date(post.createdAt).toLocaleString("en-US", {
-                        day: "numeric",
-                        month: "long",
-                      })}
-                    </li>
-                  </ul>
-
-                  <h1 class="blogHome_blogTitle pt-[5px] md:pt-2 lg:pt-[11px]">
-                    <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
-
-                    <span class="icon relative top-0">
-                      <span class="relative heading-inline-icon">
-                        <img
-                          class="w-full h-full"
-                          src={CupGreenIcon}
-                          alt="cup-icon"
-                        />
-                      </span>
-                    </span>
-                  </h1>
-
-                  <a href={`/` + post.Meta.URL_slug}>
-                    <div class="blogHome_blogTxt pt-5 leading-normal prose max-w-none">
-                      <Markdown>{post.Intro_text}</Markdown>
-                    </div>
+          {/* Text content */}
+          <div
+            class:list={[
+              "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
+              even ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
+            ]}
+          >
+            <div>
+              <div class="post-author leading-normal flex flex-wrap font-bold">
+                {post.authors.data.map(({ attributes }, i) => (
+                  <a href="#">
+                    {`${i > 0 ? ", " : " "}` + attributes.givenName}
                   </a>
-                </div>
+                ))}
               </div>
+
+              <div class="post-publish-date text-black leading-normal">
+                {new Date(post.createdAt).toLocaleString("en-US", {
+                  day: "numeric",
+                  month: "long",
+                })}
+              </div>
+
+              <h1 class="post-title pt-[5px] md:pt-2 lg:pt-[11px]">
+                <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+
+                <span class="icon">
+                  <img
+                    class="heading-inline-icon"
+                    src={CupGreenIcon}
+                    alt="cup-icon"
+                  />
+                </span>
+              </h1>
+
+              <a
+                href={`/` + post.Meta.URL_slug}
+                class="post-intro pt-5 leading-normal prose max-w-none"
+              >
+                <Markdown>{post.Intro_text}</Markdown>
+              </a>
             </div>
           </div>
-        );
-      })
-    }
-  </div>
+        </div>
+      );
+    })
+  }
 </div>
