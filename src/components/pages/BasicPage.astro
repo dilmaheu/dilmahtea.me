@@ -12,14 +12,6 @@ const { Title: title } = page,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 ---
 
-<style lang="scss">
-  @media screen and (min-width: 640px) {
-    .info {
-      height: clamp(550px, 22vw + 420px, 820px);
-    }
-  }
-</style>
-
 <BasicPageHero {title} {introText} />
 
 {
@@ -44,7 +36,7 @@ const { Title: title } = page,
   page.Block_blob.data !== null && (
     <Fragment>
       {/* Information Section */}
-      <section class="info h-full relative overflow-hidden">
+      <section class="relative overflow-hidden h-full sm:h-[clamp(550px,22vw+420px,820px)]">
         {/* Blob Image - Desktop view */}
         <div class="hidden sm:block absolute left-0 z-20 right-0 w-full sm:w-1/2 h-full py-12 pr-6 lg:pr-24">
           <ClippedImg
