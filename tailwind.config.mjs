@@ -10,7 +10,7 @@ export default {
       colors: {
         dark: "#474747",
         primary: "#2b4b50",
-        lightgray: "#e3dfde"
+        lightgray: "#e3dfde",
       },
 
       typography: () => ({
