@@ -5,7 +5,9 @@ const contentHTML = await Astro.slots.render("default"),
   { document: contentBody } = await parseHTML(contentHTML),
   contentImages = contentBody.querySelectorAll("#detailedBlog img");
 
+// clip image using svg path
 [...contentImages].forEach((img) => {
+  // content-images-curve clip path is defined in PostDetailsLayout.astro
   img.outerHTML = `<img
     src="${
       // @ts-ignore
