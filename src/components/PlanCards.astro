@@ -7,11 +7,8 @@ const { allPlans } = Astro.props,
 ---
 
 <style lang="scss">
-  @use "src/styles/colors";
-
   .plan-card {
     padding: calc(2.5vw + 17.5px);
-    background-color: colors.$primary-color;
   }
 
   .plan-offerings ul {
@@ -26,11 +23,6 @@ const { allPlans } = Astro.props,
         @apply content-[""] inline-block w-[18px] h-[18px] mr-[10px] align-middle;
       }
     }
-  }
-
-  .plan-button {
-    color: colors.$primary-color;
-    background-color: colors.$light-gray;
   }
 
   .plan-section-leaf {
@@ -48,7 +40,7 @@ const { allPlans } = Astro.props,
       <div
         role="listitem"
         aria-label={`Plan ${plan.Title}`}
-        class="plan-card w-full h-auto rounded-[45px] lg:rounded-[60px]"
+        class="plan-card w-full h-auto bg-primary rounded-[45px] lg:rounded-[60px]"
       >
         <div class="inline-flex items-end gap-x-3.5">
           <h3 class="text-xl alice">{plan.Title}</h3>
@@ -72,7 +64,7 @@ const { allPlans } = Astro.props,
 
         <a
           href={`/plans/${plan.Title.toLowerCase()}`}
-          class="plan-button inline-block font-bold text-center min-w-[140px] p-[17px] rounded-[20px]"
+          class="inline-block p-4 font-bold text-primary text-center min-w-[140px] bg-lightgray rounded-[20px]"
         >
           {plan.Button_text}
         </a>

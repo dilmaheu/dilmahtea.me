@@ -34,14 +34,8 @@ const goal = 100000,
   @use "src/styles/colors";
 
   .hero-text {
-    color: colors.$light-gray;
     padding-top: clamp(14px, 1.5vw, 20px);
     font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
-  }
-
-  .hero-btn {
-    color: colors.$primary-color;
-    background-color: colors.$light-gray;
   }
 
   .crowdfunding-info-text {
@@ -74,14 +68,14 @@ const goal = 100000,
         </span>
       </h1>
 
-      <div class="hero-text prose max-w-none leading-normal">
+      <div class="hero-text prose max-w-none text-lightgray leading-normal">
         <Markdown>{page.Intro_text}</Markdown>
       </div>
 
       <a
         href={page.Heading_button_link}
         class:list={[
-          "hero-btn flex items-center justify-center font-bold text-center rounded-full",
+          "flex items-center justify-center font-bold text-primary text-center bg-lightgray rounded-full",
           "w-64 sm:w-44 md:w-64 p-4 sm:p-[10px] md:p-4 mt-10 sm:mt-2.5 md:mt-[clamp(40px,4vw+15px,70px)]",
         ]}
       >
@@ -171,7 +165,7 @@ const goal = 100000,
   defer
   define:vars={{ initialProgress, finalProgress, animationDuration }}
 >
-  const progressBars = document.querySelectorAll(".progress");
+  const progressBars = document.querySelectorAll(".progress-bar");
 
   progressBars.forEach((progressBar) => {
     progressBar.animate(

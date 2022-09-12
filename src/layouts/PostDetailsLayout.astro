@@ -48,7 +48,6 @@ const { page, posts, recurData, headingName } = Astro.props,
   }
 
   .post-intro {
-    color: colors.$light-gray;
     font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
   }
 
@@ -57,9 +56,7 @@ const { page, posts, recurData, headingName } = Astro.props,
   }
 
   #sticky-header {
-    color: colors.$primary-color;
     box-shadow: 0 4px 5px gray;
-    background: colors.$light-gray;
   }
 
   #sticky-heading-links {
@@ -67,13 +64,8 @@ const { page, posts, recurData, headingName } = Astro.props,
   }
 
   #reading-progress-bar {
-    background: colors.$primary-color;
     border-top-right-radius: 0.127rem;
     border-bottom-right-radius: 0.157rem;
-  }
-
-  #headings {
-    color: colors.$primary-color;
   }
 
   #headings-header {
@@ -87,7 +79,6 @@ const { page, posts, recurData, headingName } = Astro.props,
   }
 
   .recent-posts-title {
-    color: colors.$primary-color;
     font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
   }
 
@@ -197,8 +188,8 @@ const { page, posts, recurData, headingName } = Astro.props,
       <a
         href="#"
         class:list={[
-          "post-intro block prose max-w-none pt-4 sm:pt-3 md:pt-4 line-clamp-5",
-          "leading-[1.4] sm:leading-[1.2] md:leading-normal",
+          "post-intro block prose text-lightgray line-clamp-5 max-w-none",
+          "pt-4 sm:pt-3 md:pt-4 leading-[1.4] sm:leading-[1.2] md:leading-normal",
         ]}
       >
         <Markdown>{page.Intro_text}</Markdown>
@@ -236,7 +227,7 @@ const { page, posts, recurData, headingName } = Astro.props,
 <section class="py-6 sm:py-12" role="main">
   <div
     id="sticky-header"
-    class="hidden md:hidden w-full sticky top-0 z-[998] overflow-hidden self-start"
+    class="self-start hidden md:hidden w-full sticky top-0 z-[998] text-primary bg-lightgray overflow-hidden"
   >
     <div class="wrapper relative text-sm lg:text-base font-bold select-none">
       <div
@@ -273,7 +264,8 @@ const { page, posts, recurData, headingName } = Astro.props,
       </div>
     </div>
 
-    <div id="reading-progress-bar" class="py-[2.5px] duration-150"></div>
+    <div id="reading-progress-bar" class="py-[2.5px] bg-primary duration-150">
+    </div>
   </div>
 
   <div class="wrapper w-full flex flex-col-reverse md:flex-row">
@@ -290,7 +282,7 @@ const { page, posts, recurData, headingName } = Astro.props,
       id="headings"
       class:list={[
         "pl-[clamp(24px,3.8vw+0.16px,50px)] lg:pl-[clamp(70px,11.3125vw-46px,128px)]",
-        "self-start md:sticky top-0 mb-20 w-full md:w-auto md:min-w-[33.33%] overflow-hidden",
+        "self-start md:sticky top-0 mb-20 w-full md:w-auto md:min-w-[33.33%] text-primary overflow-hidden",
       ]}
     >
       <div class="w-full">
@@ -309,7 +301,7 @@ const { page, posts, recurData, headingName } = Astro.props,
 {
   recentPosts.length > 0 && (
     <section class="wrapper">
-      <h2 class="recent-posts-title alice mb-6">
+      <h2 class="recent-posts-title alice text-primary mb-6">
         {recurData.text_explore_the_world_of_kindness}
       </h2>
 

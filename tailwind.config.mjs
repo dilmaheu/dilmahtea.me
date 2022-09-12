@@ -8,7 +8,9 @@ export default {
   theme: {
     extend: {
       colors: {
+        dark: "#474747",
         primary: "#2b4b50",
+        lightgray: "#e3dfde"
       },
 
       typography: () => ({
