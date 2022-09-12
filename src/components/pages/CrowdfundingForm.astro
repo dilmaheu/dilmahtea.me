@@ -25,9 +25,10 @@ const { page, locale } = Astro.props,
 
       input,
       select {
-        @apply rounded-[20px] bg-transparent;
-
         border: 1px solid colors.$primary-color;
+
+        @apply block w-full mt-2.5 px-4 py-3.5 text-lg rounded-[20px] bg-transparent;
+        @apply focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring;
       }
 
       select {
@@ -56,210 +57,185 @@ const { page, locale } = Astro.props,
 <BasicPageHero title={page.Title} introText={page.Intro_text} />
 
 {/* Form Section */}
-<div class="wrapper py-[100px]">
-  <div role="main" class="mx-auto pt-[30px] max-w-[940px]">
-    <form action="https://pay.scripts.dilmahtea.me" method="POST">
-      <div>
-        <div
-          class="inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7 pb-0.5"
-        >
-          <h2 class="heading-primary text-primary">
-            {locale === "nl" ? "Basis gegevens" : "Basic info"}
-          </h2>
 
-          <img class="form-heading-icon" src={CupIconG} alt="tea-leaf-icon" />
-        </div>
+<form
+  role="main"
+  method="POST"
+  action="https://pay.scripts.dilmahtea.me"
+  class="mx-auto pt-[130px] pb-[100px] max-w-[940px]"
+>
+  <div>
+    <div
+      class="pb-0.5 inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7"
+    >
+      <h2 class="heading-primary text-primary">
+        {locale === "nl" ? "Basis gegevens" : "Basic info"}
+      </h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 form-grid">
-          <label class="">
-            {locale === "nl" ? "Voornaam" : "First Name"}
+      <img class="form-heading-icon" src={CupIconG} alt="tea-leaf-icon" />
+    </div>
 
-            <input
-              type="text"
-              id="first_name"
-              name="first_name"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
-              placeholder={locale === "nl" ? "Voornaam" : "First Name"}
-              required
-            />
-          </label>
+    <div class="grid grid-cols-1 md:grid-cols-2 form-grid">
+      <label>
+        {locale === "nl" ? "Voornaam" : "First Name"}
 
-          <label class="">
-            {locale === "nl" ? "Achternaam" : "Last Name"}
+        <input
+          type="text"
+          id="first_name"
+          name="first_name"
+          placeholder={locale === "nl" ? "Voornaam" : "First Name"}
+          required
+        />
+      </label>
 
-            <input
-              type="text"
-              id="last_name"
-              name="last_name"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
-              placeholder={locale === "nl" ? "Achternaam" : "Last Name"}
-              required
-            />
-          </label>
+      <label>
+        {locale === "nl" ? "Achternaam" : "Last Name"}
 
-          <label class="">
-            {locale === "nl" ? "E-mailadres" : "Email Address"}
+        <input
+          type="text"
+          id="last_name"
+          name="last_name"
+          placeholder={locale === "nl" ? "Achternaam" : "Last Name"}
+          required
+        />
+      </label>
 
-            <input
-              type="email"
-              id="email"
-              name="email"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
-              placeholder={locale === "nl"
-                ? "Vul je e-mailadres in"
-                : "Enter your email address"}
-              required
-            />
-          </label>
+      <label>
+        {locale === "nl" ? "E-mailadres" : "Email Address"}
 
-          <label class="">
-            {locale === "nl" ? "Favoriete thee" : "Favourite Tea"}
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder={locale === "nl"
+            ? "Vul je e-mailadres in"
+            : "Enter your email address"}
+          required
+        />
+      </label>
 
-            <input
-              type="text"
-              id="favorite_tea"
-              name="favorite_tea"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
-              placeholder={locale === "nl" ? "Earl Grey" : "Black Tea"}
-              required
-            />
-          </label>
-        </div>
-      </div>
+      <label>
+        {locale === "nl" ? "Favoriete thee" : "Favourite Tea"}
 
-      <div class="py-[50px]">
-        <div class="inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7">
-          <h3 class="heading-primary text-primary">
-            {locale === "nl" ? "Factuurgegevens" : "Billing details"}
-          </h3>
+        <input
+          type="text"
+          id="favorite_tea"
+          name="favorite_tea"
+          placeholder={locale === "nl" ? "Earl Grey" : "Black Tea"}
+          required
+        />
+      </label>
+    </div>
+  </div>
 
-          <img
-            class="form-heading-icon"
-            src={FlowerIconG}
-            alt="tea-leaf-icon"
-          />
-        </div>
+  <div class="py-[50px]">
+    <div class="inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7">
+      <h3 class="heading-primary text-primary">
+        {locale === "nl" ? "Factuurgegevens" : "Billing details"}
+      </h3>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 form-grid">
-          <label class="">
-            {locale === "nl" ? "Land" : "Country"}
+      <img class="form-heading-icon" src={FlowerIconG} alt="tea-leaf-icon" />
+    </div>
 
-            <select
-              id="country"
-              name="country"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
-              required
-            >
-              <option value="" disabled>
-                {
-                  locale === "nl"
-                    ? "Selecteer jouw land"
-                    : "Select or type your country"
-                }
-              </option>
+    <div class="grid grid-cols-1 md:grid-cols-2 form-grid">
+      <label>
+        {locale === "nl" ? "Land" : "Country"}
 
-              <option value="Netherlands" selected
-                >{locale === "nl" ? "Nederland" : "Netherlands"}
-              </option>
-            </select>
-          </label>
-
-          <label class="">
-            {locale === "nl" ? "Plaatsnaam" : "City"}
-
-            <input
-              type="text"
-              id="city"
-              name="city"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
-              placeholder={locale === "nl"
-                ? "Vul je plaatsnaam in"
-                : "Enter your city address"}
-              required
-            />
-          </label>
-
-          <label class="">
+        <select id="country" name="country" required>
+          <option value="" disabled>
             {
               locale === "nl"
-                ? "Straat en huisnummer"
-                : "Street and house number"
+                ? "Selecteer jouw land"
+                : "Select or type your country"
             }
+          </option>
 
-            <input
-              type="text"
-              id="street"
-              name="street"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
-              placeholder={locale === "nl"
-                ? "Vul je straat en huisnummer in"
-                : "Enter your street address"}
-              required
-            />
-          </label>
+          <option value="Netherlands" selected>
+            {locale === "nl" ? "Nederland" : "Netherlands"}
+          </option>
+        </select>
+      </label>
 
-          <label class="">
-            {locale === "nl" ? "Postcode" : "Postal Code"}
+      <label>
+        {locale === "nl" ? "Plaatsnaam" : "City"}
 
-            <input
-              type="text"
-              id="postal_code"
-              name="postal_code"
-              class="block w-full px-4 py-3.5 mt-2.5 text-lg focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring"
-              placeholder={locale === "nl"
-                ? "Vul je postcode in"
-                : "Enter your postal code"}
-              required
-            />
-          </label>
+        <input
+          type="text"
+          id="city"
+          name="city"
+          placeholder={locale === "nl"
+            ? "Vul je plaatsnaam in"
+            : "Enter your city address"}
+          required
+        />
+      </label>
 
-          <input type="hidden" id="perk" name="perk" value={perk} required />
+      <label>
+        {locale === "nl" ? "Straat en huisnummer" : "Street and house number"}
 
-          <input
-            type="hidden"
-            id="locale"
-            name="locale"
-            value={locale}
-            required
-          />
+        <input
+          type="text"
+          id="street"
+          name="street"
+          placeholder={locale === "nl"
+            ? "Vul je straat en huisnummer in"
+            : "Enter your street address"}
+          required
+        />
+      </label>
 
-          <input
-            type="hidden"
-            id="origin_url"
-            name="origin_url"
-            value={originURL}
-            required
-          />
+      <label>
+        {locale === "nl" ? "Postcode" : "Postal Code"}
 
-          <script is:inline>
-            document.currentScript.previousElementSibling.value = location.href;
-          </script>
+        <input
+          type="text"
+          id="postal_code"
+          name="postal_code"
+          placeholder={locale === "nl"
+            ? "Vul je postcode in"
+            : "Enter your postal code"}
+          required
+        />
+      </label>
 
-          <input
-            type="hidden"
-            id="plan_name"
-            name="plan_name"
-            value={page.Title}
-            required
-          />
+      <input type="hidden" id="perk" name="perk" value={perk} required />
 
-          <input type="hidden" id="price" name="price" value={price} required />
-        </div>
+      <input type="hidden" id="locale" name="locale" value={locale} required />
 
-        <div>
-          <input
-            type="submit"
-            class="cursor-pointer w-full md:w-[300px] mt-[70px] md:mt-[100px] py-[16px] px-[30px] text-[16px] font-bold rounded-[40px]"
-            value={locale === "nl"
-              ? "Naar betaalgegevens"
-              : "To payment details"}
-            required
-          />
-        </div>
-      </div>
-    </form>
+      <input
+        type="hidden"
+        id="origin_url"
+        name="origin_url"
+        value={originURL}
+        required
+      />
+
+      <script is:inline>
+        document.currentScript.previousElementSibling.value = location.href;
+      </script>
+
+      <input
+        type="hidden"
+        id="plan_name"
+        name="plan_name"
+        value={page.Title}
+        required
+      />
+
+      <input type="hidden" id="price" name="price" value={price} required />
+    </div>
+
+    <input
+      type="submit"
+      class:list={[
+        "text-[16px] font-bold rounded-[40px] cursor-pointer",
+        "w-full md:w-[300px] mt-[70px] md:mt-[100px] py-[16px] px-[30px]",
+      ]}
+      value={locale === "nl" ? "Naar betaalgegevens" : "To payment details"}
+      required
+    />
   </div>
-</div>
+</form>
 
 <script>
   const params = new URLSearchParams(location.search);
