@@ -4,10 +4,10 @@ import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 const { page, recurData } = Astro.props,
   { howTos } = page,
-  headingType = recurData.text_practices,
+  headingName = recurData.text_practices,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 
-// html source to chapterize based on
+// html source to generate heading links based on
 const practicesHeadingsHTML = page.Method.map(
   (method) => `<h2>${method.Method_title}</h2>`
 ).join("\n");
@@ -52,8 +52,8 @@ const practicesHeadingsHTML = page.Method.map(
   }
 </style>
 
-<PostDetailsLayout {page} posts={howTos} {recurData} {headingType}>
-  <Fragment slot="chapters-source-html" set:html={practicesHeadingsHTML} />
+<PostDetailsLayout {page} posts={howTos} {recurData} {headingName}>
+  <Fragment slot="heading-links-source-html" set:html={practicesHeadingsHTML} />
 
   {/* Howto Header */}
   <div

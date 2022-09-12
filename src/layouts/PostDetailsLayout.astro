@@ -5,14 +5,14 @@ import RightArrow from "@images/rightArrow.svg";
 
 import Markdown from "@astrojs/markdown-component";
 
-import Chapters from "@components/Chapters.astro";
 import ClippedImg from "@components/ClippedImg.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import HeadingLinks from "@components/HeadingLinks.astro";
 import HeroBackground from "@components/HeroBackground.astro";
 
 import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
 
-const { page, posts, recurData, headingType } = Astro.props,
+const { page, posts, recurData, headingName } = Astro.props,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env,
   recentPosts = posts.filter(
     ({ Meta }) => Meta.URL_slug !== page.Meta.URL_slug
@@ -20,14 +20,22 @@ const { page, posts, recurData, headingType } = Astro.props,
 ---
 
 <style lang="scss" is:global>
-  #detailedBlog p a {
-    @apply px-1 no-underline bg-bottom bg-no-repeat transition-all;
+  #post-details {
+    img {
+      @apply block mx-auto;
 
-    background-size: 100% 50%;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23a7bcbc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
+      clip-path: url(#content-images-curve);
+    }
 
-    &:hover {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23a0b0b0'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
+    p a {
+      @apply px-1 no-underline bg-bottom bg-no-repeat transition-all;
+
+      background-size: 100% 50%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23a7bcbc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
+
+      &:hover {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23a0b0b0'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
+      }
     }
   }
 </style>
@@ -36,91 +44,65 @@ const { page, posts, recurData, headingType } = Astro.props,
   @use "src/styles/colors";
   @use "src/styles/typography";
 
-  .blogDetails_heroAuth {
+  .post-author {
     font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
   }
 
-  .blogDetails_heroTitle {
+  .hero-title {
     font-family: typography.$alice;
     font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
-
-    @apply pt-4 sm:pt-2.5 md:pt-5 leading-[1.2] underline decoration-[3px];
   }
 
-  .blogDetails_heroTxt {
+  .post-intro {
     color: colors.$light-gray;
     font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
-
-    @apply pt-4 sm:pt-3 md:pt-4 leading-[1.4] sm:leading-[1.2] md:leading-normal line-clamp-5;
   }
 
-  .blogHome_HdItem {
+  .post-publish-date {
     font-size: clamp(0.625rem, 1.5vw + 0.01rem, 0.75rem);
-
-    @apply leading-normal before:content-[""] before:border-0;
   }
 
-  #blogContent_StickyContainer {
-    color: colors.$primary-color;
-
-    @apply mb-20 w-full md:w-auto pl-[clamp(24px,3.8vw+0.16px,50px)] lg:pl-[clamp(70px,11.3125vw-46px,128px)];
-  }
-
-  #blogContent_StickyContainerMd {
-    @apply w-full top-0 z-[998];
-
+  #sticky-header {
     color: colors.$primary-color;
     box-shadow: 0 4px 5px gray;
     background: colors.$light-gray;
   }
 
-  #sticky_p_bar {
-    @apply py-[2.5px] duration-150;
+  #sticky-heading-links {
+    border-color: colors.$sticky-dropdown-border-top;
+  }
 
+  #reading-progress-bar {
     background: colors.$primary-color;
     border-top-right-radius: 0.127rem;
     border-bottom-right-radius: 0.157rem;
   }
 
-  #blog_StickyHeader {
-    font-weight: 700;
+  #headings {
+    color: colors.$primary-color;
+  }
+
+  #headings-header {
     font-size: clamp(1.5rem, 2.2vw + 0.15rem, 2rem);
     padding-bottom: clamp(1.25rem, 3.6vw + 0.01rem, 3.125rem);
   }
 
-  #blog_StickyItemContainer {
-    @apply grid leading-[1.2];
-
+  #heading-links {
     font-size: clamp(1.25rem, 1.2vw + 0.1rem, 1.5rem);
     row-gap: clamp(1.25rem, 2.5vw + 0.25rem, 2.375rem);
   }
 
-  #blog_StickyDropdownItem {
-    border-color: colors.$sticky-dropdown-border-top;
-
-    @apply max-h-[70vh] pt-[13px] pb-[35px] overflow-y-auto border-t border-solid;
-  }
-
-  .blog_StickyItemHeaderImgMd {
-    @apply w-[20px] h-full mr-[15px];
-  }
-
-  .blogDetails_recentTitle {
-    margin-bottom: 25px;
+  .recent-posts-title {
     color: colors.$primary-color;
     font-family: typography.$alice;
     font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
   }
 
-  .blogDetails_CardsContainer {
-    @apply mb-[55px] gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)];
-  }
-
-  .blogDetails_Card {
+  .recent-post {
     @apply w-full max-w-[380px] sm:max-w-none;
   }
 
-  .blogDetails_CardConentConatiner {
+  .recent-post-content-container {
     padding: clamp(20px, 6.4vw, 40px) clamp(24px, 3.8vw + 11.75px, 36px);
 
     @media (min-width: 640px) {
@@ -133,30 +115,17 @@ const { page, posts, recurData, headingType } = Astro.props,
     }
   }
 
-  .blogHome_cardItemContainer {
-    @apply gap-y-1;
-  }
-
-  .blogDetails_cardAuth {
+  .recent-post-author {
     line-height: 150%;
     font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem);
   }
 
-  .blogHome_cardItem {
-    font-size: clamp(0.625rem, 1.5vw + 0.01rem, 0.75rem);
-
-    @apply leading-[1.2] before:content-[""] before:border-0;
-  }
-
-  .blogDetails_CardTitle {
-    @apply mt-[15px] leading-[1.1];
-
+  .recent-post-title {
     font-family: typography.$alice;
     font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
   }
 
-  .blogDetails_CardTitleIcon {
-    width: auto;
+  .recent-post-title-icon {
     height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
   }
 </style>
@@ -168,94 +137,87 @@ const { page, posts, recurData, headingType } = Astro.props,
   <HeroBackground />
 
   {/* Text Content */}
-  <div class="relative h-full wrapper z-30 hero-text-container">
+  <div class="wrapper hero-text-container h-full relative z-30">
     <div
-      class="hero-text-content sm:w-8/12 md:w-7/12 pt-8 sm:pt-5 md:pt-0"
       role="banner"
+      class="hero-text-content sm:w-8/12 md:w-7/12 pt-8 sm:pt-5 md:pt-0"
     >
-      <div class="flex flex-wrap items-start">
-        <div>
-          <div class="flex flex-wrap gap-x-2.5 blogDetails_heroAuthContainer">
-            <div class="flex relative">
-              {
-                page.authors.data.map((author, index) => (
-                  <div
-                    class:list={[
-                      index > 0 && "relative -ml-5",
-                      "w-12 h-12 overflow-hidden rounded-full object-cover",
-                    ]}
-                  >
-                    <img
-                      src={
-                        imgSrcPrefix +
-                        author.attributes.Profile_picture.data.attributes
-                          .provider_metadata.public_id +
-                        `/authBlob`
-                      }
-                      alt={
-                        author.attributes.Profile_picture.data.attributes
-                          .alternativeText
-                      }
-                      class="w-full h-full"
-                    />
-                  </div>
-                ))
-              }
-            </div>
-
-            <div class="grid content-between">
+      <div class="flex flex-wrap gap-x-2.5">
+        <div class="flex relative">
+          {
+            page.authors.data.map((author, index) => (
               <div
-                class="flex flex-wrap font-bold leading-normal blogDetails_heroAuth"
+                class:list={[
+                  index > 0 && "relative -ml-5",
+                  "w-12 h-12 rounded-full object-cover overflow-hidden",
+                ]}
               >
-                {
-                  page.authors.data.map((author, index) => (
-                    <a href="#">
-                      {`${index > 0 ? ", " : " "}` +
-                        author.attributes.givenName}
-                    </a>
-                  ))
-                }
-              </div>
-
-              <ul class="flex flex-wrap items-center">
-                <li class="blogHome_HdItem">
-                  {
-                    new Date(page.createdAt).toLocaleString("en-US", {
-                      day: "numeric",
-                      month: "long",
-                    })
+                <img
+                  src={
+                    imgSrcPrefix +
+                    author.attributes.Profile_picture.data.attributes
+                      .provider_metadata.public_id +
+                    `/authBlob`
                   }
-                </li>
-              </ul>
-            </div>
+                  alt={
+                    author.attributes.Profile_picture.data.attributes
+                      .alternativeText
+                  }
+                  class="w-full h-full"
+                />
+              </div>
+            ))
+          }
+        </div>
+
+        <div class="grid content-between">
+          <div class="post-author flex flex-wrap font-bold leading-normal">
+            {
+              page.authors.data.map((author, index) => (
+                <a href="#">
+                  {`${index > 0 ? ", " : " "}` + author.attributes.givenName}
+                </a>
+              ))
+            }
           </div>
 
-          <h1 class="blogDetails_heroTitle">
-            <a href="#">{page.Title}</a>
-
-            <span class="icon relative top-0">
-              <span class="relative heading-inline-icon">
-                <img class="w-full h-full" src={CupIcon} alt="cup-icon" />
-              </span>
-            </span>
-          </h1>
-
-          <a href="#">
-            <div class="prose max-w-none blogDetails_heroTxt">
-              <Markdown>{page.Intro_text}</Markdown>
-            </div>
-          </a>
+          <div class="post-publish-date leading-normal">
+            {
+              new Date(page.createdAt).toLocaleString("en-US", {
+                day: "numeric",
+                month: "long",
+              })
+            }
+          </div>
         </div>
       </div>
+
+      <h1
+        class="hero-title pt-4 sm:pt-2.5 md:pt-5 leading-[1.2] underline decoration-[3px]"
+      >
+        <a href="#">{page.Title}</a>
+
+        <span class="icon">
+          <img src={CupIcon} alt="cup-icon" class="heading-inline-icon" />
+        </span>
+      </h1>
+
+      <a
+        href="#"
+        class:list={[
+          "post-intro block prose max-w-none pt-4 sm:pt-3 md:pt-4 line-clamp-5",
+          "leading-[1.4] sm:leading-[1.2] md:leading-normal",
+        ]}
+      >
+        <Markdown>{page.Intro_text}</Markdown>
+      </a>
     </div>
   </div>
 
   {/* Blob Image - Desktop View */}
-  <div
-    class="h-full hidden sm:block absolute z-20 hero-img-curve-container BlogHeroCurveContainer"
-  >
+  <div class="hero-img-curve-container h-full hidden sm:block absolute z-20">
     <ClippedImg
-      id="heroImgFrame2"
+      id="hero-img-curve"
       src={imgSrcPrefix +
         page.Intro_blob.data.attributes.provider_metadata.public_id +
         `/small`}
@@ -266,9 +228,9 @@ const { page, posts, recurData, headingType } = Astro.props,
 </div>
 
 {/* Blob Image - Mobile View */}
-<div class="block sm:hidden relative -mt-20 z-20 w-full">
+<div class="block sm:hidden w-full relative z-20 -mt-20">
   <ClippedImg
-    id="heroImgFrame3"
+    id="hero-img-curve-sm"
     src={imgSrcPrefix +
       page.Intro_blob.data.attributes.provider_metadata.public_id +
       `/small`}
@@ -281,47 +243,45 @@ const { page, posts, recurData, headingType } = Astro.props,
 {/* Blog Section */}
 <div class="py-6 sm:py-12" role="main">
   <div
-    class="hidden md:hidden sticky overflow-hidden self-start"
-    id="blogContent_StickyContainerMd"
+    id="sticky-header"
+    class="hidden md:hidden w-full sticky top-0 z-[998] overflow-hidden self-start"
   >
-    <div
-      id="blog_StickyDropdownContainer"
-      class="wrapper text-sm lg:text-base font-bold relative select-none"
-    >
+    <div class="wrapper relative text-sm lg:text-base font-bold select-none">
       <div
-        id="blogStickyBtn"
-        class="flex items-center justify-between p-[15px] gap-x-1.5 md:gap-x-3 font-bold cursor-pointer focus:outline-none"
+        id="sticky-dropdown-toggle"
+        class:list={[
+          "p-[15px] font-bold cursor-pointer focus:outline-none",
+          "flex items-center justify-between gap-x-1.5 md:gap-x-3",
+        ]}
       >
-        <div id="blog_StickyDropdown" class="flex">
-          <div>
-            <img
-              class="blog_StickyItemHeaderImgMd"
-              src={BookGreen}
-              alt="arrow"
-            />
-          </div>
+        <div class="flex items-center">
+          <img class="w-5 h-full mr-4" src={BookGreen} alt="Book" />
 
-          <div id="blog_StickyDropdownHeaderTop">{headingType}</div>
+          <div id="sticky-header-heading">{headingName}</div>
         </div>
 
-        <div class="w-3">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7">
-            <path
-              class="cls-1"
-              d="M.3.3A.6.6 0 0 1 .9 0a.9.9 0 0 1 .6.3l4.3 4.3L10.2.3a.6.6 0 0 1 .6-.3l.6.3a.8.8 0 0 1 .2.6.7.7 0 0 1-.2.6l-5 4.9a.6.6 0 0 1-.6.3.9.9 0 0 1-.6-.3L.3 1.5A.9.9 0 0 1 0 .9.6.6 0 0 1 .3.3Z"
-              fill="#2B4B50"></path>
-          </svg>
-        </div>
+        <svg
+          class="w-3"
+          viewBox="0 0 11.6 6.7"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M.3.3A.6.6 0 0 1 .9 0a.9.9 0 0 1 .6.3l4.3 4.3L10.2.3a.6.6 0 0 1 .6-.3l.6.3a.8.8 0 0 1 .2.6.7.7 0 0 1-.2.6l-5 4.9a.6.6 0 0 1-.6.3.9.9 0 0 1-.6-.3L.3 1.5A.9.9 0 0 1 0 .9.6.6 0 0 1 .3.3Z"
+            fill="#2B4B50"></path>
+        </svg>
       </div>
 
-      <div id="blog_StickyDropdownItem" class="hidden">
-        <Chapters type="mobile">
-          <slot name="chapters-source-html" />
-        </Chapters>
+      <div
+        id="sticky-heading-links"
+        class="hidden pt-3 pb-9 max-h-[70vh] border-t border-solid overflow-y-auto"
+      >
+        <HeadingLinks type="mobile">
+          <slot name="heading-links-source-html" />
+        </HeadingLinks>
       </div>
     </div>
 
-    <div id="sticky_p_bar"></div>
+    <div id="reading-progress-bar" class="py-[2.5px] duration-150"></div>
   </div>
 
   <div class="wrapper w-full flex flex-col-reverse md:flex-row">
@@ -330,75 +290,66 @@ const { page, posts, recurData, headingType } = Astro.props,
       path="M.516.008C.36.008.1-.008.04.082S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1.005.624 1.021.395.945.128.897-.045.734.008.516.008"
     />
 
-    <style is:inline>
-      #detailedBlog img {
-        display: block;
-        margin: 0 auto;
-        clip-path: url(#content-images-curve);
-      }
-    </style>
-
-    <div id="detailedBlog" class="md:min-w-[66.666667%]">
+    <div id="post-details" class="md:min-w-[66.67%]">
       <slot name="post-details" />
     </div>
 
     <div
-      class="md:min-w-[33.333333%] md:sticky top-0 overflow-hidden self-start"
-      id="blogContent_StickyContainer"
+      id="headings"
+      class:list={[
+        "pl-[clamp(24px,3.8vw+0.16px,50px)] lg:pl-[clamp(70px,11.3125vw-46px,128px)]",
+        "self-start md:sticky top-0 mb-20 w-full md:w-auto md:min-w-[33.33%] overflow-hidden",
+      ]}
     >
       <div class="w-full">
-        <h3 id="blog_StickyHeader">{headingType}</h3>
+        <h3 id="headings-header" class="font-bold">{headingName}</h3>
 
-        <div id="blog_StickyItemContainer">
-          <Chapters>
-            <slot name="chapters-source-html" />
-          </Chapters>
+        <div id="heading-links" class="grid leading-tight">
+          <HeadingLinks>
+            <slot name="heading-links-source-html" />
+          </HeadingLinks>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="wrapper">
-  <h2 class={recentPosts.length < 1 ? "hidden" : "blogDetails_recentTitle"}>
-    {recurData.text_explore_the_world_of_kindness}
-  </h2>
+{
+  recentPosts.length > 0 && (
+    <div class="wrapper">
+      <h2 class="recent-posts-title mb-6">
+        {recurData.text_explore_the_world_of_kindness}
+      </h2>
 
-  <ClipPathSVG
-    id="blogDetails_Card"
-    path="M.99 1H.005C-.005.636-.003.266.042.141.102-.024.358.005.513.005c.216 0 .411-.061.459.255C1 .557.995.795.99 1"
-  />
+      <ClipPathSVG
+        id="recent-post-card-curve"
+        path="M.99 1H.005C-.005.636-.003.266.042.141.102-.024.358.005.513.005c.216 0 .411-.061.459.255C1 .557.995.795.99 1"
+      />
 
-  <div
-    class="w-full grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 mx-auto justify-items-center sm:justify-items-start blogDetails_CardsContainer"
-    role="list"
-    aria-label="Kindness Items"
-  >
-    {
-      recentPosts.slice(0, 3).map((post, index) => (
-        <div
-          class="blogDetails_Card"
-          role="listitem"
-          aria-label="Kindness Item"
-        >
-          <div class="relative">
-            <div>
+      <div
+        role="list"
+        aria-label="Kindness Items"
+        class:list={[
+          "w-full mx-auto mb-14 grid sm:grid-cols-2 lg:grid-cols-3",
+          "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
+        ]}
+      >
+        {recentPosts.slice(0, 3).map((post) => (
+          <div class="recent-post" role="listitem" aria-label="Kindness Item">
+            <div class="relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 preserveAspectRatio="none"
                 viewBox="0 0 423.3 559.8"
-                class="blogDetails_cardBg"
               >
                 <path
                   d="M419.2 306.4c-1.2 40.4 0 72.6 0 93.6 0 176.6-12.5 158-197.8 158S2.1 587.1 2.1 410c0-58.7.1-86 .3-97.5-.1-1.2-.2-3.1-.3-6.1v-.3C-2.2 194.8-1.3 81.5 17.9 43.2 43.3-7.3 151.7 1.5 217.2 1.5c91.3 0 173.8-18.8 194.3 78.1 19.3 91 9.6 163.8 7.7 226.8Z"
                   fill="#273E3F"
                 />
               </svg>
-            </div>
 
-            <div class="absolute inset-0 z-30">
-              <div class="w-full">
-                <a href={`/` + post.Meta.URL_slug}>
+              <div class="absolute inset-0 z-30">
+                <a class="block w-full" href={`/` + post.Meta.URL_slug}>
                   <img
                     src={
                       imgSrcPrefix +
@@ -407,66 +358,62 @@ const { page, posts, recurData, headingType } = Astro.props,
                       `/small`
                     }
                     class="w-full h-full"
-                    style="clip-path: url(#blogDetails_Card);"
+                    style="clip-path: url(#recent-post-card-curve);"
                   />
                 </a>
-              </div>
 
-              <div class="blogDetails_CardConentConatiner">
-                <div class="flex flex-wrap font-bold blogDetails_cardAuth">
-                  {post.authors.data.map((author, idx) => (
-                    <a href="#">
-                      {`${idx > 0 ? ", " : " "}` + author.attributes.givenName}
-                    </a>
-                  ))}
-                </div>
+                <div class="recent-post-content-container">
+                  <div class="recent-post-author flex flex-wrap font-bold">
+                    {post.authors.data.map(({ attributes }, index) => (
+                      <a href="#">
+                        {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                      </a>
+                    ))}
+                  </div>
 
-                <ul class="flex flex-wrap items-center blogHome_cardItemContainer">
-                  <li class="blogHome_cardItem">
+                  <div class="post-publish-date leading-tight">
                     {new Date(post.createdAt).toLocaleString("en-US", {
                       day: "numeric",
                       month: "long",
                     })}
-                  </li>
-                </ul>
+                  </div>
 
-                <div class="blogDetails_CardTitle">
-                  <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+                  <div class="recent-post-title mt-4 leading-[1.125]">
+                    <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
 
-                  <span class="icon relative top-0">
-                    <span class="relative blogDetails_CardTitleIcon">
+                    <span class="icon">
                       <img
-                        class="w-full h-full"
+                        class="recent-post-title-icon"
                         src={RightArrow}
                         alt="cup-icon"
                       />
                     </span>
-                  </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      ))
-    }
-  </div>
-</div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 <script defer>
   {
     const query = document.querySelector.bind(document),
       queryAll = document.querySelectorAll.bind(document),
-      container = query("#detailedBlog"),
-      chapters = [...queryAll("#detailedBlog .chapter")],
+      navbar = query("#navigation"),
+      postDetails = query("#post-details"),
+      chapters = [...queryAll("#post-details .chapter")],
       [firstChapter] = chapters,
-      stickyHeader = query("#blogContent_StickyContainerMd"),
-      stickyHeaderTop = query("#blog_StickyDropdownHeaderTop"),
-      stickyHeaderProgressBar = query("#sticky_p_bar"),
-      stickyDropdownToggle = query("#blogStickyBtn"),
-      chapterLinks = queryAll("#blog_StickyItemContainer a"),
-      stickyChapterLinksContainer = query("#blog_StickyDropdownItem"),
-      stickyChapterLinks = queryAll("#blog_StickyDropdownItem a"),
-      navbar = query("#navigation");
+      stickyHeader = query("#sticky-header"),
+      stickyHeaderHeading = query("#sticky-header-heading"),
+      stickyDropdownToggle = query("#sticky-dropdown-toggle"),
+      headingLinks = queryAll("#heading-links a"),
+      stickyheadingLinksContainer = query("#sticky-heading-links"),
+      stickyheadingLinks = queryAll("#sticky-heading-links a"),
+      readingProgressBar = query("#reading-progress-bar");
 
     const isOnScreen = (element) => {
       const { top, bottom } = element.getBoundingClientRect(),
@@ -485,13 +432,13 @@ const { page, posts, recurData, headingType } = Astro.props,
         chapterIndex = chapters.indexOf(activeChapter),
         activeChapterHeading = activeChapter.querySelector("h2");
 
-      [...chapterLinks, ...stickyChapterLinks].forEach((link) =>
+      [...headingLinks, ...stickyheadingLinks].forEach((link) =>
         link.classList.remove("active")
       );
 
       // highlight active chapter link
-      chapterLinks[chapterIndex].classList.add("active");
-      stickyChapterLinks[chapterIndex].classList.add("active");
+      headingLinks[chapterIndex].classList.add("active");
+      stickyheadingLinks[chapterIndex].classList.add("active");
 
       const { height: navbarHeight } = navbar.getBoundingClientRect(),
         displayStickyHeader =
@@ -503,9 +450,9 @@ const { page, posts, recurData, headingType } = Astro.props,
       if (displayStickyHeader) {
         stickyHeader.style.top = navbarHeight + "px";
 
-        stickyHeaderTop.textContent = activeChapterHeading.textContent;
+        stickyHeaderHeading.textContent = activeChapterHeading.textContent;
 
-        const containerRect = container.getBoundingClientRect(),
+        const containerRect = postDetails.getBoundingClientRect(),
           readPixels = Math.abs(containerRect.y - window.innerHeight),
           detailedBlogHeight = containerRect.height,
           minProgress =
@@ -515,7 +462,7 @@ const { page, posts, recurData, headingType } = Astro.props,
             ((progress - minProgress) / (100 - minProgress)) * 100;
 
         // update progress meter
-        stickyHeaderProgressBar.style.width = `${correctedProgress}%`;
+        readingProgressBar.style.width = `${correctedProgress}%`;
       }
 
       // display sticky header
@@ -527,20 +474,20 @@ const { page, posts, recurData, headingType } = Astro.props,
     document.addEventListener("scroll", styleActiveChapter);
 
     stickyDropdownToggle.addEventListener("click", () => {
-      stickyChapterLinksContainer.classList.toggle("hidden");
+      stickyheadingLinksContainer.classList.toggle("hidden");
     });
 
     // collapse dropdown when an item is clicked
-    stickyChapterLinks.forEach((link) => {
+    stickyheadingLinks.forEach((link) => {
       link.addEventListener("click", (event) => {
         event.preventDefault();
 
         location.href = link.href;
 
-        stickyChapterLinksContainer.classList.add("hidden");
+        stickyheadingLinksContainer.classList.add("hidden");
 
         window.scrollTo({
-          top: scrollY - stickyHeaderProgressBar.getBoundingClientRect().bottom,
+          top: scrollY - readingProgressBar.getBoundingClientRect().bottom,
         });
       });
     });

@@ -4,12 +4,12 @@ import Chapterize from "@components/Chapterize.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 const { page, recurData } = Astro.props,
-  headingType = recurData.text_chapter,
+  headingName = recurData.text_chapter,
   { blogs } = page;
 ---
 
-<PostDetailsLayout {page} posts={blogs} {recurData} {headingType}>
-  <Markdown slot="chapters-source-html">{page.Block_text}</Markdown>
+<PostDetailsLayout {page} posts={blogs} {recurData} {headingName}>
+  <Markdown slot="heading-links-source-html">{page.Block_text}</Markdown>
 
   <div slot="post-details" class="prose content-text">
     <Chapterize>
