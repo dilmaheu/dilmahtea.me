@@ -2,7 +2,14 @@
 import favicon from "@images/favicon.svg";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
-const { meta, locale, metaImage, availableLocales } = Astro.props,
+declare interface Props {
+  meta: any;
+  locale: string;
+  metaImageID: string;
+  availableLocales: string[];
+}
+
+const { meta, locale, metaImageID, availableLocales } = Astro.props as Props,
   {
     noindex,
     nofollow,
@@ -66,7 +73,7 @@ const { meta, locale, metaImage, availableLocales } = Astro.props,
 <meta property="og:url" content={documentHref} />
 <meta property="og:site_name" content="Dilmah" />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={imgSrcPrefix + metaImage + `/opengraph`} />
+<meta property="og:image" content={imgSrcPrefix + metaImageID + `/opengraph`} />
 
 {/* Twitter */}
 <meta name="twitter:title" content={title} />
@@ -76,7 +83,7 @@ const { meta, locale, metaImage, availableLocales } = Astro.props,
 <meta name="twitter:card" content="summary_large_image" />
 <meta
   name="twitter:image"
-  content={imgSrcPrefix + metaImage + `/twittercard`}
+  content={imgSrcPrefix + metaImageID + `/twittercard`}
 />
 
 {

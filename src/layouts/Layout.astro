@@ -4,28 +4,23 @@ import "@styles/styles.scss";
 import Navbar from "@components/Navbar.astro";
 import Footer from "@components/Footer.astro";
 import MainHead from "@components/MainHead.astro";
+import Notification from "@components/Notification.astro";
 import LocalizeLinks from "@components/LocalizeLinks.astro";
-import TopNotification from "@components/Notification.astro";
 
 import NotificationsObserver from "@scripts/NotificationsObserver.astro";
 import NotificationAnimations from "@scripts/NotificationAnimations.astro";
 
 import getLangNotAvailableNotification from "@utils/getLangNotAvailableNotification";
 
-/**
- * This file is used as a re-usable component that is the layout
- * It features the head, navbar and footer
- */
-
 interface Props {
-  locale: string;
   meta: any;
+  locale: string;
   recurData: any;
-  metaImage: string;
+  metaImageID: string;
   availableLocales: string[];
 }
 
-const { meta, locale, recurData, availableLocales, metaImage } =
+const { meta, locale, recurData, availableLocales, metaImageID } =
   Astro.props as Props;
 
 const { URL_slug: slugURL } = meta,
@@ -42,7 +37,7 @@ const { Type: notificationType, localizedNotifications } =
   <head>
     {
       import.meta.env.DEV && (
-        /* the below content-security-policy header is only for use on the development server */ <meta
+        /* content-security-policy header for the development server */ <meta
           http-equiv="Content-Security-Policy"
           content="default-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' https://static.openreplay.com; img-src 'self' data: https://dilmahtea.me https://imagedelivery.net; font-src 'self' https://fonts.gstatic.com; worker-src blob:; connect-src 'self' wss: https://api.openreplay.com;"
         />
@@ -70,61 +65,49 @@ const { Type: notificationType, localizedNotifications } =
     <MainHead
       meta={meta}
       locale={locale}
-      metaImage={metaImage}
+      metaImageID={metaImageID}
       availableLocales={availableLocales}
     />
-
-    <style lang="scss">
-      .translation-not-found-notification {
-        top: 0;
-        z-index: 1000;
-        position: sticky;
-      }
-    </style>
   </head>
 
   <LocalizeLinks locale={locale}>
-    <body>
-      <div class="translation-not-found-notification">
-        <TopNotification
-          type={notificationType}
-          notification={localizedNotifications}
-        >
-          <div class="text-center">
-            <notification></notification>
-          </div>
-        </TopNotification>
-      </div>
+    <div class="translation-not-found-notification sticky top-0 z-[1000]">
+      <Notification
+        type={notificationType}
+        notification={localizedNotifications}
+      >
+        <div class="text-center">
+          <notification></notification>
+        </div>
+      </Notification>
+    </div>
 
-      <script is:inline>
-        if (
-          window.requestedLocale /* requestedLocale is defined in TranslationNotFoundRedirect.astro */
-        ) {
-          const translationNotFoundNotification =
-            document.currentScript.previousElementSibling.firstElementChild;
+    <script is:inline>
+      if (
+        window.requestedLocale /* requestedLocale is defined in TranslationNotFoundRedirect.astro */
+      ) {
+        const translationNotFoundNotification =
+          document.currentScript.previousElementSibling.firstElementChild;
 
-          translationNotFoundNotification.style.display = "flex";
+        translationNotFoundNotification.style.display = "flex";
 
-          /* removeTopNotification is defined in NotificationAnimations.astro */
-          window.removeTopNotification(translationNotFoundNotification);
-        }
-      </script>
+        /* removeTopNotification is defined in NotificationAnimations.astro */
+        window.removeTopNotification(translationNotFoundNotification);
+      }
+    </script>
 
-      <div>
-        <Navbar
-          docLocale={locale}
-          footerText={footerText}
-          availableLocales={availableLocales}
-        />
+    <div>
+      <Navbar
+        docLocale={locale}
+        footerText={footerText}
+        availableLocales={availableLocales}
+      />
 
-        <main>
-          <slot />
-        </main>
+      <main>
+        <slot />
+      </main>
 
-        <Footer footerText={footerText} />
-      </div>
-
-
-    </body>
+      <Footer footerText={footerText} />
+    </div>
   </LocalizeLinks>
 </html>
