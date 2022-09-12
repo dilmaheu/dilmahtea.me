@@ -82,11 +82,11 @@ const { page, posts, recurData, headingName } = Astro.props,
     font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
   }
 
-  .recent-post {
+  .recent-post-card {
     @apply w-full max-w-[380px] sm:max-w-none;
   }
 
-  .recent-post-content-container {
+  .recent-post-card-content-container {
     padding: clamp(20px, 6.4vw, 40px) clamp(24px, 3.8vw + 11.75px, 36px);
 
     @media (min-width: 640px) {
@@ -99,16 +99,16 @@ const { page, posts, recurData, headingName } = Astro.props,
     }
   }
 
-  .recent-post-author {
+  .recent-post-card-author {
     line-height: 150%;
     font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem);
   }
 
-  .recent-post-title {
+  .recent-post-card-title {
     font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
   }
 
-  .recent-post-title-icon {
+  .recent-post-card-title-icon {
     height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
   }
 </style>
@@ -319,7 +319,11 @@ const { page, posts, recurData, headingName } = Astro.props,
         ]}
       >
         {recentPosts.slice(0, 3).map((post) => (
-          <div class="recent-post" role="listitem" aria-label="Kindness Item">
+          <div
+            role="listitem"
+            class="recent-post-card"
+            aria-label="Kindness Item"
+          >
             <div class="relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -346,8 +350,8 @@ const { page, posts, recurData, headingName } = Astro.props,
                   />
                 </a>
 
-                <div class="recent-post-content-container">
-                  <div class="recent-post-author flex flex-wrap font-bold">
+                <div class="recent-post-card-content-container">
+                  <div class="recent-post-card-author flex flex-wrap font-bold">
                     {post.authors.data.map(({ attributes }, index) => (
                       <a href="#">
                         {`${index > 0 ? ", " : " "}` + attributes.givenName}
@@ -362,12 +366,12 @@ const { page, posts, recurData, headingName } = Astro.props,
                     })}
                   </div>
 
-                  <div class="recent-post-title alice mt-4 leading-[1.125]">
+                  <div class="recent-post-card-title alice mt-4 leading-[1.125]">
                     <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
 
                     <span class="icon">
                       <img
-                        class="recent-post-title-icon"
+                        class="recent-post-card-title-icon"
                         src={RightArrow}
                         alt="cup-icon"
                       />
