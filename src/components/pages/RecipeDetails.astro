@@ -1,0 +1,1107 @@
+---
+import CupIcon from "@images/cup.svg";
+import CookIcon from "@images/cookIcon.svg";
+import ClockIcon from "@images/clockLightGreen.svg";
+import ClockWIcon from "@images/clockW.svg";
+import BulbIcon from "@images/bulbLightGreen.svg";
+import CupGreenIcon from "@images/cupGreen.svg";
+import RightArrow from "@images/rightArrow.svg";
+import ArrowDown from "@images/arrowDown.svg";
+import ArrowDownGreen from "@images/arrowDownGreen.svg";
+import MainBG from "@images/crowdfunding-info-section-background.webp";
+
+import ClippedImg from "@components/ClippedImg.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import HeroBackground from "@components/HeroBackground.astro";
+
+import Markdown from "@astrojs/markdown-component";
+
+import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
+
+const { page, recurData } = Astro.props,
+  { recipes } = page,
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+
+function clacTime(x) {
+  var d = x[0];
+  var h = x[1];
+  var m = x[2];
+
+  var day = d > 0 ? d + (d == 1 ? ` ${recurData.recipe_day}\xa0\xa0` : ` ${recurData.recipe_day}\xa0\xa0`) : "";
+  var hour = h > 0 ? h + (h == 1 ? ` ${recurData.recipe_hour}\xa0\xa0` : ` ${recurData.recipe_hours}\xa0\xa0`) : "";
+  var min = m > 0 ? m + (m == 1 ? ` ${recurData.recipe_minute}` : ` ${recurData.recipe_minutes}`) : "";
+
+  return day + hour + min
+};
+
+function clacTimeSm(x) {
+  var d = x[0];
+  var h = x[1];
+  var m = x[2];
+
+  var day = d > 0 ? (d + `${recurData.recipe_day.substring(0, 1)}\xa0`) : "";
+  var hour = h > 0 ? (h + `${recurData.recipe_hour.substring(0, 1)}\xa0`) : "";
+  var min = m > 0 ? (m + `${recurData.recipe_minute.substring(0, 1)}\xa0`) : "";
+
+  return day + hour + min
+};
+
+function time(x) {
+  const array = x.split(":").map(Number)
+
+  return clacTime(array)
+};
+
+function timeSm(x) {
+  const array = x.split(":").map(Number)
+
+  return clacTimeSm(array)
+};
+
+
+function calcTotalTime(x, y) {
+  const preparation  = x.split(":").map(Number)
+  const cooking = y.split(":").map(Number)
+  
+  var sum = [...preparation].map((e,i)=> e+cooking[i])
+
+  var min = (sum[0] * 24 * 60)  + (sum[1] * 60) + sum[2];
+  var d = Math.floor(min / (60 * 24));
+  var h = Math.floor(min % (60 * 24) / 60);
+  var m = Math.floor(min % 60);
+
+  return [d,h,m]
+};
+
+function totalTime(x, y) {
+  var a = calcTotalTime(x, y)
+
+  return clacTime(a)
+};
+
+function totalTimeSm(x, y) {
+  var a = calcTotalTime(x, y)
+
+  return clacTimeSm(a)
+};
+
+---
+
+<!-- Hero Section -->
+<section class="hero overflow-hidden relative">
+  <UpdateHeroTopMargin />
+
+  <HeroBackground />
+
+  {/* Text Content */}
+  <div class="wrapper hero-text-container h-full relative z-30">
+    <div
+      role="banner"
+      class="sm:w-8/12 md:w-7/12 pt-0 pt-[34px] sm:pt-1.5 md:pt-[45px]"
+    >
+      <div class="flex flex-wrap gap-x-2.5">
+        <div class="flex relative">
+          {
+            page.authors.data.map((author, index) => (
+              <div
+                class:list={[
+                  index > 0 && "relative -ml-5",
+                  "w-12 h-12 rounded-full object-cover overflow-hidden",
+                ]}
+              >
+                <img
+                  src={
+                    imgSrcPrefix +
+                    author.attributes.Profile_picture.data.attributes
+                      .provider_metadata.public_id +
+                    `/authBlob`
+                  }
+                  alt={
+                    author.attributes.Profile_picture.data.attributes
+                      .alternativeText
+                  }
+                  class="w-full h-full"
+                />
+              </div>
+            ))
+          }
+        </div>
+
+        <div class="grid content-between">
+          <div class="post-author flex flex-wrap font-bold leading-normal">
+            {
+              page.authors.data.map((author, index) => (
+                <a href="#">
+                  {`${index > 0 ? ", " : " "}` + author.attributes.givenName}
+                </a>
+              ))
+            }
+          </div>
+
+          <div class="post-publish-date leading-normal">
+            {
+              new Date(page.createdAt).toLocaleString("en-US", {
+                day: "numeric",
+                month: "long",
+              })
+            }
+          </div>
+        </div>
+      </div>
+
+      <h1
+        class="hero-title pt-4 sm:pt-2.5 md:pt-5 leading-[1.2] underline decoration-[3px]"
+      >
+        <a href="#">{page.Title}</a>
+
+        <span class="icon">
+          <img src={CupIcon} alt="cup-icon" class="heading-inline-icon" />
+        </span>
+      </h1>
+
+      <a
+        href="#"
+        class:list={[
+          "post-intro block prose text-lightgray line-clamp-5 max-w-none",
+          "pt-4 sm:pt-3 md:pt-4 leading-[1.4] sm:leading-[1.2] md:leading-normal",
+        ]}
+      >
+        <Markdown>{page.Intro_text}</Markdown>
+      </a>
+
+      <div class="flex flex-wrap recipe-Time-Container">
+        <div class="inline-flex items-center gap-2 md:gap-2.5">
+          <div class="recipe-Time-Icon h-auto margin-[3px]">
+            <img
+              class="w-full h-full"
+              src={ClockWIcon}
+              alt="clock-icon"
+            />
+          </div>
+          <div>
+            <div class="recipe-Time-Tag">{recurData.recipe_prep} :</div>
+            <div class="hidden sm:block font-bold recipe-cooktime">
+              {time(page.Time_preparation)}
+            </div>
+            <div class="block sm:hidden font-bold recipe-cooktime">
+              {timeSm(page.Time_preparation)}
+            </div>
+          </div>
+        </div>
+
+        <div class="inline-flex items-center gap-2 md:gap-2.5">
+          <div class="recipe-Time-Icon h-auto margin-[3px]">
+            <img
+              class="w-full h-full"
+              src={ClockWIcon}
+              alt="clock-icon"
+            />
+          </div>
+          <div>
+            <div class="recipe-Time-Tag">{recurData.recipe_cook} :</div>
+            <div class="hidden sm:block font-bold recipe-cooktime">
+              {time(page.Time_cooking)}
+            </div>
+            <div class="block sm:hidden font-bold recipe-cooktime">
+              {timeSm(page.Time_cooking)}
+            </div>
+          </div>
+        </div>
+
+        <div class="inline-flex items-center gap-2 md:gap-2.5">
+          <div class="recipe-Time-Icon h-auto margin-[3px]">
+            <img
+              class="w-full h-full"
+              src={ClockWIcon}
+              alt="clock-icon"
+            />
+          </div>
+          <div>
+            <div class="recipe-Time-Tag">{recurData.recipe_total} :</div>
+            <div class="hidden sm:block font-bold recipe-cooktime">
+              {totalTime(page.Time_preparation, page.Time_cooking)}
+            </div>
+            <div class="block sm:hidden font-bold recipe-cooktime">
+              {totalTimeSm(page.Time_preparation, page.Time_cooking)}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="inline-flex sm:hidden gap-2 md:gap-2.5 mt-[30px] w-auto">
+        <a href="#recipe">
+          <div
+            class:list={[
+              "bg-lightgray flex items-center justify-center rounded-[40px] py-[13px] px-[23px]",
+              "text-base font-bold leading-[19px] text-primary text-center"
+            ]}
+          >
+            {recurData.recipe_jump_to_recipe}
+            <span class="icon relative top-0">
+              <span class="relative ml-5 h-5">
+                <img 
+                  class="w-full h-full" 
+                  src={ArrowDownGreen} 
+                  alt="cup-icon" 
+                />
+              </span>
+            </span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {/* Blob Image - Desktop View */}
+  <div class="hero-img-curve-container h-full hidden sm:block absolute z-20">
+    <ClippedImg
+      id="hero-img-curve"
+      src={imgSrcPrefix +
+        page.Intro_blob.data.attributes.provider_metadata.public_id +
+        `/small`}
+      className="relative"
+      path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
+    />
+  </div>
+</section>
+
+{/* Blob Image - Mobile View */}
+<div class="block sm:hidden relative -mt-20 z-20 w-full">
+  <ClippedImg
+    id="hero-img-curve-sm"
+    src={imgSrcPrefix +
+      page.Intro_blob.data.attributes.provider_metadata.public_id +
+      `/small`}
+    path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
+  />
+</div>
+
+<!-- Recipe Details Section -->
+
+<div class="py-[50px]" role="main">
+  <div
+    class="block md:hidden sticky z-40 overflow-hiden self-start"
+    id="blogContent_StickyContainerMd"
+  >
+    <div
+      id="blog_StickyDropdownContainer"
+      class="wrapper text-sm lg:text-base font-bold relative noselect"
+    >
+      <div
+        id="blogStickyBtn"
+        class="flex items-center justify-between gap-x-1.5 md:gap-x-3 font-bold focus:outline-none"
+      > 
+        <div id="blog_StickyDropdown" class="flex">
+          <div>
+            <img
+              class="blog_StickyItemHeaderImgMd"
+              src="/images/bookGreen.svg"
+              alt="arrow"
+            />
+          </div>
+          <div id="blog_StickyDropdownHeaderTop">
+            {recurData.text_practices}
+          </div>
+          <div id="blog_StickyDropdownHeader">{recurData.text_practices}</div>
+          <ul id="blog_StickyItemContainerMd"></ul>
+        </div>
+        <div class="w-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 11.6 6.7"
+            id="StickyDropdpwnIcon"
+          >
+            <path
+              class="cls-1"
+              d="M.3.3A.6.6,0,0,1,.9,0a.9.9,0,0,1,.6.3L5.8,4.6,10.2.3a.6.6,0,0,1,.6-.3l.6.3a.8.8,0,0,1,.2.6.7.7,0,0,1-.2.6l-5,4.9a.6.6,0,0,1-.6.3.9.9,0,0,1-.6-.3L.3,1.5A.9.9,0,0,1,0,.9.6.6,0,0,1,.3.3Z"
+              fill="#2B4B50"
+            ></path>
+          </svg>
+        </div>
+      </div>
+      <div id="blog_StickyDropdownItem" class="pb-20">
+        <a 
+          href="#recipe"
+          class="absolute left-10 bottom-0 w-full" 
+        >
+          <div
+            class:list={[
+              "bg-primary flex items-center justify-center max-w-[200px] rounded-[40px] py-[13px] px-[23px]",
+              "text-sm font-bold leading-[19px] text-lightgray text-center"
+            ]}
+          >
+            {recurData.recipe_jump_to_recipe}
+            <span class="icon relative top-0">
+              <span class="relative ml-5 h-5">
+                <img 
+                  class="w-full h-full" 
+                  src={ArrowDown} 
+                  alt="cup-icon" 
+                />
+              </span>
+            </span>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div id="sticky_p_bar"></div>
+  </div>
+
+  <div class="wrapper w-full flex flex-wrap">
+    <div
+      class="md:w-8/12 order-2 md:order-1 grid gap-y-[30px]"
+      id="howToStepDetails"
+    >
+      
+      <div>
+        <h2 
+          class:list={[
+            "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
+            "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
+          ]}>
+            About Vegan Broccoli Salad
+        </h2>
+
+        <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+          <div class="prose max-w-none mb-5 recipe-sec-text">
+            <Markdown>{page.Block_text}</Markdown>
+          </div>
+          <div class="mt-5">
+            <ClippedImg
+              id="recipe-img-curve"
+              src={MainBG}
+              path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2 
+          class:list={[
+            "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
+            "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
+           ]}
+          >
+            {recurData.recipe_similar} {page.Title}
+          </h2>
+        <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+          <ul class="list-disc list-inside similarRecipies">
+            {page.Recipe_variations.data.map(val => val.attributes).map(recipe => (
+              <li class="font-medium text-primary">
+                <a href={recipe.Meta.URL_slug}>
+                  {recipe.Title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <h2 
+          class:list={[
+            "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
+            "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
+          ]} 
+          id="recipe"
+        >
+          {page.Title} {recurData.recipe_recipe}
+        </h2>
+        <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+          <div class="prose max-w-none mb-5 recipe-sec-text">
+            <Markdown>{page.Time_text}</Markdown>
+          </div>
+
+          <div class="flex flex-wrap mt-5 gap-y-5 recipe-sec-time-container">
+            <div class="inline-flex gap-2.5 text-dark inline-flex gap-2.5">
+              <div class="h-auto m-[3px] recipe-sec-time-icon">
+                <img
+                  class="w-full h-full"
+                  src={ClockIcon}
+                  alt="clock-icon"
+                />
+              </div>
+              <div class="text-dark">
+                <div class="text-[10px] md:text-xs leading-3 md:leading-[14px]">
+                  {recurData.recipe_prep} :
+                </div>
+                <div class="hidden sm:block text-base font-bold leading-[19px]">
+                  {time(page.Time_preparation)}
+                </div>
+                <div class="block sm:hidden text-base font-bold leading-[19px]">
+                  {timeSm(page.Time_preparation)}
+                </div>
+              </div>
+            </div>
+
+            <div class="inline-flex gap-2.5 text-dark inline-flex gap-2.5">
+              <div class="h-auto m-[3px] recipe-sec-time-icon">
+                <img
+                  class="w-full h-full"
+                  src={ClockIcon}
+                  alt="clock-icon"
+                />
+              </div class="text-dark">
+              <div class="text-dark">
+                <div class="text-[10px] md:text-xs leading-3 md:leading-[14px]">
+                  {recurData.recipe_cook} :
+                </div>
+                <div class="hidden sm:block text-base font-bold leading-[19px]">
+                  {time(page.Time_cooking)}
+                </div>
+                <div class="block sm:hidden text-base font-bold leading-[19px]">
+                  {timeSm(page.Time_cooking)}
+                </div>
+              </div>
+            </div>
+
+            <div class="inline-flex gap-2.5 text-dark inline-flex gap-2.5">
+              <div class="h-auto m-[3px] recipe-sec-time-icon">
+                <img
+                  class="w-full h-full"
+                  src={ClockIcon}
+                  alt="clock-icon"
+                />
+              </div>
+              <div class="text-dark">
+                <div class="text-[10px] md:text-xs leading-3 md:leading-[14px]">
+                  {recurData.recipe_total} :
+                </div>
+                <div class="hidden sm:block text-base font-bold leading-[19px]">
+                  {totalTime(page.Time_preparation, page.Time_cooking)}
+                </div>
+                <div class="block sm:hidden text-base font-bold leading-[19px]">
+                  {totalTimeSm(page.Time_preparation, page.Time_cooking)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+          <div class="flex">
+            <div class="w-auto recipe-sec-content-border"></div>
+            <div class="grid w-full items-center gap-[15px]">
+              <h3 class="font-medium text-primary recipe-sec-content-title">
+                {recurData.recipe_nutrition_information}
+              </h3>
+
+              <div class="flex gap-2.5 w-full">
+                <div class="text-base font-bold leading-[1.75rem] text-dark">
+                  {recurData.recipe_yield}:
+                </div>
+                <div class="text-base font-bold leading-[1.75rem] text-primary">
+                  {page.Nutrition_yield}
+                </div>
+              </div>
+
+              <div class="text-xl font-bold leading-[2.188rem] text-primary">
+                {recurData.recipe_amount_per_serving}:
+              </div>
+              <div class="grid grid-flow-row gap-[5px] recipe-sec-nutritions-container">
+                {page.Nutrition.map((item, idx) => (
+                  <div class="flex items-center recipe-sec-nutrition-item">
+                    <div class="text-dark">
+                      {item.Nutrition_name}
+                    </div> 
+                    <span class="text-dark mr-1">:</span>
+                    <div class="text-dark">
+                      {item.Nutrition_amount != null ? item.Nutrition_amount : "0" }
+                      {item.Nutrition_measurements_unit}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>  
+          </div>
+        </div>
+
+        <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+          <div class="flex flex-wrap justify-between">
+            <h3 class="font-medium text-primary recipe-sec-content-title">
+              {recurData.recipe_ingredients}
+            </h3>
+            <div class="inline-grid grid-flow-col items-center relative recipe-sec-servingsize-input-container">
+              <label class="font-bold text-dark recipe-sec-servingsize-text">{recurData.recipe_serving_size}:</label>
+              <select
+                id="recipeSecServingsize"
+                name="recipeSecServingsize"
+                class:list={[
+                  "focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring cursor-pointer",
+                  "max-w-[65px] md:max-w-[83px] text-lightgray2 py-[5px] pl-[11px] rounded-[7px] recipe-sec-servingsize-input"
+                ]}
+              >
+                <option value="1">
+                  1x
+                </option>
+                <option value="2">
+                  2x
+                </option>
+                <option value="3">
+                  3x
+                </option>
+                <option value="5">
+                  5x
+                </option>
+                <option value="10">
+                  10x
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-5 md:mt-[25px] flex gap-2">
+
+            {page.Cooking_part.map((item, idx) => (
+              
+              <div class="w-full sm:w-1/2">
+                <h4 class="font-medium text-dark mb-[15px] recipe-sec-ingridients-content-title">
+                  {item.Cooking_part_name}
+                </h4>
+
+                {item.Cooking_part_ingredients.map((item, idx) => (
+                  <div class="inline-flex items-center w-full">
+                    <div class="flex">
+                      <label class="recipe-sec-ingridients-checkbox-label">
+                        <input type="checkbox" />
+                        <span class="recipe-sec-ingridients-checkbox"></span>
+                      </label>
+                    </div>
+                    <div class="ml-2.5 text-dark recipe-sec-ingridients-checkbox-text">
+                      {item.Cooking_part_ingredient_amount}
+                      {item.Cooking_part_ingredient_measurements_unit}
+                      {item.Cooking_part_ingredient_name}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+
+
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2 
+          class:list={[
+            "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
+            "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
+          ]}>
+            {recurData.recipe_cooking_instructions}
+          </h2>
+
+        {page.Cooking_part.map((item) => (
+          <div>
+            <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+              <div class="flex">
+                <div class="w-auto recipe-sec-content-border"></div>
+                <div class="w-full gap-[15px]">
+                  <h3 class="font-medium text-primary recipe-sec-content-title">
+                    {item.Cooking_part_name}
+                  </h3>
+                </div>  
+              </div>
+            </div>
+
+            {item.Cooking_part_steps.map((step, idx) => (
+              <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+                <div class="flex gap-[15px]">
+                  <div>
+                    <div 
+                      class:list={[
+                        "bg-primary flex items-center justify-center font-extrabold rounded-full",
+                        "w-[30px] sm:w-[35px] md:w-[40px] lg:w-[45px] h-[30px] sm:h-[35px] md:h-[40px] lg:h-[45px] recipe-sec-step-num"
+                      ]}
+                    >
+                      {idx+1}
+                    </div>
+                  </div>
+                  <div class="prose max-w-none recipe-sec-text w-auto">
+                    {step.Cooking_part_steps_text}
+                  </div>
+                </div> 
+
+                <div 
+                  class={step.Cooking_part_steps_blob?.data == null 
+                    ? "hidden"
+                    : "mt-5 recipe-step-img"
+                  }
+                >
+                  <ClippedImg
+                    id="recipe-img-curve"
+                    src={imgSrcPrefix +
+                      step.Cooking_part_steps_blob?.data?.attributes.provider_metadata.public_id +
+                      `/small`
+                    }
+                    path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+                  />
+                </div>
+              </div>
+            ))}
+
+            <div 
+              class={item.Cooking_part_step_tip == null 
+                ? "hidden" 
+                : "bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+              }
+            >
+              <div class="flex flex-wrap items-center gap-2.5">
+                <div class="flex items-center gap-2.5 w-full">
+                  <div class="w-auto m-[3px] recipe-sec-icon">
+                    <img
+                      class="w-full h-full"
+                      src={BulbIcon}
+                      alt="cook-icon"
+                    />
+                  </div>
+
+                  <h3 class="text-2xl font-bold leading-[1.95rem] text-primary">{recurData.recipe_tips}</h3>
+                </div>
+
+                <div class="prose max-w-none recipe-sec-text">
+                  {item.Cooking_part_step_tip}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+
+      </div>
+    </div>
+
+    <div
+      class="md:w-4/12 order-1 md:order-2 blogContent_StickyContainer md:sticky top-0 overflow-hiden self-start"
+      id="blogContent_StickyContainer"
+    >
+      <h3 id="blog_StickyHeader">{recurData.text_practices}</h3>
+
+      <a href="#recipe">
+        <div
+          class:list={[
+            "bg-primary flex items-center justify-center rounded-[40px] py-5 mb-[50px]",
+            "text-base font-bold leading-[19px] text-lightgray text-center"
+          ]}
+        >
+          {recurData.recipe_jump_to_recipe}
+          <span class="icon relative top-0">
+            <span class="relative ml-5 h-5">
+              <img 
+                class="w-full h-full" 
+                src={ArrowDown} 
+                alt="cup-icon" 
+              />
+            </span>
+          </span>
+        </div>
+      </a>
+
+      <div id="blog_StickyItemContainer"></div>
+    </div>
+  </div>
+</div>
+
+{
+  page.Relevant_recipes.data?.length > 0 && (
+    <section class="wrapper">
+      <h2 class="recent-posts-title alice text-primary mb-6">
+        {recurData.text_explore_the_world_of_kindness}
+      </h2>
+
+      <ClipPathSVG
+        id="recent-post-card-curve"
+        path="M.99 1H.005C-.005.636-.003.266.042.141.102-.024.358.005.513.005c.216 0 .411-.061.459.255C1 .557.995.795.99 1"
+      />
+
+      <div
+        role="list"
+        aria-label="Kindness Items"
+        class:list={[
+          "w-full mx-auto mb-14 grid sm:grid-cols-2 lg:grid-cols-3",
+          "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
+        ]}
+      >
+        {page.Relevant_recipes.data.map(val => val.attributes).slice(0, 3).map((post) => (
+          <div
+            role="listitem"
+            class="recent-post-card"
+            aria-label="Kindness Item"
+          >
+            <div class="relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="none"
+                viewBox="0 0 423.3 559.8"
+              >
+                <path
+                  d="M419.2 306.4c-1.2 40.4 0 72.6 0 93.6 0 176.6-12.5 158-197.8 158S2.1 587.1 2.1 410c0-58.7.1-86 .3-97.5-.1-1.2-.2-3.1-.3-6.1v-.3C-2.2 194.8-1.3 81.5 17.9 43.2 43.3-7.3 151.7 1.5 217.2 1.5c91.3 0 173.8-18.8 194.3 78.1 19.3 91 9.6 163.8 7.7 226.8Z"
+                  fill="#273E3F"
+                />
+              </svg>
+
+              <div class="absolute inset-0 z-30">
+                <a class="block w-full" href={`/` + post.Meta.URL_slug}>
+                  <img
+                    src={
+                      imgSrcPrefix +
+                      post.Intro_blob.data.attributes.provider_metadata
+                        .public_id +
+                      `/small`
+                    }
+                    class="w-full h-full"
+                    style="clip-path: url(#recent-post-card-curve);"
+                  />
+                </a>
+
+                <div class="recent-post-card-content-container">
+                  <div class="recent-post-card-author flex flex-wrap font-bold">
+                    {post.authors.data.map(({ attributes }, index) => (
+                      <a href="#">
+                        {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                      </a>
+                    ))}
+                  </div>
+
+                  <div class="post-publish-date leading-tight">
+                    {new Date(post.createdAt).toLocaleString("en-US", {
+                      day: "numeric",
+                      month: "long",
+                    })}
+                  </div>
+
+                  <div class="recent-post-card-title alice mt-4 leading-[1.125]">
+                    <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+
+                    <span class="icon">
+                      <img
+                        class="recent-post-card-title-icon"
+                        src={RightArrow}
+                        alt="cup-icon"
+                      />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    // creating howto practices
+    const hsd = document.getElementById("howToStepDetails");
+    const tags = hsd.querySelectorAll("h2");
+
+    for (const tag of tags) {
+      // practices in desktop screen
+      var div = document.getElementById("blog_StickyItemContainer");
+      var aTag = document.createElement("a");
+      aTag.setAttribute("href", "#" + tag.id);
+      aTag.innerHTML =
+        `<img class="blog_StickyItemImg opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` +
+        tag.id.replaceAll("-", " ");
+      div.appendChild(aTag);
+
+      // sticky active practice heading in mobile screen
+      var divMd = document.getElementById("blog_StickyItemContainerMd");
+      var liTagMd = document.createElement("li");
+      liTagMd.setAttribute("class", "truncate");
+      liTagMd.innerHTML = tag.id.replaceAll("-", " ");
+      divMd.appendChild(liTagMd);
+
+      // sticky button practices in mobile screen
+      var dropdownDiv = document.getElementById("blog_StickyDropdownItem");
+      var dropdownATag = document.createElement("a");
+      dropdownATag.setAttribute("href", "#" + tag.id);
+      dropdownATag.setAttribute(
+        "class",
+        "flex items-center pt-6 font-normal text-default-80"
+      );
+      dropdownATag.innerHTML =
+        `<img class="blog_StickyItemImgMd opacity-0" src="/images/rightArrowGreen.svg" alt="arrow">` +
+        tag.id.replaceAll("-", " ");
+      dropdownDiv.appendChild(dropdownATag);
+    }
+
+    // highlight active practice section header desktop screen
+    const stickyItemCon = document.getElementById("blog_StickyItemContainer");
+    const blogStickyAtag = stickyItemCon.querySelectorAll("a");
+    const blogStickyImg = stickyItemCon.querySelectorAll(".blog_StickyItemImg");
+
+    const dropdownStickyItemCon = document.getElementById(
+      "blog_StickyDropdownItem"
+    );
+    const dropdownStickyAtag = dropdownStickyItemCon.querySelectorAll("a");
+    const dropdownStickyImg = dropdownStickyItemCon.querySelectorAll(
+      ".blog_StickyItemImgMd"
+    );
+
+    document.addEventListener("scroll", (e) => {
+      for (var i = 0; i < tags.length; i++) {
+        var scrolled = document.scrollingElement.scrollTop;
+        var position = tags[i].offsetTop;
+
+        if (i > 0) {
+          if (scrolled > position - 300) {
+            blogStickyAtag[i].classList.add("font-bold");
+            blogStickyAtag[i - 1].classList.remove("font-bold");
+            blogStickyImg[i].classList.remove("opacity-0");
+            blogStickyImg[i - 1].classList.add("opacity-0");
+
+            dropdownStickyAtag[i].classList.add("font-medium", "text-default");
+            dropdownStickyAtag[i - 1].classList.remove(
+              "font-medium",
+              "text-default"
+            );
+            dropdownStickyImg[i].classList.remove("opacity-0");
+            dropdownStickyImg[i - 1].classList.add("opacity-0");
+          } else {
+            blogStickyAtag[i].classList.remove("font-bold");
+            blogStickyImg[i].classList.add("opacity-0");
+
+            dropdownStickyAtag[i].classList.remove(
+              "font-medium",
+              "text-default"
+            );
+            dropdownStickyImg[i].classList.add("opacity-0");
+          }
+        } else {
+          if (scrolled > position - 300) {
+            blogStickyAtag[i].classList.add("font-bold");
+            blogStickyImg[i].classList.remove("opacity-0");
+
+            dropdownStickyAtag[i].classList.add("font-medium", "text-default");
+            dropdownStickyImg[i].classList.remove("opacity-0");
+          } else {
+            blogStickyAtag[i].classList.remove("font-bold");
+            blogStickyImg[i].classList.add("opacity-0");
+
+            dropdownStickyAtag[i].classList.remove(
+              "font-medium",
+              "text-default"
+            );
+            dropdownStickyImg[i].classList.add("opacity-0");
+          }
+        }
+      }
+    });
+
+    const mqMd = window.matchMedia("(max-width: 767.98px)");
+    if (mqMd.matches) {
+      // show active practice header name top on sticky in mobile screen
+      document.addEventListener("scroll", (e) => {
+        const stickyItemConMd = document.getElementById(
+          "blog_StickyItemContainerMd"
+        );
+        const blogStickyMdAtag = stickyItemConMd.querySelectorAll("li");
+        const dropdownContainer = document.getElementById(
+          "blog_StickyDropdownContainer"
+        );
+        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
+        var scrolled = document.scrollingElement.scrollTop;
+        const hsd = document.getElementById("howToStepDetails");
+        stickyProgress = document.getElementById("sticky_p_bar");
+        hsdPosition = hsd.offsetTop;
+
+        if (scrolled > hsdPosition + 1) {
+          dropdownContainer.style.display = "block";
+          stickyProgress.style.display = "block";
+        } else {
+          dropdownContainer.style.display = "none";
+          stickyProgress.style.display = "none";
+        }
+
+        for (var i = 0; i < tags.length; i++) {
+          var position = tags[i].offsetTop;
+          if (i > 0) {
+            if (scrolled > position - 40) {
+              blogStickyMdAtag[i].style.display = "inline-flex";
+              blogStickyMdAtag[i - 1].style.display = "none";
+            } else {
+              blogStickyMdAtag[i].style.display = "none";
+            }
+          } else {
+            if (scrolled > position - 40) {
+              blogStickyMdAtag[i].style.display = "inline-flex";
+            } else {
+              blogStickyMdAtag[i].style.display = "none";
+            }
+          }
+        }
+      });
+
+      // sticky practices heading toggle by "Practices" when toggling stcky button
+      document.addEventListener("scroll", (e) => {
+        var scrolled = document.scrollingElement.scrollTop;
+        const hsd = document.getElementById("howToStepDetails");
+        hsdPosition = hsd.offsetTop;
+        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
+        dropdownHeaderTop = document.getElementById(
+          "blog_StickyDropdownHeaderTop"
+        );
+        dropdownHeaderItem = document.getElementById(
+          "blog_StickyItemContainerMd"
+        );
+        const firstTag = hsd.querySelector("h2");
+
+        if (scrolled > hsdPosition - 40) {
+          if (dropdownHeader.style.display == "block") {
+            dropdownHeaderTop.style.display = "none";
+          } else if (scrolled > firstTag.offsetTop - 40) {
+            dropdownHeaderTop.style.display = "none";
+          } else {
+            dropdownHeaderTop.style.display = "block";
+          }
+        } else {
+          dropdownHeaderTop.style.display = "block";
+        }
+      });
+    }
+    const mqSm = window.matchMedia("(max-width: 639.98px)");
+    if (mqSm.matches) {
+      // show active practice header name top on sticky in mobile screen
+      document.addEventListener("scroll", (e) => {
+        const stickyItemConMd = document.getElementById(
+          "blog_StickyItemContainerMd"
+        );
+        const blogStickyMdAtag = stickyItemConMd.querySelectorAll("li");
+        const dropdownContainer = document.getElementById(
+          "blog_StickyDropdownContainer"
+        );
+        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
+        var scrolled = document.scrollingElement.scrollTop;
+        const hsd = document.getElementById("howToStepDetails");
+        stickyProgress = document.getElementById("sticky_p_bar");
+        hsdPosition = hsd.offsetTop;
+
+        if (scrolled > hsdPosition - 50) {
+          dropdownContainer.style.display = "block";
+          stickyProgress.style.display = "block";
+        } else {
+          dropdownContainer.style.display = "none";
+          stickyProgress.style.display = "none";
+        }
+        for (var i = 0; i < tags.length; i++) {
+          var position = tags[i].offsetTop;
+
+          if (i > 0) {
+            if (scrolled > position - 120) {
+              blogStickyMdAtag[i].style.display = "inline-flex";
+              blogStickyMdAtag[i - 1].style.display = "none";
+            } else {
+              blogStickyMdAtag[i].style.display = "none";
+            }
+          } else {
+            if (scrolled > position - 120) {
+              blogStickyMdAtag[i].style.display = "inline-flex";
+            } else {
+              blogStickyMdAtag[i].style.display = "none";
+            }
+          }
+        }
+      });
+
+      // sticky Practices heading toggle by "Practices" when toggling stcky button
+      document.addEventListener("scroll", (e) => {
+        var scrolled = document.scrollingElement.scrollTop;
+        const hsd = document.getElementById("howToStepDetails");
+        hsdPosition = hsd.offsetTop;
+        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
+        dropdownHeaderTop = document.getElementById(
+          "blog_StickyDropdownHeaderTop"
+        );
+        dropdownHeaderItem = document.getElementById(
+          "blog_StickyItemContainerMd"
+        );
+
+        const firstTag = hsd.querySelector("h2");
+
+        if (scrolled > hsdPosition - 120) {
+          if (dropdownHeader.style.display == "block") {
+            dropdownHeaderTop.style.display = "none";
+          } else if (scrolled > firstTag.offsetTop - 120) {
+            dropdownHeaderTop.style.display = "none";
+          } else {
+            dropdownHeaderTop.style.display = "block";
+          }
+        } else {
+          dropdownHeaderTop.style.display = "block";
+        }
+      });
+    }
+
+    //sticky Practices button toggle
+    document.getElementById("blogStickyBtn").addEventListener(
+      "click",
+      function () {
+        const dropdownItem = document.getElementById("blog_StickyDropdownItem");
+        dropdownHeader = document.getElementById("blog_StickyDropdownHeader");
+        dropdownHeaderItem = document.getElementById(
+          "blog_StickyItemContainerMd"
+        );
+        dropdpwnIcon = document.getElementById("StickyDropdpwnIcon");
+
+        if (dropdownHeader.style.display == "none") {
+          if (dropdownItem.style.display == "block") {
+            dropdownItem.style.display = "none";
+            dropdownHeader.style.display = "block";
+            dropdownHeaderItem.style.display = "grid";
+            dropdpwnIcon.style.transform = "rotate(0deg)";
+          } else {
+            dropdownItem.style.display = "block";
+            dropdownHeaderItem.style.display = "none";
+            dropdownHeader.style.display = "block";
+            dropdpwnIcon.style.transform = "rotate(180deg)";
+          }
+        } else {
+          if (dropdownItem.style.display == "block") {
+            dropdownItem.style.display = "none";
+            dropdownHeader.style.display = "none";
+            dropdownHeaderItem.style.display = "grid";
+            dropdpwnIcon.style.transform = "rotate(0deg)";
+          } else {
+            dropdownItem.style.display = "block";
+            dropdownHeaderItem.style.display = "none";
+            dropdownHeader.style.display = "block";
+            dropdpwnIcon.style.transform = "rotate(180deg)";
+          }
+        }
+      },
+      false
+    );
+
+    // Practices reading progress bar
+    document.addEventListener("scroll", (e) => {
+      var winScroll =
+        document.body.scrollTop || document.documentElement.scrollTop;
+      var height =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+
+      const contentHeight =
+        document.querySelector("#howToStepDetails").offsetHeight;
+      const contentOffssetTop =
+        document.querySelector("#howToStepDetails").offsetTop;
+
+      var scrolled = (winScroll / height) * 100;
+      let ScrollBarWidth;
+      const diff = winScroll - contentOffssetTop;
+      if (diff <= 0) {
+        ScrollBarWidth = 0;
+      } else {
+        //check if we hav reached div bottom
+        if (winScroll + 100 <= contentOffssetTop + contentHeight) {
+          ScrollBarWidth = (diff / contentHeight) * 100;
+        } else {
+          ScrollBarWidth = 100;
+        }
+      }
+      document.getElementById("sticky_p_bar").style.width =
+        ScrollBarWidth + "%";
+    });
+  });
+</script>
