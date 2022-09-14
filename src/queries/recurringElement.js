@@ -23,6 +23,26 @@ const recurringElementQuery = `
           text_practices_to_follow
           text_practices
           text_explore_the_world_of_kindness
+          recipe_prep
+          recipe_cook
+          recipe_total
+          recipe_jump_to_recipe
+          recipe_similar
+          recipe_recipe
+          recipe_day
+          recipe_days
+          recipe_hour
+          recipe_hours
+          recipe_minute
+          recipe_minutes
+          recipe_nutrition_information
+          recipe_yield
+          recipe_amount_per_serving
+          recipe_ingredients
+          recipe_serving_size
+          recipe_cooking_instructions
+          recipe_tips
+          recipe_discover
           localizations {
             data {
               attributes {
@@ -45,6 +65,26 @@ const recurringElementQuery = `
                 text_practices_to_follow
                 text_practices
                 text_explore_the_world_of_kindness
+                recipe_prep
+                recipe_cook
+                recipe_total
+                recipe_jump_to_recipe
+                recipe_similar
+                recipe_recipe
+                recipe_day
+                recipe_days
+                recipe_hour
+                recipe_hours
+                recipe_minute
+                recipe_minutes
+                recipe_nutrition_information
+                recipe_yield
+                recipe_amount_per_serving
+                recipe_ingredients
+                recipe_serving_size
+                recipe_cooking_instructions
+                recipe_tips
+                recipe_discover
               }
             }
           }
