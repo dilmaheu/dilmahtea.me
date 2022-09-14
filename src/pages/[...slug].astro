@@ -8,7 +8,6 @@ import BasicPage from "@pages/BasicPage.astro";
 import BlogDetails from "@pages/BlogDetails.astro";
 import HowToDetails from "@pages/HowToDetails.astro";
 import Crowdfunding from "@pages/Crowdfunding.astro";
-import RecipeDetails from "@pages/RecipeDetails.astro";
 import CrowdfundingForm from "@pages/CrowdfundingForm.astro";
 
 import DefaultRouteRedirect from "@scripts/DefaultRouteRedirect.astro";
@@ -21,7 +20,6 @@ export async function getStaticPaths() {
     recurringElement,
     blogs,
     howTos,
-    recipes,
     crowdfundingForm,
     crowdfundingPlans,
     crowdfundingHome,
@@ -127,11 +125,6 @@ export async function getStaticPaths() {
     howTos: locale && getPosts(howTos, locale),
   }));
 
-  const recipeDetailsPages = getPages(recipes, (page, { locale }) => ({
-    type: "recipeDetails",
-    recipes: locale && getPosts(recipes, locale),
-  }));
-
   const blogPages = getPages(homeBlog, (page, { locale }) => ({
     type: "blog",
     posts: locale && getPosts(blogs, locale),
@@ -148,7 +141,7 @@ export async function getStaticPaths() {
       locale &&
       (!shouldDisplayExperimentals()
         ? blogs
-        : [...getPosts(blogs, locale), ...getPosts(howTos, locale), ...getPosts(recipes, locale)]),
+        : [...getPosts(blogs, locale), ...getPosts(howTos, locale)]),
   }));
 
   return [
@@ -158,7 +151,6 @@ export async function getStaticPaths() {
     ...crowdfundingPaymentConfirmationPages,
     ...blogDetailsPages,
     ...howToDetailsPages,
-    ...recipeDetailsPages,
     ...blogPages,
     ...howToPages,
     ...homepagePages,
@@ -218,8 +210,6 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
             <Posts page={page} />
           ) : page.type == `howToDetails` ? (
             <HowToDetails page={page} recurData={recurData} />
-          ) : page.type == `recipeDetails` ? (
-            <RecipeDetails page={page} recurData={recurData} />
           ) : (
             <CrowdfundingForm page={page} locale={locale} />
           )}
