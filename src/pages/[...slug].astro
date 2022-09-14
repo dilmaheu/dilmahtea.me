@@ -29,6 +29,7 @@ export async function getStaticPaths() {
     crowdfundingPaymentConfirmation,
     homeBlog,
     homeHowTo,
+    homeRecipe,
     homepage,
   } = CMS.get("all");
 
@@ -142,6 +143,11 @@ export async function getStaticPaths() {
     posts: locale && getPosts(howTos, locale),
   }));
 
+  const recipePages = getPages(homeRecipe, (page, { locale }) => ({
+    type: "recipe",
+    posts: locale && getPosts(recipes, locale),
+  }));
+
   const homepagePages = getPages(homepage, (page, { locale }) => ({
     type: "homepage",
     posts:
@@ -161,6 +167,7 @@ export async function getStaticPaths() {
     ...recipeDetailsPages,
     ...blogPages,
     ...howToPages,
+    ...recipePages,
     ...homepagePages,
   ];
 }
@@ -218,6 +225,8 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
             <Posts page={page} />
           ) : page.type == `howToDetails` ? (
             <HowToDetails page={page} recurData={recurData} />
+          ) : page.type == `recipe` ? (
+            <Posts page={page} />
           ) : page.type == `recipeDetails` ? (
             <RecipeDetails page={page} recurData={recurData} />
           ) : (

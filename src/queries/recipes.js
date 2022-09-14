@@ -2,6 +2,7 @@ const recipesQuery = `
   {
     recipes {
       data {
+        id
         attributes {
           localizations {
             data {
