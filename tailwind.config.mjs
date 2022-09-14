@@ -11,9 +11,6 @@ export default {
         dark: "#474747",
         primary: "#2b4b50",
         lightgray: "#e3dfde",
-        lightgray2: "#faf4f2",
-        white1: "#f0eeee",
-        white2: "#faf4f2",
       },
 
       typography: () => ({
