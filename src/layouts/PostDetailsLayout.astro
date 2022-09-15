@@ -112,11 +112,11 @@ const { page, posts, recurData, headingName } = Astro.props,
     height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
   }
 
-  .map-container{
+  .map-container {
     margin: clamp(55px, 5vw + 30px, 100px) 0;
   }
 
-  .map-title{
+  .map-title {
     font-size: clamp(2.125rem, 3vw + 0.3rem, 2.625rem);
   }
 </style>
@@ -133,54 +133,48 @@ const { page, posts, recurData, headingName } = Astro.props,
       role="banner"
       class="hero-text-content sm:w-8/12 md:w-7/12 pt-8 sm:pt-5 md:pt-0"
     >
-      {page.authors && 
-        (
+      {
+        page.authors && (
           <div class="flex flex-wrap gap-x-2.5">
             <div class="flex relative">
-              {
-                page.authors.data.map((author, index) => (
-                  <div
-                    class:list={[
-                      index > 0 && "relative -ml-5",
-                      "w-12 h-12 rounded-full object-cover overflow-hidden",
-                    ]}
-                  >
-                    <img
-                      src={
-                        imgSrcPrefix +
-                        author.attributes.Profile_picture.data.attributes
-                          .provider_metadata.public_id +
-                        `/authBlob`
-                      }
-                      alt={
-                        author.attributes.Profile_picture.data.attributes
-                          .alternativeText
-                      }
-                      class="w-full h-full"
-                    />
-                  </div>
-                ))
-              }
+              {page.authors.data.map((author, index) => (
+                <div
+                  class:list={[
+                    index > 0 && "relative -ml-5",
+                    "w-12 h-12 rounded-full object-cover overflow-hidden",
+                  ]}
+                >
+                  <img
+                    src={
+                      imgSrcPrefix +
+                      author.attributes.Profile_picture.data.attributes
+                        .provider_metadata.public_id +
+                      `/authBlob`
+                    }
+                    alt={
+                      author.attributes.Profile_picture.data.attributes
+                        .alternativeText
+                    }
+                    class="w-full h-full"
+                  />
+                </div>
+              ))}
             </div>
 
             <div class="grid content-between">
               <div class="post-author flex flex-wrap font-bold leading-normal">
-                {
-                  page.authors.data.map((author, index) => (
-                    <a href="#">
-                      {`${index > 0 ? ", " : " "}` + author.attributes.givenName}
-                    </a>
-                  ))
-                }
+                {page.authors.data.map((author, index) => (
+                  <a href="#">
+                    {`${index > 0 ? ", " : " "}` + author.attributes.givenName}
+                  </a>
+                ))}
               </div>
 
               <div class="post-publish-date leading-normal">
-                {
-                  new Date(page.createdAt).toLocaleString("en-US", {
-                    day: "numeric",
-                    month: "long",
-                  })
-                }
+                {new Date(page.createdAt).toLocaleString("en-US", {
+                  day: "numeric",
+                  month: "long",
+                })}
               </div>
             </div>
           </div>
@@ -192,9 +186,8 @@ const { page, posts, recurData, headingName } = Astro.props,
       >
         <a href="#">{page.Title || page.Estate_name}</a>
 
-
-        { page.Title &&
-          (
+        {
+          page.Title && (
             <span class="icon">
               <img src={CupIcon} alt="cup-icon" class="heading-inline-icon" />
             </span>
@@ -319,11 +312,11 @@ const { page, posts, recurData, headingName } = Astro.props,
   </div>
 </section>
 
-{ page.Estate_name && 
-  (
-    <div 
+{
+  page.Estate_name && (
+    <div
       class="map-container"
-      role="complementary" 
+      role="complementary"
       aria-label="location-inforamtion"
     >
       <div class="wrapper">
@@ -332,23 +325,26 @@ const { page, posts, recurData, headingName } = Astro.props,
         </h2>
 
         <a href={page.Location_link}>
-          <div 
-            class="w-full max-h-[375px] object-cover overflow-hidden"
-          >
+          <div class="w-full max-h-[375px] object-cover overflow-hidden">
             <img
-              class="hidden sm:block w-full h-full object-cover" 
-              src={imgSrcPrefix +
+              class="hidden sm:block w-full h-full object-cover"
+              src={
+                imgSrcPrefix +
                 page.Location.data.attributes.provider_metadata.public_id +
-                `/public`}
+                `/public`
+              }
               alt={page.Location.data.attributes.alternativeText}
-            >
+            />
+            
             <img
-              class="block sm:hidden w-full h-full object-cover" 
-              src={imgSrcPrefix +
+              class="block sm:hidden w-full h-full object-cover"
+              src={
+                imgSrcPrefix +
                 page.Location.data.attributes.provider_metadata.public_id +
-                `/small`}
+                `/small`
+              }
               alt={page.Location.data.attributes.alternativeText}
-            >
+            />
           </div>
         </a>
       </div>
@@ -408,29 +404,29 @@ const { page, posts, recurData, headingName } = Astro.props,
                   />
                 </a>
                 <div class="recent-post-card-content-container">
-                  {page.authors &&
-                    ( 
-                      <div>
-                        <div class="recent-post-card-author flex flex-wrap font-bold">
-                          {post.authors.data.map(({ attributes }, index) => (
-                            <a href="#">
-                              {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                            </a>
-                          ))}
-                        </div>
+                  {page.authors && (
+                    <div>
+                      <div class="recent-post-card-author flex flex-wrap font-bold">
+                        {post.authors.data.map(({ attributes }, index) => (
+                          <a href="#">
+                            {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                          </a>
+                        ))}
+                      </div>
 
-                        <div class="post-publish-date leading-tight">
-                          {new Date(post.createdAt).toLocaleString("en-US", {
-                            day: "numeric",
-                            month: "long",
-                          })}
-                        </div>
-                      </div>    
-                    )
-                  }
+                      <div class="post-publish-date leading-tight">
+                        {new Date(post.createdAt).toLocaleString("en-US", {
+                          day: "numeric",
+                          month: "long",
+                        })}
+                      </div>
+                    </div>
+                  )}
 
                   <div class="recent-post-card-title alice mt-4 leading-[1.125]">
-                    <a href={`/` + post.Meta.URL_slug}>{post.Title || page.Estate_name}</a>
+                    <a href={`/` + post.Meta.URL_slug}>
+                      {post.Title || page.Estate_name}
+                    </a>
 
                     <span class="icon">
                       <img

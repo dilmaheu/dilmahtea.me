@@ -27,64 +27,80 @@ function clacTime(x) {
   var h = x[1];
   var m = x[2];
 
-  var day = d > 0 ? d + (d == 1 ? ` ${recurData.recipe_day}\xa0\xa0` : ` ${recurData.recipe_day}\xa0\xa0`) : "";
-  var hour = h > 0 ? h + (h == 1 ? ` ${recurData.recipe_hour}\xa0\xa0` : ` ${recurData.recipe_hours}\xa0\xa0`) : "";
-  var min = m > 0 ? m + (m == 1 ? ` ${recurData.recipe_minute}` : ` ${recurData.recipe_minutes}`) : "";
+  var day =
+    d > 0
+      ? d +
+        (d == 1
+          ? ` ${recurData.recipe_day}\xa0\xa0`
+          : ` ${recurData.recipe_day}\xa0\xa0`)
+      : "";
+  var hour =
+    h > 0
+      ? h +
+        (h == 1
+          ? ` ${recurData.recipe_hour}\xa0\xa0`
+          : ` ${recurData.recipe_hours}\xa0\xa0`)
+      : "";
+  var min =
+    m > 0
+      ? m +
+        (m == 1
+          ? ` ${recurData.recipe_minute}`
+          : ` ${recurData.recipe_minutes}`)
+      : "";
 
-  return day + hour + min
-};
+  return day + hour + min;
+}
 
 function clacTimeSm(x) {
   var d = x[0];
   var h = x[1];
   var m = x[2];
 
-  var day = d > 0 ? (d + `${recurData.recipe_day.substring(0, 1)}\xa0`) : "";
-  var hour = h > 0 ? (h + `${recurData.recipe_hour.substring(0, 1)}\xa0`) : "";
-  var min = m > 0 ? (m + `${recurData.recipe_minute.substring(0, 1)}\xa0`) : "";
+  var day = d > 0 ? d + `${recurData.recipe_day.substring(0, 1)}\xa0` : "";
+  var hour = h > 0 ? h + `${recurData.recipe_hour.substring(0, 1)}\xa0` : "";
+  var min = m > 0 ? m + `${recurData.recipe_minute.substring(0, 1)}\xa0` : "";
 
-  return day + hour + min
-};
+  return day + hour + min;
+}
 
 function time(x) {
-  const array = x.split(":").map(Number)
+  const array = x.split(":").map(Number);
 
-  return clacTime(array)
-};
+  return clacTime(array);
+}
 
 function timeSm(x) {
-  const array = x.split(":").map(Number)
+  const array = x.split(":").map(Number);
 
-  return clacTimeSm(array)
-};
-
+  return clacTimeSm(array);
+}
 
 function calcTotalTime(x, y) {
-  const preparation  = x.split(":").map(Number)
-  const cooking = y.split(":").map(Number)
-  
-  var sum = [...preparation].map((e,i)=> e+cooking[i])
+  const preparation = x.split(":").map(Number);
+  const cooking = y.split(":").map(Number);
 
-  var min = (sum[0] * 24 * 60)  + (sum[1] * 60) + sum[2];
+  var sum = [...preparation].map((e, i) => e + cooking[i]);
+
+  var min = sum[0] * 24 * 60 + sum[1] * 60 + sum[2];
   var d = Math.floor(min / (60 * 24));
-  var h = Math.floor(min % (60 * 24) / 60);
+  var h = Math.floor((min % (60 * 24)) / 60);
   var m = Math.floor(min % 60);
 
-  return [d,h,m]
-};
+  return [d, h, m];
+}
 
 function totalTime(x, y) {
-  var a = calcTotalTime(x, y)
+  var a = calcTotalTime(x, y);
 
-  return clacTime(a)
-};
+  return clacTime(a);
+}
 
 function totalTimeSm(x, y) {
-  var a = calcTotalTime(x, y)
+  var a = calcTotalTime(x, y);
 
-  return clacTimeSm(a)
-};
-
+  return clacTimeSm(a);
+}
 ---
 
 <!-- Hero Section -->
@@ -172,11 +188,7 @@ function totalTimeSm(x, y) {
       <div class="flex flex-wrap recipe-Time-Container">
         <div class="inline-flex items-center gap-2 md:gap-2.5">
           <div class="recipe-Time-Icon h-auto margin-[3px]">
-            <img
-              class="w-full h-full"
-              src={ClockWIcon}
-              alt="clock-icon"
-            />
+            <img class="w-full h-full" src={ClockWIcon} alt="clock-icon" />
           </div>
           <div>
             <div class="recipe-Time-Tag">{recurData.recipe_prep} :</div>
@@ -191,11 +203,7 @@ function totalTimeSm(x, y) {
 
         <div class="inline-flex items-center gap-2 md:gap-2.5">
           <div class="recipe-Time-Icon h-auto margin-[3px]">
-            <img
-              class="w-full h-full"
-              src={ClockWIcon}
-              alt="clock-icon"
-            />
+            <img class="w-full h-full" src={ClockWIcon} alt="clock-icon" />
           </div>
           <div>
             <div class="recipe-Time-Tag">{recurData.recipe_cook} :</div>
@@ -210,11 +218,7 @@ function totalTimeSm(x, y) {
 
         <div class="inline-flex items-center gap-2 md:gap-2.5">
           <div class="recipe-Time-Icon h-auto margin-[3px]">
-            <img
-              class="w-full h-full"
-              src={ClockWIcon}
-              alt="clock-icon"
-            />
+            <img class="w-full h-full" src={ClockWIcon} alt="clock-icon" />
           </div>
           <div>
             <div class="recipe-Time-Tag">{recurData.recipe_total} :</div>
@@ -233,16 +237,16 @@ function totalTimeSm(x, y) {
           <div
             class:list={[
               "bg-lightgray flex items-center justify-center rounded-[40px] py-[13px] px-[23px]",
-              "text-base font-bold leading-[19px] text-primary text-center"
+              "text-base font-bold leading-[19px] text-primary text-center",
             ]}
           >
             {recurData.recipe_jump_to_recipe}
             <span class="icon relative top-0">
               <span class="relative ml-5 h-5">
-                <img 
-                  class="w-full h-full" 
-                  src={ArrowDownGreen} 
-                  alt="cup-icon" 
+                <img
+                  class="w-full h-full"
+                  src={ArrowDownGreen}
+                  alt="cup-icon"
                 />
               </span>
             </span>
@@ -290,7 +294,7 @@ function totalTimeSm(x, y) {
       <div
         id="blogStickyBtn"
         class="flex items-center justify-between gap-x-1.5 md:gap-x-3 font-bold focus:outline-none"
-      > 
+      >
         <div id="blog_StickyDropdown" class="flex">
           <div>
             <img
@@ -314,30 +318,22 @@ function totalTimeSm(x, y) {
             <path
               class="cls-1"
               d="M.3.3A.6.6,0,0,1,.9,0a.9.9,0,0,1,.6.3L5.8,4.6,10.2.3a.6.6,0,0,1,.6-.3l.6.3a.8.8,0,0,1,.2.6.7.7,0,0,1-.2.6l-5,4.9a.6.6,0,0,1-.6.3.9.9,0,0,1-.6-.3L.3,1.5A.9.9,0,0,1,0,.9.6.6,0,0,1,.3.3Z"
-              fill="#2B4B50"
-            ></path>
+              fill="#2B4B50"></path>
           </svg>
         </div>
       </div>
       <div id="blog_StickyDropdownItem" class="pb-20">
-        <a 
-          href="#recipe"
-          class="absolute left-10 bottom-0 w-full" 
-        >
+        <a href="#recipe" class="absolute left-10 bottom-0 w-full">
           <div
             class:list={[
               "bg-primary flex items-center justify-center max-w-[200px] rounded-[40px] py-[13px] px-[23px]",
-              "text-sm font-bold leading-[19px] text-lightgray text-center"
+              "text-sm font-bold leading-[19px] text-lightgray text-center",
             ]}
           >
             {recurData.recipe_jump_to_recipe}
             <span class="icon relative top-0">
               <span class="relative ml-5 h-5">
-                <img 
-                  class="w-full h-full" 
-                  src={ArrowDown} 
-                  alt="cup-icon" 
-                />
+                <img class="w-full h-full" src={ArrowDown} alt="cup-icon" />
               </span>
             </span>
           </div>
@@ -352,17 +348,19 @@ function totalTimeSm(x, y) {
       class="md:w-8/12 order-2 md:order-1 grid gap-y-[30px]"
       id="howToStepDetails"
     >
-      
       <div>
-        <h2 
+        <h2
           class:list={[
             "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
             "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
-          ]}>
-            About Vegan Broccoli Salad
+          ]}
+        >
+          About Vegan Broccoli Salad
         </h2>
 
-        <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+        <div
+          class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+        >
           <div class="prose max-w-none mb-5 recipe-sec-text">
             <Markdown>{page.Block_text}</Markdown>
           </div>
@@ -377,38 +375,46 @@ function totalTimeSm(x, y) {
       </div>
 
       <div>
-        <h2 
+        <h2
           class:list={[
             "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
             "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
-           ]}
-          >
-            {recurData.recipe_similar} {page.Title}
-          </h2>
-        <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+          ]}
+        >
+          {recurData.recipe_similar}
+          {page.Title}
+        </h2>
+        <div
+          class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+        >
           <ul class="list-disc list-inside similarRecipies">
-            {page.Recipe_variations.data.map(val => val.attributes).map(recipe => (
-              <li class="font-medium text-primary">
-                <a href={recipe.Meta.URL_slug}>
-                  {recipe.Title}
-                </a>
-              </li>
-            ))}
+            {
+              page.Recipe_variations.data
+                .map((val) => val.attributes)
+                .map((recipe) => (
+                  <li class="font-medium text-primary">
+                    <a href={recipe.Meta.URL_slug}>{recipe.Title}</a>
+                  </li>
+                ))
+            }
           </ul>
         </div>
       </div>
 
       <div>
-        <h2 
+        <h2
           class:list={[
             "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
             "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
-          ]} 
+          ]}
           id="recipe"
         >
-          {page.Title} {recurData.recipe_recipe}
+          {page.Title}
+          {recurData.recipe_recipe}
         </h2>
-        <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+        <div
+          class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+        >
           <div class="prose max-w-none mb-5 recipe-sec-text">
             <Markdown>{page.Time_text}</Markdown>
           </div>
@@ -416,11 +422,7 @@ function totalTimeSm(x, y) {
           <div class="flex flex-wrap mt-5 gap-y-5 recipe-sec-time-container">
             <div class="inline-flex gap-2.5 text-dark inline-flex gap-2.5">
               <div class="h-auto m-[3px] recipe-sec-time-icon">
-                <img
-                  class="w-full h-full"
-                  src={ClockIcon}
-                  alt="clock-icon"
-                />
+                <img class="w-full h-full" src={ClockIcon} alt="clock-icon" />
               </div>
               <div class="text-dark">
                 <div class="text-[10px] md:text-xs leading-3 md:leading-[14px]">
@@ -437,12 +439,8 @@ function totalTimeSm(x, y) {
 
             <div class="inline-flex gap-2.5 text-dark inline-flex gap-2.5">
               <div class="h-auto m-[3px] recipe-sec-time-icon">
-                <img
-                  class="w-full h-full"
-                  src={ClockIcon}
-                  alt="clock-icon"
-                />
-              </div class="text-dark">
+                <img class="w-full h-full" src={ClockIcon} alt="clock-icon" />
+              </div>
               <div class="text-dark">
                 <div class="text-[10px] md:text-xs leading-3 md:leading-[14px]">
                   {recurData.recipe_cook} :
@@ -458,11 +456,7 @@ function totalTimeSm(x, y) {
 
             <div class="inline-flex gap-2.5 text-dark inline-flex gap-2.5">
               <div class="h-auto m-[3px] recipe-sec-time-icon">
-                <img
-                  class="w-full h-full"
-                  src={ClockIcon}
-                  alt="clock-icon"
-                />
+                <img class="w-full h-full" src={ClockIcon} alt="clock-icon" />
               </div>
               <div class="text-dark">
                 <div class="text-[10px] md:text-xs leading-3 md:leading-[14px]">
@@ -479,7 +473,9 @@ function totalTimeSm(x, y) {
           </div>
         </div>
 
-        <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+        <div
+          class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+        >
           <div class="flex">
             <div class="w-auto recipe-sec-content-border"></div>
             <div class="grid w-full items-center gap-[15px]">
@@ -499,175 +495,181 @@ function totalTimeSm(x, y) {
               <div class="text-xl font-bold leading-[2.188rem] text-primary">
                 {recurData.recipe_amount_per_serving}:
               </div>
-              <div class="grid grid-flow-row gap-[5px] recipe-sec-nutritions-container">
-                {page.Nutrition.map((item, idx) => (
-                  <div class="flex items-center recipe-sec-nutrition-item">
-                    <div class="text-dark">
-                      {item.Nutrition_name}
-                    </div> 
-                    <span class="text-dark mr-1">:</span>
-                    <div class="text-dark">
-                      {item.Nutrition_amount != null ? item.Nutrition_amount : "0" }
-                      {item.Nutrition_measurements_unit}
+              <div
+                class="grid grid-flow-row gap-[5px] recipe-sec-nutritions-container"
+              >
+                {
+                  page.Nutrition.map((item, idx) => (
+                    <div class="flex items-center recipe-sec-nutrition-item">
+                      <div class="text-dark">{item.Nutrition_name}</div>
+                      <span class="text-dark mr-1">:</span>
+                      <div class="text-dark">
+                        {item.Nutrition_amount != null
+                          ? item.Nutrition_amount
+                          : "0"}
+                        {item.Nutrition_measurements_unit}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                }
               </div>
-            </div>  
+            </div>
           </div>
         </div>
 
-        <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+        <div
+          class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+        >
           <div class="flex flex-wrap justify-between">
             <h3 class="font-medium text-primary recipe-sec-content-title">
               {recurData.recipe_ingredients}
             </h3>
-            <div class="inline-grid grid-flow-col items-center relative recipe-sec-servingsize-input-container">
-              <label class="font-bold text-dark recipe-sec-servingsize-text">{recurData.recipe_serving_size}:</label>
+            <div
+              class="inline-grid grid-flow-col items-center relative recipe-sec-servingsize-input-container"
+            >
+              <label class="font-bold text-dark recipe-sec-servingsize-text"
+                >{recurData.recipe_serving_size}:</label
+              >
               <select
                 id="recipeSecServingsize"
                 name="recipeSecServingsize"
                 class:list={[
                   "focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring cursor-pointer",
-                  "max-w-[65px] md:max-w-[83px] text-lightgray2 py-[5px] pl-[11px] rounded-[7px] recipe-sec-servingsize-input"
+                  "max-w-[65px] md:max-w-[83px] text-lightgray2 py-[5px] pl-[11px] rounded-[7px] recipe-sec-servingsize-input",
                 ]}
               >
-                <option value="1">
-                  1x
-                </option>
-                <option value="2">
-                  2x
-                </option>
-                <option value="3">
-                  3x
-                </option>
-                <option value="5">
-                  5x
-                </option>
-                <option value="10">
-                  10x
-                </option>
+                <option value="1"> 1x</option>
+                <option value="2"> 2x</option>
+                <option value="3"> 3x</option>
+                <option value="5"> 5x</option>
+                <option value="10"> 10x</option>
               </select>
             </div>
           </div>
 
           <div class="mt-5 md:mt-[25px] flex gap-2">
+            {
+              page.Cooking_part.map((item, idx) => (
+                <div class="w-full sm:w-1/2">
+                  <h4 class="font-medium text-dark mb-[15px] recipe-sec-ingridients-content-title">
+                    {item.Cooking_part_name}
+                  </h4>
 
-            {page.Cooking_part.map((item, idx) => (
-              
-              <div class="w-full sm:w-1/2">
-                <h4 class="font-medium text-dark mb-[15px] recipe-sec-ingridients-content-title">
-                  {item.Cooking_part_name}
-                </h4>
-
-                {item.Cooking_part_ingredients.map((item, idx) => (
-                  <div class="inline-flex items-center w-full">
-                    <div class="flex">
-                      <label class="recipe-sec-ingridients-checkbox-label">
-                        <input type="checkbox" />
-                        <span class="recipe-sec-ingridients-checkbox"></span>
-                      </label>
+                  {item.Cooking_part_ingredients.map((item, idx) => (
+                    <div class="inline-flex items-center w-full">
+                      <div class="flex">
+                        <label class="recipe-sec-ingridients-checkbox-label">
+                          <input type="checkbox" />
+                          <span class="recipe-sec-ingridients-checkbox" />
+                        </label>
+                      </div>
+                      <div class="ml-2.5 text-dark recipe-sec-ingridients-checkbox-text">
+                        {item.Cooking_part_ingredient_amount}
+                        {item.Cooking_part_ingredient_measurements_unit}
+                        {item.Cooking_part_ingredient_name}
+                      </div>
                     </div>
-                    <div class="ml-2.5 text-dark recipe-sec-ingridients-checkbox-text">
-                      {item.Cooking_part_ingredient_amount}
-                      {item.Cooking_part_ingredient_measurements_unit}
-                      {item.Cooking_part_ingredient_name}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ))}
-
-
+                  ))}
+                </div>
+              ))
+            }
           </div>
         </div>
       </div>
 
       <div>
-        <h2 
+        <h2
           class:list={[
             "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
             "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
-          ]}>
-            {recurData.recipe_cooking_instructions}
-          </h2>
+          ]}
+        >
+          {recurData.recipe_cooking_instructions}
+        </h2>
 
-        {page.Cooking_part.map((item) => (
-          <div>
-            <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
-              <div class="flex">
-                <div class="w-auto recipe-sec-content-border"></div>
-                <div class="w-full gap-[15px]">
-                  <h3 class="font-medium text-primary recipe-sec-content-title">
-                    {item.Cooking_part_name}
-                  </h3>
-                </div>  
-              </div>
-            </div>
-
-            {item.Cooking_part_steps.map((step, idx) => (
+        {
+          page.Cooking_part.map((item) => (
+            <div>
               <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
-                <div class="flex gap-[15px]">
-                  <div>
-                    <div 
-                      class:list={[
-                        "bg-primary flex items-center justify-center font-extrabold rounded-full",
-                        "w-[30px] sm:w-[35px] md:w-[40px] lg:w-[45px] h-[30px] sm:h-[35px] md:h-[40px] lg:h-[45px] recipe-sec-step-num"
-                      ]}
-                    >
-                      {idx+1}
+                <div class="flex">
+                  <div class="w-auto recipe-sec-content-border" />
+                  <div class="w-full gap-[15px]">
+                    <h3 class="font-medium text-primary recipe-sec-content-title">
+                      {item.Cooking_part_name}
+                    </h3>
+                  </div>
+                </div>
+              </div>
+
+              {item.Cooking_part_steps.map((step, idx) => (
+                <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+                  <div class="flex gap-[15px]">
+                    <div>
+                      <div
+                        class:list={[
+                          "bg-primary flex items-center justify-center font-extrabold rounded-full",
+                          "w-[30px] sm:w-[35px] md:w-[40px] lg:w-[45px] h-[30px] sm:h-[35px] md:h-[40px] lg:h-[45px] recipe-sec-step-num",
+                        ]}
+                      >
+                        {idx + 1}
+                      </div>
+                    </div>
+                    <div class="prose max-w-none recipe-sec-text w-auto">
+                      {step.Cooking_part_steps_text}
                     </div>
                   </div>
-                  <div class="prose max-w-none recipe-sec-text w-auto">
-                    {step.Cooking_part_steps_text}
-                  </div>
-                </div> 
 
-                <div 
-                  class={step.Cooking_part_steps_blob?.data == null 
-                    ? "hidden"
-                    : "mt-5 recipe-step-img"
-                  }
-                >
-                  <ClippedImg
-                    id="recipe-img-curve"
-                    src={imgSrcPrefix +
-                      step.Cooking_part_steps_blob?.data?.attributes.provider_metadata.public_id +
-                      `/small`
+                  <div
+                    class={
+                      step.Cooking_part_steps_blob?.data == null
+                        ? "hidden"
+                        : "mt-5 recipe-step-img"
                     }
-                    path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-                  />
-                </div>
-              </div>
-            ))}
-
-            <div 
-              class={item.Cooking_part_step_tip == null 
-                ? "hidden" 
-                : "bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
-              }
-            >
-              <div class="flex flex-wrap items-center gap-2.5">
-                <div class="flex items-center gap-2.5 w-full">
-                  <div class="w-auto m-[3px] recipe-sec-icon">
-                    <img
-                      class="w-full h-full"
-                      src={BulbIcon}
-                      alt="cook-icon"
+                  >
+                    <ClippedImg
+                      id="recipe-img-curve"
+                      src={
+                        imgSrcPrefix +
+                        step.Cooking_part_steps_blob?.data?.attributes
+                          .provider_metadata.public_id +
+                        `/small`
+                      }
+                      path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
                     />
                   </div>
-
-                  <h3 class="text-2xl font-bold leading-[1.95rem] text-primary">{recurData.recipe_tips}</h3>
                 </div>
+              ))}
 
-                <div class="prose max-w-none recipe-sec-text">
-                  {item.Cooking_part_step_tip}
+              <div
+                class={
+                  item.Cooking_part_step_tip == null
+                    ? "hidden"
+                    : "bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+                }
+              >
+                <div class="flex flex-wrap items-center gap-2.5">
+                  <div class="flex items-center gap-2.5 w-full">
+                    <div class="w-auto m-[3px] recipe-sec-icon">
+                      <img
+                        class="w-full h-full"
+                        src={BulbIcon}
+                        alt="cook-icon"
+                      />
+                    </div>
+
+                    <h3 class="text-2xl font-bold leading-[1.95rem] text-primary">
+                      {recurData.recipe_tips}
+                    </h3>
+                  </div>
+
+                  <div class="prose max-w-none recipe-sec-text">
+                    {item.Cooking_part_step_tip}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-
+          ))
+        }
       </div>
     </div>
 
@@ -681,17 +683,13 @@ function totalTimeSm(x, y) {
         <div
           class:list={[
             "bg-primary flex items-center justify-center rounded-[40px] py-5 mb-[50px]",
-            "text-base font-bold leading-[19px] text-lightgray text-center"
+            "text-base font-bold leading-[19px] text-lightgray text-center",
           ]}
         >
           {recurData.recipe_jump_to_recipe}
           <span class="icon relative top-0">
             <span class="relative ml-5 h-5">
-              <img 
-                class="w-full h-full" 
-                src={ArrowDown} 
-                alt="cup-icon" 
-              />
+              <img class="w-full h-full" src={ArrowDown} alt="cup-icon" />
             </span>
           </span>
         </div>
@@ -722,70 +720,73 @@ function totalTimeSm(x, y) {
           "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
         ]}
       >
-        {page.Relevant_recipes.data.map(val => val.attributes).slice(0, 3).map((post) => (
-          <div
-            role="listitem"
-            class="recent-post-card"
-            aria-label="Kindness Item"
-          >
-            <div class="relative">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                preserveAspectRatio="none"
-                viewBox="0 0 423.3 559.8"
-              >
-                <path
-                  d="M419.2 306.4c-1.2 40.4 0 72.6 0 93.6 0 176.6-12.5 158-197.8 158S2.1 587.1 2.1 410c0-58.7.1-86 .3-97.5-.1-1.2-.2-3.1-.3-6.1v-.3C-2.2 194.8-1.3 81.5 17.9 43.2 43.3-7.3 151.7 1.5 217.2 1.5c91.3 0 173.8-18.8 194.3 78.1 19.3 91 9.6 163.8 7.7 226.8Z"
-                  fill="#273E3F"
-                />
-              </svg>
-
-              <div class="absolute inset-0 z-30">
-                <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-                  <img
-                    src={
-                      imgSrcPrefix +
-                      post.Intro_blob.data.attributes.provider_metadata
-                        .public_id +
-                      `/small`
-                    }
-                    class="w-full h-full"
-                    style="clip-path: url(#recent-post-card-curve);"
+        {page.Relevant_recipes.data
+          .map((val) => val.attributes)
+          .slice(0, 3)
+          .map((post) => (
+            <div
+              role="listitem"
+              class="recent-post-card"
+              aria-label="Kindness Item"
+            >
+              <div class="relative">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  preserveAspectRatio="none"
+                  viewBox="0 0 423.3 559.8"
+                >
+                  <path
+                    d="M419.2 306.4c-1.2 40.4 0 72.6 0 93.6 0 176.6-12.5 158-197.8 158S2.1 587.1 2.1 410c0-58.7.1-86 .3-97.5-.1-1.2-.2-3.1-.3-6.1v-.3C-2.2 194.8-1.3 81.5 17.9 43.2 43.3-7.3 151.7 1.5 217.2 1.5c91.3 0 173.8-18.8 194.3 78.1 19.3 91 9.6 163.8 7.7 226.8Z"
+                    fill="#273E3F"
                   />
-                </a>
+                </svg>
 
-                <div class="recent-post-card-content-container">
-                  <div class="recent-post-card-author flex flex-wrap font-bold">
-                    {post.authors.data.map(({ attributes }, index) => (
-                      <a href="#">
-                        {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                      </a>
-                    ))}
-                  </div>
+                <div class="absolute inset-0 z-30">
+                  <a class="block w-full" href={`/` + post.Meta.URL_slug}>
+                    <img
+                      src={
+                        imgSrcPrefix +
+                        post.Intro_blob.data.attributes.provider_metadata
+                          .public_id +
+                        `/small`
+                      }
+                      class="w-full h-full"
+                      style="clip-path: url(#recent-post-card-curve);"
+                    />
+                  </a>
 
-                  <div class="post-publish-date leading-tight">
-                    {new Date(post.createdAt).toLocaleString("en-US", {
-                      day: "numeric",
-                      month: "long",
-                    })}
-                  </div>
+                  <div class="recent-post-card-content-container">
+                    <div class="recent-post-card-author flex flex-wrap font-bold">
+                      {post.authors.data.map(({ attributes }, index) => (
+                        <a href="#">
+                          {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                        </a>
+                      ))}
+                    </div>
 
-                  <div class="recent-post-card-title alice mt-4 leading-[1.125]">
-                    <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+                    <div class="post-publish-date leading-tight">
+                      {new Date(post.createdAt).toLocaleString("en-US", {
+                        day: "numeric",
+                        month: "long",
+                      })}
+                    </div>
 
-                    <span class="icon">
-                      <img
-                        class="recent-post-card-title-icon"
-                        src={RightArrow}
-                        alt="cup-icon"
-                      />
-                    </span>
+                    <div class="recent-post-card-title alice mt-4 leading-[1.125]">
+                      <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+
+                      <span class="icon">
+                        <img
+                          class="recent-post-card-title-icon"
+                          src={RightArrow}
+                          alt="cup-icon"
+                        />
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </section>
   )

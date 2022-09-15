@@ -168,7 +168,12 @@ export async function getStaticPaths() {
       locale &&
       (!shouldDisplayExperimentals()
         ? blogs
-        : [...getPosts(blogs, locale), ...getPosts(howTos, locale), ...getPosts(recipes, locale), ...getPosts(estates, locale)]),
+        : [
+            ...getPosts(blogs, locale),
+            ...getPosts(howTos, locale),
+            ...getPosts(recipes, locale),
+            ...getPosts(estates, locale),
+          ]),
   }));
 
   return [
@@ -249,7 +254,7 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
             <Estate page={page} />
           ) : page.type == `estateDetails` ? (
             <EstateDetails page={page} recurData={recurData} />
-          ) :(
+          ) : (
             <CrowdfundingForm page={page} locale={locale} />
           )}
         </Layout>
