@@ -8,7 +8,6 @@ import CupGreenIcon from "@images/cupGreen.svg";
 import RightArrow from "@images/rightArrow.svg";
 import ArrowDown from "@images/arrowDown.svg";
 import ArrowDownGreen from "@images/arrowDownGreen.svg";
-import MainBG from "@images/crowdfunding-info-section-background.webp";
 
 import ClippedPicture from "@components/ClippedPicture.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
@@ -367,7 +366,7 @@ function totalTimeSm(x, y) {
           <div class="mt-5">
             <ClippedPicture
               id="recipe-img-curve"
-              src={MainBG}
+              src="/src/images/crowdfunding-info-section-background.webp"
               path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
             />
           </div>
@@ -619,24 +618,20 @@ function totalTimeSm(x, y) {
                     </div>
                   </div>
 
-                  <div
-                    class={
-                      step.Cooking_part_steps_blob?.data == null
-                        ? "hidden"
-                        : "mt-5 recipe-step-img"
-                    }
-                  >
-                    <ClippedPicture
-                      id="recipe-img-curve"
-                      src={
-                        imgSrcPrefix +
-                        step.Cooking_part_steps_blob?.data?.attributes
-                          .provider_metadata.public_id +
-                        `/small`
-                      }
-                      path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-                    />
-                  </div>
+                  {step.Cooking_part_steps_blob.data && (
+                    <div class="recipe-step-img mt-5">
+                      <ClippedPicture
+                        id="recipe-img-curve"
+                        src={
+                          imgSrcPrefix +
+                          step.Cooking_part_steps_blob.data.attributes
+                            .provider_metadata.public_id +
+                          `/small`
+                        }
+                        path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+                      />
+                    </div>
+                  )}
                 </div>
               ))}
 
