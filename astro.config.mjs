@@ -1,6 +1,7 @@
 import sitemap from "@astrojs/sitemap";
 import taiwlind from "@astrojs/tailwind";
 import { defineConfig } from "astro/config";
+import { astroImageTools } from "astro-imagetools";
 import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
 
 export default defineConfig({
@@ -21,6 +22,7 @@ export default defineConfig({
       },
     }),
     taiwlind(),
+    astroImageTools,
   ],
 
   vite: {

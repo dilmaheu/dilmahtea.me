@@ -5,7 +5,7 @@ import RightArrow from "@images/rightArrow.svg";
 
 import Markdown from "@astrojs/markdown-component";
 
-import ClippedImg from "@components/ClippedImg.astro";
+import ClippedPicture from "@components/ClippedPicture.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import HeadingLinks from "@components/HeadingLinks.astro";
 import HeroBackground from "@components/HeroBackground.astro";
@@ -209,12 +209,12 @@ const { page, posts, recurData, headingName } = Astro.props,
 
   {/* Blob Image - Desktop View */}
   <div class="hero-img-curve-container h-full hidden sm:block absolute z-20">
-    <ClippedImg
+    <ClippedPicture
       id="hero-img-curve"
+      pictureStyle="position: relative;"
       src={imgSrcPrefix +
         page.Intro_blob.data.attributes.provider_metadata.public_id +
         `/small`}
-      className="relative"
       path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
     />
   </div>
@@ -222,7 +222,7 @@ const { page, posts, recurData, headingName } = Astro.props,
 
 {/* Blob Image - Mobile View */}
 <div class="block sm:hidden w-full relative z-20 -mt-20">
-  <ClippedImg
+  <ClippedPicture
     id="hero-img-curve-sm"
     src={imgSrcPrefix +
       page.Intro_blob.data.attributes.provider_metadata.public_id +
@@ -335,7 +335,7 @@ const { page, posts, recurData, headingName } = Astro.props,
               }
               alt={page.Location.data.attributes.alternativeText}
             />
-            
+
             <img
               class="block sm:hidden w-full h-full object-cover"
               src={
