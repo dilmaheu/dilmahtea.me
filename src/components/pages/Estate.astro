@@ -1,0 +1,474 @@
+---
+import CupIcon from "@images/cup.svg";
+import LoveIcon from "@images/love.svg";
+import Love2Icon from "@images/love2Green.svg";
+import LeafImg from "@images/greenLeaf5.webp";
+import LeafImg1 from "@images/greenLeaf.webp";
+import CupGreenIcon from "@images/cupGreen.svg";
+import QuoteIcon from "@images/quoteOpen.svg";
+import MainBG from "@images/crowdfunding-info-section-background.webp";
+
+import ClippedImg from "@components/ClippedImg.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import HeroBackground from "@components/HeroBackground.astro";
+
+import Markdown from "@astrojs/markdown-component";
+
+import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
+
+const { page, recurData } = Astro.props,
+  { posts } = page,
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+---
+<style lang="scss">
+  @use "src/styles/colors";
+
+  .intro-text {
+    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
+  }
+
+  .estate-title {
+    @apply underline decoration-[3px];
+
+    margin-top: clamp(1.125rem, 1.5vw + 0.3rem, 1.563rem);
+    font-size: clamp(1.75rem, 3.6vw + 0.01rem, 3.125rem);
+    line-height: 120%;
+  }
+
+  .estate-types-selector{
+    font-size: clamp(0.75rem, 1.5vw + 0.1rem, 1.25rem);
+    border-right: 20px solid transparent;
+  }
+
+  .estates-toggle-label{
+    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
+    line-height: 150%;
+  }
+
+  .estate-mode-toggle-dot{
+    border:1px solid colors.$white2;
+  }
+
+  input[type="checkbox"].estate-mode-toggle:checked ~ .estate-mode-toggle-dot {
+    transform: translateX(100%);
+    background-color: colors.$primary;
+  }
+
+  .estate-block-text {
+    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
+    line-height: 150%;
+  }
+
+  .estate-category-item {
+    font-size: clamp(0.625rem, 1.5vw + 0.01rem, 0.75rem);
+    line-height: 150%;
+  }
+
+  .estate-text {
+    margin-top: clamp(1.125rem, 1.5vw + 0.3rem, 1.563rem);
+    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem);
+    line-height: 150%;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .estate-quote {
+    font-size: clamp(1rem, 1.5vw + 0.3rem, 1.5rem);
+    line-height: 175%;
+    padding: 13px clamp(2.188rem, 3.3vw + 0.8rem, 3.75rem) 0;
+  }
+
+  .estate-quote-icon{
+    height: clamp(1.563rem, 2.2vw + 0.15rem, 2.188rem);
+  }
+
+  .estate-impact-title{
+    font-size: clamp(1.5rem, 1.7vw + 0.6rem, 1.75rem);
+    line-height: 150%;
+  }
+
+  .estate-impacts-container{
+    column-gap: clamp(1.25rem, 2.2vw + 0.13rem, 2.188rem);
+  }
+
+  .estate-impacts-num{
+    font-size: clamp(3rem, 5vw + 1.3rem, 5.688rem);
+  }
+
+  .estate-impacts-text{
+    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
+  }
+</style>
+
+<!-- Hero Section -->
+<section class="hero overflow-hidden relative">
+  <UpdateHeroTopMargin />
+
+  <HeroBackground />
+
+  {/* Text Content */}
+  <div class="wrapper hero-text-container h-full relative z-30">
+    <div
+      role="banner"
+      class="sm:w-8/12 md:w-7/12 pt-0 pt-[34px] sm:pt-1.5 md:pt-[45px]"
+    >
+      <h1
+        class="hero-title pt-4 sm:pt-2.5 md:pt-5 leading-[1.2]"
+      >
+        {page.Title}
+      </h1>
+
+      <a
+        href="#"
+        class:list={[
+          "intro-text block prose text-lightgray line-clamp-5 max-w-none",
+          "pt-4 sm:pt-3 md:pt-4 leading-[1.4] sm:leading-[1.2] md:leading-normal",
+        ]}
+      >
+        <Markdown>{page.Intro_text}</Markdown>
+      </a>
+
+      
+      <div class="flex">
+        <a href="#estates">
+          <div 
+            class="bg-white rounded-[40px] text-base font-bold leading-[19px] text-primary py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9"
+          >
+            Explore Tea States
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  {/* Blob Image - Desktop View */}
+  <div class="hero-img-curve-container h-full hidden sm:block absolute z-20">
+    <ClippedImg
+      id="hero-img-curve"
+      src={imgSrcPrefix +
+        page.Intro_blob.data.attributes.provider_metadata.public_id +
+        `/small`}
+      className="relative"
+      path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
+    />
+  </div>
+</section>
+
+{/* Blob Image - Mobile View */}
+<div class="block sm:hidden relative -mt-20 z-20 w-full">
+  <ClippedImg
+    id="hero-img-curve-sm"
+    src={imgSrcPrefix +
+      page.Intro_blob.data.attributes.provider_metadata.public_id +
+      `/small`}
+    path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
+  />
+</div>
+
+<!-- Recipe Details Section -->
+
+<div class="wrapper py-[50px]" role="main">
+  <div class="flex flex-wrap justify-between items-center gap-y-[15px]">
+    <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-[15px]">
+      <div class="alice text-[42px] leading-[3.15rem] tracking-[-0.03rem] text-dark2">
+        {page.Heading_block}
+      </div>
+
+      {/*<div>
+        <select
+          id="estateType"
+          name="estateType"
+          class:list={[
+            "focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring cursor-pointer",
+            "bg-primary text-lightgray2 py-[5px] pl-5 rounded-[34px] estate-types-selector"
+          ]}
+        >
+          <option value="1">
+            Kindness Project Type 1
+          </option>
+
+          <option value="2">
+            Kindness Project Type 2
+          </option>
+        </select>
+      </div>*/}
+    </div>
+
+    {/*<div class="inline-flex">
+      <div class="text-dark2 estates-toggle-label">
+        View Carbon Neutral estates
+      </div>
+
+      <div class="flex items-center justify-center ml-2.5">
+        <label 
+          for="estatesToggle"
+          class="relative flex items-center cursor-pointer"
+        >
+          <div class="relative">
+            <input id="estatesToggle" type="checkbox" class="sr-only estate-mode-toggle" />
+            <div class="bg-white2 rounded-full shadow-inner w-11 sm:w-[49px] lg:w-[54px] h-5 sm:h-[22px] lg:h-6"></div>
+            <div class="absolute z-10 bg-white2 w-[30px] h-[30px] rounded-full shadow top-[-3px] -left-1 transition estate-mode-toggle-dot"></div>
+          </div>
+        </label>
+      </div>
+    </div>*/}
+
+    <div class="prose max-w-none w-full text-dark estate-block-text">
+      <Markdown>{page.Block_text}</Markdown>
+    </div>
+  </div>
+
+  {/* All Estates Section */}
+
+  <section class="wrapper flex flex-wrap items-center gap-y-20 py-20 py-[50px] lg:py-[75px]" id="estates">
+    <ClipPathSVG
+      id="estate-img-curve"
+      path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+    />
+
+    {
+      posts.map((estate, index) => {
+        const even = index % 2 === 0;
+
+        return (
+          <div class="flex flex-wrap items-center">
+            <div
+              class:list={[
+                "relative w-full sm:w-1/2 order-1 mb-4 sm:mb-0",
+                even
+                  ? "pr-0 sm:pr-5 md:pr-12 lg:pr-24"
+                  : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
+              ]}
+            >
+              <a href={`/` + estate.Meta.URL_slug}>
+                <img
+                  src={
+                    imgSrcPrefix +
+                    estate.Intro_blob.data.attributes.provider_metadata.public_id +
+                    `/small`
+                  }
+                  class="w-full h-full"
+                  style="clip-path: url(#estate-img-curve);"
+                />
+              </a>
+            </div>
+
+            {/* Text content */}
+            <div
+              class:list={[
+                "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
+                even ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
+              ]}
+            >
+              <div>
+
+                <ul class="flex flex-wrap items-center gap-y-1 gap-x-2.5 md:gap-x-[15px]">
+                  <li class="text-black estate-category-item">
+                    <a 
+                      href="" 
+                      class="bg-white1 text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
+                    >
+                      Green Tea
+                    </a>
+                  </li>
+                  <li class="text-black estate-category-item">
+                    <a 
+                      href="" 
+                      class="bg-white1 text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
+                    >
+                      Sustainable
+                    </a>
+                  </li>
+                </ul>
+
+                <h1 class="estate-title alice text-primary">
+                  <a href={`/` + estate.Meta.URL_slug}>{estate.Estate_name}</a>
+                </h1>
+
+                <a
+                  href={`/` + estate.Meta.URL_slug}
+                  class="block pt-5 leading-normal prose max-w-none text-dark estate-text"
+                >
+                  <Markdown>{estate.Intro_text}</Markdown>
+                </a>
+              </div>
+            </div>
+          </div>
+        );
+      })
+    }
+  </section>
+
+  <div class="py-[35px] px-[23px] sm:px-[30px] md:px-10 lg:px-[50px] my-[55px] sm:my-[90px] lg:my-[110px] relative">
+    <div class="absolute h-full w-full z-10 top-0 left-0">
+      <!-- Background Desktop view -->
+      <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        preserveAspectRatio="none" 
+        viewBox="0 0 1080 336.2" 
+        class="hidden sm:block h-full w-full"
+      >
+        <path 
+          d="M43.1,29.2C92.7-.4,176.9,2.2,283.1.8,460.9-1.6,563.9,2.4,741.7.8c124.6-1.1,193.1,0,261.4,9.9,52,7.5,80.6,101.2,76.5,161.1-3.6,54.5,8.6,129.9-58.1,139-62.8,8.5-208.4,11.3-271.7,16.5-119.6,10-248.7-2-358.1,0-99,1.9-223,26.9-333.6-16.5C-.1,287.9-1.3,230.2.4,171.8,2,116-7.6,59.5,43.1,29.2Z" 
+          style="fill:#284f4f"
+        />
+      </svg>
+
+      <!-- Background Mobile view -->
+      <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        preserveAspectRatio="none" 
+        viewBox="0 0 328 554" 
+        class="block sm:hidden h-full w-full"
+      >
+        <path 
+          d="M299.5,22.1c28.9,25.4,26.3,68.6,27.7,123.1,2.4,91.2-1.5,144.1,0,235.2,1.1,64,0,99.1-9.6,134.2-7.3,26.6-98.8,41.3-157.2,39.2-53.2-1.9-126.7,4.4-135.6-29.8C16.5,491.8,13.7,417.1,8.6,384.6-1,323.2,10.7,257.1,8.6,201,6.8,150.2-17.6,86.5,24.8,29.8,47.1-.1,103.4-.6,160.4.2,214.8,1,269.9-3.9,299.5,22.1Z" 
+          style="fill:#284f4f"
+        />
+      </svg>
+    </div>
+    <div class="flex flex-wrap gap-y-6 items-center relative z-20">
+      <div class="w-full sm:w-1/3">
+
+        <!-- Image Desktop view -->
+
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
+            viewBox="0 0 456 313"
+            class="hidden sm:block h-full"
+          >
+            <defs>
+              <clipPath id="teaEstateSecQuoteImgFrame">
+                <path d="M235.5,2.4C164,2.4,45.8-2.5,18.1,25.7S.9,154.9,7.7,230.5,82.9,313,240.9,313c129.8,0,170.4-19.9,203.4-88.5,14-29.2,21.4-100.9-13.1-184.5C408.8-14.1,335,2.4,235.5,2.4Z" />
+              </clipPath>
+            </defs>
+            <image
+              class="w-auto h-full"
+              height="100%"
+              width="100%"
+              href={
+                imgSrcPrefix +
+                page.Block2_blob.data.attributes.provider_metadata.public_id +
+                `/small`
+              }
+              clip-path="url(#teaEstateSecQuoteImgFrame)"
+            >
+            </image>
+          </svg>
+
+          <!-- Image Mobile view -->
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 912 499"
+            class="block sm:hidden"
+          >
+            <defs>
+              <clipPath id="teaEstateSecQuoteImgFrameSm">
+                <path d="M470.9,3.8C328.1,3.8,91.7-4.1,36.3,41S1.9,247,15.5,367.5,165.7,499,481.7,499c259.7,0,340.9-31.7,406.9-141.1,28-46.5,42.8-160.9-26.2-294.1C817.6-22.6,669.9,3.8,470.9,3.8Z" />
+              </clipPath>
+            </defs>
+            <image
+              class="w-full h-auto"
+              height="100%"
+              width="100%"
+              href={
+                imgSrcPrefix +
+                page.Block2_blob.data.attributes.provider_metadata.public_id +
+                `/small`
+              }
+              clip-path="url(#teaEstateSecQuoteImgFrameSm)"
+            >
+            </image>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Text content -->
+
+      <div class="w-full sm:w-2/3 h-full">
+        <div class="flex flex-wrap sm:ml-6">      
+          <div class="estate-quote-icon">
+            <img 
+              src={QuoteIcon}
+              class="w-full h-full" 
+            />
+          </div> 
+
+          <div class="prose max-w-none font-bold text-lightgray estate-quote">
+            {page.Block2_text}
+          </div>
+
+          <div class="rotate-180 mr-[25px] ml-auto estate-quote-icon">
+            <img 
+              src={QuoteIcon}
+              class="w-full h-full" 
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="py-[35px] px-[23px] sm:px-[30px] md:px-10 lg:px-[50px] my-[55px] sm:my-[90px] lg:my-[110px] relative">
+    <div class="absolute h-full w-full z-10 top-0 left-0">
+      <!-- Background Desktop view -->
+      <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        preserveAspectRatio="none" 
+        viewBox="0 0 1080 336.2" 
+        class="hidden sm:block h-full w-full"
+      >
+        <path 
+          d="M43.1,29.2C92.7-.4,176.9,2.2,283.1.8,460.9-1.6,563.9,2.4,741.7.8c124.6-1.1,193.1,0,261.4,9.9,52,7.5,80.6,101.2,76.5,161.1-3.6,54.5,8.6,129.9-58.1,139-62.8,8.5-208.4,11.3-271.7,16.5-119.6,10-248.7-2-358.1,0-99,1.9-223,26.9-333.6-16.5C-.1,287.9-1.3,230.2.4,171.8,2,116-7.6,59.5,43.1,29.2Z" 
+          style="fill:#faf4f2"
+        />
+      </svg>
+
+      <!-- Background Mobile view -->
+      <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        preserveAspectRatio="none" 
+        viewBox="0 0 328 554" 
+        class="block sm:hidden h-full w-full"
+      >
+        <path 
+          d="M299.5,22.1c28.9,25.4,26.3,68.6,27.7,123.1,2.4,91.2-1.5,144.1,0,235.2,1.1,64,0,99.1-9.6,134.2-7.3,26.6-98.8,41.3-157.2,39.2-53.2-1.9-126.7,4.4-135.6-29.8C16.5,491.8,13.7,417.1,8.6,384.6-1,323.2,10.7,257.1,8.6,201,6.8,150.2-17.6,86.5,24.8,29.8,47.1-.1,103.4-.6,160.4.2,214.8,1,269.9-3.9,299.5,22.1Z" 
+          style="fill:#faf4f2"
+        />
+      </svg>
+    </div>
+
+    <div class="flex flex-wrap items-center relative z-20 gap-y-[25px]">
+      <div class="w-full font-medium text-dark text-center estate-impact-title">
+        {page.Block4_heading}
+      </div>
+
+      <div class="flex flex-wrap w-full justify-center xl:justify-between gap-y-[35px] estate-impacts-container">
+        {page.Block4_items.map((item) =>(
+          <div class="grid justify-items-center">
+            <div class="h-[43px]">
+              <img 
+                src={Love2Icon} 
+                class="w-full h-full"
+                alt="love-icon" 
+              />
+            </div>
+            <div class="font-extrabold text-primary estate-impacts-num">
+              {item.Block4_Value}
+            </div>
+            <div class="text-dark text-center estate-impacts-text">
+              {item.Block4_description}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+

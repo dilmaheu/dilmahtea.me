@@ -1,6 +1,6 @@
 const homeBlogQuery = `
   {
-    homeRecipe {
+    homeBlog {
       data {
         id
         attributes {

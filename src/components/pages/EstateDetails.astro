@@ -1,0 +1,19 @@
+---
+import Markdown from "@astrojs/markdown-component";
+import Chapterize from "@components/Chapterize.astro";
+import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+
+const { page, recurData } = Astro.props,
+  headingName = recurData.text_chapter,
+  { estates } = page;
+---
+
+<PostDetailsLayout {page} posts={estates} {recurData} {headingName}>
+  <Markdown slot="heading-links-source-html">{page.Block_text}</Markdown>
+
+  <div slot="post-details" class="prose content-text">
+    <Chapterize>
+      <Markdown>{page.Block_text}</Markdown>
+    </Chapterize>
+  </div>
+</PostDetailsLayout>
