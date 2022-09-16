@@ -8,19 +8,19 @@ export default defineConfig({
   site: "https://dilmahtea.me",
 
   integrations: [
-    sitemap({
-      serialize(item) {
-        if (/exclude-from-sitemap/.test(item.url)) {
-          return undefined;
-        }
-        if (/your-special-page/.test(item.url)) {
-          item.changefreq = "daily";
-          item.lastmod = new Date();
-          item.priority = 0.9;
-        }
-        return item;
-      },
-    }),
+    // sitemap({
+    //   serialize(item) {
+    //     if (/exclude-from-sitemap/.test(item.url)) {
+    //       return undefined;
+    //     }
+    //     if (/your-special-page/.test(item.url)) {
+    //       item.changefreq = "daily";
+    //       item.lastmod = new Date();
+    //       item.priority = 0.9;
+    //     }
+    //     return item;
+    //   },
+    // }),
     taiwlind(),
     astroImageTools,
   ],
