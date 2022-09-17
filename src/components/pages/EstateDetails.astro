@@ -4,16 +4,57 @@ import Chapterize from "@components/Chapterize.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 const { page, recurData } = Astro.props,
+  { estates } = page,
   headingName = recurData.text_chapter,
-  { estates } = page;
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 ---
 
-<PostDetailsLayout {page} posts={estates} {recurData} {headingName}>
-  <Markdown slot="heading-links-source-html">{page.Block_text}</Markdown>
+<style>
+  .map-container {
+    margin: clamp(55px, 5vw + 30px, 100px) 0;
+  }
 
+  .map-title {
+    font-size: clamp(2.125rem, 3vw + 0.3rem, 2.625rem);
+  }
+</style>
+
+<PostDetailsLayout {page} posts={estates} {recurData} {headingName}>
   <div slot="post-details" class="prose content-text">
     <Chapterize>
       <Markdown>{page.Block_text}</Markdown>
     </Chapterize>
+  </div>
+
+  <div
+    slot="estate-map"
+    role="complementary"
+    class="map-container wrapper"
+    aria-label="location-inforamtion"
+  >
+    <h2 class="alice map-title mb-5 text-dark">
+      {page.Estate_name} location
+    </h2>
+
+    <a
+      href={page.Location_link}
+      class="block w-full max-h-[375px] object-cover overflow-hidden"
+    >
+      <img
+        class="hidden sm:block w-full h-full object-cover"
+        src={imgSrcPrefix +
+          page.Location.data.attributes.provider_metadata.public_id +
+          `/public`}
+        alt={page.Location.data.attributes.alternativeText}
+      />
+
+      <img
+        class="block sm:hidden w-full h-full object-cover"
+        src={imgSrcPrefix +
+          page.Location.data.attributes.provider_metadata.public_id +
+          `/small`}
+        alt={page.Location.data.attributes.alternativeText}
+      />
+    </a>
   </div>
 </PostDetailsLayout>
