@@ -166,14 +166,14 @@ const { posts } = Astro.props.page,
 
   {
     posts.slice(1).map((post, index) => {
-      const even = index % 2 === 0;
+      const isEven = index % 2 === 0;
 
       return (
         <div class="flex flex-wrap items-center">
           <div
             class:list={[
               "relative w-full sm:w-1/2 order-1 mb-4 sm:mb-0",
-              even
+              isEven
                 ? "pr-0 sm:pr-5 md:pr-12 lg:pr-24"
                 : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
             ]}
@@ -193,9 +193,9 @@ const { posts } = Astro.props.page,
                 alt="Tea Leaf"
                 class:list={[
                   "post-leaf absolute z-20",
-                  even ? "post-leaf-left" : "post-leaf-right",
+                  isEven ? "post-leaf-left" : "post-leaf-right",
                 ]}
-                src={even ? LeafImg : LeafImgRight}
+                src={isEven ? LeafImg : LeafImgRight}
               />
             </a>
           </div>
@@ -204,7 +204,7 @@ const { posts } = Astro.props.page,
           <div
             class:list={[
               "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
-              even ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
+              isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
             ]}
           >
             <div>

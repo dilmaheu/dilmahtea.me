@@ -1,22 +1,15 @@
 ---
-import CupIcon from "@images/cup.svg";
-import LoveIcon from "@images/love.svg";
-import Love2Icon from "@images/love2Green.svg";
-import LeafImg from "@images/greenLeaf5.webp";
-import LeafImg1 from "@images/greenLeaf.webp";
-import CupGreenIcon from "@images/cupGreen.svg";
 import QuoteIcon from "@images/quoteOpen.svg";
-import MainBG from "@images/crowdfunding-info-section-background.webp";
-
-import ClippedPicture from "@components/ClippedPicture.astro";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
-import HeroBackground from "@components/HeroBackground.astro";
+import Love2Icon from "@images/love2Green.svg";
 
 import Markdown from "@astrojs/markdown-component";
-
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import ClippedPicture from "@components/ClippedPicture.astro";
+import HeroBackground from "@components/HeroBackground.astro";
 import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
+import EstatesInfoSection from "@components/EstatesInfoSection.astro";
 
-const { page, recurData } = Astro.props,
+const { page } = Astro.props,
   { posts } = page,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 ---
@@ -26,14 +19,6 @@ const { page, recurData } = Astro.props,
 
   .intro-text {
     font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
-  }
-
-  .estate-title {
-    @apply underline decoration-[3px];
-
-    margin-top: clamp(1.125rem, 1.5vw + 0.3rem, 1.563rem);
-    font-size: clamp(1.75rem, 3.6vw + 0.01rem, 3.125rem);
-    line-height: 120%;
   }
 
   .estate-types-selector {
@@ -65,14 +50,16 @@ const { page, recurData } = Astro.props,
     line-height: 150%;
   }
 
-  .estate-text {
+  .estate-title {
+    @apply leading-tight underline decoration-[3px];
+
+    font-size: clamp(1.75rem, 3.6vw + 0.01rem, 3.125rem);
     margin-top: clamp(1.125rem, 1.5vw + 0.3rem, 1.563rem);
+  }
+
+  .estate-text {
     font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem);
-    line-height: 150%;
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    margin-top: clamp(1.125rem, 1.5vw + 0.3rem, 1.563rem);
   }
 
   .estate-quote {
@@ -226,27 +213,26 @@ const { page, recurData } = Astro.props,
     </div>
   </div>
 
+  <ClipPathSVG
+    id="estate-img-curve"
+    path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+  />
+
   {/* All Estates Section */}
-
   <section
-    class="wrapper flex flex-wrap items-center gap-y-20 py-20 py-[50px] lg:py-[75px]"
     id="estates"
+    class="wrapper flex flex-wrap items-center gap-y-20 py-20 py-[50px] lg:py-[75px]"
   >
-    <ClipPathSVG
-      id="estate-img-curve"
-      path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-    />
-
     {
       posts.map((estate, index) => {
-        const even = index % 2 === 0;
+        const isEven = index % 2 === 0;
 
         return (
           <div class="flex flex-wrap items-center">
             <div
               class:list={[
                 "relative w-full sm:w-1/2 order-1 mb-4 sm:mb-0",
-                even
+                isEven
                   ? "pr-0 sm:pr-5 md:pr-12 lg:pr-24"
                   : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
               ]}
@@ -269,7 +255,7 @@ const { page, recurData } = Astro.props,
             <div
               class:list={[
                 "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
-                even ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
+                isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
               ]}
             >
               <div>
@@ -298,7 +284,7 @@ const { page, recurData } = Astro.props,
 
                 <a
                   href={`/` + estate.Meta.URL_slug}
-                  class="block pt-5 leading-normal prose max-w-none text-dark estate-text"
+                  class="estate-text block prose max-w-none pt-5 text-dark leading-normal line-clamp-5"
                 >
                   <Markdown>{estate.Intro_text}</Markdown>
                 </a>
@@ -413,6 +399,8 @@ const { page, recurData } = Astro.props,
       </div>
     </div>
   </div>
+
+  <EstatesInfoSection page={page} />
 
   <div
     class="py-[35px] px-[23px] sm:px-[30px] md:px-10 lg:px-[50px] my-[55px] sm:my-[90px] lg:my-[110px] relative"
