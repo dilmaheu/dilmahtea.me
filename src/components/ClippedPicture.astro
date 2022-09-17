@@ -10,10 +10,17 @@ declare interface Props
   > {
   id: string;
   path: string;
+  alt?: string;
   pictureStyle?: string;
 }
 
-const { id, path, pictureStyle = "", ...PictureProps } = Astro.props as Props;
+const {
+  id,
+  path,
+  alt = "",
+  pictureStyle = "",
+  ...PictureProps
+} = Astro.props as Props;
 
 PictureProps.attributes ??= {};
 PictureProps.attributes.picture ??= {};
