@@ -1,6 +1,7 @@
 ---
 import { parseHTML } from "linkedom";
 import Markdown from "@astrojs/markdown-component";
+import { Picture } from "astro-imagetools/components";
 
 const { page } = Astro.props;
 
@@ -46,10 +47,14 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
                 : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
             ]}
           >
-            <img
+            <Picture
+              alt=""
               src={imgSrc}
-              class="w-full h-full"
-              style="clip-path: url(#estate-img-curve);"
+              attributes={{
+                picture: {
+                  style: "clip-path: url(#estate-img-curve);",
+                },
+              }}
             />
           </div>
 

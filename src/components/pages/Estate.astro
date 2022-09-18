@@ -3,6 +3,8 @@ import QuoteIcon from "@images/quoteOpen.svg";
 import Love2Icon from "@images/love2Green.svg";
 
 import Markdown from "@astrojs/markdown-component";
+import { Picture } from "astro-imagetools/components";
+
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import HeroBackground from "@components/HeroBackground.astro";
@@ -238,15 +240,17 @@ const { page } = Astro.props,
               ]}
             >
               <a href={`/` + estate.Meta.URL_slug}>
-                <img
+                <Picture
+                  alt=""
                   src={
                     imgSrcPrefix +
                     estate.Intro_blob.data.attributes.provider_metadata
                       .public_id +
                     `/small`
                   }
-                  class="w-full h-full"
-                  style="clip-path: url(#estate-img-curve);"
+                  attributes={{
+                    picture: { style: "clip-path: url(#estate-img-curve);" },
+                  }}
                 />
               </a>
             </div>
