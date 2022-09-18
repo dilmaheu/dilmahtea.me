@@ -4,10 +4,11 @@ import FlowerIcon from "@images/flower.svg";
 import LoveGreenIcon from "@images/loveGreen.svg";
 
 import Markdown from "@astrojs/markdown-component";
+import { Picture } from "astro-imagetools/components";
 
 import PlanCards from "@components/PlanCards.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import ClippedPicture from "@components/ClippedPicture.astro";
 import HeroBackground from "@components/HeroBackground.astro";
 import CrowdfundingProgress from "@components/CrowdfundingProgress.astro";
 
@@ -98,16 +99,18 @@ const goal = 100000,
       class="relative w-full h-full"
       style="clip-path: url(#hero-img-curve);"
     >
-      <img
+      <Picture
+        alt=""
+        layout="fill"
         src={imgSrcPrefix +
           page.Intro_blob.data.attributes.provider_metadata.public_id +
           `/cms`}
-        class="w-full h-full relative right-12 object-cover"
+        attributes={{ picture: { style: "48px" } }}
       />
 
       <div
         class:list={[
-          "absolute bottom-0 w-full flex justify-center",
+          "absolute bottom-0 z-10 w-full flex justify-center",
           "-ml-7 py-[min(4vw,60px)] pl-0 sm:pl-[min(3.5vw+20px,64px)]",
         ]}
       >
