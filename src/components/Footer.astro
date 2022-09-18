@@ -1,8 +1,5 @@
 ---
 import Logo from "@images/logo.svg";
-import LeafImg from "@images/greenLeaf3.webp";
-import LeafImgMd from "@images/greenLeaf2.webp";
-
 import { Picture } from "astro-imagetools/components";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
@@ -101,8 +98,12 @@ const { footerText } = Astro.props as Props;
   <div
     class="footer-leaf absolute z-30 flex md:items-end mt-auto -top-16 md:-top-1.5 right-0"
   >
-    <img class="hidden md:block w-full h-full" src={LeafImgMd} alt="Tea Leaf" />
+    <div class="hidden md:block w-full h-full">
+      <Picture src="/src/images/greenLeaf2.webp" alt="Tea Leaf" layout="fill" />
+    </div>
 
-    <img class="block md:hidden w-full h-full" src={LeafImg} alt="Tea Leaf" />
+    <div class="block md:hidden w-full h-full">
+      <Picture src="/src/images/greenLeaf3.webp" alt="Tea Leaf" layout="fill" />
+    </div>
   </div>
 </footer>
