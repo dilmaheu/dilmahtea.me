@@ -2,8 +2,8 @@
 import Logo from "@images/logo.svg";
 import LeafImg from "@images/greenLeaf3.webp";
 import LeafImgMd from "@images/greenLeaf2.webp";
-import FooterBackground from "@images/footer-background.webp";
 
+import { Picture } from "astro-imagetools/components";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
@@ -14,17 +14,27 @@ declare interface Props {
 const { footerText } = Astro.props as Props;
 ---
 
-<style lang="scss">
-  footer {
-    height: clamp(230px, 35vw + 30px, 300px);
-  }
-
+<style lang="scss" is:global>
   .footer-background {
+    @apply z-10 w-full;
+
+    height: 100% !important;
+    position: absolute !important;
     clip-path: url(#footer-curve);
+
+    img {
+      height: inherit !important;
+    }
 
     @media screen and (min-width: 768px) {
       clip-path: url(#footer-curve-md);
     }
+  }
+</style>
+
+<style lang="scss">
+  footer {
+    height: clamp(230px, 35vw + 30px, 300px);
   }
 
   .brand-logo {
@@ -60,9 +70,10 @@ const { footerText } = Astro.props as Props;
     path="M0 1V0h.956C.981.012 1 .081 1 .16S.995.318.981.458C.972.552.975.614.968.71.962.797.925 1 .882 1"
   />
 
-  <img
-    src={FooterBackground}
-    class="footer-background absolute w-full h-full top-0 z-10 object-cover"
+  <Picture
+    alt=""
+    src="/src/images/footer-background.webp"
+    attributes={{ picture: { class: "footer-background" } }}
   />
 
   <div
