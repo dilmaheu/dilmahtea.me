@@ -1,5 +1,6 @@
 ---
 import Markdown from "@astrojs/markdown-component";
+import { Picture } from "astro-imagetools/components";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 const { page, recurData } = Astro.props,
@@ -91,13 +92,14 @@ const practicesHeadingsHTML = page.Method.map(
               </div>
 
               {step.Step_blob.data !== null && (
-                <img
-                  class="mt-5"
+                <Picture
+                  alt=""
                   src={
                     imgSrcPrefix +
                     step.Step_blob.data.attributes.provider_metadata.public_id +
                     `/small`
                   }
+                  attributes={{ picture: { style: "margin-top: 20px;" } }}
                 />
               )}
             </div>

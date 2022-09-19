@@ -4,6 +4,7 @@ import BookGreen from "@images/bookGreen.svg";
 import RightArrow from "@images/rightArrow.svg";
 
 import Markdown from "@astrojs/markdown-component";
+import { Picture } from "astro-imagetools/components";
 
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import HeadingLinks from "@components/HeadingLinks.astro";
@@ -23,9 +24,8 @@ const recentPosts =
 
 <style lang="scss" is:global>
   #post-details {
-    img {
-      @apply block mx-auto;
-
+    picture {
+      margin: 0 auto;
       clip-path: url(#content-images-curve);
     }
 
@@ -138,18 +138,18 @@ const recentPosts =
                     "w-12 h-12 rounded-full object-cover overflow-hidden",
                   ]}
                 >
-                  <img
+                  <Picture
+                    layout="fill"
+                    alt={
+                      author.attributes.Profile_picture.data.attributes
+                        .alternativeText
+                    }
                     src={
                       imgSrcPrefix +
                       author.attributes.Profile_picture.data.attributes
                         .provider_metadata.public_id +
                       `/authBlob`
                     }
-                    alt={
-                      author.attributes.Profile_picture.data.attributes
-                        .alternativeText
-                    }
-                    class="w-full h-full"
                   />
                 </div>
               ))}
@@ -355,15 +355,20 @@ const recentPosts =
 
               <div class="absolute inset-0 z-30">
                 <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-                  <img
+                  <Picture
+                    alt=""
+                    layout="fill"
                     src={
                       imgSrcPrefix +
                       post.Intro_blob.data.attributes.provider_metadata
                         .public_id +
                       `/small`
                     }
-                    class="w-full h-full"
-                    style="clip-path: url(#recent-post-card-curve);"
+                    attributes={{
+                      picture: {
+                        style: "clip-path: url(#recent-post-card-curve);",
+                      },
+                    }}
                   />
                 </a>
 

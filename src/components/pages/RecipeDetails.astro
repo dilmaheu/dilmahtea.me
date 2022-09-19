@@ -9,6 +9,7 @@ import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 const { page, recurData } = Astro.props,
   { recipes } = page,
@@ -217,7 +218,9 @@ function totalTimeSm(x, y) {
       class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
     >
       <div class="prose max-w-none mb-5 recipe-sec-text">
-        <Markdown>{page.Block_text}</Markdown>
+        <OptimizeContentImages>
+          <Markdown>{page.Block_text}</Markdown>
+        </OptimizeContentImages>
       </div>
 
       <div class="mt-5">

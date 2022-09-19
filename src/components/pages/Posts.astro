@@ -1,13 +1,12 @@
 ---
 import CupIcon from "@images/cup.svg";
-import LeafImg from "@images/greenLeaf5.webp";
-import LeafImgRight from "@images/greenLeaf.webp";
 import CupGreenIcon from "@images/cupGreen.svg";
 
 import Markdown from "@astrojs/markdown-component";
+import { Picture } from "astro-imagetools/components";
 
-import ClippedPicture from "@components/ClippedPicture.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import ClippedPicture from "@components/ClippedPicture.astro";
 import HeroBackground from "@components/HeroBackground.astro";
 
 import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
@@ -179,23 +178,35 @@ const { posts } = Astro.props.page,
             ]}
           >
             <a href={`/` + post.Meta.URL_slug}>
-              <img
+              <Picture
+                alt=""
+                layout="fill"
                 src={
                   imgSrcPrefix +
                   post.Intro_blob.data.attributes.provider_metadata.public_id +
                   `/small`
                 }
-                class="w-full h-full"
-                style="clip-path: url(#post-img-curve);"
+                attributes={{
+                  picture: { style: "clip-path: url(#post-img-curve);" },
+                }}
               />
 
-              <img
+              <Picture
                 alt="Tea Leaf"
-                class:list={[
-                  "post-leaf absolute z-20",
-                  isEven ? "post-leaf-left" : "post-leaf-right",
-                ]}
-                src={isEven ? LeafImg : LeafImgRight}
+                src={
+                  isEven
+                    ? "/src/images/greenLeaf5.webp"
+                    : "/src/images/greenLeaf.webp"
+                }
+                attributes={{
+                  picture: {
+                    class: `post-leaf ${
+                      isEven ? "post-leaf-left" : "post-leaf-right"
+                    }`,
+                    style:
+                      "position: absolute; z-index: 20; clip-path: url(#post-img-curve);",
+                  },
+                }}
               />
             </a>
           </div>
