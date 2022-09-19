@@ -9,6 +9,7 @@ import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+import RecipesInfoSection from "@components/RecipesInfoSection.astro";
 
 const { page, recurData } = Astro.props,
   { recipes } = page,
@@ -204,56 +205,39 @@ function totalTimeSm(x, y) {
   </a>
 
   <Chapterize slot="post-details">
-    <h2
-      class:list={[
-        "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
-        "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
-      ]}
-    >
-      About Vegan Broccoli Salad
-    </h2>
 
-    <div
-      class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
-    >
-      <div class="prose max-w-none mb-5 recipe-sec-text">
-        <Markdown>{page.Block_text}</Markdown>
-      </div>
+    <RecipesInfoSection page={page} />
 
-      <div class="mt-5">
-        <ClippedPicture
-          id="recipe-img-curve"
-          src="/src/images/crowdfunding-info-section-background.webp"
-          path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-        />
-      </div>
-    </div>
+    { page.Recipe_variations.data.length > 0 &&
+      <>
+        <h2
+        class:list={[
+          "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
+          "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
+        ]}
+        >
+          {recurData.recipe_similar}
+          {page.Title}
+        </h2>
 
-    <h2
-      class:list={[
-        "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
-        "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
-      ]}
-    >
-      {recurData.recipe_similar}
-      {page.Title}
-    </h2>
-
-    <div
-      class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
-    >
-      <ul class="list-disc list-inside similarRecipies">
-        {
-          page.Recipe_variations.data
-            .map((val) => val.attributes)
-            .map((recipe) => (
-              <li class="font-medium text-primary">
-                <a href={recipe.Meta.URL_slug}>{recipe.Title}</a>
-              </li>
-            ))
-        }
-      </ul>
-    </div>
+      
+        <div
+          class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+        >
+          <ul class="list-disc list-inside similarRecipies">
+            {
+              page.Recipe_variations.data
+                .map((val) => val.attributes)
+                .map((recipe) => (
+                  <li class="font-medium text-primary">
+                    <a href={recipe.Meta.URL_slug}>{recipe.Title}</a>
+                  </li>
+                ))
+            }
+          </ul>
+        </div>
+      </>
+    }
 
     <h2
       class:list={[

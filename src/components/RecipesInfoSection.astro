@@ -1,0 +1,52 @@
+---
+import { parseHTML } from "linkedom";
+import Markdown from "@astrojs/markdown-component";
+import ClippedPicture from "@components/ClippedPicture.astro";
+
+const { page } = Astro.props;
+
+const infoBlocksHTML = await Astro.__renderMarkdown(page.Block_text);
+
+const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
+  titles = [...infoBlocksDocument.querySelectorAll("h2")];
+---
+
+{
+  titles.map(title => {
+    const { textContent: titleText } = title,
+      { textContent } = title.nextElementSibling;
+      // @ts-ignore
+    const imgSrc = title.nextElementSibling?.lastElementChild?.src;
+
+    return (
+      <>
+        <h2
+          class:list={[
+            "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
+            "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
+          ]}
+        >
+          {titleText}
+        </h2>
+
+        <div
+          class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+        >
+          <div class="prose max-w-none mb-5 recipe-sec-text">
+            <Markdown>{textContent}</Markdown>
+          </div>
+
+          { imgSrc && (
+            <div class="recipe-info-img mt-5">
+              <ClippedPicture
+                id="recipe-img-curve"
+                src={imgSrc}
+                path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+              />
+            </div>
+          )}
+        </div>
+      </>
+    );
+  })
+}
