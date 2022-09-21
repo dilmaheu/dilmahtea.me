@@ -110,9 +110,9 @@ export async function getStaticPaths() {
     slug: `plans/${(Title || page.attributes.Title).toLowerCase()}`,
   }));
 
-  const crowdfundingPages = getPages(crowdfundingHome, () => ({
+  const crowdfundingPages = getPages(crowdfundingHome, (page, { locale }) => ({
     type: "crowdfunding",
-    allPlans: crowdfundingPlans.data.map(({ attributes }) => attributes),
+    allPlans: locale && getPosts(crowdfundingPlans, locale),
   }));
 
   const basicPages = getPages(basicPagesData, () => ({ type: "basic" }));
