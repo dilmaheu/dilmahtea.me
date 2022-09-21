@@ -1,5 +1,9 @@
 ---
 import Logo from "@images/logo.svg";
+import LeafImg from "@images/greenLeaf2.webp";
+import LeafImgSm from "@images/greenLeaf3.webp";
+import FooterBackground from "@images/footer-background.webp";
+
 import { Picture } from "astro-imagetools/components";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
@@ -11,27 +15,37 @@ declare interface Props {
 const { footerText } = Astro.props as Props;
 ---
 
-<style lang="scss" is:global>
-  .footer-background {
-    @apply z-10 w-full;
+{
+  /* <style lang="scss" is:global>
+    .footer-background {
+      @apply z-10 w-full;
 
-    height: 100% !important;
-    position: absolute !important;
-    clip-path: url(#footer-curve);
+      height: 100% !important;
+      position: absolute !important;
+      clip-path: url(#footer-curve);
 
-    img {
-      height: inherit !important;
+      img {
+        height: inherit !important;
+      }
+
+      @media screen and (min-width: 768px) {
+        clip-path: url(#footer-curve-md);
+      }
     }
-
-    @media screen and (min-width: 768px) {
-      clip-path: url(#footer-curve-md);
-    }
-  }
-</style>
+  </style> */
+}
 
 <style lang="scss">
   footer {
     height: clamp(230px, 35vw + 30px, 300px);
+  }
+
+  .footer-background {
+    clip-path: url(#footer-curve);
+
+    @media (min-width: 768px) {
+      clip-path: url(#footer-curve-md);
+    }
   }
 
   .brand-logo {
@@ -67,11 +81,20 @@ const { footerText } = Astro.props as Props;
     path="M0 1V0h.956C.981.012 1 .081 1 .16S.995.318.981.458C.972.552.975.614.968.71.962.797.925 1 .882 1"
   />
 
-  <Picture
-    alt=""
-    src="/src/images/footer-background.webp"
-    attributes={{ picture: { class: "footer-background" } }}
+  <img
+    src={FooterBackground}
+    class="footer-background absolute w-full h-full top-0 z-10 object-cover"
   />
+
+  {
+    /* (
+      <Picture
+        alt=""
+        src="/src/images/footer-background.webp"
+        attributes={{ picture: { class: "footer-background" } }}
+      />
+    ) */
+  }
 
   <div
     class="wrapper relative z-20 h-full flex flex-wrap py-[clamp(24px,3vw+6.4px,56px)]"
@@ -98,12 +121,30 @@ const { footerText } = Astro.props as Props;
   <div
     class="footer-leaf absolute z-30 flex md:items-end mt-auto -top-16 md:-top-1.5 right-0"
   >
-    <div class="hidden md:block w-full h-full">
-      <Picture src="/src/images/greenLeaf2.webp" alt="Tea Leaf" layout="fill" />
-    </div>
+    <img class="hidden md:block w-full h-full" src={LeafImg} alt="Tea Leaf" />
 
-    <div class="block md:hidden w-full h-full">
-      <Picture src="/src/images/greenLeaf3.webp" alt="Tea Leaf" layout="fill" />
-    </div>
+    <img class="block md:hidden w-full h-full" src={LeafImgSm} alt="Tea Leaf" />
+
+    {
+      /* (
+        <>
+          <div class="hidden md:block w-full h-full">
+            <Picture
+              layout="fill"
+              alt="Tea Leaf"
+              src="/src/images/greenLeaf2.webp"
+            />
+          </div>
+
+          <div class="block md:hidden w-full h-full">
+            <Picture
+              layout="fill"
+              alt="Tea Leaf"
+              src="/src/images/greenLeaf3.webp"
+            />
+          </div>
+        </>
+      ) */
+    }
   </div>
 </footer>

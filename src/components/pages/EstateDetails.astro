@@ -1,6 +1,7 @@
 ---
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
+import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
@@ -38,19 +39,35 @@ const { page, recurData } = Astro.props,
     </h2>
 
     <a href={page.Location_link} class="block w-full">
-      <ClippedPicture
+      <ClippedImg
         id="estate-map-curve"
+        className="max-h-[375px]"
         src={imgSrcPrefix +
           page.Location.data.attributes.provider_metadata.public_id +
           `/public`}
         alt={page.Location.data.attributes.alternativeText}
         path="M.04.089C.086.001.164.009.262.005c.165-.007.26.005.425 0 .115-.003.179 0 .242.029C.977.057 1 .335 1 .513.996.676 1 .9.946.927.888.952.753.961.694.976.583 1 .464.97.363.976.271.982.156 1 .054.927 0 .859-.001.687 0 .513.002.348-.007.18.04.089"
-        attributes={{
-          img: {
-            style: "max-height: 375px;",
-          },
-        }}
       />
+
+      {
+        /* (
+          <ClippedPicture
+            id="estate-map-curve"
+            src={
+              imgSrcPrefix +
+              page.Location.data.attributes.provider_metadata.public_id +
+              `/public`
+            }
+            alt={page.Location.data.attributes.alternativeText}
+            path="M.04.089C.086.001.164.009.262.005c.165-.007.26.005.425 0 .115-.003.179 0 .242.029C.977.057 1 .335 1 .513.996.676 1 .9.946.927.888.952.753.961.694.976.583 1 .464.97.363.976.271.982.156 1 .054.927 0 .859-.001.687 0 .513.002.348-.007.18.04.089"
+            attributes={{
+              img: {
+                style: "max-height: 375px;",
+              },
+            }}
+          />
+        ) */
+      }
     </a>
   </div>
 </PostDetailsLayout>

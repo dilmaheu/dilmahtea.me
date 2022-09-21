@@ -8,6 +8,7 @@ import { Picture } from "astro-imagetools/components";
 
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import HeadingLinks from "@components/HeadingLinks.astro";
+import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import HeroBackground from "@components/HeroBackground.astro";
 
@@ -24,10 +25,18 @@ const recentPosts =
 
 <style lang="scss" is:global>
   #post-details {
-    picture {
-      margin: 0 auto;
+    img {
+      @apply block mx-auto;
+
       clip-path: url(#content-images-curve);
     }
+
+    // picture {
+    //   display: block !important;
+    //   margin: 0 auto !important;
+    //   max-width: fit-content !important;
+    //   clip-path: url(#content-images-curve);
+    // }
 
     p a {
       @apply px-1 no-underline bg-bottom bg-no-repeat transition-all;
@@ -138,8 +147,8 @@ const recentPosts =
                     "w-12 h-12 rounded-full object-cover overflow-hidden",
                   ]}
                 >
-                  <Picture
-                    layout="fill"
+                  <img
+                    class="w-full h-full"
                     alt={
                       author.attributes.Profile_picture.data.attributes
                         .alternativeText
@@ -151,6 +160,20 @@ const recentPosts =
                       `/authBlob`
                     }
                   />
+
+                  {/* <Picture
+                      layout="fill"
+                      alt={
+                        author.attributes.Profile_picture.data.attributes
+                          .alternativeText
+                      }
+                      src={
+                        imgSrcPrefix +
+                        author.attributes.Profile_picture.data.attributes
+                          .provider_metadata.public_id +
+                        `/authBlob`
+                      }
+                    /> */}
                 </div>
               ))}
             </div>
@@ -206,26 +229,54 @@ const recentPosts =
 
   {/* Blob Image - Desktop View */}
   <div class="hero-img-curve-container h-full hidden sm:block absolute z-20">
-    <ClippedPicture
+    <ClippedImg
       id="hero-img-curve"
-      pictureStyle="position: relative;"
       src={imgSrcPrefix +
         page.Intro_blob.data.attributes.provider_metadata.public_id +
         `/small`}
       path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
     />
+
+    {
+      /* (
+        <ClippedPicture
+          id="hero-img-curve"
+          pictureStyle="position: relative;"
+          src={
+            imgSrcPrefix +
+            page.Intro_blob.data.attributes.provider_metadata.public_id +
+            `/small`
+          }
+          path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
+        />
+      ) */
+    }
   </div>
 </section>
 
 {/* Blob Image - Mobile View */}
 <div class="block sm:hidden w-full relative z-20 -mt-20">
-  <ClippedPicture
+  <ClippedImg
     id="hero-img-curve-sm"
     src={imgSrcPrefix +
       page.Intro_blob.data.attributes.provider_metadata.public_id +
       `/small`}
     path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
   />
+
+  {
+    /* (
+      <ClippedPicture
+        id="hero-img-curve-sm"
+        src={
+          imgSrcPrefix +
+          page.Intro_blob.data.attributes.provider_metadata.public_id +
+          `/small`
+        }
+        path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
+      />
+    ) */
+  }
 </div>
 
 {/* howto header section */}
@@ -355,21 +406,32 @@ const recentPosts =
 
               <div class="absolute inset-0 z-30">
                 <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-                  <Picture
-                    alt=""
-                    layout="fill"
+                  <img
                     src={
                       imgSrcPrefix +
                       post.Intro_blob.data.attributes.provider_metadata
                         .public_id +
                       `/small`
                     }
-                    attributes={{
-                      picture: {
-                        style: "clip-path: url(#recent-post-card-curve);",
-                      },
-                    }}
+                    class="w-full h-full"
+                    style="clip-path: url(#recent-post-card-curve);"
                   />
+
+                  {/* <Picture
+                      alt=""
+                      layout="fill"
+                      src={
+                        imgSrcPrefix +
+                        post.Intro_blob.data.attributes.provider_metadata
+                          .public_id +
+                        `/small`
+                      }
+                      attributes={{
+                        picture: {
+                          style: "clip-path: url(#recent-post-card-curve);",
+                        },
+                      }}
+                    /> */}
                 </a>
 
                 <div class="recent-post-card-content-container">

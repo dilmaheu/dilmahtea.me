@@ -6,6 +6,7 @@ import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import HeroBackground from "@components/HeroBackground.astro";
 import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
@@ -132,26 +133,55 @@ const { page } = Astro.props,
 
   {/* Blob Image - Desktop View */}
   <div class="hero-img-curve-container h-full hidden sm:block absolute z-20">
-    <ClippedPicture
+    <ClippedImg
       id="hero-img-curve"
-      pictureStyle="position: relative;"
+      className="relative"
       src={imgSrcPrefix +
         page.Intro_blob.data.attributes.provider_metadata.public_id +
         `/small`}
       path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
     />
+
+    {
+      /* (
+        <ClippedPicture
+          id="hero-img-curve"
+          pictureStyle="position: relative;"
+          src={
+            imgSrcPrefix +
+            page.Intro_blob.data.attributes.provider_metadata.public_id +
+            `/small`
+          }
+          path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
+        />
+      ) */
+    }
   </div>
 </section>
 
 {/* Blob Image - Mobile View */}
 <div class="block sm:hidden relative -mt-20 z-20 w-full">
-  <ClippedPicture
+  <ClippedImg
     id="hero-img-curve-sm"
     src={imgSrcPrefix +
       page.Intro_blob.data.attributes.provider_metadata.public_id +
       `/small`}
     path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
   />
+
+  {
+    /* (
+      <ClippedPicture
+        id="hero-img-curve-sm"
+        src={
+          imgSrcPrefix +
+          page.Intro_blob.data.attributes.provider_metadata.public_id +
+          `/small`
+        }
+        path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
+      />
+    ) */
+  }
 </div>
 
 <!-- Recipe Details Section -->
@@ -168,46 +198,50 @@ const { page } = Astro.props,
       </div>
 
       {
-        /*<div>
-        <select
-          id="estateType"
-          name="estateType"
-          class:list={[
-            "focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring cursor-pointer",
-            "bg-primary text-lightgray2 py-[5px] pl-5 rounded-[34px] estate-types-selector"
-          ]}
-        >
-          <option value="1">
-            Kindness Project Type 1
-          </option>
+        /* (
+          <div>
+            <select
+              id="estateType"
+              name="estateType"
+              class:list={[
+                "focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring cursor-pointer",
+                "bg-primary text-lightgray2 py-[5px] pl-5 rounded-[34px] estate-types-selector",
+              ]}
+            >
+              <option value="1">Kindness Project Type 1</option>
 
-          <option value="2">
-            Kindness Project Type 2
-          </option>
-        </select>
-      </div>*/
+              <option value="2">Kindness Project Type 2</option>
+            </select>
+          </div>
+        ) */
       }
     </div>
 
     {
-      /*<div class="inline-flex">
-      <div class="text-dark2 estates-toggle-label">
-        View Carbon Neutral estates
-      </div>
-
-      <div class="flex items-center justify-center ml-2.5">
-        <label 
-          for="estatesToggle"
-          class="relative flex items-center cursor-pointer"
-        >
-          <div class="relative">
-            <input id="estatesToggle" type="checkbox" class="sr-only estate-mode-toggle" />
-            <div class="bg-white2 rounded-full shadow-inner w-11 sm:w-[49px] lg:w-[54px] h-5 sm:h-[22px] lg:h-6"></div>
-            <div class="absolute z-10 bg-white2 w-[30px] h-[30px] rounded-full shadow top-[-3px] -left-1 transition estate-mode-toggle-dot"></div>
+      /* (
+        <div class="inline-flex">
+          <div class="text-dark2 estates-toggle-label">
+            View Carbon Neutral estates
           </div>
-        </label>
-      </div>
-    </div>*/
+
+          <div class="flex items-center justify-center ml-2.5">
+            <label
+              for="estatesToggle"
+              class="relative flex items-center cursor-pointer"
+            >
+              <div class="relative">
+                <input
+                  id="estatesToggle"
+                  type="checkbox"
+                  class="sr-only estate-mode-toggle"
+                />
+                <div class="bg-white2 rounded-full shadow-inner w-11 sm:w-[49px] lg:w-[54px] h-5 sm:h-[22px] lg:h-6" />
+                <div class="absolute z-10 bg-white2 w-[30px] h-[30px] rounded-full shadow top-[-3px] -left-1 transition estate-mode-toggle-dot" />
+              </div>
+            </label>
+          </div>
+        </div>
+      ) */
     }
 
     <div class="prose max-w-none w-full text-dark estate-block-text">
@@ -240,18 +274,29 @@ const { page } = Astro.props,
               ]}
             >
               <a href={`/` + estate.Meta.URL_slug}>
-                <Picture
-                  alt=""
+                <img
                   src={
                     imgSrcPrefix +
                     estate.Intro_blob.data.attributes.provider_metadata
                       .public_id +
                     `/small`
                   }
-                  attributes={{
-                    picture: { style: "clip-path: url(#estate-img-curve);" },
-                  }}
+                  class="w-full h-full"
+                  style="clip-path: url(#estate-img-curve);"
                 />
+
+                {/* <Picture
+                    alt=""
+                    src={
+                      imgSrcPrefix +
+                      estate.Intro_blob.data.attributes.provider_metadata
+                        .public_id +
+                      `/small`
+                    }
+                    attributes={{
+                      picture: { style: "clip-path: url(#estate-img-curve);" },
+                    }}
+                  /> */}
               </a>
             </div>
 
