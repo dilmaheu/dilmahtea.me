@@ -18,9 +18,26 @@ const localizedAvailableLanguages = availableLanguages.map(
   (language) => localeNamesData[docLang][language]
 );
 
+const langSelectorsData = localizedAvailableLanguages.map(
+  (localizedLanguage, i) => {
+    const language = availableLanguages[i],
+      lang = locales[languages.indexOf(language)],
+      localLanguageName = localeNamesData[language][language];
+
+    return {
+      lang,
+      localizedLanguage,
+      localLanguageName,
+    };
+  }
+);
+
 // sort lang selectors alphabetically
-localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
-  nextLanguage.localeCompare(currentLanguage, "en-US")
+langSelectorsData.sort(
+  (
+    { localizedLanguage: nextLanguage },
+    { localizedLanguage: currentLanguage }
+  ) => nextLanguage.localeCompare(currentLanguage, "en-US")
 );
 ---
 
@@ -75,12 +92,8 @@ localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
     class="absolute hidden overflow-hidden w-full font-bold rounded border-t border-solid border-primary"
   >
     {
-      localizedAvailableLanguages.map((localizedLanguage, i) => {
-        const language = availableLanguages[i],
-          lang = locales[languages.indexOf(language)],
-          localLanguageName = localeNamesData[language][language];
-
-        return (
+      langSelectorsData.map(
+        ({ lang, localizedLanguage, localLanguageName }) => (
           <li class="block">
             <button
               lang={lang}
@@ -93,8 +106,8 @@ localizedAvailableLanguages.sort((nextLanguage, currentLanguage) =>
               {localizedLanguage} / {localLanguageName}
             </button>
           </li>
-        );
-      })
+        )
+      )
     }
   </ul>
 </div>
