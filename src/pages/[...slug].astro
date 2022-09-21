@@ -122,9 +122,9 @@ export async function getStaticPaths() {
     () => ({ type: "basic" })
   );
 
-  const blogDetailsPages = getPages(blogs, (page, attributes) => ({
+  const blogDetailsPages = getPages(blogs, (page, { locale }) => ({
     type: "blogDetails",
-    blogs: attributes.locale && getPosts(blogs, attributes.locale),
+    blogs: locale && getPosts(blogs, locale),
   }));
 
   const howToDetailsPages = getPages(howTos, (page, { locale }) => ({
