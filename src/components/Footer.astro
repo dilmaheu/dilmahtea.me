@@ -1,12 +1,11 @@
 ---
-import Logo from "@images/logo.svg";
-import LeafImg from "@images/greenLeaf2.webp";
-import LeafImgSm from "@images/greenLeaf3.webp";
-import FooterBackground from "@images/footer-background.webp";
-
+import RecurringImages from "@store/RecurringImages";
 import { Picture } from "astro-imagetools/components";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+
+const { logo, footer_leaf, footer_leaf_sm, footer_background } =
+  RecurringImages;
 
 declare interface Props {
   footerText: string;
@@ -82,7 +81,8 @@ const { footerText } = Astro.props as Props;
   />
 
   <img
-    src={FooterBackground}
+    alt=""
+    src={footer_background.src}
     class="footer-background absolute w-full h-full top-0 z-10 object-cover"
   />
 
@@ -90,7 +90,7 @@ const { footerText } = Astro.props as Props;
     /* (
       <Picture
         alt=""
-        src="/src/images/footer-background.webp"
+        src={footer_background.src}
         attributes={{ picture: { class: "footer-background" } }}
       />
     ) */
@@ -101,7 +101,7 @@ const { footerText } = Astro.props as Props;
   >
     <div class="grid md:flex md:flex-wrap items-center gap-8 md:gap-14">
       <a href="/" class="brand-logo">
-        <img src={Logo} class="w-full h-full" alt="Dilmah Tea | Brand Logo" />
+        <img class="w-full h-full" {...logo} />
       </a>
 
       <nav class="grid md:flex flex-wrap items-center gap-2.5 md:gap-5">
@@ -121,27 +121,19 @@ const { footerText } = Astro.props as Props;
   <div
     class="footer-leaf absolute z-30 flex md:items-end mt-auto -top-16 md:-top-1.5 right-0"
   >
-    <img class="hidden md:block w-full h-full" src={LeafImg} alt="Tea Leaf" />
+    <img class="hidden md:block w-full h-full" {...footer_leaf} />
 
-    <img class="block md:hidden w-full h-full" src={LeafImgSm} alt="Tea Leaf" />
+    <img class="block md:hidden w-full h-full" {...footer_leaf_sm} />
 
     {
       /* (
         <>
           <div class="hidden md:block w-full h-full">
-            <Picture
-              layout="fill"
-              alt="Tea Leaf"
-              src="/src/images/greenLeaf2.webp"
-            />
+            <Picture layout="fill" {...footer_leaf} />
           </div>
 
           <div class="block md:hidden w-full h-full">
-            <Picture
-              layout="fill"
-              alt="Tea Leaf"
-              src="/src/images/greenLeaf3.webp"
-            />
+            <Picture layout="fill" {...footer_leaf_sm} />
           </div>
         </>
       ) */

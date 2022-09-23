@@ -1,9 +1,10 @@
 ---
-import CupIcon from "@images/cup.svg";
-import LoveIcon from "@images/love.svg";
 import Markdown from "@astrojs/markdown-component";
+import RecurringImages from "@store/RecurringImages";
 import HeroBackground from "@components/HeroBackground.astro";
 import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
+
+const { white_cup, white_love_ribbon } = RecurringImages;
 
 const { title, introText } = Astro.props;
 ---
@@ -40,14 +41,12 @@ const { title, introText } = Astro.props;
     >
       <img
         class="hero-icon hidden sm:block w-full h-full mx-auto"
-        src={CupIcon}
-        alt="Cup"
+        {...white_cup}
       />
 
       <img
         class="hero-icon block sm:hidden w-full h-full mx-auto"
-        src={LoveIcon}
-        alt="Love"
+        {...white_love_ribbon}
       />
 
       <h1 class="hero-title leading-tight tracking-tight">{title}</h1>

@@ -1,8 +1,4 @@
 ---
-import CupIcon from "@images/cup.svg";
-import BookGreen from "@images/bookGreen.svg";
-import RightArrow from "@images/rightArrow.svg";
-
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
@@ -12,7 +8,10 @@ import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import HeroBackground from "@components/HeroBackground.astro";
 
+import RecurringImages from "@store/RecurringImages";
 import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
+
+const { white_cup, green_book, white_right_arrow } = RecurringImages;
 
 const { page, posts, recurData, headingName } = Astro.props,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
@@ -209,7 +208,7 @@ const recentPosts =
         {
           page.Title && (
             <span class="icon">
-              <img src={CupIcon} alt="cup-icon" class="heading-inline-icon" />
+              <img class="heading-inline-icon" {...white_cup} />
             </span>
           )
         }
@@ -300,7 +299,7 @@ const recentPosts =
         ]}
       >
         <div class="flex items-center">
-          <img class="w-5 h-full mr-4" src={BookGreen} alt="Book" />
+          <img class="w-5 h-full mr-4" {...green_book} />
 
           <div id="sticky-header-heading">{headingName}</div>
         </div>
@@ -465,8 +464,7 @@ const recentPosts =
                     <span class="icon">
                       <img
                         class="recent-post-card-title-icon"
-                        src={RightArrow}
-                        alt="cup-icon"
+                        {...white_right_arrow}
                       />
                     </span>
                   </div>

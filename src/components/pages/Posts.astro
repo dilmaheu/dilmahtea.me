@@ -1,9 +1,4 @@
 ---
-import CupIcon from "@images/cup.svg";
-import CupGreenIcon from "@images/cupGreen.svg";
-import LeafImg from "@images/greenLeaf5.webp";
-import LeafImgRight from "@images/greenLeaf.webp";
-
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
@@ -12,7 +7,10 @@ import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import HeroBackground from "@components/HeroBackground.astro";
 
+import RecurringImages from "@store/RecurringImages";
 import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
+
+const { white_cup, green_cup, left_post_leaf, green_leaf } = RecurringImages;
 
 const { posts } = Astro.props.page,
   [firstPost] = posts,
@@ -119,7 +117,7 @@ const { posts } = Astro.props.page,
         </a>
 
         <span class="icon">
-          <img src={CupIcon} alt="Tea Cup" class="heading-inline-icon" />
+          <img class="heading-inline-icon" {...white_cup} />
         </span>
       </h1>
 
@@ -221,12 +219,11 @@ const { posts } = Astro.props.page,
               />
 
               <img
-                alt="Tea Leaf"
                 class:list={[
                   "post-leaf absolute z-20",
                   isEven ? "post-leaf-left" : "post-leaf-right",
                 ]}
-                src={isEven ? LeafImg : LeafImgRight}
+                {...(isEven ? left_post_leaf : green_leaf)}
               />
 
               {/* <>
@@ -245,12 +242,7 @@ const { posts } = Astro.props.page,
                   />
 
                   <Picture
-                    alt="Tea Leaf"
-                    src={
-                      isEven
-                        ? "/src/images/greenLeaf5.webp"
-                        : "/src/images/greenLeaf.webp"
-                    }
+                    {...(isEven ? left_post_leaf : green_leaf)}
                     attributes={{
                       picture: {
                         class: `post-leaf ${
@@ -298,11 +290,7 @@ const { posts } = Astro.props.page,
                 </a>
 
                 <span class="icon">
-                  <img
-                    class="heading-inline-icon"
-                    src={CupGreenIcon}
-                    alt="cup-icon"
-                  />
+                  <img class="heading-inline-icon" {...green_cup} />
                 </span>
               </h1>
 

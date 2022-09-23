@@ -1,7 +1,8 @@
 ---
-import CupIconG from "@images/cupLightgreen.svg";
-import FlowerIconG from "@images/flowerLightgreen.svg";
+import RecurringImages from "@store/RecurringImages";
 import BasicPageHero from "@components/BasicPageHero.astro";
+
+const { light_green_cup, light_green_flower } = RecurringImages;
 
 const { page, locale } = Astro.props,
   { Perk: perk, Price_EUR_excl_VAT: price } = page,
@@ -68,7 +69,7 @@ const { page, locale } = Astro.props,
         {locale === "nl" ? "Basis gegevens" : "Basic info"}
       </h2>
 
-      <img class="form-heading-icon" src={CupIconG} alt="tea-leaf-icon" />
+      <img class="form-heading-icon" {...light_green_cup} />
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 form-grid">
@@ -130,7 +131,7 @@ const { page, locale } = Astro.props,
         {locale === "nl" ? "Factuurgegevens" : "Billing details"}
       </h3>
 
-      <img class="form-heading-icon" src={FlowerIconG} alt="tea-leaf-icon" />
+      <img class="form-heading-icon" {...light_green_flower} />
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 form-grid">

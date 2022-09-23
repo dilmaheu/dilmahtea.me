@@ -1,16 +1,20 @@
 ---
-import BulbIcon from "@images/bulbLightGreen.svg";
-import ClockWIcon from "@images/clockW.svg";
-import ClockIcon from "@images/clockLightGreen.svg";
-import ArrowDown from "@images/arrowDown.svg";
-import ArrowDownGreen from "@images/arrowDownGreen.svg";
-
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
 import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import RecipesInfoSection from "@components/RecipesInfoSection.astro";
+
+import RecurringImages from "@store/RecurringImages";
+
+const {
+  light_green_bulb,
+  white_clock,
+  light_green_clock,
+  white_down_arrow,
+  green_down_arrow,
+} = RecurringImages;
 
 const { page, recurData } = Astro.props,
   { recipes } = page,
@@ -103,7 +107,7 @@ function totalTimeSm(x, y) {
     <div class="flex flex-wrap recipe-Time-Container">
       <div class="inline-flex items-center gap-2 md:gap-2.5">
         <div class="recipe-Time-Icon h-auto margin-[3px]">
-          <img class="w-full h-full" src={ClockWIcon} alt="clock-icon" />
+          <img class="w-full h-full" {...white_clock} />
         </div>
 
         <div>
@@ -121,7 +125,7 @@ function totalTimeSm(x, y) {
 
       <div class="inline-flex items-center gap-2 md:gap-2.5">
         <div class="recipe-Time-Icon h-auto margin-[3px]">
-          <img class="w-full h-full" src={ClockWIcon} alt="clock-icon" />
+          <img class="w-full h-full" {...white_clock} />
         </div>
 
         <div>
@@ -139,7 +143,7 @@ function totalTimeSm(x, y) {
 
       <div class="inline-flex items-center gap-2 md:gap-2.5">
         <div class="recipe-Time-Icon h-auto margin-[3px]">
-          <img class="w-full h-full" src={ClockWIcon} alt="clock-icon" />
+          <img class="w-full h-full" {...white_clock} />
         </div>
 
         <div>
@@ -167,7 +171,7 @@ function totalTimeSm(x, y) {
           {recurData.recipe_jump_to_recipe}
           <span class="icon relative top-0">
             <span class="relative ml-5 h-5">
-              <img class="w-full h-full" src={ArrowDownGreen} alt="cup-icon" />
+              <img class="w-full h-full" {...green_down_arrow} />
             </span>
           </span>
         </div>
@@ -186,7 +190,7 @@ function totalTimeSm(x, y) {
     {recurData.recipe_jump_to_recipe}
 
     <span class="icon">
-      <img class="h-5" src={ArrowDown} alt="Cup Icon" />
+      <img class="h-5" {...white_down_arrow} />
     </span>
   </a>
 
@@ -201,7 +205,7 @@ function totalTimeSm(x, y) {
     {recurData.recipe_jump_to_recipe}
 
     <span class="icon">
-      <img class="h-5" src={ArrowDown} alt="Cup Icon" />
+      <img class="h-5" {...white_down_arrow} />
     </span>
   </a>
 
@@ -255,7 +259,7 @@ function totalTimeSm(x, y) {
       <div class="flex flex-wrap mt-5 gap-y-5 recipe-sec-time-container">
         <div class="inline-flex gap-2.5 text-dark inline-flex gap-2.5">
           <div class="h-auto m-[3px] recipe-sec-time-icon">
-            <img class="w-full h-full" src={ClockIcon} alt="clock-icon" />
+            <img class="w-full h-full" {...light_green_clock} />
           </div>
 
           <div class="text-dark">
@@ -275,7 +279,7 @@ function totalTimeSm(x, y) {
 
         <div class="inline-flex gap-2.5 text-dark inline-flex gap-2.5">
           <div class="h-auto m-[3px] recipe-sec-time-icon">
-            <img class="w-full h-full" src={ClockIcon} alt="clock-icon" />
+            <img class="w-full h-full" {...light_green_clock} />
           </div>
           <div class="text-dark">
             <div class="text-[10px] md:text-xs leading-3 md:leading-[14px]">
@@ -292,7 +296,7 @@ function totalTimeSm(x, y) {
 
         <div class="inline-flex gap-2.5 text-dark inline-flex gap-2.5">
           <div class="h-auto m-[3px] recipe-sec-time-icon">
-            <img class="w-full h-full" src={ClockIcon} alt="clock-icon" />
+            <img class="w-full h-full" {...light_green_clock} />
           </div>
           <div class="text-dark">
             <div class="text-[10px] md:text-xs leading-3 md:leading-[14px]">
@@ -496,7 +500,7 @@ function totalTimeSm(x, y) {
             <div class="flex flex-wrap items-center gap-2.5">
               <div class="flex items-center gap-2.5 w-full">
                 <div class="w-auto m-[3px] recipe-sec-icon">
-                  <img class="w-full h-full" src={BulbIcon} alt="cook-icon" />
+                  <img class="w-full h-full" {...light_green_bulb} />
                 </div>
 
                 <h3 class="text-2xl font-bold leading-[1.95rem] text-primary">

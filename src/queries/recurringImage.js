@@ -28,7 +28,7 @@ const images = [
   "green_book",
   "light_green_bulb",
   "green_leaf",
-  "right_post_leaf",
+  "left_post_leaf",
 ];
 
 const recurringImageQuery = `

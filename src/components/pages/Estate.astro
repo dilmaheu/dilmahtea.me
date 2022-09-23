@@ -1,7 +1,4 @@
 ---
-import QuoteIcon from "@images/quoteOpen.svg";
-import Love2Icon from "@images/love2Green.svg";
-
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
@@ -11,6 +8,10 @@ import ClippedPicture from "@components/ClippedPicture.astro";
 import HeroBackground from "@components/HeroBackground.astro";
 import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
 import EstatesInfoSection from "@components/EstatesInfoSection.astro";
+
+import RecurringImages from "@store/RecurringImages";
+
+const { left_quote, love_gift } = RecurringImages;
 
 const { page } = Astro.props,
   { posts } = page,
@@ -434,7 +435,7 @@ const { page } = Astro.props,
       <div class="w-full sm:w-2/3 h-full">
         <div class="flex flex-wrap sm:ml-6">
           <div class="estate-quote-icon">
-            <img src={QuoteIcon} class="w-full h-full" />
+            <img class="w-full h-full" {...left_quote} />
           </div>
 
           <div class="prose max-w-none font-bold text-lightgray estate-quote">
@@ -442,7 +443,7 @@ const { page } = Astro.props,
           </div>
 
           <div class="rotate-180 mr-[25px] ml-auto estate-quote-icon">
-            <img src={QuoteIcon} class="w-full h-full" />
+            <img class="w-full h-full" {...left_quote} />
           </div>
         </div>
       </div>
@@ -492,7 +493,7 @@ const { page } = Astro.props,
           page.Block4_items.map((item) => (
             <div class="grid justify-items-center">
               <div class="h-[43px]">
-                <img src={Love2Icon} class="w-full h-full" alt="love-icon" />
+                <img class="w-full h-full" {...love_gift} />
               </div>
               <div class="font-extrabold text-primary estate-impacts-num">
                 {item.Block4_Value}

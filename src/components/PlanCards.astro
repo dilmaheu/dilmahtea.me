@@ -1,7 +1,9 @@
 ---
-import LeafImg from "@images/greenLeaf.webp";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
+import RecurringImages from "@store/RecurringImages";
+
+const { green_leaf } = RecurringImages;
 
 const { allPlans } = Astro.props,
   imgSrcPrefix = Astro.site.origin + `/images/`;
@@ -77,8 +79,7 @@ const { allPlans } = Astro.props,
 <img
   width="120"
   height="115"
-  src={LeafImg}
-  alt="Tea Leaf"
+  {...green_leaf}
   class="plan-section-leaf hidden xl:block -mt-20 -ml-12"
 />
 
@@ -88,12 +89,7 @@ const { allPlans } = Astro.props,
       class="plan-section-leaf hidden xl:inline-block"
       style="margin-top: -80px; margin-left: -48px;"
     >
-      <Picture
-        width={120}
-        height={115}
-        alt="Tea Leaf"
-        src="/src/images/greenLeaf.webp"
-      />
+      <Picture width={120} height={115} {...green_leaf} />
     </div>
   ) */
 }
