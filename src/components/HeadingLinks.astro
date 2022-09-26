@@ -22,8 +22,8 @@ const { type = "desktop" } = Astro.props as Props,
 
     color: colors.$sticky-dropdown-item;
 
-    img {
-      width: clamp(35px, 4.6875vw - 18.75px, 45px);
+    .chapter-top-icon {
+      min-width: clamp(37px, 4.6875vw - 18.75px, 45px);
       margin-right: clamp(10px, 4.6875vw - 43.75px, 20px);
     }
 
@@ -44,7 +44,6 @@ const { type = "desktop" } = Astro.props as Props,
 
       &.active {
         font-weight: 500;
-        color: rgba(43, 75, 80, 0.8);
       }
     }
   }
@@ -55,16 +54,16 @@ const { type = "desktop" } = Astro.props as Props,
     <a
       href={"#" + id}
       class:list={[
+        "text-primary",
         i === 0 && "active",
         type !== "mobile"
-          ? "chapter-link"
-          : "chapter-link-sm flex items-center pt-6 font-normal",
+          ? "chapter-link pt-4 xl:pt-5"
+          : "chapter-link-sm flex items-center pt-2.5 font-normal",
       ]}
     >
-      <img
-        {...green_right_arrow}
-        class:list={["h-full", type === "mobile" && "w-4 h-full mr-[10px]"]}
-      />
+      <div class="chapter-top-icon">
+        <img {...green_right_arrow} />
+      </div>
 
       <Fragment set:text={innerText} />
     </a>

@@ -15,9 +15,24 @@ const { document: contentBlocksDocument } = await parseHTML(contentBlocksHTML),
 ---
 
 <style is:global>
+  .chapter:nth-child(1) .recipe-sec-title{
+    margin-top: 0;
+  }
+</style>
+
+<style lang="scss">
   .recipe-content-img {
     margin-top: 20px;
     max-height: 391px !important;
+  }
+
+  .recipe-info-img-container{
+    width: 100%;
+    max-height: 420px;
+
+    @media (min-width: 640px) {
+      aspect-ratio: 7.3 / 3.9;
+    }
   }
 </style>
 
@@ -30,17 +45,12 @@ const { document: contentBlocksDocument } = await parseHTML(contentBlocksHTML),
 
     return (
       <>
-        <h2
-          class:list={[
-            "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
-            "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
-          ]}
-        >
+        <h2 class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title">
           {titleText}
         </h2>
 
-        <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
-          <div class="prose max-w-none mb-5 recipe-sec-text">
+        <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] mt-[25px]">
+          <div class="prose max-w-none mb-[15px] text-dark recipe-sec-text">
             <Markdown>{textContent}</Markdown>
 
             {/* <OptimizeContentImages>
@@ -49,12 +59,14 @@ const { document: contentBlocksDocument } = await parseHTML(contentBlocksHTML),
           </div>
 
           {imgSrc && (
-            <ClippedImg
-              id="recipe-img-curve"
-              className="recipe-content-img"
-              src={imgSrc}
-              path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-            />
+            <div class="recipe-info-img-container">
+              <ClippedImg
+                id="recipe-img-curve"
+                className="w-full h-full"
+                src={imgSrc}
+                path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+              />
+            </div>
 
             /* <ClippedPicture
               id="recipe-img-curve"

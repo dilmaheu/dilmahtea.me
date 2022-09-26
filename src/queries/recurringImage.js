@@ -26,7 +26,7 @@ const images = [
   "love_gift",
   "left_quote",
   "green_book",
-  "light_green_bulb",
+  "green_bulb",
   "green_leaf",
   "left_post_leaf",
 ];

@@ -25,23 +25,42 @@ const { goalText, supportersText, supportersCount, totalAmountRaised } =
   .progressContent {
     width: clamp(50px, 18vw + 120px, 400px);
   }
+  .progress-content-container{
+    margin: -5% 8% 0 18%;
+
+    @media (max-width: 799.98px) {
+      margin: -5% 14% 0 16%;
+    }
+
+    @media (max-width: 699.98px) {
+      margin: -5% 18% 0 16%;
+    }
+
+    @media (max-width: 669.98px) {
+      margin: -5% 20% 0 15%;
+    }
+
+    @media (max-width: 639.98px) {
+      margin: 0;
+    }
+  }
 </style>
 
 <div
-  class="relative w-full sm:w-auto p-0 mx-auto sm:mx-0 sm:-ml-[60px] 2xl:ml-0"
+  class="relative w-full progress-content-container"
 >
   <div
-    class="progress-header font-bold pt-[clamp(10px,7.5vw-9px,36px)] sm:pt-0"
+    class="progress-header"
   >
-    €<span class="total-amount-raised">{totalAmountRaised}</span>
+    €<span class="font-bold total-amount-raised">{totalAmountRaised}</span>
   </div>
 
-  <div class="flex flex-wrap justify-between gap-x-1.5">
+  <div class="flex flex-wrap items-center justify-between gap-x-1.5 h-auto">
     <div class="progress-text">{goalText}</div>
 
     <div class="progress-text">
       <span
-        class="supporters-count font-medium text-lightgray text-[1.5rem] sm:text-[1.625rem] leading-none"
+        class="supporters-count font-medium text-lightgray text-[1.5rem] md:text-[1.625rem] leading-[26px]"
       >
         {supportersCount}
       </span>

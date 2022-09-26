@@ -9,7 +9,7 @@ import RecipesInfoSection from "@components/RecipesInfoSection.astro";
 import RecurringImages from "@store/RecurringImages";
 
 const {
-  light_green_bulb,
+  green_bulb,
   white_clock,
   light_green_clock,
   white_down_arrow,
@@ -104,13 +104,13 @@ function totalTimeSm(x, y) {
 
 <PostDetailsLayout {page} posts={recipes} {recurData} {headingName}>
   <Fragment slot="recipe-header">
-    <div class="flex flex-wrap recipe-Time-Container">
+    <div class="flex flex-wrap items-center recipe-Time-Container">
       <div class="inline-flex items-center gap-2 md:gap-2.5">
-        <div class="recipe-Time-Icon h-auto margin-[3px]">
+        <div class="recipe-Time-Icon">
           <img class="w-full h-full" {...white_clock} />
         </div>
 
-        <div>
+        <div class="w-auto">
           <div class="recipe-Time-Tag">{recurData.recipe_prep} :</div>
 
           <div class="hidden sm:block font-bold recipe-cooktime">
@@ -124,11 +124,11 @@ function totalTimeSm(x, y) {
       </div>
 
       <div class="inline-flex items-center gap-2 md:gap-2.5">
-        <div class="recipe-Time-Icon h-auto margin-[3px]">
+        <div class="recipe-Time-Icon">
           <img class="w-full h-full" {...white_clock} />
         </div>
 
-        <div>
+        <div class="w-auto">
           <div class="recipe-Time-Tag">{recurData.recipe_cook} :</div>
 
           <div class="hidden sm:block font-bold recipe-cooktime">
@@ -142,11 +142,11 @@ function totalTimeSm(x, y) {
       </div>
 
       <div class="inline-flex items-center gap-2 md:gap-2.5">
-        <div class="recipe-Time-Icon h-auto margin-[3px]">
+        <div class="recipe-Time-Icon">
           <img class="w-full h-full" {...white_clock} />
         </div>
 
-        <div>
+        <div class="w-auto">
           <div class="recipe-Time-Tag">{recurData.recipe_total} :</div>
 
           <div class="hidden sm:block font-bold recipe-cooktime">
@@ -215,12 +215,7 @@ function totalTimeSm(x, y) {
     {
       page.Recipe_variations.data.length > 0 && (
         <>
-          <h2
-            class:list={[
-              "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
-              "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
-            ]}
-          >
+          <h2 class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title">
             {recurData.recipe_similar}
             {page.Title}
           </h2>
@@ -228,7 +223,7 @@ function totalTimeSm(x, y) {
           <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
             <ul class="list-disc list-inside similarRecipies">
               {page.Recipe_variations.data.map(({ attributes }) => (
-                <li class="font-medium text-primary">
+                <li class="font-bold sm:font-semibold text-primary">
                   <a href={attributes.Meta.URL_slug}>{attributes.Title}</a>
                 </li>
               ))}
@@ -239,10 +234,7 @@ function totalTimeSm(x, y) {
     }
 
     <h2
-      class:list={[
-        "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
-        "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
-      ]}
+      class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title"
       id="recipe"
     >
       {page.Title}
@@ -252,60 +244,60 @@ function totalTimeSm(x, y) {
     <div
       class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
     >
-      <div class="prose max-w-none mb-5 recipe-sec-text">
+      <div class="prose max-w-none mb-[15px] leading-[150%] recipe-sec-text">
         <Markdown>{page.Time_text}</Markdown>
       </div>
 
       <div class="flex flex-wrap mt-5 gap-y-5 recipe-sec-time-container">
-        <div class="inline-flex gap-2.5 text-dark inline-flex gap-2.5">
-          <div class="h-auto m-[3px] recipe-sec-time-icon">
+        <div class="inline-flex items-center gap-2.5">
+          <div class="recipe-sec-time-icon">
             <img class="w-full h-full" {...light_green_clock} />
           </div>
 
-          <div class="text-dark">
-            <div class="text-[10px] md:text-xs leading-3 md:leading-[14px]">
+          <div class="w-auto text-dark">
+            <div class="text-[10px] md:text-xs leading-[150%]">
               {recurData.recipe_prep} :
             </div>
 
-            <div class="hidden sm:block text-base font-bold leading-[19px]">
+            <div class="hidden sm:block text-base font-medium leading-[150%]">
               {time(page.Time_preparation)}
             </div>
 
-            <div class="block sm:hidden text-base font-bold leading-[19px]">
+            <div class="block sm:hidden text-base font-medium leading-[150%]">
               {timeSm(page.Time_preparation)}
             </div>
           </div>
         </div>
 
-        <div class="inline-flex gap-2.5 text-dark inline-flex gap-2.5">
-          <div class="h-auto m-[3px] recipe-sec-time-icon">
+        <div class="inline-flex items-center gap-2.5">
+          <div class="recipe-sec-time-icon">
             <img class="w-full h-full" {...light_green_clock} />
           </div>
-          <div class="text-dark">
-            <div class="text-[10px] md:text-xs leading-3 md:leading-[14px]">
+          <div class="w-auto text-dark">
+            <div class="text-[10px] md:text-xs leading-[150%]">
               {recurData.recipe_cook} :
             </div>
-            <div class="hidden sm:block text-base font-bold leading-[19px]">
+            <div class="hidden sm:block text-base font-medium leading-[150%]">
               {time(page.Time_cooking)}
             </div>
-            <div class="block sm:hidden text-base font-bold leading-[19px]">
+            <div class="block sm:hidden text-base font-medium leading-[150%]">
               {timeSm(page.Time_cooking)}
             </div>
           </div>
         </div>
 
-        <div class="inline-flex gap-2.5 text-dark inline-flex gap-2.5">
-          <div class="h-auto m-[3px] recipe-sec-time-icon">
+        <div class="inline-flex items-center gap-2.5">
+          <div class="recipe-sec-time-icon">
             <img class="w-full h-full" {...light_green_clock} />
           </div>
-          <div class="text-dark">
-            <div class="text-[10px] md:text-xs leading-3 md:leading-[14px]">
+          <div class="w-auto text-dark">
+            <div class="text-[10px] md:text-xs leading-[150%]">
               {recurData.recipe_total} :
             </div>
-            <div class="hidden sm:block text-base font-bold leading-[19px]">
+            <div class="hidden sm:block text-base font-medium leading-[150%]">
               {totalTime(page.Time_preparation, page.Time_cooking)}
             </div>
-            <div class="block sm:hidden text-base font-bold leading-[19px]">
+            <div class="block sm:hidden text-base font-medium leading-[150%]">
               {totalTimeSm(page.Time_preparation, page.Time_cooking)}
             </div>
           </div>
@@ -320,21 +312,21 @@ function totalTimeSm(x, y) {
         <div class="w-auto recipe-sec-content-border"></div>
 
         <div class="grid w-full items-center gap-[15px]">
-          <h3 class="font-medium text-primary recipe-sec-content-title">
+          <h3 class="font-bold sm:font-semibold text-primary sm:text-dark2 recipe-sec-content-title">
             {recurData.recipe_nutrition_information}
           </h3>
 
-          <div class="flex gap-2.5 w-full">
-            <div class="text-base font-bold leading-[1.75rem] text-dark">
+          <div class="flex items-center gap-2.5 w-full">
+            <div class="text-xs font-bold leading-[150%] text-dark2">
               {recurData.recipe_yield}:
             </div>
 
-            <div class="text-base font-bold leading-[1.75rem] text-primary">
+            <div class="text-lg font-bold leading-[150%] text-primary">
               {page.Nutrition_yield}
             </div>
           </div>
 
-          <div class="text-xl font-bold leading-[2.188rem] text-primary">
+          <div class="text-base md:text-lg font-bold leading-[150%] text-dark2">
             {recurData.recipe_amount_per_serving}:
           </div>
 
@@ -343,12 +335,12 @@ function totalTimeSm(x, y) {
           >
             {
               page.Nutrition.map((item, idx) => (
-                <div class="flex items-center recipe-sec-nutrition-item">
-                  <div class="text-dark">{item.Nutrition_name}</div>
+                <div class="flex items-center text-base lg:text-lg leading-[150%] text-dark2">
+                  <div>{item.Nutrition_name}</div>
 
-                  <span class="text-dark mr-1">:</span>
+                  <span class="mr-1">:</span>
 
-                  <div class="text-dark">
+                  <div>
                     {item.Nutrition_amount != null
                       ? item.Nutrition_amount
                       : "0"}
@@ -366,13 +358,13 @@ function totalTimeSm(x, y) {
       class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
     >
       <div class="flex flex-wrap justify-between">
-        <h3 class="font-medium text-primary recipe-sec-content-title">
+        <h3 class="font-bold sm:font-semibold text-primary sm:text-dark2 recipe-sec-content-title">
           {recurData.recipe_ingredients}
         </h3>
         <div
           class="inline-grid grid-flow-col items-center relative recipe-sec-servingsize-input-container"
         >
-          <label class="font-bold text-dark recipe-sec-servingsize-text"
+          <label class="text-xs leading-[150%] font-bold text-dark2"
             >{recurData.recipe_serving_size}:</label
           >
           <select
@@ -392,11 +384,11 @@ function totalTimeSm(x, y) {
         </div>
       </div>
 
-      <div class="mt-5 md:mt-[25px] flex gap-2">
+      <div class="mt-5 md:mt-[25px] flex flex-wrap sm:flex-nowrap gap-2">
         {
           page.Cooking_part.map((item, idx) => (
             <div class="w-full sm:w-1/2">
-              <h4 class="font-medium text-dark mb-[15px] recipe-sec-ingridients-content-title">
+              <h4 class="text-base md:text-lg font-bold leading-[150%] text-dark2 mb-[10px] md:mb-[15px]">
                 {item.Cooking_part_name}
               </h4>
 
@@ -408,7 +400,7 @@ function totalTimeSm(x, y) {
                       <span class="recipe-sec-ingridients-checkbox" />
                     </label>
                   </div>
-                  <div class="ml-2.5 text-dark recipe-sec-ingridients-checkbox-text">
+                  <div class="text-base md:text-lg leading-[150%] text-dark2 ml-2.5">
                     {item.Cooking_part_ingredient_amount}
                     {item.Cooking_part_ingredient_measurements_unit}
                     {item.Cooking_part_ingredient_name}
@@ -421,12 +413,7 @@ function totalTimeSm(x, y) {
       </div>
     </div>
 
-    <h2
-      class:list={[
-        "bg-primary py-2 sm:py-[9px] px-[15px] sm:px-5 md:px-[25px] lg:px-[30px]",
-        "rounded-[10px] text-lightgray2 alice text-[2.25rem] leading-[47px]",
-      ]}
-    >
+    <h2 class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title">
       {recurData.recipe_cooking_instructions}
     </h2>
 
@@ -437,7 +424,7 @@ function totalTimeSm(x, y) {
             <div class="flex">
               <div class="w-auto recipe-sec-content-border" />
               <div class="w-full gap-[15px]">
-                <h3 class="font-medium text-primary recipe-sec-content-title">
+                <h3 class="alice leading-[130%] sm:leading-[120%] text-dark2 recipe-sec-coockingpart-title">
                   {item.Cooking_part_name}
                 </h3>
               </div>
@@ -448,22 +435,17 @@ function totalTimeSm(x, y) {
             <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
               <div class="flex gap-[15px]">
                 <div>
-                  <div
-                    class:list={[
-                      "bg-primary flex items-center justify-center font-extrabold rounded-full",
-                      "w-[30px] sm:w-[35px] md:w-[40px] lg:w-[45px] h-[30px] sm:h-[35px] md:h-[40px] lg:h-[45px] recipe-sec-step-num",
-                    ]}
-                  >
+                  <div class="bg-primary flex items-center justify-center font-extrabold rounded-full recipe-sec-step-num",>
                     {idx + 1}
                   </div>
                 </div>
-                <div class="prose max-w-none recipe-sec-text w-auto">
+                <div class="prose max-w-none text-dark2 leading-[150%] recipe-sec-text w-auto">
                   {step.Cooking_part_steps_text}
                 </div>
               </div>
 
               {step.Cooking_part_steps_blob.data && (
-                <div class="recipe-step-img mt-5">
+                <div class="recipe-step-img-container mt-2.5 sm:mt-[15px]">
                   <ClippedImg
                     id="recipe-img-curve"
                     src={
@@ -472,6 +454,7 @@ function totalTimeSm(x, y) {
                         .provider_metadata.public_id +
                       `/small`
                     }
+                    alt={step.Cooking_part_steps_blob.data.attributes.alternativeText}
                     path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
                   />
 
@@ -498,17 +481,17 @@ function totalTimeSm(x, y) {
             }
           >
             <div class="flex flex-wrap items-center gap-2.5">
-              <div class="flex items-center gap-2.5 w-full">
-                <div class="w-auto m-[3px] recipe-sec-icon">
-                  <img class="w-full h-full" {...light_green_bulb} />
+              <div class="flex items-center gap-[15px] sm:gap-5 w-full">
+                <div class="recipe-sec-icon">
+                  <img class="w-full h-full object-contain" {...green_bulb} />
                 </div>
 
-                <h3 class="text-2xl font-bold leading-[1.95rem] text-primary">
+                <h3 class="font-bold leading-[150%] text-primary recipe-sec-tips-title">
                   {recurData.recipe_tips}
                 </h3>
               </div>
 
-              <div class="prose max-w-none recipe-sec-text">
+              <div class="prose max-w-none font-medium sm:font-bold text-primary leading-[150%] recipe-sec-text">
                 {item.Cooking_part_step_tip}
               </div>
             </div>

@@ -21,10 +21,6 @@ const { page } = Astro.props,
 <style lang="scss">
   @use "src/styles/colors";
 
-  .intro-text {
-    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
-  }
-
   .estate-types-selector {
     font-size: clamp(0.75rem, 1.5vw + 0.1rem, 1.25rem);
     border-right: 20px solid transparent;
@@ -54,21 +50,39 @@ const { page } = Astro.props,
     line-height: 150%;
   }
 
-  .estate-title {
-    @apply leading-tight underline decoration-[3px];
+  .post-img-curve-container{
+    width: 100%;
+    max-height: 530px;
 
-    font-size: clamp(1.75rem, 3.6vw + 0.01rem, 3.125rem);
-    margin-top: clamp(1.125rem, 1.5vw + 0.3rem, 1.563rem);
+    @media (min-width: 640px) {
+      aspect-ratio: 5.65 / 5;
+    }
+
   }
 
-  .estate-text {
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem);
-    margin-top: clamp(1.125rem, 1.5vw + 0.3rem, 1.563rem);
+  .post-title {
+    @apply underline decoration-[2.5px] underline-offset-[5px];
+
+    font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
+    list-style: 130%;
+
+    @media (max-width: 767.98px) {
+      letter-spacing: -0.03em;
+    }
+
   }
 
+  .post-intro {
+    @apply line-clamp-3 sm:line-clamp-4 md:line-clamp-5 lg:line-clamp-6;
+
+    font-size: clamp(1rem, 1.5vw + 0.15rem, 1.5rem);
+    line-height: 150%;
+  }
+  
   .estate-quote {
+    @apply leading-[175%] sm:leading-[150%];
+
     font-size: clamp(1rem, 1.5vw + 0.3rem, 1.5rem);
-    line-height: 175%;
     padding: 13px clamp(2.188rem, 3.3vw + 0.8rem, 3.75rem) 0;
   }
 
@@ -90,7 +104,7 @@ const { page } = Astro.props,
   }
 
   .estate-impacts-text {
-    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
+    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
   }
 </style>
 
@@ -104,30 +118,26 @@ const { page } = Astro.props,
   <div class="wrapper hero-text-container h-full relative z-30">
     <div
       role="banner"
-      class="sm:w-8/12 md:w-7/12 pt-0 pt-[34px] sm:pt-1.5 md:pt-[45px]"
+      class="flex flex-wrap items-center sm:w-7/12 h-full"
     >
-      <h1 class="hero-title pt-4 sm:pt-2.5 md:pt-5 leading-[1.2]">
-        {page.Title}
-      </h1>
+      <div class="mt-[30px] sm:mt-4 lg:mt-0">
+        <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
+          {page.Title}
+        </h1>
 
-      <a
-        href="#"
-        class:list={[
-          "intro-text block prose text-lightgray line-clamp-5 max-w-none",
-          "pt-4 sm:pt-3 md:pt-4 leading-[1.4] sm:leading-[1.2] md:leading-normal",
-        ]}
-      >
-        <Markdown>{page.Intro_text}</Markdown>
-      </a>
+        <div class="hero-text pt-2.5 block prose text-lightgray max-w-none">
+          <Markdown>{page.Intro_text}</Markdown>
+        </div>
 
-      <div class="flex">
-        <a href="#estates">
-          <div
-            class="bg-white rounded-[40px] text-base font-bold leading-[19px] text-primary py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9"
-          >
-            Explore Tea States
-          </div>
-        </a>
+        <div class="flex">
+          <a href="#estates">
+            <div
+              class="bg-white rounded-[40px] text-base font-bold leading-[19px] text-primary py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9"
+            >
+              Explore Tea States
+            </div>
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -140,6 +150,7 @@ const { page } = Astro.props,
       src={imgSrcPrefix +
         page.Intro_blob.data.attributes.provider_metadata.public_id +
         `/small`}
+      alt={page.Intro_blob.data.attributes.alternativeText}
       path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
     />
 
@@ -161,12 +172,13 @@ const { page } = Astro.props,
 </section>
 
 {/* Blob Image - Mobile View */}
-<div class="block sm:hidden relative -mt-20 z-20 w-full">
+<div class="hero-img-sm-container block sm:hidden relative -mt-20 z-20 w-full">
   <ClippedImg
     id="hero-img-curve-sm"
     src={imgSrcPrefix +
       page.Intro_blob.data.attributes.provider_metadata.public_id +
       `/small`}
+    alt={page.Intro_blob.data.attributes.alternativeText}
     path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
   />
 
@@ -250,100 +262,104 @@ const { page } = Astro.props,
     </div>
   </div>
 
-  <ClipPathSVG
-    id="estate-img-curve"
-    path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-  />
+
 
   {/* All Estates Section */}
-  <section
-    id="estates"
-    class="flex flex-wrap items-center gap-y-20 py-20 py-[50px] lg:py-[75px]"
-  >
-    {
-      posts.map((estate, index) => {
-        const isEven = index % 2 === 0;
+  <section id="estates">
+    <ClipPathSVG
+      id="estate-img-curve"
+      path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+    />
 
-        return (
-          <div class="flex flex-wrap items-center">
-            <div
-              class:list={[
-                "relative w-full sm:w-1/2 order-1 mb-4 sm:mb-0",
-                isEven
-                  ? "pr-0 sm:pr-5 md:pr-12 lg:pr-24"
-                  : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
-              ]}
-            >
-              <a href={`/` + estate.Meta.URL_slug}>
-                <img
-                  src={
-                    imgSrcPrefix +
-                    estate.Intro_blob.data.attributes.provider_metadata
-                      .public_id +
-                    `/small`
-                  }
-                  class="w-full h-full"
-                  style="clip-path: url(#estate-img-curve);"
-                />
+    <div class="flex flex-wrap items-center gap-y-20 py-20 py-[50px] lg:py-[75px]">
+      {
+        posts.map((estate, index) => {
+          const isEven = index % 2 === 0;
 
-                {/* <Picture
-                    alt=""
-                    src={
-                      imgSrcPrefix +
-                      estate.Intro_blob.data.attributes.provider_metadata
-                        .public_id +
-                      `/small`
-                    }
-                    attributes={{
-                      picture: { style: "clip-path: url(#estate-img-curve);" },
-                    }}
-                  /> */}
-              </a>
-            </div>
+          return (
+            <div class="flex flex-wrap items-center">
+              <div
+                class:list={[
+                  "relative w-full sm:w-1/2 order-1 mb-4 sm:mb-0",
+                  isEven
+                    ? "pr-0 sm:pr-5 md:pr-12 lg:pr-24"
+                    : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
+                ]}
+              >
+                <a href={`/` + estate.Meta.URL_slug}>
+                  <div class="post-img-curve-container">
+                    <img
+                      src={
+                        imgSrcPrefix +
+                        estate.Intro_blob.data.attributes.provider_metadata
+                          .public_id +
+                        `/small`
+                      }
+                      alt={estate.Intro_blob.data.attributes.alternativeText}
+                      class="w-full h-full"
+                      style="clip-path: url(#estate-img-curve);"
+                    />
+                  </div>
 
-            {/* Text content */}
-            <div
-              class:list={[
-                "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
-                isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
-              ]}
-            >
-              <div>
-                <ul class="flex flex-wrap items-center gap-y-1 gap-x-2.5 md:gap-x-[15px]">
-                  <li class="text-black estate-category-item">
-                    <a
-                      href=""
-                      class="bg-white1 text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
-                    >
-                      Green Tea
-                    </a>
-                  </li>
-                  <li class="text-black estate-category-item">
-                    <a
-                      href=""
-                      class="bg-white1 text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
-                    >
-                      Sustainable
-                    </a>
-                  </li>
-                </ul>
-
-                <h1 class="estate-title alice text-primary">
-                  <a href={`/` + estate.Meta.URL_slug}>{estate.Estate_name}</a>
-                </h1>
-
-                <a
-                  href={`/` + estate.Meta.URL_slug}
-                  class="estate-text block prose max-w-none pt-5 text-dark leading-normal line-clamp-5"
-                >
-                  <Markdown>{estate.Intro_text}</Markdown>
+                  {/* <Picture
+                      alt=""
+                      src={
+                        imgSrcPrefix +
+                        estate.Intro_blob.data.attributes.provider_metadata
+                          .public_id +
+                        `/small`
+                      }
+                      attributes={{
+                        picture: { style: "clip-path: url(#estate-img-curve);" },
+                      }}
+                    /> */}
                 </a>
               </div>
+
+              {/* Text content */}
+              <div
+                class:list={[
+                  "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
+                  isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
+                ]}
+              >
+                <div>
+                  {/*<ul class="flex flex-wrap items-center gap-y-1 gap-x-2.5 md:gap-x-[15px] md:pb-[5px] lg:pb-2.5">
+                    <li class="text-black estate-category-item">
+                      <a
+                        href=""
+                        class="bg-white1 text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
+                      >
+                        Green Tea
+                      </a>
+                    </li>
+                    <li class="text-black estate-category-item">
+                      <a
+                        href=""
+                        class="bg-white1 text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
+                      >
+                        Sustainable
+                      </a>
+                    </li>
+                  </ul>*/}
+
+                  <h1 class="post-title alice text-primary pt-[15px]">
+                    <a href={`/` + estate.Meta.URL_slug}>{estate.Estate_name}</a>
+                  </h1>
+
+                  <a
+                    href={`/` + estate.Meta.URL_slug}
+                    class="post-intro texr-dark block pt-[15px] prose max-w-none"
+                  >
+                    <Markdown>{estate.Intro_text}</Markdown>
+                  </a>
+                </div>
+              </div>
             </div>
-          </div>
-        );
-      })
-    }
+          );
+        })
+      }
+    </div>
   </section>
 
   <div
@@ -359,7 +375,7 @@ const { page } = Astro.props,
       >
         <path
           d="M43.1,29.2C92.7-.4,176.9,2.2,283.1.8,460.9-1.6,563.9,2.4,741.7.8c124.6-1.1,193.1,0,261.4,9.9,52,7.5,80.6,101.2,76.5,161.1-3.6,54.5,8.6,129.9-58.1,139-62.8,8.5-208.4,11.3-271.7,16.5-119.6,10-248.7-2-358.1,0-99,1.9-223,26.9-333.6-16.5C-.1,287.9-1.3,230.2.4,171.8,2,116-7.6,59.5,43.1,29.2Z"
-          style="fill:#284f4f"></path>
+          style="fill:#2b4b50"></path>
       </svg>
 
       <!-- Background Mobile view -->
@@ -371,7 +387,7 @@ const { page } = Astro.props,
       >
         <path
           d="M299.5,22.1c28.9,25.4,26.3,68.6,27.7,123.1,2.4,91.2-1.5,144.1,0,235.2,1.1,64,0,99.1-9.6,134.2-7.3,26.6-98.8,41.3-157.2,39.2-53.2-1.9-126.7,4.4-135.6-29.8C16.5,491.8,13.7,417.1,8.6,384.6-1,323.2,10.7,257.1,8.6,201,6.8,150.2-17.6,86.5,24.8,29.8,47.1-.1,103.4-.6,160.4.2,214.8,1,269.9-3.9,299.5,22.1Z"
-          style="fill:#284f4f"></path>
+          style="fill:#2b4b50"></path>
       </svg>
     </div>
     <div class="flex flex-wrap gap-y-6 items-center relative z-20">
@@ -495,10 +511,10 @@ const { page } = Astro.props,
               <div class="h-[43px]">
                 <img class="w-full h-full" {...love_gift} />
               </div>
-              <div class="font-extrabold text-primary estate-impacts-num">
+              <div class="alice font-extrabold leading-[110%] md:leading-[115%] text-primary estate-impacts-num">
                 {item.Block4_Value}
               </div>
-              <div class="text-dark text-center estate-impacts-text">
+              <div class="text-dark text-center leading-[150%] estate-impacts-text">
                 {item.Block4_description}
               </div>
             </div>

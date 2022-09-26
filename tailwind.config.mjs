@@ -9,6 +9,7 @@ export default {
     extend: {
       colors: {
         dark: "#474747",
+        dark2: "#2f2f2f",
         primary: "#2b4b50",
         lightgray: "#e3dfde",
         lightgray2: "#faf4f2",
@@ -19,9 +20,11 @@ export default {
       typography: () => ({
         DEFAULT: {
           css: {
-            "--tw-prose-headings": "#2b4b50",
-            "--tw-prose-links": "#2b4b50",
-            "--tw-prose-bullets": "#2b4b50",
+            "--tw-prose-body": "#474747",
+            "--tw-prose-headings": "#474747",
+            "--tw-prose-links": "#474747",
+            "--tw-prose-bullets": "#474747",
+            "--tw-prose-counters": "#474747",
           },
         },
       }),

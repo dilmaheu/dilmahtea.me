@@ -12,17 +12,23 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
   titles = [...infoBlocksDocument.querySelectorAll("h2")];
 ---
 
-<style>
-  .info-block-title {
-    @apply leading-tight underline decoration-[3px];
+<style lang="scss">
+  .info-block-image-container{
+    width: 100%;
+    max-height: 530px;
 
-    font-size: clamp(1.75rem, 3.6vw + 0.01rem, 3.125rem);
-    margin-top: clamp(1.125rem, 1.5vw + 0.3rem, 1.563rem);
+    @media (min-width: 640px) {
+      aspect-ratio: 5.65 / 5;
+    }
+  }
+
+  .info-block-title {
+    font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
   }
 
   .info-block-text {
     font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem);
-    margin-top: clamp(1.125rem, 1.5vw + 0.3rem, 1.563rem);
+    line-height: 150%;
   }
 </style>
 
@@ -47,7 +53,14 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
                 : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
             ]}
           >
-            <img src={imgSrc} style="clip-path: url(#estate-img-curve);" />
+            <div class="info-block-image-container">
+              <img 
+                class="w-full h-full"
+                src={imgSrc} 
+                alt="estate-image"
+                style="clip-path: url(#estate-img-curve);" 
+              />
+            </div>
 
             {/* <Picture
                 alt=""
@@ -67,9 +80,9 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
               isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
             ]}
           >
-            <h2 class="info-block-title alice text-primary">{titleText}</h2>
+            <h2 class="info-block-title alice leading-[115% sm:leading-[120%] text-dark2">{titleText}</h2>
 
-            <div class="info-block-text block prose max-w-none pt-5 text-dark leading-normal line-clamp-5">
+            <div class="info-block-text texr-dark block pt-[15px] prose max-w-none">
               <Markdown>{textContent}</Markdown>
             </div>
           </div>
