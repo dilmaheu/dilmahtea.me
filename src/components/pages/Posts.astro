@@ -20,63 +20,53 @@ const { posts } = Astro.props.page,
 <style lang="scss">
   @use "src/styles/colors";
 
-  .hero-post-author {
-    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
-  }
-
   .hero-title,
   .post-title {
-    @apply leading-[1.2] underline decoration-[3px];
-  }
-
-  .hero-text {
-    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
-  }
-
-  .post-publish-date {
-    font-size: clamp(0.625rem, 1.5vw + 0.01rem, 0.75rem);
-  }
-
-  .post-author {
-    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
+    @apply underline decoration-[2.5px] underline-offset-[5px];
   }
 
   .post-title {
-    font-size: clamp(1.75rem, 3.6vw + 0.01rem, 3.125rem);
+    font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
+    list-style: 130%;
+
+    @media (max-width: 767.98px) {
+      letter-spacing: -0.03em;
+    }
+
   }
 
   .post-intro {
-    color: colors.$post-intro;
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem);
+    @apply line-clamp-3 sm:line-clamp-4 md:line-clamp-5 lg:line-clamp-6;
+
+    font-size: clamp(1rem, 1.5vw + 0.15rem, 1.5rem);
+    line-height: 150%;
+  }
+
+  .post-img-curve-container{
+    width: 100%;
+    max-height: 530px;
+
+    @media (min-width: 640px) {
+      aspect-ratio: 5.65 / 5;
+    }
+
   }
 
   .post-leaf {
-    height: clamp(55px, 8vw + 1px, 117px);
     filter: drop-shadow(0px 8px 9px rgba(0, 0, 0, 0.5));
   }
 
   .post-leaf-left {
-    @apply -top-4 left-[7px];
-
-    @media (min-width: 476px) {
-      @apply left-[3%];
-    }
-
-    & {
-      @apply sm:-top-[9%] sm:left-[3.5%] lg:-top-[11%] lg:left-0 xl:-top-[46px] xl:left-[26px];
-    }
+    @apply -top-[6.5%] left-[3%] sm:-left-[1%] w-[24%] h-auto;
   }
 
   .post-leaf-right {
-    @apply -left-5 bottom-[7%];
+    @apply sm:right-0 bottom-[7%] w-[18%] h-auto;
 
-    @media (min-width: 476px) {
-      @apply left-0 bottom-0;
+    @media (max-width: 639.98px) {
+      @apply -left-[5%] bottom-[6%];
     }
 
-    & {
-      @apply sm:left-[2%] md:left-[5%] lg:left-[68px] xl:left-[76px];
-    }
   }
 </style>
 
@@ -90,46 +80,45 @@ const { posts } = Astro.props.page,
   <div class="wrapper hero-text-container h-full relative z-30">
     <div
       role="banner"
-      class="hero-text-content sm:w-8/12 md:w-7/12 pt-8 sm:pt-5 md:pt-0"
+      class="flex flex-wrap items-center sm:w-8/12 md:w-7/12 h-full"
     >
-      {
-        firstPost.authors && (
-          <div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
-            <div class="hero-post-author flex flex-wrap font-bold text-lightgray leading-normal">
-              {firstPost.authors.data.map(({ attributes }, i) => (
-                <a href="#">{`${i > 0 ? ", " : " "}` + attributes.givenName}</a>
-              ))}
-            </div>
+      <div class="mt-[30px] sm:mt-4 lg:mt-0">
+        {
+          firstPost.authors && (
+            <div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
+              <div class="post-author flex flex-wrap font-bold text-lightgray">
+                {firstPost.authors.data.map(({ attributes }, i) => (
+                  <a href="#">{`${i > 0 ? ", " : " "}` + attributes.givenName}</a>
+                ))}
+              </div>
 
-            <div class="post-publish-date leading-normal">
-              {new Date(firstPost.createdAt).toLocaleString("en-US", {
-                day: "numeric",
-                month: "long",
-              })}
+              <div class="post-publish-date">
+                {new Date(firstPost.createdAt).toLocaleString("en-US", {
+                  day: "numeric",
+                  month: "long",
+                })}
+              </div>
             </div>
-          </div>
-        )
-      }
+          )
+        }
 
-      <h1 class="hero-title pt-[10px] md:pt-5">
-        <a href={`/` + firstPost.Meta.URL_slug}
-          >{firstPost.Title || firstPost.Estate_name}
+        <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
+          <a href={`/` + firstPost.Meta.URL_slug} >
+            {firstPost.Title}
+          </a>
+
+          <span class="icon heading-inline-icon">
+            <img class="w-full h-full" {...white_cup} />
+          </span>
+        </h1>
+
+        <a
+          href={`/` + firstPost.Meta.URL_slug}
+          class="hero-text pt-2.5 block prose text-lightgray max-w-none"
+        >
+          <Markdown>{firstPost.Intro_text}</Markdown>
         </a>
-
-        <span class="icon">
-          <img class="heading-inline-icon" {...white_cup} />
-        </span>
-      </h1>
-
-      <a
-        href={`/` + firstPost.Meta.URL_slug}
-        class:list={[
-          "hero-text block prose text-lightgray max-w-none",
-          "pt-4 sm:pt-3 md:pt-4 leading-[1.4] sm:leading-[1.2] md:leading-normal",
-        ]}
-      >
-        <Markdown>{firstPost.Intro_text}</Markdown>
-      </a>
+      </div>
     </div>
   </div>
 
@@ -141,6 +130,7 @@ const { posts } = Astro.props.page,
       src={imgSrcPrefix +
         firstPost.Intro_blob.data.attributes.provider_metadata.public_id +
         `/small`}
+      alt={firstPost.Intro_blob.data.attributes.alternativeText}
       path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
     />
 
@@ -168,6 +158,7 @@ const { posts } = Astro.props.page,
     src={imgSrcPrefix +
       firstPost.Intro_blob.data.attributes.provider_metadata.public_id +
       `/small`}
+    alt={firstPost.Intro_blob.data.attributes.alternativeText}
     path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
   />
 
@@ -187,123 +178,135 @@ const { posts } = Astro.props.page,
 </div>
 
 {/* All Posts Section */}
-<section class="wrapper flex flex-wrap items-center gap-y-20 py-20">
+<section class="wrapper">
   <ClipPathSVG
     id="post-img-curve"
     path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
   />
 
-  {
-    posts.slice(1).map((post, index) => {
-      const isEven = index % 2 === 0;
+  <div class="flex flex-wrap items-center gap-y-[50px] py-[50px]">
+    {
+      posts.slice(1).map((post, index) => {
+        const isEven = index % 2 === 0;
 
-      return (
-        <div class="flex flex-wrap items-center">
-          <div
-            class:list={[
-              "relative w-full sm:w-1/2 order-1 mb-4 sm:mb-0",
-              isEven
-                ? "pr-0 sm:pr-5 md:pr-12 lg:pr-24"
-                : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
-            ]}
-          >
-            <a href={`/` + post.Meta.URL_slug}>
-              <img
-                src={
-                  imgSrcPrefix +
-                  post.Intro_blob.data.attributes.provider_metadata.public_id +
-                  `/small`
-                }
-                class="w-full h-full"
-                style="clip-path: url(#post-img-curve);"
-              />
-
-              <img
-                class:list={[
-                  "post-leaf absolute z-20",
-                  isEven ? "post-leaf-left" : "post-leaf-right",
-                ]}
-                {...(isEven ? left_post_leaf : green_leaf)}
-              />
-
-              {/* <>
-                  <Picture
-                    alt=""
-                    layout="fill"
+        return (
+          <div class="flex flex-wrap items-center">
+            <div
+              class:list={[
+                "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
+                isEven
+                  ? "pr-0 sm:pr-5 md:pr-12 lg:pr-24"
+                  : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
+              ]}
+            >
+              <a href={`/` + post.Meta.URL_slug}>
+                <div class="post-img-curve-container">
+                  <img
                     src={
                       imgSrcPrefix +
-                      post.Intro_blob.data.attributes.provider_metadata
-                        .public_id +
+                      post.Intro_blob.data.attributes.provider_metadata.public_id +
                       `/small`
                     }
-                    attributes={{
-                      picture: { style: "clip-path: url(#post-img-curve);" },
-                    }}
+                    alt={post.Intro_blob.data.attributes.alternativeText}
+                    class="w-full h-full object-cover"
+                    style="clip-path: url(#post-img-curve);"
                   />
-
-                  <Picture
-                    {...(isEven ? left_post_leaf : green_leaf)}
-                    attributes={{
-                      picture: {
-                        class: `post-leaf ${
-                          isEven ? "post-leaf-left" : "post-leaf-right"
-                        }`,
-                        style:
-                          "position: absolute; z-index: 20; clip-path: url(#post-img-curve);",
-                      },
-                    }}
-                  />
-                </> */}
-            </a>
-          </div>
-
-          {/* Text content */}
-          <div
-            class:list={[
-              "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
-              isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
-            ]}
-          >
-            <div>
-              {post.authors && (
-                <div>
-                  <div class="post-author flex flex-wrap font-bold text-primary leading-normal">
-                    {post.authors.data.map(({ attributes }, i) => (
-                      <a href="#">
-                        {`${i > 0 ? ", " : " "}` + attributes.givenName}
-                      </a>
-                    ))}
-                  </div>
-
-                  <div class="post-publish-date text-black leading-normal">
-                    {new Date(post.createdAt).toLocaleString("en-US", {
-                      day: "numeric",
-                      month: "long",
-                    })}
-                  </div>
                 </div>
-              )}
 
-              <h1 class="post-title alice text-dark pt-[5px] md:pt-2 lg:pt-[11px]">
-                <a href={`/` + post.Meta.URL_slug}>
-                  {post.Title || post.Estate_name}
-                </a>
+                <div 
+                  class:list={[
+                    "post-leaf absolute z-20",
+                    isEven ? "post-leaf-left" : "post-leaf-right",
+                  ]}
+                >
+                  <img
+                    class="w-full h-full"
+                    {...(isEven ? left_post_leaf : green_leaf)}
+                  />
+                </div>
 
-                <span class="icon">
-                  <img class="heading-inline-icon" {...green_cup} />
-                </span>
-              </h1>
+                {/* <>
+                    <Picture
+                      alt=""
+                      layout="fill"
+                      src={
+                        imgSrcPrefix +
+                        post.Intro_blob.data.attributes.provider_metadata
+                          .public_id +
+                        `/small`
+                      }
+                      attributes={{
+                        picture: { style: "clip-path: url(#post-img-curve);" },
+                      }}
+                    />
 
-              <a
-                href={`/` + post.Meta.URL_slug}
-                class="post-intro block pt-5 leading-normal prose max-w-none"
-              >
-                <Markdown>{post.Intro_text}</Markdown>
+                    <Picture
+                      {...(isEven ? left_post_leaf : green_leaf)}
+                      attributes={{
+                        picture: {
+                          class: `post-leaf ${
+                            isEven ? "post-leaf-left" : "post-leaf-right"
+                          }`,
+                          style:
+                            "position: absolute; z-index: 20; clip-path: url(#post-img-curve);",
+                        },
+                      }}
+                    />
+                  </> */}
               </a>
             </div>
+
+            {/* Text content */}
+            <div
+              class:list={[
+                "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
+                isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
+              ]}
+            >
+              <div>
+                {post.authors && (
+                  <div>
+                    <div class="post-author flex flex-wrap font-bold text-primary">
+                      {post.authors.data.map(({ attributes }, i) => (
+                        <a href="#">
+                          {`${i > 0 ? ", " : " "}` + attributes.givenName}
+                        </a>
+                      ))}
+                    </div>
+
+                    <div class="post-publish-date text-dark">
+                      {new Date(post.createdAt).toLocaleString("en-US", {
+                        day: "numeric",
+                        month: "long",
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                <h1 class="post-title alice text-primary pt-[15px]">
+                  <a href={`/` + post.Meta.URL_slug}>
+                    {post.Title || post.Estate_name}
+                  </a>
+
+                  <span class="icon heading-inline-icon">
+                    <img
+                      class="w-full h-full"
+                      {...green_cup}
+                    />
+                  </span>
+                </h1>
+
+                <a
+                  href={`/` + post.Meta.URL_slug}
+                  class="post-intro texr-dark block pt-[15px] prose max-w-none"
+                >
+                  <Markdown>{post.Intro_text}</Markdown>
+                </a>
+              </div>
+            </div>
           </div>
-        </div>
-      );
-    })
-  }
+        );
+      })
+    }
+  </div>
 </section>
