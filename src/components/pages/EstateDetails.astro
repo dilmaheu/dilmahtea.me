@@ -6,18 +6,27 @@ import ClippedPicture from "@components/ClippedPicture.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 const { page, recurData } = Astro.props,
-  { estates } = page,
   headingName = recurData.text_chapter,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 ---
 
-<style>
+<style lang="scss">
   .map-title {
     font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
   }
+
+  .map-img-container{
+    width: 100%;
+    max-height: 530px;
+
+    @media (min-width: 640px) {
+      aspect-ratio: 5 / 3;
+    }
+
+  }
 </style>
 
-<PostDetailsLayout {page} posts={estates} {recurData} {headingName}>
+<PostDetailsLayout {page} {recurData} {headingName}>
   <div slot="post-details" class="prose content-text">
     <Chapterize>
       <Markdown>{page.Block_text}</Markdown>
@@ -35,10 +44,10 @@ const { page, recurData } = Astro.props,
     </h2>
 
     <a href={page.Location_link} class="block w-full">
-      <div class="hidden sm:block h-[375px]">
+      <div class="hidden sm:block map-img-container">
         <ClippedImg
           id="estate-map-curve"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-fit"
           src={imgSrcPrefix +
             page.Location.data.attributes.provider_metadata.public_id +
             `/public`}

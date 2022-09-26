@@ -11,11 +11,13 @@ import EstatesInfoSection from "@components/EstatesInfoSection.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
-const { left_quote, love_gift } = RecurringImages;
+const { left_quote, love_gift, white_right_arrow } = RecurringImages;
 
-const { page } = Astro.props,
+const { page, recurData } = Astro.props,
   { posts } = page,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+
+const blogs = page.blogs.data.map(({ attributes }) => attributes);
 ---
 
 <style lang="scss">
@@ -79,6 +81,23 @@ const { page } = Astro.props,
     line-height: 150%;
   }
   
+  .estate-quote-container, .estate-impact-container{
+    clip-path: url(#quote-bg-curve);
+
+    @media (max-width: 639.98px) {
+      clip-path: url(#quote-bg-curve-sm);
+    }
+  }
+
+  .quote-img-container{
+    max-height: 330px;
+
+    @media (min-width: 640px) {
+      aspect-ratio: 4.56 / 3.13;
+    }
+
+  }
+
   .estate-quote {
     @apply leading-[175%] sm:leading-[150%];
 
@@ -106,6 +125,43 @@ const { page } = Astro.props,
   .estate-impacts-text {
     font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
   }
+
+  .recent-posts-title {
+    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
+    margin-bottom: clamp(0.938rem, 2vw + 0.08rem, 2.5rem);
+  }
+
+  .recent-post-card {
+    @apply w-full max-w-[380px] sm:max-w-none;
+  }
+
+  .recent-post-card-content-container {
+    padding: clamp(20px, 6.4vw, 40px) clamp(24px, 3.8vw + 11.75px, 36px);
+
+    @media (min-width: 640px) {
+      padding: clamp(30px, 7.8125vw - 20px, 60px)
+        clamp(28px, 4.6875vw - 2px, 46px);
+    }
+
+    @media (min-width: 1024px) {
+      padding: clamp(30px, 8vw - 51.75px, 60px) clamp(28px, 4.8vw - 21px, 46px);
+    }
+  }
+
+  .recent-post-card-author {
+    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem);
+    line-height: 150%;
+  }
+
+  .recent-post-card-title {
+    @apply leading-[130%] sm:leading-[120%];
+
+    font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
+  }
+
+  .recent-post-card-title-icon {
+    height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
+  }
 </style>
 
 <!-- Hero Section -->
@@ -130,11 +186,11 @@ const { page } = Astro.props,
         </div>
 
         <div class="flex">
-          <a href="#estates">
+          <a href={page.Heading_button_link}>
             <div
               class="bg-white rounded-[40px] text-base font-bold leading-[19px] text-primary py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9"
             >
-              Explore Tea States
+              {page.Heading_button_text}
             </div>
           </a>
         </div>
@@ -197,7 +253,7 @@ const { page } = Astro.props,
   }
 </div>
 
-<!-- Recipe Details Section -->
+<!-- Home Estate Details Section -->
 
 <div class="wrapper py-[50px]" role="main">
   <div class="flex flex-wrap justify-between items-center gap-y-[15px]">
@@ -362,92 +418,34 @@ const { page } = Astro.props,
     </div>
   </section>
 
-  <div
-    class="py-[35px] px-[23px] sm:px-[30px] md:px-10 lg:px-[50px] my-[55px] sm:my-[90px] lg:my-[110px] relative"
-  >
-    <div class="absolute h-full w-full z-10 top-0 left-0">
-      <!-- Background Desktop view -->
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="none"
-        viewBox="0 0 1080 336.2"
-        class="hidden sm:block h-full w-full"
-      >
-        <path
-          d="M43.1,29.2C92.7-.4,176.9,2.2,283.1.8,460.9-1.6,563.9,2.4,741.7.8c124.6-1.1,193.1,0,261.4,9.9,52,7.5,80.6,101.2,76.5,161.1-3.6,54.5,8.6,129.9-58.1,139-62.8,8.5-208.4,11.3-271.7,16.5-119.6,10-248.7-2-358.1,0-99,1.9-223,26.9-333.6-16.5C-.1,287.9-1.3,230.2.4,171.8,2,116-7.6,59.5,43.1,29.2Z"
-          style="fill:#2b4b50"></path>
-      </svg>
+  
+  <ClipPathSVG
+    id="quote-bg-curve"
+    path="M0.04,0.087 C0.086,-0.001,0.164,0.007,0.262,0.002 C0.427,-0.005,0.522,0.007,0.687,0.002 c0.115,-0.003,0.179,0,0.242,0.029 c0.048,0.022,0.075,0.301,0.071,0.479 c-0.003,0.162,0.008,0.386,-0.054,0.413 c-0.058,0.025,-0.193,0.034,-0.252,0.049 c-0.111,0.03,-0.23,-0.006,-0.332,0 c-0.092,0.006,-0.206,0.08,-0.309,-0.049 C0,0.856,-0.001,0.685,0,0.511 C0.002,0.345,-0.007,0.177,0.04,0.087"
+  />
 
-      <!-- Background Mobile view -->
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="none"
-        viewBox="0 0 328 554"
-        class="block sm:hidden h-full w-full"
-      >
-        <path
-          d="M299.5,22.1c28.9,25.4,26.3,68.6,27.7,123.1,2.4,91.2-1.5,144.1,0,235.2,1.1,64,0,99.1-9.6,134.2-7.3,26.6-98.8,41.3-157.2,39.2-53.2-1.9-126.7,4.4-135.6-29.8C16.5,491.8,13.7,417.1,8.6,384.6-1,323.2,10.7,257.1,8.6,201,6.8,150.2-17.6,86.5,24.8,29.8,47.1-.1,103.4-.6,160.4.2,214.8,1,269.9-3.9,299.5,22.1Z"
-          style="fill:#2b4b50"></path>
-      </svg>
-    </div>
+  <ClipPathSVG
+    id="quote-bg-curve-sm"
+    path="M0.913,0.04 c0.088,0.046,0.08,0.124,0.084,0.222 c0.007,0.165,-0.005,0.26,0,0.425 c0.003,0.116,0,0.179,-0.029,0.242 c-0.022,0.048,-0.301,0.075,-0.479,0.071 c-0.162,-0.003,-0.386,0.008,-0.413,-0.054 C0.05,0.888,0.042,0.753,0.026,0.694 C-0.003,0.583,0.033,0.464,0.026,0.363 C0.021,0.271,-0.054,0.156,0.076,0.054 C0.144,0,0.315,-0.001,0.489,0 C0.655,0.002,0.823,-0.007,0.913,0.04"
+  />
+
+  <div class="bg-primary w-full h-full py-[35px] px-[23px] sm:px-[30px] md:px-10 lg:px-[50px] estate-quote-container" >
     <div class="flex flex-wrap gap-y-6 items-center relative z-20">
-      <div class="w-full sm:w-1/3">
-        <!-- Image Desktop view -->
 
-        <div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="none"
-            viewBox="0 0 456 313"
-            class="hidden sm:block h-full"
-          >
-            <defs>
-              <clipPath id="teaEstateSecQuoteImgFrame">
-                <path
-                  d="M235.5,2.4C164,2.4,45.8-2.5,18.1,25.7S.9,154.9,7.7,230.5,82.9,313,240.9,313c129.8,0,170.4-19.9,203.4-88.5,14-29.2,21.4-100.9-13.1-184.5C408.8-14.1,335,2.4,235.5,2.4Z"
-                ></path>
-              </clipPath>
-            </defs>
-            <image
-              class="w-auto h-full"
-              height="100%"
-              width="100%"
-              href={imgSrcPrefix +
-                page.Block2_blob.data.attributes.provider_metadata.public_id +
-                `/small`}
-              clip-path="url(#teaEstateSecQuoteImgFrame)"
-            />
-          </svg>
-
-          <!-- Image Mobile view -->
-
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 912 499"
-            class="block sm:hidden"
-          >
-            <defs>
-              <clipPath id="teaEstateSecQuoteImgFrameSm">
-                <path
-                  d="M470.9,3.8C328.1,3.8,91.7-4.1,36.3,41S1.9,247,15.5,367.5,165.7,499,481.7,499c259.7,0,340.9-31.7,406.9-141.1,28-46.5,42.8-160.9-26.2-294.1C817.6-22.6,669.9,3.8,470.9,3.8Z"
-                ></path>
-              </clipPath>
-            </defs>
-            <image
-              class="w-full h-auto"
-              height="100%"
-              width="100%"
-              href={imgSrcPrefix +
-                page.Block2_blob.data.attributes.provider_metadata.public_id +
-                `/small`}
-              clip-path="url(#teaEstateSecQuoteImgFrameSm)"
-            />
-          </svg>
-        </div>
+      <!-- Quote Image -->
+      <div class="w-full sm:w-1/3 quote-img-container">
+        <ClippedImg
+          id="quote-img-curve"
+          className="relative object-cover"
+          src={imgSrcPrefix +
+            page.Block2_blob.data.attributes.provider_metadata.public_id +
+            `/small`}
+          alt={page.Block2_blob.data.attributes.alternativeText}
+          path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 S0.002,0.495,0.017,0.736 S0.182,1,0.528,1 c0.285,0,0.374,-0.064,0.446,-0.283 c0.031,-0.093,0.047,-0.322,-0.029,-0.59 C0.896,-0.045,0.735,0.008,0.516,0.008"
+        />
       </div>
 
       <!-- Text content -->
-
       <div class="w-full sm:w-2/3 h-full">
         <div class="flex flex-wrap sm:ml-6">
           <div class="estate-quote-icon">
@@ -468,35 +466,7 @@ const { page } = Astro.props,
 
   <EstatesInfoSection page={page} />
 
-  <div
-    class="py-[35px] px-[23px] sm:px-[30px] md:px-10 lg:px-[50px] my-[55px] sm:my-[90px] lg:my-[110px] relative"
-  >
-    <div class="absolute h-full w-full z-10 top-0 left-0">
-      <!-- Background Desktop view -->
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="none"
-        viewBox="0 0 1080 336.2"
-        class="hidden sm:block h-full w-full"
-      >
-        <path
-          d="M43.1,29.2C92.7-.4,176.9,2.2,283.1.8,460.9-1.6,563.9,2.4,741.7.8c124.6-1.1,193.1,0,261.4,9.9,52,7.5,80.6,101.2,76.5,161.1-3.6,54.5,8.6,129.9-58.1,139-62.8,8.5-208.4,11.3-271.7,16.5-119.6,10-248.7-2-358.1,0-99,1.9-223,26.9-333.6-16.5C-.1,287.9-1.3,230.2.4,171.8,2,116-7.6,59.5,43.1,29.2Z"
-          style="fill:#faf4f2"></path>
-      </svg>
-
-      <!-- Background Mobile view -->
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="none"
-        viewBox="0 0 328 554"
-        class="block sm:hidden h-full w-full"
-      >
-        <path
-          d="M299.5,22.1c28.9,25.4,26.3,68.6,27.7,123.1,2.4,91.2-1.5,144.1,0,235.2,1.1,64,0,99.1-9.6,134.2-7.3,26.6-98.8,41.3-157.2,39.2-53.2-1.9-126.7,4.4-135.6-29.8C16.5,491.8,13.7,417.1,8.6,384.6-1,323.2,10.7,257.1,8.6,201,6.8,150.2-17.6,86.5,24.8,29.8,47.1-.1,103.4-.6,160.4.2,214.8,1,269.9-3.9,299.5,22.1Z"
-          style="fill:#faf4f2"></path>
-      </svg>
-    </div>
-
+  <div class="bg-lightgray2 py-[35px] px-[23px] sm:px-[30px] md:px-10 lg:px-[50px] lg:mb-[25px] estate-impact-container">
     <div class="flex flex-wrap items-center relative z-20 gap-y-[25px]">
       <div class="w-full font-medium text-dark text-center estate-impact-title">
         {page.Block4_heading}
@@ -524,3 +494,112 @@ const { page } = Astro.props,
     </div>
   </div>
 </div>
+
+{
+  blogs.length > 0 && (
+    <section class="wrapper">
+      <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
+        {recurData.text_explore_the_world_of_kindness}
+      </h2>
+
+      <ClipPathSVG
+        id="recent-post-card-curve"
+        path="M.99 1H.005C-.005.636-.003.266.042.141.102-.024.358.005.513.005c.216 0 .411-.061.459.255C1 .557.995.795.99 1"
+      />
+
+      <div
+        role="list"
+        aria-label="Kindness Items"
+        class:list={[
+          "w-full mx-auto mb-14 grid sm:grid-cols-2 lg:grid-cols-3",
+          "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
+        ]}
+      >
+        {blogs.slice(0, 3).map((post) => (
+          <div
+            role="listitem"
+            class="recent-post-card"
+            aria-label="Kindness Item"
+          >
+            <div class="relative">
+              <svg
+                viewBox="0 0 423.3 559.8"
+                preserveAspectRatio="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M419.2 306.4c-1.2 40.4 0 72.6 0 93.6 0 176.6-12.5 158-197.8 158S2.1 587.1 2.1 410c0-58.7.1-86 .3-97.5-.1-1.2-.2-3.1-.3-6.1v-.3C-2.2 194.8-1.3 81.5 17.9 43.2 43.3-7.3 151.7 1.5 217.2 1.5c91.3 0 173.8-18.8 194.3 78.1 19.3 91 9.6 163.8 7.7 226.8Z"
+                  fill="#2B4B50"
+                />
+              </svg>
+
+              <div class="absolute inset-0 z-30">
+                <a class="block w-full" href={`/` + post.Meta.URL_slug}>
+                  <img
+                    src={
+                      imgSrcPrefix +
+                      post.Intro_blob.data.attributes.provider_metadata
+                        .public_id +
+                      `/small`
+                    }
+                    alt={post.Intro_blob.data.attributes.alternativeText}
+                    class="w-full h-full"
+                    style="clip-path: url(#recent-post-card-curve);"
+                  />
+
+                  {/* <Picture
+                      alt=""
+                      layout="fill"
+                      src={
+                        imgSrcPrefix +
+                        post.Intro_blob.data.attributes.provider_metadata
+                          .public_id +
+                        `/small`
+                      }
+                      attributes={{
+                        picture: {
+                          style: "clip-path: url(#recent-post-card-curve);",
+                        },
+                      }}
+                    /> */}
+                </a>
+
+                <div class="recent-post-card-content-container">
+                  <div>
+                    <div class="recent-post-card-author flex flex-wrap font-bold">
+                      {post.authors.data.map(({ attributes }, index) => (
+                        <a href="#">
+                          {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                        </a>
+                      ))}
+                    </div>
+
+                    <div class="post-publish-date">
+                      {new Date(post.createdAt).toLocaleString("en-US", {
+                        day: "numeric",
+                        month: "long",
+                      })}
+                    </div>
+                  </div>
+
+                  <div class="recent-post-card-title alice mt-[15px]">
+                    <a href={`/` + post.Meta.URL_slug}>
+                      {post.Title}
+                    </a>
+
+                    <span class="icon recent-post-card-title-icon">
+                      <img
+                        class="recent-post-card-title-icon"
+                        {...white_right_arrow}
+                      />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
