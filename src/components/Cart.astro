@@ -81,7 +81,7 @@ const addedProducts = [
         <div class="flex justify-between items-center">
           <h3 class="cart-heading alice">Cart</h3>
 
-          <button>
+          <button onclick="closeCart()">
             <Icon name="heroicons-solid:x" class="w-14" />
           </button>
         </div>
@@ -159,3 +159,25 @@ const addedProducts = [
     </div>
   </div>
 </div>
+
+<script>
+  const cart = document.getElementById("cart");
+
+  let currentBodyPosition;
+
+  // @ts-ignore
+  window.openCart = () => {
+    currentBodyPosition = document.body.style.position;
+
+    document.body.style.position = "fixed";
+
+    cart.classList.toggle("hidden");
+  };
+
+  // @ts-ignore
+  window.closeCart = () => {
+    document.body.style.position = currentBodyPosition;
+
+    cart.classList.toggle("hidden");
+  };
+</script>
