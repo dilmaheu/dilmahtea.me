@@ -1,6 +1,7 @@
 ---
 import "@styles/styles.scss";
 
+import Cart from "@components/Cart.astro";
 import Navbar from "@components/Navbar.astro";
 import Footer from "@components/Footer.astro";
 import MainHead from "@components/MainHead.astro";
@@ -96,18 +97,18 @@ const { Type: notificationType, localizedNotifications } =
       }
     </script>
 
-    <div>
-      <Navbar
-        docLocale={locale}
-        footerText={footerText}
-        availableLocales={availableLocales}
-      />
+    <Navbar
+      docLocale={locale}
+      footerText={footerText}
+      availableLocales={availableLocales}
+    />
 
-      <main>
-        <slot />
-      </main>
+    <main>
+      <slot />
+    </main>
 
-      <Footer footerText={footerText} />
-    </div>
+    <Footer footerText={footerText} />
+
+    <Cart />
   </LocalizeLinks>
 </html>
