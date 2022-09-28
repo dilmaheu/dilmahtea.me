@@ -1,7 +1,9 @@
 ---
+import Icon from "astro-icon";
 import RecurringImages from "@store/RecurringImages";
-import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
 import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { logo } = RecurringImages;
 
@@ -69,7 +71,7 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
       }
     </nav>
 
-    <div class="flex items-center">
+    <div class="flex gap-4 items-center">
       <div class="flex items-center">
         <LangSelectorsDropdown
           docLocale={docLocale}
@@ -77,7 +79,35 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
         />
       </div>
 
-      <button onclick="openCart()">Cart</button>
+      <button
+        onclick="openCart()"
+        class="relative scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]"
+      >
+        <ClipPathSVG
+          id="cart-btn-curve"
+          path="M0.5,0 A0.5,0.5,0,0,0,0,0.5 a0.5,0.5,0,0,0,0.5,0.5 a0.5,0.5,0,0,0,0.5,-0.5 a0.5,0.5,0,0,0,-0.021,-0.146 a0.25,0.25,0,0,1,-0.104,0.021 A0.25,0.25,0,0,1,0.625,0.125 a0.25,0.25,0,0,1,0.021,-0.104 a0.5,0.5,0,0,0,-0.146,-0.021"
+        />
+
+        <div
+          style="clip-path: url(#cart-btn-curve);"
+          class="w-12 h-12 text-primary flex justify-center items-center bg-lightgray rounded-full"
+        >
+          <Icon name="mi:shopping-cart" class="w-[30px] h-[30px] mx-auto" />
+        </div>
+
+        <div
+          class:list={[
+            "w-6 h-6 absolute -top-1.5 -right-1.5",
+            "flex justify-center items-center rounded-full",
+          ]}
+        >
+          <div
+            class="w-5 h-5 text-white flex justify-center items-center rounded-full bg-red-600"
+          >
+            <span>2</span>
+          </div>
+        </div>
+      </button>
 
       <div class="block md:hidden w-[38px] h-[38px] ml-[18px]">
         <button
