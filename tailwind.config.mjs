@@ -13,7 +13,7 @@ export default {
         primary: "#2b4b50",
         lightgray: "#e3dfde",
         lightgray2: "#faf4f2",
-        lightgreen: "#b3cccc",
+        lightgreen: "#b2cccc",
         white1: "#f0eeee",
         white2: "#faf4f2",
       },
