@@ -17,7 +17,6 @@ const {
 } = RecurringImages;
 
 const { page, recurData } = Astro.props,
-  { recipes } = page,
   headingName = recurData.text_chapter,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 
@@ -102,7 +101,7 @@ function totalTimeSm(x, y) {
 }
 ---
 
-<PostDetailsLayout {page} posts={recipes} {recurData} {headingName}>
+<PostDetailsLayout {page} {recurData} {headingName}>
   <Fragment slot="recipe-header">
     <div class="flex flex-wrap items-center recipe-Time-Container">
       <div class="inline-flex items-center gap-2 md:gap-2.5">

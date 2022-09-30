@@ -43,6 +43,7 @@ const recurringElementQuery = `
           recipe_cooking_instructions
           recipe_tips
           recipe_discover
+          estate_location
           localizations {
             data {
               attributes {
@@ -85,6 +86,7 @@ const recurringElementQuery = `
                 recipe_cooking_instructions
                 recipe_tips
                 recipe_discover
+                estate_location
               }
             }
           }
