@@ -22,10 +22,6 @@ const addedProducts = [
 ---
 
 <style lang="scss">
-  #cart {
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-
   .cart-content-container {
     @apply w-[375px] sm:w-[528.96px];
   }
@@ -70,115 +66,123 @@ const addedProducts = [
 <div
   id="cart"
   onclick="event.target === this && closeCart()"
-  class="hidden fixed z-[1000] flex justify-end w-screen h-screen top-0 bottom-0"
+  class="hidden fixed z-[1000] flex justify-end w-full h-full top-0 left-0"
 >
-  <div
-    class="cart-content-container min-h-screen overflow-y-auto text-dark bg-lightgray"
-  >
+  <div class="w-full max-w-[2050px] mx-auto bg-[rgba(0,0,0,0.5)]">
     <div
-      class="cart-content p-6 sm:py-9 sm:px-14 flex flex-col justify-between gap-2.5"
+      class="cart-content-container ml-auto overflow-y-auto text-dark bg-lightgray"
     >
-      <div class="flex flex-col gap-5">
-        <div class="flex justify-between items-center">
-          <h3 class="cart-heading alice">Cart</h3>
+      <div
+        class="cart-content min-h-screen p-6 sm:py-9 sm:px-14 flex flex-col justify-between gap-2.5"
+      >
+        <div class="flex flex-col gap-5">
+          <div class="flex justify-between items-center">
+            <h3 class="cart-heading alice">Cart</h3>
 
-          <button onclick="closeCart()">
-            <Icon name="heroicons-solid:x" class="w-14" />
-          </button>
-        </div>
+            <button onclick="closeCart()">
+              <Icon name="heroicons-solid:x" class="w-14" />
+            </button>
+          </div>
 
-        <div class="border border-solid border-lightgreen"></div>
+          <div class="border border-solid border-lightgreen"></div>
 
-        {
-          addedProducts.map(({ name, image, quantity, price, size }) => (
-            <div class="p-4 gap-3.5 flex justify-between items-center bg-lightgray2 rounded-[10px]">
-              {/* <img width={100} height={100} src={image} alt={name} /> */}
+          {
+            addedProducts.map(({ name, image, quantity, price, size }) => (
+              <div class="p-4 gap-3.5 flex justify-between items-center bg-lightgray2 rounded-[10px]">
+                {/* <img width={100} height={100} src={image} alt={name} /> */}
 
-              <div
-                class="flex"
-                style="min-width: 100px; width: 100px; height: 100px;"
-              >
-                <ClippedImg
-                  id="cart-product-image"
-                  src={productImageSrc}
-                  path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
-                />
-              </div>
-
-              <div class="cart-product-details flex flex-col gap-1">
-                <div class="flex justify-between items-center gap-1.5">
-                  <h6 class="alice cart-product-name">{name}</h6>
-
-                  <button>
-                    <Icon name="akar-icons:trash-can" class="w-6 h-6" />
-                  </button>
+                <div
+                  class="flex"
+                  style="min-width: 100px; width: 100px; height: 100px;"
+                >
+                  <ClippedImg
+                    id="cart-product-image"
+                    src={productImageSrc}
+                    path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
+                  />
                 </div>
 
-                <div class="cart-product-size">Size: {size}gm</div>
+                <div class="cart-product-details flex flex-col gap-1">
+                  <div class="flex justify-between items-center gap-1.5">
+                    <h6 class="alice cart-product-name">{name}</h6>
 
-                <div class="flex justify-between items-center gap-1.5">
-                  <div
-                    class:list={[
-                      "flex items-center py-1.5 px-2.5 gap-2.5",
-                      "bg-primary text-lightgray rounded-[9999px]",
-                    ]}
-                  >
-                    <Icon name="akar-icons:minus" class="w-5 h-5" />
-
-                    <span class="font-medium">{quantity}</span>
-
-                    <Icon name="akar-icons:plus" class="w-5 h-5" />
+                    <button>
+                      <Icon name="akar-icons:trash-can" class="w-6 h-6" />
+                    </button>
                   </div>
 
-                  <span class="cart-product-price alice">${price}</span>
+                  <div class="cart-product-size">Size: {size}gm</div>
+
+                  <div class="flex justify-between items-center gap-1.5">
+                    <div
+                      class:list={[
+                        "flex items-center py-1.5 px-2.5 gap-2.5",
+                        "bg-primary text-lightgray rounded-[9999px]",
+                      ]}
+                    >
+                      <Icon name="akar-icons:minus" class="w-5 h-5" />
+
+                      <span class="font-medium">{quantity}</span>
+
+                      <Icon name="akar-icons:plus" class="w-5 h-5" />
+                    </div>
+
+                    <span class="cart-product-price alice">${price}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
-        }
-      </div>
-
-      <div class="flex flex-col gap-5">
-        <div>
-          <div class="flex justify-between items-center">
-            <span class="subtotal-text font-medium">Subtotal</span>
-
-            <span class="subtotal-amount alice">$1000</span>
-          </div>
-
-          <div class="shipping-charge-info">
-            *Shipping Calculated at Checkout
-          </div>
+            ))
+          }
         </div>
 
-        <button
-          class="capitalize py-4 font-bold bg-primary text-lightgray rounded-[9999px]"
-        >
-          Proceed to Checkout
-        </button>
+        <div class="flex flex-col gap-5">
+          <div>
+            <div class="flex justify-between items-center">
+              <span class="subtotal-text font-medium">Subtotal</span>
+
+              <span class="subtotal-amount alice">$1000</span>
+            </div>
+
+            <div class="shipping-charge-info">
+              *Shipping Calculated at Checkout
+            </div>
+          </div>
+
+          <button
+            class="capitalize py-4 font-bold bg-primary text-lightgray rounded-[9999px]"
+          >
+            Proceed to Checkout
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  const cart = document.getElementById("cart");
+  // disableScrolling & enableScrolling are defined in Navbar.astro
 
-  let currentBodyPosition;
+  declare global {
+    interface Window {
+      enableScrolling: () => void;
+      disableScrolling: () => void;
+    }
+  }
+
+  const cart = document.getElementById("cart"),
+    sidebar = document.getElementById("sidebar");
 
   // @ts-ignore
   window.openCart = () => {
-    currentBodyPosition = document.body.style.position;
-
-    document.body.style.position = "fixed";
+    window.disableScrolling();
 
     cart.classList.toggle("hidden");
   };
 
   // @ts-ignore
   window.closeCart = () => {
-    document.body.style.position = currentBodyPosition;
-
     cart.classList.toggle("hidden");
+
+    sidebar.style.display === "none" && window.enableScrolling();
   };
 </script>

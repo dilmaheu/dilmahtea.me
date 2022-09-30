@@ -200,14 +200,24 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 </script>
 
 <script>
+  // disableScrolling & enableScrolling are declared globally to use in cart toggling logic
+
+  declare global {
+    interface Window {
+      enableScrolling: () => void;
+      disableScrolling: () => void;
+    }
+  }
+
   const query = document.querySelector.bind(document),
     rootElement = query(":root"),
+    cart = query("#cart"),
     sidebar = query("#sidebar"),
     navigation = query("#navigation"),
     sidebarOpenButton = query("#sidebar-open-btn"),
     sidebarCloseButton = query("#sidebar-close-btn");
 
-  function disableScrolling() {
+  window.disableScrolling = () => {
     const overflowY =
       visualViewport.height < document.body.offsetHeight ? "scroll" : "auto";
 
@@ -217,9 +227,9 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
       position: "fixed",
       top: `-${window.scrollY}px`,
     });
-  }
+  };
 
-  function enableScrolling() {
+  window.enableScrolling = () => {
     const scrollYPosition = parseInt(document.body.style.top.slice(1, -2));
 
     Object.assign(document.body.style, {
@@ -246,7 +256,7 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 
       rootElement.style.scrollBehavior = currentRootScrollBehavior;
     }
-  }
+  };
 
   const updateSidebarTopPosition = () => {
     sidebar.style.top = `${navigation.getBoundingClientRect().bottom}px`;
@@ -264,7 +274,7 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     sidebarCloseButton.style.display = "block";
     navigation.style.backgroundImage = "url(/bg-images/nav-background.webp)";
 
-    disableScrolling();
+    window.disableScrolling();
 
     window.addEventListener("resize", updateSidebarTopPosition);
   });
@@ -275,16 +285,18 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     sidebarCloseButton.style.display = "none";
     navigation.style.backgroundImage = "unset";
 
-    enableScrolling();
+    window.enableScrolling();
   });
 
   window.addEventListener("resize", () => {
     if (window.innerWidth > 639) {
-      enableScrolling();
+      // enable scrolling only if cart is not open
+      cart.classList.contains("hidden") && window.enableScrolling();
 
       window.removeEventListener("resize", updateSidebarTopPosition);
-    } else if (sidebarCloseButton.style.display === "block") {
-      disableScrolling();
+    } else if (sidebar.style.display === "block") {
+      // @ts-ignore
+      window.disableScrolling();
 
       window.addEventListener("resize", updateSidebarTopPosition);
     }
