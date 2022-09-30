@@ -9,6 +9,8 @@ const homeEstateQuery = `
                 locale
                 Title
                 Intro_text
+                Heading_button_text
+                Heading_button_link
                 Intro_blob {
                   data {
                     attributes {
@@ -38,6 +40,33 @@ const homeEstateQuery = `
                   Block4_Value
                   Block4_description
                 }
+                blogs {
+                  data{
+                    attributes{
+                      Title
+                      Intro_blob{
+                        data{
+                          attributes{
+                            url
+                            provider_metadata
+                            alternativeText
+                          }
+                        }
+                      }
+                      authors{
+                        data{
+                          attributes{
+                            givenName
+                          }
+                        }
+                      }
+                      createdAt
+                      Meta{
+                        URL_slug
+                      }
+                    }
+                  }
+                }
                 Meta {
                   HTML_Title
                   Meta_description
@@ -52,6 +81,8 @@ const homeEstateQuery = `
           locale
           Title
           Intro_text
+          Heading_button_text
+          Heading_button_link
           Intro_blob {
             data {
               attributes {
@@ -80,6 +111,33 @@ const homeEstateQuery = `
           Block4_items{
             Block4_Value
             Block4_description
+          }
+          blogs {
+            data{
+              attributes{
+                Title
+                Intro_blob{
+                  data{
+                    attributes{
+                      url
+                      provider_metadata
+                      alternativeText
+                    }
+                  }
+                }
+                authors{
+                  data{
+                    attributes{
+                      givenName
+                    }
+                  }
+                }
+                createdAt
+                Meta{
+                  URL_slug
+                }
+              }
+            }
           }
           Meta {
             HTML_Title

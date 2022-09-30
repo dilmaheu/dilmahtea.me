@@ -134,12 +134,10 @@ export async function getStaticPaths() {
 
   const recipeDetailsPages = getPages(recipes, (page, { locale }) => ({
     type: "recipeDetails",
-    recipes: locale && getPosts(recipes, locale),
   }));
 
   const estateDetailsPages = getPages(estates, (page, { locale }) => ({
     type: "estateDetails",
-    estates: locale && getPosts(estates, locale),
   }));
 
   const blogPages = getPages(homeBlog, (page, { locale }) => ({
@@ -250,7 +248,7 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
           ) : page.type === `recipeDetails` ? (
             <RecipeDetails page={page} recurData={recurData} />
           ) : page.type === `estate` ? (
-            <Estate page={page} />
+            <Estate page={page} recurData={recurData} />
           ) : page.type === `estateDetails` ? (
             <EstateDetails page={page} recurData={recurData} />
           ) : (

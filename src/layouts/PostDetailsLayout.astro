@@ -18,6 +18,7 @@ const { page, posts, recurData, headingName } = Astro.props,
 
 // display relevant recipes instead of recent posts for RecipeDetails pages
 const recentPosts =
+  page.blogs?.data?.map(({ attributes }) => attributes) ||
   page.Relevant_recipes?.data?.map(({ attributes }) => attributes) ||
   posts.filter(({ Meta }) => Meta.URL_slug !== page.Meta.URL_slug);
 ---
@@ -358,8 +359,8 @@ const recentPosts =
 {
   recentPosts.length > 0 && (
     <section class="wrapper">
-      <h2 class="recent-posts-title alice leading-[110%] text-dark">
-        {recurData.text_explore_the_world_of_kindness}
+      <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
+        {page.Relevant_recipes != null ? recurData.recipe_discover : recurData.text_explore_the_world_of_kindness}
       </h2>
 
       <ClipPathSVG
@@ -425,7 +426,7 @@ const recentPosts =
                 </a>
 
                 <div class="recent-post-card-content-container">
-                  {page.authors && (
+                  {post.authors && (
                     <div>
                       <div class="recent-post-card-author flex flex-wrap font-bold">
                         {post.authors.data.map(({ attributes }, index) => (
