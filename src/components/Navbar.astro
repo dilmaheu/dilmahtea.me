@@ -213,6 +213,7 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     rootElement = query(":root"),
     cart = query("#cart"),
     sidebar = query("#sidebar"),
+    checkout = query("#checkout"),
     navigation = query("#navigation"),
     sidebarOpenButton = query("#sidebar-open-btn"),
     sidebarCloseButton = query("#sidebar-close-btn");
@@ -290,8 +291,10 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 
   window.addEventListener("resize", () => {
     if (window.innerWidth > 639) {
-      // enable scrolling only if cart is not open
-      cart.classList.contains("hidden") && window.enableScrolling();
+      // enable scrolling only if cart and checkout is not open
+      cart.classList.contains("hidden") &&
+        checkout.classList.contains("hidden") &&
+        window.enableScrolling();
 
       window.removeEventListener("resize", updateSidebarTopPosition);
     } else if (sidebar.style.display === "block") {
