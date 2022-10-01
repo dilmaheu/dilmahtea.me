@@ -80,7 +80,6 @@ const recentPosts =
 
   .recent-posts-title {
     font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
-    margin-bottom: clamp(0.938rem, 2vw + 0.08rem, 2.5rem);
   }
 
   .recent-post-card {
@@ -209,6 +208,9 @@ const recentPosts =
 
         {/* Recipe Header */}
         <slot name="recipe-header" />
+
+        {/* tea-details header section */}
+        <slot name="tea-details-header" />
       </div>
     </div>
   </div>
@@ -314,6 +316,9 @@ const recentPosts =
 
         {/* Jump to Recipe Small Button */}
         <slot name="jump-to-recipe-sm" />
+
+        {/* Add cart */}
+        <slot name="product-add-cart-sm" />
       </div>
     </div>
 
@@ -349,12 +354,19 @@ const recentPosts =
           {/* html source to extract heading links from */}
           <slot name="post-details" />
         </HeadingLinks>
+
+        {/* Add cart */}
+        <slot name="product-add-cart-sm" />
       </div>
     </div>
   </div>
 </section>
 
+{/* estate map */}
 <slot name="estate-map" />
+
+{/* product kindness impact  */}
+<slot name="product-kindness-impact" />
 
 {
   recentPosts.length > 0 && (
@@ -365,99 +377,84 @@ const recentPosts =
 
       <ClipPathSVG
         id="recent-post-card-curve"
-        path="M.99 1H.005C-.005.636-.003.266.042.141.102-.024.358.005.513.005c.216 0 .411-.061.459.255C1 .557.995.795.99 1"
+        path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
       />
 
       <div
         role="list"
         aria-label="Kindness Items"
         class:list={[
-          "w-full mx-auto mb-14 grid sm:grid-cols-2 lg:grid-cols-3",
+          "w-full mx-auto mb-[50px] grid sm:grid-cols-2 lg:grid-cols-3",
           "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
         ]}
       >
         {recentPosts.slice(0, 3).map((post) => (
           <div
+            class="bg-primary recent-post-card"
             role="listitem"
-            class="recent-post-card"
             aria-label="Kindness Item"
+            style="clip-path: url(#recent-post-card-curve)"
           >
-            <div class="relative">
-              <svg
-                viewBox="0 0 423.3 559.8"
-                preserveAspectRatio="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M419.2 306.4c-1.2 40.4 0 72.6 0 93.6 0 176.6-12.5 158-197.8 158S2.1 587.1 2.1 410c0-58.7.1-86 .3-97.5-.1-1.2-.2-3.1-.3-6.1v-.3C-2.2 194.8-1.3 81.5 17.9 43.2 43.3-7.3 151.7 1.5 217.2 1.5c91.3 0 173.8-18.8 194.3 78.1 19.3 91 9.6 163.8 7.7 226.8Z"
-                  fill="#2B4B50"
-                />
-              </svg>
+            <a class="block w-full" href={`/` + post.Meta.URL_slug}>
+              <img
+                src={
+                  imgSrcPrefix +
+                  post.Intro_blob.data.attributes.provider_metadata
+                    .public_id +
+                  `/small`
+                }
+                alt={post.Intro_blob.data.attributes.alternativeText}
+                class="w-full h-full"
+              />
 
-              <div class="absolute inset-0 z-30">
-                <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-                  <img
-                    src={
-                      imgSrcPrefix +
-                      post.Intro_blob.data.attributes.provider_metadata
-                        .public_id +
-                      `/small`
-                    }
-                    alt={post.Intro_blob.data.attributes.alternativeText}
-                    class="w-full h-full"
-                    style="clip-path: url(#recent-post-card-curve);"
-                  />
+              {/* <Picture
+                  alt=""
+                  layout="fill"
+                  src={
+                    imgSrcPrefix +
+                    post.Intro_blob.data.attributes.provider_metadata
+                      .public_id +
+                    `/small`
+                  }
+                  attributes={{
+                    picture: {
+                      style: "clip-path: url(#recent-post-card-curve);",
+                    },
+                  }}
+                /> */}
+            </a>
 
-                  {/* <Picture
-                      alt=""
-                      layout="fill"
-                      src={
-                        imgSrcPrefix +
-                        post.Intro_blob.data.attributes.provider_metadata
-                          .public_id +
-                        `/small`
-                      }
-                      attributes={{
-                        picture: {
-                          style: "clip-path: url(#recent-post-card-curve);",
-                        },
-                      }}
-                    /> */}
-                </a>
+            <div class="recent-post-card-content-container">
+              {post.authors && (
+                <div>
+                  <div class="recent-post-card-author flex flex-wrap font-bold">
+                    {post.authors.data.map(({ attributes }, index) => (
+                      <a href="#">
+                        {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                      </a>
+                    ))}
+                  </div>
 
-                <div class="recent-post-card-content-container">
-                  {post.authors && (
-                    <div>
-                      <div class="recent-post-card-author flex flex-wrap font-bold">
-                        {post.authors.data.map(({ attributes }, index) => (
-                          <a href="#">
-                            {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                          </a>
-                        ))}
-                      </div>
-
-                      <div class="post-publish-date">
-                        {new Date(post.createdAt).toLocaleString("en-US", {
-                          day: "numeric",
-                          month: "long",
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  <div class="recent-post-card-title alice mt-[15px]">
-                    <a href={`/` + post.Meta.URL_slug}>
-                      {post.Title || post.Estate_name}
-                    </a>
-
-                    <span class="icon recent-post-card-title-icon">
-                      <img
-                        class="recent-post-card-title-icon"
-                        {...white_right_arrow}
-                      />
-                    </span>
+                  <div class="post-publish-date">
+                    {new Date(post.createdAt).toLocaleString("en-US", {
+                      day: "numeric",
+                      month: "long",
+                    })}
                   </div>
                 </div>
+              )}
+
+              <div class="recent-post-card-title alice mt-[15px]">
+                <a href={`/` + post.Meta.URL_slug}>
+                  {post.Title}
+                </a>
+
+                <span class="icon recent-post-card-title-icon">
+                  <img
+                    class="recent-post-card-title-icon"
+                    {...white_right_arrow}
+                  />
+                </span>
               </div>
             </div>
           </div>
