@@ -151,6 +151,7 @@ const addedProducts = [
           </div>
 
           <button
+            onclick="proceedToCheckout()"
             class="capitalize py-4 font-bold bg-primary text-lightgray rounded-[9999px]"
           >
             Proceed to Checkout
@@ -170,11 +171,15 @@ const addedProducts = [
       closeCart: () => void;
       enableScrolling: () => void;
       disableScrolling: () => void;
+      proceedToCheckout: () => void;
     }
   }
 
-  const cart = document.getElementById("cart"),
-    sidebar = document.getElementById("sidebar"),
+  const id = document.getElementById.bind(document),
+    cart = id("cart"),
+    sidebar = id("sidebar"),
+    checkout = id("checkout"),
+    checkoutContactInfo = id("checkout-contact-info"),
     { overflowY: prevBodyOverflowYValue } = document.body.style;
 
   window.openCart = () => {
@@ -194,5 +199,15 @@ const addedProducts = [
 
     document.body.style.overflowY =
       sidebar.offsetWidth > 0 ? "scroll" : prevBodyOverflowYValue;
+  };
+
+  window.proceedToCheckout = () => {
+    cart.classList.toggle("hidden");
+    checkout.classList.toggle("hidden");
+    checkoutContactInfo.classList.toggle("hidden");
+
+    window.disableScrolling();
+
+    document.body.style.overflowY = "hidden";
   };
 </script>

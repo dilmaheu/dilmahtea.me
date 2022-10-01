@@ -29,10 +29,6 @@ const products = [
 <style lang="scss">
   @use "poly-fluid-sizing" as *;
 
-  :global(body) {
-    position: fixed;
-  }
-
   .checkout-flow-container {
     @include poly-fluid-sizing(
       "padding",
@@ -130,7 +126,8 @@ const products = [
 </style>
 
 <div
-  class="fixed top-0 left-0 z-[1000] w-full h-full bg-lightgray overflow-auto"
+  id="checkout"
+  class="hidden fixed top-0 left-0 z-[1000] w-full h-full bg-lightgray overflow-auto"
 >
   <section class="checkout-flow-container relative">
     <img
@@ -156,7 +153,7 @@ const products = [
     </div>
   </section>
 
-  <section class="flex">
+  <section id="checkout-contact-info" class="hidden flex">
     <form class="flex flex-col gap-12 py-8 px-6 sm:px-14 w-full sm:w-2/3">
       <div class="form-grid-container">
         <h4 class="alice">Contact info</h4>
