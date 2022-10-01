@@ -172,19 +172,27 @@ const addedProducts = [
   }
 
   const cart = document.getElementById("cart"),
-    sidebar = document.getElementById("sidebar");
+    sidebar = document.getElementById("sidebar"),
+    { overflowY: prevBodyOverflowYValue } = document.body.style;
 
   // @ts-ignore
   window.openCart = () => {
+    cart.classList.toggle("hidden");
+
     window.disableScrolling();
 
-    cart.classList.toggle("hidden");
+    if (cart.scrollHeight > cart.offsetHeight) {
+      document.body.style.overflowY = "hidden";
+    }
   };
 
   // @ts-ignore
   window.closeCart = () => {
     cart.classList.toggle("hidden");
 
-    sidebar.style.display === "none" && window.enableScrolling();
+    sidebar.offsetWidth === 0 && window.enableScrolling();
+
+    document.body.style.overflowY =
+      sidebar.offsetWidth > 0 ? "scroll" : prevBodyOverflowYValue;
   };
 </script>
