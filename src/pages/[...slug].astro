@@ -5,12 +5,14 @@ import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 import Posts from "@pages/Posts.astro";
 import Estate from "@pages/Estate.astro";
+import Product from "@pages/Product.astro";
 import BasicPage from "@pages/BasicPage.astro";
 import BlogDetails from "@pages/BlogDetails.astro";
 import HowToDetails from "@pages/HowToDetails.astro";
 import Crowdfunding from "@pages/Crowdfunding.astro";
 import RecipeDetails from "@pages/RecipeDetails.astro";
 import EstateDetails from "@pages/EstateDetails.astro";
+import ProductDetails from "@pages/ProductDetails.astro";
 import CrowdfundingForm from "@pages/CrowdfundingForm.astro";
 
 import DefaultRouteRedirect from "@scripts/DefaultRouteRedirect.astro";
@@ -25,6 +27,7 @@ export async function getStaticPaths() {
     howTos,
     recipes,
     estates,
+    products,
     crowdfundingForm,
     crowdfundingPlans,
     crowdfundingHome,
@@ -34,6 +37,7 @@ export async function getStaticPaths() {
     homeHowTo,
     homeRecipe,
     homeEstate,
+    homeProduct,
     homepage,
   } = CMS.get("all");
 
@@ -140,6 +144,10 @@ export async function getStaticPaths() {
     type: "estateDetails",
   }));
 
+  const productDetailsPages = getPages(products, (page, { locale }) => ({
+    type: "productDetails",
+  }));
+
   const blogPages = getPages(homeBlog, (page, { locale }) => ({
     type: "blog",
     posts: locale && getPosts(blogs, locale),
@@ -158,6 +166,11 @@ export async function getStaticPaths() {
   const estatePages = getPages(homeEstate, (page, { locale }) => ({
     type: "estate",
     posts: locale && getPosts(estates, locale),
+  }));
+
+  const productPages = getPages(homeProduct, (page, { locale }) => ({
+    type: "product",
+    posts: locale && getPosts(products, locale),
   }));
 
   const homepagePages = getPages(homepage, (page, { locale }) => ({
@@ -182,10 +195,12 @@ export async function getStaticPaths() {
     ...howToDetailsPages,
     ...recipeDetailsPages,
     ...estateDetailsPages,
+    ...productDetailsPages,
     ...blogPages,
     ...howToPages,
     ...recipePages,
     ...estatePages,
+    ...productPages,
     ...homepagePages,
   ];
 }
@@ -251,6 +266,10 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
             <Estate page={page} recurData={recurData} />
           ) : page.type === `estateDetails` ? (
             <EstateDetails page={page} recurData={recurData} />
+          ) : page.type === `product` ? (
+            <Product page={page} recurData={recurData} />
+          ) : page.type === `productDetails` ? (
+            <ProductDetails page={page} recurData={recurData} />
           ) : (
             <CrowdfundingForm page={page} locale={locale} />
           )}
