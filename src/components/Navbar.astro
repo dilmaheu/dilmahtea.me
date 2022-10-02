@@ -84,7 +84,7 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
       </div>
 
       <button
-        onclick="openCart()"
+        id="open-cart-btn"
         class:list={[
           "relative scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]",
           "mx-[calc(-24px*0.225)] sm:mx-[calc(-24px*0.15)] md:mx-[calc(-24px*0.075)] lg:mx-0",
@@ -208,10 +208,9 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 </script>
 
 <script>
-  // disableScrolling & enableScrolling are declared globally to use in cart toggling logic
-
   declare global {
     interface Window {
+      // disableScrolling & enableScrolling are declared globally to use in cart toggling logic
       enableScrolling: () => void;
       disableScrolling: () => void;
     }
@@ -223,8 +222,13 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     sidebar = query("#sidebar"),
     checkout = query("#checkout"),
     navigation = query("#navigation"),
+    openCartBtn = query("#open-cart-btn"),
     sidebarOpenButton = query("#sidebar-open-btn"),
     sidebarCloseButton = query("#sidebar-close-btn");
+
+  openCartBtn.addEventListener("click", () => {
+    window.openCart();
+  });
 
   window.disableScrolling = () => {
     const overflowY =

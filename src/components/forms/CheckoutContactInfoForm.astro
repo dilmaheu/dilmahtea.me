@@ -23,7 +23,6 @@
 </style>
 
 <form
-  onsubmit="continueToShipping(event)"
   class="checkout-main-active flex flex-col gap-12 py-8 px-6 sm:px-14 w-full sm:w-2/3"
 >
   <div class="form-grid-container">
@@ -118,7 +117,7 @@
       Continue To Shipping
     </button>
 
-    <button onclick="returnToCart(event)" class="text-primary font-bold">
+    <button id="return-to-cart-btn" class="text-primary font-bold">
       Return To Cart
     </button>
   </div>
@@ -128,16 +127,15 @@
   declare global {
     interface Window {
       contactInfo: Record<string, FormDataEntryValue>;
-      returnToCart: (event: Event) => void;
-      continueToShipping: (event: SubmitEvent) => void;
       toggleBetweenInfoFormAndShippingDetails: () => void;
     }
   }
 
-  const id = document.getElementById.bind(document),
-    query = document.querySelector.bind(document),
+  const id: (string) => HTMLElement = document.getElementById.bind(document),
+    query: (string) => HTMLElement = document.querySelector.bind(document),
     checkout = id("checkout"),
     checkoutMain = id("checkout-main"),
+    returnToCartBtn = id("return-to-cart-btn"),
     shippingDetails = id("shipping-details"),
     checkoutContactInfoForm = query("#checkout-main form"),
     contactInfoFlowItemProgress = query(".flow div:nth-child(2) div"),
@@ -155,7 +153,7 @@
     shippingDetailsFlowItemProgress.classList.toggle("opacity-30");
   };
 
-  window.continueToShipping = (event) => {
+  checkoutContactInfoForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
     const formData = Object.fromEntries(
@@ -165,14 +163,14 @@
     window.contactInfo = formData;
 
     window.toggleBetweenInfoFormAndShippingDetails();
-  };
+  });
 
-  window.returnToCart = (event) => {
+  returnToCartBtn.addEventListener("click", (event) => {
     event.preventDefault();
 
     window.openCart();
 
     checkout.classList.toggle("hidden");
     checkoutMain.classList.toggle("hidden");
-  };
+  });
 </script>

@@ -65,7 +65,6 @@ const addedProducts = [
 
 <div
   id="cart"
-  onclick="event.target === this && closeCart()"
   class="hidden fixed z-[1000] flex justify-end w-full h-full top-0 left-0 overflow-auto"
 >
   <div class="w-full max-w-[2050px] h-fit mx-auto bg-[rgba(0,0,0,0.5)]">
@@ -79,7 +78,7 @@ const addedProducts = [
           <div class="flex justify-between items-center">
             <h3 class="cart-heading alice">Cart</h3>
 
-            <button onclick="closeCart()">
+            <button id="close-cart-btn">
               <Icon name="heroicons-solid:x" class="w-14" />
             </button>
           </div>
@@ -151,7 +150,7 @@ const addedProducts = [
           </div>
 
           <button
-            onclick="proceedToCheckout()"
+            id="proceed-to-checkout-btn"
             class="capitalize py-4 font-bold bg-primary text-lightgray rounded-[9999px]"
           >
             Proceed to Checkout
@@ -168,18 +167,18 @@ const addedProducts = [
   declare global {
     interface Window {
       openCart: () => void;
-      closeCart: () => void;
       enableScrolling: () => void;
       disableScrolling: () => void;
-      proceedToCheckout: () => void;
     }
   }
 
-  const id = document.getElementById.bind(document),
+  const id: (string) => HTMLElement = document.getElementById.bind(document),
     cart = id("cart"),
     sidebar = id("sidebar"),
     checkout = id("checkout"),
     checkoutMain = id("checkout-main"),
+    closeCartBtn = id("close-cart-btn"),
+    proceedToCheckoutBtn = id("proceed-to-checkout-btn"),
     { overflowY: prevBodyOverflowYValue } = document.body.style;
 
   window.openCart = () => {
@@ -192,7 +191,7 @@ const addedProducts = [
     }
   };
 
-  window.closeCart = () => {
+  const closeCart = () => {
     cart.classList.toggle("hidden");
 
     sidebar.offsetWidth === 0 && window.enableScrolling();
@@ -201,7 +200,16 @@ const addedProducts = [
       sidebar.offsetWidth > 0 ? "scroll" : prevBodyOverflowYValue;
   };
 
-  window.proceedToCheckout = () => {
+  cart.addEventListener("click", (event) => {
+    if (event.target === cart) {
+      // close cart if clicked outside of cart content
+      closeCart();
+    }
+  });
+
+  closeCartBtn.addEventListener("click", closeCart);
+
+  proceedToCheckoutBtn.addEventListener("click", () => {
     cart.classList.toggle("hidden");
     checkout.classList.toggle("hidden");
     checkoutMain.classList.toggle("hidden");
@@ -209,5 +217,5 @@ const addedProducts = [
     window.disableScrolling();
 
     document.body.style.overflowY = "hidden";
-  };
+  });
 </script>

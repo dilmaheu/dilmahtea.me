@@ -81,12 +81,23 @@
       Continue To Payment
     </button>
 
-    <button
-      class="text-primary font-bold"
-      {/* toggleBetweenInfoFormAndShippingDetails is defined in CheckoutContactInfoForm.astro */}
-      onclick="toggleBetweenInfoFormAndShippingDetails()"
-    >
+    <button id="return-to-info-btn" class="text-primary font-bold">
       Return To Information
     </button>
   </div>
 </section>
+
+<script>
+  declare global {
+    interface Window {
+      toggleBetweenInfoFormAndShippingDetails: () => void;
+    }
+  }
+
+  const returnToInfoBtn = document.getElementById("return-to-info-btn");
+
+  returnToInfoBtn.addEventListener("click", () => {
+    // toggleBetweenInfoFormAndShippingDetails is defined in CheckoutContactInfoForm.astro
+    window.toggleBetweenInfoFormAndShippingDetails();
+  });
+</script>
