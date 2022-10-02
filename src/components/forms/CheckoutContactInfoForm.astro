@@ -127,6 +127,7 @@
     interface Window {
       contactInfo: Record<string, FormDataEntryValue>;
       continueToShipping: (event: SubmitEvent) => void;
+      toggleBetweenInfoFormAndShippingDetails: () => void;
     }
   }
 
@@ -135,6 +136,18 @@
     shippingDetails = query("#shipping-details"),
     contactInfoFlowItemProgress = query(".flow div:nth-child(2) div"),
     shippingDetailsFlowItemProgress = query(".flow div:nth-child(3) div");
+
+  window.toggleBetweenInfoFormAndShippingDetails = () => {
+    checkoutContactInfoForm.classList.toggle("hidden");
+    checkoutContactInfoForm.classList.toggle("checkout-main-active");
+
+    shippingDetails.classList.toggle("hidden");
+    shippingDetails.classList.toggle("checkout-main-active");
+
+    contactInfoFlowItemProgress.classList.toggle("opacity-60");
+    shippingDetailsFlowItemProgress.classList.toggle("opacity-60");
+    shippingDetailsFlowItemProgress.classList.toggle("opacity-30");
+  };
 
   window.continueToShipping = (event) => {
     event.preventDefault();
@@ -145,14 +158,6 @@
 
     window.contactInfo = formData;
 
-    checkoutContactInfoForm.classList.add("hidden");
-    checkoutContactInfoForm.classList.add("checkout-main-active");
-
-    shippingDetails.classList.remove("hidden");
-    shippingDetails.classList.remove("checkout-main-active");
-
-    contactInfoFlowItemProgress.classList.remove("opacity-60");
-    shippingDetailsFlowItemProgress.classList.remove("opacity-30");
-    shippingDetailsFlowItemProgress.classList.add("opacity-60");
+    window.toggleBetweenInfoFormAndShippingDetails();
   };
 </script>
