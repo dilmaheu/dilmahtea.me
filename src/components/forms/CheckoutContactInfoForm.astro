@@ -118,7 +118,9 @@
       Continue To Shipping
     </button>
 
-    <button class="text-primary font-bold">Return To Cart</button>
+    <button onclick="returnToCart(event)" class="text-primary font-bold">
+      Return To Cart
+    </button>
   </div>
 </form>
 
@@ -126,14 +128,18 @@
   declare global {
     interface Window {
       contactInfo: Record<string, FormDataEntryValue>;
+      returnToCart: (event: Event) => void;
       continueToShipping: (event: SubmitEvent) => void;
       toggleBetweenInfoFormAndShippingDetails: () => void;
     }
   }
 
-  const query = document.querySelector.bind(document),
+  const id = document.getElementById.bind(document),
+    query = document.querySelector.bind(document),
+    checkout = id("checkout"),
+    checkoutMain = id("checkout-main"),
+    shippingDetails = id("shipping-details"),
     checkoutContactInfoForm = query("#checkout-main form"),
-    shippingDetails = query("#shipping-details"),
     contactInfoFlowItemProgress = query(".flow div:nth-child(2) div"),
     shippingDetailsFlowItemProgress = query(".flow div:nth-child(3) div");
 
@@ -159,5 +165,14 @@
     window.contactInfo = formData;
 
     window.toggleBetweenInfoFormAndShippingDetails();
+  };
+
+  window.returnToCart = (event) => {
+    event.preventDefault();
+
+    window.openCart();
+
+    checkout.classList.toggle("hidden");
+    checkoutMain.classList.toggle("hidden");
   };
 </script>
