@@ -1,0 +1,149 @@
+<style lang="scss">
+  .form-grid-container {
+    @apply flex flex-col gap-6;
+
+    h4 {
+      @apply font-normal text-primary text-[2rem] leading-[110%];
+    }
+
+    .form-grid {
+      @apply w-full grid sm:grid-cols-2 gap-y-2.5 sm:gap-y-6 sm:gap-x-24;
+
+      label {
+        @apply flex flex-col gap-1.5;
+
+        span {
+          @apply font-medium text-dark sm:text-[1.125rem];
+        }
+
+        input,
+        select {
+          @apply focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none;
+          @apply h-12 bg-lightgray py-3 px-4 border border-primary rounded-full text-dark sm:text-[1.125rem];
+        }
+      }
+    }
+  }
+</style>
+
+<form
+  onsubmit="continueToShipping(event)"
+  class="checkout-main-active flex flex-col gap-12 py-8 px-6 sm:px-14 w-full sm:w-2/3"
+>
+  <div class="form-grid-container">
+    <h4 class="alice">Contact info</h4>
+
+    <div class="form-grid">
+      <label>
+        <span>Email Address</span>
+
+        <input
+          type="text"
+          name="email"
+          placeholder="Enter your email address"
+          required
+        />
+      </label>
+    </div>
+  </div>
+
+  <div class="form-grid-container">
+    <h4 class="alice">Shipping Address</h4>
+
+    <div class="form-grid">
+      <label>
+        <span>First Name</span>
+
+        <input
+          type="text"
+          name="first_name"
+          placeholder="Enter your first name"
+          required
+        />
+      </label>
+
+      <label>
+        <span>Last Name</span>
+
+        <input
+          type="text"
+          name="last_name"
+          placeholder="Enter your last name"
+          required
+        />
+      </label>
+
+      <label>
+        <span>Country</span>
+
+        <select name="country" required>
+          <option value="" selected disabled hidden>Select your country</option>
+          <option value="nl">Nederland</option>
+          <option value="en">England</option>
+          <option value="de">Germany</option>
+        </select>
+      </label>
+
+      <label>
+        <span>City</span>
+        <input type="text" name="city" placeholder="Enter your city" required />
+      </label>
+
+      <label>
+        <span>Street</span>
+
+        <input
+          type="text"
+          name="address"
+          placeholder="Enter your street address"
+          required
+        />
+      </label>
+
+      <label>
+        <span>Postal Code</span>
+
+        <input
+          type="text"
+          name="postal_code"
+          placeholder="Enter your postal code"
+          required
+        />
+      </label>
+    </div>
+  </div>
+
+  <div
+    class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-9 sm:gap-12"
+  >
+    <button
+      class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
+    >
+      Continue To Shipping
+    </button>
+
+    <button class="text-primary font-bold">Return To Cart</button>
+  </div>
+</form>
+
+<script>
+  declare global {
+    interface Window {
+      contactInfo: Record<string, FormDataEntryValue>;
+      continueToShipping: (event: SubmitEvent) => void;
+    }
+  }
+
+  const shippingDetails = document.getElementById("shipping-details"),
+    checkoutContactInfoForm = document.querySelector("#checkout-main form");
+
+  window.continueToShipping = (event) => {
+    event.preventDefault();
+
+    const formData = Object.fromEntries(
+      new FormData(event.target as HTMLFormElement)
+    );
+
+    window.contactInfo = formData;
+  };
+</script>
