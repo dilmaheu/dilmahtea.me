@@ -119,11 +119,19 @@ const addedProducts = [
                         "bg-primary text-lightgray rounded-[9999px]",
                       ]}
                     >
-                      <Icon name="akar-icons:minus" class="w-5 h-5" />
+                      <Icon
+                        name="akar-icons:minus"
+                        data-action="decrement"
+                        class="w-5 h-5 cursor-pointer select-none"
+                      />
 
                       <span class="font-medium">{quantity}</span>
 
-                      <Icon name="akar-icons:plus" class="w-5 h-5" />
+                      <Icon
+                        name="akar-icons:plus"
+                        data-action="increment"
+                        class="w-5 h-5 cursor-pointer select-none"
+                      />
                     </div>
 
                     <span class="cart-product-price alice text-dark3">
@@ -200,6 +208,20 @@ const addedProducts = [
       sidebar.offsetWidth > 0 ? "scroll" : prevBodyOverflowYValue;
   };
 
+  const tweak = (target, { action }) => {
+    const counter = target[
+        action === "decrement" ? "nextElementSibling" : "previousElementSibling"
+      ] as HTMLInputElement,
+      isInput = !!counter.value,
+      count = Number(counter[isInput ? "value" : "textContent"]);
+
+    if (action === "decrement" ? count > 1 : count < 999) {
+      counter[isInput ? "value" : "textContent"] = String(
+        action === "decrement" ? count - 1 : count + 1
+      );
+    }
+  };
+
   cart.addEventListener("click", (event) => {
     if (event.target === cart) {
       // close cart if clicked outside of cart content
@@ -217,5 +239,15 @@ const addedProducts = [
     window.disableScrolling();
 
     document.body.style.overflowY = "hidden";
+  });
+
+  document.addEventListener("click", (event) => {
+    const target = (event.target as HTMLElement).closest(
+      "[data-action='decrement'], [data-action='increment']"
+    );
+
+    const action = target?.getAttribute("data-action");
+
+    if (action) tweak(target, { action });
   });
 </script>

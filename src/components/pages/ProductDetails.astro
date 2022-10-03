@@ -428,9 +428,7 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
 </PostDetailsLayout>
 
 <script>
-  const queryAll: (selector: string) => NodeListOf<HTMLElement> =
-      document.querySelectorAll.bind(document),
-    productCounters = queryAll(`.product-counter`);
+  const productCounters = document.querySelectorAll(`.product-counter`);
 
   const handleKeyUp = ({ target: counter }) => {
     const count = Number(counter.value);
@@ -440,33 +438,5 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
 
   productCounters.forEach((counter) => {
     counter.addEventListener("keyup", handleKeyUp);
-  });
-
-  document.addEventListener("click", (event) => {
-    const target = (event.target as HTMLElement).closest(
-      "[data-action='decrement'], [data-action='increment']"
-    );
-
-    switch (target?.getAttribute("data-action")) {
-      case "increment":
-        {
-          const counter = target.previousElementSibling as HTMLInputElement,
-            count = Number(counter.value);
-
-          count < 999 && (counter.value = String(count + 1));
-        }
-
-        break;
-
-      case "decrement":
-        {
-          const counter = target.nextElementSibling as HTMLInputElement,
-            count = Number(counter.value);
-
-          count > 1 && (counter.value = String(count - 1));
-        }
-
-        break;
-    }
   });
 </script>
