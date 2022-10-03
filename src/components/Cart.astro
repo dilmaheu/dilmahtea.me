@@ -103,7 +103,7 @@ const addedProducts = [
                   <div class="flex justify-between items-center gap-1.5">
                     <h6 class="alice cart-product-name">{name}</h6>
 
-                    <button>
+                    <button class="remove-item-btn">
                       <Icon name="akar-icons:trash-can" class="w-6 h-6" />
                     </button>
                   </div>
@@ -187,6 +187,8 @@ const addedProducts = [
     proceedToCheckoutBtn = id("proceed-to-checkout-btn"),
     { overflowY: prevBodyOverflowYValue } = document.body.style;
 
+  const removeItemBtns = document.querySelectorAll(".remove-item-btn");
+
   window.openCart = () => {
     cart.classList.toggle("hidden");
 
@@ -247,5 +249,11 @@ const addedProducts = [
     const action = target?.getAttribute("data-action");
 
     if (action) tweak(target, { action });
+  });
+
+  removeItemBtns.forEach((button) => {
+    button.addEventListener("click", () => {
+      button.parentElement.parentElement.parentElement.remove();
+    });
   });
 </script>
