@@ -11,12 +11,7 @@ import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
-const {
-  white_cup,
-  white_love_ribbon,
-  green_product_cart_plus,
-  white_right_arrow,
-} = RecurringImages;
+const { white_cup, white_love_ribbon, white_right_arrow } = RecurringImages;
 
 const { page, recurData } = Astro.props,
   { posts } = page,
@@ -244,19 +239,17 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                       <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
                     </div>
 
-                    <button>
-                      <div
-                        class:list={[
-                          "bg-lightgray2 hidden lg:flex justify-center items-center gap-x-2",
-                          "py-[9px] px-[24px] ml-2.5 font-bold text-primary leading-[150%] rounded-[40px]",
-                        ]}
-                      >
-                        <Icon
-                          class="w-[30px] h-[30px]"
-                          name="mi:shopping-cart-add"
-                        />
-                        Add
-                      </div>
+                    <button
+                      class:list={[
+                        "bg-lightgray2 hidden lg:flex justify-center items-center gap-x-2",
+                        "py-[9px] px-[24px] ml-2.5 font-bold text-primary leading-[150%] rounded-[40px]",
+                      ]}
+                    >
+                      <Icon
+                        class="w-[30px] h-[30px]"
+                        name="mi:shopping-cart-add"
+                      />
+                      Add
                     </button>
                   </div>
 
@@ -267,22 +260,18 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                     <Markdown>{post.Intro_text}</Markdown>
                   </a>
 
-                  <a href={`/` + post.Meta.URL_slug}>
-                    <div
-                      class:list={[
-                        "bg-lightgray2 flex lg:hidden justify-center items-center gap-x-2",
-                        "py-[9px] px-[24px] mt-5 font-bold text-primary leading-[150%] rounded-[40px]",
-                      ]}
-                    >
-                      <span class="w-[30px] h-[30px] p-0.5">
-                        <img
-                          class="w-full h-full"
-                          {...green_product_cart_plus}
-                        />
-                      </span>
-                      Add
-                    </div>
-                  </a>
+                  <button
+                    class:list={[
+                      "bg-lightgray2 flex lg:hidden justify-center items-center gap-x-2",
+                      "py-[9px] px-[24px] mt-5 font-bold text-primary leading-[150%] rounded-[40px]",
+                    ]}
+                  >
+                    <Icon
+                      name="mi:shopping-cart-add"
+                      class="w-[30px] h-[30px] p-0.5"
+                    />
+                    Add
+                  </button>
                 </div>
 
                 <div class="flex items-center mt-[20px] md:mt-[25px]">
