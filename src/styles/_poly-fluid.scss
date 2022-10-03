@@ -133,6 +133,11 @@
   @return $value;
 }
 
+/// poly-fluid-clamp
+/// Generate linear interpolated size values through two break points
+/// @param $map - A SASS map of viewport unit and size value pairs
+/// @example
+///   font-size: poly-fluid-clamp(( 576px: 22px, 768px: 24px, 992px: 34px ));
 @function poly-fluid-clamp($map) {
   $keys: map-keys($map);
 
@@ -152,7 +157,12 @@
   @return $value;
 }
 
+/// poly-fluid-sizing
 /// Generate linear interpolated size values through multiple break points
+/// @param $property - A string CSS property name
+/// @param $map - A SASS map of viewport unit and size value pairs
+/// @example
+///   @include poly-fluid-sizing('font-size', ( 576px: 22px, 768px: 24px, 992px: 34px ));
 @mixin poly-fluid-sizing($property, $map) {
   $keys: map-keys($map);
 
