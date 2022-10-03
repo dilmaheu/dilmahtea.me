@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
@@ -15,7 +16,7 @@ const {
   green_leaf_icon,
   green_no_icon,
   green_package_icon,
-  green_right_arrow
+  green_right_arrow,
 } = RecurringImages;
 
 const { page, recurData } = Astro.props,
@@ -32,17 +33,17 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
     margin-top: clamp(0.938rem, 2vw + 0.1rem, 2rem);
   }
 
-  input[type=number].product-amount-input{
+  input[type="number"].product-counter {
     -moz-appearance: textfield;
 
     &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button{
+    &::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
   }
 
-  .product-details img{
+  .product-details img {
     width: 100%;
     max-height: 530px;
 
@@ -51,34 +52,37 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
     }
   }
 
-  .product-info-container{
+  .product-info-container {
     border-color: colors.$sticky-dropdown-border-top;
   }
 
-  .product-kindness-impact-container{
+  .product-kindness-impact-container {
     clip-path: url(#product-impact-bg-curve-sm);
 
     @media (min-width: 768px) {
       clip-path: url(#product-impact-bg-curve);
     }
-
   }
 
-  .product-kindness-impact-text{
+  .product-kindness-impact-text {
     font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
   }
 
-  .product-details{
-    ul, ol {
+  .product-details {
+    ul,
+    ol {
       padding: 0;
     }
+
     ol {
       list-style: none;
       counter-reset: counter;
     }
+
     li {
       counter-increment: counter;
     }
+
     li::before {
       content: counter(counter);
       background: colors.$primary;
@@ -96,11 +100,16 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
 <PostDetailsLayout {page} {recurData} {headingName}>
   <Fragment slot="tea-details-header">
     <div>
-      <form class="add-cart-container flex flex-wrap justify-between sm:justify-start items-center gap-y-5 gap-x-[31px]">
+      <form
+        class="add-cart-container flex flex-wrap justify-between sm:justify-start items-center gap-y-5 gap-x-[31px]"
+      >
         <fieldset>
-          <legend class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]">
+          <legend
+            class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
+          >
             Size:
           </legend>
+
           <div class="flex flex-wrap gap-[15px]">
             <label for="size_1" class="cursor-pointer">
               <input
@@ -113,8 +122,8 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
 
               <span
                 class:list={[
-                  "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-lightgray", 
-                  "rounded-[22px] group peer-checked:bg-lightgray peer-checked:text-primary"
+                  "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-lightgray",
+                  "rounded-[22px] group peer-checked:bg-lightgray peer-checked:text-primary",
                 ]}
               >
                 100gm
@@ -131,8 +140,8 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
 
               <span
                 class:list={[
-                  "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-lightgray", 
-                  "rounded-[22px] group peer-checked:bg-lightgray peer-checked:text-primary"
+                  "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-lightgray",
+                  "rounded-[22px] group peer-checked:bg-lightgray peer-checked:text-primary",
                 ]}
               >
                 20gm
@@ -142,49 +151,41 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
         </fieldset>
 
         <fieldset>
-          <legend class="text-sm lg:text-base font-medium leading-[150%] pb-[3px] lg:pb-[5px]">
+          <legend
+            class="text-sm lg:text-base font-medium leading-[150%] pb-[3px] lg:pb-[5px]"
+          >
             Quantity:
           </legend>
 
-          <div class="flex items-center h-[40px] lg:h-[45px] text-primary">
-            <div 
-              data-action="decrement" 
-              class="bg-lightgray flex items-center h-full rounded-l-[22px] cursor-pointer outline-none"
-            >
-              <span class="m-auto text-2xl font-semibold px-[15px] select-none">−</span>
-            </div>
-
-            <input 
-              class="product-amount-input outline-none w-[30px] h-full text-center bg-lightgray lg:text-lg items-center" 
-              type="number" 
-              name=""
-              value="1"
-              onkeyup="
-                value < 1 ? value = 1 : value || 
-                value > 999 ? value = 999 : value
-              "
+          <div
+            class="py-2.5 px-4 gap-4 flex items-center text-primary bg-lightgray rounded-full"
+          >
+            <Icon
+              name="akar-icons:minus"
+              data-action="decrement"
+              class="w-6 h-6 select-none cursor-pointer"
             />
 
-            <div 
-              data-action="increment" 
-              class="bg-lightgray flex items-center h-full rounded-r-[22px] cursor-pointer"
-            >
-              <span class="m-auto text-2xl font-semibold px-[15px] select-none">+</span>
-            </div>
+            <input
+              value="1"
+              type="number"
+              class="product-counter w-8 h-full text-center lg:text-lg bg-lightgray outline-none"
+            />
+
+            <Icon
+              name="akar-icons:plus"
+              data-action="increment"
+              class="w-6 h-6 select-none cursor-pointer"
+            />
           </div>
         </fieldset>
 
-        <a 
-          class="flex mt-auto w-full sm:w-auto" 
-          href=""
-        >
-
-          <div class="bg-lightgray flex w-full justify-center items-center gap-x-[15px] text-base font-bold leading-[150%] text-primary py-2.5 px-[52px] rounded-[40px]">
+        <a class="flex mt-auto w-full sm:w-auto" href="">
+          <div
+            class="bg-lightgray flex w-full justify-center items-center gap-x-[15px] text-base font-bold leading-[150%] text-primary py-2.5 px-[52px] rounded-[40px]"
+          >
             <span class="w-[26px] h-[26px]">
-              <img 
-                class="w-full h-full"
-                {...green_product_cart}
-              >
+              <img class="w-full h-full" {...green_product_cart} />
             </span>
             Add to Cart For $500
           </div>
@@ -194,139 +195,131 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
   </Fragment>
 
   <div slot="product-add-cart-sm">
-    <form class="add-cart-container flex flex-wrap justify-between items-center gap-y-5 gap-x-[31px]">
+    <form
+      class="add-cart-container flex flex-wrap justify-between items-center gap-y-5 gap-x-[31px]"
+    >
       <fieldset>
-          <legend class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]">
-            Size:
-          </legend>
-          <div class="flex flex-wrap gap-[15px]">
-            <label for="size_3" class="cursor-pointer">
-              <input
-                type="radio"
-                name="size"
-                id="size_3"
-                class="sr-only peer"
-                checked
-              />
-              <span
-                class:list={[
-                  "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-primary", 
-                  "rounded-[22px] group peer-checked:bg-primary peer-checked:text-lightgray"
-                ]}
-              >
-                100gm
-              </span>
-            </label>
-
-            <label for="size_4" class="cursor-pointer">
-              <input
-                type="radio"
-                name="size"
-                id="size_4"
-                class="sr-only peer"
-              />
-              <span
-                class:list={[
-                  "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-primary", 
-                  "rounded-[22px] group peer-checked:bg-primary peer-checked:text-lightgray"
-                ]}
-              >
-                20gm
-              </span>
-            </label>
-          </div>
-      </fieldset>
-
-      <fieldset>
-        <legend class="text-sm lg:text-base font-medium leading-[150%] text-primary pb-[3px] lg:pb-[5px]">
-          Quantity:
+        <legend
+          class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]"
+        >
+          Size:
         </legend>
 
-        <div class="flex items-center h-[40px] lg:h-[45px] text-lightgray">
-          <div 
-            data-action="decrement" 
-            class="bg-primary flex items-center h-full rounded-l-[22px] cursor-pointer outline-none"
-          >
-            <span class="m-auto text-2xl font-semibold px-[15px] select-none">−</span>
-          </div>
+        <div class="flex flex-wrap gap-[15px]">
+          <label for="size_3" class="cursor-pointer">
+            <input
+              type="radio"
+              name="size"
+              id="size_3"
+              class="sr-only peer"
+              checked
+            />
 
-          <input 
-            class="product-amount-input outline-none w-[30px] h-full text-center bg-primary lg:text-lg items-center" 
-            type="number" 
-            name=""
-            value="1"
-            onkeyup="
-              value < 1 ? value = 1 : value || 
-              value > 999 ? value = 999 : value
-            "
-          />
+            <span
+              class:list={[
+                "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-primary",
+                "rounded-[22px] group peer-checked:bg-primary peer-checked:text-lightgray",
+              ]}
+            >
+              100gm
+            </span>
+          </label>
 
-          <div 
-            data-action="increment" 
-            class="bg-primary flex items-center h-full rounded-r-[22px] cursor-pointer"
-          >
-            <span class="m-auto text-2xl font-semibold px-[15px] select-none">+</span>
-          </div>
+          <label for="size_4" class="cursor-pointer">
+            <input type="radio" name="size" id="size_4" class="sr-only peer" />
+
+            <span
+              class:list={[
+                "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-primary",
+                "rounded-[22px] group peer-checked:bg-primary peer-checked:text-lightgray",
+              ]}
+            >
+              20gm
+            </span>
+          </label>
         </div>
       </fieldset>
 
-      <a 
-        class="flex mt-auto w-full" 
-        href=""
-      >
-        <div class="bg-primary flex w-full justify-center items-center gap-x-[15px] text-base font-bold leading-[19px] text-lightgray py-[18px] px-[52px] rounded-[40px]">
+      <fieldset>
+        <legend
+          class="text-sm lg:text-base font-medium leading-[150%] text-primary pb-[3px] lg:pb-[5px]"
+        >
+          Quantity:
+        </legend>
+
+        <div
+          class="py-2.5 px-4 gap-4 flex items-center text-lightgray bg-primary rounded-full"
+        >
+          <Icon
+            name="akar-icons:minus"
+            data-action="decrement"
+            class="w-6 h-6 select-none cursor-pointer"
+          />
+
+          <input
+            value="1"
+            type="number"
+            class="product-counter w-8 h-full text-center lg:text-lg bg-primary outline-none"
+          />
+
+          <Icon
+            name="akar-icons:plus"
+            data-action="increment"
+            class="w-6 h-6 select-none cursor-pointer"
+          />
+        </div>
+      </fieldset>
+
+      <a class="flex mt-auto w-full" href="">
+        <div
+          class="bg-primary flex w-full justify-center items-center gap-x-[15px] text-base font-bold leading-[19px] text-lightgray py-[18px] px-[52px] rounded-[40px]"
+        >
           <span class="w-[26px] h-[26px]">
-            <img 
-              class="w-full h-full"
-              {...white_product_cart}
-            >
+            <img class="w-full h-full" {...white_product_cart} />
           </span>
           Add to Cart
         </div>
       </a>
     </form>
 
-    <div class="product-info-container grid grid-cols-[repeat(auto-fit,minmax(0,80px))] gap-[14px] lg:gap-[21px] justify-between md:justify-center pt-[25px] md:pt-[15px] mt-[25px] border-t border-solid">
+    <div
+      class="product-info-container grid grid-cols-[repeat(auto-fit,minmax(0,80px))] gap-[14px] lg:gap-[21px] justify-between md:justify-center pt-[25px] md:pt-[15px] mt-[25px] border-t border-solid"
+    >
       <div>
         <div class="w-[31px] h-[31px] p-[2px] mx-auto">
-          <img
-            class="w-full h-full"
-            {...green_leaf_icon}
-          >
+          <img class="w-full h-full" {...green_leaf_icon} />
         </div>
+
         <div class="text-sm font-medium leading-[150%] text-center">
           Environment Friendly
         </div>
       </div>
+
       <div>
         <div class="w-[31px] h-[31px] p-[2px] mx-auto">
-          <img
-            class="w-full h-full"
-            {...green_no_icon}
-          >
+          <img class="w-full h-full" {...green_no_icon} />
         </div>
+
         <div class="text-sm font-medium leading-[150%] text-center">
           No Preservatives
         </div>
       </div>
+
       <div>
         <div class="w-[31px] h-[31px] p-[2px] mx-auto">
-          <img
-            class="w-full h-full"
-            {...green_package_icon}
-          >
+          <img class="w-full h-full" {...green_package_icon} />
         </div>
+
         <div class="text-sm font-medium leading-[150%] text-center">
           Sustainable Packaging
         </div>
       </div>
+
       <div>
         <div class="w-[31px] h-[31px] p-[2px] mx-auto">
-          <img
-            class="w-full h-full"
-            {...green_love}
-          >
+          <img class="w-full h-full" {...green_love} />
         </div>
+
         <div class="text-sm font-medium leading-[150%] text-center">
           Handmade in small batch
         </div>
@@ -340,10 +333,7 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
     </Chapterize>
   </div>
 
-  <section 
-    class="mb-[50px]" 
-    slot="product-kindness-impact"
-  >
+  <section class="mb-[50px]" slot="product-kindness-impact">
     <ClipPathSVG
       id="product-impact-bg-curve"
       path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.23,-0.017 c0.074,0,0.2,0.037,0.315,0.009 S1,0.894,1,0.894 V0.055"
@@ -361,32 +351,30 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
 
     <div class="bg-primary product-kindness-impact-container">
       <div class="wrapper py-[70px] md:py-[100px]">
-        <div class="product-kindness-impact-text alice leading-[110%] md:leading-[115%] text-center">
+        <div
+          class="product-kindness-impact-text alice leading-[110%] md:leading-[115%] text-center"
+        >
           <h2>With Food spread smiles. With Kindness create impact.</h2>
           <div>Here is how:</div>
         </div>
 
-        <div 
+        <div
           role="list"
           aria-label="Kindness Items"
           class:list={[
-            "wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]", 
-            "justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]"
+            "wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]",
+            "justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
           ]}
         >
-
           {
             recipes.map((post) => (
               <div
                 role="listitem"
                 aria-label="Kindness Item"
-                class="flex flex-wrap bg-lightgray" 
+                class="flex flex-wrap bg-lightgray"
                 style="clip-path: url(#card-curve)"
               >
-                <a 
-                  class="block w-full" 
-                  href={`/` + post.Meta.URL_slug}
-                >
+                <a class="block w-full" href={`/` + post.Meta.URL_slug}>
                   <img
                     src={
                       imgSrcPrefix +
@@ -420,9 +408,7 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
                   )}
 
                   <div class="recent-post-card-title alice mt-[15px]">
-                    <a href={`/` + post.Meta.URL_slug}>
-                      {post.Title}
-                    </a>
+                    <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
 
                     <span class="icon recent-post-card-title-icon">
                       <img
@@ -436,44 +422,51 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
             ))
           }
         </div>
+      </div>
     </div>
   </section>
 </PostDetailsLayout>
 
-<script defer>
-  function decrement(e) {
-    const btn = e.target.parentNode.parentElement.querySelector(
-      'div[data-action="decrement"]'
-    );
-    const target = btn.nextElementSibling;
-    let value = Number(target.value);
-    value > 1 ? value-- : "";
-    target.value = value;
-  }
+<script>
+  const queryAll: (selector: string) => NodeListOf<HTMLElement> =
+      document.querySelectorAll.bind(document),
+    productCounters = queryAll(`.product-counter`);
 
-  function increment(e) {
-    const btn = e.target.parentNode.parentElement.querySelector(
-      'div[data-action="decrement"]'
-    );
-    const target = btn.nextElementSibling;
-    let value = Number(target.value);
-    value < 999 ? value++ : "";
-    target.value = value;
-  }
+  const handleKeyUp = ({ target: counter }) => {
+    const count = Number(counter.value);
 
-  const decrementButtons = document.querySelectorAll(
-    `div[data-action="decrement"]`
-  );
+    counter.value = String(count < 1 ? 1 : count > 999 ? 999 : count);
+  };
 
-  const incrementButtons = document.querySelectorAll(
-    `div[data-action="increment"]`
-  );
-
-  decrementButtons.forEach(btn => {
-    btn.addEventListener("click", decrement);
+  productCounters.forEach((counter) => {
+    counter.addEventListener("keyup", handleKeyUp);
   });
 
-  incrementButtons.forEach(btn => {
-    btn.addEventListener("click", increment);
+  document.addEventListener("click", (event) => {
+    const target = (event.target as HTMLElement).closest(
+      "[data-action='decrement'], [data-action='increment']"
+    );
+
+    switch (target?.getAttribute("data-action")) {
+      case "increment":
+        {
+          const counter = target.previousElementSibling as HTMLInputElement,
+            count = Number(counter.value);
+
+          count < 999 && (counter.value = String(count + 1));
+        }
+
+        break;
+
+      case "decrement":
+        {
+          const counter = target.nextElementSibling as HTMLInputElement,
+            count = Number(counter.value);
+
+          count > 1 && (counter.value = String(count - 1));
+        }
+
+        break;
+    }
   });
 </script>
