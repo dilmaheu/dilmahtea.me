@@ -1,0 +1,173 @@
+---
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import productImageSrc from "@components/teatime-rocks.png";
+
+const products = [
+  {
+    name: "Chamomile Tea",
+    image: "image.png",
+    quantity: 2,
+    price: 500,
+    size: 100,
+  },
+  {
+    name: "Chamomile Tea",
+    image: "image.png",
+    quantity: 2,
+    price: 500,
+    size: 100,
+  },
+];
+---
+
+<style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
+  .order-charges {
+    & > div,
+    & + div {
+      @apply flex justify-between items-center;
+    }
+  }
+
+  .order-charges > div span {
+    &:first-of-type {
+      @apply text-[1.125rem];
+    }
+
+    &:last-of-type {
+      @apply text-[2rem];
+    }
+
+    &:first-of-type {
+      font-size: poly-fluid-clamp(
+        (
+          375px: 16px,
+          1440px: 18px,
+        )
+      );
+    }
+
+    &:last-of-type {
+      line-height: 110%;
+
+      font-size: poly-fluid-clamp(
+        (
+          375px: 28px,
+          1440px: 32px,
+        )
+      );
+    }
+  }
+
+  .order-total span {
+    &:first-of-type {
+      font-size: poly-fluid-clamp(
+        (
+          375px: 18px,
+          1440px: 24px,
+        )
+      );
+    }
+
+    &:last-of-type {
+      font-size: poly-fluid-clamp(
+        (
+          375px: 32px,
+          1440px: 42px,
+        )
+      );
+    }
+  }
+
+  .product-image {
+    $fluid-image-size: poly-fluid-clamp(
+      (
+        375px: 68px,
+        1440px: 100px,
+      )
+    );
+
+    width: $fluid-image-size;
+    height: $fluid-image-size;
+    min-width: $fluid-image-size;
+  }
+
+  .product-name {
+    font-size: poly-fluid-clamp(
+      (
+        375px: 18px,
+        1440px: 24px,
+      )
+    );
+  }
+
+  .product-size {
+    font-size: poly-fluid-clamp(
+      (
+        375px: 14px,
+        1440px: 16px,
+      )
+    );
+  }
+</style>
+
+<ClipPathSVG
+  id="shipping-product-image"
+  path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
+/>
+
+<div
+  id="order-summary"
+  class:list={[
+    "lg:w-[36.67%] lg:border lg:border-l-lightgreen",
+    "hidden py-9 px-14 text-dark2 lg:flex flex-col justify-between gap-32",
+  ]}
+>
+  <div class="flex flex-col gap-5">
+    <h5 class="alice text-[1.5rem] sm:text-[1.75rem] leading-[120%]">
+      Order Summary
+    </h5>
+
+    {
+      products.map(({ name, image, quantity, price, size }) => (
+        <div class="product p-4 gap-3.5 flex items-center bg-lightgray2 rounded-[10px]">
+          <img
+            class="product-image"
+            src={productImageSrc}
+            style="clip-path: url(#shipping-product-image)"
+          />
+
+          <div class="flex flex-col flex-grow gap-2.5">
+            <h6 class="product-name alice leading-[130%]">
+              {name} ({quantity})
+            </h6>
+
+            <div class="flex justify-between items-center gap-1.5">
+              <div class="product-size">Size: {size}gm</div>
+
+              <span class="product-price alice text-[1.75rem] leading-[120%]">
+                ${price}
+              </span>
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="flex flex-col">
+    <div class="order-charges pb-3 flex flex flex-col gap-3">
+      <div><span>Subtotal</span> <span class="alice">$1000</span></div>
+
+      <div><span>Shipping</span> <span class="alice">$100</span></div>
+
+      <div><span>Tax</span><span class="alice">$50</span></div>
+    </div>
+
+    <div class="order-total pt-3 border border-t-lightgreen">
+      <span class="font-semibold leading-[130%]">Total</span>
+      <span class="alice leading-[110%]">$50</span>
+    </div>
+  </div>
+</div>

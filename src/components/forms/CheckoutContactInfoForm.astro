@@ -1,9 +1,29 @@
 <style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
   .form-grid-container {
-    @apply flex flex-col gap-6;
+    @apply flex flex-col;
+
+    gap: poly-fluid-clamp(
+      (
+        375px: 10px,
+        1440px: 35px,
+      )
+    );
 
     .form-grid {
-      @apply w-full grid sm:grid-cols-2 gap-y-2.5 sm:gap-y-6 sm:gap-x-24;
+      @apply w-full grid gap-y-2.5;
+
+      @media (min-width: 480px) {
+        @apply grid-cols-2;
+
+        gap: poly-fluid-clamp(
+          (
+            480px: 10px 40px,
+            1440px: 25px 100px,
+          )
+        );
+      }
 
       label {
         @apply flex flex-col gap-1.5;
@@ -22,9 +42,7 @@
   }
 </style>
 
-<form
-  class="checkout-main-active flex flex-col gap-12 py-8 px-6 sm:px-14 w-full sm:w-2/3"
->
+<form class="checkout-main-active flex flex-col gap-12 w-full lg:w-[66.67%]">
   <div class="form-grid-container">
     <h4 class="alice">Contact info</h4>
 
@@ -126,6 +144,7 @@
 <script>
   declare global {
     interface Window {
+      openCart: () => void;
       contactInfo: Record<string, FormDataEntryValue>;
       toggleBetweenInfoFormAndShippingDetails: () => void;
     }
