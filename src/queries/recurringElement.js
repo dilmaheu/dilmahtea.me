@@ -44,7 +44,7 @@ const recurringElementQuery = `
           recipe_tips
           recipe_discover
           estate_location
-          product_made_love_form
+          product_made_love_from
           product_kindness_impact
           product_add
           product_add_cart
@@ -94,7 +94,7 @@ const recurringElementQuery = `
                 recipe_tips
                 recipe_discover
                 estate_location
-                product_made_love_form
+                product_made_love_from
                 product_kindness_impact
                 product_add
                 product_add_cart
