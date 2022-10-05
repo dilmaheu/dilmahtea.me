@@ -18,6 +18,18 @@ const homeProductQuery = `
               }
             }
           }
+          Block2_title
+          Block2_button_text
+          Block2_button_link
+          Block2_blob{
+            data{
+              attributes{
+                url
+                provider_metadata
+                alternativeText
+              }
+            }
+          }
           blogs {
             data{
               attributes{
@@ -62,6 +74,18 @@ const homeProductQuery = `
                 Heading_button_text
                 Heading_button_link
                 Intro_blob{
+                  data{
+                    attributes{
+                      url
+                      provider_metadata
+                      alternativeText
+                    }
+                  }
+                }
+                Block2_title
+                Block2_button_text
+                Block2_button_link
+                Block2_blob{
                   data{
                     attributes{
                       url
