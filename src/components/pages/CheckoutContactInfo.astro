@@ -1,5 +1,25 @@
+---
+import CMS from "@store/CMS";
+
+const { page, recurData } = Astro.props;
+
+const { locale } = page,
+  { data: checkoutShippingData } = CMS.get("checkoutShipping"),
+  { URL_slug: shippingPageSlug } = checkoutShippingData.attributes.Meta,
+  shippingPageLink = "/" + locale + "/" + shippingPageSlug;
+---
+
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
+
+  form {
+    padding: poly-fluid-clamp(
+      (
+        375px: 25px 25px,
+        1440px: 32px 56px,
+      )
+    );
+  }
 
   .form-grid-container {
     @apply flex flex-col;
@@ -42,7 +62,7 @@
   }
 </style>
 
-<form class="checkout-main-active flex flex-col gap-12 w-full lg:w-[66.67%]">
+<form class="flex flex-col gap-12" action={shippingPageLink}>
   <div class="form-grid-container">
     <h4 class="alice">Contact info</h4>
 
@@ -146,50 +166,27 @@
     interface Window {
       openCart: () => void;
       contactInfo: Record<string, FormDataEntryValue>;
-      toggleBetweenInfoFormAndShippingDetails: () => void;
     }
   }
 
-  const id: (string) => HTMLElement = document.getElementById.bind(document),
-    query: (string) => HTMLElement = document.querySelector.bind(document),
-    checkout = id("checkout"),
-    checkoutMain = id("checkout-main"),
-    returnToCartBtn = id("return-to-cart-btn"),
-    shippingDetails = id("shipping-details"),
-    checkoutContactInfoForm = query("#checkout-main form"),
-    contactInfoFlowItemProgress = query(".flow div:nth-child(2) div"),
-    shippingDetailsFlowItemProgress = query(".flow div:nth-child(3) div");
-
-  window.toggleBetweenInfoFormAndShippingDetails = () => {
-    checkoutContactInfoForm.classList.toggle("hidden");
-    checkoutContactInfoForm.classList.toggle("checkout-main-active");
-
-    shippingDetails.classList.toggle("hidden");
-    shippingDetails.classList.toggle("checkout-main-active");
-
-    contactInfoFlowItemProgress.classList.toggle("opacity-60");
-    shippingDetailsFlowItemProgress.classList.toggle("opacity-60");
-    shippingDetailsFlowItemProgress.classList.toggle("opacity-30");
-  };
+  const returnToCartBtn = document.getElementById("return-to-cart-btn"),
+    checkoutContactInfoForm = document.querySelector(
+      "#checkout-main form"
+    ) as HTMLFormElement;
 
   checkoutContactInfoForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const formData = Object.fromEntries(
-      new FormData(event.target as HTMLFormElement)
-    );
+    const formData = Object.fromEntries(new FormData(checkoutContactInfoForm));
 
     window.contactInfo = formData;
 
-    window.toggleBetweenInfoFormAndShippingDetails();
+    location.href = checkoutContactInfoForm.action;
   });
 
   returnToCartBtn.addEventListener("click", (event) => {
     event.preventDefault();
 
     window.openCart();
-
-    checkout.classList.toggle("hidden");
-    checkoutMain.classList.toggle("hidden");
   });
 </script>

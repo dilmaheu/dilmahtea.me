@@ -3,6 +3,7 @@ import { Icon } from "astro-icon";
 import ClippedImg from "@components/ClippedImg.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import productImageSrc from "@components/teatime-rocks.png";
+import CMS from "@store/CMS";
 
 const addedProducts = [
   {
@@ -20,6 +21,17 @@ const addedProducts = [
     size: 100,
   },
 ];
+
+declare interface Props {
+  page: Record<string, any>;
+}
+
+const { page } = Astro.props as Props;
+
+const { locale } = page,
+  { data: checkoutInformationData } = CMS.get("checkoutInformation"),
+  { URL_slug: checkoutInfoPageSlug } = checkoutInformationData.attributes.Meta,
+  checkoutInfoPageLink = "/" + locale + "/" + checkoutInfoPageSlug;
 ---
 
 <style lang="scss">
@@ -155,12 +167,12 @@ const addedProducts = [
             </div>
           </div>
 
-          <button
-            id="proceed-to-checkout-btn"
-            class="capitalize py-4 font-bold bg-primary text-lightgray rounded-[9999px]"
+          <a
+            href={checkoutInfoPageLink}
+            class="capitalize py-4 font-bold bg-primary text-center text-lightgray rounded-[9999px]"
           >
             Proceed to Checkout
-          </button>
+          </a>
         </div>
       </div>
     </div>
@@ -181,10 +193,7 @@ const addedProducts = [
   const id: (string) => HTMLElement = document.getElementById.bind(document),
     cart = id("cart"),
     sidebar = id("sidebar"),
-    checkout = id("checkout"),
-    checkoutMain = id("checkout-main"),
     closeCartBtn = id("close-cart-btn"),
-    proceedToCheckoutBtn = id("proceed-to-checkout-btn"),
     { overflowY: prevBodyOverflowYValue } = document.body.style;
 
   const removeItemBtns = document.querySelectorAll(".remove-item-btn");
@@ -202,10 +211,10 @@ const addedProducts = [
   const closeCart = () => {
     cart.classList.toggle("hidden");
 
-    sidebar.offsetWidth === 0 && window.enableScrolling();
+    (!sidebar || sidebar.offsetWidth === 0) && window.enableScrolling();
 
     document.body.style.overflowY =
-      sidebar.offsetWidth > 0 ? "scroll" : prevBodyOverflowYValue;
+      sidebar?.offsetWidth > 0 ? "scroll" : prevBodyOverflowYValue;
   };
 
   const tweak = (target, { action }) => {
@@ -230,16 +239,6 @@ const addedProducts = [
   });
 
   closeCartBtn.addEventListener("click", closeCart);
-
-  proceedToCheckoutBtn.addEventListener("click", () => {
-    cart.classList.toggle("hidden");
-    checkout.classList.toggle("hidden");
-    checkoutMain.classList.toggle("hidden");
-
-    window.disableScrolling();
-
-    document.body.style.overflowY = "hidden";
-  });
 
   document.addEventListener("click", (event) => {
     const target = (event.target as HTMLElement).closest(

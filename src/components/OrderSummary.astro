@@ -1,5 +1,4 @@
 ---
-import ClipPathSVG from "@components/ClipPathSVG.astro";
 import productImageSrc from "@components/teatime-rocks.png";
 
 const products = [
@@ -22,6 +21,17 @@ const products = [
 
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
+
+  .order-summary {
+    @media (min-width: 1024px) {
+      padding: poly-fluid-clamp(
+        (
+          1024px: 28px 42px,
+          1440px: 32px 56px,
+        )
+      );
+    }
+  }
 
   .order-charges {
     & > div,
@@ -112,17 +122,8 @@ const products = [
   }
 </style>
 
-<ClipPathSVG
-  id="shipping-product-image"
-  path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
-/>
-
 <div
-  id="order-summary"
-  class:list={[
-    "lg:w-[36.67%] lg:border lg:border-l-lightgreen",
-    "hidden py-9 px-14 text-dark2 lg:flex flex-col justify-between gap-32",
-  ]}
+  class="order-summary text-dark2 flex flex-col justify-between gap-[26px] lg:gap-32"
 >
   <div class="flex flex-col gap-5">
     <h5 class="alice text-[1.5rem] sm:text-[1.75rem] leading-[120%]">

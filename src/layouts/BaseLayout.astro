@@ -1,10 +1,6 @@
 ---
 import "@styles/styles.scss";
 
-import Cart from "@components/Cart.astro";
-import Checkout from "@pages/Checkout.astro";
-import Navbar from "@components/Navbar.astro";
-import Footer from "@components/Footer.astro";
 import MainHead from "@components/MainHead.astro";
 import Notification from "@components/Notification.astro";
 import LocalizeLinks from "@components/LocalizeLinks.astro";
@@ -15,21 +11,15 @@ import NotificationAnimations from "@scripts/NotificationAnimations.astro";
 import getLangNotAvailableNotification from "@utils/getLangNotAvailableNotification";
 
 interface Props {
-  meta: any;
+  meta: Record<string, any>;
   locale: string;
-  recurData: any;
   metaImageID: string;
   availableLocales: string[];
 }
 
-const { meta, locale, recurData, availableLocales, metaImageID } =
-  Astro.props as Props;
+const { meta, locale, availableLocales, metaImageID } = Astro.props as Props;
 
-const { URL_slug: slugURL } = meta,
-  footerText = recurData.Footer_text.replaceAll(
-    "<current_year>",
-    `${new Date().getFullYear()}`
-  );
+const { URL_slug: slugURL } = meta;
 
 const { Type: notificationType, localizedNotifications } =
   getLangNotAvailableNotification();
@@ -98,20 +88,6 @@ const { Type: notificationType, localizedNotifications } =
       }
     </script>
 
-    <Navbar
-      docLocale={locale}
-      footerText={footerText}
-      availableLocales={availableLocales}
-    />
-
-    <main>
-      <slot />
-    </main>
-
-    <Footer footerText={footerText} />
-
-    <Cart />
-
-    <Checkout />
+    <slot />
   </LocalizeLinks>
 </html>

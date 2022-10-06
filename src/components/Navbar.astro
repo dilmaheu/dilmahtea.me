@@ -227,10 +227,6 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     sidebarOpenButton = query("#sidebar-open-btn"),
     sidebarCloseButton = query("#sidebar-close-btn");
 
-  openCartBtn.addEventListener("click", () => {
-    window.openCart();
-  });
-
   window.disableScrolling = () => {
     const overflowY =
       visualViewport.height < document.body.offsetHeight ? "scroll" : "auto";
@@ -278,6 +274,26 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 
   window.addEventListener("resize", updateSidebarTopPosition);
 
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 639) {
+      // enable scrolling only if cart and checkout is not open
+      cart.classList.contains("hidden") &&
+        checkout.classList.contains("hidden") &&
+        window.enableScrolling();
+
+      window.removeEventListener("resize", updateSidebarTopPosition);
+    } else if (sidebar.style.display === "block") {
+      // @ts-ignore
+      window.disableScrolling();
+
+      window.addEventListener("resize", updateSidebarTopPosition);
+    }
+  });
+
+  openCartBtn.addEventListener("click", () => {
+    window.openCart();
+  });
+
   sidebarOpenButton.addEventListener("click", () => {
     window.removeEventListener("resize", updateSidebarTopPosition);
 
@@ -300,21 +316,5 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     navigation.style.backgroundImage = "unset";
 
     window.enableScrolling();
-  });
-
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 639) {
-      // enable scrolling only if cart and checkout is not open
-      cart.classList.contains("hidden") &&
-        checkout.classList.contains("hidden") &&
-        window.enableScrolling();
-
-      window.removeEventListener("resize", updateSidebarTopPosition);
-    } else if (sidebar.style.display === "block") {
-      // @ts-ignore
-      window.disableScrolling();
-
-      window.addEventListener("resize", updateSidebarTopPosition);
-    }
   });
 </script>

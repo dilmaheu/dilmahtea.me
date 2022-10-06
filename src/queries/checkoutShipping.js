@@ -5,6 +5,7 @@ const checkoutShippingQuery = `
         id
         attributes {
           locale
+          checkout_step_order
           Meta {
             HTML_Title
             Meta_description
