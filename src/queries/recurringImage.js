@@ -44,8 +44,9 @@ const recurringImageQuery = `
       data {
         id
         attributes {
-          ${images.map(
-            (image) => `
+          ${images
+            .map(
+              (image) => `
               ${image} {
                 data {
                   attributes {
@@ -55,7 +56,8 @@ const recurringImageQuery = `
                 }
               }
             `
-          )}
+            )
+            .join("")}
         }
       }
     }
