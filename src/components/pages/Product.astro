@@ -1,4 +1,5 @@
 ---
+import Icon from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
@@ -10,12 +11,7 @@ import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
-const { 
-  white_cup,
-  white_love_ribbon, 
-  green_product_cart_plus, 
-  white_right_arrow 
-} = RecurringImages;
+const { white_cup, white_love_ribbon, white_right_arrow } = RecurringImages;
 
 const { page, recurData } = Astro.props,
   { posts } = page,
@@ -71,22 +67,20 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     height: clamp(27px, 3.5vw + 6px, 42px);
   }
 
-  .product-img-container{
+  .product-img-container {
     width: 100%;
     max-height: 393px;
 
     @media (min-width: 640px) {
       aspect-ratio: 5.93 / 3.91;
     }
-
   }
 
   .product-card-info {
     height: clamp(27px, 3.5vw + 6px, 42px);
   }
 
-
-  .product-impact-container{
+  .product-impact-container {
     width: 100%;
     height: 100%;
     clip-path: url(#product-impact-bg-curve-sm);
@@ -96,19 +90,17 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       aspect-ratio: 144 / 55;
       clip-path: url(#product-impact-bg-curve);
     }
-
   }
 
-  .product-impact-text{
+  .product-impact-text {
     font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
   }
 
-  .product-impact-btn{
+  .product-impact-btn {
     font-size: clamp(1rem, 2.2vw + 0.13rem, 2rem);
     margin-top: clamp(25px, 3.5vw + 6px, 50px);
     padding: clamp(10px, 1.3vw + 1px, 19px) clamp(16px, 2.2vw + 1px, 31px);
   }
-
 </style>
 
 <!-- Hero Section -->
@@ -119,10 +111,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
   {/* Text Content */}
   <div class="wrapper hero-text-container h-full relative z-30">
-    <div
-      role="banner"
-      class="flex flex-wrap items-center sm:w-7/12 h-full"
-    >
+    <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
       <div class="mt-[30px] sm:mt-4 lg:mt-0">
         <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
           {page.Title}
@@ -136,13 +125,11 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
           <Markdown>{page.Intro_text}</Markdown>
         </div>
 
-        { 
+        {
           page.Heading_button_text && (
             <div class="flex">
               <a href={page.Heading_button_link}>
-                <div
-                  class="bg-white rounded-[40px] text-base font-bold leading-[19px] text-primary py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9"
-                >
+                <div class="bg-white rounded-[40px] text-base font-bold leading-[19px] text-primary py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9">
                   {page.Heading_button_text}
                 </div>
               </a>
@@ -208,18 +195,16 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   }
 </div>
 
-
 <div class="py-[50px]">
   <ClipPathSVG
     id="product-card-curve"
     path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
   />
 
-
   <div class="grid gap-y-[50px]">
-    {/* Products Section */ }
+    {/* Products Section */}
     <main>
-      <div 
+      <div
         id="products"
         role="list"
         aria-label="Kindness Items"
@@ -230,13 +215,10 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
             <div
               role="listitem"
               aria-label="Kindness Item"
-              class="flex flex-wrap bg-primary" 
+              class="flex flex-wrap bg-primary"
               style="clip-path: url(#product-card-curve)"
             >
-              <a 
-                class="block w-full" 
-                href={`/` + post.Meta.URL_slug}
-              >
+              <a class="block w-full" href={`/` + post.Meta.URL_slug}>
                 <div class="product-img-container">
                   <img
                     src={
@@ -254,32 +236,24 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
               <div class="grid content-between py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
                 <div>
                   <div class="flex items-center">
-                    <a href={`/` + post.Meta.URL_slug}>
-                      <div class="product-card-title alice leading-[120%] md:leading-[110%]">
-                        {post.Title}
-                      </div>
-                    </a>
-                    
+                    <div class="product-card-title alice leading-[120%] md:leading-[110%]">
+                      <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+                    </div>
 
-                    <a href={`/` + post.Meta.URL_slug}>
-                      <div 
-                        class:list={[
-                          "bg-lightgray2 hidden lg:flex justify-center items-center gap-x-2",
-                          "py-[9px] px-[24px] ml-2.5 font-bold text-primary leading-[150%] rounded-[40px]"
-                        ]}
-                      >
-                        <span class="w-[30px] h-[30px] p-0.5">
-                          <img 
-                            class="w-full h-full"
-                            {...green_product_cart_plus} 
-                          />
-                        </span>
-                        {recurData.product_add}
-                      </div>
-                    </a>
+                    <button
+                      class:list={[
+                        "bg-lightgray2 hidden lg:flex justify-center items-center gap-x-2",
+                        "py-[9px] px-[24px] ml-2.5 font-bold text-primary leading-[150%] rounded-[40px]",
+                      ]}
+                    >
+                      <Icon
+                        class="w-[30px] h-[30px]"
+                        name="mi:shopping-cart-add"
+                      />
+                      {recurData.product_add}
+                    </button>
                   </div>
-                  
-                  
+
                   <a
                     href={`/` + post.Meta.URL_slug}
                     class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] lg:mt-[7px]"
@@ -287,19 +261,16 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                     <Markdown>{post.Intro_text}</Markdown>
                   </a>
 
-                  
-                  <button 
+                  <button
                     class:list={[
                       "bg-lightgray2 flex lg:hidden justify-center items-center gap-x-2",
-                      "py-[9px] px-[24px] mt-5 font-bold text-primary leading-[150%] rounded-[40px]"
+                      "py-[9px] px-[24px] mt-5 font-bold text-primary leading-[150%] rounded-[40px]",
                     ]}
                   >
-                    <span class="w-[30px] h-[30px] p-0.5">
-                      <img 
-                        class="w-full h-full"
-                        {...green_product_cart_plus} 
-                      />
-                    </span>
+                    <Icon
+                      name="mi:shopping-cart-add"
+                      class="w-[30px] h-[30px] p-0.5"
+                    />
                     {recurData.product_add}
                   </button>
                 </div>
@@ -310,7 +281,9 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                       <img class="w-full h-full" {...white_love_ribbon} />
                     </span>
                     {recurData.product_made_love_from + `\xa0`}
-                    <a href="" class="underline underline-offset-[2px]">Somesset Estate</a>
+                    <a href="" class="underline underline-offset-[2px]">
+                      Somesset Estate
+                    </a>
                   </h2>
                 </div>
               </div>
@@ -320,7 +293,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       </div>
     </main>
 
-    {/* Products impact Section */ }
+    {/* Products impact Section */}
     <section role="complementary">
       <ClipPathSVG
         id="product-impact-bg-curve"
@@ -332,31 +305,33 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
         path="M0.718,0 C0.853,0,0.938,0.021,1,0.064 V0.97 c-0.045,0.046,-0.195,0.006,-0.324,0 c-0.149,-0.007,-0.301,0.03,-0.45,0.03 C0.094,1,0,0.954,0,0.954 V0.064 c0.059,-0.061,0.237,0,0.32,0 S0.583,0,0.718,0"
       />
 
-      <div 
-        class="relative w-full h-full product-impact-container"
-      >
+      <div class="relative w-full h-full product-impact-container">
         <div class="absolute inset-0 w-full h-full">
-          <img 
-            class="bg-primary w-full h-full object-cover" 
-            src={
-              imgSrcPrefix +
-              page.Block2_blob.data.attributes.provider_metadata
-                .public_id +
-              `/small`
-            } 
+          <img
+            class="bg-primary w-full h-full object-cover"
+            src={imgSrcPrefix +
+              posts[0].Intro_blob.data.attributes.provider_metadata.public_id +
+              `/small`}
             alt=""
-          >
+          />
         </div>
 
-        <div class="absolute inset-0 w-full h-full bg-gradient-to-b from-black to-[#2f2f2f] opacity-[0.4]"></div>
+        <div
+          class="absolute inset-0 w-full h-full bg-gradient-to-b from-[#000] to-[#2f2f2f] opacity-[0.4]"
+        >
+        </div>
 
         <div class="relative z-50 h-full flex flex-wrap items-center">
-          <div class="wrapper flex flex-wrap justify-center text-center py-[95px] md:py-[50px]">
-            <div class="product-impact-text alice leading-[110%] md:leading-[115%] w-full">
+          <div
+            class="wrapper flex flex-wrap justify-center text-center py-[95px] md:py-[50px]"
+          >
+            <div
+              class="product-impact-text alice leading-[110%] md:leading-[115%] w-full"
+            >
               {page.Block2_title}
             </div>
             <a href={page.Block2_button_link}>
-              <div 
+              <div
                 class:list={[
                   "product-impact-btn bg-lightgray flex",
                   "font-bold md:font-semibold leading-[150%] text-primary rounded-[40px]",
@@ -370,12 +345,9 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       </div>
     </section>
 
-     {
+    {
       blogs.length > 0 && (
-        <section 
-          class="wrapper" 
-          role="complementary"
-        >
+        <section class="wrapper" role="complementary">
           <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
             {recurData.text_explore_the_world_of_kindness}
           </h2>
@@ -408,20 +380,20 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                   />
 
                   {/* <Picture
-                      alt=""
-                      layout="fill"
-                      src={
-                        imgSrcPrefix +
-                        post.Intro_blob.data.attributes.provider_metadata
-                          .public_id +
-                        `/small`
-                      }
-                      attributes={{
-                        picture: {
-                          style: "clip-path: url(#recent-post-card-curve);",
-                        },
-                      }}
-                    /> */}
+                    alt=""
+                    layout="fill"
+                    src={
+                      imgSrcPrefix +
+                      post.Intro_blob.data.attributes.provider_metadata
+                        .public_id +
+                      `/small`
+                    }
+                    attributes={{
+                      picture: {
+                        style: "clip-path: url(#recent-post-card-curve);",
+                      },
+                    }}
+                  /> */}
                 </a>
 
                 <div class="recent-post-card-content-container">
@@ -445,9 +417,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                   )}
 
                   <div class="recent-post-card-title alice mt-[15px]">
-                    <a href={`/` + post.Meta.URL_slug}>
-                      {post.Title}
-                    </a>
+                    <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
 
                     <span class="icon recent-post-card-title-icon">
                       <img
@@ -464,9 +434,4 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       )
     }
   </div>
-
 </div>
-
-
-
-    
