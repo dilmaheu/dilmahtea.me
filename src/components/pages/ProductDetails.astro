@@ -3,7 +3,6 @@ import { Icon } from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
-import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
@@ -105,7 +104,7 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
           <legend
             class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
           >
-            Size:
+            {recurData.product_size}:
           </legend>
 
           <div class="flex flex-wrap gap-[15px]">
@@ -141,7 +140,7 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
           <legend
             class="text-sm lg:text-base font-medium leading-[150%] pb-[3px] lg:pb-[5px]"
           >
-            Quantity:
+            {recurData.product_quantity}:
           </legend>
 
           <div
@@ -174,134 +173,130 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
           ]}
         >
           <Icon name="mi:shopping-cart" class="w-[26px] h-[26px]" />
-          Add to Cart For $500
+          {recurData.product_add_cart_for} €{page.Price}
         </button>
       </form>
     </div>
   </Fragment>
 
   <div slot="product-add-cart-sm">
-    <form
-      class="add-cart-container flex flex-wrap justify-between items-center gap-y-5 gap-x-[31px]"
-    >
-      <fieldset>
-        <legend
-          class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]"
-        >
-          Size:
-        </legend>
-
-        <div class="flex flex-wrap gap-[15px]">
-          <label class="cursor-pointer">
-            <input type="radio" name="size" class="sr-only peer" checked />
-
-            <span
-              class:list={[
-                "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-primary",
-                "rounded-[22px] group peer-checked:bg-primary peer-checked:text-lightgray",
-              ]}
-            >
-              100gm
-            </span>
-          </label>
-
-          <label class="cursor-pointer">
-            <input type="radio" name="size" class="sr-only peer" />
-
-            <span
-              class:list={[
-                "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-primary",
-                "rounded-[22px] group peer-checked:bg-primary peer-checked:text-lightgray",
-              ]}
-            >
-              20gm
-            </span>
-          </label>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend
-          class="text-sm lg:text-base font-medium leading-[150%] text-primary pb-[3px] lg:pb-[5px]"
-        >
-          Quantity:
-        </legend>
-
-        <div
-          class="py-2.5 px-4 gap-4 flex items-center text-lightgray bg-primary rounded-full"
-        >
-          <Icon
-            name="akar-icons:minus"
-            data-action="decrement"
-            class="w-6 h-6 select-none cursor-pointer"
-          />
-
-          <input
-            value="1"
-            type="number"
-            class="product-counter w-8 h-full text-center lg:text-lg bg-primary outline-none"
-          />
-
-          <Icon
-            name="akar-icons:plus"
-            data-action="increment"
-            class="w-6 h-6 select-none cursor-pointer"
-          />
-        </div>
-      </fieldset>
-
-      <button
-        class:list={[
-          "w-full gap-4 flex justify-center items-center bg-primary",
-          "py-[18px] px-[52px] mt-auto font-bold text-base text-lightgray leading-[19px] rounded-full",
-        ]}
+    <fieldset>
+      <legend
+        class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]"
       >
-        <Icon name="mi:shopping-cart" class="w-8 h-8" />
-        Add to Cart
-      </button>
-    </form>
+        {recurData.product_size}:
+      </legend>
 
-    <div
-      class="product-info-container grid grid-cols-[repeat(auto-fit,minmax(0,80px))] gap-[14px] lg:gap-[21px] justify-between md:justify-center pt-[25px] md:pt-[15px] mt-[25px] border-t border-solid"
+      <div class="flex flex-wrap gap-[15px]">
+        <label class="cursor-pointer">
+          <input type="radio" name="size" class="sr-only peer" checked />
+
+          <span
+            class:list={[
+              "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-primary",
+              "rounded-[22px] group peer-checked:bg-primary peer-checked:text-lightgray",
+            ]}
+          >
+            100gm
+          </span>
+        </label>
+
+        <label class="cursor-pointer">
+          <input type="radio" name="size" class="sr-only peer" />
+
+          <span
+            class:list={[
+              "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-primary",
+              "rounded-[22px] group peer-checked:bg-primary peer-checked:text-lightgray",
+            ]}
+          >
+            20gm
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend
+        class="text-sm lg:text-base font-medium leading-[150%] text-primary pb-[3px] lg:pb-[5px]"
+      >
+        {recurData.product_quantity}:
+      </legend>
+
+      <div
+        class="py-2.5 px-4 gap-4 flex items-center text-lightgray bg-primary rounded-full"
+      >
+        <Icon
+          name="akar-icons:minus"
+          data-action="decrement"
+          class="w-6 h-6 select-none cursor-pointer"
+        />
+
+        <input
+          value="1"
+          type="number"
+          class="product-counter w-8 h-full text-center lg:text-lg bg-primary outline-none"
+        />
+
+        <Icon
+          name="akar-icons:plus"
+          data-action="increment"
+          class="w-6 h-6 select-none cursor-pointer"
+        />
+      </div>
+    </fieldset>
+
+    <button
+      class:list={[
+        "w-full gap-4 flex justify-center items-center bg-primary",
+        "py-[18px] px-[52px] mt-auto font-bold text-base text-lightgray leading-[19px] rounded-full",
+      ]}
     >
-      <div>
-        <div class="w-[31px] h-[31px] p-[2px] mx-auto">
-          <img class="w-full h-full" {...green_leaf_icon} />
-        </div>
+      <Icon name="mi:shopping-cart" class="w-8 h-8" />
+      {recurData.product_add_cart}
+    </button>
+  </div>
 
-        <div class="text-sm font-medium leading-[150%] text-center">
-          Environment Friendly
-        </div>
+  <div
+    class="product-info-container grid grid-cols-[repeat(auto-fit,minmax(0,80px))] gap-[14px] lg:gap-[21px] justify-between md:justify-center pt-[25px] md:pt-[15px] mt-[25px] border-t border-solid"
+  >
+    <div>
+      <div class="w-[31px] h-[31px] p-[2px] mx-auto">
+        <img class="w-full h-full" {...green_leaf_icon} />
       </div>
 
-      <div>
-        <div class="w-[31px] h-[31px] p-[2px] mx-auto">
-          <img class="w-full h-full" {...green_no_icon} />
-        </div>
+      <div class="text-sm font-medium leading-[150%] text-center">
+        Environment Friendly
+      </div>
+    </div>
 
-        <div class="text-sm font-medium leading-[150%] text-center">
-          No Preservatives
-        </div>
+    <div>
+      <div class="w-[31px] h-[31px] p-[2px] mx-auto">
+        <img class="w-full h-full" {...green_no_icon} />
       </div>
 
-      <div>
-        <div class="w-[31px] h-[31px] p-[2px] mx-auto">
-          <img class="w-full h-full" {...green_package_icon} />
-        </div>
+      <div class="text-sm font-medium leading-[150%] text-center">
+        No Preservatives
+      </div>
+    </div>
 
-        <div class="text-sm font-medium leading-[150%] text-center">
-          Sustainable Packaging
-        </div>
+    <div>
+      <div class="w-[31px] h-[31px] p-[2px] mx-auto">
+        <img class="w-full h-full" {...green_package_icon} />
       </div>
 
-      <div>
-        <div class="w-[31px] h-[31px] p-[2px] mx-auto">
-          <img class="w-full h-full" {...green_love} />
-        </div>
+      <div class="text-sm font-medium leading-[150%] text-center">
+        Sustainable Packaging
+      </div>
+    </div>
 
-        <div class="text-sm font-medium leading-[150%] text-center">
-          Handmade in small batch
-        </div>
+    <div>
+      <div class="w-[31px] h-[31px] p-[2px] mx-auto">
+        <img class="w-full h-full" {...green_love} />
+      </div>
+
+      <div class="text-sm font-medium leading-[150%] text-center">
+        Handmade in small batch
       </div>
     </div>
   </div>
@@ -333,8 +328,7 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
         <div
           class="product-kindness-impact-text alice leading-[110%] md:leading-[115%] text-center"
         >
-          <h2>With Food spread smiles. With Kindness create impact.</h2>
-          <div>Here is how:</div>
+          <h2>{recurData.product_kindness_impact}</h2>
         </div>
 
         <div

@@ -205,6 +205,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     {/* Products Section */}
     <main>
       <div
+        id="products"
         role="list"
         aria-label="Kindness Items"
         class="wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))] justify-center gap-[50px]"
@@ -249,7 +250,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                         class="w-[30px] h-[30px]"
                         name="mi:shopping-cart-add"
                       />
-                      Add
+                      {recurData.product_add}
                     </button>
                   </div>
 
@@ -270,7 +271,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                       name="mi:shopping-cart-add"
                       class="w-[30px] h-[30px] p-0.5"
                     />
-                    Add
+                    {recurData.product_add}
                   </button>
                 </div>
 
@@ -279,7 +280,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                     <span class="icon h-5 md:h-6 mr-2 md:mr-2.5">
                       <img class="w-full h-full" {...white_love_ribbon} />
                     </span>
-                    Made with Love from{`\xa0`}
+                    {recurData.product_made_love_from + `\xa0`}
                     <a href="" class="underline underline-offset-[2px]">
                       Somesset Estate
                     </a>
@@ -327,17 +328,16 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
             <div
               class="product-impact-text alice leading-[110%] md:leading-[115%] w-full"
             >
-              Creating a positive impact in indegenious communites
+              {page.Block2_title}
             </div>
-
-            <a href="">
+            <a href={page.Block2_button_link}>
               <div
                 class:list={[
                   "product-impact-btn bg-lightgray flex",
                   "font-bold md:font-semibold leading-[150%] text-primary rounded-[40px]",
                 ]}
               >
-                Lets Create An Impact
+                {page.Block2_button_text}
               </div>
             </a>
           </div>
