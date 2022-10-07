@@ -95,93 +95,90 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
   }
 </style>
 <PostDetailsLayout {page} {recurData} {headingName}>
-  <Fragment slot="tea-details-header">
-    <div>
-      <form
-        class="add-cart-container flex flex-wrap justify-between sm:justify-start items-center gap-y-5 gap-x-[31px]"
+  <form
+    slot="tea-details-header"
+    class="add-cart-container flex flex-wrap justify-between sm:justify-start items-center gap-y-5 gap-x-[31px]"
+  >
+    <fieldset>
+      <legend
+        class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
       >
-        <fieldset>
-          <legend
-            class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
+        {recurData.product_size}:
+      </legend>
+
+      <div class="flex flex-wrap gap-[15px]">
+        <label class="cursor-pointer">
+          <input type="radio" name="size" class="sr-only peer" checked />
+
+          <span
+            class:list={[
+              "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-lightgray",
+              "rounded-[22px] group peer-checked:bg-lightgray peer-checked:text-primary",
+            ]}
           >
-            {recurData.product_size}:
-          </legend>
+            100gm
+          </span>
+        </label>
 
-          <div class="flex flex-wrap gap-[15px]">
-            <label class="cursor-pointer">
-              <input type="radio" name="size" class="sr-only peer" checked />
+        <label class="cursor-pointer">
+          <input type="radio" name="size" class="sr-only peer" />
 
-              <span
-                class:list={[
-                  "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-lightgray",
-                  "rounded-[22px] group peer-checked:bg-lightgray peer-checked:text-primary",
-                ]}
-              >
-                100gm
-              </span>
-            </label>
-
-            <label class="cursor-pointer">
-              <input type="radio" name="size" class="sr-only peer" />
-
-              <span
-                class:list={[
-                  "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-lightgray",
-                  "rounded-[22px] group peer-checked:bg-lightgray peer-checked:text-primary",
-                ]}
-              >
-                20gm
-              </span>
-            </label>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend
-            class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
+          <span
+            class:list={[
+              "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-lightgray",
+              "rounded-[22px] group peer-checked:bg-lightgray peer-checked:text-primary",
+            ]}
           >
-            {recurData.product_quantity}:
-          </legend>
+            20gm
+          </span>
+        </label>
+      </div>
+    </fieldset>
 
-          <div
-            class="py-2.5 px-4 flex items-center text-primary bg-lightgray rounded-full"
-          >
-            <Icon
-              name="akar-icons:minus"
-              data-action="decrement"
-              class="w-6 h-6 select-none cursor-pointer"
-            />
+    <fieldset>
+      <legend
+        class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
+      >
+        {recurData.product_quantity}:
+      </legend>
 
-            <input
-              min="1"
-              max="999"
-              value="1"
-              type="number"
-              class="product-counter w-12 h-full text-center lg:text-lg bg-lightgray outline-none"
-            />
+      <div
+        class="py-2.5 px-4 flex items-center text-primary bg-lightgray rounded-full"
+      >
+        <Icon
+          name="akar-icons:minus"
+          data-action="decrement"
+          class="w-6 h-6 select-none cursor-pointer"
+        />
 
-            <Icon
-              name="akar-icons:plus"
-              data-action="increment"
-              class="w-6 h-6 select-none cursor-pointer"
-            />
-          </div>
-        </fieldset>
+        <input
+          min="1"
+          max="999"
+          value="1"
+          type="number"
+          class="product-counter w-12 h-full text-center lg:text-lg bg-lightgray outline-none"
+        />
 
-        <button
-          class:list={[
-            "w-full sm:w-auto gap-4 flex justify-center items-center bg-lightgray",
-            "py-2.5 px-[52px] mt-auto font-bold text-base text-primary rounded-[40px]",
-          ]}
-        >
-          <Icon name="mi:shopping-cart" class="w-[26px] h-[26px]" />
-          {recurData.product_add_cart_for} €{page.Price}
-        </button>
-      </form>
-    </div>
-  </Fragment>
+        <Icon
+          name="akar-icons:plus"
+          data-action="increment"
+          class="w-6 h-6 select-none cursor-pointer"
+        />
+      </div>
+    </fieldset>
 
-  <div
+    <button
+      class:list={[
+        "w-full sm:w-auto gap-4 flex justify-center items-center bg-lightgray",
+        "py-2.5 px-[52px] mt-auto font-bold text-base text-primary rounded-[40px]",
+      ]}
+    >
+      <Icon name="mi:shopping-cart" class="w-[26px] h-[26px]" />
+      {recurData.product_add_cart_for} €{page.Price}
+    </button>
+  </form>
+
+  <form
     slot="product-add-cart-sm"
     class="flex justify-between flex-wrap gap-4 mt-8"
   >
@@ -262,7 +259,7 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
       <Icon name="mi:shopping-cart" class="w-8 h-8" />
       {recurData.product_add_cart}
     </button>
-  </div>
+  </form>
 
   <div
     class="product-info-container grid grid-cols-[repeat(auto-fit,minmax(0,80px))] gap-[14px] lg:gap-[21px] justify-between md:justify-center pt-[25px] md:pt-[15px] mt-[25px] border-t border-solid"
