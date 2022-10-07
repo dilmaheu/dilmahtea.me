@@ -153,6 +153,8 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
             />
 
             <input
+              min="1"
+              max="999"
               value="1"
               type="number"
               class="product-counter w-12 h-full text-center lg:text-lg bg-lightgray outline-none"
@@ -236,6 +238,8 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
         />
 
         <input
+          min="1"
+          max="999"
           value="1"
           type="number"
           class="product-counter w-12 h-full text-center lg:text-lg bg-primary outline-none"
@@ -402,17 +406,3 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
     </div>
   </section>
 </PostDetailsLayout>
-
-<script>
-  const productCounters = document.querySelectorAll(`.product-counter`);
-
-  const handleKeyUp = ({ target: counter }) => {
-    const count = Number(counter.value);
-
-    counter.value = String(count < 1 ? 1 : count > 999 ? 999 : count);
-  };
-
-  productCounters.forEach((counter) => {
-    counter.addEventListener("keyup", handleKeyUp);
-  });
-</script>
