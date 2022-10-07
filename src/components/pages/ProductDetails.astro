@@ -30,7 +30,7 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
     margin-top: clamp(0.938rem, 2vw + 0.1rem, 2rem);
   }
 
-  input[type="number"].product-counter {
+  input[type="number"].product-amount-input {
     -moz-appearance: textfield;
 
     &::-webkit-outer-spin-button,
@@ -94,6 +94,7 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
     }
   }
 </style>
+
 <PostDetailsLayout {page} {recurData} {headingName}>
   <form
     slot="tea-details-header"
@@ -108,7 +109,13 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
 
       <div class="flex flex-wrap gap-[15px]">
         <label class="cursor-pointer">
-          <input type="radio" name="size" class="sr-only peer" checked />
+          <input
+            type="radio"
+            name="size"
+            value="100gm"
+            class="peer sr-only"
+            checked
+          />
 
           <span
             class:list={[
@@ -121,7 +128,7 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
         </label>
 
         <label class="cursor-pointer">
-          <input type="radio" name="size" class="sr-only peer" />
+          <input type="radio" name="size" value="20gm" class="peer sr-only" />
 
           <span
             class:list={[
@@ -152,11 +159,12 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
         />
 
         <input
+          type="number"
+          name="count"
+          value="1"
           min="1"
           max="999"
-          value="1"
-          type="number"
-          class="product-counter w-12 h-full text-center lg:text-lg bg-lightgray outline-none"
+          class="product-amount-input w-12 h-full text-center lg:text-lg bg-lightgray outline-none"
         />
 
         <Icon
@@ -191,7 +199,13 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
 
       <div class="flex flex-wrap gap-[15px]">
         <label class="cursor-pointer">
-          <input type="radio" name="size" class="sr-only peer" checked />
+          <input
+            type="radio"
+            name="size"
+            value="100gm"
+            class="peer sr-only"
+            checked
+          />
 
           <span
             class:list={[
@@ -204,7 +218,7 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
         </label>
 
         <label class="cursor-pointer">
-          <input type="radio" name="size" class="sr-only peer" />
+          <input type="radio" name="size" value="20gm" class="peer sr-only" />
 
           <span
             class:list={[
@@ -235,11 +249,12 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
         />
 
         <input
+          type="number"
+          name="count"
+          value="1"
           min="1"
           max="999"
-          value="1"
-          type="number"
-          class="product-counter w-12 h-full text-center lg:text-lg bg-primary outline-none"
+          class="product-amount-input w-12 h-full text-center lg:text-lg bg-primary outline-none"
         />
 
         <Icon
