@@ -131,31 +131,39 @@ const products = [
       Order Summary
     </h5>
 
-    {
-      products.map(({ name, image, quantity, price, size }) => (
-        <div class="product p-4 gap-3.5 flex items-center bg-lightgray2 rounded-[10px]">
-          <img
-            class="product-image"
-            src={productImageSrc}
-            style="clip-path: url(#shipping-product-image)"
-          />
+    <DynamicHTML
+      htmlFn={(content) =>
+        Object.keys(window.cart)
+          .map((id) => window.replacePlaceholders(content, window.cart[id]))
+          .join("")}
+    >
+      <div
+        class="product p-4 gap-3.5 flex items-center bg-lightgray2 rounded-[10px]"
+      >
+        <img
+          class="product-image"
+          src={`<placeholder name="image"></placeholder>`}
+          style="clip-path: url(#shipping-product-image)"
+        />
 
-          <div class="flex flex-col flex-grow gap-2.5">
-            <h6 class="product-name alice leading-[130%]">
-              {name} ({quantity})
-            </h6>
+        <div class="flex flex-col flex-grow gap-2.5">
+          <h6 class="product-name alice leading-[130%]">
+            <placeholder name="name"></placeholder> (<placeholder
+              name="quantity"></placeholder>)
+          </h6>
 
-            <div class="flex justify-between items-center gap-1.5">
-              <div class="product-size">Size: {size}gm</div>
-
-              <span class="product-price alice text-[1.75rem] leading-[120%]">
-                €{price}
-              </span>
+          <div class="flex justify-between items-center gap-1.5">
+            <div class="product-size">
+              Size: <placeholder name="size"></placeholder>
             </div>
+
+            <span class="product-price alice text-[1.75rem] leading-[120%]">
+              €<placeholder name="price"></placeholder>
+            </span>
           </div>
         </div>
-      ))
-    }
+      </div>
+    </DynamicHTML>
   </div>
 
   <div class="flex flex-col">
