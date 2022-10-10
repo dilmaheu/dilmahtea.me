@@ -2,6 +2,7 @@
 import { Icon } from "astro-icon";
 import ClippedImg from "@components/ClippedImg.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import DynamicHTML from "@components/DynamicHTML.astro";
 import productImageSrc from "@components/teatime-rocks.png";
 import CMS from "@store/CMS";
 
@@ -35,11 +36,11 @@ const { locale } = page,
 ---
 
 <style lang="scss">
-  .cart-content-container {
+  .cart-products-container {
     @apply w-[375px] sm:w-[528.96px];
   }
 
-  .cart-content {
+  #cart-products {
     height: 812px;
   }
 
@@ -64,7 +65,7 @@ const { locale } = page,
   }
 
   .cart-product-price,
-  .subtotal-amount {
+  #cart-subtotal {
     line-height: 110%;
 
     @apply text-[1.75rem] sm:text-[2rem];
@@ -82,7 +83,7 @@ const { locale } = page,
 >
   <div class="w-full max-w-[2050px] h-fit mx-auto bg-[rgba(0,0,0,0.5)]">
     <div
-      class="cart-content-container ml-auto overflow-y-auto text-dark2 bg-lightgray"
+      class="cart-products-container ml-auto overflow-y-auto text-dark2 bg-lightgray"
     >
       <ClipPathSVG
         id="cart-product-image"
@@ -90,7 +91,8 @@ const { locale } = page,
       />
 
       <div
-        class="cart-content min-h-screen p-6 sm:py-9 sm:px-14 flex flex-col justify-between gap-2.5"
+        id="cart-products"
+        class="min-h-screen p-6 sm:py-9 sm:px-14 flex flex-col justify-between gap-2.5"
       >
         <div class="flex flex-col gap-5">
           <div class="flex justify-between items-center">
@@ -103,55 +105,76 @@ const { locale } = page,
 
           <div class="border border-solid border-lightgreen"></div>
 
-          {
-            addedProducts.map(({ name, image, quantity, price, size }) => (
-              <div class="p-4 gap-3.5 flex justify-between items-center bg-lightgray2 rounded-[10px]">
-                <img
-                  src={productImageSrc}
-                  style="min-width: 100px; width: 100px; height: 100px; clip-path: url(#cart-product-image);"
-                />
+          <DynamicHTML
+            voidFn={(content, currentScript) => {
+              window.addProductToCart = (id) => {
+                currentScript.insertAdjacentHTML(
+                  "beforebegin",
+                  window.replacePlaceholders(content, {
+                    id,
+                    ...window.cart[id],
+                  })
+                );
+              };
 
-                <div class="cart-product-details flex flex-col gap-1">
-                  <div class="flex justify-between items-center gap-1.5">
-                    <h6 class="alice cart-product-name">{name}</h6>
+              Object.keys(window.cart).forEach(addProductToCart);
+            }}
+          >
+            <div
+              id={`<placeholder name="id"></placeholder>`}
+              class="cart-product p-4 gap-3.5 flex justify-between items-center bg-lightgray2 rounded-[10px]"
+            >
+              <img
+                src={`<placeholder name="image"></placeholder>`}
+                style="min-width: 100px; width: 100px; height: 100px; clip-path: url(#cart-product-image);"
+              />
 
-                    <button class="remove-item-btn">
-                      <Icon name="akar-icons:trash-can" class="w-6 h-6" />
-                    </button>
-                  </div>
+              <div class="cart-product-details flex flex-col gap-1">
+                <div class="flex justify-between items-center gap-1.5">
+                  <h6 class="alice cart-product-name">
+                    <placeholder name="name"></placeholder>
+                  </h6>
 
-                  <div class="cart-product-size">Size: {size}gm</div>
+                  <button class="remove-item-btn">
+                    <Icon name="akar-icons:trash-can" class="w-6 h-6" />
+                  </button>
+                </div>
 
-                  <div class="flex justify-between items-center gap-1.5">
-                    <div
-                      class:list={[
-                        "flex items-center py-1.5 px-2.5 gap-2.5",
-                        "bg-primary text-lightgray rounded-[9999px]",
-                      ]}
-                    >
-                      <Icon
-                        name="akar-icons:minus"
-                        data-action="decrement"
-                        class="w-5 h-5 cursor-pointer select-none"
-                      />
+                <div class="cart-product-size">
+                  Size: <placeholder name="size"></placeholder>
+                </div>
 
-                      <span class="font-medium">{quantity}</span>
+                <div class="flex justify-between items-center gap-1.5">
+                  <div
+                    class:list={[
+                      "flex items-center py-1.5 px-2.5 gap-2.5",
+                      "bg-primary text-lightgray rounded-[9999px]",
+                    ]}
+                  >
+                    <Icon
+                      name="akar-icons:minus"
+                      data-action="decrement"
+                      class="w-5 h-5 cursor-pointer select-none"
+                    />
 
-                      <Icon
-                        name="akar-icons:plus"
-                        data-action="increment"
-                        class="w-5 h-5 cursor-pointer select-none"
-                      />
-                    </div>
-
-                    <span class="cart-product-price alice text-dark3">
-                      ${price}
+                    <span class="font-medium"
+                      ><placeholder name="quantity"></placeholder>
                     </span>
+
+                    <Icon
+                      name="akar-icons:plus"
+                      data-action="increment"
+                      class="w-5 h-5 cursor-pointer select-none"
+                    />
                   </div>
+
+                  <span class="cart-product-price alice text-dark3">
+                    $<placeholder name="price"></placeholder>
+                  </span>
                 </div>
               </div>
-            ))
-          }
+            </div>
+          </DynamicHTML>
         </div>
 
         <div class="flex flex-col gap-5">
@@ -159,7 +182,9 @@ const { locale } = page,
             <div class="flex justify-between items-center">
               <span class="subtotal-text font-medium">Subtotal</span>
 
-              <span class="subtotal-amount alice">$1000</span>
+              <span id="cart-subtotal" class="alice">
+                €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+              </span>
             </div>
 
             <div class="shipping-charge-info">
@@ -196,8 +221,6 @@ const { locale } = page,
     closeCartBtn = id("close-cart-btn"),
     { overflowY: prevBodyOverflowYValue } = document.body.style;
 
-  const removeItemBtns = document.querySelectorAll(".remove-item-btn");
-
   window.openCart = () => {
     cart.classList.toggle("hidden");
 
@@ -222,11 +245,11 @@ const { locale } = page,
         action === "decrement" ? "nextElementSibling" : "previousElementSibling"
       ] as HTMLInputElement,
       isInput = !!counter.value,
-      count = Number(counter[isInput ? "value" : "textContent"]);
+      quantity = Number(counter[isInput ? "value" : "textContent"]);
 
-    if (action === "decrement" ? count > 1 : count < 999) {
+    if (action === "decrement" ? quantity > 1 : quantity < 999) {
       counter[isInput ? "value" : "textContent"] = String(
-        action === "decrement" ? count - 1 : count + 1
+        action === "decrement" ? quantity - 1 : quantity + 1
       );
     }
   };
@@ -235,6 +258,17 @@ const { locale } = page,
     if (event.target === cart) {
       // close cart if clicked outside of cart content
       closeCart();
+    }
+
+    const hasToRemoveItem = event.target.closest(".remove-item-btn");
+
+    if (hasToRemoveItem) {
+      const productToRemove = event.target.closest(".cart-product"),
+        { id: productId } = productToRemove;
+
+      delete window.cart[productId];
+
+      productToRemove.remove();
     }
   });
 
@@ -248,11 +282,5 @@ const { locale } = page,
     const action = target?.getAttribute("data-action");
 
     if (action) tweak(target, { action });
-  });
-
-  removeItemBtns.forEach((button) => {
-    button.addEventListener("click", () => {
-      button.parentElement.parentElement.parentElement.remove();
-    });
   });
 </script>

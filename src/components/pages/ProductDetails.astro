@@ -166,7 +166,7 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes),
 
         <input
           type="number"
-          name="count"
+          name="quantity"
           value="1"
           min="1"
           max="999"
@@ -260,7 +260,7 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes),
 
         <input
           type="number"
-          name="count"
+          name="quantity"
           value="1"
           min="1"
           max="999"
@@ -428,3 +428,42 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes),
     </div>
   </section>
 </PostDetailsLayout>
+
+<script>
+  declare global {
+    interface Window {
+      cart: Record<string, Record<string, string | number>>;
+    }
+  }
+
+  type ProductData = Record<string, string | number>;
+
+  const cartAddingForms = document.querySelectorAll(
+    ".cart-adding-form, .cart-adding-form-sm"
+  );
+
+  // polyfill crypto.randomUUID if not available
+  crypto.randomUUID ??= () =>
+    "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (char) =>
+      (
+        Number(char) ^
+        (crypto.getRandomValues(new Uint8Array(1))[0] &
+          (15 >> (Number(char) / 4)))
+      ).toString(16)
+    );
+
+  cartAddingForms.forEach((form: HTMLFormElement) => {
+    form.onsubmit = (event) => {
+      event.preventDefault();
+
+      const uuid = crypto.randomUUID(),
+        productData = Object.fromEntries(new FormData(form)) as ProductData;
+
+      productData.price = Number(productData.price) * Number(productData.quantity);
+
+      window.cart[uuid] = productData;
+
+      form.reset();
+    };
+  });
+</script>

@@ -1,0 +1,105 @@
+<script is:inline>
+  {
+    window.replacePlaceholders = (content, data) => {
+      const placeholderRegex =
+        /<placeholder\s+name=(?:"|&#34;)(\w+)(?:"|&#34;)[^>]*><\/placeholder>/g;
+
+      return content.replace(
+        placeholderRegex,
+        (match, placeholderName) => data[placeholderName]
+      );
+    };
+
+    const storedCart = JSON.parse(localStorage.getItem("cart") || "{}");
+
+    let subTotal = Object.values(storedCart).reduce(
+      (sum, { price }) => sum + Number(price),
+      0
+    );
+
+    let tax = subTotal / 20,
+      shippingCharge = subTotal / 10,
+      total = subTotal + shippingCharge + tax;
+
+    const updateUI = (type, productData) => {
+      const id = document.getElementById.bind(document),
+        cartSize = id("cart-size"),
+        orderTax = id("order-tax"),
+        orderTotal = id("order-total"),
+        cartSubTotal = id("cart-subtotal"),
+        orderSubTotal = id("order-subtotal"),
+        orderShippingCharge = id("order-shipping-charge");
+
+      const currentCartSize = Number(cartSize.innerText);
+
+      switch (type) {
+        case "add":
+          subTotal += productData.price;
+          cartSize.textContent = currentCartSize + 1;
+          break;
+
+        case "remove":
+          subTotal -= productData.price;
+          cartSize.textContent = currentCartSize - 1;
+          break;
+      }
+
+      tax = subTotal / 20;
+      shippingCharge = subTotal / 10;
+      total = subTotal + shippingCharge + tax;
+
+      cartSubTotal.textContent = "€" + subTotal;
+
+      orderTax && (orderTax.textContent = "€" + tax);
+      orderTotal && (orderTotal.textContent = "€" + total);
+      orderSubTotal && (orderSubTotal.textContent = "€" + subTotal);
+      orderShippingCharge &&
+        (orderShippingCharge.textContent = "€" + shippingCharge);
+    };
+
+    window.cart = new Proxy(storedCart, {
+      get(cart, property) {
+        switch (property) {
+          case "subTotal":
+            return subTotal;
+
+          case "tax":
+            return tax;
+
+          case "shippingCharge":
+            return shippingCharge;
+
+          case "total":
+            return total;
+
+          default:
+            return cart[property];
+        }
+      },
+
+      set(cart, uuid, productData) {
+        cart[uuid] = productData;
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+
+        window.addProductToCart(uuid);
+
+        updateUI("add", productData);
+
+        return true;
+      },
+
+      deleteProperty(cart, property) {
+        const productData = cart[property];
+
+        delete cart[property];
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+
+        updateUI("remove", productData);
+
+        return true;
+      },
+    });
+  }
+</script>

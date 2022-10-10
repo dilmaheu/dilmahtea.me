@@ -1,4 +1,5 @@
 ---
+import DynamicHTML from "@components/DynamicHTML.astro";
 import productImageSrc from "@components/teatime-rocks.png";
 
 const products = [
@@ -70,7 +71,7 @@ const products = [
     }
   }
 
-  .order-total span {
+  .order-total-container span {
     &:first-of-type {
       font-size: poly-fluid-clamp(
         (
@@ -148,7 +149,7 @@ const products = [
               <div class="product-size">Size: {size}gm</div>
 
               <span class="product-price alice text-[1.75rem] leading-[120%]">
-                ${price}
+                €{price}
               </span>
             </div>
           </div>
@@ -159,16 +160,33 @@ const products = [
 
   <div class="flex flex-col">
     <div class="order-charges pb-3 flex flex flex-col gap-3">
-      <div><span>Subtotal</span> <span class="alice">$1000</span></div>
+      <div>
+        <span>Subtotal</span>
+        <span id="order-subtotal" class="alice">
+          €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+        </span>
+      </div>
 
-      <div><span>Shipping</span> <span class="alice">$100</span></div>
+      <div>
+        <span>Shipping</span>
+        <span id="order-shipping-charge" class="alice">
+          €<DynamicHTML htmlFn={() => window.cart.shippingCharge} />
+        </span>
+      </div>
 
-      <div><span>Tax</span><span class="alice">$50</span></div>
+      <div>
+        <span>Tax</span>
+        <span id="order-tax" class="alice">
+          €<DynamicHTML htmlFn={() => window.cart.tax} />
+        </span>
+      </div>
     </div>
 
-    <div class="order-total pt-3 border border-t-lightgreen">
+    <div class="order-total-container pt-3 border border-t-lightgreen">
       <span class="font-semibold leading-[130%]">Total</span>
-      <span class="alice leading-[110%]">$50</span>
+      <span id="order-total" class="alice leading-[110%]">
+        €<DynamicHTML htmlFn={() => window.cart.total} />
+      </span>
     </div>
   </div>
 </div>
