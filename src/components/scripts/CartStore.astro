@@ -12,41 +12,41 @@
 
     const storedCart = JSON.parse(localStorage.getItem("cart") || "{}");
 
-    let subTotal = Object.values(storedCart).reduce(
-      (sum, { price }) => sum + Number(price),
-      0
-    );
+    let subTotal, tax, shippingCharge, total;
 
-    let tax = subTotal / 20,
-      shippingCharge = subTotal / 10,
-      total = subTotal + shippingCharge + tax;
+    const updateAmounts = (cart) => {
+      subTotal = Object.values(cart).reduce(
+        (sum, { price }) => sum + Number(price),
+        0
+      );
 
-    const updateUI = (type, productData) => {
-      const id = document.getElementById.bind(document),
-        cartSize = id("cart-size"),
-        orderTax = id("order-tax"),
-        orderTotal = id("order-total"),
-        cartSubTotal = id("cart-subtotal"),
-        orderSubTotal = id("order-subtotal"),
-        orderShippingCharge = id("order-shipping-charge");
+      (tax = subTotal / 20),
+        (shippingCharge = subTotal / 10),
+        (total = subTotal + shippingCharge + tax);
+    };
 
-      const currentCartSize = Number(cartSize.innerText);
+    updateAmounts(storedCart);
 
-      switch (type) {
-        case "add":
-          subTotal += productData.price;
-          cartSize.textContent = currentCartSize + 1;
-          break;
+    const id = document.getElementById.bind(document);
 
-        case "remove":
-          subTotal -= productData.price;
-          cartSize.textContent = currentCartSize - 1;
-          break;
-      }
+    let cartSize,
+      orderTax,
+      orderTotal,
+      cartSubTotal,
+      orderSubTotal,
+      orderShippingCharge;
 
-      tax = subTotal / 20;
-      shippingCharge = subTotal / 10;
-      total = subTotal + shippingCharge + tax;
+    const updateUI = (cart) => {
+      cartSize ??= id("cart-size");
+      orderTax ??= id("order-tax");
+      orderTotal ??= id("order-total");
+      cartSubTotal ??= id("cart-subtotal");
+      orderSubTotal ??= id("order-subtotal");
+      orderShippingCharge ??= id("order-shipping-charge");
+
+      cartSize.textContent = Object.values(cart).length;
+
+      updateAmounts(cart);
 
       cartSubTotal.textContent = "€" + subTotal;
 
@@ -84,19 +84,17 @@
 
         window.addProductToCart(uuid);
 
-        updateUI("add", productData);
+        updateUI(cart);
 
         return true;
       },
 
       deleteProperty(cart, property) {
-        const productData = cart[property];
-
         delete cart[property];
 
         localStorage.setItem("cart", JSON.stringify(cart));
 
-        updateUI("remove", productData);
+        updateUI(cart);
 
         return true;
       },
