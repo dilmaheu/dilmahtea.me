@@ -1,11 +1,9 @@
 ---
-import Brand from "/logo.svg";
-import LangButton from "./LangButton.astro";
-import getLocalesData from "../utils/getLocalesData";
+import RecurringImages from "@store/RecurringImages";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
 
-// import UKImg from "/images/UK.svg";
-// import GerImg from "/images/germany.svg";
-// import NLImg from "/images/netherlands.svg";
+const { logo } = RecurringImages;
 
 interface Props {
   docLocale: string;
@@ -14,198 +12,246 @@ interface Props {
 }
 
 const { docLocale, footerText, availableLocales } = Astro.props as Props;
-
-const { locales, languages, localeNamesData } = getLocalesData();
-
-const availableLanguages = [];
-
-locales.forEach((locale, index) => {
-  if (locale !== docLocale && [...availableLocales].includes(locale)) {
-    availableLanguages.push(languages[index]);
-  }
-});
-
-const docLang = languages[locales.indexOf(docLocale)],
-  localDocLang = localeNamesData[docLang][docLang];
 ---
 
-<div id="navigation">
-  <nav class="wrapper mx-auto z-50 relative top-0">
-    <div class="flex justify-between items-center paddingTop navbar">
-      <div class="my-auto">
-        <a href="/"><img src={Brand} class="brandLogo" alt="brand-logo" /></a>
-      </div>
+<style lang="scss">
+  .brand-logo {
+    height: clamp(38px, 5vw, 50px);
+  }
 
-      <div class="hidden sm:block mr-auto my-auto navMenu">
-        <div class="flex mr-auto my-auto navMenuItem">
-          <a class="navItem" href="/crowdfunding">Crowdfunding</a>
-          <a class="navItem" href="/blog">Blog</a>
-          <!-- <a class="navItem" href="/howto">How-to</a> -->
-        </div>
-      </div>
+  nav {
+    gap: clamp(10px, 1.5vw, 20px);
 
+    a {
+      @apply text-[32px] md:text-[clamp(0.875rem,1.5vw+0.1rem,1.125rem)] font-semibold md:font-bold leading-[150%];
+    }
+  }
+
+  #sidebar {
+    background-image: url(/bg-images/sidebar.webp);
+  }
+</style>
+
+<section
+  id="navigation"
+  class="md:!static sticky !top-0 z-[999] w-full bg-cover bg-right-bottom"
+>
+  <div
+    class:list={[
+      "flex justify-between items-center",
+      "navbar wrapper relative top-0 z-50 mx-auto py-[clamp(20px,3vw,56px)]",
+    ]}
+  >
+    <a href="/" class="brand-logo my-auto">
+      <img class="w-full h-full" {...logo} />
+    </a>
+
+    <nav class="hidden md:flex m-auto ml-14">
+      <a class="navItem" href="/crowdfunding">Crowdfunding</a>
+      <a class="navItem" href="/blog">Blog</a>
+
+      {
+        shouldDisplayExperimentals() && (
+          <Fragment>
+            <a class="navItem" href="/howto">
+              How-to
+            </a>
+
+            <a class="navItem" href="/recipes">
+              Recipe
+            </a>
+
+            <a class="navItem" href="/tea-estates">
+              Tea Estates
+            </a>
+          </Fragment>
+        )
+      }
+    </nav>
+
+    <div class="flex items-center">
       <div class="flex items-center">
-        <div class="flex items-center">
-          <!-- <div class="relative search">
-                        <div class="flex absolute right-0 items-center justify-center pointer-events-none searchIcnContainer">
-                            <svg class="searchIcn"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.8 25.8"><path d="M24.8,24.8l-5.7-5.7m3.2-7.5a10.7,10.7,0,0,1-3.2,7.5,10.7,10.7,0,0,1-7.5,3.2,10.7,10.7,0,0,1-7.5-3.2,10.6,10.6,0,0,1,15-15,10.7,10.7,0,0,1,3.2,7.5Z" style="fill:none;stroke:#D0D2D0;stroke-linecap:round;stroke-width:2px"/></svg>
-                        </div>
-                        <input type="text" id="search-navbar" class="block w-full bg-gray-5 focus:outline-none searchInput" placeholder="Search tea stories">
-                    </div> -->
-
-          <div
-            id="dropdown"
-            class="dropdown text-sm lg:text-base font-bold relative noselect"
-          >
-            <div
-              id="langBtn"
-              class="flex items-center justify-between gap-x-1.5 md:gap-x-3 font-bold focus:outline-none langBtn"
-            >
-              <!-- <div class="langIcon rounded-full overflow-hidden">
-                                <img src={locale=="en" ? UKImg : locale=="nl" ? NLImg : GerImg} class="w-full h-full object-cover"
-                                    alt="brand-logo">
-                            </div> -->
-              <div class="preferred-locale font-bold">{localDocLang}</div>
-
-              <div class="w-3">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7">
-                  <path
-                    class="cls-1"
-                    d="M.3.3A.6.6,0,0,1,.9,0a.9.9,0,0,1,.6.3L5.8,4.6,10.2.3a.6.6,0,0,1,.6-.3l.6.3a.8.8,0,0,1,.2.6.7.7,0,0,1-.2.6l-5,4.9a.6.6,0,0,1-.6.3.9.9,0,0,1-.6-.3L.3,1.5A.9.9,0,0,1,0,.9.6.6,0,0,1,.3.3Z"
-                    fill="#2B4B50"></path>
-                </svg>
-              </div>
-            </div>
-            <ul
-              id="dropdownMenu"
-              class="absolute rounded hidden overflow-hidden dropdown-menu"
-            >
-              {availableLanguages.map((language) => (
-                <LangButton
-                  locales={locales}
-                  docLang={docLang}
-                  language={language}
-                  languages={languages}
-                  localeNamesData={localeNamesData}
-                />
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div class="block sm:hidden">
-          <div id="sidebarOpen" class="block sm:hidden cursor-pointer">
-            <svg class="w-full h-full" viewBox="0 0 22.4 19.2">
-              <path
-                d="M0,17.6a1.6,1.6,0,0,0,.5,1.1,1.6,1.6,0,0,0,1.1.5H20.8a1.6,1.6,0,0,0,0-3.2H1.6a1.6,1.6,0,0,0-1.1.5A1.6,1.6,0,0,0,0,17.6Zm0-8a1.6,1.6,0,0,0,.5,1.1,1.6,1.6,0,0,0,1.1.5h9.6a1.6,1.6,0,0,0,0-3.2H1.6a1.6,1.6,0,0,0-1.1.5A1.6,1.6,0,0,0,0,9.6Zm0-8A1.6,1.6,0,0,0,.5,2.7a1.6,1.6,0,0,0,1.1.5H20.8a1.6,1.6,0,0,0,1.1-.5,1.6,1.6,0,0,0,.5-1.1A1.6,1.6,0,0,0,21.9.5,1.6,1.6,0,0,0,20.8,0H1.6A1.6,1.6,0,0,0,.5.5,1.6,1.6,0,0,0,0,1.6Z"
-                style="fill:#e3dfde;fill-rule:evenodd"></path>
-            </svg>
-          </div>
-          <div id="sidebarClose" class="cursor-pointer">
-            <svg
-              class="w-auto h-full"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 19.2 19.2"
-            >
-              <path
-                d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
-                style="fill:#e3dfde;fill-rule:evenodd"></path>
-            </svg>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <div id="sidebar">
-    <div class="grid content-between h-full sidebarContainer">
-      <!-- <div class="relative search">
-                <div class="flex absolute right-0 items-center justify-center pointer-events-none searchIcnContainer">
-                    <svg class="searchIcn"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.8 25.8"><path d="M24.8,24.8l-5.7-5.7m3.2-7.5a10.7,10.7,0,0,1-3.2,7.5,10.7,10.7,0,0,1-7.5,3.2,10.7,10.7,0,0,1-7.5-3.2,10.6,10.6,0,0,1,15-15,10.7,10.7,0,0,1,3.2,7.5Z" style="fill:none;stroke:#D0D2D0;stroke-linecap:round;stroke-width:2px"/></svg>
-                </div>
-                <input type="text" id="search-navbar" class="block w-full bg-gray-5 focus:outline-none searchInput" placeholder="Search tea stories">
-            </div> -->
-      <div class="flex navMenuItem">
-        <ul>
-          <li><a class="navItem" href="/crowdfunding">Crowdfunding</a></li>
-          <li><a class="navItem" href="/blog">Blog</a></li>
-          <!-- <li><a class="navItem" href="/howto">How-to</a></li> -->
-        </ul>
+        <LangSelectorsDropdown
+          docLocale={docLocale}
+          availableLocales={availableLocales}
+        />
       </div>
 
-      <div class="sidebarfooter" set:html={footerText}></div>
+      <div class="block md:hidden w-[38px] h-[38px] ml-[18px]">
+        <button
+          id="sidebar-open-btn"
+          class="block w-full h-full select-none cursor-pointer"
+        >
+          <svg viewBox="0 0 22.4 19.2" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M0 17.6a1.6 1.6 0 0 0 .5 1.1 1.6 1.6 0 0 0 1.1.5h19.2a1.6 1.6 0 0 0 0-3.2H1.6a1.6 1.6 0 0 0-1.1.5 1.6 1.6 0 0 0-.5 1.1Zm0-8a1.6 1.6 0 0 0 .5 1.1 1.6 1.6 0 0 0 1.1.5h9.6a1.6 1.6 0 0 0 0-3.2H1.6a1.6 1.6 0 0 0-1.1.5A1.6 1.6 0 0 0 0 9.6Zm0-8a1.6 1.6 0 0 0 .5 1.1 1.6 1.6 0 0 0 1.1.5h19.2a1.6 1.6 0 0 0 1.1-.5 1.6 1.6 0 0 0 .5-1.1 1.6 1.6 0 0 0-.5-1.1 1.6 1.6 0 0 0-1.1-.5H1.6A1.6 1.6 0 0 0 .5.5 1.6 1.6 0 0 0 0 1.6Z"
+              style="fill: #e3dfde; fill-rule: evenodd"></path>
+          </svg>
+        </button>
+
+        <button
+          id="sidebar-close-btn"
+          class="hidden w-full h-full select-none cursor-pointer"
+        >
+          <svg viewBox="0 0 19.2 19.2" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+              style="fill: #e3dfde; fill-rule: evenodd"></path>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
-</div>
-<div class="block sm:hidden py-11"></div>
 
-<script
-  is:inline
-  define:vars={{
-    locales,
-    languages,
-  }}
->
-  const navigation = document.getElementById("navigation"),
-    translationNotFoundNotification = document.querySelector(
-      ".translation-not-found-notification"
-    );
+  <div
+    id="sidebar"
+    class:list={[
+      "bg-cover bg-right-bottom bg-no-repeat",
+      "hidden md:!hidden fixed right-0 z-[40] w-[300px] max-w-full h-full pb-20",
+    ]}
+  >
+    <div class="grid content-between h-full px-[30px] pt-[26px] pb-9">
+      <nav class="flex flex-col">
+        <a class="navItem" href="/crowdfunding">Crowdfunding</a>
+        <a class="navItem" href="/blog">Blog</a>
 
-  window.onscroll = function () {
-    const top = window.pageYOffset || document.documentElement.scrollTop,
-      translationNotFoundNotificationHeight =
+        {
+          shouldDisplayExperimentals() && (
+            <Fragment>
+              <a class="navItem" href="/howto">
+                How-to
+              </a>
+
+              <a class="navItem" href="/recipes">
+                Recipe
+              </a>
+
+              <a class="navItem" href="/tea-estates">
+                Tea Estates
+              </a>
+            </Fragment>
+          )
+        }
+      </nav>
+
+      <div class="text-xs font-normal leading-[150%]" set:html={footerText}>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="block md:hidden py-11"></div>
+
+<script is:inline>
+  {
+    const navigation = document.getElementById("navigation"),
+      translationNotFoundNotification = document.querySelector(
+        ".translation-not-found-notification"
+      );
+
+    window.addEventListener("scroll", () => {
+      const translationNotFoundNotificationHeight =
         translationNotFoundNotification.getBoundingClientRect().height;
 
-    navigation.style.top = `${translationNotFoundNotificationHeight}px`;
+      // fix sticky navbar position if top notification is shown
+      navigation.style.top = `${translationNotFoundNotificationHeight}px`;
 
-    if (top > 0) {
-      navigation.style.backgroundImage = "url(/images/navBg.webp)";
-    } else if (document.body.style.position !== "fixed") {
-      navigation.style.background = "transparent";
+      navigation.style.backgroundImage =
+        scrollY > 0 || document.body.style.position === "fixed"
+          ? "url(/bg-images/nav-background.webp)"
+          : "unset";
+    });
+  }
+</script>
+
+<script>
+  const query = document.querySelector.bind(document),
+    rootElement = query(":root"),
+    sidebar = query("#sidebar"),
+    navigation = query("#navigation"),
+    sidebarOpenButton = query("#sidebar-open-btn"),
+    sidebarCloseButton = query("#sidebar-close-btn");
+
+  function disableScrolling() {
+    const overflowY =
+      visualViewport.height < document.body.offsetHeight ? "scroll" : "auto";
+
+    Object.assign(document.body.style, {
+      overflowY,
+      width: "100%",
+      position: "fixed",
+      top: `-${window.scrollY}px`,
+    });
+  }
+
+  function enableScrolling() {
+    const scrollYPosition = parseInt(document.body.style.top.slice(1, -2));
+
+    Object.assign(document.body.style, {
+      width: "auto",
+      overflowY: "auto",
+      position: "static",
+    });
+
+    try {
+      window.scrollTo({
+        top: scrollYPosition,
+        // @ts-ignore
+        behavior: "instant",
+      });
+    } catch (error) {
+      const currentRootScrollBehavior = rootElement.style.scrollBehavior;
+
+      rootElement.style.scrollBehavior = "auto";
+
+      window.scrollTo({
+        top: scrollYPosition,
+        behavior: "auto",
+      });
+
+      rootElement.style.scrollBehavior = currentRootScrollBehavior;
     }
+  }
+
+  const updateSidebarTopPosition = () => {
+    sidebar.style.top = `${navigation.getBoundingClientRect().bottom}px`;
   };
 
-  document.querySelectorAll(".preferred-locale").forEach((dropdown) => {
-    const preferredLanguage =
-      languages[
-        locales.indexOf(
-          preferredLocale /* preferredLocale is declared in the Redirect.astro component */
-        )
-      ];
+  window.addEventListener("resize", updateSidebarTopPosition);
 
-    dropdown.textContent = preferredLanguage;
+  sidebarOpenButton.addEventListener("click", () => {
+    window.removeEventListener("resize", updateSidebarTopPosition);
+
+    updateSidebarTopPosition();
+
+    sidebar.style.display = "block";
+    sidebarOpenButton.style.display = "none";
+    sidebarCloseButton.style.display = "block";
+    navigation.style.backgroundImage = "url(/bg-images/nav-background.webp)";
+
+    disableScrolling();
+
+    window.addEventListener("resize", updateSidebarTopPosition);
   });
 
-  // document
-  //   .querySelectorAll(
-  //     `.lang-selector.${preferredLocale}, .lang-selector .${preferredLocale}`
-  //   )
-  //   .forEach((selector) => {
-  //     selector.classList.toggle("hidden");
-  //   });
+  sidebarCloseButton.addEventListener("click", () => {
+    sidebar.style.display = "none";
+    sidebarOpenButton.style.display = "block";
+    sidebarCloseButton.style.display = "none";
+    navigation.style.backgroundImage = "unset";
 
-  const activeLangSelectors = document.querySelectorAll(
-      ".lang-selector:not(.hidden)"
-    ),
-    sortedLangSelectors = [...activeLangSelectors].sort(
-      (nextSelector, currentSelector) =>
-        nextSelector.innerText.localeCompare(currentSelector.innerText, "en")
-    );
-
-  sortedLangSelectors.forEach((langSelector, i) => {
-    i !== sortedLangSelectors.length - 1 &&
-      langSelector.after(sortedLangSelectors[i + 1]);
+    enableScrolling();
   });
 
-  document.addEventListener("click", ({ target }) => {
-    const dropdown = document.querySelector("#dropdown");
-    (langButton = document.querySelector("#langBtn")),
-      (dropdownMenu = document.querySelector("#dropdownMenu"));
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 639) {
+      enableScrolling();
 
-    if (!dropdown.contains(target)) {
-      if (dropdownMenu.style.display === "block") {
-        langButton.click();
-      }
+      window.removeEventListener("resize", updateSidebarTopPosition);
+    } else if (sidebarCloseButton.style.display === "block") {
+      disableScrolling();
+
+      window.addEventListener("resize", updateSidebarTopPosition);
     }
   });
 </script>

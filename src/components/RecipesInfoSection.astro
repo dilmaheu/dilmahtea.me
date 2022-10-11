@@ -1,0 +1,86 @@
+---
+import { parseHTML } from "linkedom";
+import Markdown from "@astrojs/markdown-component";
+import ClippedImg from "@components/ClippedImg.astro";
+import ClippedPicture from "@components/ClippedPicture.astro";
+import OptimizeContentImages from "@components/OptimizeContentImages.astro";
+
+const { page } = Astro.props;
+
+// @ts-ignore
+const contentBlocksHTML = await Astro.__renderMarkdown(page.Block_text);
+
+const { document: contentBlocksDocument } = await parseHTML(contentBlocksHTML),
+  titles = [...contentBlocksDocument.querySelectorAll("h2")];
+---
+
+<style is:global>
+  .chapter:nth-child(1) .recipe-sec-title{
+    margin-top: 0;
+  }
+</style>
+
+<style lang="scss">
+  .recipe-content-img {
+    margin-top: 20px;
+    max-height: 391px !important;
+  }
+
+  .recipe-info-img-container{
+    width: 100%;
+    max-height: 420px;
+
+    @media (min-width: 640px) {
+      aspect-ratio: 7.3 / 3.9;
+    }
+  }
+</style>
+
+{
+  titles.map((title) => {
+    const { textContent: titleText } = title,
+      { textContent } = title.nextElementSibling;
+    // @ts-ignore
+    const imgSrc = title.nextElementSibling?.lastElementChild?.src;
+
+    return (
+      <>
+        <h2 class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title">
+          {titleText}
+        </h2>
+
+        <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] mt-[25px]">
+          <div class="prose max-w-none mb-[15px] text-dark recipe-sec-text">
+            <Markdown>{textContent}</Markdown>
+
+            {/* <OptimizeContentImages>
+                <Markdown>{textContent}</Markdown>
+              </OptimizeContentImages> */}
+          </div>
+
+          {imgSrc && (
+            <div class="recipe-info-img-container">
+              <ClippedImg
+                id="recipe-img-curve"
+                className="w-full h-full"
+                src={imgSrc}
+                path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+              />
+            </div>
+
+            /* <ClippedPicture
+              id="recipe-img-curve"
+              src={imgSrc}
+              path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+              attributes={{
+                picture: {
+                  class: "recipe-content-img",
+                },
+              }}
+            /> */
+          )}
+        </div>
+      </>
+    );
+  })
+}

@@ -1,0 +1,74 @@
+---
+const { goalText, supportersText, supportersCount, totalAmountRaised } =
+  Astro.props;
+---
+
+<style lang="scss">
+  @use "src/styles/colors";
+
+  .progress-header {
+    line-height: 130%;
+    letter-spacing: -0.02em;
+    font-size: clamp(28px, 2vw + 1px, 40px);
+  }
+
+  .progress-text {
+    line-height: 140%;
+    color: rgba(227, 223, 222, 0.65);
+    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
+  }
+
+  .progress-bar {
+    background-color: colors.$crowdfunding-progress;
+  }
+
+  .progressContent {
+    width: clamp(50px, 18vw + 120px, 400px);
+  }
+  .progress-content-container{
+    margin: -5% 8% 0 18%;
+
+    @media (max-width: 799.98px) {
+      margin: -5% 14% 0 16%;
+    }
+
+    @media (max-width: 699.98px) {
+      margin: -5% 18% 0 16%;
+    }
+
+    @media (max-width: 669.98px) {
+      margin: -5% 20% 0 15%;
+    }
+
+    @media (max-width: 639.98px) {
+      margin: 0;
+    }
+  }
+</style>
+
+<div
+  class="relative w-full progress-content-container"
+>
+  <div
+    class="progress-header"
+  >
+    €<span class="font-bold total-amount-raised">{totalAmountRaised}</span>
+  </div>
+
+  <div class="flex flex-wrap items-center justify-between gap-x-1.5 h-auto">
+    <div class="progress-text">{goalText}</div>
+
+    <div class="progress-text">
+      <span
+        class="supporters-count font-medium text-lightgray text-[1.5rem] md:text-[1.625rem] leading-[26px]"
+      >
+        {supportersCount}
+      </span>
+      {supportersText}
+    </div>
+  </div>
+
+  <div class="bg-lightgray w-full mt-1 sm:mt-2 md:mt-3 rounded-full">
+    <div style="width: 0%" class="progress-bar py-1.5 rounded-full"></div>
+  </div>
+</div>

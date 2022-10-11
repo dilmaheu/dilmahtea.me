@@ -1,0 +1,41 @@
+---
+import getLocalesData from "@utils/getLocalesData";
+
+const { locales } = getLocalesData();
+---
+
+<script is:inline define:vars={{ locales }}>
+  const searchParams = Object.fromEntries(new URL(location.href).searchParams);
+
+  const { requestedLocale } = searchParams;
+
+  window.requestedLocale = locales.includes(requestedLocale)
+    ? requestedLocale
+    : null;
+
+  if (window.requestedLocale) {
+    const notificationsObserver = new MutationObserver(function (
+      mutationRecords
+    ) {
+      // check if any notification is added in current records' batch
+      const documentHasNewNotifications = mutationRecords.some((record) =>
+        record.target?.classList?.contains("notification-content")
+      );
+
+      if (documentHasNewNotifications) {
+        const { target: topmostTarget } = mutationRecords[0];
+
+        topmostTarget
+          .querySelectorAll(
+            `.notification .notification-content .${requestedLocale}`
+          )
+          .forEach((notification) => notification.classList.remove("hidden"));
+      }
+    });
+
+    notificationsObserver.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
+  }
+</script>

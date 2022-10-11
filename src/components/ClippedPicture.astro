@@ -1,0 +1,33 @@
+---
+import { Picture } from "astro-imagetools/components";
+import { PictureConfigOptions } from "astro-imagetools";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+
+declare interface Props
+  extends Pick<
+    PictureConfigOptions,
+    Exclude<keyof PictureConfigOptions, "alt" | "layout">
+  > {
+  id: string;
+  path: string;
+  alt?: string;
+  pictureStyle?: string;
+}
+
+const {
+  id,
+  path,
+  alt = "",
+  pictureStyle = "",
+  ...PictureProps
+} = Astro.props as Props;
+
+PictureProps.attributes ??= {};
+PictureProps.attributes.picture ??= {};
+PictureProps.attributes.picture.style ??= "";
+PictureProps.attributes.picture.style += `clip-path: url(#${id}); ${pictureStyle}`;
+---
+
+<ClipPathSVG id={id} path={path} />
+
+<Picture alt="" layout="fill" {...PictureProps} />

@@ -1,0 +1,112 @@
+---
+import { parseHTML } from "linkedom";
+import RecurringImages from "@store/RecurringImages";
+
+declare interface Props {
+  type?: "Error" | "Warning" | "Info" | "Success" | "Default";
+  closingEnabled?: boolean;
+  notification?: Record<string, any>;
+}
+
+const { type, closingEnabled, notification } = Astro.props as Props;
+
+if (type === "Error" && closingEnabled === true) {
+  throw Error("Error notifications can't have closing functionality enabled");
+}
+
+if (type !== "Default") {
+  var icon = RecurringImages[`${type.toLowerCase()}_notification`];
+}
+
+const defaultSlotHTML = await Astro.slots.render("default"),
+  { document: defaultSlotDocument } = await parseHTML(defaultSlotHTML),
+  notificationPlaceholder = defaultSlotDocument.querySelector("notification");
+
+const notificationsHTML = Object.keys(notification)
+  .map(
+    (lang) =>
+      `<span class="${lang.substring(0, 2)} hidden">${
+        notification[lang]
+      }</span>`
+  )
+  .join("");
+
+notificationPlaceholder.outerHTML = notificationsHTML;
+
+const notificationContentHTML = defaultSlotDocument.toString();
+---
+
+<style lang="scss">
+  $notification-error-bg-color: #f9eae9;
+  $notification-warning-bg-color: #faf2e5;
+  $notification-info-bg-color: #e7eef9;
+  $notification-success-bg-color: #e9f9ef;
+  $notification-default-bg-color: #fbf7f7;
+  $notification-default-text-color: #000000;
+
+  .notification {
+    color: $notification-default-text-color;
+
+    &.notification-error {
+      background-color: $notification-error-bg-color;
+    }
+
+    &.notification-warning {
+      background-color: $notification-warning-bg-color;
+    }
+
+    &.notification-info {
+      background-color: $notification-info-bg-color;
+    }
+
+    &.notification-success {
+      background-color: $notification-success-bg-color;
+    }
+  }
+</style>
+
+<div
+  class:list={[
+    `notification notification-${type.toLowerCase()}`,
+    "hidden relative p-5 text-[1rem] leading-height items-center",
+  ]}
+>
+  <div class="mx-auto gap-5 flex items-center">
+    {icon && <img {...icon} width={26} height={26} />}
+
+    <div class="notification-content" set:html={notificationContentHTML}></div>
+  </div>
+
+  {
+    closingEnabled && (
+      <button class="close-button">
+        <svg
+          width="15"
+          height="14"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill="#4c4847"
+            fill-rule="evenodd"
+            d="M.3.4A1.2 1.2 0 0 1 2 .4l5 5 5-5A1.2 1.2 0 1 1 13.7 2l-5 5 5 5a1.2 1.2 0 0 1-1.7 1.7l-5-5-5 5A1.2 1.2 0 0 1 .3 12l5-5-5-5A1.2 1.2 0 0 1 .3.4Z"
+          />
+        </svg>
+      </button>
+    )
+  }
+</div>
+
+<script>
+  const notificationCloseButtons = document.querySelectorAll(
+    ".notification .close-button"
+  );
+
+  notificationCloseButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      // @ts-ignore
+      window.slideOutTopNotification(button.parentElement);
+      /* slideOutTopNotification is defined in NotificationAnimations.astro */
+    });
+  });
+</script>

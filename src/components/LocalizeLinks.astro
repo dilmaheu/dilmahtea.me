@@ -1,23 +1,40 @@
 ---
 import { parseHTML } from "linkedom";
+import getLocalesData from "@utils/getLocalesData";
+
+const { locales } = getLocalesData();
 
 declare interface Props {
   locale: string;
 }
 
-const { locale } = Astro.props as Props;
-
-const documentBodyHTML = await Astro.slots.render("default");
-
-const { document: documentBody } = await parseHTML(documentBodyHTML);
-
-const documentLinks = documentBody.querySelectorAll("a");
+const { locale } = Astro.props as Props,
+  documentBodyHTML = await Astro.slots.render("default"),
+  { document: documentBody } = await parseHTML(documentBodyHTML),
+  documentLinks = documentBody.querySelectorAll("a");
 
 [...documentLinks].forEach((link) => {
   const href = link.getAttribute("href");
 
   if (!href.startsWith("#")) {
-    link.href = "/" + locale + href;
+    const origin = "https://dilmahtea.me",
+      url = new URL(href, origin);
+
+    // check if link is internal
+    if (url.origin === origin) {
+      const href = url.href.replace(origin, ""),
+        localizedLinkRegex = new RegExp(
+          `^/(${locales.map((locale) => locale).join("|")})/`
+        );
+
+      // check if link is already localized
+      if (localizedLinkRegex.test(href)) {
+        link.href = href;
+      } else {
+        // localize unlocalized link
+        link.href = "/" + locale + href;
+      }
+    }
   }
 });
 ---

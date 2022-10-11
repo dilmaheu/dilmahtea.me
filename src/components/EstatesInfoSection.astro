@@ -1,0 +1,93 @@
+---
+import { parseHTML } from "linkedom";
+import Markdown from "@astrojs/markdown-component";
+import { Picture } from "astro-imagetools/components";
+
+const { page } = Astro.props;
+
+// @ts-ignore
+const infoBlocksHTML = await Astro.__renderMarkdown(page.Block3);
+
+const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
+  titles = [...infoBlocksDocument.querySelectorAll("h2")];
+---
+
+<style lang="scss">
+  .info-block-image-container{
+    width: 100%;
+    max-height: 530px;
+
+    @media (min-width: 640px) {
+      aspect-ratio: 5.65 / 5;
+    }
+  }
+
+  .info-block-title {
+    font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
+  }
+
+  .info-block-text {
+    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem);
+    line-height: 150%;
+  }
+</style>
+
+<section
+  class="flex flex-wrap items-center gap-y-20 py-20 py-[50px] lg:py-[75px]"
+>
+  {
+    titles.map((title, index) => {
+      const isEven = index % 2 === 0,
+        { textContent: titleText } = title,
+        { textContent } = title.nextElementSibling,
+        // @ts-ignore
+        { src: imgSrc } = title.nextElementSibling.lastElementChild;
+
+      return (
+        <div class="flex flex-wrap items-center">
+          <div
+            class:list={[
+              "relative w-full sm:w-1/2 order-1 mb-4 sm:mb-0",
+              isEven
+                ? "pr-0 sm:pr-5 md:pr-12 lg:pr-24"
+                : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
+            ]}
+          >
+            <div class="info-block-image-container">
+              <img 
+                class="w-full h-full"
+                src={imgSrc} 
+                alt="estate-image"
+                style="clip-path: url(#estate-img-curve);" 
+              />
+            </div>
+
+            {/* <Picture
+                alt=""
+                src={imgSrc}
+                attributes={{
+                  picture: {
+                    style: "clip-path: url(#estate-img-curve);",
+                  },
+                }}
+              /> */}
+          </div>
+
+          {/* Text content */}
+          <div
+            class:list={[
+              "order-2 w-full sm:w-1/2",
+              isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
+            ]}
+          >
+            <h2 class="info-block-title alice leading-[115% sm:leading-[120%] text-dark2">{titleText}</h2>
+
+            <div class="info-block-text texr-dark block pt-[15px] prose max-w-none">
+              <Markdown>{textContent}</Markdown>
+            </div>
+          </div>
+        </div>
+      );
+    })
+  }
+</section>

@@ -1,0 +1,67 @@
+@use "colors" as *;
+
+$alice: "Alice", "Alice Fallback", "Times New Roman", Times, Cambria,
+  "Hoefler Text", Utopia, "Liberation Serif", "Nimbus Roman No9 L Regular",
+  serif;
+
+$roboto-flex: "Roboto Flex", "Roboto Flex Fallback", Roboto, Arial,
+  ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+  "Helvetica Neue", "Noto Sans", sans-serif, "Apple Color Emoji",
+  "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+@supports not (font-variation-settings: normal) {
+  @font-face {
+    font-family: "Roboto Flex";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("/fonts/roboto-flex-v8-latin-regular.woff2") format("woff2"),
+      url("/fonts/roboto-flex-v8-latin-regular.woff") format("woff");
+  }
+}
+
+@supports (font-variation-settings: normal) {
+  @font-face {
+    font-family: "Roboto Flex";
+    font-style: normal;
+    font-weight: 100 1000;
+    font-display: swap;
+    src: url("/fonts/roboto-flex-v8-variable.woff2") format("woff2-variations"),
+      url("/fonts/roboto-flex-v8-variable.woff2") format("woff2");
+  }
+}
+
+@font-face {
+  font-family: "Alice";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/alice-v20-latin-regular.woff2") format("woff2"),
+    url("/fonts/alice-v20-latin-regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Alice Fallback";
+  size-adjust: 111.19%;
+  src: local("Times New Roman");
+}
+
+@font-face {
+  font-family: "Roboto Flex Fallback";
+  size-adjust: 99.56%;
+  src: local("Arial");
+}
+
+html {
+  font-weight: 400;
+  color: $light-gray;
+  font-family: $roboto-flex;
+}
+
+.alice {
+  font-family: $alice;
+}
+
+.roboto-flex {
+  font-family: $roboto-flex;
+}

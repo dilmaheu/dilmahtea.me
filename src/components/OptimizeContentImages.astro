@@ -1,0 +1,31 @@
+---
+import { parseHTML } from "linkedom";
+import { renderPicture } from "astro-imagetools/api";
+
+let contentHTML = await Astro.slots.render("default");
+
+const { document: contentDocument } = await parseHTML(contentHTML),
+  images = contentDocument.querySelectorAll("img");
+
+// wrap every heading and its following content with div.chapter
+await Promise.all(
+  [...images].map(async (img) => {
+    const { src, alt = "" } = img;
+
+    const { style, picture } = await renderPicture({
+      src,
+      alt,
+      attributes: {
+        picture: {
+          class: "not-prose",
+          style: "margin: 2em 0;"
+        },
+      },
+    });
+
+    contentHTML = contentHTML.replace(img.outerHTML, style + picture);
+  })
+);
+---
+
+<Fragment set:html={contentHTML} />

@@ -1,0 +1,26 @@
+<script is:inline>
+  {
+    const animationDuration = Math.min(300, window.innerWidth / (10 / 3));
+
+    window.slideOutTopNotification = (notification) => {
+      const animation = notification.animate(
+        { left: ["0vw", `-100vw`] },
+        animationDuration
+      );
+
+      animation.onfinish = () => {
+        notification.style.display = "none";
+      };
+    };
+
+    window.removeTopNotification = (notification) => {
+      const isNotError = !notification.classList.contains("notification-error");
+
+      if (isNotError) {
+        setTimeout(() => {
+          slideOutTopNotification(notification);
+        }, 7500);
+      }
+    };
+  }
+</script>

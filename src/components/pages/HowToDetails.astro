@@ -1,0 +1,140 @@
+---
+import Markdown from "@astrojs/markdown-component";
+import { Picture } from "astro-imagetools/components";
+import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+
+const { page, recurData } = Astro.props,
+  { howTos } = page,
+  headingName = recurData.text_practices,
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+---
+
+<style lang="scss">
+  @use "src/styles/colors";
+
+  .howto-header-method {
+    background: colors.$howto-white;
+  }
+
+  .howto-header-method-title {
+    font-size: clamp(1.5rem, 2.2vw + 0.15rem, 2rem);
+  }
+
+  .howto-header-method-text, .method-text {
+    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
+  }
+
+  .method-title {
+    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
+    padding: 10px clamp(15px, 2.08vw + 0.01rem, 30px);
+
+    @media (max-width: 767.98px) {
+      padding: 15px;
+    }
+  }
+
+  .chapter:nth-child(1) .method-title{
+    margin-top: 0;
+  }
+
+  .method-step {
+    background-color: colors.$howto-white;
+    padding: clamp(15px, 2.875vw, 36px) 36px;
+  }
+
+  .step-img-container{
+    width: 100%;
+    max-height: 420px;
+
+    @media (min-width: 640px) {
+      aspect-ratio: 7.3 / 3.9;
+    }
+  }
+</style>
+
+<PostDetailsLayout {page} posts={howTos} {recurData} {headingName}>
+  {/* Howto Header */}
+  <div
+    slot="howto-header"
+    class="wrapper flex relative z-20 -top-8 lg:top-0 lg:-mt-16 xl:-mt-24"
+  >
+    <div class="howto-header-method py-7 px-5 rounded-[10px]">
+      <h2
+        class="alice text-primary text-center sm:text-left leading-[110%] sm:leading-[130%] howto-header-method-title"
+      >
+        {page.Method.length}
+        {recurData.text_practices_to_follow}
+      </h2>
+
+      <div
+        class="flex flex-wrap justify-center sm:justify-start gap-x-5 gap-y-2.5 mt-[18px] sm:mt-[23px]"
+      >
+        {
+          page.Method.map((method) => (
+            <a
+              href={`#` + method.Method_title.replaceAll(" ", "-")}
+              class:list={[
+                "py-1.5 md:py-[13px] px-5 md:px-[35px] flex items-center bg-primary cursor-pointer",
+                "text-white leading-[150%] max-w-[240px] min-h-[80px] rounded-[58px] howto-header-method-text",
+              ]}
+            >
+              {method.Method_title}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <Fragment slot="post-details">
+    {
+      page.Method.map((method) => (
+        <div class="chapter">
+          <h2
+            class="method-title alice text-lightgray2 leading-[110%] mt-[50px] bg-primary rounded-[10px]"
+            id={method.Method_title.replaceAll(" ", "-")}
+          >
+            {method.Method_title}
+          </h2>
+
+          {method.Steps.map((step, index) => (
+            <div class="method-step my-[30px] rounded-[10px]">
+              <h3 class="font-semibold text-primary text-2xl leading-[130%]">
+                {index + 1 + ". " + step.Step_title}
+              </h3>
+
+              <div class="text-dark leading-[130%] my-[15px] method-text prose max-w-none">
+                <Markdown>{step.Step_text}</Markdown>
+              </div>
+
+              {step.Step_blob.data !== null && (
+
+                <div class="step-img-container">
+                  <img
+                    class="w-full h-full"
+                    src={
+                      imgSrcPrefix +
+                      step.Step_blob.data.attributes.provider_metadata.public_id +
+                      `/small`
+                    }
+                    alt={step.Step_blob.data.attributes.alternativeText}
+                  />
+                </div>
+
+                /* <Picture
+                  alt=""
+                  src={
+                    imgSrcPrefix +
+                    step.Step_blob.data.attributes.provider_metadata.public_id +
+                    `/small`
+                  }
+                  attributes={{ picture: { style: "margin-top: 20px;" } }}
+                /> */
+              )}
+            </div>
+          ))}
+        </div>
+      ))
+    }
+  </Fragment>
+</PostDetailsLayout>

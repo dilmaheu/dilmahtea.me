@@ -1,0 +1,71 @@
+---
+import { parseHTML } from "linkedom";
+import RecurringImages from "@store/RecurringImages";
+
+const { green_right_arrow } = RecurringImages;
+
+declare interface Props {
+  type?: "desktop" | "mobile";
+}
+
+const { type = "desktop" } = Astro.props as Props,
+  contentHTML = await Astro.slots.render("default"),
+  { document: contentDocument } = await parseHTML(contentHTML),
+  headings = contentDocument.querySelectorAll("h2");
+---
+
+<style lang="scss">
+  @use "src/styles/colors";
+
+  a {
+    @apply inline-flex items-center;
+
+    color: colors.$sticky-dropdown-item;
+
+    .chapter-top-icon {
+      min-width: clamp(37px, 4.6875vw - 18.75px, 45px);
+      margin-right: clamp(10px, 4.6875vw - 43.75px, 20px);
+    }
+
+    &.chapter-link {
+      &:not(.active) img {
+        @apply md:opacity-0;
+      }
+
+      &.active {
+        @apply md:font-bold;
+      }
+    }
+
+    &.chapter-link-sm {
+      &:not(.active) img {
+        opacity: 0;
+      }
+
+      &.active {
+        font-weight: 500;
+      }
+    }
+  }
+</style>
+
+{
+  [...headings].map(({ id, innerText }, i) => (
+    <a
+      href={"#" + id}
+      class:list={[
+        "text-primary",
+        i === 0 && "active",
+        type !== "mobile"
+          ? "chapter-link pt-4 xl:pt-5"
+          : "chapter-link-sm flex items-center pt-2.5 font-normal",
+      ]}
+    >
+      <div class="chapter-top-icon">
+        <img {...green_right_arrow} />
+      </div>
+
+      <Fragment set:text={innerText} />
+    </a>
+  ))
+}

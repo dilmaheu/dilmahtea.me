@@ -1,31 +1,28 @@
 ---
-export interface Props {
-  title: string;
-  description: string;
-  noIndex: string;
-  noFollow: string;
-  image?: string;
+import RecurringImages from "@store/RecurringImages";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+
+const { favicon } = RecurringImages;
+
+declare interface Props {
+  meta: any;
   locale: string;
-  canonicalURL?: string;
-  slugURL: string | URL;
-  availableLocales: (string | null)[];
+  metaImageID: string;
+  availableLocales: string[];
 }
 
-const {
-  title,
-  description,
-  noIndex,
-  noFollow,
-  image,
-  locale,
-  canonicalURL,
-  slugURL,
-  availableLocales,
-} = Astro.props as Props;
-const url = `${import.meta.env.CloudImg_URL}`;
-const domain = Astro.site.origin;
-
-const alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
+const { meta, locale, metaImageID, availableLocales } = Astro.props as Props,
+  {
+    noindex,
+    nofollow,
+    HTML_Title: title,
+    URL_slug: slugURL,
+    Canonical_link: canonicalURL,
+    Meta_description: description,
+  } = meta,
+  domain = Astro.site.origin,
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env,
+  alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
   documentHref = `${domain}/${locale}/${slugURL === "/" ? "" : slugURL}/`,
   canonicalHref = `${domain}/en/${canonicalURL === "/" ? "" : canonicalURL}/`;
 ---
@@ -38,63 +35,72 @@ const alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
 <meta name="author" content="Dilmah" />
 <meta
   name="robots"
-  content={noIndex.length == 7 && noFollow.length == 8
-    ? "noindex, nofollow"
-    : noIndex.length == 7
-    ? "noindex"
-    : noFollow.length == 8
-    ? "nofollow"
-    : "all"}
+  content={[noindex && "noindex", nofollow && "nofollow"]
+    .filter(Boolean)
+    .join(", ") || "all"}
 />
 
-<!-- Sitemap -->
-<!-- <link rel="sitemap" href= /> -->
+{/* Sitemap */}
+<link
+  rel="sitemap"
+  title="Sitemap"
+  href="/sitemap-0.xml"
+  type="application/xml"
+/>
 
-<!-- RSS -->
-<!-- <link rel="alternate" type="application/rss+xml" href="" /> -->
+{/* RSS */}
+{/* <link rel="alternate" type="application/rss+xml" href="" /> */}
 
-<!-- Favicon -->
-<link rel="icon" href="/favicon.svg" />
+{/* Favicon */}
+<link rel="icon" href={favicon.src} />
 
-<!-- SEO -->
+{/* SEO */}
 <link rel="canonical" href={canonicalHref} />
 <link href={documentHref} hreflang={locale} />
 
-{alternateLocales.map((alternateLocale) => (
-  <link
-    rel="alternate"
-    hreflang={alternateLocale}
-    href={`${domain}/${alternateLocale}/${slugURL === "/" ? "" : slugURL}/`}
-  />
-))}
+{
+  alternateLocales.map((alternateLocale) => (
+    <link
+      rel="alternate"
+      hreflang={alternateLocale}
+      href={`${domain}/${alternateLocale}/${slugURL === "/" ? "" : slugURL}/`}
+    />
+  ))
+}
 
-<!-- OpenGraph -->
-<meta property="og:locale" content={locale} />
-<meta property="og:type" content="website" />
+{/* OpenGraph */}
 <meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content={locale} />
 <meta property="og:url" content={documentHref} />
 <meta property="og:site_name" content="Dilmah" />
-<meta property="og:image" content={url + image + `/opengraph`} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={imgSrcPrefix + metaImageID + `/opengraph`} />
 
-<!-- Twitter -->
-<meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
-<meta property="twitter:domain" content="dilmahtea.me" />
-<meta property="twitter:url" content={documentHref} />
+{/* Twitter */}
 <meta name="twitter:title" content={title} />
+<meta property="twitter:url" content={documentHref} />
+<meta property="twitter:domain" content="dilmahtea.me" />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={url + image + `/twittercard`} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta
+  name="twitter:image"
+  content={imgSrcPrefix + metaImageID + `/twittercard`}
+/>
 
-<script
-  defer
-  data-domain="dilmahtea.me"
-  data-api="/rpcq/event"
-  src="/rpcq/script.js"
->
+{
+  !shouldDisplayExperimentals() && (
+    // Plausible Analytics Tracking Code
+    <script
+      defer
+      src="/rpcq/script.js"
+      data-api="/rpcq/event"
+      data-domain="dilmahtea.me"
+    />
+  )
+}
 
-</script>
-
-<!-- OpenReplay Tracking Code -->
+{/* OpenReplay Tracking Code for Dilmahtea.me */}
 <script>
   var initOpts = {
     projectKey: "IjHJ0NTxwL2YHDk9TDnR",
@@ -104,10 +110,15 @@ const alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
   };
   var startOpts = { userID: "" };
   (function (A, s, a, y, e, r) {
+    // @ts-ignore
     r = window.OpenReplay = [e, r, y, [s - 1, e]];
+    // @ts-ignore
     s = document.createElement("script");
+    // @ts-ignore
     s.src = A;
+    // @ts-ignore
     s.async = !a;
+    // @ts-ignore
     document.getElementsByTagName("head")[0].appendChild(s);
     r.start = function (v) {
       r.push([0]);

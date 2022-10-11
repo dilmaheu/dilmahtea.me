@@ -1,0 +1,20 @@
+---
+import { parseHTML } from "linkedom";
+
+let contentHTML = await Astro.slots.render("default");
+
+const { document: contentDocument } = await parseHTML(contentHTML),
+  headings = contentDocument.querySelectorAll("h2");
+
+// wrap every heading and its following content with div.chapter
+headings.forEach((heading, i) => {
+  contentHTML = contentHTML.replace(
+    heading.outerHTML,
+    (i === 0 ? "" : "</div>") + "<div class='chapter'>" + heading.outerHTML
+  );
+});
+
+headings.length > 0 && (contentHTML += "</div>");
+---
+
+<Fragment set:html={contentHTML} />

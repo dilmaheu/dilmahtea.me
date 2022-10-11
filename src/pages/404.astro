@@ -1,44 +1,72 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import NotFound from "../components/NotFound.astro";
-import NotFoundPagesQuery from "../queries/NotFoundPagesQuery";
+import CMS from "@store/CMS";
+import Layout from "@layouts/Layout.astro";
+import BasicPage from "@pages/BasicPage.astro";
+import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 
 // fetching the error page
-const notFoundPagesData = await fetch(`${import.meta.env.DB_URL}`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
-  },
-  body: JSON.stringify({
-    query: NotFoundPagesQuery,
-  }),
-}).then((response) => response.json());
+const basicPagesData = CMS.get("basicPages");
+
+let recurringElements = CMS.get("recurringElement").data.attributes,
+  { attributes: _404Page } = basicPagesData.data.find(
+    ({ attributes }) => attributes.Meta.URL_slug === "404"
+  );
 
 // saving it's page attributes like meta and other components
-const notFoundPages = notFoundPagesData.data.basicPages.data;
+const requestPath = Astro.url.pathname;
 
-const locale = "en",
-  page = notFoundPages.find(
-    (page) => page.attributes.locale === locale
+const availableLocales = [
+  "en",
+  ..._404Page.localizations.data.map(({ attributes }) =>
+    attributes.locale.substring(0, 2)
+  ),
+];
+
+let [, locale] = requestPath.match(/^\/([a-z]{2})\//) ?? [];
+
+if (!(locale && availableLocales.includes(locale))) locale = "en";
+
+if (locale !== "en") {
+  _404Page = _404Page.localizations.data.find(
+    ({ attributes }) => attributes.locale.substring(0, 2) === locale
   ).attributes;
 
-const availableLocales = page.localizations.data.map((localized) =>
-  localized.attributes.locale.substring(0, 2)
-);
-
-// saving footer text
-const recurData = notFoundPagesData.data.recurringElement.data.attributes;
+  recurringElements = {
+    // localize recurring elements
+    ...recurringElements.localizations.data.find(
+      ({ attributes }) => attributes.locale.substring(0, 2) === locale
+    ).attributes,
+  };
+}
 ---
+
+<SetPreferredLocale />
+
+<script is:inline define:vars={{ availableLocales }}>
+  const localeRegex = new RegExp(
+    `^/(${availableLocales.map((locale) => locale).join("|")})/`
+  );
+
+  let [, locale] = location.pathname.match(localeRegex) ?? [];
+
+  if (
+    !locale &&
+    /* preferredLocale is defined in SetPreferredLocale.astro */
+    preferredLocale !== "en"
+  ) {
+    location.pathname = location.pathname.replace("/", `/${preferredLocale}/`);
+  }
+</script>
 
 <Layout
   locale={locale}
   availableLocales={availableLocales}
-  meta={page.Meta}
-  recurData={recurData}
-  metaImage={page.Block_blob != null && page.Block_blob.data != null
-    ? page.Block_blob.data.attributes.provider_metadata.public_id
-    : recurData.OpenGraph_default.data.attributes.provider_metadata.public_id}
+  meta={_404Page.Meta}
+  recurData={recurringElements}
+  metaImageID={_404Page.Block_blob?.data?.attributes.provider_metadata
+    .public_id ||
+    recurringElements.OpenGraph_default.data.attributes.provider_metadata
+      .public_id}
 >
-  <NotFound page={page} />
+  <BasicPage page={_404Page} />
 </Layout>
