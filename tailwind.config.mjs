@@ -15,6 +15,7 @@ export default {
         lightgray2: "#faf4f2",
         white1: "#f0eeee",
         white2: "#faf4f2",
+        warning: "#E06464",
       },
 
       typography: () => ({
