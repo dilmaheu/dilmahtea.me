@@ -1,0 +1,430 @@
+---
+import { Icon } from "astro-icon";
+import Markdown from "@astrojs/markdown-component";
+import Chapterize from "@components/Chapterize.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import ClippedPicture from "@components/ClippedPicture.astro";
+import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+
+import RecurringImages from "@store/RecurringImages";
+
+const {
+  green_love,
+  green_leaf_icon,
+  green_no_icon,
+  green_package_icon,
+  green_right_arrow,
+} = RecurringImages;
+
+const { page, recurData } = Astro.props,
+  headingName = recurData.text_chapter,
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+
+const recipes = page.recipes.data.map(({ attributes }) => attributes),
+  { Title: productTitle, Price: productPrice } = page,
+  { url: productImgURL } = page.Intro_blob.data.attributes;
+---
+
+<style lang="scss">
+  @use "src/styles/colors";
+
+  .cart-adding-form {
+    margin-top: clamp(0.938rem, 2vw + 0.1rem, 2rem);
+  }
+
+  input[type="number"].product-amount-input {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  .product-details img {
+    width: 100%;
+    max-height: 530px;
+
+    @media (min-width: 640px) {
+      aspect-ratio: 8 / 5.17;
+    }
+  }
+
+  .product-info-container {
+    border-color: colors.$sticky-dropdown-border-top;
+  }
+
+  .product-kindness-impact-container {
+    clip-path: url(#product-impact-bg-curve-sm);
+
+    @media (min-width: 768px) {
+      clip-path: url(#product-impact-bg-curve);
+    }
+  }
+
+  .product-kindness-impact-text {
+    font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
+  }
+
+  .product-details {
+    ul,
+    ol {
+      padding: 0;
+    }
+
+    ol {
+      list-style: none;
+      counter-reset: counter;
+    }
+
+    li {
+      counter-increment: counter;
+    }
+
+    li::before {
+      content: counter(counter);
+      background: colors.$primary;
+      width: 45px;
+      height: 45px;
+      border-radius: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      margin-right: 20px;
+    }
+  }
+</style>
+
+<PostDetailsLayout {page} {recurData} {headingName}>
+  <form
+    slot="tea-details-header"
+    class="cart-adding-form flex flex-wrap justify-between sm:justify-start items-center gap-y-5 gap-x-[31px]"
+  >
+    <input type="hidden" name="name" value={productTitle} />
+    <input type="hidden" name="price" value={productPrice} />
+    <input type="hidden" name="image" value={productImgURL} />
+
+    <fieldset>
+      <legend
+        class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
+      >
+        {recurData.product_size}:
+      </legend>
+
+      <div class="flex flex-wrap gap-[15px]">
+        <label class="cursor-pointer">
+          <input
+            type="radio"
+            name="size"
+            value="100gm"
+            class="peer sr-only"
+            checked
+          />
+
+          <span
+            class:list={[
+              "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-lightgray",
+              "rounded-[22px] group peer-checked:bg-lightgray peer-checked:text-primary",
+            ]}
+          >
+            100gm
+          </span>
+        </label>
+
+        <label class="cursor-pointer">
+          <input type="radio" name="size" value="20gm" class="peer sr-only" />
+
+          <span
+            class:list={[
+              "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-lightgray",
+              "rounded-[22px] group peer-checked:bg-lightgray peer-checked:text-primary",
+            ]}
+          >
+            20gm
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend
+        class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
+      >
+        {recurData.product_quantity}:
+      </legend>
+
+      <div
+        class="py-2.5 px-4 flex items-center text-primary bg-lightgray rounded-full"
+      >
+        <Icon
+          name="akar-icons:minus"
+          data-action="decrement"
+          class="w-6 h-6 select-none cursor-pointer"
+        />
+
+        <input
+          type="number"
+          name="count"
+          value="1"
+          min="1"
+          max="999"
+          class="product-amount-input w-12 h-full text-center lg:text-lg bg-lightgray outline-none"
+        />
+
+        <Icon
+          name="akar-icons:plus"
+          data-action="increment"
+          class="w-6 h-6 select-none cursor-pointer"
+        />
+      </div>
+    </fieldset>
+
+    <button
+      class:list={[
+        "w-full sm:w-auto gap-4 flex justify-center items-center bg-lightgray",
+        "py-2.5 px-[52px] mt-auto font-bold text-base text-primary rounded-[40px]",
+      ]}
+    >
+      <Icon name="mi:shopping-cart" class="w-[26px] h-[26px]" />
+      {recurData.product_add_cart_for} €{productPrice}
+    </button>
+  </form>
+
+  <form
+    slot="cart-adding-form-sm"
+    class="cart-adding-form-sm flex justify-between flex-wrap gap-4 mt-8"
+  >
+    <input type="hidden" name="name" value={productTitle} />
+    <input type="hidden" name="price" value={productPrice} />
+    <input type="hidden" name="image" value={productImgURL} />
+
+    <fieldset>
+      <legend
+        class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]"
+      >
+        {recurData.product_size}:
+      </legend>
+
+      <div class="flex flex-wrap gap-[15px]">
+        <label class="cursor-pointer">
+          <input
+            type="radio"
+            name="size"
+            value="100gm"
+            class="peer sr-only"
+            checked
+          />
+
+          <span
+            class:list={[
+              "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-primary",
+              "rounded-[22px] group peer-checked:bg-primary peer-checked:text-lightgray",
+            ]}
+          >
+            100gm
+          </span>
+        </label>
+
+        <label class="cursor-pointer">
+          <input type="radio" name="size" value="20gm" class="peer sr-only" />
+
+          <span
+            class:list={[
+              "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-primary",
+              "rounded-[22px] group peer-checked:bg-primary peer-checked:text-lightgray",
+            ]}
+          >
+            20gm
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend
+        class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]"
+      >
+        {recurData.product_quantity}:
+      </legend>
+
+      <div
+        class="w-fit py-2.5 px-4 flex items-center text-lightgray bg-primary rounded-full"
+      >
+        <Icon
+          name="akar-icons:minus"
+          data-action="decrement"
+          class="w-6 h-6 select-none cursor-pointer"
+        />
+
+        <input
+          type="number"
+          name="count"
+          value="1"
+          min="1"
+          max="999"
+          class="product-amount-input w-12 h-full text-center lg:text-lg bg-primary outline-none"
+        />
+
+        <Icon
+          name="akar-icons:plus"
+          data-action="increment"
+          class="w-6 h-6 select-none cursor-pointer"
+        />
+      </div>
+    </fieldset>
+
+    <button
+      class:list={[
+        "w-full gap-4 flex justify-center items-center bg-primary",
+        "p-[18px] mt-auto font-bold text-base text-lightgray leading-[19px] rounded-full",
+      ]}
+    >
+      <Icon name="mi:shopping-cart" class="w-8 h-8" />
+      {recurData.product_add_cart}
+    </button>
+  </form>
+
+  <div
+    class="product-info-container grid grid-cols-[repeat(auto-fit,minmax(0,80px))] gap-[14px] lg:gap-[21px] justify-between md:justify-center pt-[25px] md:pt-[15px] mt-[25px] border-t border-solid"
+  >
+    <div>
+      <div class="w-[31px] h-[31px] p-[2px] mx-auto">
+        <img class="w-full h-full" {...green_leaf_icon} />
+      </div>
+
+      <div class="text-sm font-medium leading-[150%] text-center">
+        Environment Friendly
+      </div>
+    </div>
+
+    <div>
+      <div class="w-[31px] h-[31px] p-[2px] mx-auto">
+        <img class="w-full h-full" {...green_no_icon} />
+      </div>
+
+      <div class="text-sm font-medium leading-[150%] text-center">
+        No Preservatives
+      </div>
+    </div>
+
+    <div>
+      <div class="w-[31px] h-[31px] p-[2px] mx-auto">
+        <img class="w-full h-full" {...green_package_icon} />
+      </div>
+
+      <div class="text-sm font-medium leading-[150%] text-center">
+        Sustainable Packaging
+      </div>
+    </div>
+
+    <div>
+      <div class="w-[31px] h-[31px] p-[2px] mx-auto">
+        <img class="w-full h-full" {...green_love} />
+      </div>
+
+      <div class="text-sm font-medium leading-[150%] text-center">
+        Handmade in small batch
+      </div>
+    </div>
+  </div>
+
+  <div slot="post-details" class="product-details prose content-text">
+    <Chapterize slot="post-details">
+      <Markdown>{page.Block_text}</Markdown>
+    </Chapterize>
+  </div>
+
+  <section class="mb-[50px]" slot="product-kindness-impact">
+    <ClipPathSVG
+      id="product-impact-bg-curve"
+      path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.23,-0.017 c0.074,0,0.2,0.037,0.315,0.009 S1,0.894,1,0.894 V0.055"
+    />
+
+    <ClipPathSVG
+      id="product-impact-bg-curve-sm"
+      path="M0.718,0 C0.853,0,0.938,0.021,1,0.064 V0.97 c-0.045,0.046,-0.195,0.006,-0.324,0 c-0.149,-0.007,-0.301,0.03,-0.45,0.03 C0.094,1,0,0.954,0,0.954 V0.064 c0.059,-0.061,0.237,0,0.32,0 S0.583,0,0.718,0"
+    />
+
+    <ClipPathSVG
+      id="card-curve"
+      path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
+    />
+
+    <div class="bg-primary product-kindness-impact-container">
+      <div class="wrapper py-[70px] md:py-[100px]">
+        <div
+          class="product-kindness-impact-text alice leading-[110%] md:leading-[115%] text-center"
+        >
+          <h2>{recurData.product_kindness_impact}</h2>
+        </div>
+
+        <div
+          role="list"
+          aria-label="Kindness Items"
+          class:list={[
+            "wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]",
+            "justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
+          ]}
+        >
+          {
+            recipes.map((post) => (
+              <div
+                role="listitem"
+                aria-label="Kindness Item"
+                class="flex flex-wrap bg-lightgray"
+                style="clip-path: url(#card-curve)"
+              >
+                <a class="block w-full" href={`/` + post.Meta.URL_slug}>
+                  <img
+                    src={
+                      imgSrcPrefix +
+                      post.Intro_blob.data.attributes.provider_metadata
+                        .public_id +
+                      `/small`
+                    }
+                    alt={post.Intro_blob.data.attributes.alternativeText}
+                    class="w-full h-full object-cover"
+                  />
+                </a>
+
+                <div class="recent-post-card-content-container text-primary">
+                  {post.authors && (
+                    <div>
+                      <div class="recent-post-card-author flex flex-wrap font-bold">
+                        {post.authors.data.map(({ attributes }, index) => (
+                          <a href="#">
+                            {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                          </a>
+                        ))}
+                      </div>
+
+                      <div class="post-publish-date">
+                        {new Date(post.createdAt).toLocaleString("en-US", {
+                          day: "numeric",
+                          month: "long",
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <div class="recent-post-card-title alice mt-[15px]">
+                    <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+
+                    <span class="icon recent-post-card-title-icon">
+                      <img
+                        class="recent-post-card-title-icon"
+                        {...green_right_arrow}
+                      />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+</PostDetailsLayout>
