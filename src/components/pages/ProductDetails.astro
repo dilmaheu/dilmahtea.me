@@ -20,9 +20,11 @@ const { page, recurData } = Astro.props,
   headingName = recurData.text_chapter,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 
-const recipes = page.recipes.data.map(({ attributes }) => attributes),
+const recipes = page.recipes.data.map(({ attributes }) => attributes);
+
+const { url: productImgURL } = page.Intro_blob.data.attributes,
   { Title: productTitle, Price: productPrice } = page,
-  { url: productImgURL } = page.Intro_blob.data.attributes;
+  productSize = page.Weight_tea + "gm";
 ---
 
 <style lang="scss">
@@ -113,39 +115,25 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes),
         {recurData.product_size}:
       </legend>
 
-      <div class="flex flex-wrap gap-[15px]">
-        <label class="cursor-pointer">
-          <input
-            type="radio"
-            name="size"
-            value="100gm"
-            class="peer sr-only"
-            checked
-          />
+      <label class="cursor-pointer">
+        <input
+          type="radio"
+          name="size"
+          value={productSize}
+          class="sr-only"
+          checked
+          required
+        />
 
-          <span
-            class:list={[
-              "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-lightgray",
-              "rounded-[22px] group peer-checked:bg-lightgray peer-checked:text-primary",
-            ]}
-          >
-            100gm
-          </span>
-        </label>
-
-        <label class="cursor-pointer">
-          <input type="radio" name="size" value="20gm" class="peer sr-only" />
-
-          <span
-            class:list={[
-              "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-lightgray",
-              "rounded-[22px] group peer-checked:bg-lightgray peer-checked:text-primary",
-            ]}
-          >
-            20gm
-          </span>
-        </label>
-      </div>
+        <span
+          class:list={[
+            "inline-block bg-lightgray text-primary border border-lightgray",
+            "py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal rounded-[22px]",
+          ]}
+        >
+          {productSize}
+        </span>
+      </label>
     </fieldset>
 
     <fieldset>
@@ -207,39 +195,25 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes),
         {recurData.product_size}:
       </legend>
 
-      <div class="flex flex-wrap gap-[15px]">
-        <label class="cursor-pointer">
-          <input
-            type="radio"
-            name="size"
-            value="100gm"
-            class="peer sr-only"
-            checked
-          />
+      <label class="cursor-pointer">
+        <input
+          type="radio"
+          name="size"
+          value={productSize}
+          class="sr-only"
+          checked
+          required
+        />
 
-          <span
-            class:list={[
-              "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-primary",
-              "rounded-[22px] group peer-checked:bg-primary peer-checked:text-lightgray",
-            ]}
-          >
-            100gm
-          </span>
-        </label>
-
-        <label class="cursor-pointer">
-          <input type="radio" name="size" value="20gm" class="peer sr-only" />
-
-          <span
-            class:list={[
-              "inline-block py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal border border-primary",
-              "rounded-[22px] group peer-checked:bg-primary peer-checked:text-lightgray",
-            ]}
-          >
-            20gm
-          </span>
-        </label>
-      </div>
+        <span
+          class:list={[
+            "inline-block border border-primary bg-primary text-lightgray",
+            "py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal rounded-[22px]",
+          ]}
+        >
+          {productSize}
+        </span>
+      </label>
     </fieldset>
 
     <fieldset>
@@ -459,7 +433,8 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes),
       const uuid = crypto.randomUUID(),
         productData = Object.fromEntries(new FormData(form)) as ProductData;
 
-      productData.price = Number(productData.price) * Number(productData.quantity);
+      productData.price =
+        Number(productData.price) * Number(productData.quantity);
 
       window.cart[uuid] = productData;
 
