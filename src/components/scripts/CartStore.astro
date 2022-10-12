@@ -77,12 +77,33 @@
         }
       },
 
-      set(cart, uuid, productData) {
-        cart[uuid] = productData;
+      set(cart, id, productData) {
+        const existingProduct = cart[id];
+
+        if (existingProduct) {
+          const productPrice = productData.price / productData.quantity;
+
+          productData.quantity =
+            existingProduct.quantity + productData.quantity;
+          productData.price = productData.quantity * productPrice;
+
+          const productElement = document.getElementById(id),
+            productPriceElement = productElement.querySelector(
+              ".cart-product-price"
+            ),
+            productQuantityElement = productElement.querySelector(
+              ".cart-product-quantity"
+            );
+
+          productQuantityElement.textContent = productData.quantity;
+          productPriceElement.textContent = productData.price;
+        }
+
+        cart[id] = productData;
 
         localStorage.setItem("cart", JSON.stringify(cart));
 
-        window.addProductToCart(uuid);
+        existingProduct ?? window.addProductToCart(id);
 
         updateUI(cart);
 

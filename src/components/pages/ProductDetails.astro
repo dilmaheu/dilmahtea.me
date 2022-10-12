@@ -430,13 +430,14 @@ const { url: productImgURL } = page.Intro_blob.data.attributes,
     form.onsubmit = (event) => {
       event.preventDefault();
 
-      const uuid = crypto.randomUUID(),
-        productData = Object.fromEntries(new FormData(form)) as ProductData;
+      const productData = Object.fromEntries(new FormData(form)) as ProductData,
+        productTitle = productData.name as string,
+        id = "product-" + productTitle.split(" ").join("_");
 
-      productData.price =
-        Number(productData.price) * Number(productData.quantity);
+      productData.quantity = Number(productData.quantity);
+      productData.price = Number(productData.price) * productData.quantity;
 
-      window.cart[uuid] = productData;
+      window.cart[id] = productData;
 
       form.reset();
     };
