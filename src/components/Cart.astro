@@ -43,6 +43,16 @@ const { locale } = page,
     @apply text-[1.125rem] sm:text-[1.5rem];
   }
 
+  :global(input[type="number"].product-amount-input) {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
   .subtotal-text {
     @apply text-base sm:text-[1.125rem];
   }
@@ -129,25 +139,27 @@ const { locale } = page,
 
                 <div class="flex justify-between items-center gap-1.5">
                   <div
-                    class:list={[
-                      "flex items-center py-1.5 px-2.5 gap-2.5",
-                      "bg-primary text-lightgray rounded-[9999px]",
-                    ]}
+                    class="flex items-center py-1.5 px-2.5 bg-primary text-lightgray rounded-full"
                   >
                     <Icon
                       name="akar-icons:minus"
                       data-action="decrement"
-                      class="w-5 h-5 cursor-pointer select-none"
+                      class="w-5 h-5 select-none cursor-pointer"
                     />
 
-                    <span class="cart-product-quantity font-medium">
-                      <placeholder name="quantity"></placeholder>
-                    </span>
+                    <input
+                      type="number"
+                      value={`<placeholder name="quantity"></placeholder>`}
+                      min="1"
+                      max="10"
+                      class="product-amount-input w-9 h-full text-center lg:text-lg bg-primary outline-none"
+                      required
+                    />
 
                     <Icon
                       name="akar-icons:plus"
                       data-action="increment"
-                      class="w-5 h-5 cursor-pointer select-none"
+                      class="w-5 h-5 select-none cursor-pointer"
                     />
                   </div>
 
@@ -202,7 +214,8 @@ const { locale } = page,
     cart = id("cart"),
     sidebar = id("sidebar"),
     closeCartBtn = id("close-cart-btn"),
-    { overflowY: prevBodyOverflowYValue } = document.body.style;
+    { overflowY: prevBodyOverflowYValue } = document.body.style,
+    productAmountInputs = document.querySelectorAll(".product-amount-input");
 
   window.openCart = () => {
     cart.classList.toggle("hidden");
@@ -227,15 +240,28 @@ const { locale } = page,
     const counter = target[
         action === "decrement" ? "nextElementSibling" : "previousElementSibling"
       ] as HTMLInputElement,
-      isInput = !!counter.value,
-      quantity = Number(counter[isInput ? "value" : "textContent"]);
+      quantity = Number(counter.value);
 
-    if (action === "decrement" ? quantity > 1 : quantity < 999) {
-      counter[isInput ? "value" : "textContent"] = String(
+    if (action === "decrement" ? quantity > 1 : quantity < 10) {
+      counter.value = String(
         action === "decrement" ? quantity - 1 : quantity + 1
       );
     }
   };
+
+  productAmountInputs.forEach((input: HTMLInputElement) => {
+    let latestValidValue;
+
+    input.addEventListener("beforeinput", () => {
+      input.validity.valid && (latestValidValue = input.value);
+    });
+
+    input.addEventListener("input", () => {
+      if (input.value.length > 2 || !input.validity.valid) {
+        input.value = latestValidValue;
+      }
+    });
+  });
 
   cart.addEventListener("click", (event) => {
     if (event.target === cart.firstElementChild) {
