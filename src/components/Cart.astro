@@ -284,15 +284,17 @@ const { locale } = page,
   });
 
   cart.addEventListener("click", (event) => {
-    if (event.target === cart.firstElementChild) {
+    const target = event.target as HTMLElement;
+
+    if (target === cart.firstElementChild) {
       // close cart if clicked outside of cart content
       closeCart();
     }
 
-    const hasToRemoveItem = event.target.closest(".remove-item-btn");
+    const hasToRemoveItem = target.closest(".remove-item-btn");
 
     if (hasToRemoveItem) {
-      const productToRemove = event.target.closest(".cart-product"),
+      const productToRemove = target.closest(".cart-product"),
         { id: productId } = productToRemove;
 
       delete window.cart[productId];
