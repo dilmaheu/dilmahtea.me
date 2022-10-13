@@ -60,8 +60,10 @@ const CMS = {
 };
 
 async function catchError(error) {
+  let cachedData;
+
   if (fs.existsSync("./.cache/CMS.json")) {
-    const cachedData = JSON.parse(
+    cachedData = JSON.parse(
       await fs.promises.readFile("./.cache/CMS.json", "utf8")
     );
 
@@ -69,20 +71,21 @@ async function catchError(error) {
       "error",
       "Failed to fetch data from CMS, serving from the cache"
     );
-
-    return cachedData;
-  } else {
+  } else
     printMessage(
       "error",
       "Failed to fetch data from CMS, nothing found in cache!"
     );
-  }
 
   if (error.message) {
-    throw error;
+    try {
+      throw error;
+    } catch (error) {}
   } else {
     console.error(error);
   }
+
+  return cachedData;
 }
 
 export default CMS;
