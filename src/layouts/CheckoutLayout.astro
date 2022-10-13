@@ -99,6 +99,13 @@ const checkoutStepOrder = page.checkout_step_order,
   availableLocales={availableLocales}
   metaImageID={metaImageID}
 >
+  <script is:inline>
+    const savedCheckoutContactInfo =
+      localStorage.getItem("checkout-contact-info") || "{}";
+
+    window.checkoutContactInfo = JSON.parse(savedCheckoutContactInfo);
+  </script>
+
   <div id="checkout" class="bg-lightgray">
     <header class="checkout-flow-container relative">
       <img

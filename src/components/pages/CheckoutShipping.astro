@@ -1,5 +1,6 @@
 ---
 import CMS from "@store/CMS";
+import DynamicHTML from "@components/DynamicHTML.astro";
 import OrderSummary from "@components/OrderSummary.astro";
 
 const { page, recurData } = Astro.props;
@@ -94,7 +95,9 @@ const { locale } = page,
       <div>Contact</div>
 
       <div>
-        <span class="break-all">maverick.john@gmail.com</span>
+        <span class="break-all">
+          <DynamicHTML htmlFn={() => window.checkoutContactInfo.email} />
+        </span>
 
         <button>Change</button>
       </div>
@@ -106,7 +109,9 @@ const { locale } = page,
       <div>Delivery Address</div>
 
       <div>
-        <span>456B, Oakwoods, Germany</span>
+        <span>
+          <DynamicHTML htmlFn={() => window.checkoutContactInfo.address} />
+        </span>
 
         <button>Change</button>
       </div>
