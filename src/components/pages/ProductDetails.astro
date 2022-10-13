@@ -408,16 +408,6 @@ const { url: productImgURL } = page.Intro_blob.data.attributes,
     ".cart-adding-form, .cart-adding-form-sm"
   );
 
-  // polyfill crypto.randomUUID if not available
-  crypto.randomUUID ??= () =>
-    "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (char) =>
-      (
-        Number(char) ^
-        (crypto.getRandomValues(new Uint8Array(1))[0] &
-          (15 >> (Number(char) / 4)))
-      ).toString(16)
-    );
-
   cartAddingForms.forEach((form: HTMLFormElement) => {
     form.onsubmit = (event) => {
       event.preventDefault();
