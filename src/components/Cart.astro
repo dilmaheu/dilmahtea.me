@@ -217,9 +217,7 @@ const { locale } = page,
     cart = id("cart"),
     sidebar = id("sidebar"),
     closeCartBtn = id("close-cart-btn"),
-    { overflowY: prevBodyOverflowYValue } = document.body.style,
-    productAmountInputs = document.querySelectorAll(".product-amount-input");
-
+    { overflowY: prevBodyOverflowYValue } = document.body.style;
   window.openCart = () => {
     cart.classList.toggle("hidden");
 
@@ -238,6 +236,34 @@ const { locale } = page,
     document.body.style.overflowY =
       sidebar?.offsetWidth > 0 ? "scroll" : prevBodyOverflowYValue;
   };
+
+  cart.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+
+    if (target === cart.firstElementChild) {
+      // close cart if clicked outside of cart content
+      closeCart();
+    }
+
+    const hasToRemoveItem = target.closest(".remove-item-btn");
+
+    if (hasToRemoveItem) {
+      const productToRemove = target.closest(".cart-product"),
+        { id: productId } = productToRemove;
+
+      delete window.cart[productId];
+
+      productToRemove.remove();
+    }
+  });
+
+  closeCartBtn.addEventListener("click", closeCart);
+</script>
+
+<script>
+  const productAmountInputs = document.querySelectorAll(
+    ".product-amount-input"
+  );
 
   const tweak = (target, { action }) => {
     const counter = target[
@@ -266,8 +292,20 @@ const { locale } = page,
       cartProductData.price = updatedPrice;
 
       window.cart[productId] = cartProductData;
+    } else {
+      counter.dispatchEvent(new Event("input"));
     }
   };
+
+  document.addEventListener("click", (event) => {
+    const target = (event.target as HTMLElement).closest(
+      "[data-action='decrement'], [data-action='increment']"
+    );
+
+    const action = target?.getAttribute("data-action");
+
+    if (action) tweak(target, { action });
+  });
 
   productAmountInputs.forEach((input: HTMLInputElement) => {
     let latestValidValue;
@@ -280,38 +318,15 @@ const { locale } = page,
       if (input.value.length > 2 || !input.validity.valid) {
         input.value = latestValidValue;
       }
+
+      productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
+        if (
+          otherAmountInput !== input &&
+          !otherAmountInput.classList.contains("cart-product-quantity")
+        ) {
+          otherAmountInput.value = input.value;
+        }
+      });
     });
-  });
-
-  cart.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement;
-
-    if (target === cart.firstElementChild) {
-      // close cart if clicked outside of cart content
-      closeCart();
-    }
-
-    const hasToRemoveItem = target.closest(".remove-item-btn");
-
-    if (hasToRemoveItem) {
-      const productToRemove = target.closest(".cart-product"),
-        { id: productId } = productToRemove;
-
-      delete window.cart[productId];
-
-      productToRemove.remove();
-    }
-  });
-
-  closeCartBtn.addEventListener("click", closeCart);
-
-  document.addEventListener("click", (event) => {
-    const target = (event.target as HTMLElement).closest(
-      "[data-action='decrement'], [data-action='increment']"
-    );
-
-    const action = target?.getAttribute("data-action");
-
-    if (action) tweak(target, { action });
   });
 </script>
