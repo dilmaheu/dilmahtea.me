@@ -250,6 +250,23 @@ const { locale } = page,
         action === "decrement" ? quantity - 1 : quantity + 1
       );
     }
+
+    const parentCartProduct = counter.closest(".cart-product");
+
+    if (parentCartProduct) {
+      const productId = parentCartProduct.id,
+        cartProductData = window.cart[productId],
+        productPrice =
+          (cartProductData.price as number) /
+          (cartProductData.quantity as number),
+        updatedQuantity = Number(counter.value),
+        updatedPrice = updatedQuantity * productPrice;
+
+      cartProductData.quantity = updatedQuantity;
+      cartProductData.price = updatedPrice;
+
+      window.cart[productId] = cartProductData;
+    }
   };
 
   productAmountInputs.forEach((input: HTMLInputElement) => {
