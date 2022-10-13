@@ -21,6 +21,10 @@ const recentPosts =
   page.blogs?.data?.map(({ attributes }) => attributes) ||
   page.Relevant_recipes?.data?.map(({ attributes }) => attributes) ||
   posts.filter(({ Meta }) => Meta.URL_slug !== page.Meta.URL_slug);
+
+const authorsProfilePictures = page.authors.data
+  .filter((author) => author.attributes.Profile_picture.data)
+  .map((author) => author.attributes.Profile_picture.data.attributes);
 ---
 
 <style lang="scss" is:global>
@@ -128,44 +132,36 @@ const recentPosts =
         {
           page.authors && (
             <div class="flex flex-wrap gap-x-2.5">
-              <div class="flex relative">
-                {page.authors.data.map((author, index) => (
-                  <div
+              {authorsProfilePictures.map(
+                (picture, index) => (
+                  <img
                     class:list={[
                       index > 0 && "relative -ml-5",
                       "w-12 h-12 rounded-full object-cover overflow-hidden",
                     ]}
-                  >
-                    <img
-                      class="w-full h-full"
-                      alt={
-                        author.attributes.Profile_picture.data.attributes
-                          .alternativeText
-                      }
-                      src={
-                        imgSrcPrefix +
-                        author.attributes.Profile_picture.data.attributes
-                          .provider_metadata.public_id +
-                        `/authBlob`
-                      }
-                    />
+                    alt={picture.alternativeText}
+                    src={
+                      imgSrcPrefix +
+                      picture.provider_metadata.public_id +
+                      `/authBlob`
+                    }
+                  />
+                )
 
-                    {/* <Picture
-                        layout="fill"
-                        alt={
-                          author.attributes.Profile_picture.data.attributes
-                            .alternativeText
-                        }
-                        src={
-                          imgSrcPrefix +
-                          author.attributes.Profile_picture.data.attributes
-                            .provider_metadata.public_id +
-                          `/authBlob`
-                        }
-                      /> */}
-                  </div>
-                ))}
-              </div>
+                /* <Picture
+                  layout="fill"
+                  alt={
+                    author.attributes.Profile_picture.data?.attributes
+                      ?.alternativeText
+                  }
+                  src={
+                    imgSrcPrefix +
+                    author.attributes.Profile_picture.data?.attributes
+                      ?.provider_metadata.public_id +
+                    `/authBlob`
+                  }
+                /> */
+              )}
 
               <div class="grid content-between">
                 <div class="post-author flex flex-wrap font-bold">
