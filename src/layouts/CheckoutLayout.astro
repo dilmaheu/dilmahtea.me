@@ -101,6 +101,10 @@ const checkoutStepOrder = page.checkout_step_order,
   metaImageID={metaImageID}
 >
   <script is:inline>
+    if (Object.keys(window.cart).length === 0) {
+      history.back();
+    }
+
     const savedCheckoutContactInfo =
       localStorage.getItem("checkout-contact-info") || "{}";
 
