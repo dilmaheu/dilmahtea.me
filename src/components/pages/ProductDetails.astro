@@ -414,9 +414,13 @@ const { url: productImgURL } = page.Intro_blob.data.attributes,
 
       const productData = Object.fromEntries(new FormData(form)) as ProductData,
         productTitle = productData.name as string,
-        id = "product-" + productTitle.split(" ").join("_");
+        id = "product-" + productTitle.split(" ").join("_"),
+        existingCartProduct = window.cart[id];
 
-      productData.quantity = Number(productData.quantity);
+      productData.quantity =
+        Number(productData.quantity) +
+        (existingCartProduct ? (existingCartProduct.quantity as number) : 0);
+
       productData.price = Number(productData.price) * productData.quantity;
 
       window.cart[id] = productData;
