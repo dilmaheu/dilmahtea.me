@@ -257,8 +257,9 @@ const { locale } = page,
 
 <script>
   const productAmountInputs = document.querySelectorAll(
-    ".product-amount-input"
-  );
+      ".product-amount-input"
+    ),
+    productAmountOutput = document.querySelector(".product-amount-price");
 
   const tweak = (target, { action }) => {
     const counter = target[
@@ -303,6 +304,10 @@ const { locale } = page,
   });
 
   productAmountInputs.forEach((input: HTMLInputElement) => {
+    const { value: productPrice } = document.querySelector(
+      "input[name='price']"
+    ) as HTMLInputElement;
+
     let latestValidValue;
 
     input.addEventListener("beforeinput", () => {
@@ -322,6 +327,10 @@ const { locale } = page,
           otherAmountInput.value = input.value;
         }
       });
+
+      productAmountOutput.textContent = String(
+        Number(input.value) * Number(productPrice)
+      );
     });
   });
 </script>
