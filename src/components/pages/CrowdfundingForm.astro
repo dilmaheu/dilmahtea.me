@@ -235,21 +235,10 @@ const { page, locale } = Astro.props,
 </form>
 
 <script>
-  const params = new URLSearchParams(location.search);
+  import fillUpForm from "@utils/fillUpForm";
 
-  Array.from(params.entries()).forEach(([param, value]) => {
-    if (param === "country") {
-      const country = document.querySelector(
-        `select[name="country"] option[value="${value}"]`
-      );
+  const searchParams = new URLSearchParams(location.search),
+    crowdfundingFormEntries = Array.from(searchParams.entries());
 
-      // @ts-ignore
-      if (country) country.selected = true;
-    } else {
-      const input = document.querySelector(`input[name="${param}"]`);
-
-      // @ts-ignore
-      if (input) input.value = value || "";
-    }
-  });
+  fillUpForm(crowdfundingFormEntries);
 </script>

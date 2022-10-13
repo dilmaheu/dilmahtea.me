@@ -72,6 +72,7 @@ const { locale } = page,
 
         <input
           type="text"
+          id="email"
           name="email"
           placeholder="Enter your email address"
           required
@@ -89,6 +90,7 @@ const { locale } = page,
 
         <input
           type="text"
+          id="first_name"
           name="first_name"
           placeholder="Enter your first name"
           required
@@ -100,6 +102,7 @@ const { locale } = page,
 
         <input
           type="text"
+          id="last_name"
           name="last_name"
           placeholder="Enter your last name"
           required
@@ -109,7 +112,7 @@ const { locale } = page,
       <label>
         <span>Country</span>
 
-        <select name="country" required>
+        <select id="country" name="country" required>
           <option value="" selected disabled hidden>Select your country</option>
           <option value="nl">Nederland</option>
           <option value="en">England</option>
@@ -119,7 +122,14 @@ const { locale } = page,
 
       <label>
         <span>City</span>
-        <input type="text" name="city" placeholder="Enter your city" required />
+
+        <input
+          type="text"
+          id="city"
+          name="city"
+          placeholder="Enter your city"
+          required
+        />
       </label>
 
       <label>
@@ -127,6 +137,7 @@ const { locale } = page,
 
         <input
           type="text"
+          id="address"
           name="address"
           placeholder="Enter your street address"
           required
@@ -138,6 +149,7 @@ const { locale } = page,
 
         <input
           type="text"
+          id="postal_code"
           name="postal_code"
           placeholder="Enter your postal code"
           required
@@ -162,11 +174,23 @@ const { locale } = page,
 </form>
 
 <script>
+  import fillUpForm from "@utils/fillUpForm";
+
   declare global {
     interface Window {
       openCart: () => void;
       contactInfo: Record<string, FormDataEntryValue>;
     }
+  }
+
+  const savedCheckoutContactInfo = localStorage.getItem(
+    "checkout-contact-info"
+  );
+
+  if (savedCheckoutContactInfo) {
+    const parsedContactInfo = JSON.parse(savedCheckoutContactInfo);
+
+    fillUpForm(Object.entries(parsedContactInfo));
   }
 
   const returnToCartBtn = document.getElementById("return-to-cart-btn"),
