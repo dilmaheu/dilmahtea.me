@@ -1,5 +1,9 @@
 ---
+import CMS from "@store/CMS";
 import DynamicHTML from "@components/DynamicHTML.astro";
+
+const { locale } = Astro.props,
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style lang="scss">
@@ -110,7 +114,7 @@ import DynamicHTML from "@components/DynamicHTML.astro";
 >
   <div class="flex flex-col gap-5">
     <h5 class="alice text-[1.5rem] sm:text-[1.75rem] leading-[120%]">
-      Order Summary
+      {checkoutRecurData.text_order_summary}
     </h5>
 
     <DynamicHTML
@@ -136,7 +140,8 @@ import DynamicHTML from "@components/DynamicHTML.astro";
 
           <div class="flex justify-between items-center gap-1.5">
             <div class="product-size">
-              Size: <placeholder name="size"></placeholder>
+              {checkoutRecurData.text_size}: <placeholder name="size"
+              ></placeholder>
             </div>
 
             <span class="product-price alice text-[1.75rem] leading-[120%]">
@@ -151,21 +156,24 @@ import DynamicHTML from "@components/DynamicHTML.astro";
   <div class="flex flex-col">
     <div class="order-charges pb-3 flex flex flex-col gap-3">
       <div>
-        <span>Subtotal</span>
+        <span>{checkoutRecurData.text_subtotal}</span>
+
         <span id="order-subtotal" class="alice">
           €<DynamicHTML htmlFn={() => window.cart.subTotal} />
         </span>
       </div>
 
       <div>
-        <span>Shipping</span>
+        <span>{checkoutRecurData.text_shipping}</span>
+
         <span id="order-shipping-charge" class="alice">
           €<DynamicHTML htmlFn={() => window.cart.shippingCharge} />
         </span>
       </div>
 
       <div>
-        <span>Tax</span>
+        <span>{checkoutRecurData.text_tax}</span>
+
         <span id="order-tax" class="alice">
           €<DynamicHTML htmlFn={() => window.cart.tax} />
         </span>
@@ -173,7 +181,10 @@ import DynamicHTML from "@components/DynamicHTML.astro";
     </div>
 
     <div class="order-total-container pt-3 border border-t-lightgreen">
-      <span class="font-semibold leading-[130%]">Total</span>
+      <span class="font-semibold leading-[130%]">
+        {checkoutRecurData.text_total}
+      </span>
+
       <span id="order-total" class="alice leading-[110%]">
         €<DynamicHTML htmlFn={() => window.cart.total} />
       </span>
