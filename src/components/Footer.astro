@@ -4,7 +4,7 @@ import { Picture } from "astro-imagetools/components";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
-const { logo, footer_leaf, footer_leaf_sm, footer_background } =
+const { logo, footer_leaf, footer_leaf_sm, footer_background, footer_background_sm } =
   RecurringImages;
 
 declare interface Props {
@@ -82,12 +82,16 @@ const { footerText } = Astro.props as Props;
 
   <div class="footer-background absolute w-full h-[254px] sm:h-full top-0 z-10">
     <img
-      class="w-full h-full object-cover"
+      class="hidden sm:block w-full h-full object-cover object-left-top"
       src={footer_background.src}
       alt=""
     />
+    <img
+      class="block sm:hidden w-full h-full object-cover object-left-bottom"
+      src={footer_background_sm.src}
+      alt=""
+    />
   </div>
-    
 
   {
     /* (
@@ -107,9 +111,9 @@ const { footerText } = Astro.props as Props;
         <img class="w-full h-full" {...logo} />
       </a>
 
-      <nav class="grid grid-cols-2 grid-flow-row sm:flex flex-wrap items-center gap-x-9 gap-y-[7px] sm:gap-2.5 md:gap-5 font-medium md:font-bold text-white">
-        <a href="/crowdfunding">Crowdfunding</a>
-
+      <nav
+        class="grid grid-cols-2 grid-flow-row sm:flex flex-wrap items-center gap-x-9 gap-y-[7px] sm:gap-2.5 md:gap-5 font-medium md:font-bold text-white"
+      >
         <a href="/blog">Blog</a>
 
         {
@@ -129,7 +133,11 @@ const { footerText } = Astro.props as Props;
     </div>
 
     <div class="w-full flex justify-center mt-auto">
-      <p class="copyright text-center leading-[150%] sm:font-medium" set:html={footerText}></p>
+      <p
+        class="copyright text-center leading-[150%] sm:font-medium"
+        set:html={footerText}
+      >
+      </p>
     </div>
   </div>
 

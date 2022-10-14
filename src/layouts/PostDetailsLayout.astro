@@ -41,7 +41,11 @@ const recentPosts =
     //   clip-path: url(#content-images-curve);
     // }
 
-    p a {
+    p a, 
+    ol a, 
+    ul a, 
+    p s a,
+    blockquote p a {
       @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat transition-all;
 
       background-size: 100% 45%;
@@ -112,6 +116,12 @@ const recentPosts =
 
   .recent-post-card-title-icon {
     height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
+  }
+
+  .recent-posts-img-container{
+    width: 100%;
+    max-height: 310px;
+    aspect-ratio: 4.23 / 3.1;
   }
 </style>
 
@@ -214,6 +224,7 @@ const recentPosts =
   <div class="hero-img-curve-container h-full hidden sm:block absolute z-20">
     <ClippedImg
       id="hero-img-curve"
+      className="relative object-cover"
       src={imgSrcPrefix +
         page.Intro_blob.data.attributes.provider_metadata.public_id +
         `/small`}
@@ -397,15 +408,18 @@ const recentPosts =
             style="clip-path: url(#recent-post-card-curve)"
           >
             <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-              <img
-                src={
-                  imgSrcPrefix +
-                  post.Intro_blob.data.attributes.provider_metadata.public_id +
-                  `/small`
-                }
-                alt={post.Intro_blob.data.attributes.alternativeText}
-                class="w-full h-full"
-              />
+              <div class="recent-posts-img-container">
+                <img
+                  src={
+                    imgSrcPrefix +
+                    post.Intro_blob.data.attributes.provider_metadata
+                      .public_id +
+                    `/small`
+                  }
+                  alt={post.Intro_blob.data.attributes.alternativeText}
+                  class="w-full h-full object-cover"
+                />
+              </div>
 
               {/* <Picture
                   alt=""
@@ -424,35 +438,39 @@ const recentPosts =
                 /> */}
             </a>
 
-            <div class="recent-post-card-content-container">
-              {post.authors && (
-                <div>
-                  <div class="recent-post-card-author flex flex-wrap font-bold">
-                    {post.authors.data.map(({ attributes }, index) => (
-                      <a href="#">
-                        {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                      </a>
-                    ))}
-                  </div>
+            <div class="recent-post-card-content-container grid content-between">
+              <div>
+                {post.authors && (
+                  <div>
+                    <div class="recent-post-card-author flex flex-wrap font-bold">
+                      {post.authors.data.map(({ attributes }, index) => (
+                        <a href="#">
+                          {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                        </a>
+                      ))}
+                    </div>
 
-                  <div class="post-publish-date">
-                    {new Date(post.createdAt).toLocaleString("en-US", {
-                      day: "numeric",
-                      month: "long",
-                    })}
+                    <div class="post-publish-date">
+                      {new Date(post.createdAt).toLocaleString("en-US", {
+                        day: "numeric",
+                        month: "long",
+                      })}
+                    </div>
                   </div>
+                )}
+
+                <div class="recent-post-card-title alice mt-[15px]">
+                  <a href={`/` + post.Meta.URL_slug}>
+                    {post.Title}
+                  </a>
+
+                  <span class="icon recent-post-card-title-icon">
+                    <img
+                      class="recent-post-card-title-icon"
+                      {...white_right_arrow}
+                    />
+                  </span>
                 </div>
-              )}
-
-              <div class="recent-post-card-title alice mt-[15px]">
-                <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
-
-                <span class="icon recent-post-card-title-icon">
-                  <img
-                    class="recent-post-card-title-icon"
-                    {...white_right_arrow}
-                  />
-                </span>
               </div>
             </div>
           </div>
