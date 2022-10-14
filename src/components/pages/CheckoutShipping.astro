@@ -116,7 +116,13 @@ const { locale } = page,
 
       <div>
         <span>
-          <DynamicHTML htmlFn={() => window.checkoutContactInfo.address} />
+          <DynamicHTML
+            htmlFn={() => {
+              const { address, city, country } = window.checkoutContactInfo;
+
+              return [address, city, country.slice(3)].join(", ");
+            }}
+          />
         </span>
 
         <button>Change</button>
