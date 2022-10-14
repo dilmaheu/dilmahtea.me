@@ -6,6 +6,12 @@ const checkoutShippingQuery = `
         attributes {
           locale
           checkout_step_order
+          text_contact
+          text_delivery_address
+          text_change
+          text_shipping_method
+          text_continue_to_payment
+          text_return_to_information
           Meta {
             HTML_Title
             Meta_description
@@ -18,6 +24,13 @@ const checkoutShippingQuery = `
             data {
               attributes {
                 locale
+                checkout_step_order
+                text_contact
+                text_delivery_address
+                text_change
+                text_shipping_method
+                text_continue_to_payment
+                text_return_to_information
                 Meta {
                   HTML_Title
                   Meta_description
