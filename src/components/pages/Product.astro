@@ -1,0 +1,439 @@
+---
+import Icon from "astro-icon";
+import Markdown from "@astrojs/markdown-component";
+import { Picture } from "astro-imagetools/components";
+
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import ClippedImg from "@components/ClippedImg.astro";
+import ClippedPicture from "@components/ClippedPicture.astro";
+import HeroBackground from "@components/HeroBackground.astro";
+import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
+
+import RecurringImages from "@store/RecurringImages";
+
+const { white_cup, white_love_ribbon, white_right_arrow } = RecurringImages;
+
+const { page, recurData } = Astro.props,
+  { posts } = page,
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+
+const blogs = page.blogs.data.map(({ attributes }) => attributes);
+---
+
+<style lang="scss">
+  @use "src/styles/colors";
+
+  .recent-posts-title {
+    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
+  }
+
+  .recent-post-card {
+    @apply w-full max-w-[380px] sm:max-w-none;
+  }
+
+  .recent-post-card-content-container {
+    padding: clamp(20px, 6.4vw, 40px) clamp(24px, 3.8vw + 11.75px, 36px);
+
+    @media (min-width: 640px) {
+      padding: clamp(30px, 7.8125vw - 20px, 60px)
+        clamp(28px, 4.6875vw - 2px, 46px);
+    }
+
+    @media (min-width: 1024px) {
+      padding: clamp(30px, 8vw - 51.75px, 60px) clamp(28px, 4.8vw - 21px, 46px);
+    }
+  }
+
+  .recent-post-card-author {
+    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem);
+    line-height: 150%;
+  }
+
+  .recent-post-card-title {
+    @apply leading-[130%] sm:leading-[120%];
+
+    font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
+  }
+
+  .recent-post-card-title-icon {
+    height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
+  }
+
+  .product-card-title {
+    font-size: clamp(1.75rem, 3vw + 0.3rem, 2.625rem);
+  }
+
+  .product-card-inline-icon {
+    height: clamp(27px, 3.5vw + 6px, 42px);
+  }
+
+  .product-img-container {
+    width: 100%;
+    max-height: 393px;
+
+    @media (min-width: 640px) {
+      aspect-ratio: 5.93 / 3.91;
+    }
+  }
+
+  .product-card-info {
+    height: clamp(27px, 3.5vw + 6px, 42px);
+  }
+
+  .product-impact-container {
+    width: 100%;
+    height: 100%;
+    clip-path: url(#product-impact-bg-curve-sm);
+
+    @media (min-width: 768px) {
+      max-height: 530px;
+      aspect-ratio: 144 / 55;
+      clip-path: url(#product-impact-bg-curve);
+    }
+  }
+
+  .product-impact-text {
+    font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
+  }
+
+  .product-impact-btn {
+    font-size: clamp(1rem, 2.2vw + 0.13rem, 2rem);
+    margin-top: clamp(25px, 3.5vw + 6px, 50px);
+    padding: clamp(10px, 1.3vw + 1px, 19px) clamp(16px, 2.2vw + 1px, 31px);
+  }
+</style>
+
+<!-- Hero Section -->
+<section class="hero overflow-hidden relative">
+  <UpdateHeroTopMargin />
+
+  <HeroBackground />
+
+  {/* Text Content */}
+  <div class="wrapper hero-text-container h-full relative z-30">
+    <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
+      <div class="mt-[30px] sm:mt-4 lg:mt-0">
+        <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
+          {page.Title}
+
+          <span class="icon heading-inline-icon">
+            <img class="w-full h-full" {...white_cup} />
+          </span>
+        </h1>
+
+        <div class="hero-text pt-2.5 block prose text-lightgray max-w-none">
+          <Markdown>{page.Intro_text}</Markdown>
+        </div>
+
+        {
+          page.Heading_button_text && (
+            <div class="flex">
+              <a href={page.Heading_button_link}>
+                <div class="bg-white rounded-[40px] text-base font-bold leading-[19px] text-primary py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9">
+                  {page.Heading_button_text}
+                </div>
+              </a>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+
+  {/* Blob Image - Desktop View */}
+  <div class="hero-img-curve-container h-full hidden sm:block absolute z-20">
+    <ClippedImg
+      id="hero-img-curve"
+      className="relative"
+      src={imgSrcPrefix +
+        page.Intro_blob.data.attributes.provider_metadata.public_id +
+        `/small`}
+      alt={page.Intro_blob.data.attributes.alternativeText}
+      path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
+    />
+
+    {
+      /* (
+        <ClippedPicture
+          id="hero-img-curve"
+          pictureStyle="position: relative;"
+          src={
+            imgSrcPrefix +
+            page.Intro_blob.data.attributes.provider_metadata.public_id +
+            `/small`
+          }
+          path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
+        />
+      ) */
+    }
+  </div>
+</section>
+
+{/* Blob Image - Mobile View */}
+<div class="hero-img-sm-container block sm:hidden relative -mt-20 z-20 w-full">
+  <ClippedImg
+    id="hero-img-curve-sm"
+    src={imgSrcPrefix +
+      page.Intro_blob.data.attributes.provider_metadata.public_id +
+      `/small`}
+    alt={page.Intro_blob.data.attributes.alternativeText}
+    path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
+  />
+
+  {
+    /* (
+      <ClippedPicture
+        id="hero-img-curve-sm"
+        src={
+          imgSrcPrefix +
+          page.Intro_blob.data.attributes.provider_metadata.public_id +
+          `/small`
+        }
+        path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
+      />
+    ) */
+  }
+</div>
+
+<div class="py-[50px]">
+  <ClipPathSVG
+    id="product-card-curve"
+    path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
+  />
+
+  <div class="grid gap-y-[50px]">
+    {/* Products Section */}
+    <main>
+      <div
+        id="products"
+        role="list"
+        aria-label="Kindness Items"
+        class="wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))] justify-center gap-[50px]"
+      >
+        {
+          posts.map((post) => (
+            <div
+              role="listitem"
+              aria-label="Kindness Item"
+              class="flex flex-wrap bg-primary"
+              style="clip-path: url(#product-card-curve)"
+            >
+              <a class="block w-full" href={`/` + post.Meta.URL_slug}>
+                <div class="product-img-container">
+                  <img
+                    src={
+                      imgSrcPrefix +
+                      post.Intro_blob.data.attributes.provider_metadata
+                        .public_id +
+                      `/small`
+                    }
+                    alt={post.Intro_blob.data.attributes.alternativeText}
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+              </a>
+
+              <div class="grid content-between py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
+                <div>
+                  <div class="flex items-center">
+                    <div class="product-card-title alice leading-[120%] md:leading-[110%]">
+                      <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+                    </div>
+
+                    <a
+                      href={`/` + post.Meta.URL_slug}
+                      class:list={[
+                        "bg-lightgray2 hidden lg:flex justify-center items-center gap-x-2",
+                        "py-[9px] px-[24px] ml-2.5 font-bold text-primary leading-[150%] rounded-[40px]",
+                      ]}
+                    >
+                      <Icon
+                        class="w-[30px] h-[30px]"
+                        name="mi:shopping-cart-add"
+                      />
+                      {recurData.product_add}
+                    </a>
+                  </div>
+
+                  <a
+                    href={`/` + post.Meta.URL_slug}
+                    class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] lg:mt-[7px]"
+                  >
+                    <Markdown>{post.Intro_text}</Markdown>
+                  </a>
+
+                  <a
+                    href={`/` + post.Meta.URL_slug}
+                    class:list={[
+                      "bg-lightgray2 flex lg:hidden justify-center items-center gap-x-2",
+                      "py-[9px] px-[24px] mt-5 font-bold text-primary leading-[150%] rounded-[40px]",
+                    ]}
+                  >
+                    <Icon
+                      name="mi:shopping-cart-add"
+                      class="w-[30px] h-[30px] p-0.5"
+                    />
+                    {recurData.product_add}
+                  </a>
+                </div>
+
+                <div class="flex items-center mt-[20px] md:mt-[25px]">
+                  <h2 class="flex items-center text-sm md:text-base leading-[150%]">
+                    <span class="icon h-5 md:h-6 mr-2 md:mr-2.5">
+                      <img class="w-full h-full" {...white_love_ribbon} />
+                    </span>
+                    {recurData.product_made_love_from + `\xa0`}
+                    <a href="" class="underline underline-offset-[2px]">
+                      Somesset Estate
+                    </a>
+                  </h2>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </main>
+
+    {/* Products impact Section */}
+    <section role="complementary">
+      <ClipPathSVG
+        id="product-impact-bg-curve"
+        path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.23,-0.017 c0.074,0,0.2,0.037,0.315,0.009 S1,0.894,1,0.894 V0.055"
+      />
+
+      <ClipPathSVG
+        id="product-impact-bg-curve-sm"
+        path="M0.718,0 C0.853,0,0.938,0.021,1,0.064 V0.97 c-0.045,0.046,-0.195,0.006,-0.324,0 c-0.149,-0.007,-0.301,0.03,-0.45,0.03 C0.094,1,0,0.954,0,0.954 V0.064 c0.059,-0.061,0.237,0,0.32,0 S0.583,0,0.718,0"
+      />
+
+      <div class="relative w-full h-full product-impact-container">
+        <div class="absolute inset-0 w-full h-full">
+          <img
+            class="bg-primary w-full h-full object-cover"
+            src={imgSrcPrefix +
+              posts[0].Intro_blob.data.attributes.provider_metadata.public_id +
+              `/small`}
+            alt=""
+          />
+        </div>
+
+        <div
+          class="absolute inset-0 w-full h-full bg-gradient-to-b from-[#000] to-[#2f2f2f] opacity-[0.4]"
+        >
+        </div>
+
+        <div class="relative z-50 h-full flex flex-wrap items-center">
+          <div
+            class="wrapper flex flex-wrap justify-center text-center py-[95px] md:py-[50px]"
+          >
+            <div
+              class="product-impact-text alice leading-[110%] md:leading-[115%] w-full"
+            >
+              {page.Block2_title}
+            </div>
+            <a href={page.Block2_button_link}>
+              <div
+                class:list={[
+                  "product-impact-btn bg-lightgray flex",
+                  "font-bold md:font-semibold leading-[150%] text-primary rounded-[40px]",
+                ]}
+              >
+                {page.Block2_button_text}
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {
+      blogs.length > 0 && (
+        <section class="wrapper" role="complementary">
+          <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
+            {recurData.text_explore_the_world_of_kindness}
+          </h2>
+
+          <div
+            role="list"
+            aria-label="Kindness Items"
+            class:list={[
+              "w-full mx-auto mb-[50px] grid sm:grid-cols-2 lg:grid-cols-3",
+              "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
+            ]}
+          >
+            {blogs.slice(0, 3).map((post) => (
+              <div
+                class="bg-primary recent-post-card"
+                role="listitem"
+                aria-label="Kindness Item"
+                style="clip-path: url(#product-card-curve)"
+              >
+                <a class="block w-full" href={`/` + post.Meta.URL_slug}>
+                  <img
+                    src={
+                      imgSrcPrefix +
+                      post.Intro_blob.data.attributes.provider_metadata
+                        .public_id +
+                      `/small`
+                    }
+                    alt={post.Intro_blob.data.attributes.alternativeText}
+                    class="w-full h-full"
+                  />
+
+                  {/* <Picture
+                    alt=""
+                    layout="fill"
+                    src={
+                      imgSrcPrefix +
+                      post.Intro_blob.data.attributes.provider_metadata
+                        .public_id +
+                      `/small`
+                    }
+                    attributes={{
+                      picture: {
+                        style: "clip-path: url(#recent-post-card-curve);",
+                      },
+                    }}
+                  /> */}
+                </a>
+
+                <div class="recent-post-card-content-container">
+                  {post.authors && (
+                    <div>
+                      <div class="recent-post-card-author flex flex-wrap font-bold">
+                        {post.authors.data.map(({ attributes }, index) => (
+                          <a href="#">
+                            {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                          </a>
+                        ))}
+                      </div>
+
+                      <div class="post-publish-date">
+                        {new Date(post.createdAt).toLocaleString("en-US", {
+                          day: "numeric",
+                          month: "long",
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <div class="recent-post-card-title alice mt-[15px]">
+                    <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+
+                    <span class="icon recent-post-card-title-icon">
+                      <img
+                        class="recent-post-card-title-icon"
+                        {...white_right_arrow}
+                      />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </div>
+</div>

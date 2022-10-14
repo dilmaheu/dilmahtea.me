@@ -2,8 +2,10 @@ const images = [
   "logo",
   "favicon",
   "hero_background",
+  "hero_background_sm",
   "crowdfunding_info_section_background",
   "footer_background",
+  "footer_background_sm",
   "footer_leaf",
   "footer_leaf_sm",
   "error_notification",
@@ -12,6 +14,7 @@ const images = [
   "success_notification",
   "white_love_ribbon",
   "green_love_ribbon",
+  "green_love",
   "white_cup",
   "green_cup",
   "light_green_cup",
@@ -29,6 +32,12 @@ const images = [
   "green_bulb",
   "green_leaf",
   "left_post_leaf",
+  "green_leaf_icon",
+  "white_product_cart",
+  "green_product_cart",
+  "green_product_cart_plus",
+  "green_no_icon",
+  "green_package_icon",
 ];
 
 const recurringImageQuery = `
