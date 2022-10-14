@@ -236,9 +236,11 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
     )
   ) : (
     () => {
-      const { page } = Astro.props,
-        locale = page.locale.substring(0, 2),
-        { Meta: meta, availableLocales } = page,
+      const { page } = Astro.props;
+
+      page.locale = page.locale.substring(0, 2);
+
+      const { Meta: meta, locale, availableLocales } = page,
         recurData =
           locale === "en"
             ? Astro.props.recurData
