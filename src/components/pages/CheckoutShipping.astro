@@ -9,6 +9,8 @@ const { locale } = page,
   { data: checkoutInformationData } = CMS.get("checkoutInformation"),
   { URL_slug: checkoutInfoPageSlug } = checkoutInformationData.attributes.Meta,
   checkoutInfoPageLink = "/" + locale + "/" + checkoutInfoPageSlug;
+
+const checkoutShipping = CMS.get("checkoutShipping", locale);
 ---
 
 <style lang="scss">
@@ -98,21 +100,21 @@ const { locale } = page,
 <section id="shipping-details" class="flex flex-col gap-12">
   <div class="p-4 gap-6 flex flex-col bg-lightgray2 rounded-2xl">
     <div class="shipping-detail">
-      <div>Contact</div>
+      <div>{checkoutShipping.text_contact}</div>
 
       <div>
         <span class="break-all">
           <DynamicHTML htmlFn={() => window.checkoutContactInfo.email} />
         </span>
 
-        <button>Change</button>
+        <button>{checkoutShipping.text_change}</button>
       </div>
     </div>
 
     <div class="border border-dark opacity-80"></div>
 
     <div class="shipping-detail">
-      <div>Delivery Address</div>
+      <div>{checkoutShipping.text_delivery_address}</div>
 
       <div>
         <span>
@@ -125,13 +127,13 @@ const { locale } = page,
           />
         </span>
 
-        <button>Change</button>
+        <button>{checkoutShipping.text_change}</button>
       </div>
     </div>
   </div>
 
   <div class="flex flex-col gap-4">
-    <h4 class="alice">Shipping Method</h4>
+    <h4 class="alice">{checkoutShipping.text_shipping_method}</h4>
 
     <div class="gap-5 flex items-center">
       <div class="p-1 border-2 border-primary rounded-full">
@@ -162,11 +164,11 @@ const { locale } = page,
     <button
       class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
     >
-      Continue To Payment
+      {checkoutShipping.text_continue_to_payment}
     </button>
 
     <a href={checkoutInfoPageLink} class="text-primary font-bold">
-      Return To Information
+      {checkoutShipping.text_return_to_information}
     </a>
   </div>
 </section>
