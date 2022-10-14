@@ -15,6 +15,8 @@ const { locale } = page,
   { data: checkoutInformationData } = CMS.get("checkoutInformation"),
   { URL_slug: checkoutInfoPageSlug } = checkoutInformationData.attributes.Meta,
   checkoutInfoPageLink = "/" + locale + "/" + checkoutInfoPageSlug;
+
+const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style lang="scss">
@@ -84,7 +86,7 @@ const { locale } = page,
       >
         <div class="flex flex-col gap-5">
           <div class="flex justify-between items-center">
-            <h3 class="cart-heading alice">Cart</h3>
+            <h3 class="cart-heading alice">{checkoutRecurData.text_cart}</h3>
 
             <button id="close-cart-btn">
               <Icon name="heroicons-solid:x" class="w-14" />
@@ -129,7 +131,8 @@ const { locale } = page,
                 </div>
 
                 <div class="cart-product-size">
-                  Size: <placeholder name="size"></placeholder>
+                  {checkoutRecurData.text_size}: <placeholder name="size"
+                  ></placeholder>
                 </div>
 
                 <div class="flex justify-between items-center gap-1.5">
@@ -173,7 +176,9 @@ const { locale } = page,
         <div class="flex flex-col gap-5">
           <div>
             <div class="flex justify-between items-center">
-              <span class="subtotal-text font-medium">Subtotal</span>
+              <span class="subtotal-text font-medium">
+                {checkoutRecurData.text_subtotal}
+              </span>
 
               <span id="cart-subtotal" class="alice">
                 €<DynamicHTML htmlFn={() => window.cart.subTotal} />
@@ -181,7 +186,7 @@ const { locale } = page,
             </div>
 
             <div class="shipping-charge-info">
-              *Shipping Calculated at Checkout
+              {checkoutRecurData.text_shipping_calculated_at_checkout}
             </div>
           </div>
 
@@ -189,7 +194,7 @@ const { locale } = page,
             href={checkoutInfoPageLink}
             class="capitalize py-4 font-bold bg-primary text-center text-lightgray rounded-[9999px]"
           >
-            Proceed to Checkout
+            {checkoutRecurData.text_proceed_to_checkout}
           </a>
         </div>
       </div>
