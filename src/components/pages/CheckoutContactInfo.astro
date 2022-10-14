@@ -7,6 +7,8 @@ const { locale } = page,
   { data: checkoutShippingData } = CMS.get("checkoutShipping"),
   { URL_slug: shippingPageSlug } = checkoutShippingData.attributes.Meta,
   shippingPageLink = "/" + locale + "/" + shippingPageSlug;
+
+const checkoutInformation = CMS.get("checkoutInformation", locale);
 ---
 
 <style lang="scss">
@@ -64,17 +66,17 @@ const { locale } = page,
 
 <form class="flex flex-col gap-12" action={shippingPageLink}>
   <div class="form-grid-container">
-    <h4 class="alice">Contact info</h4>
+    <h4 class="alice">{checkoutInformation.text_contact_info}</h4>
 
     <div class="form-grid">
       <label>
-        <span>Email Address</span>
+        <span>{checkoutInformation.text_email_address}</span>
 
         <input
           type="text"
           id="email"
           name="email"
-          placeholder="Enter your email address"
+          placeholder={checkoutInformation.email_address_placeholder}
           required
         />
       </label>
@@ -82,38 +84,40 @@ const { locale } = page,
   </div>
 
   <div class="form-grid-container">
-    <h4 class="alice">Shipping Address</h4>
+    <h4 class="alice">{checkoutInformation.text_shipping_address}</h4>
 
     <div class="form-grid">
       <label>
-        <span>First Name</span>
+        <span>{checkoutInformation.text_first_name}</span>
 
         <input
           type="text"
           id="first_name"
           name="first_name"
-          placeholder="Enter your first name"
+          placeholder={checkoutInformation.first_name_placeholder}
           required
         />
       </label>
 
       <label>
-        <span>Last Name</span>
+        <span>{checkoutInformation.text_last_name}</span>
 
         <input
           type="text"
           id="last_name"
           name="last_name"
-          placeholder="Enter your last name"
+          placeholder={checkoutInformation.last_name_placeholder}
           required
         />
       </label>
 
       <label>
-        <span>Country</span>
+        <span>{checkoutInformation.text_country}</span>
 
         <select id="country" name="country" required>
-          <option value="" selected disabled hidden>Select your country</option>
+          <option value="" selected disabled hidden>
+            {checkoutInformation.country_placeholder}
+          </option>
           <option value="nl-Nederland">Nederland</option>
           <option value="en-England">England</option>
           <option value="de-Germany">Germany</option>
@@ -121,37 +125,37 @@ const { locale } = page,
       </label>
 
       <label>
-        <span>City</span>
+        <span>{checkoutInformation.text_city}</span>
 
         <input
           type="text"
           id="city"
           name="city"
-          placeholder="Enter your city"
+          placeholder={checkoutInformation.city_placeholder}
           required
         />
       </label>
 
       <label>
-        <span>Street</span>
+        <span>{checkoutInformation.text_street}</span>
 
         <input
           type="text"
           id="address"
           name="address"
-          placeholder="Enter your street address"
+          placeholder={checkoutInformation.street_placeholder}
           required
         />
       </label>
 
       <label>
-        <span>Postal Code</span>
+        <span>{checkoutInformation.text_postal_code}</span>
 
         <input
           type="text"
           id="postal_code"
           name="postal_code"
-          placeholder="Enter your postal code"
+          placeholder={checkoutInformation.postal_code_placeholder}
           required
         />
       </label>
@@ -164,7 +168,7 @@ const { locale } = page,
     <button
       class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
     >
-      Continue To Shipping
+      {checkoutInformation.text_continue_to_shipping}
     </button>
 
     <button id="return-to-cart-btn" class="text-primary font-bold">
