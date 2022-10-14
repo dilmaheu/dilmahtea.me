@@ -138,16 +138,14 @@ const recentPosts =
         {
           page.authors && (
             <div class="flex flex-wrap gap-x-2.5">
-              <div class="flex relative">
-                {page.authors.data.map((author, index) => (
-                  <div
-                    class:list={[
-                      index > 0 && "relative -ml-5",
-                      "w-12 h-12 rounded-full object-cover overflow-hidden",
-                    ]}
-                  >
+              {page.authors.data.map(
+                (author, index) =>
+                  author.attributes.Profile_picture.data && (
                     <img
-                      class="w-full h-full"
+                      class:list={[
+                        index > 0 && "relative -ml-5",
+                        "w-12 h-12 rounded-full object-cover overflow-hidden",
+                      ]}
                       alt={
                         author.attributes.Profile_picture.data.attributes
                           .alternativeText
@@ -159,23 +157,22 @@ const recentPosts =
                         `/authBlob`
                       }
                     />
+                  )
 
-                    {/* <Picture
-                        layout="fill"
-                        alt={
-                          author.attributes.Profile_picture.data.attributes
-                            .alternativeText
-                        }
-                        src={
-                          imgSrcPrefix +
-                          author.attributes.Profile_picture.data.attributes
-                            .provider_metadata.public_id +
-                          `/authBlob`
-                        }
-                      /> */}
-                  </div>
-                ))}
-              </div>
+                /* <Picture
+                  layout="fill"
+                  alt={
+                    author.attributes.Profile_picture.data?.attributes
+                      ?.alternativeText
+                  }
+                  src={
+                    imgSrcPrefix +
+                    author.attributes.Profile_picture.data?.attributes
+                      ?.provider_metadata.public_id +
+                    `/authBlob`
+                  }
+                /> */
+              )}
 
               <div class="grid content-between">
                 <div class="post-author flex flex-wrap font-bold">
