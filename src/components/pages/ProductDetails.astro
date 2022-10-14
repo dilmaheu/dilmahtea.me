@@ -6,6 +6,7 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
+import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
 const {
@@ -17,6 +18,7 @@ const {
 } = RecurringImages;
 
 const { page, recurData } = Astro.props,
+  { locale } = page,
   headingName = recurData.text_chapter,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 
@@ -25,6 +27,8 @@ const recipes = page.recipes.data.map(({ attributes }) => attributes);
 const { url: productImgURL } = page.Intro_blob.data.attributes,
   { Title: productTitle, Price: productPrice } = page,
   productSize = page.Weight_tea + "gm";
+
+const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style lang="scss">
@@ -102,7 +106,7 @@ const { url: productImgURL } = page.Intro_blob.data.attributes,
       <legend
         class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
       >
-        {recurData.product_size}:
+        {checkoutRecurData.text_size}:
       </legend>
 
       <label class="cursor-pointer">
@@ -130,7 +134,7 @@ const { url: productImgURL } = page.Intro_blob.data.attributes,
       <legend
         class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
       >
-        {recurData.product_quantity}:
+        {checkoutRecurData.text_quantity}:
       </legend>
 
       <div
@@ -168,7 +172,7 @@ const { url: productImgURL } = page.Intro_blob.data.attributes,
     >
       <Icon name="mi:shopping-cart" class="w-[26px] h-[26px]" />
       <span>
-        {recurData.product_add_cart_for}
+        {checkoutRecurData.text_add_to_cart_for}
         €<output class="product-amount-price">{productPrice}</output>
       </span>
     </button>
@@ -186,7 +190,7 @@ const { url: productImgURL } = page.Intro_blob.data.attributes,
       <legend
         class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]"
       >
-        {recurData.product_size}:
+        {checkoutRecurData.text_size}:
       </legend>
 
       <label class="cursor-pointer">
@@ -214,7 +218,7 @@ const { url: productImgURL } = page.Intro_blob.data.attributes,
       <legend
         class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]"
       >
-        {recurData.product_quantity}:
+        {checkoutRecurData.text_quantity}:
       </legend>
 
       <div
@@ -251,7 +255,7 @@ const { url: productImgURL } = page.Intro_blob.data.attributes,
       ]}
     >
       <Icon name="mi:shopping-cart" class="w-8 h-8" />
-      {recurData.product_add_cart}
+      {checkoutRecurData.text_add_to_cart}
     </button>
   </form>
 

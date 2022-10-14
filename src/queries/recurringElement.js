@@ -46,11 +46,6 @@ const recurringElementQuery = `
           estate_location
           product_made_love_from
           product_kindness_impact
-          product_add
-          product_add_cart
-          product_add_cart_for
-          product_size
-          product_quantity
           localizations {
             data {
               attributes {
@@ -96,11 +91,6 @@ const recurringElementQuery = `
                 estate_location
                 product_made_love_from
                 product_kindness_impact
-                product_add
-                product_add_cart
-                product_add_cart_for
-                product_size
-                product_quantity
               }
             }
           }
