@@ -12,6 +12,7 @@ const checkoutShippingQuery = `
           text_shipping_method
           text_continue_to_payment
           text_return_to_information
+          shipping_methods
           Meta {
             HTML_Title
             Meta_description
@@ -31,6 +32,7 @@ const checkoutShippingQuery = `
                 text_shipping_method
                 text_continue_to_payment
                 text_return_to_information
+                shipping_methods
                 Meta {
                   HTML_Title
                   Meta_description

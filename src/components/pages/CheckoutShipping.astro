@@ -10,7 +10,10 @@ const { locale } = page,
   { URL_slug: checkoutInfoPageSlug } = checkoutInformationData.attributes.Meta,
   checkoutInfoPageLink = "/" + locale + "/" + checkoutInfoPageSlug;
 
-const checkoutShipping = CMS.get("checkoutShipping", locale);
+const checkoutShipping = CMS.get("checkoutShipping", locale),
+  shippingMethods = checkoutShipping.shipping_methods
+    .split("\n")
+    .map((methodString) => methodString.split(" - "));
 ---
 
 <style lang="scss">
@@ -97,7 +100,7 @@ const checkoutShipping = CMS.get("checkoutShipping", locale);
   }
 </script>
 
-<section id="shipping-details" class="flex flex-col gap-12">
+<form id="shipping-details" class="flex flex-col gap-12">
   <div class="p-4 gap-6 flex flex-col bg-lightgray2 rounded-2xl">
     <div class="shipping-detail">
       <div>{checkoutShipping.text_contact}</div>
@@ -135,23 +138,35 @@ const checkoutShipping = CMS.get("checkoutShipping", locale);
   <div class="flex flex-col gap-4">
     <h4 class="alice">{checkoutShipping.text_shipping_method}</h4>
 
-    <div class="gap-5 flex items-center">
-      <div class="p-1 border-2 border-primary rounded-full">
-        <div class="w-2 h-2 bg-primary rounded-full"></div>
-      </div>
+    {
+      shippingMethods.map(([method, cost]) => (
+        <label class="gap-5 flex items-center">
+          <input
+            type="radio"
+            name="shipping-method"
+            value={method}
+            class:list={[
+              "hover:brightness-50 active:brightness-150",
+              "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
+              "checked:before:block before:hidden before:w-2 before:h-2 before:bg-primary before:rounded-full",
+            ]}
+            checked
+          />
 
-      <span class="gap-3 flex items-center">
-        <span class="shipping-method font-semibold text-dark2 leading-[130%]">
-          Standard
-        </span>
+          <span class="gap-3 flex items-center">
+            <span class="shipping-method font-semibold text-dark2 leading-[130%]">
+              {method}
+            </span>
 
-        <span class="w-1 h-1 bg-primary rounded-full">.</span>
+            <span class="w-1 h-1 bg-primary rounded-full" />
 
-        <span class="shipping-cost font-semibold text-dark2 leading-[130%]">
-          $4.50
-        </span>
-      </span>
-    </div>
+            <span class="shipping-cost font-semibold text-dark2 leading-[130%]">
+              €{cost}
+            </span>
+          </span>
+        </label>
+      ))
+    }
   </div>
 
   <div class="block lg:hidden -mb-6">
@@ -162,6 +177,7 @@ const checkoutShipping = CMS.get("checkoutShipping", locale);
     class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-9 sm:gap-12"
   >
     <button
+      type="submit"
       class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
     >
       {checkoutShipping.text_continue_to_payment}
@@ -171,4 +187,4 @@ const checkoutShipping = CMS.get("checkoutShipping", locale);
       {checkoutShipping.text_return_to_information}
     </a>
   </div>
-</section>
+</form>
