@@ -100,7 +100,34 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
   }
 </script>
 
-<form id="shipping-details" class="flex flex-col gap-12">
+<form
+  method="POST"
+  id="shipping-details"
+  class="flex flex-col gap-12"
+  action="https://dev.pay.scripts.dilmahtea.me"
+>
+  <DynamicHTML
+    htmlFn={() => {
+      const { origin, pathname } = location,
+        paymentInfo = {
+          ...window.checkoutContactInfo,
+          product_name: "Dilmahtea.me Ecommerce Payment",
+          price: window.cart.total,
+          payment_type: "ecommerce",
+          locale: preferredLocale,
+          origin_url: origin + pathname,
+          success_url: `${origin}/${preferredLocale}/thank-you-for-your-order`,
+        };
+
+      return Object.keys(paymentInfo)
+        .map(
+          (name) =>
+            `<input type="hidden" name="${name}" value="${paymentInfo[name]}" />`
+        )
+        .join("");
+    }}
+  />
+
   <div class="p-4 gap-6 flex flex-col bg-lightgray2 rounded-2xl">
     <div class="shipping-detail">
       <div>{checkoutShipping.text_contact}</div>
