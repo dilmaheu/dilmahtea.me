@@ -16,6 +16,7 @@ const checkoutInformationQuery = `
           last_name_placeholder
           text_country
           country_placeholder
+          countries
           text_city
           city_placeholder
           text_street
@@ -46,6 +47,7 @@ const checkoutInformationQuery = `
                 last_name_placeholder
                 text_country
                 country_placeholder
+                countries
                 text_city
                 city_placeholder
                 text_street

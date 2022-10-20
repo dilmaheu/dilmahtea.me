@@ -8,7 +8,8 @@ const { locale } = page,
   { URL_slug: shippingPageSlug } = checkoutShippingData.attributes.Meta,
   shippingPageLink = "/" + locale + "/" + shippingPageSlug;
 
-const checkoutInformation = CMS.get("checkoutInformation", locale);
+const checkoutInformation = CMS.get("checkoutInformation", locale),
+  countries = checkoutInformation.countries.split("\n");
 ---
 
 <style lang="scss">
@@ -122,9 +123,12 @@ const checkoutInformation = CMS.get("checkoutInformation", locale);
           <option value="" selected disabled hidden>
             {checkoutInformation.country_placeholder}
           </option>
-          <option value="Nederland">Nederland</option>
-          <option value="England">England</option>
-          <option value="Germany">Germany</option>
+
+          {
+            countries.map((country) => (
+              <option value={country}>{country}</option>
+            ))
+          }
         </select>
       </label>
 
