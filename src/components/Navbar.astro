@@ -268,7 +268,9 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
   };
 
   const updateSidebarTopPosition = () => {
-    sidebar.style.top = `${navigation.getBoundingClientRect().bottom}px`;
+    if (navigation) {
+      sidebar.style.top = `${navigation.getBoundingClientRect().bottom}px`;
+    }
   };
 
   window.addEventListener("resize", updateSidebarTopPosition);
@@ -289,11 +291,11 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     }
   });
 
-  openCartBtn.addEventListener("click", () => {
+  openCartBtn?.addEventListener("click", () => {
     window.openCart();
   });
 
-  sidebarOpenButton.addEventListener("click", () => {
+  sidebarOpenButton?.addEventListener("click", () => {
     window.removeEventListener("resize", updateSidebarTopPosition);
 
     updateSidebarTopPosition();
@@ -308,7 +310,7 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     window.addEventListener("resize", updateSidebarTopPosition);
   });
 
-  sidebarCloseButton.addEventListener("click", () => {
+  sidebarCloseButton?.addEventListener("click", () => {
     sidebar.style.display = "none";
     sidebarOpenButton.style.display = "block";
     sidebarCloseButton.style.display = "none";

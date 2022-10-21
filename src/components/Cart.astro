@@ -218,6 +218,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     sidebar = id("sidebar"),
     closeCartBtn = id("close-cart-btn"),
     { overflowY: prevBodyOverflowYValue } = document.body.style;
+
   window.openCart = () => {
     cart.classList.toggle("hidden");
 
@@ -237,7 +238,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       sidebar?.offsetWidth > 0 ? "scroll" : prevBodyOverflowYValue;
   };
 
-  cart.addEventListener("click", (event) => {
+  cart?.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
 
     if (target === cart.firstElementChild) {
@@ -264,8 +265,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   const query = document.querySelector.bind(document),
     productAmountOutput = query(".product-amount-price"),
     productAmountInputs = document.querySelectorAll(".product-amount-input"),
-    productPriceContainer = query("input[name='price']"),
-    productPrice = productPriceContainer?.value as HTMLInputElement;
+    productPriceElement = query("input[name='price']"),
+    productPrice = productPriceElement?.value as HTMLInputElement;
 
   const tweak = (target, { action }) => {
     const counter = target[
