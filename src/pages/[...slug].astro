@@ -149,8 +149,20 @@ export async function getStaticPaths() {
     type: "estateDetails",
   }));
 
-  const productDetailsPages = getPages(products, () => ({
+  const productDetailsPages = getPages(products, (page) => ({
     type: "productDetails",
+    names: (() => {
+      const nameEntries = [page, ...page.attributes.localizations.data].map(
+        ({ attributes }) => [
+          attributes.locale.substring(0, 2),
+          attributes.Title,
+        ]
+      );
+
+      const names = Object.fromEntries(nameEntries);
+
+      return names;
+    })(),
   }));
 
   const blogPages = getPages(homeBlog, (page, { locale }) => ({

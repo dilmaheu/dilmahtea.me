@@ -25,7 +25,8 @@ const { page, recurData } = Astro.props,
 const recipes = page.recipes.data.map(({ attributes }) => attributes);
 
 const { url: productImgURL } = page.Intro_blob.data.attributes,
-  { Title: productTitle, Price: productPrice, SKU: productSKU } = page,
+  { Price: productPrice, SKU: productSKU } = page,
+  productNames = JSON.stringify(page.names),
   productSize = page.Weight_tea + "gm";
 
 const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
@@ -99,7 +100,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     class="cart-adding-form flex flex-wrap justify-between sm:justify-start items-center gap-y-5 gap-x-[31px]"
   >
     <input type="hidden" name="sku" value={productSKU} required />
-    <input type="hidden" name="name" value={productTitle} required />
+    <input type="hidden" name="names" value={productNames} required />
     <input type="hidden" name="price" value={productPrice} required />
     <input type="hidden" name="image" value={productImgURL} required />
 
@@ -184,7 +185,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     class="cart-adding-form-sm flex justify-between flex-wrap gap-4 mt-8"
   >
     <input type="hidden" name="sku" value={productSKU} required />
-    <input type="hidden" name="name" value={productTitle} required />
+    <input type="hidden" name="names" value={productNames} required />
     <input type="hidden" name="price" value={productPrice} required />
     <input type="hidden" name="image" value={productImgURL} required />
 
