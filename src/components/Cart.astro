@@ -143,7 +143,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     <div
                       class="flex items-center bg-primary text-lightgray rounded-full"
                     >
-                      <div
+                      <button
                         data-action="decrement"
                         class="w-8 h-8 py-1.5 pl-2 pr-1"
                       >
@@ -151,7 +151,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           name="akar-icons:minus"
                           class="w-5 h-5 select-none cursor-pointer"
                         />
-                      </div>
+                      </button>
 
                       <input
                         type="number"
@@ -312,7 +312,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   };
 
   productAmountTweakBtns.forEach((target) => {
-    target.addEventListener("click", () => {
+    target.addEventListener("click", (event) => {
+      event.preventDefault();
+
       const action = target.getAttribute("data-action");
 
       tweak({ target, action });
