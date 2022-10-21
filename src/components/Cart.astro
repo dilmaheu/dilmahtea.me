@@ -69,7 +69,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
 <div
   id="cart"
-  class="hidden fixed z-[1000] flex justify-end w-full h-full top-0 left-0 overflow-auto"
+  class="hidden fixed z-[1000] flex justify-end w-full h-full top-0 left-0"
 >
   <div class="w-full max-w-[2050px] h-fit mx-auto bg-[rgba(0,0,0,0.5)]">
     <div
@@ -82,9 +82,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
       <div
         id="cart-products"
-        class="min-h-screen p-6 sm:py-9 sm:px-14 flex flex-col justify-between gap-[36px]"
+        class="h-screen p-6 sm:py-9 sm:px-14 flex flex-col justify-between gap-[36px]"
       >
-        <div class="flex flex-col gap-5">
+        <div class="h-full flex flex-col gap-5">
           <div class="flex justify-between items-center">
             <h3 class="cart-heading alice">{checkoutRecurData.text_cart}</h3>
 
@@ -95,93 +95,95 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
           <div class="border border-solid border-lightgreen"></div>
 
-          <DynamicHTML
-            voidFn={(content, currentScript) => {
-              window.addProductToCart = (id) => {
-                const productData = window.cart[id];
+          <div class="h-36 sm:h-44 grow flex flex-col gap-5 overflow-auto">
+            <DynamicHTML
+              voidFn={(content, currentScript) => {
+                window.addProductToCart = (id) => {
+                  const productData = window.cart[id];
 
-                currentScript.insertAdjacentHTML(
-                  "beforebegin",
-                  window.replacePlaceholders(content, {
-                    id,
-                    ...productData,
-                    name: JSON.parse(productData.names)[preferredLocale],
-                  })
-                );
-              };
+                  currentScript.insertAdjacentHTML(
+                    "beforebegin",
+                    window.replacePlaceholders(content, {
+                      id,
+                      ...productData,
+                      name: JSON.parse(productData.names)[preferredLocale],
+                    })
+                  );
+                };
 
-              Object.keys(window.cart).forEach(addProductToCart);
-            }}
-          >
-            <div
-              id={`<placeholder name="id"></placeholder>`}
-              class="cart-product p-4 gap-3.5 flex justify-between items-center bg-lightgray2 rounded-[10px]"
+                Object.keys(window.cart).forEach(addProductToCart);
+              }}
             >
-              <img
-                src={`<placeholder name="image"></placeholder>`}
-                style="min-width: 100px; width: 100px; height: 100px; clip-path: url(#cart-product-image);"
-              />
+              <div
+                id={`<placeholder name="id"></placeholder>`}
+                class="cart-product p-4 gap-3.5 flex justify-between items-center bg-lightgray2 rounded-[10px]"
+              >
+                <img
+                  src={`<placeholder name="image"></placeholder>`}
+                  style="min-width: 100px; width: 100px; height: 100px; clip-path: url(#cart-product-image);"
+                />
 
-              <div class="cart-product-details flex flex-col gap-1">
-                <div class="flex justify-between items-center gap-1.5">
-                  <h6 class="alice cart-product-name">
-                    <placeholder name="name"></placeholder>
-                  </h6>
+                <div class="cart-product-details flex flex-col gap-1">
+                  <div class="flex justify-between items-center gap-1.5">
+                    <h6 class="alice cart-product-name">
+                      <placeholder name="name"></placeholder>
+                    </h6>
 
-                  <button class="remove-item-btn">
-                    <Icon name="akar-icons:trash-can" class="w-6 h-6" />
-                  </button>
-                </div>
-
-                <div class="cart-product-size">
-                  {checkoutRecurData.text_size}: <placeholder name="size"
-                  ></placeholder>
-                </div>
-
-                <div class="flex justify-between items-center gap-1.5">
-                  <div
-                    class="flex items-center bg-primary text-lightgray rounded-full"
-                  >
-                    <div
-                      data-action="decrement"
-                      class="w-8 h-8 py-1.5 pl-2 pr-1"
-                    >
-                      <Icon
-                        name="akar-icons:minus"
-                        class="w-5 h-5 select-none cursor-pointer"
-                      />
-                    </div>
-
-                    <input
-                      type="number"
-                      value={`<placeholder name="quantity"></placeholder>`}
-                      min="1"
-                      max="10"
-                      class:list={[
-                        "product-amount-input cart-product-quantity",
-                        "w-9 h-full text-center lg:text-lg bg-primary outline-none",
-                      ]}
-                      required
-                    />
-
-                    <button
-                      data-action="increment"
-                      class="w-8 h-8 py-1.5 pl-1 pr-2"
-                    >
-                      <Icon
-                        name="akar-icons:plus"
-                        class="w-5 h-5 select-none cursor-pointer"
-                      />
+                    <button class="remove-item-btn">
+                      <Icon name="akar-icons:trash-can" class="w-6 h-6" />
                     </button>
                   </div>
 
-                  <span class="cart-product-price alice text-dark3">
-                    €<placeholder name="price"></placeholder>
-                  </span>
+                  <div class="cart-product-size">
+                    {checkoutRecurData.text_size}: <placeholder name="size"
+                    ></placeholder>
+                  </div>
+
+                  <div class="flex justify-between items-center gap-1.5">
+                    <div
+                      class="flex items-center bg-primary text-lightgray rounded-full"
+                    >
+                      <div
+                        data-action="decrement"
+                        class="w-8 h-8 py-1.5 pl-2 pr-1"
+                      >
+                        <Icon
+                          name="akar-icons:minus"
+                          class="w-5 h-5 select-none cursor-pointer"
+                        />
+                      </div>
+
+                      <input
+                        type="number"
+                        value={`<placeholder name="quantity"></placeholder>`}
+                        min="1"
+                        max="10"
+                        class:list={[
+                          "product-amount-input cart-product-quantity",
+                          "w-9 h-full text-center lg:text-lg bg-primary outline-none",
+                        ]}
+                        required
+                      />
+
+                      <button
+                        data-action="increment"
+                        class="w-8 h-8 py-1.5 pl-1 pr-2"
+                      >
+                        <Icon
+                          name="akar-icons:plus"
+                          class="w-5 h-5 select-none cursor-pointer"
+                        />
+                      </button>
+                    </div>
+
+                    <span class="cart-product-price alice text-dark3">
+                      €<placeholder name="price"></placeholder>
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </DynamicHTML>
+            </DynamicHTML>
+          </div>
         </div>
 
         <div class="flex flex-col gap-5">
