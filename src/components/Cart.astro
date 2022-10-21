@@ -261,10 +261,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 </script>
 
 <script>
-  const productAmountInputs = document.querySelectorAll(
-      ".product-amount-input"
-    ),
-    productAmountOutput = document.querySelector(".product-amount-price");
+  const query = document.querySelector.bind(document),
+    productAmountOutput = query(".product-amount-price"),
+    productAmountInputs = document.querySelectorAll(".product-amount-input"),
+    productPriceContainer = query("input[name='price']"),
+    productPrice = productPriceContainer?.value as HTMLInputElement;
 
   const tweak = (target, { action }) => {
     const counter = target[
@@ -309,10 +310,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   });
 
   productAmountInputs.forEach((input: HTMLInputElement) => {
-    const { value: productPrice } = document.querySelector(
-      "input[name='price']"
-    ) as HTMLInputElement;
-
     let latestValidValue;
 
     input.addEventListener("beforeinput", () => {
@@ -324,18 +321,21 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         input.value = latestValidValue;
       }
 
-      productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
-        if (
-          otherAmountInput !== input &&
-          !otherAmountInput.classList.contains("cart-product-quantity")
-        ) {
-          otherAmountInput.value = input.value;
-        }
-      });
+      // check if it's a product details page
+      if (productPrice) {
+        productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
+          if (
+            otherAmountInput !== input &&
+            !otherAmountInput.classList.contains("cart-product-quantity")
+          ) {
+            otherAmountInput.value = input.value;
+          }
+        });
 
-      productAmountOutput.textContent = String(
-        Number(input.value) * Number(productPrice)
-      );
+        productAmountOutput.textContent = String(
+          Number(input.value) * Number(productPrice)
+        );
+      }
     });
   });
 </script>
