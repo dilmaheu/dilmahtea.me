@@ -288,7 +288,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       ] as HTMLInputElement,
       quantity = Number(counter.value);
 
-    if (action === "decrement" ? quantity > 1 : quantity < 10) {
+    if (action === "decrement" ? quantity > 1 : true) {
       counter.value = String(
         action === "decrement" ? quantity - 1 : quantity + 1
       );
@@ -330,7 +330,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     });
 
     input.addEventListener("input", () => {
-      if (input.value.length > 2 || !input.validity.valid) {
+      if (!input.validity.valid) {
         input.value = latestValidValue;
       }
 
