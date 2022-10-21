@@ -222,9 +222,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       openCart: () => void;
       enableScrolling: () => void;
       disableScrolling: () => void;
+      cart: Record<string, Record<string, string | number>>;
     }
   }
+</script>
 
+<script>
   const id: (string) => HTMLElement = document.getElementById.bind(document),
     cart = id("cart"),
     sidebar = id("sidebar"),
@@ -299,30 +302,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       ] as HTMLInputElement,
       quantity = Number(counter.value);
 
-    if (action === "decrement" ? quantity > 1 : true) {
-      counter.value = String(
-        action === "decrement" ? quantity - 1 : quantity + 1
-      );
-    }
+    counter.dispatchEvent(new Event("beforeinput"));
 
-    const parentCartProduct = counter.closest(".cart-product");
+    counter.value = String(
+      action === "decrement" ? quantity - 1 : quantity + 1
+    );
 
-    if (parentCartProduct) {
-      const productId = parentCartProduct.id,
-        cartProductData = window.cart[productId],
-        productPrice =
-          (cartProductData.price as number) /
-          (cartProductData.quantity as number),
-        updatedQuantity = Number(counter.value),
-        updatedPrice = updatedQuantity * productPrice;
-
-      cartProductData.quantity = updatedQuantity;
-      cartProductData.price = updatedPrice;
-
-      window.cart[productId] = cartProductData;
-    } else {
-      counter.dispatchEvent(new Event("input"));
-    }
+    counter.dispatchEvent(new Event("input"));
   };
 
   productAmountTweakBtns.forEach((target) => {
@@ -345,8 +331,26 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         input.value = latestValidValue;
       }
 
+      const parentCartProduct = input.closest(".cart-product");
+
+      // check if the input is of a cart product
+      if (parentCartProduct) {
+        const productId = parentCartProduct.id,
+          cartProductData = window.cart[productId],
+          productPrice =
+            (cartProductData.price as number) /
+            (cartProductData.quantity as number),
+          updatedQuantity = Number(input.value),
+          updatedPrice = updatedQuantity * productPrice;
+
+        cartProductData.quantity = updatedQuantity;
+        cartProductData.price = updatedPrice;
+
+        window.cart[productId] = cartProductData;
+      }
+
       // check if it's a product details page
-      if (productPrice) {
+      else if (productPrice) {
         productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
           if (
             otherAmountInput !== input &&
