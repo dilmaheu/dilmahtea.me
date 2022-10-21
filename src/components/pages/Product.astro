@@ -55,7 +55,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
   }
 
-  .recent-post-card-title-icon {
+  .recent-post-card-title-icon, .product-card-title-icon {
     height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
   }
 
@@ -69,11 +69,8 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
   .product-img-container {
     width: 100%;
-    max-height: 393px;
-
-    @media (min-width: 640px) {
-      aspect-ratio: 5.93 / 3.91;
-    }
+    max-height: 400px;
+    aspect-ratio: 5.8 / 400;
   }
 
   .product-card-info {
@@ -211,7 +208,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
         class="wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))] justify-center gap-[50px]"
       >
         {
-          posts.map((post) => (
+          posts.map((post, idx) => (
             <div
               role="listitem"
               aria-label="Kindness Item"
@@ -233,61 +230,24 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                 </div>
               </a>
 
-              <div class="grid content-between py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
-                <div>
-                  <div class="flex items-center">
-                    <div class="product-card-title alice leading-[120%] md:leading-[110%]">
-                      <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
-                    </div>
+              <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
+                <div class="product-card-title alice leading-[120%] md:leading-[110%]">
+                  <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
 
-                    <a
-                      href={`/` + post.Meta.URL_slug}
-                      class:list={[
-                        "bg-lightgray2 hidden lg:flex justify-center items-center gap-x-2",
-                        "py-[9px] px-[24px] ml-2.5 font-bold text-primary leading-[150%] rounded-[40px]",
-                      ]}
-                    >
-                      <Icon
-                        class="w-[30px] h-[30px]"
-                        name="mi:shopping-cart-add"
-                      />
-                      {recurData.product_add}
-                    </a>
-                  </div>
-
-                  <a
-                    href={`/` + post.Meta.URL_slug}
-                    class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] lg:mt-[7px]"
-                  >
-                    <Markdown>{post.Intro_text}</Markdown>
-                  </a>
-
-                  <a
-                    href={`/` + post.Meta.URL_slug}
-                    class:list={[
-                      "bg-lightgray2 flex lg:hidden justify-center items-center gap-x-2",
-                      "py-[9px] px-[24px] mt-5 font-bold text-primary leading-[150%] rounded-[40px]",
-                    ]}
-                  >
-                    <Icon
-                      name="mi:shopping-cart-add"
-                      class="w-[30px] h-[30px] p-0.5"
+                  <span class="icon product-card-title-icon">
+                    <img
+                      class="w-full h-full"
+                      {...white_right_arrow}
                     />
-                    {recurData.product_add}
-                  </a>
+                  </span>
                 </div>
 
-                <div class="flex items-center mt-[20px] md:mt-[25px]">
-                  <h2 class="flex items-center text-sm md:text-base leading-[150%]">
-                    <span class="icon h-5 md:h-6 mr-2 md:mr-2.5">
-                      <img class="w-full h-full" {...white_love_ribbon} />
-                    </span>
-                    {recurData.product_made_love_from + `\xa0`}
-                    <a href="" class="underline underline-offset-[2px]">
-                      Somesset Estate
-                    </a>
-                  </h2>
-                </div>
+                <a
+                  href={`/` + post.Meta.URL_slug}
+                  class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
+                >
+                  <Markdown>{post.Intro_text}</Markdown>
+                </a>
               </div>
             </div>
           ))

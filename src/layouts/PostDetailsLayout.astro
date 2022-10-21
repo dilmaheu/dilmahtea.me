@@ -137,7 +137,7 @@ const recentPosts =
       <div class="mt-[30px] sm:mt-4 lg:mt-0">
         {
           page.authors && (
-            <div class="flex flex-wrap gap-x-2.5">
+            <div class="flex flex-wrap gap-x-2.5 mb-2.5">
               {page.authors.data.map(
                 (author, index) =>
                   author.attributes.Profile_picture.data && (
@@ -195,7 +195,24 @@ const recentPosts =
           )
         }
 
-        <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
+        {
+          page.estate_name?.data.length > 0 && (
+            <div class="flex items-center mt-[20px] md:mt-[25px]">
+              <div class="flex items-center text-lg lg:text-xl leading-[150%]">
+                {recurData.product_made_love_from + `\xa0`}
+
+                {page.estate_name.data.map((estate, index) => (
+                  <a href={estate.attributes.Meta.URL_slug} class="underline decoration-1 underline-offset-[2px] font-bold">
+                    {`${index > 0 ? ", " : " "}` +
+                      estate.attributes.Estate_name}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )
+        }
+
+        <h1 class="hero-title pt-[5px]">
           <a href="#">{page.Title || page.Estate_name}</a>
 
           {
@@ -207,15 +224,32 @@ const recentPosts =
           }
         </h1>
 
-        <div class="hero-text pt-2.5 block prose text-lightgray max-w-none">
-          <Markdown>{page.Intro_text}</Markdown>
-        </div>
+        { page.estate_name ? "" :
+          <div class="hero-text pt-2.5 block prose text-lightgray max-w-none">
+            <Markdown>{page.Intro_text}</Markdown>
+          </div>
+        }
 
         {/* Recipe Header */}
         <slot name="recipe-header" />
 
         {/* tea-details header section */}
         <slot name="tea-details-header" />
+
+        {
+          page.estate_name?.data.length > 0 && (
+            <div class="flex items-center mt-[20px] md:mt-[10px]">
+              <div class="text-base lg:text-lg leading-[150%]">
+                {recurData.product_each_penny_you_spend + `\xa0`}
+
+                <a href="#" class="underline decoration-1 underline-offset-[2px] font-semibold">
+                  {recurData.product_check_where_going}
+                </a>
+              </div>
+            </div>
+          )
+        }
+
       </div>
     </div>
   </div>
@@ -372,6 +406,9 @@ const recentPosts =
   </div>
 </section>
 
+{/* product infos */}
+<slot name="product-info" />
+
 {/* estate map */}
 <slot name="estate-map" />
 
@@ -379,7 +416,7 @@ const recentPosts =
 <slot name="product-kindness-impact" />
 
 {
-  recentPosts.length > 0 && (
+  page.Relevant_recipes?.data.length > 0 && (
     <section class="wrapper">
       <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
         {page.Relevant_recipes != null

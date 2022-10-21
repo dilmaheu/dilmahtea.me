@@ -44,6 +44,7 @@ const recurringElementQuery = `
           recipe_tips
           recipe_discover
           estate_location
+          text_content
           product_made_love_from
           product_kindness_impact
           product_add
@@ -51,6 +52,11 @@ const recurringElementQuery = `
           product_add_cart_for
           product_size
           product_quantity
+          product_each_penny_you_spend
+          product_check_where_going
+          product_price_breakdown_title
+          product_transparency_title
+          product_impact_title
           localizations {
             data {
               attributes {
@@ -94,6 +100,7 @@ const recurringElementQuery = `
                 recipe_tips
                 recipe_discover
                 estate_location
+                text_content
                 product_made_love_from
                 product_kindness_impact
                 product_add
@@ -101,6 +108,11 @@ const recurringElementQuery = `
                 product_add_cart_for
                 product_size
                 product_quantity
+                product_each_penny_you_spend
+                product_check_where_going
+                product_price_breakdown_title
+                product_transparency_title
+                product_impact_title
               }
             }
           }
