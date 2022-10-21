@@ -120,7 +120,14 @@ const { locale } = Astro.props,
     <DynamicHTML
       htmlFn={(content) =>
         Object.keys(window.cart)
-          .map((id) => window.replacePlaceholders(content, window.cart[id]))
+          .map((id) => {
+            const productData = window.cart[id];
+
+            return window.replacePlaceholders(content, {
+              ...productData,
+              name: JSON.parse(productData.names)[preferredLocale],
+            });
+          })
           .join("")}
     >
       <div
