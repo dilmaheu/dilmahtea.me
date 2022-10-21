@@ -417,8 +417,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   type ProductData = Record<string, string | number>;
 
   const cartAddingForms = document.querySelectorAll(
-    ".cart-adding-form, .cart-adding-form-sm"
-  );
+      ".cart-adding-form, .cart-adding-form-sm"
+    ),
+    productAmountPriceOutput = document.querySelector(".product-amount-price");
 
   cartAddingForms.forEach((form: HTMLFormElement) => {
     form.onsubmit = (event) => {
@@ -426,17 +427,19 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
       const productData = Object.fromEntries(new FormData(form)) as ProductData,
         id = productData.sku as string,
+        productPrice = productData.price,
         existingCartProduct = window.cart[id];
 
       productData.quantity =
         Number(productData.quantity) +
         (existingCartProduct ? (existingCartProduct.quantity as number) : 0);
 
-      productData.price = Number(productData.price) * productData.quantity;
+      productData.price = Number(productPrice) * productData.quantity;
 
       window.cart[id] = productData;
 
       form.reset();
+      productAmountPriceOutput.textContent = productPrice as string;
     };
   });
 </script>
