@@ -102,10 +102,14 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
   }
 </style>
 
-<script define:vars={{ checkoutInfoPageLink }}>
+<script
+  define:vars={{ checkoutInfoPageLink, companyName: recurData.Company_name }}
+>
   if (Object.keys(window.checkoutContactInfo).length === 0) {
     location.href = checkoutInfoPageLink;
   }
+
+  window.companyName = companyName;
 </script>
 
 <form
@@ -117,9 +121,19 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
   <DynamicHTML
     htmlFn={() => {
       const { origin, pathname } = location,
+        product_desc = Object.keys(window.cart)
+          .map((id) => {
+            const productData = window.cart[id],
+              names = JSON.parse(productData.names),
+              name = names[preferredLocale] || names["en"];
+
+            return `${productData.quantity}x ${name}`;
+          })
+          .join(", "),
         paymentInfo = {
           ...window.checkoutContactInfo,
-          product_name: "Dilmahtea.me Ecommerce Payment",
+          product_name: window.companyName,
+          product_desc,
           price: window.cart.total,
           payment_type: "ecommerce",
           locale: preferredLocale,
