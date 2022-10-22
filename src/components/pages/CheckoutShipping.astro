@@ -108,12 +108,7 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
   }
 </script>
 
-<form
-  method="POST"
-  id="shipping-details"
-  class="flex flex-col gap-12"
-  action="https://dev.pay.scripts.dilmahtea.me"
->
+<form id="shipping-details" class="flex flex-col gap-12">
   <DynamicHTML
     htmlFn={() => {
       const { origin, pathname } = location,
@@ -244,7 +239,7 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
   const shippingDetailsForm = document.getElementById("shipping-details"),
     shippingDetailsChangeBtns = [
       ...document.querySelectorAll(
-        '#shipping-details button:not(type="submit")'
+        '#shipping-details button:not([type="submit"])'
       ),
     ],
     shippingDetailsFormSelectables = [
