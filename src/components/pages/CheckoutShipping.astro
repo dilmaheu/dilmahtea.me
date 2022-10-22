@@ -122,6 +122,9 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
           success_url: `${origin}/${preferredLocale}/thank-you-for-your-order`,
         };
 
+      delete paymentInfo.email;
+      delete paymentInfo.shipping_method;
+
       return Object.keys(paymentInfo)
         .map(
           (name) =>
@@ -179,7 +182,7 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
     <h4 class="alice">{checkoutShipping.text_shipping_method}</h4>
 
     {
-      shippingMethods.map(([method, cost]) => (
+      shippingMethods.map(([method, cost], i) => (
         <label class="gap-5 flex items-center">
           <input
             type="radio"
@@ -190,7 +193,7 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
               "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
               "checked:before:block before:hidden before:w-2 before:h-2 before:bg-primary before:rounded-full",
             ]}
-            checked
+            checked={i === 0}
           />
 
           <span class="gap-3 flex items-center">
@@ -236,6 +239,18 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
     }
   }
 
+  const updateCheckoutContactInfo = (input) => {
+    const checkoutContactInfo = {
+      ...window.checkoutContactInfo,
+      [input.name]: input.value,
+    };
+
+    localStorage.setItem(
+      "checkout-contact-info",
+      JSON.stringify(checkoutContactInfo)
+    );
+  };
+
   const shippingDetailsForm = document.getElementById("shipping-details"),
     shippingDetailsChangeBtns = [
       ...document.querySelectorAll(
@@ -244,7 +259,10 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
     ],
     shippingDetailsFormSelectables = [
       ...shippingDetailsForm.querySelectorAll<HTMLElement>("input, button"),
-    ];
+    ],
+    shippingMethodInputs = shippingDetailsForm.querySelectorAll(
+      'input[type="radio"]'
+    );
 
   shippingDetailsForm.addEventListener("submit", (event) => {
     const button = event.submitter as HTMLElement;
@@ -255,8 +273,7 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
       const detailInputElement = button.parentElement
         .firstElementChild as HTMLInputElement;
 
-      const inputName = detailInputElement.name,
-        inputLength = detailInputElement.value.length;
+      const inputLength = detailInputElement.value.length;
 
       detailInputElement.classList.toggle("!shadow-none");
       detailInputElement.readOnly = !detailInputElement.readOnly;
@@ -272,15 +289,7 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
 
         detailInputElement.focus();
       } else {
-        const checkoutContactInfo = {
-          ...window.checkoutContactInfo,
-          [inputName]: detailInputElement.value,
-        };
-
-        localStorage.setItem(
-          "checkout-contact-info",
-          JSON.stringify(checkoutContactInfo)
-        );
+        updateCheckoutContactInfo(detailInputElement);
       }
     }
   });
@@ -299,5 +308,15 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
         }
       });
     }
+  });
+
+  shippingMethodInputs.forEach((input: HTMLInputElement) => {
+    const { shipping_method } = window.checkoutContactInfo;
+
+    if (!shipping_method && input.checked) updateCheckoutContactInfo(input);
+    else if (input.value === shipping_method) input.checked = true;
+
+    // the click event is named poorly, it handles all kinds of activation
+    input.addEventListener("click", () => updateCheckoutContactInfo(input));
   });
 </script>
