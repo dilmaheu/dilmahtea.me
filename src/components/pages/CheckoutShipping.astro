@@ -271,72 +271,75 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
     );
   };
 
-  const shippingDetailsForm = document.getElementById("shipping-details"),
-    shippingDetailsChangeBtns = [
-      ...document.querySelectorAll(
-        '#shipping-details button:not([type="submit"])'
-      ),
-    ],
-    shippingDetailsFormSelectables = [
-      ...shippingDetailsForm.querySelectorAll<HTMLElement>("input, button"),
-    ],
-    shippingMethodInputs = shippingDetailsForm.querySelectorAll(
-      'input[type="radio"]'
-    );
+  const shippingDetailsForm = document.getElementById("shipping-details");
 
-  shippingDetailsForm.addEventListener("submit", (event) => {
-    const button = event.submitter as HTMLElement;
+  if (shippingDetailsForm) {
+    const shippingDetailsChangeBtns = [
+        ...shippingDetailsForm.querySelectorAll(
+          '#shipping-details button:not([type="submit"])'
+        ),
+      ],
+      shippingDetailsFormSelectables = [
+        ...shippingDetailsForm.querySelectorAll<HTMLElement>("input, button"),
+      ],
+      shippingMethodInputs = shippingDetailsForm.querySelectorAll(
+        'input[type="radio"]'
+      );
 
-    if (shippingDetailsChangeBtns.includes(button)) {
-      event.preventDefault();
+    shippingDetailsForm.addEventListener("submit", (event) => {
+      const button = event.submitter as HTMLElement;
 
-      const detailInputElement = button.parentElement
-        .firstElementChild as HTMLInputElement;
+      if (shippingDetailsChangeBtns.includes(button)) {
+        event.preventDefault();
 
-      const inputLength = detailInputElement.value.length;
+        const detailInputElement = button.parentElement
+          .firstElementChild as HTMLInputElement;
 
-      detailInputElement.classList.toggle("!shadow-none");
-      detailInputElement.readOnly = !detailInputElement.readOnly;
+        const inputLength = detailInputElement.value.length;
 
-      if (!detailInputElement.readOnly) {
-        const { type: currentInputType } = detailInputElement;
+        detailInputElement.classList.toggle("!shadow-none");
+        detailInputElement.readOnly = !detailInputElement.readOnly;
 
-        detailInputElement.type = "text";
+        if (!detailInputElement.readOnly) {
+          const { type: currentInputType } = detailInputElement;
 
-        detailInputElement.setSelectionRange(inputLength, inputLength);
+          detailInputElement.type = "text";
 
-        detailInputElement.type = currentInputType;
+          detailInputElement.setSelectionRange(inputLength, inputLength);
 
-        detailInputElement.focus();
-      } else {
-        updateCheckoutContactInfo(detailInputElement);
-      }
-    }
-  });
+          detailInputElement.type = currentInputType;
 
-  shippingDetailsFormSelectables.forEach((selectable, i) => {
-    if (selectable.tagName === "INPUT") {
-      selectable.addEventListener("keydown", (event: KeyboardEvent) => {
-        if (event.key === "Enter") {
-          event.preventDefault();
-
-          const nextButton = shippingDetailsFormSelectables
-            .slice(i + 1)
-            .find(({ tagName }) => tagName === "BUTTON");
-
-          nextButton.click();
+          detailInputElement.focus();
+        } else {
+          updateCheckoutContactInfo(detailInputElement);
         }
-      });
-    }
-  });
+      }
+    });
 
-  shippingMethodInputs.forEach((input: HTMLInputElement) => {
-    const { shipping_method } = window.checkoutContactInfo;
+    shippingDetailsFormSelectables.forEach((selectable, i) => {
+      if (selectable.tagName === "INPUT") {
+        selectable.addEventListener("keydown", (event: KeyboardEvent) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
 
-    if (!shipping_method && input.checked) updateCheckoutContactInfo(input);
-    else if (input.value === shipping_method) input.checked = true;
+            const nextButton = shippingDetailsFormSelectables
+              .slice(i + 1)
+              .find(({ tagName }) => tagName === "BUTTON");
 
-    // the click event is named poorly, it handles all kinds of activation
-    input.addEventListener("click", () => updateCheckoutContactInfo(input));
-  });
+            nextButton.click();
+          }
+        });
+      }
+    });
+
+    shippingMethodInputs.forEach((input: HTMLInputElement) => {
+      const { shipping_method } = window.checkoutContactInfo;
+
+      if (!shipping_method && input.checked) updateCheckoutContactInfo(input);
+      else if (input.value === shipping_method) input.checked = true;
+
+      // the click event is named poorly, it handles all kinds of activation
+      input.addEventListener("click", () => updateCheckoutContactInfo(input));
+    });
+  }
 </script>
