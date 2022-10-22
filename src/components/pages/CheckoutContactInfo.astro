@@ -150,7 +150,7 @@ const checkoutInformation = CMS.get("checkoutInformation", locale),
         <input
           type="text"
           id="address"
-          name="address"
+          name="street"
           placeholder={checkoutInformation.street_placeholder}
           required
         />
@@ -212,9 +212,14 @@ const checkoutInformation = CMS.get("checkoutInformation", locale),
   checkoutContactInfoForm?.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const formData = Object.fromEntries(new FormData(checkoutContactInfoForm));
+    const formData = Object.fromEntries(new FormData(checkoutContactInfoForm)),
+      { street, city, country } = formData,
+      contactInfo = {
+        ...formData,
+        delivery_address: [street, city, country].join(", "),
+      };
 
-    localStorage.setItem("checkout-contact-info", JSON.stringify(formData));
+    localStorage.setItem("checkout-contact-info", JSON.stringify(contactInfo));
 
     location.href = checkoutContactInfoForm.action;
   });

@@ -62,8 +62,13 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
           )
         );
 
-        span,
-        button {
+        :global(input) {
+          all: unset;
+
+          @apply text-primary grow;
+
+          box-shadow: 0 4px theme("colors.lightgray2"),
+            0 6px theme("colors.primary");
           font-size: poly-fluid-clamp(
             (
               375px: 18px,
@@ -72,12 +77,15 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
           );
         }
 
-        span {
-          @apply text-dark2;
-        }
-
         button {
           @apply font-semibold text-primary leading-[130%];
+
+          font-size: poly-fluid-clamp(
+            (
+              375px: 18px,
+              1440px: 24px,
+            )
+          );
         }
       }
     }
@@ -106,9 +114,17 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
       <div>{checkoutShipping.text_contact}</div>
 
       <div>
-        <span class="break-all">
-          <DynamicHTML htmlFn={() => window.checkoutContactInfo.email} />
-        </span>
+        <DynamicHTML
+          htmlFn={() =>
+            `<input
+              type="email"
+              name="email"
+              value="${window.checkoutContactInfo.email}"
+              class="!shadow-none"
+              readonly
+              required
+            />`}
+        />
 
         <button>{checkoutShipping.text_change}</button>
       </div>
@@ -120,15 +136,17 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
       <div>{checkoutShipping.text_delivery_address}</div>
 
       <div>
-        <span>
-          <DynamicHTML
-            htmlFn={() => {
-              const { address, city, country } = window.checkoutContactInfo;
-
-              return [address, city, country].join(", ");
-            }}
-          />
-        </span>
+        <DynamicHTML
+          htmlFn={() =>
+            `<input
+              type="text"
+              name="delivery_address"
+              value="${window.checkoutContactInfo.delivery_address}"
+              class="!shadow-none"
+              readonly
+              required
+            />`}
+        />
 
         <button>{checkoutShipping.text_change}</button>
       </div>
@@ -188,3 +206,76 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
     </a>
   </div>
 </form>
+
+<script>
+  declare global {
+    interface Window {
+      checkoutContactInfo: Record<string, string>;
+    }
+  }
+
+  const shippingDetailsForm = document.getElementById("shipping-details"),
+    shippingDetailsChangeBtns = [
+      ...document.querySelectorAll(
+        '#shipping-details button:not(type="submit")'
+      ),
+    ],
+    shippingDetailsFormSelectables = [
+      ...shippingDetailsForm.querySelectorAll<HTMLElement>("input, button"),
+    ];
+
+  shippingDetailsForm.addEventListener("submit", (event) => {
+    const button = event.submitter as HTMLElement;
+
+    if (shippingDetailsChangeBtns.includes(button)) {
+      event.preventDefault();
+
+      const detailInputElement = button.parentElement
+        .firstElementChild as HTMLInputElement;
+
+      const inputName = detailInputElement.name,
+        inputLength = detailInputElement.value.length;
+
+      detailInputElement.classList.toggle("!shadow-none");
+      detailInputElement.readOnly = !detailInputElement.readOnly;
+
+      if (!detailInputElement.readOnly) {
+        const { type: currentInputType } = detailInputElement;
+
+        detailInputElement.type = "text";
+
+        detailInputElement.setSelectionRange(inputLength, inputLength);
+
+        detailInputElement.type = currentInputType;
+
+        detailInputElement.focus();
+      } else {
+        const checkoutContactInfo = {
+          ...window.checkoutContactInfo,
+          [inputName]: detailInputElement.value,
+        };
+
+        localStorage.setItem(
+          "checkout-contact-info",
+          JSON.stringify(checkoutContactInfo)
+        );
+      }
+    }
+  });
+
+  shippingDetailsFormSelectables.forEach((selectable, i) => {
+    if (selectable.tagName === "INPUT") {
+      selectable.addEventListener("keydown", (event: KeyboardEvent) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+
+          const nextButton = shippingDetailsFormSelectables
+            .slice(i + 1)
+            .find(({ tagName }) => tagName === "BUTTON");
+
+          nextButton.click();
+        }
+      });
+    }
+  });
+</script>
