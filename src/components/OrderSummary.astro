@@ -121,11 +121,13 @@ const { locale } = Astro.props,
       htmlFn={(content) =>
         Object.keys(window.cart)
           .map((id) => {
-            const productData = window.cart[id];
+            const productData = window.cart[id],
+              names = JSON.parse(productData.names),
+              name = names[preferredLocale] || names["en"];
 
             return window.replacePlaceholders(content, {
+              name,
               ...productData,
-              name: JSON.parse(productData.names)[preferredLocale],
             });
           })
           .join("")}

@@ -99,14 +99,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             <DynamicHTML
               voidFn={(content, currentScript) => {
                 window.addProductToCart = (id) => {
-                  const productData = window.cart[id];
+                  const productData = window.cart[id],
+                    names = JSON.parse(productData.names),
+                    name = names[preferredLocale] || names["en"];
 
                   currentScript.insertAdjacentHTML(
                     "beforebegin",
                     window.replacePlaceholders(content, {
                       id,
+                      name,
                       ...productData,
-                      name: JSON.parse(productData.names)[preferredLocale],
                     })
                   );
                 };
