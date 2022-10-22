@@ -1,12 +1,13 @@
 ---
 import RecurringImages from "@store/RecurringImages";
 import BasicPageHero from "@components/BasicPageHero.astro";
+import DynamicHTML from "@components/DynamicHTML.astro";
 
 const { light_green_cup, light_green_flower } = RecurringImages;
 
 const { page, locale } = Astro.props,
   { Perk: perk, Price_EUR_excl_VAT: price } = page,
-  { href: originURL } = new URL(Astro.url.pathname, Astro.site);
+  productName = `${page.Title} Plan`;
 ---
 
 <style lang="scss">
@@ -58,7 +59,7 @@ const { page, locale } = Astro.props,
 <form
   role="main"
   method="POST"
-  action="https://pay.scripts.dilmahtea.me"
+  action="https://dev.pay.scripts.dilmahtea.me"
   class="mx-auto pt-[130px] pb-[100px] max-w-[940px]"
 >
   <div>
@@ -78,7 +79,6 @@ const { page, locale } = Astro.props,
 
         <input
           type="text"
-          id="first_name"
           name="first_name"
           placeholder={locale === "nl" ? "Voornaam" : "First Name"}
           required
@@ -90,7 +90,6 @@ const { page, locale } = Astro.props,
 
         <input
           type="text"
-          id="last_name"
           name="last_name"
           placeholder={locale === "nl" ? "Achternaam" : "Last Name"}
           required
@@ -101,9 +100,8 @@ const { page, locale } = Astro.props,
         {locale === "nl" ? "E-mailadres" : "Email Address"}
 
         <input
-          id="email"
-          name="email"
           type="email"
+          name="email"
           placeholder={locale === "nl"
             ? "Vul je e-mailadres in"
             : "Enter your email address"}
@@ -116,7 +114,6 @@ const { page, locale } = Astro.props,
 
         <input
           type="text"
-          id="favorite_tea"
           name="favorite_tea"
           placeholder={locale === "nl" ? "Earl Grey" : "Black Tea"}
           required
@@ -138,7 +135,7 @@ const { page, locale } = Astro.props,
       <label>
         {locale === "nl" ? "Land" : "Country"}
 
-        <select id="country" name="country" required>
+        <select name="country" required>
           <option value="" disabled>
             {
               locale === "nl"
@@ -157,9 +154,8 @@ const { page, locale } = Astro.props,
         {locale === "nl" ? "Plaatsnaam" : "City"}
 
         <input
-          id="city"
-          name="city"
           type="text"
+          name="city"
           placeholder={locale === "nl"
             ? "Vul je plaatsnaam in"
             : "Enter your city address"}
@@ -171,7 +167,6 @@ const { page, locale } = Astro.props,
         {locale === "nl" ? "Straat en huisnummer" : "Street and house number"}
 
         <input
-          id="street"
           type="text"
           name="street"
           placeholder={locale === "nl"
@@ -186,7 +181,6 @@ const { page, locale } = Astro.props,
 
         <input
           type="text"
-          id="postal_code"
           name="postal_code"
           placeholder={locale === "nl"
             ? "Vul je postcode in"
@@ -194,33 +188,42 @@ const { page, locale } = Astro.props,
           required
         />
       </label>
-
-      <input type="hidden" id="perk" name="perk" value={perk} required />
-
-      <input type="hidden" id="locale" name="locale" value={locale} required />
-
-      <input
-        type="hidden"
-        id="origin_url"
-        name="origin_url"
-        value={originURL}
-        required
-      />
-
-      <script is:inline>
-        document.currentScript.previousElementSibling.value = location.href;
-      </script>
-
-      <input
-        type="hidden"
-        id="plan_name"
-        name="plan_name"
-        value={page.Title}
-        required
-      />
-
-      <input type="hidden" id="price" name="price" value={price} required />
     </div>
+
+    <input type="hidden" name="perk" value={perk} required />
+
+    <input type="hidden" name="product_name" value={productName} required />
+
+    <input type="hidden" name="price" value={price} required />
+
+    <input type="hidden" name="payment_type" value="crowdfunding" required />
+
+    <input type="hidden" name="locale" value={locale} required />
+
+    <DynamicHTML
+      htmlFn={(content) => {
+        const { origin, pathname } = location,
+          origin_url = origin + pathname,
+          success_url = `${origin}/${preferredLocale}/crowdfunding-confirmation`;
+
+        return window.replacePlaceholders(content, {
+          origin_url,
+          success_url,
+        });
+      }}
+    >
+      <input
+        type="hidden"
+        name="origin_url"
+        value={`<placeholder name="origin_url"></placeholder>`}
+      />
+
+      <input
+        type="hidden"
+        name="success_url"
+        value={`<placeholder name="success_url"></placeholder>`}
+      />
+    </DynamicHTML>
 
     <input
       type="submit"
