@@ -1,18 +1,28 @@
+const query = document.querySelector.bind(document);
+
 export default function fillUpForm(entries) {
   entries.forEach(([name, value]) => {
     if (value) {
-      const option: HTMLOptionElement = document.querySelector(
+      const option: HTMLOptionElement = query(
         `select[name="${name}"] option[value="${value}"]`
       );
 
       if (option) {
         option.selected = true;
       } else {
-        const input: HTMLInputElement = document.querySelector(
-          `input[name="${name}"]`
-        );
+        const input: HTMLInputElement = query(`input[name="${name}"]`);
 
-        if (input) input.value = value || "";
+        if (input) {
+          if (input.type === "radio") {
+            const selectedOptionInput: HTMLInputElement = query(
+              `input[name="${name}"][value="${value}"]`
+            );
+
+            selectedOptionInput.checked = true;
+          } else {
+            input.value = value || "";
+          }
+        }
       }
     }
   });
