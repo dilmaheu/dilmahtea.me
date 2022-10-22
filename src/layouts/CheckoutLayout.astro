@@ -4,12 +4,11 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import Cart from "@components/Cart.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import OrderSummary from "@components/OrderSummary.astro";
-import CheckoutFlowBg from "@components/checkout-flow-background.webp";
-import CheckoutFlowBgSm from "@components/checkout-flow-background-sm.webp";
 
 import RecurringImages from "@store/RecurringImages";
 
-const { logo } = RecurringImages;
+const { logo, checkout_header_background, checkout_header_background_sm } =
+  RecurringImages;
 
 interface Props {
   page: Record<string, any>;
@@ -121,9 +120,9 @@ const checkoutStepOrder = page.checkout_step_order,
       <img
         class="absolute top-0 left-0 w-full h-full"
         alt=""
-        src={CheckoutFlowBg}
+        src={checkout_header_background.src}
         sizes="(min-width: 1440px) 1440px, 100vw"
-        srcset={`${CheckoutFlowBgSm} 640w, ${CheckoutFlowBg} 1440w`}
+        srcset={`${checkout_header_background_sm.src} 640w, ${checkout_header_background.src} 1440w`}
         style="clip-path: url(#checkout-header-curve)"
       />
 
