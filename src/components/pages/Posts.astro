@@ -8,7 +8,7 @@ import ClippedPicture from "@components/ClippedPicture.astro";
 import HeroBackground from "@components/HeroBackground.astro";
 
 import RecurringImages from "@store/RecurringImages";
-import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
+import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 
 const { white_cup, green_cup, left_post_leaf, green_leaf } = RecurringImages;
 
@@ -32,7 +32,6 @@ const { posts } = Astro.props.page,
     @media (max-width: 767.98px) {
       letter-spacing: -0.03em;
     }
-
   }
 
   .post-intro {
@@ -42,14 +41,13 @@ const { posts } = Astro.props.page,
     line-height: 150%;
   }
 
-  .post-img-curve-container{
+  .post-img-curve-container {
     width: 100%;
     max-height: 530px;
 
     @media (min-width: 640px) {
       aspect-ratio: 5.65 / 5;
     }
-
   }
 
   .post-leaf {
@@ -66,29 +64,27 @@ const { posts } = Astro.props.page,
     @media (max-width: 639.98px) {
       @apply -left-[5%] bottom-[6%];
     }
-
   }
 </style>
 
 {/* Hero Section */}
 <section class="hero overflow-hidden relative">
-  <UpdateHeroTopMargin />
+  <UpdateTopMargin />
 
   <HeroBackground />
 
   {/* Text Content */}
   <div class="wrapper hero-text-container h-full relative z-30">
-    <div
-      role="banner"
-      class="flex flex-wrap items-center sm:w-7/12 h-full"
-    >
+    <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
       <div class="mt-[30px] sm:mt-4 lg:mt-0">
         {
           firstPost.authors && (
             <div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
               <div class="post-author flex flex-wrap font-bold text-lightgray">
                 {firstPost.authors.data.map(({ attributes }, i) => (
-                  <a href="#">{`${i > 0 ? ", " : " "}` + attributes.givenName}</a>
+                  <a href="#">
+                    {`${i > 0 ? ", " : " "}` + attributes.givenName}
+                  </a>
                 ))}
               </div>
 
@@ -103,7 +99,7 @@ const { posts } = Astro.props.page,
         }
 
         <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
-          <a href={`/` + firstPost.Meta.URL_slug} >
+          <a href={`/` + firstPost.Meta.URL_slug}>
             {firstPost.Title}
           </a>
 
@@ -204,7 +200,8 @@ const { posts } = Astro.props.page,
                   <img
                     src={
                       imgSrcPrefix +
-                      post.Intro_blob.data.attributes.provider_metadata.public_id +
+                      post.Intro_blob.data.attributes.provider_metadata
+                        .public_id +
                       `/small`
                     }
                     alt={post.Intro_blob.data.attributes.alternativeText}
@@ -213,7 +210,7 @@ const { posts } = Astro.props.page,
                   />
                 </div>
 
-                <div 
+                <div
                   class:list={[
                     "post-leaf absolute z-20",
                     isEven ? "post-leaf-left" : "post-leaf-right",
@@ -289,10 +286,7 @@ const { posts } = Astro.props.page,
                   </a>
 
                   <span class="icon heading-inline-icon">
-                    <img
-                      class="w-full h-full"
-                      {...green_cup}
-                    />
+                    <img class="w-full h-full" {...green_cup} />
                   </span>
                 </h1>
 

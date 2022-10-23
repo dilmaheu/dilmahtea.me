@@ -1,4 +1,50 @@
 ---
+import Navbar from "@components/Navbar.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
+import CheckoutBackground from "@components/checkout_background.webp";
+
+interface Props {
+  page: Record<string, any>;
+  meta: Record<string, any>;
+  locale: string;
+  recurData: Record<string, any>;
+  metaImageID: string;
+  availableLocales: string[];
+}
+
+const { page, meta, locale, recurData, availableLocales, metaImageID } =
+  Astro.props;
+
+const footerText = recurData.Footer_text.replaceAll(
+  "<current_year>",
+  `${new Date().getFullYear()}`
+);
 ---
 
-<h1>Cart</h1>
+<style
+  lang="scss"
+  define:vars={{ "checkout-background": `url('${CheckoutBackground}')` }}
+>
+  #checkout-cart-container {
+    background-size: cover;
+    background-image: var(--checkout-background);
+  }
+</style>
+
+<BaseLayout
+  meta={meta}
+  locale={locale}
+  availableLocales={availableLocales}
+  metaImageID={metaImageID}
+>
+  <Navbar
+    docLocale={locale}
+    footerText={footerText}
+    availableLocales={availableLocales}
+  />
+
+  <div id="checkout-cart-container">
+    <UpdateTopMargin />
+  </div>
+</BaseLayout>
