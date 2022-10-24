@@ -30,40 +30,78 @@ const { data } = await fetch(import.meta.env.DB_URL, {
   }),
 })
   .then(async (res) => {
-    const data = await res.text(),
-      cacheDir = "./.cache/";
+    const cacheDir = "./.cache/",
+      response = await res.text(),
+      data = JSON.parse(response);
+
+    if (data.errors) {
+      return catchError(data.errors);
+    }
 
     fs.existsSync(cacheDir) || (await fs.promises.mkdir(cacheDir));
-    await fs.promises.writeFile(cacheDir + "CMS.json", data, "utf8");
+
+    await fs.promises.writeFile(cacheDir + "CMS.json", response, "utf8");
 
     printMessage(
       "info",
       "Successfully fetched data from CMS and saved it to the cache"
     );
 
-    return JSON.parse(data);
+    return data;
   })
-  .catch(async (error) => {
-    if (fs.existsSync("./.cache/CMS.json")) {
-      const data = await fs.promises.readFile("./.cache/CMS.json", "utf8");
-
-      printMessage(
-        "error",
-        "Failed to fetch data from CMS, serving from the cache"
-      );
-
-      return JSON.parse(data);
-    }
-
-    throw error;
-  });
+  .catch(catchError);
 
 const CMS = {
-  get(contentType) {
-    if (contentType === "all") return data;
+  get(contentType, locale) {
+    if (contentType === "all") {
+      if (locale) {
+        console.warn(`locale is ignored when the content type is "all"`);
+      }
 
-    return data[contentType];
+      return data;
+    }
+
+    const content = locale
+      ? (locale === "en"
+          ? data[contentType].data
+          : data[contentType].data.attributes.localizations.data.find(
+              ({ attributes }) =>
+                attributes.locale.substring(0, 2) === locale.substring(0, 2)
+            )
+        ).attributes
+      : data[contentType];
+
+    return content;
   },
 };
+
+async function catchError(error) {
+  let cachedData;
+
+  if (fs.existsSync("./.cache/CMS.json")) {
+    cachedData = JSON.parse(
+      await fs.promises.readFile("./.cache/CMS.json", "utf8")
+    );
+
+    printMessage(
+      "error",
+      "Failed to fetch data from CMS, serving from the cache"
+    );
+  } else
+    printMessage(
+      "error",
+      "Failed to fetch data from CMS, nothing found in cache!"
+    );
+
+  if (error.message) {
+    try {
+      throw error;
+    } catch (error) {}
+  } else {
+    console.error(error);
+  }
+
+  return cachedData;
+}
 
 export default CMS;
