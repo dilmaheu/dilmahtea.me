@@ -52,10 +52,26 @@ const { data } = await fetch(import.meta.env.DB_URL, {
   .catch(catchError);
 
 const CMS = {
-  get(contentType) {
-    if (contentType === "all") return data;
+  get(contentType, locale) {
+    if (contentType === "all") {
+      if (locale) {
+        console.warn(`locale is ignored when the content type is "all"`);
+      }
 
-    return data[contentType];
+      return data;
+    }
+
+    const content = locale
+      ? (locale === "en"
+          ? data[contentType].data
+          : data[contentType].data.attributes.localizations.data.find(
+              ({ attributes }) =>
+                attributes.locale.substring(0, 2) === locale.substring(0, 2)
+            )
+        ).attributes
+      : data[contentType];
+
+    return content;
   },
 };
 
