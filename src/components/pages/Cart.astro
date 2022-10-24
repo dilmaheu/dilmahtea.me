@@ -26,9 +26,25 @@ const footerText = recurData.Footer_text.replaceAll(
   lang="scss"
   define:vars={{ "checkout-background": `url('${CheckoutBackground}')` }}
 >
+  @use "src/styles/poly-fluid" as *;
+
   #checkout-cart-container {
     background-size: cover;
     background-image: var(--checkout-background);
+
+    @include poly-fluid-sizing(
+      "padding-top",
+      (
+        639px: 90px,
+        640px: 95px,
+        768px: 100px,
+        960px: 110px,
+        1024px: 120px,
+        1280px: 130px,
+        1536px: 145px,
+        2050px: 165px,
+      )
+    );
   }
 </style>
 
