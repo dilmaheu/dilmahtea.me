@@ -296,9 +296,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   const query = document.querySelector.bind(document),
     productAmountOutput = query(".product-amount-price"),
     productAmountInputs = document.querySelectorAll(".product-amount-input"),
-    productAmountTweakBtns = document.querySelectorAll(
-      "[data-action='decrement'], [data-action='increment']"
-    ),
     productPrice = Number(query("input[name='price']")?.value);
 
   const tweak = ({ target, action }) => {
@@ -316,14 +313,19 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     counter.dispatchEvent(new Event("input"));
   };
 
-  productAmountTweakBtns.forEach((target) => {
-    target.addEventListener("click", (event) => {
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement,
+      tweakBtn = target.closest(
+        "[data-action='decrement'], [data-action='increment']"
+      );
+
+    if (tweakBtn) {
       event.preventDefault();
 
-      const action = target.getAttribute("data-action");
+      const action = tweakBtn.getAttribute("data-action");
 
-      tweak({ target, action });
-    });
+      tweak({ target: tweakBtn, action });
+    }
   });
 
   productAmountInputs.forEach((input: HTMLInputElement) => {
