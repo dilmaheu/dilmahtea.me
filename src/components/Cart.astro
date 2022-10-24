@@ -115,9 +115,17 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       price,
                     })
                   );
+
+                  const newCartProduct = currentScript.previousElementSibling,
+                    newProductAmountInput = newCartProduct.querySelector(
+                      ".product-amount-input"
+                    );
+
+                  window.handleProductAmountInput &&
+                    window.handleProductAmountInput(newProductAmountInput);
                 };
 
-                Object.keys(window.cart).forEach(addProductToCart);
+                Object.keys(window.cart).forEach(window.addProductToCart);
               }}
             >
               <div
@@ -228,7 +236,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       openCart: () => void;
       enableScrolling: () => void;
       disableScrolling: () => void;
+      addProductToCart: (id: string) => void;
       cart: Record<string, Record<string, string | number>>;
+      handleProductAmountInput: (input: HTMLInputElement) => void;
     }
   }
 </script>
@@ -313,22 +323,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     counter.dispatchEvent(new Event("input"));
   };
 
-  document.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement,
-      tweakBtn = target.closest(
-        "[data-action='decrement'], [data-action='increment']"
-      );
-
-    if (tweakBtn) {
-      event.preventDefault();
-
-      const action = tweakBtn.getAttribute("data-action");
-
-      tweak({ target: tweakBtn, action });
-    }
-  });
-
-  productAmountInputs.forEach((input: HTMLInputElement) => {
+  window.handleProductAmountInput = (input: HTMLInputElement) => {
     let latestValidValue;
 
     input.addEventListener("beforeinput", () => {
@@ -376,5 +371,22 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         );
       }
     });
+  };
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement,
+      tweakBtn = target.closest(
+        "[data-action='decrement'], [data-action='increment']"
+      );
+
+    if (tweakBtn) {
+      event.preventDefault();
+
+      const action = tweakBtn.getAttribute("data-action");
+
+      tweak({ target: tweakBtn, action });
+    }
   });
+
+  productAmountInputs.forEach(window.handleProductAmountInput);
 </script>
