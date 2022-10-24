@@ -14,7 +14,8 @@ import RecurringImages from "@store/RecurringImages";
 const { white_cup, white_love_ribbon, white_right_arrow } = RecurringImages;
 
 const { page, recurData } = Astro.props,
-  { posts } = page,
+  { posts: products } = page,
+  [firstProduct] = products,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 
 const blogs = page.blogs.data.map(({ attributes }) => attributes);
@@ -211,7 +212,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
         class="wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))] justify-center gap-[50px]"
       >
         {
-          posts.map((post) => (
+          products.map((post) => (
             <div
               role="listitem"
               aria-label="Kindness Item"
@@ -308,15 +309,22 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       />
 
       <div class="relative w-full h-full product-impact-container">
-        <div class="absolute inset-0 w-full h-full">
-          <img
-            class="bg-primary w-full h-full object-cover"
-            src={imgSrcPrefix +
-              posts[0].Intro_blob.data.attributes.provider_metadata.public_id +
-              `/small`}
-            alt=""
-          />
-        </div>
+        {
+          firstProduct && (
+            <div class="absolute inset-0 w-full h-full">
+              <img
+                class="bg-primary w-full h-full object-cover"
+                src={
+                  imgSrcPrefix +
+                  firstProduct.Intro_blob.data.attributes.provider_metadata
+                    .public_id +
+                  `/small`
+                }
+                alt=""
+              />
+            </div>
+          )
+        }
 
         <div
           class="absolute inset-0 w-full h-full bg-gradient-to-b from-[#000] to-[#2f2f2f] opacity-[0.4]"
