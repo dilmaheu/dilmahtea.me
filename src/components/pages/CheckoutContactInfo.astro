@@ -1,5 +1,6 @@
 ---
 import CMS from "@store/CMS";
+import OrderSummary from "@components/OrderSummary.astro";
 
 const { page, recurData } = Astro.props;
 
@@ -164,6 +165,10 @@ const checkoutInformation = CMS.get("checkoutInformation", locale),
     </div>
   </div>
 
+  <div class="block lg:hidden -mb-6">
+    <OrderSummary page={page} locale={locale} />
+  </div>
+
   <div
     class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-9 sm:gap-12"
   >
@@ -173,9 +178,9 @@ const checkoutInformation = CMS.get("checkoutInformation", locale),
       {checkoutInformation.text_continue_to_shipping}
     </button>
 
-    <button id="return-to-cart-btn" class="text-primary font-bold">
-      Return To Cart
-    </button>
+    <a href="/checkout/cart" class="text-primary font-bold">
+      {checkoutInformation.text_return_to_cart}
+    </a>
   </div>
 </form>
 

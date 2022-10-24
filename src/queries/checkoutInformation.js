@@ -24,6 +24,7 @@ const checkoutInformationQuery = `
           text_postal_code
           postal_code_placeholder
           text_continue_to_shipping
+          text_return_to_cart
           Meta {
             HTML_Title
             Meta_description
@@ -55,6 +56,7 @@ const checkoutInformationQuery = `
                 text_postal_code
                 postal_code_placeholder
                 text_continue_to_shipping
+                text_return_to_cart
                 Meta {
                   HTML_Title
                   Meta_description
