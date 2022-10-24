@@ -101,14 +101,18 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 window.addProductToCart = (id) => {
                   const productData = window.cart[id],
                     names = JSON.parse(productData.names),
-                    name = names[preferredLocale] || names["en"];
+                    name = names[preferredLocale] || names["en"],
+                    price = Number(productData.price)
+                      .toFixed(2)
+                      .replace(".", ",");
 
                   currentScript.insertAdjacentHTML(
                     "beforebegin",
                     window.replacePlaceholders(content, {
+                      ...productData,
                       id,
                       name,
-                      ...productData,
+                      price,
                     })
                   );
                 };
@@ -295,8 +299,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     productAmountTweakBtns = document.querySelectorAll(
       "[data-action='decrement'], [data-action='increment']"
     ),
-    productPriceElement = query("input[name='price']"),
-    productPrice = productPriceElement?.value as HTMLInputElement;
+    productPrice = Number(query("input[name='price']")?.value);
 
   const tweak = ({ target, action }) => {
     const counter = target[
@@ -340,17 +343,17 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       // check if the input is of a cart product
       if (parentCartProduct) {
         const productId = parentCartProduct.id,
-          cartProductData = window.cart[productId],
-          productPrice =
-            (cartProductData.price as number) /
-            (cartProductData.quantity as number),
-          updatedQuantity = Number(input.value),
-          updatedPrice = updatedQuantity * productPrice;
+          productData = window.cart[productId],
+          { price, tax, quantity } = productData,
+          productPrice = Number(price) / Number(quantity),
+          productTax = Number(tax) / Number(quantity),
+          updatedQuantity = Number(input.value);
 
-        cartProductData.quantity = updatedQuantity;
-        cartProductData.price = updatedPrice;
+        productData.quantity = updatedQuantity;
+        productData.tax = +(updatedQuantity * productTax).toFixed(2);
+        productData.price = +(updatedQuantity * productPrice).toFixed(2);
 
-        window.cart[productId] = cartProductData;
+        window.cart[productId] = productData;
       }
 
       // check if it's a product details page
@@ -365,7 +368,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         });
 
         productAmountOutput.textContent = String(
-          Number(input.value) * Number(productPrice)
+          (Number(input.value) * Number(productPrice))
+            .toFixed(2)
+            .replace(".", ",")
         );
       }
     });

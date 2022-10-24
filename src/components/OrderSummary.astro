@@ -134,11 +134,13 @@ const { page } = Astro.props,
           .map((id) => {
             const productData = window.cart[id],
               names = JSON.parse(productData.names),
-              name = names[preferredLocale] || names["en"];
+              name = names[preferredLocale] || names["en"],
+              price = Number(productData.price).toFixed(2).replace(".", ",");
 
             return window.replacePlaceholders(content, {
-              name,
               ...productData,
+              name,
+              price,
             });
           })
           .join("")}
@@ -200,7 +202,7 @@ const { page } = Astro.props,
           <div>
             <span>{checkoutRecurData.text_subtotal}</span>
 
-            <span id="order-subtotal" class="alice">
+            <span class="order-subtotal alice">
               €<DynamicHTML htmlFn={() => window.cart.subTotal} />
             </span>
           </div>
@@ -208,15 +210,15 @@ const { page } = Astro.props,
           <div>
             <span>{checkoutRecurData.text_shipping}</span>
 
-            <span id="order-shipping-charge" class="alice">
-              €<DynamicHTML htmlFn={() => window.cart.shippingCharge} />
+            <span class="order-shipping-cost alice">
+              €<DynamicHTML htmlFn={() => window.cart.shippingCost} />
             </span>
           </div>
 
           <div>
             <span>{checkoutRecurData.text_tax}</span>
 
-            <span id="order-tax" class="alice">
+            <span class="alice order-tax">
               €<DynamicHTML htmlFn={() => window.cart.tax} />
             </span>
           </div>
@@ -227,7 +229,7 @@ const { page } = Astro.props,
             {checkoutRecurData.text_total}
           </span>
 
-          <span id="order-total" class="alice leading-[110%]">
+          <span class="order-total alice leading-[110%]">
             €<DynamicHTML htmlFn={() => window.cart.total} />
           </span>
         </div>

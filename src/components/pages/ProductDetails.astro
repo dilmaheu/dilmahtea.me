@@ -25,7 +25,10 @@ const { page, recurData } = Astro.props,
 const recipes = page.recipes.data.map(({ attributes }) => attributes);
 
 const { url: productImgURL } = page.Intro_blob.data.attributes,
-  { Price: productPrice, SKU: productSKU } = page,
+  { SKU: productSKU } = page,
+  productPrice = Number(page.Price),
+  tax = Math.round(productPrice * 9) / 100,
+  productPriceIncludingTax = productPrice + tax,
   productNames = JSON.stringify(page.names),
   productSize = page.Weight + "gm";
 
@@ -101,8 +104,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   >
     <input type="hidden" name="sku" value={productSKU} required />
     <input type="hidden" name="names" value={productNames} required />
-    <input type="hidden" name="price" value={productPrice} required />
     <input type="hidden" name="image" value={productImgURL} required />
+    <input type="hidden" name="tax" value={tax} required />
+    <input
+      type="hidden"
+      name="price"
+      value={productPriceIncludingTax}
+      required
+    />
 
     <fieldset>
       <legend
@@ -174,7 +183,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       <Icon name="mi:shopping-cart" class="w-[26px] h-[26px]" />
       <span>
         {checkoutRecurData.text_add_to_cart_for}
-        €<output class="product-amount-price">{productPrice}</output>
+        €<output class="product-amount-price"
+          >{productPriceIncludingTax.toFixed(2).replace(".", ",")}
+        </output>
       </span>
     </button>
   </form>
@@ -185,8 +196,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   >
     <input type="hidden" name="sku" value={productSKU} required />
     <input type="hidden" name="names" value={productNames} required />
-    <input type="hidden" name="price" value={productPrice} required />
     <input type="hidden" name="image" value={productImgURL} required />
+    <input type="hidden" name="tax" value={tax} required />
+    <input
+      type="hidden"
+      name="price"
+      value={productPriceIncludingTax}
+      required
+    />
 
     <fieldset>
       <legend
@@ -412,7 +429,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     }
   }
 
-  type ProductData = Record<string, string | number>;
+  type ProductData = Record<string, number | string>;
 
   const cartAddingForms = document.querySelectorAll(
       ".cart-adding-form, .cart-adding-form-sm"
@@ -424,20 +441,20 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       event.preventDefault();
 
       const productData = Object.fromEntries(new FormData(form)) as ProductData,
-        id = productData.sku as string,
-        productPrice = productData.price,
+        { sku: id, price, tax } = productData as Record<string, string>,
         existingCartProduct = window.cart[id];
 
       productData.quantity =
         Number(productData.quantity) +
         (existingCartProduct ? (existingCartProduct.quantity as number) : 0);
 
-      productData.price = Number(productPrice) * productData.quantity;
+      productData.price = (Number(price) * productData.quantity).toFixed(2);
+      productData.tax = (Number(tax) * productData.quantity).toFixed(2);
 
       window.cart[id] = productData;
 
       form.reset();
-      productAmountPriceOutput.textContent = productPrice as string;
+      productAmountPriceOutput.textContent = price.replace(".", ",");
     };
   });
 </script>
