@@ -1,7 +1,12 @@
 ---
+import CMS from "@store/CMS";
+import Icon from "astro-icon";
+import DynamicHTML from "@components/DynamicHTML.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
+
 import Navbar from "@components/Navbar.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 import CheckoutBackground from "@components/checkout_background.webp";
 
 interface Props {
@@ -20,6 +25,8 @@ const footerText = recurData.Footer_text.replaceAll(
   "<current_year>",
   `${new Date().getFullYear()}`
 );
+
+const checkoutRecurData = CMS.get("checkoutRecurringElement").data.attributes;
 ---
 
 <style
@@ -31,6 +38,12 @@ const footerText = recurData.Footer_text.replaceAll(
   #checkout-cart-container {
     background-size: cover;
     background-image: var(--checkout-background);
+    padding-bottom: poly-fluid-clamp(
+      (
+        375px: 20px,
+        1440px: 56px,
+      )
+    );
 
     @include poly-fluid-sizing(
       "padding-top",
@@ -43,6 +56,105 @@ const footerText = recurData.Footer_text.replaceAll(
         1280px: 130px,
         1536px: 145px,
         2050px: 165px,
+      )
+    );
+  }
+
+  h1,
+  .amount-total {
+    line-height: 115%;
+    font-size: poly-fluid-clamp(
+      (
+        375px: 32px,
+        1440px: 48px,
+      )
+    );
+  }
+
+  .cart-products {
+    > div {
+      display: grid;
+      grid-template-columns: 3fr 1fr 1fr;
+
+      div {
+        &:nth-of-type(1) {
+          justify-self: start;
+        }
+
+        &:nth-of-type(2) {
+          justify-self: center;
+        }
+
+        &:nth-of-type(3) {
+          justify-self: end;
+        }
+      }
+    }
+
+    hr {
+      @apply border border-lightgreen2 opacity-50;
+    }
+
+    .details-headings {
+      @apply font-semibold text-lightgray3 text-[1.5rem] leading-[130%];
+    }
+  }
+
+  .cart-product-details {
+    gap: poly-fluid-clamp(
+      (
+        375px: 14px,
+        1440px: 35px,
+      )
+    );
+  }
+
+  .cart-product-name {
+    line-height: 110%;
+    font-size: poly-fluid-clamp(
+      (
+        375px: 20px,
+        1440px: 32px,
+      )
+    );
+  }
+
+  .cart-product-price {
+    line-height: 110%;
+    font-size: poly-fluid-clamp(
+      (
+        375px: 28px,
+        1440px: 32px,
+      )
+    );
+  }
+
+  .cart-product-quantity {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  .cart-product-size,
+  .text-shipping-charge-info {
+    font-size: poly-fluid-clamp(
+      (
+        375px: 14px,
+        1440px: 18px,
+      )
+    );
+  }
+
+  .text-total {
+    line-height: 115%;
+    font-size: poly-fluid-clamp(
+      (
+        375px: 28px,
+        1440px: 48px,
       )
     );
   }
@@ -62,5 +174,133 @@ const footerText = recurData.Footer_text.replaceAll(
 
   <div id="checkout-cart-container">
     <UpdateTopMargin />
+
+    <div class="wrapper">
+      <h1 class="alice mb-4 sm:mb-6">Cart</h1>
+
+      <ClipPathSVG
+        id="cart-product-image"
+        path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
+      />
+
+      <div class="cart-products flex flex-col gap-4 mb-24">
+        <div class="details-headings">
+          <div>Product</div>
+          <div>Quantity</div>
+          <div>Subtotal</div>
+        </div>
+
+        <hr />
+
+        <DynamicHTML
+          htmlFn={(content) =>
+            Object.keys(window.cart)
+              .map((id) => {
+                const productData = window.cart[id],
+                  names = JSON.parse(productData.names),
+                  name = names[preferredLocale] || names["en"],
+                  price = Number(productData.price)
+                    .toFixed(2)
+                    .replace(".", ",");
+
+                return window.replacePlaceholders(content, {
+                  ...productData,
+                  id,
+                  name,
+                  price,
+                });
+              })
+              .join("")}
+        >
+          <div
+            id={`<placeholder name="id"></placeholder>`}
+            class="cart-product items-center"
+          >
+            <div class="cart-product-details flex items-center">
+              <img
+                src={`<placeholder name="image"></placeholder>`}
+                style="min-width: 85px; width: 85px; height: 85px; clip-path: url(#cart-product-image);"
+              />
+
+              <div class="flex flex-col gap-2">
+                <div class="cart-product-name alice">
+                  <placeholder name="name"></placeholder>
+                </div>
+
+                <div class="cart-product-size">
+                  {checkoutRecurData.text_size}: <placeholder name="size"
+                  ></placeholder>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="flex items-center bg-limedspruce text-lightgray border-2 border-lightgray rounded-full"
+            >
+              <!-- <button class="remove-item-btn">
+                <Icon name="akar-icons:trash-can" class="w-6 h-6" />
+              </button> -->
+
+              <button
+                data-action="decrement"
+                class="w-9 h-8 sm:w-11 sm:h-12 py-1.5 sm:py-3 pl-2.5 sm:pl-3.5 pr-1.5"
+              >
+                <Icon
+                  name="akar-icons:minus"
+                  class="w-5 h-5 sm:w-6 sm:h-6 select-none cursor-pointer"
+                />
+              </button>
+
+              <input
+                type="number"
+                min="1"
+                value={`<placeholder name="quantity"></placeholder>`}
+                class:list={[
+                  "cart-product-quantity",
+                  "w-8 sm:w-9 h-full text-center sm:text-[1.125rem] bg-limedspruce outline-none",
+                ]}
+                required
+              />
+
+              <button
+                data-action="increment"
+                class="w-9 h-8 sm:w-11 sm:h-12 py-1.5 sm:py-3 pl-1.5 pr-2.5 sm:pr-3.5"
+              >
+                <Icon
+                  name="akar-icons:plus"
+                  class="w-5 h-5 sm:w-6 sm:h-6 select-none cursor-pointer"
+                />
+              </button>
+            </div>
+
+            <div class="cart-product-price alice">
+              €<placeholder name="price"></placeholder>
+            </div>
+          </div>
+        </DynamicHTML>
+
+        <hr />
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div class="flex justify-between items-center">
+          <div class="flex flex-col gap-4">
+            <div class="alice text-total">Total</div>
+
+            <div class="text-shipping-charge-info">
+              {checkoutRecurData.text_shipping_calculated_at_checkout}
+            </div>
+          </div>
+
+          <div class="amount-total alice">$1500</div>
+        </div>
+
+        <button
+          class="self-end px-32 py-3 bg-lightgray font-bold text-primary rounded-full"
+        >
+          {page.text_go_to_checkout}
+        </button>
+      </div>
+    </div>
   </div>
 </BaseLayout>
