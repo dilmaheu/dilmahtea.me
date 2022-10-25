@@ -101,19 +101,31 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 window.addProductToCart = (id) => {
                   const productData = window.cart[id],
                     names = JSON.parse(productData.names),
-                    name = names[preferredLocale] || names["en"];
+                    name = names[preferredLocale] || names["en"],
+                    price = Number(productData.price)
+                      .toFixed(2)
+                      .replace(".", ",");
 
                   currentScript.insertAdjacentHTML(
                     "beforebegin",
                     window.replacePlaceholders(content, {
+                      ...productData,
                       id,
                       name,
-                      ...productData,
+                      price,
                     })
                   );
+
+                  const newCartProduct = currentScript.previousElementSibling,
+                    newProductAmountInput = newCartProduct.querySelector(
+                      ".product-amount-input"
+                    );
+
+                  window.handleProductAmountInput &&
+                    window.handleProductAmountInput(newProductAmountInput);
                 };
 
-                Object.keys(window.cart).forEach(addProductToCart);
+                Object.keys(window.cart).forEach(window.addProductToCart);
               }}
             >
               <div
@@ -224,7 +236,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       openCart: () => void;
       enableScrolling: () => void;
       disableScrolling: () => void;
+      addProductToCart: (id: string) => void;
       cart: Record<string, Record<string, string | number>>;
+      handleProductAmountInput: (input: HTMLInputElement) => void;
     }
   }
 </script>
@@ -292,11 +306,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   const query = document.querySelector.bind(document),
     productAmountOutput = query(".product-amount-price"),
     productAmountInputs = document.querySelectorAll(".product-amount-input"),
-    productAmountTweakBtns = document.querySelectorAll(
-      "[data-action='decrement'], [data-action='increment']"
-    ),
-    productPriceElement = query("input[name='price']"),
-    productPrice = productPriceElement?.value as HTMLInputElement;
+    productPrice = Number(query("input[name='price']")?.value);
 
   const tweak = ({ target, action }) => {
     const counter = target[
@@ -313,17 +323,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     counter.dispatchEvent(new Event("input"));
   };
 
-  productAmountTweakBtns.forEach((target) => {
-    target.addEventListener("click", (event) => {
-      event.preventDefault();
-
-      const action = target.getAttribute("data-action");
-
-      tweak({ target, action });
-    });
-  });
-
-  productAmountInputs.forEach((input: HTMLInputElement) => {
+  window.handleProductAmountInput = (input: HTMLInputElement) => {
     let latestValidValue;
 
     input.addEventListener("beforeinput", () => {
@@ -340,17 +340,17 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       // check if the input is of a cart product
       if (parentCartProduct) {
         const productId = parentCartProduct.id,
-          cartProductData = window.cart[productId],
-          productPrice =
-            (cartProductData.price as number) /
-            (cartProductData.quantity as number),
-          updatedQuantity = Number(input.value),
-          updatedPrice = updatedQuantity * productPrice;
+          productData = window.cart[productId],
+          { price, tax, quantity } = productData,
+          productPrice = Number(price) / Number(quantity),
+          productTax = Number(tax) / Number(quantity),
+          updatedQuantity = Number(input.value);
 
-        cartProductData.quantity = updatedQuantity;
-        cartProductData.price = updatedPrice;
+        productData.quantity = updatedQuantity;
+        productData.tax = +(updatedQuantity * productTax).toFixed(2);
+        productData.price = +(updatedQuantity * productPrice).toFixed(2);
 
-        window.cart[productId] = cartProductData;
+        window.cart[productId] = productData;
       }
 
       // check if it's a product details page
@@ -365,9 +365,28 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         });
 
         productAmountOutput.textContent = String(
-          Number(input.value) * Number(productPrice)
+          (Number(input.value) * Number(productPrice))
+            .toFixed(2)
+            .replace(".", ",")
         );
       }
     });
+  };
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement,
+      tweakBtn = target.closest(
+        "[data-action='decrement'], [data-action='increment']"
+      );
+
+    if (tweakBtn) {
+      event.preventDefault();
+
+      const action = tweakBtn.getAttribute("data-action");
+
+      tweak({ target: tweakBtn, action });
+    }
   });
+
+  productAmountInputs.forEach(window.handleProductAmountInput);
 </script>
