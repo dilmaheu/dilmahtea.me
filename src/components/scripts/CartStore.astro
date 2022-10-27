@@ -16,10 +16,10 @@
 
     const updateAmounts = (cart) => {
       ({ subTotal = 0, tax = 0 } = Object.values(cart).reduce(
-        ([priceSum, taxSum], { price, tax }) => ({
-          subTotal: priceSum + Number(price),
-          tax: taxSum + Number(tax),
-        }),
+        ([priceSum, taxSum], { price, tax }) => [
+          priceSum + Number(price),
+          taxSum + Number(tax),
+        ],
         [0, 0]
       ));
 
@@ -56,7 +56,7 @@
 
       updateAmounts(cart);
 
-      cartSubTotal.textContent = "€" + subTotal;
+      cartSubTotal && (cartSubTotal.textContent = "€" + subTotal);
       cartSize && (cartSize.textContent = Object.values(cart).length);
 
       orderTax.forEach((span) => (span.textContent = "€" + tax));
@@ -91,14 +91,13 @@
       },
 
       set(cart, id, productData) {
-        const existingProduct = cart[id];
+        const cartProductElement = document.getElementById(id);
 
-        if (existingProduct) {
-          const productElement = document.getElementById(id),
-            productPriceElement = productElement.querySelector(
+        if (cartProductElement) {
+          const productPriceElement = cartProductElement.querySelector(
               ".cart-product-price"
             ),
-            productQuantityElement = productElement.querySelector(
+            productQuantityElement = cartProductElement.querySelector(
               ".cart-product-quantity"
             );
 
@@ -110,8 +109,6 @@
         cart[id] = productData;
 
         localStorage.setItem("cart", JSON.stringify(cart));
-
-        existingProduct ?? window.addProductToCart(id);
 
         updateUI(cart);
 

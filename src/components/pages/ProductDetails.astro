@@ -467,4 +467,63 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       productAmountPriceOutput.textContent = price.replace(".", ",");
     };
   });
+
+  const query = document.querySelector.bind(document),
+    productAmountOutput = query(".product-amount-price"),
+    productAmountInputs = document.querySelectorAll(".product-amount-input"),
+    productAmountTweakBtns = document.querySelectorAll(
+      "[data-action='decrement'], [data-action='increment']"
+    ),
+    productPrice = Number(query("input[name='price']")?.value);
+
+  const tweak = ({ target, action }) => {
+    const counter = target[
+        action === "decrement" ? "nextElementSibling" : "previousElementSibling"
+      ] as HTMLInputElement,
+      quantity = Number(counter.value);
+
+    counter.dispatchEvent(new Event("beforeinput"));
+
+    counter.value = String(
+      action === "decrement" ? quantity - 1 : quantity + 1
+    );
+
+    counter.dispatchEvent(new Event("input"));
+  };
+
+  productAmountTweakBtns.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      const action = button.getAttribute("data-action");
+
+      tweak({ target: button, action });
+    });
+  });
+
+  productAmountInputs.forEach((input: HTMLInputElement) => {
+    let latestValidValue;
+
+    input.addEventListener("beforeinput", () => {
+      input.validity.valid && (latestValidValue = input.value);
+    });
+
+    input.addEventListener("input", () => {
+      if (!input.validity.valid) {
+        input.value = latestValidValue;
+      }
+
+      productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
+        if (otherAmountInput !== input) {
+          otherAmountInput.value = input.value;
+        }
+      });
+
+      productAmountOutput.textContent = String(
+        (Number(input.value) * Number(productPrice))
+          .toFixed(2)
+          .replace(".", ",")
+      );
+    });
+  });
 </script>

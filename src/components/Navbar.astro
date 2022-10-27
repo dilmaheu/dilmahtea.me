@@ -66,8 +66,8 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
         />
       </div>
 
-      <button
-        id="open-cart-btn"
+      <a
+        href="/checkout/cart"
         class:list={[
           "relative scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]",
           "mx-[calc(-24px*0.225)] sm:mx-[calc(-24px*0.15)] md:mx-[calc(-24px*0.075)] lg:mx-0",
@@ -99,7 +99,7 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
             </span>
           </div>
         </div>
-      </button>
+      </a>
 
       <div class="block md:hidden w-[38px] h-[38px]">
         <button
@@ -150,6 +150,14 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
   </div>
 </section>
 
+<script>
+  declare global {
+    interface Window {
+      cart: Record<string, Record<string, string | number>>;
+    }
+  }
+</script>
+
 <script is:inline>
   {
     const navigation = document.getElementById("navigation"),
@@ -173,25 +181,14 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 </script>
 
 <script>
-  declare global {
-    interface Window {
-      openCart: () => void;
-      // disableScrolling & enableScrolling are declared globally to use in cart toggling logic
-      enableScrolling: () => void;
-      disableScrolling: () => void;
-    }
-  }
-
   const query = document.querySelector.bind(document),
     rootElement = query(":root"),
-    cart = query("#cart"),
     sidebar = query("#sidebar"),
     navigation = query("#navigation"),
-    openCartBtn = query("#open-cart-btn"),
     sidebarOpenButton = query("#sidebar-open-btn"),
     sidebarCloseButton = query("#sidebar-close-btn");
 
-  window.disableScrolling = () => {
+  const disableScrolling = () => {
     const overflowY =
       visualViewport.height < document.body.offsetHeight ? "scroll" : "auto";
 
@@ -203,7 +200,7 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     });
   };
 
-  window.enableScrolling = () => {
+  const enableScrolling = () => {
     const scrollYPosition = parseInt(document.body.style.top.slice(1, -2));
 
     Object.assign(document.body.style, {
@@ -242,9 +239,6 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 
   window.addEventListener("resize", () => {
     if (window.innerWidth > 639) {
-      // enable scrolling only if cart and checkout is not open
-      if (cart.classList.contains("hidden")) window.enableScrolling();
-
       window.removeEventListener("resize", updateSidebarTopPosition);
     } else if (sidebar.style.display === "block") {
       // @ts-ignore
@@ -252,10 +246,6 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 
       window.addEventListener("resize", updateSidebarTopPosition);
     }
-  });
-
-  openCartBtn?.addEventListener("click", () => {
-    window.openCart();
   });
 
   sidebarOpenButton?.addEventListener("click", () => {
@@ -268,7 +258,7 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     sidebarCloseButton.style.display = "block";
     navigation.style.backgroundImage = "url(/bg-images/nav-background.webp)";
 
-    window.disableScrolling();
+    disableScrolling();
 
     window.addEventListener("resize", updateSidebarTopPosition);
   });
@@ -279,6 +269,6 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     sidebarCloseButton.style.display = "none";
     navigation.style.backgroundImage = "unset";
 
-    window.enableScrolling();
+    enableScrolling();
   });
 </script>
