@@ -1,0 +1,16 @@
+---
+const { html, htmlFn, voidFn } = Astro.props;
+
+const hasChildren = Astro.slots.has("default");
+
+const content = (await Astro.slots.render("default")) ?? "";
+
+const scriptHTML = voidFn
+  ? `(${voidFn.toString()})(\`${content}\`, document.currentScript)`
+  : `document.currentScript.insertAdjacentHTML(
+  "beforebegin",
+  (${htmlFn.toString()})(\`${content}\`)
+);`;
+---
+
+<script set:html={scriptHTML}></script>

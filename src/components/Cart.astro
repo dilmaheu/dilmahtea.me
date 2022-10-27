@@ -1,0 +1,392 @@
+---
+import CMS from "@store/CMS";
+import { Icon } from "astro-icon";
+import ClippedImg from "@components/ClippedImg.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import DynamicHTML from "@components/DynamicHTML.astro";
+
+declare interface Props {
+  page: Record<string, any>;
+}
+
+const { page } = Astro.props as Props;
+
+const { locale } = page,
+  { data: checkoutInformationData } = CMS.get("checkoutInformation"),
+  { URL_slug: checkoutInfoPageSlug } = checkoutInformationData.attributes.Meta,
+  checkoutInfoPageLink = "/" + locale + "/" + checkoutInfoPageSlug;
+
+const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+---
+
+<style lang="scss">
+  .cart-products-container {
+    @apply max-w-full w-[375px] sm:w-[528.96px];
+  }
+
+  .cart-heading {
+    line-height: 110%;
+
+    @apply text-[2rem] sm:text-[2.625rem];
+  }
+
+  .cart-product-details {
+    @apply max-w-full w-[272px];
+  }
+
+  .cart-product-name {
+    line-height: 130%;
+
+    @apply text-[1.125rem] sm:text-[1.5rem];
+  }
+
+  :global(input[type="number"].product-amount-input) {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  .subtotal-text {
+    @apply text-base sm:text-[1.125rem];
+  }
+
+  .cart-product-price,
+  #cart-subtotal {
+    line-height: 110%;
+
+    @apply text-[1.75rem] sm:text-[2rem];
+  }
+
+  .cart-product-size,
+  .shipping-charge-info {
+    @apply text-[0.875rem] sm:text-base;
+  }
+</style>
+
+<div
+  id="cart"
+  class="hidden fixed z-[1000] flex justify-end w-full h-full top-0 left-0"
+>
+  <div class="w-full max-w-[2050px] h-fit mx-auto bg-[rgba(0,0,0,0.5)]">
+    <div
+      class="cart-products-container ml-auto overflow-y-auto text-dark2 bg-lightgray"
+    >
+      <ClipPathSVG
+        id="cart-product-image"
+        path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
+      />
+
+      <div
+        id="cart-products"
+        class="h-screen p-6 sm:py-9 sm:px-14 flex flex-col justify-between gap-[36px]"
+      >
+        <div class="h-full flex flex-col gap-5">
+          <div class="flex justify-between items-center">
+            <h3 class="cart-heading alice">{checkoutRecurData.text_cart}</h3>
+
+            <button id="close-cart-btn">
+              <Icon name="heroicons-solid:x" class="w-14" />
+            </button>
+          </div>
+
+          <div class="border border-solid border-lightgreen"></div>
+
+          <div class="h-36 sm:h-44 grow flex flex-col gap-5 overflow-auto">
+            <DynamicHTML
+              voidFn={(content, currentScript) => {
+                window.addProductToCart = (id) => {
+                  const productData = window.cart[id],
+                    names = JSON.parse(productData.names),
+                    name = names[preferredLocale] || names["en"],
+                    price = Number(productData.price)
+                      .toFixed(2)
+                      .replace(".", ",");
+
+                  currentScript.insertAdjacentHTML(
+                    "beforebegin",
+                    window.replacePlaceholders(content, {
+                      ...productData,
+                      id,
+                      name,
+                      price,
+                    })
+                  );
+
+                  const newCartProduct = currentScript.previousElementSibling,
+                    newProductAmountInput = newCartProduct.querySelector(
+                      ".product-amount-input"
+                    );
+
+                  window.handleProductAmountInput &&
+                    window.handleProductAmountInput(newProductAmountInput);
+                };
+
+                Object.keys(window.cart).forEach(window.addProductToCart);
+              }}
+            >
+              <div
+                id={`<placeholder name="id"></placeholder>`}
+                class="cart-product p-4 gap-3.5 flex justify-between items-center bg-lightgray2 rounded-[10px]"
+              >
+                <img
+                  src={`<placeholder name="image"></placeholder>`}
+                  style="min-width: 100px; width: 100px; height: 100px; clip-path: url(#cart-product-image);"
+                />
+
+                <div class="cart-product-details flex flex-col gap-1">
+                  <div class="flex justify-between items-center gap-1.5">
+                    <h6 class="alice cart-product-name">
+                      <placeholder name="name"></placeholder>
+                    </h6>
+
+                    <button class="remove-item-btn">
+                      <Icon name="akar-icons:trash-can" class="w-6 h-6" />
+                    </button>
+                  </div>
+
+                  <div class="cart-product-size">
+                    {checkoutRecurData.text_size}: <placeholder name="size"
+                    ></placeholder>
+                  </div>
+
+                  <div class="flex justify-between items-center gap-1.5">
+                    <div
+                      class="flex items-center bg-primary text-lightgray rounded-full"
+                    >
+                      <button
+                        data-action="decrement"
+                        class="w-8 h-8 py-1.5 pl-2 pr-1"
+                      >
+                        <Icon
+                          name="akar-icons:minus"
+                          class="w-5 h-5 select-none cursor-pointer"
+                        />
+                      </button>
+
+                      <input
+                        type="number"
+                        min="1"
+                        value={`<placeholder name="quantity"></placeholder>`}
+                        class:list={[
+                          "product-amount-input cart-product-quantity",
+                          "w-9 h-full text-center lg:text-lg bg-primary outline-none",
+                        ]}
+                        required
+                      />
+
+                      <button
+                        data-action="increment"
+                        class="w-8 h-8 py-1.5 pl-1 pr-2"
+                      >
+                        <Icon
+                          name="akar-icons:plus"
+                          class="w-5 h-5 select-none cursor-pointer"
+                        />
+                      </button>
+                    </div>
+
+                    <span class="cart-product-price alice text-dark3">
+                      €<placeholder name="price"></placeholder>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </DynamicHTML>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-5">
+          <div>
+            <div class="flex justify-between items-center">
+              <span class="subtotal-text font-medium">
+                {checkoutRecurData.text_subtotal}
+              </span>
+
+              <span id="cart-subtotal" class="alice">
+                €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+              </span>
+            </div>
+
+            <div class="shipping-charge-info">
+              {checkoutRecurData.text_shipping_calculated_at_checkout}
+            </div>
+          </div>
+
+          <a
+            href={checkoutInfoPageLink}
+            class="capitalize py-4 font-bold bg-primary text-center text-lightgray rounded-[9999px]"
+          >
+            {checkoutRecurData.text_proceed_to_checkout}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // disableScrolling & enableScrolling are defined in Navbar.astro
+
+  declare global {
+    interface Window {
+      openCart: () => void;
+      enableScrolling: () => void;
+      disableScrolling: () => void;
+      addProductToCart: (id: string) => void;
+      cart: Record<string, Record<string, string | number>>;
+      handleProductAmountInput: (input: HTMLInputElement) => void;
+    }
+  }
+</script>
+
+<script>
+  const id: (string) => HTMLElement = document.getElementById.bind(document),
+    cart = id("cart"),
+    sidebar = id("sidebar"),
+    closeCartBtn = id("close-cart-btn"),
+    { overflowY: prevBodyOverflowYValue } = document.body.style;
+
+  window.openCart = () => {
+    cart.classList.toggle("hidden");
+
+    window.disableScrolling();
+
+    if (cart.scrollHeight > cart.offsetHeight) {
+      document.body.style.overflowY = "hidden";
+    }
+  };
+
+  const closeCart = () => {
+    cart.classList.toggle("hidden");
+
+    (!sidebar || sidebar.offsetWidth === 0) && window.enableScrolling();
+
+    document.body.style.overflowY =
+      sidebar?.offsetWidth > 0 ? "scroll" : prevBodyOverflowYValue;
+  };
+
+  cart?.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+
+    if (target === cart.firstElementChild) {
+      // close cart if clicked outside of cart content
+      closeCart();
+    }
+
+    const hasToRemoveItem = target.closest(".remove-item-btn");
+
+    if (hasToRemoveItem) {
+      const productToRemove = target.closest(".cart-product"),
+        { id: productId } = productToRemove;
+
+      delete window.cart[productId];
+
+      productToRemove.remove();
+    }
+  });
+
+  closeCartBtn.addEventListener("click", closeCart);
+
+  window.addEventListener("resize", () => {
+    const cartProducts = document.getElementById("cart-products");
+
+    if (cartProducts.scrollHeight > cartProducts.clientHeight) {
+      document.body.style.overflowY = "hidden";
+    } else {
+      document.body.style.overflowY = "scroll";
+    }
+  });
+</script>
+
+<script>
+  const query = document.querySelector.bind(document),
+    productAmountOutput = query(".product-amount-price"),
+    productAmountInputs = document.querySelectorAll(".product-amount-input"),
+    productPrice = Number(query("input[name='price']")?.value);
+
+  const tweak = ({ target, action }) => {
+    const counter = target[
+        action === "decrement" ? "nextElementSibling" : "previousElementSibling"
+      ] as HTMLInputElement,
+      quantity = Number(counter.value);
+
+    counter.dispatchEvent(new Event("beforeinput"));
+
+    counter.value = String(
+      action === "decrement" ? quantity - 1 : quantity + 1
+    );
+
+    counter.dispatchEvent(new Event("input"));
+  };
+
+  window.handleProductAmountInput = (input: HTMLInputElement) => {
+    let latestValidValue;
+
+    input.addEventListener("beforeinput", () => {
+      input.validity.valid && (latestValidValue = input.value);
+    });
+
+    input.addEventListener("input", () => {
+      if (!input.validity.valid) {
+        input.value = latestValidValue;
+      }
+
+      const parentCartProduct = input.closest(".cart-product");
+
+      // check if the input is of a cart product
+      if (parentCartProduct) {
+        const productId = parentCartProduct.id,
+          productData = window.cart[productId],
+          { price, tax, quantity } = productData,
+          productPrice = Number(price) / Number(quantity),
+          productTax = Number(tax) / Number(quantity),
+          updatedQuantity = Number(input.value);
+
+        productData.quantity = updatedQuantity;
+        productData.tax = +(updatedQuantity * productTax).toFixed(2);
+        productData.price = +(updatedQuantity * productPrice).toFixed(2);
+
+        window.cart[productId] = productData;
+      }
+
+      // check if it's a product details page
+      else if (productPrice) {
+        productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
+          if (
+            otherAmountInput !== input &&
+            !otherAmountInput.classList.contains("cart-product-quantity")
+          ) {
+            otherAmountInput.value = input.value;
+          }
+        });
+
+        productAmountOutput.textContent = String(
+          (Number(input.value) * Number(productPrice))
+            .toFixed(2)
+            .replace(".", ",")
+        );
+      }
+    });
+  };
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement,
+      tweakBtn = target.closest(
+        "[data-action='decrement'], [data-action='increment']"
+      );
+
+    if (tweakBtn) {
+      event.preventDefault();
+
+      const action = tweakBtn.getAttribute("data-action");
+
+      tweak({ target: tweakBtn, action });
+    }
+  });
+
+  productAmountInputs.forEach(window.handleProductAmountInput);
+</script>
