@@ -1,0 +1,44 @@
+---
+import Cart from "@components/Cart.astro";
+import Navbar from "@components/Navbar.astro";
+import Footer from "@components/Footer.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+interface Props {
+  page: Record<string, any>;
+  meta: Record<string, any>;
+  locale: string;
+  recurData: Record<string, any>;
+  metaImageID: string;
+  availableLocales: string[];
+}
+
+const { page, meta, locale, recurData, availableLocales, metaImageID } =
+  Astro.props as Props;
+
+const footerText = recurData.Footer_text.replaceAll(
+  "<current_year>",
+  `${new Date().getFullYear()}`
+);
+---
+
+<BaseLayout
+  meta={meta}
+  locale={locale}
+  availableLocales={availableLocales}
+  metaImageID={metaImageID}
+>
+  <Navbar
+    docLocale={locale}
+    footerText={footerText}
+    availableLocales={availableLocales}
+  />
+
+  <main>
+    <slot />
+  </main>
+
+  <Footer footerText={footerText} />
+
+  <Cart page={page} />
+</BaseLayout>

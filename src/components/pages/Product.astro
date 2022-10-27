@@ -9,16 +9,19 @@ import ClippedPicture from "@components/ClippedPicture.astro";
 import HeroBackground from "@components/HeroBackground.astro";
 import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
 
+import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
 const { white_cup, white_love_ribbon, white_right_arrow } = RecurringImages;
 
 const { page, recurData } = Astro.props,
-  { posts: products } = page,
+  { posts: products, locale } = page,
   [firstProduct] = products,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 
 const blogs = page.blogs.data.map(({ attributes }) => attributes);
+
+const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style lang="scss">
@@ -252,7 +255,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                         class="w-[30px] h-[30px]"
                         name="mi:shopping-cart-add"
                       />
-                      {recurData.product_add}
+                      {checkoutRecurData.text_add}
                     </a>
                   </div>
 
@@ -274,7 +277,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                       name="mi:shopping-cart-add"
                       class="w-[30px] h-[30px] p-0.5"
                     />
-                    {recurData.product_add}
+                    {checkoutRecurData.text_add}
                   </a>
                 </div>
 

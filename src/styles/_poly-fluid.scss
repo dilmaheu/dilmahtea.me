@@ -1,0 +1,192 @@
+/* 
+  MIT License
+
+  Copyright (c) 2017 Jake Wilson <jake.e.wilson@gmail.com>
+*/
+
+@use "sass:math";
+
+/// Remove an item from a list
+@function list-remove($list, $index) {
+  $newList: ();
+
+  @for $i from 1 through length($list) {
+    @if $i != $index {
+      $newList: append($newList, nth($list, $i), "space");
+    }
+  }
+
+  @return $newList;
+}
+
+/// Sort a SASS list
+@function list-sort($list) {
+  $sortedlist: ();
+
+  @while length($list) > 0 {
+    $value: nth($list, 1);
+
+    @each $item in $list {
+      @if $item < $value {
+        $value: $item;
+      }
+    }
+
+    $sortedlist: append($sortedlist, $value, "space");
+    $list: list-remove($list, index($list, $value));
+  }
+
+  @return $sortedlist;
+}
+
+/// Sort map by keys
+@function map-sort($map) {
+  $keys: list-sort(map-keys($map));
+  $sortedMap: ();
+
+  @each $key in $keys {
+    $sortedMap: map-merge(
+      $sortedMap,
+      (
+        $key: map-get($map, $key),
+      )
+    );
+  }
+
+  @return $sortedMap;
+}
+
+/// Calculate the definition of a line between two points
+@function linear-interpolation($map) {
+  $keys: map-keys($map);
+
+  @if (length($keys) != 2) {
+    @error "linear-interpolation() $map must be exactly 2 values";
+  }
+
+  // The slope
+  $m: math.div(
+    map-get($map, nth($keys, 2)) - map-get($map, nth($keys, 1)),
+    nth($keys, 2) - nth($keys, 1)
+  );
+
+  // The y-intercept
+  $b: map-get($map, nth($keys, 1)) - $m * nth($keys, 1);
+
+  // Determine if the sign should be positive or negative
+  $sign: "+";
+
+  @if ($b < 0) {
+    $sign: "-";
+    $b: abs($b);
+  }
+
+  @return calc(#{$m * 100}vw #{$sign} #{$b});
+}
+
+/// Calculate the value between two certain breakpoints
+@function get-value($i, $map, $keys, $func) {
+  $value: ();
+
+  $low-values: map-get($map, nth($keys, $i));
+  $high-values: map-get($map, nth($keys, ($i + 1)));
+
+  @if (length($low-values) != length($high-values)) {
+    @error "#{$func}() values must have same number args";
+  }
+
+  $values-length: length($low-values);
+
+  $separator: list-separator(nth($keys, $i));
+
+  @if ($separator != list-separator(nth($keys, $i + 1))) {
+    @error "#{$func}() values must use the same separator";
+  }
+
+  @for $j from 1 through $values-length {
+    $result: ();
+
+    $key1: nth($keys, $i);
+    $key2: nth($keys, $i + 1);
+
+    $value1: nth($low-values, $j);
+    $value2: nth($high-values, $j);
+
+    @if ($value1 != $value2) {
+      $result: linear-interpolation(
+        (
+          $key1: $value1,
+          $key2: $value2,
+        )
+      );
+    } @else {
+      $result: $value1;
+    }
+
+    $value: append(
+      $value,
+      #{"clamp(#{$value1}, #{$result}, #{$value2})"},
+      $separator
+    );
+  }
+
+  @return $value;
+}
+
+/// poly-fluid-clamp
+/// Generate linear interpolated size values through two break points
+/// @param $map - A SASS map of viewport unit and size value pairs
+/// @example
+///   font-size: poly-fluid-clamp(( 576px: 22px, 768px: 24px, 992px: 34px ));
+@function poly-fluid-clamp($map) {
+  $keys: map-keys($map);
+
+  // Get the number of provided breakpoints
+  $breakpoints-length: length($keys);
+
+  // Error if the number of breakpoints is != 2
+  @if ($breakpoints-length != 2) {
+    @error "poly-fluid-clamp() $map must have exactly two values";
+  }
+
+  // Sort the map by viewport width (key)
+  $map: map-sort($map);
+
+  $value: get-value(1, $map, $keys, "poly-fluid-clamp");
+
+  @return $value;
+}
+
+/// poly-fluid-sizing
+/// Generate linear interpolated size values through multiple break points
+/// @param $property - A string CSS property name
+/// @param $map - A SASS map of viewport unit and size value pairs
+/// @example
+///   @include poly-fluid-sizing('font-size', ( 576px: 22px, 768px: 24px, 992px: 34px ));
+@mixin poly-fluid-sizing($property, $map) {
+  $keys: map-keys($map);
+
+  // Get the number of provided breakpoints
+  $breakpoints-length: length($keys);
+
+  // Error if the number of breakpoints is < 2
+  @if ($breakpoints-length < 2) {
+    @error "poly-fluid-sizing() $map requires at least two values";
+  }
+
+  // Sort the map by viewport width (key)
+  $map: map-sort($map);
+
+  // Interpolated size through breakpoints
+  @for $i from 1 through ($breakpoints-length - 1) {
+    $value: get-value($i, $map, $keys, "poly-fluid-sizing");
+
+    @if ($i == 1) {
+      #{$property}: $value;
+    } @else {
+      @media (min-width: nth($keys, $i)) {
+        #{$property}: $value;
+      }
+    }
+  }
+}
