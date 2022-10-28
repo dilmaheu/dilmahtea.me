@@ -10,6 +10,10 @@
       );
     };
 
+    window.checkoutContactInfo = JSON.parse(
+      localStorage.getItem("checkout-contact-info") || "{}"
+    );
+
     const storedCart = JSON.parse(localStorage.getItem("cart") || "{}");
 
     let subTotal, tax, shippingCost, total;
@@ -23,7 +27,7 @@
         [0, 0]
       );
 
-      shippingCost = window.checkoutContactInfo?.shipping_cost || 0;
+      shippingCost = Number(window.checkoutContactInfo?.shipping_cost) || 0;
 
       total = subTotal + shippingCost;
 
@@ -38,20 +42,13 @@
     const id = document.getElementById.bind(document),
       queryAll = document.querySelectorAll.bind(document);
 
-    let cartSize,
-      orderTax,
-      orderTotal,
-      cartSubTotal,
-      orderSubTotal,
-      orderShippingCost;
+    let cartSize, cartSubTotal, orderTotal, orderShippingCost;
 
     const updateUI = (cart) => {
       cartSize ??= id("cart-size");
       cartSubTotal ??= id("cart-subtotal");
 
-      orderTax ??= queryAll(".order-tax");
       orderTotal ??= queryAll(".order-total");
-      orderSubTotal ??= queryAll(".order-subtotal");
       orderShippingCost ??= queryAll(".order-shipping-cost");
 
       updateAmounts(cart);
@@ -59,9 +56,7 @@
       cartSubTotal && (cartSubTotal.textContent = "€" + subTotal);
       cartSize && (cartSize.textContent = Object.values(cart).length);
 
-      orderTax.forEach((span) => (span.textContent = "€" + tax));
       orderTotal.forEach((span) => (span.textContent = "€" + total));
-      orderSubTotal.forEach((span) => (span.textContent = "€" + subTotal));
       orderShippingCost.forEach(
         (span) => (span.textContent = "€" + shippingCost)
       );

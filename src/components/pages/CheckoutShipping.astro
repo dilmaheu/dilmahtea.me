@@ -206,7 +206,10 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
           <input
             type="radio"
             name="shipping_method"
-            value={`${method}:${cost}`}
+            value={method}
+            {
+            /* @ts-ignore */ }
+            cost={cost}
             class:list={[
               "hover:brightness-50 active:brightness-150",
               "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
@@ -260,26 +263,13 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
   }
 
   const updateCheckoutContactInfo = (input) => {
-    let newProperties;
     const isShippingMethodInput = input.name === "shipping_method";
 
-    if (!isShippingMethodInput) {
-      newProperties = {
-        [input.name]: input.value,
-      };
-    } else {
-      const [shipping_method, shipping_cost] = input.value.split(":");
+    window.checkoutContactInfo[input.name] = input.value;
 
-      newProperties = {
-        shipping_method,
-        shipping_cost: Number(shipping_cost),
-      };
+    if (isShippingMethodInput) {
+      window.checkoutContactInfo.shipping_cost = input.getAttribute("cost");
     }
-
-    window.checkoutContactInfo = {
-      ...window.checkoutContactInfo,
-      ...newProperties,
-    };
 
     isShippingMethodInput && window.cart.updateUI(window.cart);
 

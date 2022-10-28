@@ -476,8 +476,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         Number(productData.quantity) +
         (existingCartProduct ? (existingCartProduct.quantity as number) : 0);
 
-      productData.price = (Number(price) * productData.quantity).toFixed(2);
-      productData.tax = (Number(tax) * productData.quantity).toFixed(2);
+      productData.price = Number(price) * productData.quantity;
+      productData.tax = Number(tax) * productData.quantity;
 
       window.cart[id] = productData;
 
@@ -493,9 +493,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       }
     });
 
-    productAmountOutput.textContent = String(
-      (Number(input.value) * Number(productPrice)).toFixed(2).replace(".", ",")
-    );
+    productAmountOutput.textContent = (
+      Number(input.value) * Number(productPrice)
+    )
+      .toFixed(2)
+      .replace(".", ",");
   }
 
   tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
