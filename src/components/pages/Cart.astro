@@ -278,3 +278,44 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     </div>
   </div>
 </BaseLayout>
+
+<script>
+  import tweakAmount from "@utils/tweakAmount";
+
+  const cartProductAmountInputs = document.querySelectorAll(
+      ".cart-product-amount-input"
+    ),
+    cartProductAmountTweakBtns = document.querySelectorAll(
+      ".cart-product-amount-tweak-btn"
+    );
+
+  function tweakAmountCallback(input) {
+    const parentCartProduct = input.closest(".cart-product"),
+      productPriceElements = parentCartProduct.querySelectorAll(
+        ".cart-product-price"
+      ),
+      productId = parentCartProduct.id,
+      productData = window.cart[productId],
+      { price, tax, quantity } = productData,
+      productPrice = Number(price) / Number(quantity),
+      productTax = Number(tax) / Number(quantity),
+      updatedQuantity = Number(input.value);
+
+    productData.quantity = updatedQuantity;
+    productData.tax = +(updatedQuantity * productTax).toFixed(2);
+    productData.price = +(updatedQuantity * productPrice).toFixed(2);
+
+    window.cart[productId] = productData;
+
+    productPriceElements.forEach((element) => {
+      element.textContent =
+        "€" + Number(productData.price).toFixed(2).replace(".", ",");
+    });
+  }
+
+  tweakAmount(
+    cartProductAmountTweakBtns,
+    cartProductAmountInputs,
+    tweakAmountCallback
+  );
+</script>

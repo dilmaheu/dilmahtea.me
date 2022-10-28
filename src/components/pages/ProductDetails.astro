@@ -159,7 +159,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       </legend>
 
       <div class="flex items-center text-primary bg-lightgray rounded-full">
-        <button data-action="decrement" class="w-10 h-11 py-2.5 pl-3 pr-1">
+        <button
+          data-action="decrement"
+          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1"
+        >
           <Icon
             name="akar-icons:minus"
             class="w-6 h-6 select-none cursor-pointer"
@@ -175,7 +178,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           required
         />
 
-        <button data-action="increment" class="w-10 h-11 py-2.5 pl-1 pr-3">
+        <button
+          data-action="increment"
+          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
+        >
           <Icon
             name="akar-icons:plus"
             class="w-6 h-6 select-none cursor-pointer"
@@ -253,7 +259,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       <div
         class="w-fit flex items-center text-lightgray bg-primary rounded-full"
       >
-        <button data-action="decrement" class="w-10 h-11 py-2.5 pl-3 pr-1">
+        <button
+          data-action="decrement"
+          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1"
+        >
           <Icon
             name="akar-icons:minus"
             class="w-6 h-6 select-none cursor-pointer"
@@ -269,7 +278,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           required
         />
 
-        <button data-action="increment" class="w-10 h-11 py-2.5 pl-1 pr-3">
+        <button
+          data-action="increment"
+          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
+        >
           <Icon
             name="akar-icons:plus"
             class="w-6 h-6 select-none cursor-pointer"
@@ -433,6 +445,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 </PostDetailsLayout>
 
 <script>
+  import tweakAmount from "@utils/tweakAmount";
+
   declare global {
     interface Window {
       cart: Record<string, Record<string, string | number>>;
@@ -441,10 +455,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
   type ProductData = Record<string, number | string>;
 
-  const cartAddingForms = document.querySelectorAll(
-      ".cart-adding-form, .cart-adding-form-sm"
-    ),
-    productAmountPriceOutput = document.querySelector(".product-amount-price");
+  const query = document.querySelector.bind(document),
+    queryAll = document.querySelectorAll.bind(document),
+    cartAddingForms = queryAll(".cart-adding-form, .cart-adding-form-sm"),
+    productAmountPriceOutput = document.querySelector(".product-amount-price"),
+    productAmountOutput = query(".product-amount-price"),
+    productAmountInputs = queryAll(".product-amount-input"),
+    productAmountTweakBtns = queryAll(".product-amount-tweak-btn"),
+    productPrice = Number(query("input[name='price']")?.value);
 
   cartAddingForms.forEach((form: HTMLFormElement) => {
     form.onsubmit = (event) => {
@@ -468,62 +486,17 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     };
   });
 
-  const query = document.querySelector.bind(document),
-    productAmountOutput = query(".product-amount-price"),
-    productAmountInputs = document.querySelectorAll(".product-amount-input"),
-    productAmountTweakBtns = document.querySelectorAll(
-      "[data-action='decrement'], [data-action='increment']"
-    ),
-    productPrice = Number(query("input[name='price']")?.value);
-
-  const tweak = ({ target, action }) => {
-    const counter = target[
-        action === "decrement" ? "nextElementSibling" : "previousElementSibling"
-      ] as HTMLInputElement,
-      quantity = Number(counter.value);
-
-    counter.dispatchEvent(new Event("beforeinput"));
-
-    counter.value = String(
-      action === "decrement" ? quantity - 1 : quantity + 1
-    );
-
-    counter.dispatchEvent(new Event("input"));
-  };
-
-  productAmountTweakBtns.forEach((button) => {
-    button.addEventListener("click", (event) => {
-      event.preventDefault();
-
-      const action = button.getAttribute("data-action");
-
-      tweak({ target: button, action });
-    });
-  });
-
-  productAmountInputs.forEach((input: HTMLInputElement) => {
-    let latestValidValue;
-
-    input.addEventListener("beforeinput", () => {
-      input.validity.valid && (latestValidValue = input.value);
-    });
-
-    input.addEventListener("input", () => {
-      if (!input.validity.valid) {
-        input.value = latestValidValue;
+  function tweakAmountCallback(input) {
+    productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
+      if (otherAmountInput !== input) {
+        otherAmountInput.value = input.value;
       }
-
-      productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
-        if (otherAmountInput !== input) {
-          otherAmountInput.value = input.value;
-        }
-      });
-
-      productAmountOutput.textContent = String(
-        (Number(input.value) * Number(productPrice))
-          .toFixed(2)
-          .replace(".", ",")
-      );
     });
-  });
+
+    productAmountOutput.textContent = String(
+      (Number(input.value) * Number(productPrice)).toFixed(2).replace(".", ",")
+    );
+  }
+
+  tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
 </script>
