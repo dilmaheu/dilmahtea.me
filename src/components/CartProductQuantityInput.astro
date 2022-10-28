@@ -1,0 +1,54 @@
+---
+import Icon from "astro-icon";
+---
+
+<style lang="scss">
+  .cart-product-quantity {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+</style>
+
+<div
+  class="flex items-center bg-limedspruce text-lightgray border-2 border-lightgray rounded-full"
+>
+  <!-- <button class="remove-item-btn">
+    <Icon name="akar-icons:trash-can" class="w-6 h-6" />
+  </button> -->
+
+  <button
+    data-action="decrement"
+    class="w-9 h-8 md:w-11 md:h-12 py-1.5 md:py-3 pl-2.5 md:pl-3.5 pr-1.5"
+  >
+    <Icon
+      name="akar-icons:minus"
+      class="w-5 h-5 md:w-6 md:h-6 select-none cursor-pointer"
+    />
+  </button>
+
+  <input
+    type="number"
+    min="1"
+    value={`<placeholder name="quantity"></placeholder>`}
+    class:list={[
+      "cart-product-quantity",
+      "w-8 md:w-9 h-full text-center md:text-[1.125rem] bg-limedspruce outline-none",
+    ]}
+    required
+  />
+
+  <button
+    data-action="increment"
+    class="w-9 h-8 md:w-11 md:h-12 py-1.5 md:py-3 pl-1.5 pr-2.5 md:pr-3.5"
+  >
+    <Icon
+      name="akar-icons:plus"
+      class="w-5 h-5 md:w-6 md:h-6 select-none cursor-pointer"
+    />
+  </button>
+</div>
