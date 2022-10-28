@@ -26,7 +26,7 @@ const footerText = recurData.Footer_text.replaceAll(
   `${new Date().getFullYear()}`
 );
 
-const checkoutRecurData = CMS.get("checkoutRecurringElement").data.attributes;
+const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style
@@ -169,7 +169,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement").data.attributes;
     <UpdateTopMargin />
 
     <div class="wrapper">
-      <h1 class="alice mb-4 md:mb-6">Cart</h1>
+      <h1 class="alice mb-4 md:mb-6">{page.text_cart}</h1>
 
       <ClipPathSVG
         id="cart-product-image"
@@ -178,9 +178,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement").data.attributes;
 
       <div class="cart-products flex flex-col gap-6 md:gap-4 mb-24">
         <div class="!hidden md:!grid details-headings">
-          <div>Product</div>
-          <div>Quantity</div>
-          <div>Subtotal</div>
+          <div>{page.text_product}</div>
+          <div>{checkoutRecurData.text_quantity}</div>
+          <div>{checkoutRecurData.text_subtotal}</div>
         </div>
 
         <hr />
@@ -253,14 +253,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement").data.attributes;
       <div class="flex flex-col">
         <div class="mb-3 md:mb-4 flex justify-between items-center">
           <div class="flex flex-col gap-4">
-            <div class="alice text-total">Total</div>
+            <div class="alice text-total">{checkoutRecurData.text_total}</div>
 
             <div class="hidden md:block text-shipping-charge-info">
               {checkoutRecurData.text_shipping_calculated_at_checkout}
             </div>
           </div>
 
-          <div class="amount-total alice">$1500</div>
+          <div class="amount-total alice">
+            €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+          </div>
         </div>
 
         <div class="md:hidden mb-5 text-shipping-charge-info">
