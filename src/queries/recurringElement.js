@@ -47,11 +47,6 @@ const recurringElementQuery = `
           text_content
           product_made_love_from
           product_kindness_impact
-          product_add
-          product_add_cart
-          product_add_cart_for
-          product_size
-          product_quantity
           product_each_penny_you_spend
           product_check_where_going
           product_price_breakdown_title
@@ -103,11 +98,6 @@ const recurringElementQuery = `
                 text_content
                 product_made_love_from
                 product_kindness_impact
-                product_add
-                product_add_cart
-                product_add_cart_for
-                product_size
-                product_quantity
                 product_each_penny_you_spend
                 product_check_where_going
                 product_price_breakdown_title

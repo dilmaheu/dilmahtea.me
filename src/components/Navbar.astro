@@ -1,7 +1,10 @@
 ---
+import Icon from "astro-icon";
 import RecurringImages from "@store/RecurringImages";
-import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import DynamicHTML from "@components/DynamicHTML.astro";
 import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { logo } = RecurringImages;
 
@@ -47,32 +50,15 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     </a>
 
     <nav class="hidden md:flex m-auto ml-14 text-white">
-      <a class="navItem" href="/blog">Blog</a>
+      <a href="/blog">Blog</a>
+      <a href="/tea-estates">Tea Estates</a>
+      <a href="/howto">How-to</a>
+      <a href="/recipes">Recipe</a>
 
-      {
-        shouldDisplayExperimentals() && (
-          <Fragment>
-            <a class="navItem" href="/tea-estates">
-              Tea Estates
-            </a>
-
-            <a class="navItem" href="/howto">
-              How-to
-            </a>
-
-            <a class="navItem" href="/recipes">
-              Recipe
-            </a>
-
-            <a class="navItem" href="/product">
-              Tea
-            </a>
-          </Fragment>
-        )
-      }
+      {shouldDisplayExperimentals() && <a href="/tea">Tea</a>}
     </nav>
 
-    <div class="flex items-center">
+    <div class="flex gap-4 items-center">
       <div class="flex items-center">
         <LangSelectorsDropdown
           docLocale={docLocale}
@@ -80,7 +66,42 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
         />
       </div>
 
-      <div class="block md:hidden w-[38px] h-[38px] ml-[18px]">
+      <button
+        id="open-cart-btn"
+        class:list={[
+          "relative scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]",
+          "mx-[calc(-24px*0.225)] sm:mx-[calc(-24px*0.15)] md:mx-[calc(-24px*0.075)] lg:mx-0",
+        ]}
+      >
+        <ClipPathSVG
+          id="cart-btn-curve"
+          path="M0.5,0 A0.5,0.5,0,0,0,0,0.5 a0.5,0.5,0,0,0,0.5,0.5 a0.5,0.5,0,0,0,0.5,-0.5 a0.5,0.5,0,0,0,-0.021,-0.146 a0.25,0.25,0,0,1,-0.104,0.021 A0.25,0.25,0,0,1,0.625,0.125 a0.25,0.25,0,0,1,0.021,-0.104 a0.5,0.5,0,0,0,-0.146,-0.021"
+        />
+
+        <div
+          style="clip-path: url(#cart-btn-curve);"
+          class="w-12 h-12 text-primary flex justify-center items-center bg-lightgray rounded-full"
+        >
+          <Icon name="mi:shopping-cart" class="w-[30px] h-[30px] mx-auto" />
+        </div>
+
+        <div
+          class:list={[
+            "w-6 h-6 absolute -top-1.5 -right-1.5",
+            "flex justify-center items-center rounded-full",
+          ]}
+        >
+          <div
+            class="w-5 h-5 text-white flex justify-center items-center rounded-full bg-red-600"
+          >
+            <span id="cart-size">
+              <DynamicHTML htmlFn={() => Object.keys(window.cart).length} />
+            </span>
+          </div>
+        </div>
+      </button>
+
+      <div class="block md:hidden w-[38px] h-[38px]">
         <button
           id="sidebar-open-btn"
           class="block w-full h-full select-none cursor-pointer"
@@ -115,29 +136,12 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
   >
     <div class="grid content-between h-full px-[30px] pt-[26px] pb-9">
       <nav class="flex flex-col text-white">
-        <a class="navItem" href="/blog">Blog</a>
+        <a href="/blog">Blog</a>
+        <a href="/tea-estates">Tea Estates</a>
+        <a href="/howto">How-to</a>
+        <a href="/recipes">Recipe</a>
 
-        {
-          shouldDisplayExperimentals() && (
-            <Fragment>
-              <a class="navItem" href="/tea-estates">
-                Tea Estates
-              </a>
-
-              <a class="navItem" href="/howto">
-                How-to
-              </a>
-
-              <a class="navItem" href="/recipes">
-                Recipe
-              </a>
-
-              <a class="navItem" href="/product">
-                Tea
-              </a>
-            </Fragment>
-          )
-        }
+        {shouldDisplayExperimentals() && <a href="/tea">Tea</a>}
       </nav>
 
       <div class="text-xs font-normal leading-[150%]" set:html={footerText}>
@@ -169,14 +173,25 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 </script>
 
 <script>
+  declare global {
+    interface Window {
+      openCart: () => void;
+      // disableScrolling & enableScrolling are declared globally to use in cart toggling logic
+      enableScrolling: () => void;
+      disableScrolling: () => void;
+    }
+  }
+
   const query = document.querySelector.bind(document),
     rootElement = query(":root"),
+    cart = query("#cart"),
     sidebar = query("#sidebar"),
     navigation = query("#navigation"),
+    openCartBtn = query("#open-cart-btn"),
     sidebarOpenButton = query("#sidebar-open-btn"),
     sidebarCloseButton = query("#sidebar-close-btn");
 
-  function disableScrolling() {
+  window.disableScrolling = () => {
     const overflowY =
       visualViewport.height < document.body.offsetHeight ? "scroll" : "auto";
 
@@ -186,9 +201,9 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
       position: "fixed",
       top: `-${window.scrollY}px`,
     });
-  }
+  };
 
-  function enableScrolling() {
+  window.enableScrolling = () => {
     const scrollYPosition = parseInt(document.body.style.top.slice(1, -2));
 
     Object.assign(document.body.style, {
@@ -215,15 +230,35 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 
       rootElement.style.scrollBehavior = currentRootScrollBehavior;
     }
-  }
+  };
 
   const updateSidebarTopPosition = () => {
-    sidebar.style.top = `${navigation.getBoundingClientRect().bottom}px`;
+    if (navigation) {
+      sidebar.style.top = `${navigation.getBoundingClientRect().bottom}px`;
+    }
   };
 
   window.addEventListener("resize", updateSidebarTopPosition);
 
-  sidebarOpenButton.addEventListener("click", () => {
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 639) {
+      // enable scrolling only if cart and checkout is not open
+      if (cart.classList.contains("hidden")) window.enableScrolling();
+
+      window.removeEventListener("resize", updateSidebarTopPosition);
+    } else if (sidebar.style.display === "block") {
+      // @ts-ignore
+      window.disableScrolling();
+
+      window.addEventListener("resize", updateSidebarTopPosition);
+    }
+  });
+
+  openCartBtn?.addEventListener("click", () => {
+    window.openCart();
+  });
+
+  sidebarOpenButton?.addEventListener("click", () => {
     window.removeEventListener("resize", updateSidebarTopPosition);
 
     updateSidebarTopPosition();
@@ -233,29 +268,17 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     sidebarCloseButton.style.display = "block";
     navigation.style.backgroundImage = "url(/bg-images/nav-background.webp)";
 
-    disableScrolling();
+    window.disableScrolling();
 
     window.addEventListener("resize", updateSidebarTopPosition);
   });
 
-  sidebarCloseButton.addEventListener("click", () => {
+  sidebarCloseButton?.addEventListener("click", () => {
     sidebar.style.display = "none";
     sidebarOpenButton.style.display = "block";
     sidebarCloseButton.style.display = "none";
     navigation.style.backgroundImage = "unset";
 
-    enableScrolling();
-  });
-
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 639) {
-      enableScrolling();
-
-      window.removeEventListener("resize", updateSidebarTopPosition);
-    } else if (sidebarCloseButton.style.display === "block") {
-      disableScrolling();
-
-      window.addEventListener("resize", updateSidebarTopPosition);
-    }
+    window.enableScrolling();
   });
 </script>

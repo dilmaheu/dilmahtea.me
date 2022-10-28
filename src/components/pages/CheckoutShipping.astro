@@ -1,0 +1,363 @@
+---
+import CMS from "@store/CMS";
+import DynamicHTML from "@components/DynamicHTML.astro";
+import OrderSummary from "@components/OrderSummary.astro";
+
+const { page, recurData } = Astro.props;
+
+const { locale } = page,
+  { data: checkoutInformationData } = CMS.get("checkoutInformation"),
+  { URL_slug: checkoutInfoPageSlug } = checkoutInformationData.attributes.Meta,
+  checkoutInfoPageLink = "/" + locale + "/" + checkoutInfoPageSlug;
+
+const checkoutShipping = CMS.get("checkoutShipping", locale),
+  shippingMethods = checkoutShipping.shipping_methods
+    .split("\n")
+    .map((methodString) => methodString.split(" - "));
+---
+
+<style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
+  #shipping-details {
+    padding: poly-fluid-clamp(
+      (
+        375px: 50px 24px,
+        1024px: 50px 29px,
+      )
+    );
+
+    @media (min-width: 1024px) {
+      padding: poly-fluid-clamp(
+        (
+          1024px: 29px 42px,
+          1440px: 32px 56px,
+        )
+      );
+    }
+  }
+
+  .shipping-detail {
+    @apply flex flex-col gap-1.5;
+
+    div {
+      &:first-of-type {
+        @apply font-bold text-dark;
+
+        font-size: poly-fluid-clamp(
+          (
+            375px: 16px,
+            1440px: 18px,
+          )
+        );
+      }
+
+      &:last-of-type {
+        @apply flex justify-between;
+
+        gap: poly-fluid-clamp(
+          (
+            375px: 20px,
+            1440px: 68px,
+          )
+        );
+
+        :global(input) {
+          all: unset;
+
+          @apply text-primary grow;
+
+          box-shadow: 0 4px theme("colors.lightgray2"),
+            0 6px theme("colors.primary");
+          font-size: poly-fluid-clamp(
+            (
+              375px: 18px,
+              1440px: 24px,
+            )
+          );
+        }
+
+        button {
+          @apply font-semibold text-primary leading-[130%];
+
+          font-size: poly-fluid-clamp(
+            (
+              375px: 18px,
+              1440px: 24px,
+            )
+          );
+        }
+      }
+    }
+  }
+
+  .shipping-method,
+  .shipping-cost {
+    font-size: poly-fluid-clamp(
+      (
+        375px: 18px,
+        1440px: 24px,
+      )
+    );
+  }
+</style>
+
+<script
+  define:vars={{ checkoutInfoPageLink, companyName: recurData.Company_name }}
+>
+  if (Object.keys(window.checkoutContactInfo).length === 0) {
+    location.href = checkoutInfoPageLink;
+  }
+
+  window.companyName = companyName;
+</script>
+
+<form
+  method="POST"
+  id="shipping-details"
+  class="flex flex-col gap-12"
+  action="https://dev.pay.scripts.dilmahtea.me"
+>
+  <DynamicHTML
+    htmlFn={() => {
+      const { origin, pathname } = location,
+        product_desc = Object.keys(window.cart)
+          .map((id) => {
+            const productData = window.cart[id],
+              names = JSON.parse(productData.names),
+              name = names[preferredLocale] || names["en"];
+
+            return `${productData.quantity}x ${name}`;
+          })
+          .join(", "),
+        paymentInfo = {
+          ...window.checkoutContactInfo,
+          product_name: window.companyName,
+          product_desc,
+          price: window.cart.total,
+          payment_type: "ecommerce",
+          locale: preferredLocale,
+          origin_url: origin + pathname,
+          success_url: `${origin}/${preferredLocale}/thank-you-for-your-order`,
+        };
+
+      delete paymentInfo.email;
+      delete paymentInfo.shipping_method;
+
+      return Object.keys(paymentInfo)
+        .map(
+          (name) =>
+            `<input type="hidden" name="${name}" value="${paymentInfo[name]}" />`
+        )
+        .join("");
+    }}
+  />
+
+  <div class="p-4 gap-6 flex flex-col bg-lightgray2 rounded-2xl">
+    <div class="shipping-detail">
+      <div>{checkoutShipping.text_contact}</div>
+
+      <div>
+        <DynamicHTML
+          htmlFn={() =>
+            `<input
+              type="email"
+              name="email"
+              value="${window.checkoutContactInfo.email}"
+              class="!shadow-none"
+              readonly
+              required
+            />`}
+        />
+
+        <button>{checkoutShipping.text_change}</button>
+      </div>
+    </div>
+
+    <div class="border border-dark opacity-80"></div>
+
+    <div class="shipping-detail">
+      <div>{checkoutShipping.text_delivery_address}</div>
+
+      <div>
+        <DynamicHTML
+          htmlFn={() =>
+            `<input
+              type="text"
+              name="delivery_address"
+              value="${window.checkoutContactInfo.delivery_address}"
+              class="!shadow-none"
+              readonly
+              required
+            />`}
+        />
+
+        <button>{checkoutShipping.text_change}</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-4">
+    <h4 class="alice">{checkoutShipping.text_shipping_method}</h4>
+
+    {
+      shippingMethods.map(([method, cost, methodLocalName], i) => (
+        <label class="gap-5 flex items-center">
+          <input
+            type="radio"
+            name="shipping_method"
+            value={`${method}:${cost}`}
+            class:list={[
+              "hover:brightness-50 active:brightness-150",
+              "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
+              "checked:before:block before:hidden before:w-2 before:h-2 before:bg-primary before:rounded-full",
+            ]}
+            checked={i === 0}
+            required
+          />
+
+          <span class="gap-3 flex items-center">
+            <span class="shipping-method font-semibold text-dark2 leading-[130%]">
+              {methodLocalName}
+            </span>
+
+            <span class="w-1 h-1 bg-primary rounded-full" />
+
+            <span class="shipping-cost font-semibold text-dark2 leading-[130%]">
+              €{cost}
+            </span>
+          </span>
+        </label>
+      ))
+    }
+  </div>
+
+  <div class="block lg:hidden -mb-6">
+    <OrderSummary page={page} />
+  </div>
+
+  <div
+    class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-9 sm:gap-12"
+  >
+    <button
+      type="submit"
+      class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
+    >
+      {checkoutShipping.text_continue_to_payment}
+    </button>
+
+    <a href={checkoutInfoPageLink} class="text-primary font-bold">
+      {checkoutShipping.text_return_to_information}
+    </a>
+  </div>
+</form>
+
+<script>
+  declare global {
+    interface Window {
+      checkoutContactInfo: Record<string, string>;
+    }
+  }
+
+  const updateCheckoutContactInfo = (input) => {
+    let newProperties;
+    const isShippingMethodInput = input.name === "shipping_method";
+
+    if (!isShippingMethodInput) {
+      newProperties = {
+        [input.name]: input.value,
+      };
+    } else {
+      const [shipping_method, shipping_cost] = input.value.split(":");
+
+      newProperties = {
+        shipping_method,
+        shipping_cost: Number(shipping_cost),
+      };
+    }
+
+    window.checkoutContactInfo = {
+      ...window.checkoutContactInfo,
+      ...newProperties,
+    };
+
+    isShippingMethodInput && window.cart.updateUI(window.cart);
+
+    localStorage.setItem(
+      "checkout-contact-info",
+      JSON.stringify(window.checkoutContactInfo)
+    );
+  };
+
+  const shippingDetailsForm = document.getElementById("shipping-details");
+
+  if (shippingDetailsForm) {
+    const shippingDetailsChangeBtns = [
+        ...shippingDetailsForm.querySelectorAll(
+          '#shipping-details button:not([type="submit"])'
+        ),
+      ],
+      shippingDetailsFormSelectables = [
+        ...shippingDetailsForm.querySelectorAll<HTMLElement>("input, button"),
+      ],
+      shippingMethodInputs = shippingDetailsForm.querySelectorAll(
+        'input[type="radio"]'
+      );
+
+    shippingDetailsForm.addEventListener("submit", (event) => {
+      const button = event.submitter as HTMLElement;
+
+      if (shippingDetailsChangeBtns.includes(button)) {
+        event.preventDefault();
+
+        const detailInputElement = button.parentElement
+          .firstElementChild as HTMLInputElement;
+
+        const inputLength = detailInputElement.value.length;
+
+        detailInputElement.classList.toggle("!shadow-none");
+        detailInputElement.readOnly = !detailInputElement.readOnly;
+
+        if (!detailInputElement.readOnly) {
+          const { type: currentInputType } = detailInputElement;
+
+          detailInputElement.type = "text";
+
+          detailInputElement.setSelectionRange(inputLength, inputLength);
+
+          detailInputElement.type = currentInputType;
+
+          detailInputElement.focus();
+        } else {
+          updateCheckoutContactInfo(detailInputElement);
+        }
+      }
+    });
+
+    shippingDetailsFormSelectables.forEach((selectable, i) => {
+      if (selectable.tagName === "INPUT") {
+        selectable.addEventListener("keydown", (event: KeyboardEvent) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+
+            const nextButton = shippingDetailsFormSelectables
+              .slice(i + 1)
+              .find(({ tagName }) => tagName === "BUTTON");
+
+            nextButton.click();
+          }
+        });
+      }
+    });
+
+    shippingMethodInputs.forEach((input: HTMLInputElement) => {
+      const { shipping_method } = window.checkoutContactInfo;
+
+      if (!shipping_method && input.checked) updateCheckoutContactInfo(input);
+      else if (input.value === shipping_method) input.checked = true;
+
+      // the click event is named poorly, it handles all kinds of activation
+      input.addEventListener("click", () => updateCheckoutContactInfo(input));
+    });
+  }
+</script>
