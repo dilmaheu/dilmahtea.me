@@ -125,7 +125,12 @@ const checkoutStepOrder = page.checkout_step_order,
           <img {...logo} class="h-full" />
         </a>
 
-        <div class="flow flex-grow grid grid-cols-3 gap-[3.25%]">
+        <div
+          class="flow flex-grow grid gap-[3.25%]"
+          style={`grid-template-columns: ${Array.from({ length: steps.length })
+            .map(() => "1fr")
+            .join(" ")}`}
+        >
           {
             steps.map((step, i) => {
               const shortenedStep = shortenedSteps[i];
