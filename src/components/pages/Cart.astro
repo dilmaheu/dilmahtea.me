@@ -1,12 +1,13 @@
 ---
 import CMS from "@store/CMS";
-import DynamicHTML from "@components/DynamicHTML.astro";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
+import RecurringImages from "@store/RecurringImages";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
 import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 
 import Navbar from "@components/Navbar.astro";
-import BaseLayout from "@layouts/BaseLayout.astro";
-import CheckoutBackground from "@components/checkout_background.webp";
+import DynamicHTML from "@components/DynamicHTML.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
 import CartProductQuantityInput from "@components/CartProductQuantityInput.astro";
 
 interface Props {
@@ -17,6 +18,9 @@ interface Props {
   metaImageID: string;
   availableLocales: string[];
 }
+
+const { checkout_pre_post_background, checkout_pre_post_background_sm } =
+  RecurringImages;
 
 const { page, meta, locale, recurData, availableLocales, metaImageID } =
   Astro.props;
@@ -31,13 +35,21 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
 <style
   lang="scss"
-  define:vars={{ "checkout-background": `url('${CheckoutBackground}')` }}
+  define:vars={{
+    "checkout-pre-post-background": `url('${checkout_pre_post_background.src}')`,
+    "checkout-pre-post-background-sm": `url('${checkout_pre_post_background_sm.src}')`,
+  }}
 >
   @use "src/styles/poly-fluid" as *;
 
   #checkout-cart-container {
     background-size: cover;
-    background-image: var(--checkout-background);
+    background-image: var(--checkout-pre-post-background-sm);
+
+    @media (min-width: 768px) {
+      background-image: var(--checkout-pre-post-background);
+    }
+
     padding-bottom: poly-fluid-clamp(
       (
         375px: 20px,
