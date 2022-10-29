@@ -1,17 +1,9 @@
 ---
-import CMS from "@store/CMS";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import OrderSummary from "@components/OrderSummary.astro";
 
-const { page, recurData } = Astro.props;
-
-const { locale } = page,
-  { data: checkoutInformationData } = CMS.get("checkoutInformation"),
-  { URL_slug: checkoutInfoPageSlug } = checkoutInformationData.attributes.Meta,
-  checkoutInfoPageLink = "/" + locale + "/" + checkoutInfoPageSlug;
-
-const checkoutShipping = CMS.get("checkoutShipping", locale),
-  shippingMethods = checkoutShipping.shipping_methods
+const { page, recurData } = Astro.props,
+  shippingMethods = page.shipping_methods
     .split("\n")
     .map((methodString) => methodString.split(" - "));
 ---
@@ -98,11 +90,9 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
   }
 </style>
 
-<script
-  define:vars={{ checkoutInfoPageLink, companyName: recurData.Company_name }}
->
+<script define:vars={{ companyName: recurData.Company_name }}>
   if (Object.keys(window.checkoutContactInfo).length === 0) {
-    location.href = checkoutInfoPageLink;
+    location.href = "/" + window.preferredLocale + "/checkout/information";
   }
 
   window.companyName = companyName;
@@ -150,7 +140,7 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
 
   <div class="p-4 gap-6 flex flex-col bg-lightgray2 rounded-2xl">
     <div class="shipping-detail">
-      <div>{checkoutShipping.text_contact}</div>
+      <div>{page.text_contact}</div>
 
       <div>
         <p>
@@ -158,7 +148,7 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
         </p>
 
         <a href="/checkout/information?change=email">
-          {checkoutShipping.text_change}
+          {page.text_change}
         </a>
       </div>
     </div>
@@ -166,7 +156,7 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
     <div class="border border-dark opacity-80"></div>
 
     <div class="shipping-detail">
-      <div>{checkoutShipping.text_delivery_address}</div>
+      <div>{page.text_delivery_address}</div>
 
       <div>
         <p>
@@ -176,14 +166,14 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
         </p>
 
         <a href="/checkout/information?change=street">
-          {checkoutShipping.text_change}
+          {page.text_change}
         </a>
       </div>
     </div>
   </div>
 
   <div class="flex flex-col gap-4">
-    <h4 class="alice">{checkoutShipping.text_shipping_method}</h4>
+    <h4 class="alice">{page.text_shipping_method}</h4>
 
     {
       shippingMethods.map(([method, cost, methodLocalName], i) => (
@@ -231,11 +221,11 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
       type="submit"
       class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
     >
-      {checkoutShipping.text_continue_to_payment}
+      {page.text_continue_to_payment}
     </button>
 
-    <a href={checkoutInfoPageLink} class="text-primary font-bold">
-      {checkoutShipping.text_return_to_information}
+    <a href="/checkout/information" class="text-primary font-bold">
+      {page.text_return_to_information}
     </a>
   </div>
 </form>
