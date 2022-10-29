@@ -201,12 +201,20 @@ const recentPosts =
               <div class="flex items-center text-lg lg:text-xl leading-[150%]">
                 {recurData.product_made_love_from + `\xa0`}
 
-                {page.estate_name.data.map((estate, index) => (
-                  <a href={estate.attributes.Meta.URL_slug} class="underline decoration-1 underline-offset-[2px] font-bold">
-                    {`${index > 0 ? ", " : " "}` +
-                      estate.attributes.Estate_name}
-                  </a>
-                ))}
+                <div class="flex gap-x-1.5">
+                  {page.estate_name.data.map((estate, index) => (
+                    <a 
+                      href={estate.attributes.Meta.URL_slug} 
+                      class="flex underline decoration-1 underline-offset-[2px] font-bold"
+                    >  
+                      { estate.attributes.Estate_name + 
+                        `${index === 
+                          ( 0 || (page.estate_name.data.length - 1 ))
+                          ? "" : ","}`
+                      }
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
           )
@@ -237,12 +245,15 @@ const recentPosts =
         <slot name="tea-details-header" />
 
         {
-          page.estate_name?.data.length > 0 && (
+          page.Price_breakdown?.length > 0 && (
             <div class="flex items-center mt-[20px] md:mt-[10px]">
               <div class="text-base lg:text-lg leading-[150%]">
                 {recurData.product_each_penny_you_spend + `\xa0`}
 
-                <a href="#" class="underline decoration-1 underline-offset-[2px] font-semibold">
+                <a 
+                  href="#price-breakdown" 
+                  class="underline decoration-1 underline-offset-[2px] font-semibold"
+                >
                   {recurData.product_check_where_going}
                 </a>
               </div>

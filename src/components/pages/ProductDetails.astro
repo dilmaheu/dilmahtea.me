@@ -66,6 +66,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     }
   }
 
+  .product-kindness-impact-img-container{
+    width: 100%;
+    max-height: 310px;
+    aspect-ratio: 4.23 / 3.1;
+  }
+
   .product-kindness-impact-text {
     font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
   }
@@ -116,16 +122,38 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     }
   }
 
+  button.accordian-first {
+    @apply font-semibold md:font-bold;
+
+    font-size: clamp(1.125rem, 1.5vw + 0.15rem, 1.5rem);
+    transition: all 150ms ease-out 0ms;
+
+    &.is-active {
+      @apply font-normal;
+    }
+  }
+  
   .accordian-content {
-    display: none;
     opacity: 0;
     max-height: 0;
-    transition: all 400ms ease-out 0ms;
+    transition: all 200ms ease-out 0ms;
 
     &.is-open {
       display: block;
       max-height: 100%;
       opacity: 1;
+    }
+  }
+
+  .accordian-content-first {
+    display: block;
+    max-height: 100%;
+    opacity: 1;
+    transition: all 200ms ease-out 0ms;
+
+    &.is-open {
+      opacity: 0;
+      max-height: 0;
     }
   }
 
@@ -348,13 +376,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             <h2 id="price-breakdown">
               {recurData.product_price_breakdown_title}
             </h2>
-            <p>
-              You’re spending a total of
-              <span class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] text-primary">
-                $500
-              </span>
-              in this tea
-            </p>
+            <div>
+              <Markdown>
+                {page.Price_breakdown_text.split('<')[0]}
+                <span class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] text-primary">
+                  {page.Price_breakdown_text.match("<total_spent>") && `€${Total_spent_amount.toFixed(2)}`}
+                </span>
+                {page.Price_breakdown_text.split('>')[1]}
+              </Markdown>
+            </div>
 
             <div class="flex overflow-hidden w-full my-2.5 md:my-[15px] h-[80px] rounded-[25px]">
               {page.Price_breakdown.map((item) => (
@@ -373,14 +403,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   <div
                     style={`background-color: ${item.Item_color_code};
                           clip-path: url(#price-breakdown-curve)`}
-                    class="flex justify-center items-center w-[60px] h-[60px] text-sm lg:text-base font-medium lg:font-normal"
+                    class="flex justify-center items-center w-[62px] h-[62px] text-sm lg:text-base font-medium lg:font-normal"
                   >
-                    {(item.Spent_amount * 100) / Total_spent_amount}%
+                    { ((item.Spent_amount * 100) / Total_spent_amount).toFixed(2) }%
                   </div>
 
                   <div class="grid">
                     <div class="alice text-[clamp(1.75rem,2.2vw+0.15rem,2rem)] text-primary">
-                      ${item.Spent_amount}
+                      €{item.Spent_amount.toFixed(2)}
                     </div>
                     <div class="text-[clamp(0.875rem,1vw+0.25rem,1.125rem)]">
                       {item.Item_name}
@@ -400,15 +430,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             <p>{page.Transparency_text}</p>
 
             <div class="grid gap-5">
-              {page.Transparency.map((item) => (
+              {page.Transparency.map((item, index) => (
                 <div class="w-full lg:w-10/12">
                   <div class="grid transparency-items-grid gap-x-2.5">
                     <div class="transparency-item-icon flex items-center">
                       <img
                         src={
                           imgSrcPrefix +
-                          item.Transparency_item_icon.data.attributes
-                            .provider_metadata.public_id +
+                          item.Transparency_item_icon.data.attributes.provider_metadata
+                            .public_id +
                           `/small`
                         }
                         alt=""
@@ -417,18 +447,25 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     </div>
 
                     <div class="w-full">
-                      <button
-                        class="accordian js-accordian-toggle w-full cursor-pointer text-left leading-[150%]"
+
+                      <button 
+                        class:list={[
+                          index === 0 ? "accordian-first" : "accordian",
+                          "accordian w-full cursor-pointer text-left leading-[150%]"
+                        ]}
                         aria-expanded="false"
                       >
                         {item.Transparency_item_title}
                       </button>
-                      <p
-                        class="accordian-content text-lg lg:text-xl italic leading-[150%] m-0"
+                      <div 
+                        class:list={[
+                          index === 0 ? "accordian-content-first" : "accordian-content",
+                          "accordian-content text-lg lg:text-xl leading-[150%] m-0"
+                        ]} 
                         aria-hidden="true"
                       >
-                        {item.Transparency_item_text}
-                      </p>
+                        <Markdown>{item.Transparency_item_text}</Markdown>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -445,15 +482,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             <p>{page.Impact_text}</p>
 
             <div class="grid gap-5">
-              {page.Impact.map((item) => (
+              {page.Impact.map((item, index) => (
                 <div class="w-full lg:w-10/12">
                   <div class="grid transparency-items-grid gap-x-2.5">
                     <div class="transparency-item-icon flex items-center">
                       <img
                         src={
                           imgSrcPrefix +
-                          item.Impact_item_icon.data.attributes
-                            .provider_metadata.public_id +
+                          item.Impact_item_icon.data.attributes.provider_metadata
+                            .public_id +
                           `/small`
                         }
                         alt=""
@@ -462,18 +499,25 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     </div>
 
                     <div class="w-full">
-                      <button
-                        class="accordian js-accordian-toggle w-full cursor-pointer text-left leading-[150%]"
+
+                      <button 
+                        class:list={[
+                          index === 0 ? "accordian-first" : "accordian",
+                          "accordian w-full cursor-pointer text-left leading-[150%]"
+                        ]} 
                         aria-expanded="false"
                       >
                         {item.Impact_item_title}
                       </button>
-                      <p
-                        class="accordian-content text-lg lg:text-xl italic leading-[150%] m-0"
+                      <div 
+                        class:list={[
+                          index === 0 ? "accordian-content-first" : "accordian-content",
+                          "accordian-content text-lg lg:text-xl leading-[150%] m-0"
+                        ]} 
                         aria-hidden="true"
                       >
-                        {item.Impact_item_text}
-                      </p>
+                        <Markdown>{item.Impact_item_text}</Markdown>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -558,7 +602,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   class="flex flex-wrap bg-lightgray"
                   style="clip-path: url(#card-curve)"
                 >
-                  <a class="block w-full" href={`/` + post.Meta.URL_slug}>
+                  <a class="product-kindness-impact-img-container block w-full" href={`/` + post.Meta.URL_slug}>
                     <img
                       src={
                         imgSrcPrefix +
