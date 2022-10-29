@@ -198,13 +198,23 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   name = names[preferredLocale] || names["en"],
                   price = Number(productData.price)
                     .toFixed(2)
-                    .replace(".", ",");
+                    .replace(".", ","),
+                  remove_icon_btn_hidden_class =
+                    productData.quantity === 1 ? "" : "hidden",
+                  remove_text_btn_hidden_class = remove_icon_btn_hidden_class
+                    ? ""
+                    : "hidden",
+                  amount_decrement_btn_hidden_class =
+                    remove_text_btn_hidden_class;
 
                 return window.replacePlaceholders(content, {
                   ...productData,
                   id,
                   name,
                   price,
+                  remove_icon_btn_hidden_class,
+                  remove_text_btn_hidden_class,
+                  amount_decrement_btn_hidden_class,
                 });
               })
               .join("")}
@@ -229,9 +239,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   ></placeholder>
                 </div>
 
-                <div class="flex justify-between">
+                <div class="flex justify-between items-center">
                   <div class="block md:hidden">
-                    <CartProductQuantityInput />
+                    <CartProductQuantityInput page={page} />
                   </div>
 
                   <div class="cart-product-price alice block md:hidden">
@@ -242,7 +252,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             </div>
 
             <div class="hidden md:block">
-              <CartProductQuantityInput />
+              <CartProductQuantityInput page={page} />
             </div>
 
             <div class="cart-product-price alice hidden md:block">
@@ -287,6 +297,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 <script>
   import tweakAmount from "@utils/tweakAmount";
 
+  declare global {
+    interface Window {
+      cart: Record<string, Record<string, string | number>>;
+    }
+  }
+
   const cartProductAmountInputs = document.querySelectorAll(
       ".cart-product-amount-input"
     ),
@@ -295,6 +311,17 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     );
 
   function tweakAmountCallback(input) {
+    if (
+      input.value === "1" ||
+      input.previousElementSibling.classList.contains("hidden")
+    ) {
+      input.previousElementSibling.classList.toggle("hidden");
+      input.parentElement.nextElementSibling.classList.toggle("hidden");
+      input.previousElementSibling.previousElementSibling.classList.toggle(
+        "hidden"
+      );
+    }
+
     const parentCartProduct = input.closest(".cart-product"),
       productPriceElements = parentCartProduct.querySelectorAll(
         ".cart-product-price"

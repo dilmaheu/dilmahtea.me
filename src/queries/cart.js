@@ -7,6 +7,7 @@ const cartQuery = `
           locale
           text_cart
           text_product
+          text_remove
           text_go_to_checkout
           Meta {
             HTML_Title
@@ -22,6 +23,7 @@ const cartQuery = `
                 locale
                 text_cart
                 text_product
+                text_remove
                 text_go_to_checkout
                 Meta {
                   HTML_Title
