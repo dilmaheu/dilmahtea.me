@@ -113,7 +113,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     height: clamp(2rem, 3vw + 0.3rem, 2.5rem);
   }
 
-  button.accordian {
+  .accordion {
     font-size: clamp(1.125rem, 1.5vw + 0.15rem, 1.5rem);
     transition: all 150ms ease-out 0ms;
 
@@ -122,38 +122,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     }
   }
 
-  button.accordian-first {
-    @apply font-semibold md:font-bold;
-
-    font-size: clamp(1.125rem, 1.5vw + 0.15rem, 1.5rem);
-    transition: all 150ms ease-out 0ms;
-
-    &.is-active {
-      @apply font-normal;
-    }
-  }
-  
-  .accordian-content {
-    opacity: 0;
+  .accordion-content {
+    display: none;
     max-height: 0;
+    opacity: 0;
     transition: all 200ms ease-out 0ms;
 
     &.is-open {
       display: block;
       max-height: 100%;
       opacity: 1;
-    }
-  }
-
-  .accordian-content-first {
-    display: block;
-    max-height: 100%;
-    opacity: 1;
-    transition: all 200ms ease-out 0ms;
-
-    &.is-open {
-      opacity: 0;
-      max-height: 0;
     }
   }
 
@@ -447,22 +425,19 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     </div>
 
                     <div class="w-full">
-
                       <button 
                         class:list={[
-                          index === 0 ? "accordian-first" : "accordian",
-                          "accordian w-full cursor-pointer text-left leading-[150%]"
+                          "accordion w-full cursor-pointer text-left leading-[150%]",
+                          index === 0 ? "is-active" : "",
                         ]}
-                        aria-expanded="false"
                       >
                         {item.Transparency_item_title}
                       </button>
                       <div 
                         class:list={[
-                          index === 0 ? "accordian-content-first" : "accordian-content",
-                          "accordian-content text-lg lg:text-xl leading-[150%] m-0"
-                        ]} 
-                        aria-hidden="true"
+                          "accordion-content text-lg lg:text-xl leading-[150%] m-0",
+                          index === 0 ? "is-open" : "",
+                        ]}
                       >
                         <Markdown>{item.Transparency_item_text}</Markdown>
                       </div>
@@ -499,22 +474,19 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     </div>
 
                     <div class="w-full">
-
                       <button 
                         class:list={[
-                          index === 0 ? "accordian-first" : "accordian",
-                          "accordian w-full cursor-pointer text-left leading-[150%]"
-                        ]} 
-                        aria-expanded="false"
+                          "accordion w-full cursor-pointer text-left leading-[150%]",
+                          index === 0 ? "is-active" : "",
+                        ]}
                       >
                         {item.Impact_item_title}
                       </button>
                       <div 
                         class:list={[
-                          index === 0 ? "accordian-content-first" : "accordian-content",
-                          "accordian-content text-lg lg:text-xl leading-[150%] m-0"
-                        ]} 
-                        aria-hidden="true"
+                          "accordion-content text-lg lg:text-xl leading-[150%] m-0",
+                          index === 0 ? "is-open" : "",
+                        ]}
                       >
                         <Markdown>{item.Impact_item_text}</Markdown>
                       </div>
@@ -666,7 +638,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
   type ProductData = Record<string, number | string>;
 
-  const accordions = document.querySelectorAll("button.accordian"),
+  const accordions = document.querySelectorAll("button.accordion"),
     cartAddingForms = document.querySelectorAll(
       ".cart-adding-form, .cart-adding-form-sm"
     ),
