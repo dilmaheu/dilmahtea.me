@@ -2,7 +2,6 @@
 import CMS from "@store/CMS";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
-import OrderSummary from "@components/OrderSummary.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
@@ -162,15 +161,7 @@ const checkoutStepOrder = page.checkout_step_order,
     />
 
     <main id="checkout-main" class="flex">
-      <section class="w-full lg:w-[66.67%]">
-        <slot />
-      </section>
-
-      <section
-        class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-lightgreen"
-      >
-        <OrderSummary page={page} />
-      </section>
+      <slot />
     </main>
   </div>
 </BaseLayout>

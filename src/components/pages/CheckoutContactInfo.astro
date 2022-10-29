@@ -58,123 +58,129 @@ const { page } = Astro.props,
   }
 </style>
 
-<form
-  id="checkout-contact-info-form"
-  class="flex flex-col gap-12"
-  action="/checkout/shipping"
->
-  <div class="form-grid-container">
-    <h4 class="alice">{page.text_contact_info}</h4>
-
-    <div class="form-grid">
-      <label>
-        <span>{page.text_email_address}</span>
-
-        <input
-          type="email"
-          name="email"
-          placeholder={page.email_address_placeholder}
-          required
-        />
-      </label>
-    </div>
-  </div>
-
-  <div class="form-grid-container">
-    <h4 class="alice">{page.text_shipping_address}</h4>
-
-    <div class="form-grid">
-      <label>
-        <span>{page.text_first_name}</span>
-
-        <input
-          type="text"
-          name="first_name"
-          placeholder={page.first_name_placeholder}
-          required
-        />
-      </label>
-
-      <label>
-        <span>{page.text_last_name}</span>
-
-        <input
-          type="text"
-          name="last_name"
-          placeholder={page.last_name_placeholder}
-          required
-        />
-      </label>
-
-      <label>
-        <span>{page.text_country}</span>
-
-        <select name="country" required>
-          <option value="" selected disabled hidden>
-            {page.country_placeholder}
-          </option>
-
-          {
-            countries.map((country) => (
-              <option value={country}>{country}</option>
-            ))
-          }
-        </select>
-      </label>
-
-      <label>
-        <span>{page.text_city}</span>
-
-        <input
-          type="text"
-          name="city"
-          placeholder={page.city_placeholder}
-          required
-        />
-      </label>
-
-      <label>
-        <span>{page.text_street}</span>
-
-        <input
-          type="text"
-          name="street"
-          placeholder={page.street_placeholder}
-          required
-        />
-      </label>
-
-      <label>
-        <span>{page.text_postal_code}</span>
-
-        <input
-          type="text"
-          name="postal_code"
-          placeholder={page.postal_code_placeholder}
-          required
-        />
-      </label>
-    </div>
-  </div>
-
-  <div class="block lg:hidden -mb-6">
-    <OrderSummary page={page} />
-  </div>
-
-  <div
-    class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-9 sm:gap-12"
+<section class="w-full lg:w-[66.67%]">
+  <form
+    id="checkout-contact-info-form"
+    class="flex flex-col gap-12"
+    action="/checkout/shipping"
   >
-    <button
-      class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
-    >
-      {page.text_continue_to_shipping}
-    </button>
+    <div class="form-grid-container">
+      <h4 class="alice">{page.text_contact_info}</h4>
 
-    <a href="/checkout/cart" class="text-primary font-bold">
-      {page.text_return_to_cart}
-    </a>
-  </div>
-</form>
+      <div class="form-grid">
+        <label>
+          <span>{page.text_email_address}</span>
+
+          <input
+            type="email"
+            name="email"
+            placeholder={page.email_address_placeholder}
+            required
+          />
+        </label>
+      </div>
+    </div>
+
+    <div class="form-grid-container">
+      <h4 class="alice">{page.text_shipping_address}</h4>
+
+      <div class="form-grid">
+        <label>
+          <span>{page.text_first_name}</span>
+
+          <input
+            type="text"
+            name="first_name"
+            placeholder={page.first_name_placeholder}
+            required
+          />
+        </label>
+
+        <label>
+          <span>{page.text_last_name}</span>
+
+          <input
+            type="text"
+            name="last_name"
+            placeholder={page.last_name_placeholder}
+            required
+          />
+        </label>
+
+        <label>
+          <span>{page.text_country}</span>
+
+          <select name="country" required>
+            <option value="" selected disabled hidden>
+              {page.country_placeholder}
+            </option>
+
+            {
+              countries.map((country) => (
+                <option value={country}>{country}</option>
+              ))
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>{page.text_city}</span>
+
+          <input
+            type="text"
+            name="city"
+            placeholder={page.city_placeholder}
+            required
+          />
+        </label>
+
+        <label>
+          <span>{page.text_street}</span>
+
+          <input
+            type="text"
+            name="street"
+            placeholder={page.street_placeholder}
+            required
+          />
+        </label>
+
+        <label>
+          <span>{page.text_postal_code}</span>
+
+          <input
+            type="text"
+            name="postal_code"
+            placeholder={page.postal_code_placeholder}
+            required
+          />
+        </label>
+      </div>
+    </div>
+
+    <div class="block lg:hidden -mb-6">
+      <OrderSummary page={page} />
+    </div>
+
+    <div
+      class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-9 sm:gap-12"
+    >
+      <button
+        class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
+      >
+        {page.text_continue_to_shipping}
+      </button>
+
+      <a href="/checkout/cart" class="text-primary font-bold">
+        {page.text_return_to_cart}
+      </a>
+    </div>
+  </form>
+</section>
+
+<section class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-lightgreen">
+  <OrderSummary page={page} />
+</section>
 
 <script>
   import fillUpForm from "@utils/fillUpForm";

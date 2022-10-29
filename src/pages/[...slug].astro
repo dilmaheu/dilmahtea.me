@@ -16,6 +16,7 @@ import RecipeDetails from "@pages/RecipeDetails.astro";
 import EstateDetails from "@pages/EstateDetails.astro";
 import ProductDetails from "@pages/ProductDetails.astro";
 import CrowdfundingForm from "@pages/CrowdfundingForm.astro";
+import CheckoutKindness from "@pages/CheckoutKindness.astro";
 import CheckoutShipping from "@pages/CheckoutShipping.astro";
 import CheckoutContactInfo from "@pages/CheckoutContactInfo.astro";
 
@@ -44,6 +45,7 @@ export async function getStaticPaths() {
     homeProduct,
     homepage,
     cart,
+    checkoutKindness,
     checkoutInformation,
     checkoutShipping,
   } = CMS.get("all");
@@ -209,6 +211,10 @@ export async function getStaticPaths() {
     type: "cart",
   }));
 
+  const checkoutKindnessPages = getPages(checkoutKindness, () => ({
+    type: "checkoutKindness",
+  }));
+
   const checkoutInformationPages = getPages(checkoutInformation, () => ({
     type: "checkoutInformation",
   }));
@@ -234,6 +240,7 @@ export async function getStaticPaths() {
     ...productPages,
     ...homepagePages,
     ...cartpages,
+    ...checkoutKindnessPages,
     ...checkoutInformationPages,
     ...checkoutShippingPages,
   ];
@@ -316,6 +323,8 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
             <Product page={page} recurData={recurData} />
           ) : page.type === `productDetails` ? (
             <ProductDetails page={page} recurData={recurData} />
+          ) : page.type === `checkoutKindness` ? (
+            <CheckoutKindness page={page} recurData={recurData} />
           ) : page.type === `checkoutInformation` ? (
             <CheckoutContactInfo page={page} recurData={recurData} />
           ) : page.type === `checkoutShipping` ? (
