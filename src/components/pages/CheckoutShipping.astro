@@ -62,13 +62,9 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
           )
         );
 
-        :global(input) {
-          all: unset;
-
+        p {
           @apply text-primary grow;
 
-          box-shadow: 0 4px theme("colors.lightgray2"),
-            0 6px theme("colors.primary");
           font-size: poly-fluid-clamp(
             (
               375px: 18px,
@@ -77,7 +73,7 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
           );
         }
 
-        button {
+        a {
           @apply font-semibold text-primary leading-[130%];
 
           font-size: poly-fluid-clamp(
@@ -120,29 +116,28 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
 >
   <DynamicHTML
     htmlFn={() => {
-      const { origin, pathname } = location,
-        product_desc = Object.keys(window.cart)
-          .map((id) => {
-            const productData = window.cart[id],
-              names = JSON.parse(productData.names),
-              name = names[preferredLocale] || names["en"];
+      const { origin, pathname } = location;
 
-            return `${productData.quantity}x ${name}`;
-          })
-          .join(", "),
-        paymentInfo = {
-          ...window.checkoutContactInfo,
-          product_name: window.companyName,
-          product_desc,
-          price: window.cart.total,
-          payment_type: "ecommerce",
-          locale: preferredLocale,
-          origin_url: origin + pathname,
-          success_url: `${origin}/${preferredLocale}/thank-you-for-your-order`,
-        };
+      const product_desc = Object.keys(window.cart)
+        .map((id) => {
+          const productData = window.cart[id],
+            names = JSON.parse(productData.names),
+            name = names[preferredLocale] || names["en"];
 
-      delete paymentInfo.email;
-      delete paymentInfo.shipping_method;
+          return `${productData.quantity}x ${name}`;
+        })
+        .join(", ");
+
+      const paymentInfo = {
+        ...window.checkoutContactInfo,
+        product_name: window.companyName,
+        product_desc,
+        price: window.cart.total,
+        payment_type: "ecommerce",
+        locale: preferredLocale,
+        origin_url: origin + pathname,
+        success_url: `${origin}/${preferredLocale}/thank-you-for-your-order`,
+      };
 
       return Object.keys(paymentInfo)
         .map(
@@ -158,19 +153,13 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
       <div>{checkoutShipping.text_contact}</div>
 
       <div>
-        <DynamicHTML
-          htmlFn={() =>
-            `<input
-              type="email"
-              name="email"
-              value="${window.checkoutContactInfo.email}"
-              class="!shadow-none"
-              readonly
-              required
-            />`}
-        />
+        <p>
+          <DynamicHTML htmlFn={() => window.checkoutContactInfo.email} />
+        </p>
 
-        <button>{checkoutShipping.text_change}</button>
+        <a href="/checkout/information?change=email">
+          {checkoutShipping.text_change}
+        </a>
       </div>
     </div>
 
@@ -180,19 +169,15 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
       <div>{checkoutShipping.text_delivery_address}</div>
 
       <div>
-        <DynamicHTML
-          htmlFn={() =>
-            `<input
-              type="text"
-              name="delivery_address"
-              value="${window.checkoutContactInfo.delivery_address}"
-              class="!shadow-none"
-              readonly
-              required
-            />`}
-        />
+        <p>
+          <DynamicHTML
+            htmlFn={() => window.checkoutContactInfo.delivery_address}
+          />
+        </p>
 
-        <button>{checkoutShipping.text_change}</button>
+        <a href="/checkout/information?change=street">
+          {checkoutShipping.text_change}
+        </a>
       </div>
     </div>
   </div>
@@ -282,47 +267,12 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
   const shippingDetailsForm = document.getElementById("shipping-details");
 
   if (shippingDetailsForm) {
-    const shippingDetailsChangeBtns = [
-        ...shippingDetailsForm.querySelectorAll(
-          '#shipping-details button:not([type="submit"])'
-        ),
-      ],
-      shippingDetailsFormSelectables = [
+    const shippingDetailsFormSelectables = [
         ...shippingDetailsForm.querySelectorAll<HTMLElement>("input, button"),
       ],
       shippingMethodInputs = shippingDetailsForm.querySelectorAll(
         'input[type="radio"]'
       );
-
-    shippingDetailsForm.addEventListener("submit", (event) => {
-      const button = event.submitter as HTMLElement;
-
-      if (shippingDetailsChangeBtns.includes(button)) {
-        event.preventDefault();
-
-        const detailInputElement = button.parentElement
-          .firstElementChild as HTMLInputElement;
-
-        const inputLength = detailInputElement.value.length;
-
-        detailInputElement.classList.toggle("!shadow-none");
-        detailInputElement.readOnly = !detailInputElement.readOnly;
-
-        if (!detailInputElement.readOnly) {
-          const { type: currentInputType } = detailInputElement;
-
-          detailInputElement.type = "text";
-
-          detailInputElement.setSelectionRange(inputLength, inputLength);
-
-          detailInputElement.type = currentInputType;
-
-          detailInputElement.focus();
-        } else {
-          updateCheckoutContactInfo(detailInputElement);
-        }
-      }
-    });
 
     shippingDetailsFormSelectables.forEach((selectable, i) => {
       if (selectable.tagName === "INPUT") {

@@ -193,20 +193,18 @@ const checkoutInformation = CMS.get("checkoutInformation", locale),
     }
   }
 
-  const savedCheckoutContactInfo = localStorage.getItem(
-    "checkout-contact-info"
-  );
+  const inputToBeChanged = new URLSearchParams(location.search).get("change"),
+    savedCheckoutContactInfo = localStorage.getItem("checkout-contact-info"),
+    returnToCartBtn = document.getElementById("return-to-cart-btn"),
+    checkoutContactInfoForm = document.getElementById(
+      "checkout-contact-info-form"
+    ) as HTMLFormElement;
 
   if (savedCheckoutContactInfo) {
     const parsedContactInfo = JSON.parse(savedCheckoutContactInfo);
 
     fillUpForm(Object.entries(parsedContactInfo));
   }
-
-  const returnToCartBtn = document.getElementById("return-to-cart-btn"),
-    checkoutContactInfoForm = document.querySelector(
-      "#checkout-contact-info-form"
-    ) as HTMLFormElement;
 
   checkoutContactInfoForm?.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -228,4 +226,13 @@ const checkoutInformation = CMS.get("checkoutInformation", locale),
 
     window.openCart();
   });
+
+  if (inputToBeChanged) {
+    const inputElement = document.querySelector(
+      `input[name=${inputToBeChanged}]`
+    ) as HTMLInputElement;
+
+    inputElement.scrollIntoView({ block: "center" });
+    inputElement.focus();
+  }
 </script>
