@@ -1,11 +1,15 @@
 ---
+import CMS from "@store/CMS";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import OrderSummary from "@components/OrderSummary.astro";
 
 const { page, recurData } = Astro.props,
-  shippingMethods = page.shipping_methods
-    .split("\n")
-    .map((methodString) => methodString.split(" - "));
+  { locale } = page,
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+
+const shippingMethods = page.shipping_methods
+  .split("\n")
+  .map((methodString) => methodString.split(" - "));
 ---
 
 <style lang="scss">
@@ -222,11 +226,11 @@ const { page, recurData } = Astro.props,
         type="submit"
         class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
       >
-        {page.text_continue_to_payment}
+        {checkoutRecurData.text_continue_to_payment}
       </button>
 
       <a href="/checkout/information" class="text-primary font-bold">
-        {page.text_return_to_information}
+        {checkoutRecurData.text_return_to_information}
       </a>
     </div>
   </form>

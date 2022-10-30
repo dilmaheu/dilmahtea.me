@@ -18,6 +18,8 @@ const recurringElementQuery = `
           text_total
           text_shipping_calculated_at_checkout
           text_proceed_to_checkout
+          text_continue_to_payment
+          text_return_to_information
           localizations {
             data {
               attributes {
@@ -35,6 +37,8 @@ const recurringElementQuery = `
                 text_total
                 text_shipping_calculated_at_checkout
                 text_proceed_to_checkout
+                text_continue_to_payment
+                text_return_to_information
               }
             }
           }

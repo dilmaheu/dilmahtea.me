@@ -1,9 +1,12 @@
 ---
+import CMS from "@store/CMS";
 import Markdown from "@astrojs/markdown-component";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
 const { page } = Astro.props,
-  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+  { locale } = page,
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env,
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style lang="scss">
@@ -106,11 +109,11 @@ const { page } = Astro.props,
     <button
       class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
     >
-      Continue To Payment
+      {checkoutRecurData.text_continue_to_payment}
     </button>
 
     <a href="/checkout/information" class="text-primary font-bold">
-      Return To Information
+      {checkoutRecurData.text_return_to_information}
     </a>
   </div>
 </div>
