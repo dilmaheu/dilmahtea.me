@@ -247,6 +247,10 @@ const shippingMethods = page.shipping_methods
     }
   }
 
+  const priceInputElement = document.querySelector(
+    "input[name='price']"
+  ) as HTMLInputElement;
+
   const updateCheckoutInfo = (input) => {
     const isShippingMethodInput = input.name === "shipping_method";
 
@@ -259,6 +263,8 @@ const shippingMethods = page.shipping_methods
     isShippingMethodInput && window.cart.updateUI(window.cart);
 
     localStorage.setItem("checkout-info", JSON.stringify(window.checkoutInfo));
+
+    priceInputElement.value = window.cart.total.split(",").join(".");
   };
 
   const shippingDetailsForm = document.getElementById("shipping-details");
@@ -288,10 +294,13 @@ const shippingMethods = page.shipping_methods
     });
 
     shippingMethodInputs.forEach((input: HTMLInputElement) => {
-      const { shipping_method } = window.checkoutInfo;
+      const { shipping_cost, shipping_method } = window.checkoutInfo;
 
-      if (!shipping_method && input.checked) updateCheckoutInfo(input);
-      else if (input.value === shipping_method) input.checked = true;
+      if (!(shipping_cost && shipping_method) && input.checked) {
+        updateCheckoutInfo(input);
+      } else if (input.value === shipping_method) {
+        input.checked = true;
+      }
 
       // the click event is named poorly, it handles all kinds of activation
       input.addEventListener("click", () => updateCheckoutInfo(input));
