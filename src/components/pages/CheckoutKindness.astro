@@ -76,6 +76,9 @@ const { page } = Astro.props,
         <div>
           <div class="h-full">
             <div
+              {
+              /* @ts-ignore */ }
+              cause={cause}
               style="clip-path: url(#kindness-cause-card-curve);"
               class="kindness-cause relative w-full h-full sm:w-80 flex flex-col bg-primary cursor-pointer"
             >
@@ -119,18 +122,29 @@ const { page } = Astro.props,
 </div>
 
 <script>
-  const kindnessCausesContainer = document.querySelector(".kindness-causes"),
-    kindnessCauses = document.querySelectorAll(".kindness-cause");
+  const kindnessCausesCardsContainer =
+      document.querySelector(".kindness-causes"),
+    kindnessCausesCards = document.querySelectorAll(".kindness-cause");
 
-  kindnessCauses.forEach((cause) => {
-    cause.addEventListener("click", () => {
-      const activeCause = kindnessCausesContainer.querySelector(
-        ".active-kindness-cause"
+  kindnessCausesCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const activeCauseCard = kindnessCausesCardsContainer.querySelector(
+          ".active-kindness-cause"
+        ),
+        kindness_cause = card.getAttribute("cause");
+
+      activeCauseCard?.classList?.remove("active-kindness-cause");
+
+      window.checkoutInfo.kindness_cause = kindness_cause;
+
+      console.log(kindness_cause);
+
+      localStorage.setItem(
+        "checkout-info",
+        JSON.stringify(window.checkoutInfo)
       );
 
-      activeCause?.classList?.remove("active-kindness-cause");
-
-      cause.parentElement.parentElement.classList.add("active-kindness-cause");
+      card.parentElement.parentElement.classList.add("active-kindness-cause");
     });
   });
 </script>
