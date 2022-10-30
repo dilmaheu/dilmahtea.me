@@ -476,8 +476,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         Number(productData.quantity) +
         (existingCartProduct ? (existingCartProduct.quantity as number) : 0);
 
-      productData.price = Number(price) * productData.quantity;
-      productData.tax = Number(tax) * productData.quantity;
+      productData.price = +(Number(price) * productData.quantity).toFixed(2);
+      productData.tax = +(Number(tax) * productData.quantity).toFixed(2);
 
       window.cart[id] = productData;
 
