@@ -129,6 +129,7 @@ const shippingMethods = page.shipping_methods
           ...window.checkoutInfo,
           product_name: window.companyName,
           product_desc,
+          tax: window.cart.tax.split(",").join("."),
           price: window.cart.total.split(",").join("."),
           payment_type: "ecommerce",
           locale: preferredLocale,
@@ -247,8 +248,13 @@ const shippingMethods = page.shipping_methods
     }
   }
 
-  const priceInputElement = document.querySelector(
-    "input[name='price']"
+  const shippingDetailsForm = document.getElementById("shipping-details"),
+    priceInputElement = document.querySelector(
+      "input[name='price']"
+    ) as HTMLInputElement;
+
+  let shippingCostInputElement = document.querySelector(
+    "input[name='shipping_cost']"
   ) as HTMLInputElement;
 
   const updateCheckoutInfo = (input) => {
@@ -265,9 +271,17 @@ const shippingMethods = page.shipping_methods
     localStorage.setItem("checkout-info", JSON.stringify(window.checkoutInfo));
 
     priceInputElement.value = window.cart.total.split(",").join(".");
-  };
 
-  const shippingDetailsForm = document.getElementById("shipping-details");
+    if (!shippingCostInputElement) {
+      shippingCostInputElement = document.createElement("input");
+
+      shippingCostInputElement.type = "hidden";
+      shippingCostInputElement.name = "shipping_cost";
+      shippingCostInputElement.value = window.checkoutInfo.shipping_cost;
+
+      shippingDetailsForm.prepend(shippingCostInputElement);
+    }
+  };
 
   if (shippingDetailsForm) {
     const shippingDetailsFormSelectables = [
