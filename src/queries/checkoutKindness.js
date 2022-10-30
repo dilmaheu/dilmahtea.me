@@ -9,9 +9,9 @@ const checkoutKindnessQuery = `
           Title
           Intro_text
           Kindness_Causes {
-            Title
-            Intro_text
-            Intro_blob {
+            cause
+            description
+            featured_blob {
               data {
                 id
                 attributes {
@@ -34,15 +34,14 @@ const checkoutKindnessQuery = `
           localizations {
             data {
               attributes {
-                locale
-                
+                locale                
                 checkout_step_order
                 Title
                 Intro_text
                 Kindness_Causes {
-                  Title
-                  Intro_text
-                  Intro_blob {
+                  cause
+                  description
+                  featured_blob {
                     data {
                       id
                       attributes {
