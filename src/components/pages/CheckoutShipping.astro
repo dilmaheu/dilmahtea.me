@@ -95,7 +95,7 @@ const shippingMethods = page.shipping_methods
 </style>
 
 <script define:vars={{ companyName: recurData.Company_name }}>
-  if (Object.keys(window.checkoutContactInfo).length === 0) {
+  if (Object.keys(window.checkoutInfo).length === 0) {
     location.href = "/" + window.preferredLocale + "/checkout/information";
   }
 
@@ -124,7 +124,7 @@ const shippingMethods = page.shipping_methods
           .join(", ");
 
         const paymentInfo = {
-          ...window.checkoutContactInfo,
+          ...window.checkoutInfo,
           product_name: window.companyName,
           product_desc,
           price: window.cart.total,
@@ -149,7 +149,7 @@ const shippingMethods = page.shipping_methods
 
         <div>
           <p>
-            <DynamicHTML htmlFn={() => window.checkoutContactInfo.email} />
+            <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
           </p>
 
           <a href="/checkout/information?change=email">
@@ -165,9 +165,7 @@ const shippingMethods = page.shipping_methods
 
         <div>
           <p>
-            <DynamicHTML
-              htmlFn={() => window.checkoutContactInfo.delivery_address}
-            />
+            <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
           </p>
 
           <a href="/checkout/information?change=street">
@@ -243,25 +241,22 @@ const shippingMethods = page.shipping_methods
 <script>
   declare global {
     interface Window {
-      checkoutContactInfo: Record<string, string>;
+      checkoutInfo: Record<string, string>;
     }
   }
 
-  const updateCheckoutContactInfo = (input) => {
+  const updateCheckoutInfo = (input) => {
     const isShippingMethodInput = input.name === "shipping_method";
 
-    window.checkoutContactInfo[input.name] = input.value;
+    window.checkoutInfo[input.name] = input.value;
 
     if (isShippingMethodInput) {
-      window.checkoutContactInfo.shipping_cost = input.getAttribute("cost");
+      window.checkoutInfo.shipping_cost = input.getAttribute("cost");
     }
 
     isShippingMethodInput && window.cart.updateUI(window.cart);
 
-    localStorage.setItem(
-      "checkout-contact-info",
-      JSON.stringify(window.checkoutContactInfo)
-    );
+    localStorage.setItem("checkout-info", JSON.stringify(window.checkoutInfo));
   };
 
   const shippingDetailsForm = document.getElementById("shipping-details");
@@ -291,13 +286,13 @@ const shippingMethods = page.shipping_methods
     });
 
     shippingMethodInputs.forEach((input: HTMLInputElement) => {
-      const { shipping_method } = window.checkoutContactInfo;
+      const { shipping_method } = window.checkoutInfo;
 
-      if (!shipping_method && input.checked) updateCheckoutContactInfo(input);
+      if (!shipping_method && input.checked) updateCheckoutInfo(input);
       else if (input.value === shipping_method) input.checked = true;
 
       // the click event is named poorly, it handles all kinds of activation
-      input.addEventListener("click", () => updateCheckoutContactInfo(input));
+      input.addEventListener("click", () => updateCheckoutInfo(input));
     });
   }
 </script>

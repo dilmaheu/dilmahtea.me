@@ -60,7 +60,7 @@ const { page } = Astro.props,
 
 <section class="w-full lg:w-[66.67%]">
   <form
-    id="checkout-contact-info-form"
+    id="checkout-info-form"
     class="flex flex-col gap-12"
     action="/checkout/shipping"
   >
@@ -192,31 +192,31 @@ const { page } = Astro.props,
   }
 
   const inputToBeChanged = new URLSearchParams(location.search).get("change"),
-    savedCheckoutContactInfo = localStorage.getItem("checkout-contact-info"),
+    savedCheckoutInfo = localStorage.getItem("checkout-info"),
     returnToCartBtn = document.getElementById("return-to-cart-btn"),
-    checkoutContactInfoForm = document.getElementById(
-      "checkout-contact-info-form"
+    checkoutInfoForm = document.getElementById(
+      "checkout-info-form"
     ) as HTMLFormElement;
 
-  if (savedCheckoutContactInfo) {
-    const parsedContactInfo = JSON.parse(savedCheckoutContactInfo);
+  if (savedCheckoutInfo) {
+    const parsedContactInfo = JSON.parse(savedCheckoutInfo);
 
     fillUpForm(Object.entries(parsedContactInfo));
   }
 
-  checkoutContactInfoForm?.addEventListener("submit", (event) => {
+  checkoutInfoForm?.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const formData = Object.fromEntries(new FormData(checkoutContactInfoForm)),
+    const formData = Object.fromEntries(new FormData(checkoutInfoForm)),
       { street, city, country } = formData,
       contactInfo = {
         ...formData,
         delivery_address: [street, city, country].join(", "),
       };
 
-    localStorage.setItem("checkout-contact-info", JSON.stringify(contactInfo));
+    localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
 
-    location.href = checkoutContactInfoForm.action;
+    location.href = checkoutInfoForm.action;
   });
 
   returnToCartBtn?.addEventListener("click", (event) => {
