@@ -1,0 +1,90 @@
+---
+import CMS from "@store/CMS";
+import Navbar from "@components/Navbar.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import RecurringImages from "@store/RecurringImages";
+import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
+
+interface Props {
+  page: Record<string, any>;
+  meta: Record<string, any>;
+  locale: string;
+  recurData: Record<string, any>;
+  metaImageID: string;
+  availableLocales: string[];
+}
+
+const { checkout_pre_post_background, checkout_pre_post_background_sm } =
+  RecurringImages;
+
+const { page, meta, locale, recurData, availableLocales, metaImageID } =
+  Astro.props;
+
+const footerText = recurData.Footer_text.replaceAll(
+  "<current_year>",
+  `${new Date().getFullYear()}`
+);
+
+const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+---
+
+<style
+  lang="scss"
+  define:vars={{
+    "checkout-pre-post-background": `url('${checkout_pre_post_background.src}')`,
+    "checkout-pre-post-background-sm": `url('${checkout_pre_post_background_sm.src}')`,
+  }}
+>
+  @use "src/styles/poly-fluid" as *;
+
+  #checkout-cart-container {
+    background-size: cover;
+    background-image: var(--checkout-pre-post-background-sm);
+
+    @media (min-width: 768px) {
+      background-image: var(--checkout-pre-post-background);
+    }
+
+    padding-bottom: poly-fluid-clamp(
+      (
+        375px: 20px,
+        1440px: 56px,
+      )
+    );
+
+    @include poly-fluid-sizing(
+      "padding-top",
+      (
+        639px: 90px,
+        640px: 95px,
+        768px: 100px,
+        960px: 110px,
+        1024px: 120px,
+        1280px: 130px,
+        1536px: 145px,
+        2050px: 165px,
+      )
+    );
+  }
+</style>
+
+<BaseLayout
+  meta={meta}
+  locale={locale}
+  availableLocales={availableLocales}
+  metaImageID={metaImageID}
+>
+  <Navbar
+    docLocale={locale}
+    footerText={footerText}
+    availableLocales={availableLocales}
+  />
+
+  <div id="checkout-cart-container" class="min-h-screen flex flex-col">
+    <UpdateTopMargin />
+
+    <div class="wrapper grow flex flex-col">
+      <slot />
+    </div>
+  </div>
+</BaseLayout>

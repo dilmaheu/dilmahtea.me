@@ -2,6 +2,7 @@
 import CMS from "@store/CMS";
 import PageLayout from "@layouts/PageLayout.astro";
 import CheckoutLayout from "@layouts/CheckoutLayout.astro";
+import CheckoutPrePostLayout from "@layouts/CheckoutPrePostLayout.astro";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 import Cart from "@pages/Cart.astro";
@@ -16,6 +17,7 @@ import RecipeDetails from "@pages/RecipeDetails.astro";
 import EstateDetails from "@pages/EstateDetails.astro";
 import ProductDetails from "@pages/ProductDetails.astro";
 import CrowdfundingForm from "@pages/CrowdfundingForm.astro";
+// import CheckoutSuccess from "@pages/CheckoutSuccess.astro";
 import CheckoutKindness from "@pages/CheckoutKindness.astro";
 import CheckoutShipping from "@pages/CheckoutShipping.astro";
 import CheckoutInformation from "@pages/CheckoutInformation.astro";
@@ -48,6 +50,7 @@ export async function getStaticPaths() {
     checkoutKindness,
     checkoutInformation,
     checkoutShipping,
+    // checkoutSuccess
   } = CMS.get("all");
 
   const allLocales = i18NLocales.data.map(({ attributes }) =>
@@ -207,21 +210,25 @@ export async function getStaticPaths() {
           ]),
   }));
 
-  const cartpages = getPages(cart, () => ({
+  const cartPages = getPages(cart, () => ({
     type: "cart",
-  }));
-
-  const checkoutKindnessPages = getPages(checkoutKindness, () => ({
-    type: "checkoutKindness",
   }));
 
   const checkoutInformationPages = getPages(checkoutInformation, () => ({
     type: "checkoutInformation",
   }));
 
+  const checkoutKindnessPages = getPages(checkoutKindness, () => ({
+    type: "checkoutKindness",
+  }));
+
   const checkoutShippingPages = getPages(checkoutShipping, () => ({
     type: "checkoutShipping",
   }));
+
+  // const checkoutSuccessPages = getPages(checkoutSuccess, () => ({
+  //   type: "checkoutSuccess",
+  // }));
 
   return [
     ...plansPages,
@@ -239,10 +246,11 @@ export async function getStaticPaths() {
     ...estatePages,
     ...productPages,
     ...homepagePages,
-    ...cartpages,
+    ...cartPages,
     ...checkoutKindnessPages,
     ...checkoutInformationPages,
     ...checkoutShippingPages,
+    // ...checkoutSuccessPages
   ];
 }
 
@@ -274,12 +282,11 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
                 ({ attributes }) => attributes.locale.substring(0, 2) === locale
               ).attributes;
 
-      const Layout =
-        page.type === "cart"
-          ? Cart
-          : page.type.startsWith("checkout")
-          ? CheckoutLayout
-          : PageLayout;
+      const Layout = ["cart", "checkoutSuccess"].includes(page.type)
+        ? CheckoutPrePostLayout
+        : page.type.startsWith("checkout")
+        ? CheckoutLayout
+        : PageLayout;
 
       return (
         <Layout
@@ -323,13 +330,18 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
             <Product page={page} recurData={recurData} />
           ) : page.type === `productDetails` ? (
             <ProductDetails page={page} recurData={recurData} />
-          ) : page.type === `checkoutKindness` ? (
-            <CheckoutKindness page={page} recurData={recurData} />
+          ) : page.type === `cart` ? (
+            <Cart page={page} recurData={recurData} />
           ) : page.type === `checkoutInformation` ? (
             <CheckoutInformation page={page} recurData={recurData} />
+          ) : page.type === `checkoutKindness` ? (
+            <CheckoutKindness page={page} recurData={recurData} />
           ) : page.type === `checkoutShipping` ? (
             <CheckoutShipping page={page} recurData={recurData} />
-          ) : page.type === `plan` ? (
+          ) : // page.type === `checkoutSuccess` ? (
+          //   <CheckoutSuccess page={page} recurData={recurData} />
+          // ) :
+          page.type === `plan` ? (
             <CrowdfundingForm page={page} locale={locale} />
           ) : null}
         </Layout>
