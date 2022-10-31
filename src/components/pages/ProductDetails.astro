@@ -9,20 +9,25 @@ import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
-const {
-  green_love,
-  green_leaf_icon,
-  green_no_icon,
-  green_package_icon,
-  green_right_arrow,
-} = RecurringImages;
+const { green_right_arrow } = RecurringImages;
 
 const { page, recurData } = Astro.props,
   { locale } = page,
   headingName = recurData.text_chapter,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 
-const recipes = page.recipes.data.map(({ attributes }) => attributes);
+const infos = page.product_infos.data.map(({ attributes }) => attributes),
+  recipes = page.recipes.data.map(({ attributes }) => attributes);
+
+const Spent_amount = page.Price_breakdown.map(
+  ({ Spent_amount }) => Spent_amount
+);
+
+let Total_spent_amount = 0;
+
+for (const value of Spent_amount) {
+  Total_spent_amount += value;
+}
 
 const { url: productImgURL } = page.Intro_blob.data.attributes,
   { SKU: productSKU } = page,
@@ -39,20 +44,18 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   @use "src/styles/colors";
 
   .cart-adding-form {
-    margin-top: clamp(0.938rem, 2vw + 0.1rem, 2rem);
+    margin-top: clamp(0.625rem, 1vw + 0.35rem, 1.25em);
+    row-gap: clamp(0.938rem, 3vw + 0.3rem, 3.125rem);
   }
 
   .product-details img {
     width: 100%;
     max-height: 530px;
+    aspect-ratio: 3.26 / 1.77 !important;
 
     @media (min-width: 640px) {
-      aspect-ratio: 8 / 5.17;
+      aspect-ratio: 8 / 5.17 !important;
     }
-  }
-
-  .product-info-container {
-    border-color: colors.$sticky-dropdown-border-top;
   }
 
   .product-kindness-impact-container {
@@ -61,6 +64,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     @media (min-width: 768px) {
       clip-path: url(#product-impact-bg-curve);
     }
+  }
+
+  .product-kindness-impact-img-container{
+    width: 100%;
+    max-height: 310px;
+    aspect-ratio: 4.23 / 3.1;
   }
 
   .product-kindness-impact-text {
@@ -95,12 +104,63 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       margin-right: 20px;
     }
   }
+
+  .transparency-items-grid {
+    grid-template-columns: clamp(2rem, 3vw + 0.3rem, 2.5rem) auto;
+  }
+
+  .transparency-item-icon {
+    height: clamp(2rem, 3vw + 0.3rem, 2.5rem);
+  }
+
+  .accordion {
+    font-size: clamp(1.125rem, 1.5vw + 0.15rem, 1.5rem);
+    transition: all 150ms ease-out 0ms;
+
+    &.is-active {
+      @apply font-semibold md:font-bold;
+    }
+  }
+
+  .accordion-content {
+    display: none;
+    max-height: 0;
+    opacity: 0;
+    transition: all 200ms ease-out 0ms;
+
+    &.is-open {
+      display: block;
+      max-height: 100%;
+      opacity: 1;
+    }
+  }
+
+  .product-info-container {
+    border-color: colors.$sticky-dropdown-border-top;
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(0, clamp(100px, 18vw + 20px, 280px))
+    );
+  }
+</style>
+
+<style lang="scss" is:global>
+  #post-details .transparency-item-icon {
+    img {
+      @apply block mx-auto;
+
+      width: 100%;
+      object-fit: contain;
+      aspect-ratio: 1 / 1;
+      clip-path: none;
+    }
+  }
 </style>
 
 <PostDetailsLayout {page} {recurData} {headingName}>
   <form
     slot="tea-details-header"
-    class="cart-adding-form flex flex-wrap justify-between sm:justify-start items-center gap-y-5 gap-x-[31px]"
+    class="cart-adding-form flex flex-wrap justify-between items-center gap-x-[31px] w-full xl:w-2/3"
   >
     <input type="hidden" name="sku" value={productSKU} required />
     <input type="hidden" name="names" value={productNames} required />
@@ -176,7 +236,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
     <button
       class:list={[
-        "w-full sm:w-auto gap-4 flex justify-center items-center bg-lightgray",
+        "w-full gap-4 flex justify-center items-center bg-lightgray",
         "py-2.5 px-[52px] mt-auto font-bold text-base text-primary rounded-[40px]",
       ]}
     >
@@ -279,147 +339,296 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     </button>
   </form>
 
-  <div
-    class="product-info-container grid grid-cols-[repeat(auto-fit,minmax(0,80px))] gap-[14px] lg:gap-[21px] justify-between md:justify-center pt-[25px] md:pt-[15px] mt-[25px] border-t border-solid"
-  >
-    <div>
-      <div class="w-[31px] h-[31px] p-[2px] mx-auto">
-        <img class="w-full h-full" {...green_leaf_icon} />
-      </div>
-
-      <div class="text-sm font-medium leading-[150%] text-center">
-        Environment Friendly
-      </div>
-    </div>
-
-    <div>
-      <div class="w-[31px] h-[31px] p-[2px] mx-auto">
-        <img class="w-full h-full" {...green_no_icon} />
-      </div>
-
-      <div class="text-sm font-medium leading-[150%] text-center">
-        No Preservatives
-      </div>
-    </div>
-
-    <div>
-      <div class="w-[31px] h-[31px] p-[2px] mx-auto">
-        <img class="w-full h-full" {...green_package_icon} />
-      </div>
-
-      <div class="text-sm font-medium leading-[150%] text-center">
-        Sustainable Packaging
-      </div>
-    </div>
-
-    <div>
-      <div class="w-[31px] h-[31px] p-[2px] mx-auto">
-        <img class="w-full h-full" {...green_love} />
-      </div>
-
-      <div class="text-sm font-medium leading-[150%] text-center">
-        Handmade in small batch
-      </div>
-    </div>
-  </div>
-
   <div slot="post-details" class="product-details prose content-text">
+    <ClipPathSVG
+      id="price-breakdown-curve"
+      path="M0.526,0.003 C0.368,0.003,0.173,0.042,0.111,0.133 C0.05,0.224,-0.008,0.58,0.013,0.696 C0.034,0.812,0.187,1,0.538,1 C0.826,1,0.917,0.939,0.99,0.718 C1,0.624,1,0.516,0.941,0.247 C0.892,0.073,0.747,0.003,0.526,0.003"
+    />
+
     <Chapterize slot="post-details">
+      <Markdown>{page.Intro_text}</Markdown>
+
       <Markdown>{page.Block_text}</Markdown>
+
+      {
+        page.Price_breakdown.length > 0 && (
+          <div class="chapter">
+            <h2 id="price-breakdown">
+              {recurData.product_price_breakdown_title}
+            </h2>
+            <div>
+              <Markdown>
+                {page.Price_breakdown_text.split('<')[0]}
+                <span class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] text-primary">
+                  {page.Price_breakdown_text.match("<total_spent>") && `€${Total_spent_amount.toFixed(2)}`}
+                </span>
+                {page.Price_breakdown_text.split('>')[1]}
+              </Markdown>
+            </div>
+
+            <div class="flex overflow-hidden w-full my-2.5 md:my-[15px] h-[80px] rounded-[25px]">
+              {page.Price_breakdown.map((item) => (
+                <div
+                  class="h-full"
+                  style={`background-color: ${item.Item_color_code}; width:${
+                    (item.Spent_amount * 100) / Total_spent_amount
+                  }%`}
+                />
+              ))}
+            </div>
+
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(0,250px))] gap-2.5 justify-between">
+              {page.Price_breakdown.map((item) => (
+                <div class="flex items-center gap-x-2.5">
+                  <div
+                    style={`background-color: ${item.Item_color_code};
+                          clip-path: url(#price-breakdown-curve)`}
+                    class="flex justify-center items-center w-[62px] h-[62px] text-sm lg:text-base font-medium lg:font-normal"
+                  >
+                    { ((item.Spent_amount * 100) / Total_spent_amount).toFixed(2) }%
+                  </div>
+
+                  <div class="grid">
+                    <div class="alice text-[clamp(1.75rem,2.2vw+0.15rem,2rem)] text-primary">
+                      €{item.Spent_amount.toFixed(2)}
+                    </div>
+                    <div class="text-[clamp(0.875rem,1vw+0.25rem,1.125rem)]">
+                      {item.Item_name}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      }
+
+      {
+        page.Transparency.length > 0 && (
+          <div class="chapter">
+            <h2 id="price-breakdown">{recurData.product_transparency_title}</h2>
+            <p>{page.Transparency_text}</p>
+
+            <div class="grid gap-5">
+              {page.Transparency.map((item, index) => (
+                <div class="w-full lg:w-10/12">
+                  <div class="grid transparency-items-grid gap-x-2.5">
+                    <div class="transparency-item-icon flex items-center">
+                      <img
+                        src={
+                          imgSrcPrefix +
+                          item.Transparency_item_icon.data.attributes.provider_metadata
+                            .public_id +
+                          `/small`
+                        }
+                        alt=""
+                        class="w-full h-full object-contain p-1"
+                      />
+                    </div>
+
+                    <div class="w-full">
+                      <button 
+                        class:list={[
+                          "accordion w-full cursor-pointer text-left leading-[150%]",
+                          index === 0 ? "is-active" : "",
+                        ]}
+                      >
+                        {item.Transparency_item_title}
+                      </button>
+                      <div 
+                        class:list={[
+                          "accordion-content text-lg lg:text-xl leading-[150%] m-0",
+                          index === 0 ? "is-open" : "",
+                        ]}
+                      >
+                        <Markdown>{item.Transparency_item_text}</Markdown>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      }
+
+      {
+        page.Impact.length > 0 && (
+          <div class="chapter">
+            <h2 id="price-breakdown">{recurData.product_impact_title}</h2>
+            <p>{page.Impact_text}</p>
+
+            <div class="grid gap-5">
+              {page.Impact.map((item, index) => (
+                <div class="w-full lg:w-10/12">
+                  <div class="grid transparency-items-grid gap-x-2.5">
+                    <div class="transparency-item-icon flex items-center">
+                      <img
+                        src={
+                          imgSrcPrefix +
+                          item.Impact_item_icon.data.attributes.provider_metadata
+                            .public_id +
+                          `/small`
+                        }
+                        alt=""
+                        class="w-full h-full object-contain p-1"
+                      />
+                    </div>
+
+                    <div class="w-full">
+                      <button 
+                        class:list={[
+                          "accordion w-full cursor-pointer text-left leading-[150%]",
+                          index === 0 ? "is-active" : "",
+                        ]}
+                      >
+                        {item.Impact_item_title}
+                      </button>
+                      <div 
+                        class:list={[
+                          "accordion-content text-lg lg:text-xl leading-[150%] m-0",
+                          index === 0 ? "is-open" : "",
+                        ]}
+                      >
+                        <Markdown>{item.Impact_item_text}</Markdown>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      }
     </Chapterize>
   </div>
 
-  <section class="mb-[50px]" slot="product-kindness-impact">
-    <ClipPathSVG
-      id="product-impact-bg-curve"
-      path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.23,-0.017 c0.074,0,0.2,0.037,0.315,0.009 S1,0.894,1,0.894 V0.055"
-    />
-
-    <ClipPathSVG
-      id="product-impact-bg-curve-sm"
-      path="M0.718,0 C0.853,0,0.938,0.021,1,0.064 V0.97 c-0.045,0.046,-0.195,0.006,-0.324,0 c-0.149,-0.007,-0.301,0.03,-0.45,0.03 C0.094,1,0,0.954,0,0.954 V0.064 c0.059,-0.061,0.237,0,0.32,0 S0.583,0,0.718,0"
-    />
-
-    <ClipPathSVG
-      id="card-curve"
-      path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
-    />
-
-    <div class="bg-primary product-kindness-impact-container">
-      <div class="wrapper py-[70px] md:py-[100px]">
+  {
+    infos.length > 0 && (
+      <section slot="product-info" class="wrapper">
         <div
-          class="product-kindness-impact-text alice leading-[110%] md:leading-[115%] text-center"
-        >
-          <h2>{recurData.product_kindness_impact}</h2>
-        </div>
-
-        <div
-          role="list"
-          aria-label="Kindness Items"
           class:list={[
-            "wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]",
-            "justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
+            "grid gap-[14px] lg:gap-[21px] justify-between md:justify-center",
+            "py-[50px] my-[50px] border-y border-solid product-info-container",
           ]}
         >
-          {
-            recipes.map((post) => (
-              <div
-                role="listitem"
-                aria-label="Kindness Item"
-                class="flex flex-wrap bg-lightgray"
-                style="clip-path: url(#card-curve)"
-              >
-                <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-                  <img
-                    src={
-                      imgSrcPrefix +
-                      post.Intro_blob.data.attributes.provider_metadata
-                        .public_id +
-                      `/small`
-                    }
-                    alt={post.Intro_blob.data.attributes.alternativeText}
-                    class="w-full h-full object-cover"
-                  />
-                </a>
+          {infos.map((info) => (
+            <div class="grid gap-[7px] md:gap-3.5 lg:gap-[20px]">
+              <div class="h-[clamp(1.125rem,4vw+0.4rem,4rem)] mx-auto">
+                <img
+                  class="w-full h-full"
+                  src={
+                    imgSrcPrefix +
+                    info.Product_info_icon.data.attributes.provider_metadata
+                      .public_id +
+                    `/small`
+                  }
+                  alt=""
+                />
+              </div>
 
-                <div class="recent-post-card-content-container text-primary">
-                  {post.authors && (
-                    <div>
-                      <div class="recent-post-card-author flex flex-wrap font-bold">
-                        {post.authors.data.map(({ attributes }, index) => (
-                          <a href="#">
-                            {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                          </a>
-                        ))}
-                      </div>
+              <div class="text-[clamp(0.625rem,2vw+0.1rem,1.5em)] font-medium leading-[150%] text-primary text-center">
+                {info.Product_info_title}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
 
-                      <div class="post-publish-date">
-                        {new Date(post.createdAt).toLocaleString("en-US", {
-                          day: "numeric",
-                          month: "long",
-                        })}
+  {
+    recipes.length > 0 && (
+      <section class="mb-[50px]" slot="product-kindness-impact">
+        <ClipPathSVG
+          id="product-impact-bg-curve"
+          path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.23,-0.017 c0.074,0,0.2,0.037,0.315,0.009 S1,0.894,1,0.894 V0.055"
+        />
+
+        <ClipPathSVG
+          id="product-impact-bg-curve-sm"
+          path="M0.718,0 C0.853,0,0.938,0.021,1,0.064 V0.97 c-0.045,0.046,-0.195,0.006,-0.324,0 c-0.149,-0.007,-0.301,0.03,-0.45,0.03 C0.094,1,0,0.954,0,0.954 V0.064 c0.059,-0.061,0.237,0,0.32,0 S0.583,0,0.718,0"
+        />
+
+        <ClipPathSVG
+          id="card-curve"
+          path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
+        />
+
+        <div class="bg-primary product-kindness-impact-container">
+          <div class="wrapper py-[70px] md:py-[100px]">
+            <div class="product-kindness-impact-text alice leading-[110%] md:leading-[115%] text-center">
+              <h2>{recurData.product_kindness_impact}</h2>
+            </div>
+
+            <div
+              role="list"
+              aria-label="Kindness Items"
+              class:list={[
+                "wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]",
+                "justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
+              ]}
+            >
+              {recipes.map((post) => (
+                <div
+                  role="listitem"
+                  aria-label="Kindness Item"
+                  class="flex flex-wrap bg-lightgray"
+                  style="clip-path: url(#card-curve)"
+                >
+                  <a class="product-kindness-impact-img-container block w-full" href={`/` + post.Meta.URL_slug}>
+                    <img
+                      src={
+                        imgSrcPrefix +
+                        post.Intro_blob.data.attributes.provider_metadata
+                          .public_id +
+                        `/small`
+                      }
+                      alt={post.Intro_blob.data.attributes.alternativeText}
+                      class="w-full h-full object-cover"
+                    />
+                  </a>
+
+                  <div class="recent-post-card-content-container text-primary">
+                    {post.authors && (
+                      <div>
+                        <div class="recent-post-card-author flex flex-wrap font-bold">
+                          {post.authors.data.map(({ attributes }, index) => (
+                            <a href="#">
+                              {`${index > 0 ? ", " : " "}` +
+                                attributes.givenName}
+                            </a>
+                          ))}
+                        </div>
+
+                        <div class="post-publish-date">
+                          {new Date(post.createdAt).toLocaleString("en-US", {
+                            day: "numeric",
+                            month: "long",
+                          })}
+                        </div>
                       </div>
+                    )}
+
+                    <div class="recent-post-card-title alice mt-[15px]">
+                      <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+
+                      <span class="icon recent-post-card-title-icon">
+                        <img
+                          class="recent-post-card-title-icon"
+                          {...green_right_arrow}
+                        />
+                      </span>
                     </div>
-                  )}
-
-                  <div class="recent-post-card-title alice mt-[15px]">
-                    <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
-
-                    <span class="icon recent-post-card-title-icon">
-                      <img
-                        class="recent-post-card-title-icon"
-                        {...green_right_arrow}
-                      />
-                    </span>
                   </div>
                 </div>
-              </div>
-            ))
-          }
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
+    )
+  }
 </PostDetailsLayout>
 
 <script>
@@ -431,10 +640,18 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
   type ProductData = Record<string, number | string>;
 
-  const cartAddingForms = document.querySelectorAll(
+  const accordions = document.querySelectorAll("button.accordion"),
+    cartAddingForms = document.querySelectorAll(
       ".cart-adding-form, .cart-adding-form-sm"
     ),
     productAmountPriceOutput = document.querySelector(".product-amount-price");
+
+  accordions.forEach((accordion) => {
+    accordion.addEventListener("click", () => {
+      accordion.classList.toggle("is-active");
+      accordion.nextElementSibling.classList.toggle("is-open");
+    });
+  });
 
   cartAddingForms.forEach((form: HTMLFormElement) => {
     form.onsubmit = (event) => {
