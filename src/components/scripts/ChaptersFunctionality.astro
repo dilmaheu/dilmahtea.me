@@ -1,0 +1,94 @@
+<script defer>
+  {
+    const query = document.querySelector.bind(document),
+      queryAll = document.querySelectorAll.bind(document),
+      navbar = query("#navigation"),
+      postDetails = query("#post-details"),
+      chapters = [...queryAll("#post-details .chapter")],
+      [firstChapter] = chapters,
+      stickyHeader = query("#sticky-header"),
+      stickyHeaderHeading = query("#sticky-header-heading"),
+      stickyDropdownToggle = query("#sticky-dropdown-toggle"),
+      headingLinks = queryAll("#heading-links a"),
+      stickyheadingLinksContainer = query("#sticky-heading-links"),
+      stickyheadingLinks = queryAll("#sticky-heading-links a"),
+      readingProgressBar = query("#reading-progress-bar");
+
+    const isOnScreen = (element) => {
+      const { top, bottom } = element.getBoundingClientRect(),
+        // consider an element on screen only if it's at least 50px on screen
+        safeAreaHeight = 50;
+
+      if (top < window.innerHeight - safeAreaHeight && bottom > 0) return true;
+
+      return false;
+    };
+
+    const styleActiveChapter = () => {
+      // find active chapter
+      const { length, [length - 1]: activeChapter = chapters[0] } =
+          chapters.filter((chapter) => isOnScreen(chapter)),
+        chapterIndex = chapters.indexOf(activeChapter),
+        activeChapterHeading = activeChapter.querySelector("h2");
+
+      [...headingLinks, ...stickyheadingLinks].forEach((link) =>
+        link.classList.remove("active")
+      );
+
+      // highlight active chapter link
+      headingLinks[chapterIndex].classList.add("active");
+      stickyheadingLinks[chapterIndex].classList.add("active");
+
+      const { height: navbarHeight } = navbar.getBoundingClientRect(),
+        displayStickyHeader =
+          window.innerWidth < 640 &&
+          firstChapter.getBoundingClientRect().y -
+            navbar.getBoundingClientRect().height <
+            0;
+
+      if (displayStickyHeader) {
+        stickyHeader.style.top = navbarHeight + "px";
+
+        stickyHeaderHeading.textContent = activeChapterHeading.textContent;
+
+        const containerRect = postDetails.getBoundingClientRect(),
+          readPixels = Math.abs(containerRect.y - window.innerHeight),
+          detailedBlogHeight = containerRect.height,
+          minProgress =
+            ((window.innerHeight - navbarHeight) / detailedBlogHeight) * 100,
+          progress = (readPixels / detailedBlogHeight) * 100,
+          correctedProgress =
+            ((progress - minProgress) / (100 - minProgress)) * 100;
+
+        // update progress meter
+        readingProgressBar.style.width = `${correctedProgress}%`;
+      }
+
+      // display sticky header
+      stickyHeader.classList[displayStickyHeader ? "remove" : "add"]("hidden");
+    };
+
+    styleActiveChapter();
+
+    document.addEventListener("scroll", styleActiveChapter);
+
+    stickyDropdownToggle.addEventListener("click", () => {
+      stickyheadingLinksContainer.classList.toggle("hidden");
+    });
+
+    // collapse dropdown when an item is clicked
+    stickyheadingLinks.forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        location.href = link.href;
+
+        stickyheadingLinksContainer.classList.add("hidden");
+
+        window.scrollTo({
+          top: scrollY - readingProgressBar.getBoundingClientRect().bottom,
+        });
+      });
+    });
+  }
+</script>

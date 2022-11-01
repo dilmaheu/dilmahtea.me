@@ -6,12 +6,10 @@ const { green_right_arrow } = RecurringImages;
 
 declare interface Props {
   type?: "desktop" | "mobile";
+  headings: NodeListOf<HTMLHeadingElement>;
 }
 
-const { type = "desktop" } = Astro.props as Props,
-  contentHTML = await Astro.slots.render("default"),
-  { document: contentDocument } = await parseHTML(contentHTML),
-  headings = contentDocument.querySelectorAll("h2");
+const { type = "desktop", headings } = Astro.props as Props;
 ---
 
 <style lang="scss">
