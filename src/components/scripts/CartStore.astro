@@ -14,6 +14,12 @@
       localStorage.getItem("checkout-info") || "{}"
     );
 
+    const queryParams = new URLSearchParams(location.search);
+
+    if (queryParams.get("clear") === "cart") {
+      localStorage.removeItem("cart");
+    }
+
     const storedCart = JSON.parse(localStorage.getItem("cart") || "{}");
 
     let subTotal, tax, shippingCost, total;
