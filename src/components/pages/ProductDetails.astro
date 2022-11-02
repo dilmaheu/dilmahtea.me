@@ -17,9 +17,9 @@ const { page, recurData } = Astro.props,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 
 const infos = page.product_infos.data.map(({ attributes }) => attributes),
-  blogs = page.related_blogs?.data.map(({ attributes }) => attributes),
-  recipes = page.related_recipes?.data.map(({ attributes }) => attributes),
-  how_tos = page.related_how_tos?.data.map(({ attributes }) => attributes);
+  blogs = page.related_blogs?.data?.map(({ attributes }) => attributes),
+  recipes = page.related_recipes?.data?.map(({ attributes }) => attributes),
+  how_tos = page.related_how_tos?.data?.map(({ attributes }) => attributes);
 
 const relevant_items = blogs.concat(recipes, how_tos);
 
