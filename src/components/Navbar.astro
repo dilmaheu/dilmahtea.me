@@ -204,7 +204,8 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
   };
 
   window.enableScrolling = () => {
-    const scrollYPosition = parseInt(document.body.style.top.slice(1, -2));
+    const scrollYPosition =
+      parseInt(document.body.style.top.slice(1, -2)) || window.scrollY;
 
     Object.assign(document.body.style, {
       width: "auto",
