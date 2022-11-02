@@ -18,6 +18,7 @@ const { page, posts, recurData, headingName } = Astro.props,
 
 // display relevant recipes instead of recent posts for RecipeDetails pages
 const recentPosts =
+  page.related_products?.data?.map(({ attributes }) => attributes) ||
   page.blogs?.data?.map(({ attributes }) => attributes) ||
   page.Relevant_recipes?.data?.map(({ attributes }) => attributes) ||
   posts.filter(({ Meta }) => Meta.URL_slug !== page.Meta.URL_slug);
