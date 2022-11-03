@@ -513,12 +513,27 @@ const recentPosts =
                     {post.Title}
                   </a>
 
-                  <span class="icon recent-post-card-title-icon">
-                    <img
-                      class="recent-post-card-title-icon"
-                      {...white_right_arrow}
-                    />
-                  </span>
+                  { 
+                    !page.related_products && (
+                      <span class="icon recent-post-card-title-icon">
+                        <img
+                          class="recent-post-card-title-icon"
+                          {...white_right_arrow}
+                        />
+                      </span>
+                    )
+                  }
+
+                  { 
+                    page.related_products && (
+                      <a
+                        href={`/` + post.Meta.URL_slug}
+                        class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
+                      >
+                        <Markdown>{post.Intro_text}</Markdown>
+                      </a>
+                    )
+                  }
                 </div>
               </div>
             </div>

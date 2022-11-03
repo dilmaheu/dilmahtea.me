@@ -174,6 +174,7 @@ const productsQuery = `
             data{
               attributes{
                 Title
+                Intro_text
                 Intro_blob{
                   data{
                     attributes{
@@ -371,6 +372,7 @@ const productsQuery = `
                   data{
                     attributes{
                       Title
+                      Intro_text
                       Intro_blob{
                         data{
                           attributes{
