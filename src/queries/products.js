@@ -89,7 +89,7 @@ const productsQuery = `
               }
             }
           }
-          recipes {
+          related_blogs {
             data{
               attributes{
                 Title
@@ -116,7 +116,7 @@ const productsQuery = `
               }
             }
           }
-          blogs {
+          related_recipes {
             data{
               attributes{
                 Title
@@ -133,6 +133,54 @@ const productsQuery = `
                   data{
                     attributes{
                       givenName
+                    }
+                  }
+                }
+                createdAt
+                Meta{
+                  URL_slug
+                }
+              }
+            }
+          }
+          related_how_tos {
+            data{
+              attributes{
+                Title
+                Intro_blob{
+                  data{
+                    attributes{
+                      url
+                      provider_metadata
+                      alternativeText
+                    }
+                  }
+                }
+                authors{
+                  data{
+                    attributes{
+                      givenName
+                    }
+                  }
+                }
+                createdAt
+                Meta{
+                  URL_slug
+                }
+              }
+            }
+          }
+          related_products {
+            data{
+              attributes{
+                Title
+                Intro_text
+                Intro_blob{
+                  data{
+                    attributes{
+                      url
+                      provider_metadata
+                      alternativeText
                     }
                   }
                 }
@@ -239,7 +287,7 @@ const productsQuery = `
                     }
                   }
                 }
-                recipes {
+                related_blogs {
                   data{
                     attributes{
                       Title
@@ -266,7 +314,7 @@ const productsQuery = `
                     }
                   }
                 }
-                blogs {
+                related_recipes {
                   data{
                     attributes{
                       Title
@@ -283,6 +331,54 @@ const productsQuery = `
                         data{
                           attributes{
                             givenName
+                          }
+                        }
+                      }
+                      createdAt
+                      Meta{
+                        URL_slug
+                      }
+                    }
+                  }
+                }
+                related_how_tos {
+                  data{
+                    attributes{
+                      Title
+                      Intro_blob{
+                        data{
+                          attributes{
+                            url
+                            provider_metadata
+                            alternativeText
+                          }
+                        }
+                      }
+                      authors{
+                        data{
+                          attributes{
+                            givenName
+                          }
+                        }
+                      }
+                      createdAt
+                      Meta{
+                        URL_slug
+                      }
+                    }
+                  }
+                }
+                related_products {
+                  data{
+                    attributes{
+                      Title
+                      Intro_text
+                      Intro_blob{
+                        data{
+                          attributes{
+                            url
+                            provider_metadata
+                            alternativeText
                           }
                         }
                       }
