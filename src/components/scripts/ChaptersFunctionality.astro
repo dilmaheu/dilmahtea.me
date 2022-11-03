@@ -39,15 +39,13 @@
       headingLinks[chapterIndex].classList.add("active");
       stickyheadingLinks[chapterIndex].classList.add("active");
 
-      const { height: navbarHeight } = navbar.getBoundingClientRect(),
+      const { bottom: navbarBottom } = navbar.getBoundingClientRect(),
         displayStickyHeader =
           window.innerWidth < 640 &&
-          firstChapter.getBoundingClientRect().y -
-            navbar.getBoundingClientRect().height <
-            0;
+          firstChapter.getBoundingClientRect().y - navbarBottom < 0;
 
       if (displayStickyHeader) {
-        stickyHeader.style.top = navbarHeight + "px";
+        stickyHeader.style.top = navbarBottom + "px";
 
         stickyHeaderHeading.textContent = activeChapterHeading.textContent;
 
@@ -55,7 +53,7 @@
           readPixels = Math.abs(containerRect.y - window.innerHeight),
           detailedBlogHeight = containerRect.height,
           minProgress =
-            ((window.innerHeight - navbarHeight) / detailedBlogHeight) * 100,
+            ((window.innerHeight - navbarBottom) / detailedBlogHeight) * 100,
           progress = (readPixels / detailedBlogHeight) * 100,
           correctedProgress =
             ((progress - minProgress) / (100 - minProgress)) * 100;
