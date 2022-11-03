@@ -26,6 +26,9 @@ export default defineConfig({
   ],
 
   vite: {
+    ssr: {
+      external: ["svgo"],
+    },
     plugins: [
       {
         name: "permissions-policy",

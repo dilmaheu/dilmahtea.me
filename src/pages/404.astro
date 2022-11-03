@@ -1,7 +1,7 @@
 ---
 import CMS from "@store/CMS";
-import Layout from "@layouts/Layout.astro";
 import BasicPage from "@pages/BasicPage.astro";
+import PageLayout from "@layouts/PageLayout.astro";
 import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 
 // fetching the error page
@@ -58,7 +58,8 @@ if (locale !== "en") {
   }
 </script>
 
-<Layout
+<PageLayout
+  page={_404Page}
   locale={locale}
   availableLocales={availableLocales}
   meta={_404Page.Meta}
@@ -69,4 +70,4 @@ if (locale !== "en") {
       .public_id}
 >
   <BasicPage page={_404Page} />
-</Layout>
+</PageLayout>

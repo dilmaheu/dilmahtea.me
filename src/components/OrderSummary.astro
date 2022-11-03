@@ -1,0 +1,239 @@
+---
+import CMS from "@store/CMS";
+import DynamicHTML from "@components/DynamicHTML.astro";
+
+const { page } = Astro.props,
+  { locale } = page,
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+---
+
+<style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
+  .order-summary {
+    @media (min-width: 1024px) {
+      padding: poly-fluid-clamp(
+        (
+          1024px: 28px 42px,
+          1440px: 32px 56px,
+        )
+      );
+    }
+  }
+
+  .order-charges {
+    & > div,
+    & + div {
+      @apply flex justify-between items-center;
+    }
+  }
+
+  .order-charges > div span {
+    &:first-of-type {
+      font-size: poly-fluid-clamp(
+        (
+          375px: 16px,
+          1440px: 18px,
+        )
+      );
+    }
+
+    &:last-of-type {
+      line-height: 110%;
+      font-size: poly-fluid-clamp(
+        (
+          375px: 28px,
+          1440px: 32px,
+        )
+      );
+    }
+  }
+
+  .order-total-container span {
+    &:first-of-type {
+      font-size: poly-fluid-clamp(
+        (
+          375px: 18px,
+          1440px: 24px,
+        )
+      );
+    }
+
+    &:last-of-type {
+      font-size: poly-fluid-clamp(
+        (
+          375px: 32px,
+          1440px: 42px,
+        )
+      );
+    }
+  }
+
+  .product-image {
+    $fluid-image-size: poly-fluid-clamp(
+      (
+        375px: 68px,
+        1440px: 100px,
+      )
+    );
+
+    width: $fluid-image-size;
+    height: $fluid-image-size;
+    min-width: $fluid-image-size;
+  }
+
+  .product-size {
+    font-size: poly-fluid-clamp(
+      (
+        375px: 14px,
+        1440px: 16px,
+      )
+    );
+  }
+
+  .product-name,
+  .subtotal-text {
+    font-size: poly-fluid-clamp(
+      (
+        375px: 18px,
+        1440px: 24px,
+      )
+    );
+  }
+
+  .subtotal {
+    font-size: poly-fluid-clamp(
+      (
+        375px: 32px,
+        1440px: 42px,
+      )
+    );
+  }
+
+  .shipping-charge-info {
+    font-size: poly-fluid-clamp(
+      (
+        375px: 16px,
+        1440px: 18px,
+      )
+    );
+  }
+</style>
+
+<div
+  class="order-summary text-dark2 flex flex-col justify-between gap-[26px] lg:gap-32 lg:min-h-full"
+>
+  <div class="flex flex-col gap-5">
+    <h5 class="alice text-[1.5rem] sm:text-[1.75rem] leading-[120%]">
+      {checkoutRecurData.text_order_summary}
+    </h5>
+
+    <DynamicHTML
+      htmlFn={(content) =>
+        Object.keys(window.cart)
+          .map((id) => {
+            const productData = window.cart[id],
+              names = JSON.parse(productData.names),
+              name = names[preferredLocale] || names["en"],
+              price = Number(productData.price).toFixed(2).replace(".", ",");
+
+            return window.replacePlaceholders(content, {
+              ...productData,
+              name,
+              price,
+            });
+          })
+          .join("")}
+    >
+      <div
+        class="product p-4 gap-3.5 flex items-center bg-lightgray2 rounded-[10px]"
+      >
+        <img
+          class="product-image"
+          src={`<placeholder name="image"></placeholder>`}
+          style="clip-path: url(#shipping-product-image)"
+        />
+
+        <div class="flex flex-col flex-grow gap-2.5">
+          <h6 class="product-name alice leading-[130%]">
+            <placeholder name="name"></placeholder> (<placeholder
+              name="quantity"></placeholder>)
+          </h6>
+
+          <div class="flex justify-between items-center gap-1.5">
+            <div class="product-size">
+              {checkoutRecurData.text_size}: <placeholder name="size"
+              ></placeholder>
+            </div>
+
+            <span class="product-price alice text-[1.75rem] leading-[120%]">
+              €<placeholder name="price"></placeholder>
+            </span>
+          </div>
+        </div>
+      </div>
+    </DynamicHTML>
+  </div>
+
+  {
+    page.type === "checkoutInformation" && (
+      <div>
+        <div class="flex justify-between items-center">
+          <span class="subtotal-text font-medium">
+            {checkoutRecurData.text_subtotal}
+          </span>
+
+          <span class="subtotal alice leading-[110%]">
+            €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+          </span>
+        </div>
+
+        <div class="shipping-charge-info">
+          {checkoutRecurData.text_shipping_calculated_at_checkout}
+        </div>
+      </div>
+    )
+  }
+
+  {
+    page.type === "checkoutShipping" && (
+      <div class="flex flex-col">
+        <div class="order-charges pb-3 flex flex flex-col gap-3">
+          <div>
+            <span>{checkoutRecurData.text_subtotal}</span>
+
+            <span class="order-subtotal alice">
+              €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+            </span>
+          </div>
+
+          <div>
+            <span>{checkoutRecurData.text_shipping}</span>
+
+            <span class="order-shipping-cost alice">
+              €<DynamicHTML htmlFn={() => window.cart.shippingCost} />
+            </span>
+          </div>
+
+          <div>
+            <span>{checkoutRecurData.text_tax}</span>
+
+            <span class="alice order-tax">
+              €<DynamicHTML htmlFn={() => window.cart.tax} />
+            </span>
+          </div>
+        </div>
+
+        <div class="order-total-container pt-3 border border-t-lightgreen">
+          <span class="font-semibold leading-[130%]">
+            {checkoutRecurData.text_total}
+          </span>
+
+          <span class="order-total alice leading-[110%]">
+            €<DynamicHTML htmlFn={() => window.cart.total} />
+          </span>
+        </div>
+      </div>
+    )
+  }
+</div>
