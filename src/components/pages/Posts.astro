@@ -2,13 +2,12 @@
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
+import Hero from "@components/Hero.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
-import HeroBackground from "@components/HeroBackground.astro";
 
 import RecurringImages from "@store/RecurringImages";
-import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
 
 const { white_cup, green_cup, left_post_leaf, green_leaf } = RecurringImages;
 
@@ -72,11 +71,7 @@ const { posts } = Astro.props.page,
 </style>
 
 {/* Hero Section */}
-<section class="hero overflow-hidden relative">
-  <UpdateHeroTopMargin />
-
-  <HeroBackground />
-
+<Hero>
   {/* Text Content */}
   <div class="wrapper hero-text-container h-full relative z-30">
     <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
@@ -147,7 +142,7 @@ const { posts } = Astro.props.page,
       ) */
     }
   </div>
-</section>
+</Hero>
 
 {/* Blob Image - Mobile View */}
 <div class="hero-img-sm-container block sm:hidden relative -mt-20 z-20 w-full">

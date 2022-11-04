@@ -3,15 +3,14 @@ import { parseHTML } from "linkedom";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
+import Hero from "@components/Hero.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import HeadingLinks from "@components/HeadingLinks.astro";
 import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
-import HeroBackground from "@components/HeroBackground.astro";
 import ChaptersFunctionality from "@components/scripts/ChaptersFunctionality.astro";
 
 import RecurringImages from "@store/RecurringImages";
-import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
 
 const { white_cup, green_book, white_right_arrow } = RecurringImages;
 
@@ -48,9 +47,9 @@ const contentHTML = await Astro.slots.render("post-details"),
     //   clip-path: url(#content-images-curve);
     // }
 
-    p a, 
-    ol a, 
-    ul a, 
+    p a,
+    ol a,
+    ul a,
     p s a,
     blockquote p a {
       @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat transition-all;
@@ -125,7 +124,7 @@ const contentHTML = await Astro.slots.render("post-details"),
     height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
   }
 
-  .recent-posts-img-container{
+  .recent-posts-img-container {
     width: 100%;
     max-height: 310px;
     aspect-ratio: 4.23 / 3.1;
@@ -133,11 +132,7 @@ const contentHTML = await Astro.slots.render("post-details"),
 </style>
 
 {/* Hero Section */}
-<section class="hero overflow-hidden relative">
-  <UpdateHeroTopMargin />
-
-  <HeroBackground />
-
+<Hero>
   {/* Text Content */}
   <div class="wrapper hero-text-container h-full relative z-30">
     <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
@@ -303,7 +298,7 @@ const contentHTML = await Astro.slots.render("post-details"),
       ) */
     }
   </div>
-</section>
+</Hero>
 
 {/* Blob Image - Mobile View */}
 <div class="hero-img-sm-container block sm:hidden w-full relative z-20 -mt-20">
@@ -452,9 +447,8 @@ const contentHTML = await Astro.slots.render("post-details"),
   recentPosts?.length > 0 && (
     <section class="wrapper">
       <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
-        {page.Relevant_recipes
-          && recurData.recipe_discover
-          || recurData.text_explore_the_world_of_kindness}
+        {(page.Relevant_recipes && recurData.recipe_discover) ||
+          recurData.text_explore_the_world_of_kindness}
       </h2>
 
       <ClipPathSVG
@@ -530,34 +524,27 @@ const contentHTML = await Astro.slots.render("post-details"),
                 )}
 
                 <div class="recent-post-card-title mt-[15px]">
-                  <a 
-                    class="alice"
-                    href={`/` + post.Meta.URL_slug}
-                  >
+                  <a class="alice" href={`/` + post.Meta.URL_slug}>
                     {post.Title}
                   </a>
 
-                  { 
-                    !page.related_products && (
-                      <span class="icon recent-post-card-title-icon">
-                        <img
-                          class="recent-post-card-title-icon"
-                          {...white_right_arrow}
-                        />
-                      </span>
-                    )
-                  }
+                  {!page.related_products && (
+                    <span class="icon recent-post-card-title-icon">
+                      <img
+                        class="recent-post-card-title-icon"
+                        {...white_right_arrow}
+                      />
+                    </span>
+                  )}
 
-                  { 
-                    page.related_products && (
-                      <a
-                        href={`/` + post.Meta.URL_slug}
-                        class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
-                      >
-                        <Markdown>{post.Intro_text}</Markdown>
-                      </a>
-                    )
-                  }
+                  {page.related_products && (
+                    <a
+                      href={`/` + post.Meta.URL_slug}
+                      class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
+                    >
+                      <Markdown>{post.Intro_text}</Markdown>
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

@@ -3,11 +3,10 @@ import Icon from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
+import Hero from "@components/Hero.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
-import HeroBackground from "@components/HeroBackground.astro";
-import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
@@ -59,7 +58,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
   }
 
-  .recent-post-card-title-icon, .product-card-title-icon {
+  .recent-post-card-title-icon,
+  .product-card-title-icon {
     height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
   }
 
@@ -105,11 +105,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 </style>
 
 <!-- Hero Section -->
-<section class="hero overflow-hidden relative">
-  <UpdateHeroTopMargin />
-
-  <HeroBackground />
-
+<Hero>
   {/* Text Content */}
   <div class="wrapper hero-text-container h-full relative z-30">
     <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
@@ -168,7 +164,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       ) */
     }
   </div>
-</section>
+</Hero>
 
 {/* Blob Image - Mobile View */}
 <div class="hero-img-sm-container block sm:hidden relative -mt-20 z-20 w-full">
@@ -239,10 +235,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
 
                   <span class="icon product-card-title-icon">
-                    <img
-                      class="w-full h-full"
-                      {...white_right_arrow}
-                    />
+                    <img class="w-full h-full" {...white_right_arrow} />
                   </span>
                 </div>
 
