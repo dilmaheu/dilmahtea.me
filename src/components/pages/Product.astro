@@ -200,57 +200,55 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
   <div class="grid gap-y-[50px]">
     {/* Products Section */}
-    <main>
-      <div
-        id="products"
-        role="list"
-        aria-label="Kindness Items"
-        class="wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))] justify-center gap-[50px]"
-      >
-        {
-          products.map((post, idx) => (
-            <div
-              role="listitem"
-              aria-label="Kindness Item"
-              class="flex flex-wrap bg-primary"
-              style="clip-path: url(#product-card-curve)"
-            >
-              <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-                <div class="product-img-container">
-                  <img
-                    src={
-                      imgSrcPrefix +
-                      post.Intro_blob.data.attributes.provider_metadata
-                        .public_id +
-                      `/small`
-                    }
-                    alt={post.Intro_blob.data.attributes.alternativeText}
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-              </a>
-
-              <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
-                <div class="product-card-title alice leading-[120%] md:leading-[110%]">
-                  <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
-
-                  <span class="icon product-card-title-icon">
-                    <img class="w-full h-full" {...white_right_arrow} />
-                  </span>
-                </div>
-
-                <a
-                  href={`/` + post.Meta.URL_slug}
-                  class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
-                >
-                  <Markdown>{post.Intro_text}</Markdown>
-                </a>
+    <div
+      id="products"
+      role="list"
+      aria-label="Kindness Items"
+      class="wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))] justify-center gap-[50px]"
+    >
+      {
+        products.map((post) => (
+          <div
+            role="listitem"
+            aria-label="Kindness Item"
+            class="flex flex-wrap bg-primary"
+            style="clip-path: url(#product-card-curve)"
+          >
+            <a class="block w-full" href={`/` + post.Meta.URL_slug}>
+              <div class="product-img-container">
+                <img
+                  src={
+                    imgSrcPrefix +
+                    post.Intro_blob.data.attributes.provider_metadata
+                      .public_id +
+                    `/small`
+                  }
+                  alt={post.Intro_blob.data.attributes.alternativeText}
+                  class="w-full h-full object-cover"
+                />
               </div>
+            </a>
+
+            <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
+              <div class="product-card-title alice leading-[120%] md:leading-[110%]">
+                <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+
+                <span class="icon product-card-title-icon">
+                  <img class="w-full h-full" {...white_right_arrow} />
+                </span>
+              </div>
+
+              <a
+                href={`/` + post.Meta.URL_slug}
+                class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
+              >
+                <Markdown>{post.Intro_text}</Markdown>
+              </a>
             </div>
-          ))
-        }
-      </div>
-    </main>
+          </div>
+        ))
+      }
+    </div>
 
     {/* Products impact Section */}
     <section role="complementary">
