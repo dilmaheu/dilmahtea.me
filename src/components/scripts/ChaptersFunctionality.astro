@@ -75,17 +75,24 @@
     });
 
     // collapse dropdown when an item is clicked
-    stickyheadingLinks.forEach((link) => {
+    [...headingLinks, ...stickyheadingLinks].forEach((link) => {
       link.addEventListener("click", (event) => {
-        event.preventDefault();
+        if (window.innerWidth < 640) {
+          event.preventDefault();
 
-        location.href = link.href;
+          const target = query(link.getAttribute("href")),
+            { offsetTop: targetOffsetTop } = target,
+            blockedAreaHeight =
+              readingProgressBar.getBoundingClientRect().bottom;
 
-        stickyheadingLinksContainer.classList.add("hidden");
+          stickyheadingLinksContainer.classList.add("hidden");
 
-        window.scrollTo({
-          top: scrollY - readingProgressBar.getBoundingClientRect().bottom,
-        });
+          location.href = link.href;
+
+          window.scrollTo({
+            top: targetOffsetTop - blockedAreaHeight,
+          });
+        }
       });
     });
   }
