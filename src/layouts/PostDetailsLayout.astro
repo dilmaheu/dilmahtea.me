@@ -18,6 +18,7 @@ const { page, posts, recurData, headingName } = Astro.props,
 
 // display relevant recipes instead of recent posts for RecipeDetails pages
 const recentPosts =
+  page.related_products?.data?.map(({ attributes }) => attributes) ||
   page.blogs?.data?.map(({ attributes }) => attributes) ||
   page.Relevant_recipes?.data?.map(({ attributes }) => attributes) ||
   posts.filter(({ Meta }) => Meta.URL_slug !== page.Meta.URL_slug);
@@ -427,12 +428,12 @@ const recentPosts =
 <slot name="product-kindness-impact" />
 
 {
-  page.Relevant_recipes?.data.length > 0 && (
+  recentPosts?.length > 0 && (
     <section class="wrapper">
       <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
-        {page.Relevant_recipes != null
-          ? recurData.recipe_discover
-          : recurData.text_explore_the_world_of_kindness}
+        {page.Relevant_recipes
+          && recurData.recipe_discover
+          || recurData.text_explore_the_world_of_kindness}
       </h2>
 
       <ClipPathSVG
@@ -507,15 +508,35 @@ const recentPosts =
                   </div>
                 )}
 
-                <div class="recent-post-card-title alice mt-[15px]">
-                  <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+                <div class="recent-post-card-title mt-[15px]">
+                  <a 
+                    class="alice"
+                    href={`/` + post.Meta.URL_slug}
+                  >
+                    {post.Title}
+                  </a>
 
-                  <span class="icon recent-post-card-title-icon">
-                    <img
-                      class="recent-post-card-title-icon"
-                      {...white_right_arrow}
-                    />
-                  </span>
+                  { 
+                    !page.related_products && (
+                      <span class="icon recent-post-card-title-icon">
+                        <img
+                          class="recent-post-card-title-icon"
+                          {...white_right_arrow}
+                        />
+                      </span>
+                    )
+                  }
+
+                  { 
+                    page.related_products && (
+                      <a
+                        href={`/` + post.Meta.URL_slug}
+                        class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
+                      >
+                        <Markdown>{post.Intro_text}</Markdown>
+                      </a>
+                    )
+                  }
                 </div>
               </div>
             </div>

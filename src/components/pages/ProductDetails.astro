@@ -17,7 +17,11 @@ const { page, recurData } = Astro.props,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 
 const infos = page.product_infos.data.map(({ attributes }) => attributes),
-  recipes = page.recipes.data.map(({ attributes }) => attributes);
+  blogs = page.related_blogs?.data?.map(({ attributes }) => attributes),
+  recipes = page.related_recipes?.data?.map(({ attributes }) => attributes),
+  how_tos = page.related_how_tos?.data?.map(({ attributes }) => attributes);
+
+const relevant_items = blogs.concat(recipes, how_tos);
 
 const Spent_amount = page.Price_breakdown.map(
   ({ Spent_amount }) => Spent_amount
@@ -35,7 +39,7 @@ const { url: productImgURL } = page.Intro_blob.data.attributes,
   tax = Math.round(productPrice * 9) / 100,
   productPriceIncludingTax = productPrice + tax,
   productNames = JSON.stringify(page.names),
-  productSize = page.Weight + "gm";
+  productSize = page.Weight_tea + page.Weight_tea_unit;
 
 const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
@@ -564,7 +568,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   }
 
   {
-    recipes.length > 0 && (
+    relevant_items.length > 0 && (
       <section class="mb-[50px]" slot="product-kindness-impact">
         <ClipPathSVG
           id="product-impact-bg-curve"
@@ -595,7 +599,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 "justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
               ]}
             >
-              {recipes.map((post) => (
+              {relevant_items.map((post) => (
                 <div
                   role="listitem"
                   aria-label="Kindness Item"
