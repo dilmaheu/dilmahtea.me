@@ -92,11 +92,30 @@
       },
 
       set(cart, id, productData) {
+        const productExistsInCart = !!cart[id];
+
         cart[id] = productData;
 
         localStorage.setItem("cart", JSON.stringify(cart));
 
         updateUI(cart);
+
+        if (productExistsInCart) {
+          const cartOverlayoutProductElement = document.getElementById(id),
+            cartOverlayoutProductAmountInput =
+              cartOverlayoutProductElement.querySelector(
+                ".cart-overlay-product-amount-input"
+              ),
+            cartOverlayoutProductPrice =
+              cartOverlayoutProductElement.querySelector(
+                ".cart-overlay-product-price"
+              );
+
+          cartOverlayoutProductAmountInput.value = productData.quantity;
+          cartOverlayoutProductPrice.textContent = "€" + productData.price;
+        } else {
+          window.addProductToCart(id);
+        }
 
         return true;
       },
