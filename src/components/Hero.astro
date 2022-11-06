@@ -1,6 +1,7 @@
 ---
 import RecurringImages from "@store/RecurringImages";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 // import ClippedPicture from "@components/ClippedPicture.astro";
 
 const { hero_background, hero_background_sm } = RecurringImages;
@@ -26,22 +27,7 @@ const { hero_background, hero_background_sm } = RecurringImages;
   class="hero overflow-hidden relative"
   style="clip-path: url(#hero-background-curve);"
 >
-  <script is:inline>
-    {
-      const hero = document.querySelector(".hero"),
-        navigation = document.querySelector("#navigation");
-
-      const updateHeroTopMargin = () => {
-        hero.style.marginTop = `-${
-          navigation.getBoundingClientRect().height
-        }px`;
-      };
-
-      updateHeroTopMargin();
-
-      window.addEventListener("resize", updateHeroTopMargin);
-    }
-  </script>
+  <UpdateTopMargin />
 
   <div
     class="hero-background absolute w-full h-full object-cover object-left-top"
