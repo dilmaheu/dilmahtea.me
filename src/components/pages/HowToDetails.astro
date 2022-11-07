@@ -1,4 +1,6 @@
 ---
+import { marked } from 'marked';
+import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
@@ -7,6 +9,11 @@ const { page, recurData } = Astro.props,
   { howTos } = page,
   headingName = recurData.text_practices,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+
+const url = 
+  `${ Astro.site.origin}/${page.locale}/${page.Meta.URL_slug === "/" 
+    ? "" 
+    : page.Meta.URL_slug}/`
 ---
 
 <style lang="scss">
@@ -141,3 +148,39 @@ const { page, recurData } = Astro.props,
     }
   </Fragment>
 </PostDetailsLayout>
+
+<Schema
+  item={{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: page.Title,
+    image: {
+      "@type": "ImageObject",
+      url: ( 
+        imgSrcPrefix +
+          page.Intro_blob.data.attributes.provider_metadata.public_id +
+          `/public` 
+      )
+    },
+    step: (
+      page.Method.map((method) => ({
+        "@type": "HowToSection",
+        name: method.Method_title,
+        itemListElement: (
+          method.Steps.map((step) => ({
+            "@type": "HowToStep",
+            name: step.Step_title,
+            text: step.Step_text,
+            url: `${url + `#` + step.Step_title.replaceAll(" ", "-")}`,
+            image: {
+              "@type": "ImageObject",
+              url: ( imgSrcPrefix +
+                    step.Step_blob?.data?.attributes.provider_metadata.public_id +
+                    `/public` )
+            }
+          })),
+        )
+      })),
+    )
+  }}
+/>
