@@ -5,6 +5,8 @@ import DynamicHTML from "@components/DynamicHTML.astro";
 const { page } = Astro.props,
   { locale } = page,
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+
+const isCheckoutShipping = page.type === "checkoutShipping";
 ---
 
 <style lang="scss">
@@ -18,6 +20,24 @@ const { page } = Astro.props,
           1440px: 32px 56px,
         )
       );
+    }
+
+    h5 {
+      font-size: poly-fluid-clamp(
+        (
+          375px: 24px,
+          1440px: 28px,
+        )
+      );
+
+      & + a {
+        font-size: poly-fluid-clamp(
+          (
+            375px: 18px,
+            1440px: 20px,
+          )
+        );
+      }
     }
   }
 
@@ -124,9 +144,22 @@ const { page } = Astro.props,
   class="order-summary text-dark2 flex flex-col justify-between gap-[26px] lg:gap-32 lg:min-h-full"
 >
   <div class="flex flex-col gap-5">
-    <h5 class="alice text-[1.5rem] sm:text-[1.75rem] leading-[120%]">
-      {checkoutRecurData.text_order_summary}
-    </h5>
+    <div class="flex justify-between items-center gap-2.5">
+      <h5 class="alice text-[1.5rem] sm:text-[1.75rem] leading-[120%]">
+        {checkoutRecurData.text_order_summary}
+      </h5>
+
+      {
+        isCheckoutShipping && (
+          <a
+            href="/checkout/cart"
+            class="font-medium text-primary leading-[120%] underline underline-offset-2"
+          >
+            {checkoutRecurData.text_edit_cart}
+          </a>
+        )
+      }
+    </div>
 
     <DynamicHTML
       htmlFn={(content) =>
