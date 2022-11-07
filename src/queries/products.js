@@ -22,7 +22,7 @@ const productsQuery = `
           Price
           Currency
           SKU
-          Barcode
+          GTIN_Barcode
           Weight
           Weight_unit
           Weight_tea
@@ -220,7 +220,7 @@ const productsQuery = `
                 Price
                 Currency
                 SKU
-                Barcode
+                GTIN_Barcode
                 Weight
                 Weight_unit
                 Weight_tea
