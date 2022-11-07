@@ -16,84 +16,38 @@ const { page } = Astro.props;
   }
 </style>
 
-<div class="flex md:flex-col gap-2.5 items-center">
-  <div
-    class="flex items-center bg-limedspruce text-lightgray border-2 border-lightgray rounded-full"
-  >
-    <button
-      class:list={[
-        `<placeholder name="remove_icon_btn_hidden_class"></placeholder>`,
-        "remove-item-btn w-9 h-8 md:w-11 md:h-12 py-1.5 md:py-3 pl-2.5 md:pl-3.5 pr-1.5",
-      ]}
-    >
-      <Icon
-        name="akar-icons:trash-can"
-        class:list="w-5 h-5 md:w-6 md:h-6 select-none cursor-pointer"
-      />
-    </button>
-
-    <button
-      data-action="decrement"
-      class:list={[
-        `<placeholder name="amount_decrement_btn_hidden_class"></placeholder>`,
-        "cart-product-amount-tweak-btn w-9 h-8 md:w-11 md:h-12 py-1.5 md:py-3 pl-2.5 md:pl-3.5 pr-1.5",
-      ]}
-    >
-      <Icon
-        name="akar-icons:minus"
-        class:list="w-5 h-5 md:w-6 md:h-6 select-none cursor-pointer"
-      />
-    </button>
-
-    <input
-      type="number"
-      min="1"
-      value={`<placeholder name="quantity"></placeholder>`}
-      class:list={[
-        "cart-product-amount-input",
-        "w-8 md:w-9 h-full text-center md:text-[1.125rem] bg-limedspruce outline-none",
-      ]}
-      required
-    />
-
-    <button
-      data-action="increment"
-      class="cart-product-amount-tweak-btn w-9 h-8 md:w-11 md:h-12 py-1.5 md:py-3 pl-1.5 pr-2.5 md:pr-3.5"
-    >
-      <Icon
-        name="akar-icons:plus"
-        class="w-5 h-5 md:w-6 md:h-6 select-none cursor-pointer"
-      />
-    </button>
-  </div>
-
+<div class="flex items-center bg-primary text-lightgray rounded-full">
   <button
+    data-action="decrement"
     class:list={[
-      `<placeholder name="remove_text_btn_hidden_class"></placeholder>`,
-      "remove-item-btn font-medium text-[1rem] leading-[130%] underline underline-offset-2",
+      `<placeholder name="amount_decrement_btn_hidden_class"></placeholder>`,
+      "cart-product-amount-tweak-btn w-9 h-8 md:w-11 md:h-12 py-1.5 md:py-3 pl-2.5 md:pl-3.5 pr-1.5",
     ]}
   >
-    {page.text_remove}
+    <Icon
+      name="akar-icons:minus"
+      class:list="w-5 h-5 md:w-6 md:h-6 select-none cursor-pointer"
+    />
+  </button>
+
+  <input
+    type="number"
+    min="1"
+    value={`<placeholder name="quantity"></placeholder>`}
+    class:list={[
+      "cart-product-amount-input",
+      "w-8 md:w-9 h-full text-center md:text-[1.125rem] bg-primary outline-none",
+    ]}
+    required
+  />
+
+  <button
+    data-action="increment"
+    class="cart-product-amount-tweak-btn w-9 h-8 md:w-11 md:h-12 py-1.5 md:py-3 pl-1.5 pr-2.5 md:pr-3.5"
+  >
+    <Icon
+      name="akar-icons:plus"
+      class="w-5 h-5 md:w-6 md:h-6 select-none cursor-pointer"
+    />
   </button>
 </div>
-
-<script>
-  declare global {
-    interface Window {
-      cart: Record<string, Record<string, string | number>>;
-    }
-  }
-
-  const removeItemBtns = document.querySelectorAll(".remove-item-btn");
-
-  removeItemBtns.forEach((button) => {
-    button.addEventListener("click", () => {
-      const parentCartProduct = button.closest(".cart-product"),
-        productId = parentCartProduct.id;
-
-      delete window.cart[productId];
-
-      parentCartProduct.remove();
-    });
-  });
-</script>

@@ -6,16 +6,46 @@ import DynamicHTML from "@components/DynamicHTML.astro";
 import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
-const { logo } = RecurringImages;
+const { logo, checkout_header_background, checkout_header_background_sm } =
+  RecurringImages;
 
 interface Props {
   docLocale: string;
   footerText: string;
+  isCartNavbar?: boolean;
   availableLocales: string[];
 }
 
-const { docLocale, footerText, availableLocales } = Astro.props as Props;
+const { docLocale, footerText, isCartNavbar, availableLocales } =
+  Astro.props as Props;
 ---
+
+{
+  isCartNavbar && (
+    <ClipPathSVG
+      id="cart-navbar-curve"
+      path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
+    />
+  )
+}
+
+<style
+  lang="scss"
+  define:vars={{
+    "cart-navbar-background": `url('${checkout_header_background.src}')`,
+    "cart-navbar-background-sm": `url('${checkout_header_background_sm.src}')`,
+  }}
+>
+  .cart-navbar {
+    background-size: cover;
+    clip-path: url(#cart-navbar-curve);
+    background-image: var(--cart-navbar-background-sm);
+
+    @media (min-width: 768px) {
+      background-image: var(--cart-navbar-background);
+    }
+  }
+</style>
 
 <style lang="scss">
   .brand-logo {
@@ -37,7 +67,10 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 
 <section
   id="navigation"
-  class="md:!static sticky !top-0 z-[999] w-full bg-cover bg-right-bottom"
+  class:list={[
+    isCartNavbar && "cart-navbar",
+    "md:!static sticky !top-0 z-[999] w-full bg-cover bg-right-bottom",
+  ]}
 >
   <div
     class:list={[
@@ -160,6 +193,7 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 <script is:inline>
   {
     const navigation = document.getElementById("navigation"),
+      isCartNavbar = navigation.classList.contains("cart-navbar"),
       translationNotFoundNotification = document.querySelector(
         ".translation-not-found-notification"
       );
@@ -171,10 +205,12 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
       // fix sticky navbar position if top notification is shown
       navigation.style.top = `${translationNotFoundNotificationHeight}px`;
 
-      navigation.style.backgroundImage =
-        scrollY > 0 || document.body.style.position === "fixed"
-          ? "url(/bg-images/nav-background.webp)"
-          : "unset";
+      if (!isCartNavbar) {
+        navigation.style.backgroundImage =
+          scrollY > 0 || document.body.style.position === "fixed"
+            ? "url(/bg-images/nav-background.webp)"
+            : "unset";
+      }
     });
   }
 </script>
@@ -196,7 +232,8 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     navigation = query("#navigation"),
     openCartBtn = query("#open-cart-btn"),
     sidebarOpenButton = query("#sidebar-open-btn"),
-    sidebarCloseButton = query("#sidebar-close-btn");
+    sidebarCloseButton = query("#sidebar-close-btn"),
+    isCartNavbar = navigation.classList.contains("cart-navbar");
 
   window.disableScrolling = () => {
     const overflowY =
@@ -273,7 +310,10 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     sidebar.style.display = "block";
     sidebarOpenButton.style.display = "none";
     sidebarCloseButton.style.display = "block";
-    navigation.style.backgroundImage = "url(/bg-images/nav-background.webp)";
+
+    if (!isCartNavbar) {
+      navigation.style.backgroundImage = "url(/bg-images/nav-background.webp)";
+    }
 
     window.disableScrolling();
 
@@ -284,7 +324,10 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     sidebar.style.display = "none";
     sidebarOpenButton.style.display = "block";
     sidebarCloseButton.style.display = "none";
-    navigation.style.backgroundImage = "unset";
+
+    if (!isCartNavbar) {
+      navigation.style.backgroundImage = "unset";
+    }
 
     window.enableScrolling();
   });

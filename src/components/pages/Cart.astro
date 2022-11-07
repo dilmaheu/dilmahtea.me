@@ -1,16 +1,63 @@
 ---
+import { Icon } from "astro-icon";
+
 import CMS from "@store/CMS";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
+
+import Navbar from "@components/Navbar.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import CartOverlay from "@components/CartOverlay.astro";
 import CartProductQuantityInput from "@components/CartProductQuantityInput.astro";
 
-const { page } = Astro.props,
-  { locale } = page,
-  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+interface Props {
+  page: Record<string, any>;
+  meta: Record<string, any>;
+  locale: string;
+  recurData: Record<string, any>;
+  metaImageID: string;
+  availableLocales: string[];
+}
+
+const { page, meta, locale, recurData, availableLocales, metaImageID } =
+  Astro.props;
+
+const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+
+const footerText = recurData.Footer_text.replaceAll(
+  "<current_year>",
+  `${new Date().getFullYear()}`
+);
 ---
 
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
+
+  #checkout-cart-container {
+    @include poly-fluid-sizing(
+      "padding-top",
+      (
+        639px: 90px,
+        640px: 95px,
+        768px: 100px,
+        960px: 110px,
+        1024px: 120px,
+        1280px: 130px,
+        1536px: 145px,
+        2050px: 165px,
+      )
+    );
+
+    > div {
+      padding: poly-fluid-clamp(
+        (
+          375px: 13px 24px 24px,
+          1440px: 29px 56px 56px,
+        )
+      );
+    }
+  }
 
   h1,
   #cart-subtotal,
@@ -52,11 +99,11 @@ const { page } = Astro.props,
     }
 
     hr {
-      @apply border border-lightgreen2 opacity-50;
+      @apply border border-lightgreen opacity-50;
     }
 
     .details-headings {
-      @apply font-semibold text-lightgray3 text-[1.5rem] leading-[130%];
+      @apply font-semibold text-primary text-[1.5rem] leading-[130%];
     }
   }
 
@@ -109,120 +156,179 @@ const { page } = Astro.props,
   }
 </style>
 
-<h1 class="alice mb-4 md:mb-6">{page.text_cart}</h1>
+<BaseLayout
+  meta={meta}
+  locale={locale}
+  availableLocales={availableLocales}
+  metaImageID={metaImageID}
+>
+  <Navbar
+    docLocale={locale}
+    footerText={footerText}
+    isCartNavbar={true}
+    availableLocales={availableLocales}
+  />
 
-<ClipPathSVG
-  id="cart-product-image"
-  path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
-/>
+  <div id="checkout-cart-container" class="min-h-screen flex flex-col">
+    <UpdateTopMargin />
 
-<div class="cart-products flex flex-col gap-6 md:gap-4 mb-24">
-  <div class="!hidden md:!grid details-headings">
-    <div>{page.text_product}</div>
-    <div>{checkoutRecurData.text_quantity}</div>
-    <div>{checkoutRecurData.text_subtotal}</div>
-  </div>
+    <div class="grow flex flex-col text-primary">
+      <h1 class="alice mb-4 md:mb-6">{page.text_cart}</h1>
 
-  <hr />
+      <ClipPathSVG
+        id="cart-product-image"
+        path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
+      />
 
-  <DynamicHTML
-    htmlFn={(content) =>
-      Object.keys(window.cart)
-        .map((id) => {
-          const productData = window.cart[id],
-            names = JSON.parse(productData.names),
-            name = names[preferredLocale] || names["en"],
-            price = Number(productData.price).toFixed(2).replace(".", ","),
-            remove_icon_btn_hidden_class =
-              productData.quantity === 1 ? "" : "hidden",
-            remove_text_btn_hidden_class = remove_icon_btn_hidden_class
-              ? ""
-              : "hidden",
-            amount_decrement_btn_hidden_class = remove_text_btn_hidden_class;
+      <div class="cart-products flex flex-col gap-6 md:gap-4 mb-9">
+        <div class="!hidden md:!grid details-headings">
+          <div>{page.text_product}</div>
+          <div>{checkoutRecurData.text_quantity}</div>
+          <div>{checkoutRecurData.text_subtotal}</div>
+        </div>
 
-          return window.replacePlaceholders(content, {
-            ...productData,
-            id,
-            name,
-            price,
-            remove_icon_btn_hidden_class,
-            remove_text_btn_hidden_class,
-            amount_decrement_btn_hidden_class,
-          });
-        })
-        .join("")}
-  >
-    <div
-      id={`<placeholder name="id"></placeholder>`}
-      class="cart-product items-center"
-    >
-      <div class="cart-product-details flex items-center">
-        <img
-          src={`<placeholder name="image"></placeholder>`}
-          style="min-width: 85px; width: 85px; height: 85px; clip-path: url(#cart-product-image);"
-        />
+        <hr />
 
-        <div class="grow flex flex-col gap-2">
-          <div class="cart-product-name alice">
-            <placeholder name="name"></placeholder>
-          </div>
+        <DynamicHTML
+          htmlFn={(content) =>
+            Object.keys(window.cart)
+              .map((id) => {
+                const productData = window.cart[id],
+                  names = JSON.parse(productData.names),
+                  name = names[preferredLocale] || names["en"],
+                  price = Number(productData.price)
+                    .toFixed(2)
+                    .replace(".", ","),
+                  remove_icon_btn_hidden_class =
+                    productData.quantity === 1 ? "" : "hidden",
+                  remove_text_btn_hidden_class = remove_icon_btn_hidden_class
+                    ? ""
+                    : "hidden",
+                  amount_decrement_btn_hidden_class =
+                    remove_text_btn_hidden_class;
 
-          <div class="cart-product-size">
-            {checkoutRecurData.text_size}: <placeholder name="size"
-            ></placeholder>
-          </div>
+                return window.replacePlaceholders(content, {
+                  ...productData,
+                  id,
+                  name,
+                  price,
+                  remove_icon_btn_hidden_class,
+                  remove_text_btn_hidden_class,
+                  amount_decrement_btn_hidden_class,
+                });
+              })
+              .join("")}
+        >
+          <div
+            id={`<placeholder name="id"></placeholder>`}
+            class="cart-product items-center p-[15px] rounded-[19px] bg-lightgray2"
+          >
+            <div class="cart-product-details flex items-center">
+              <img
+                src={`<placeholder name="image"></placeholder>`}
+                style="min-width: 85px; width: 85px; height: 85px; clip-path: url(#cart-product-image);"
+              />
 
-          <div class="flex justify-between items-center">
-            <div class="block md:hidden">
-              <CartProductQuantityInput page={page} />
+              <div class="grow flex flex-col gap-2">
+                <div class="flex justify-between gap-2.5">
+                  <div class="cart-product-name alice">
+                    <placeholder name="name"></placeholder>
+                  </div>
+
+                  <button class="remove-item-btn md:hidden">
+                    <Icon
+                      name="akar-icons:trash-can"
+                      class="w-[29px] h-[29px]"
+                    />
+                  </button>
+                </div>
+
+                <div class="cart-product-size">
+                  {checkoutRecurData.text_size}: <placeholder name="size"
+                  ></placeholder>
+                </div>
+
+                <div class="flex justify-between items-center">
+                  <div class="block md:hidden">
+                    <CartProductQuantityInput page={page} />
+                  </div>
+
+                  <div class="cart-product-price alice block md:hidden">
+                    €<placeholder name="price"></placeholder>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div class="cart-product-price alice block md:hidden">
+            <div class="hidden md:flex gap-7">
+              <CartProductQuantityInput page={page} />
+
+              <button class="remove-item-btn">
+                <Icon name="akar-icons:trash-can" class="w-[29px] h-[29px]" />
+              </button>
+            </div>
+
+            <div class="cart-product-price alice hidden md:block">
               €<placeholder name="price"></placeholder>
             </div>
           </div>
+        </DynamicHTML>
+
+        <hr />
+      </div>
+
+      <div class="flex flex-col mt-auto">
+        <div class="mb-3 md:mb-4 flex justify-between items-center">
+          <div class="flex flex-col gap-4">
+            <div class="alice text-total">{checkoutRecurData.text_total}</div>
+
+            <div class="hidden md:block text-shipping-charge-info">
+              {checkoutRecurData.text_shipping_calculated_at_checkout}
+            </div>
+          </div>
+
+          <div id="cart-subtotal" class="alice">
+            €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+          </div>
         </div>
+
+        <div class="md:hidden mb-5 text-shipping-charge-info">
+          {checkoutRecurData.text_shipping_calculated_at_checkout}
+        </div>
+
+        <a
+          href="/checkout/information"
+          class="self-end px-32 py-3 bg-primary font-bold text-lightgray rounded-full"
+        >
+          {page.text_go_to_checkout}
+        </a>
       </div>
-
-      <div class="hidden md:block">
-        <CartProductQuantityInput page={page} />
-      </div>
-
-      <div class="cart-product-price alice hidden md:block">
-        €<placeholder name="price"></placeholder>
-      </div>
-    </div>
-  </DynamicHTML>
-
-  <hr />
-</div>
-
-<div class="flex flex-col mt-auto">
-  <div class="mb-3 md:mb-4 flex justify-between items-center">
-    <div class="flex flex-col gap-4">
-      <div class="alice text-total">{checkoutRecurData.text_total}</div>
-
-      <div class="hidden md:block text-shipping-charge-info">
-        {checkoutRecurData.text_shipping_calculated_at_checkout}
-      </div>
-    </div>
-
-    <div id="cart-subtotal" class="alice">
-      €<DynamicHTML htmlFn={() => window.cart.subTotal} />
     </div>
   </div>
 
-  <div class="md:hidden mb-5 text-shipping-charge-info">
-    {checkoutRecurData.text_shipping_calculated_at_checkout}
-  </div>
+  <CartOverlay page={page} />
+</BaseLayout>
 
-  <a
-    href="/checkout/information"
-    class="self-end px-32 py-3 bg-lightgray font-bold text-primary rounded-full"
-  >
-    {page.text_go_to_checkout}
-  </a>
-</div>
+<script>
+  declare global {
+    interface Window {
+      cart: Record<string, Record<string, string | number>>;
+    }
+  }
+
+  const removeItemBtns = document.querySelectorAll(".remove-item-btn");
+
+  removeItemBtns.forEach((button) => {
+    button.addEventListener("click", () => {
+      const parentCartProduct = button.closest(".cart-product"),
+        productId = parentCartProduct.id;
+
+      delete window.cart[productId];
+
+      parentCartProduct.remove();
+    });
+  });
+</script>
 
 <script>
   import tweakAmount from "@utils/tweakAmount";
