@@ -642,37 +642,49 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     "@context": "https://schema.org",
     "@type": "Product",
     name: page.Title,
-    image: ( imgSrcPrefix +
-            page.Intro_blob.data.attributes.provider_metadata.public_id +
-            `/public` ),
-    description: `${marked.parse(page.Intro_text)
-                    .replace(/(<([^>]+)>)/gi, "")} ${marked
-                      .parse(page.Block_text)
-                      .replace(/(<([^>]+)>)/gi, "")}`,
+    image: ( 
+      imgSrcPrefix +
+        page.Intro_blob.data.attributes.provider_metadata.public_id +
+        `/public` 
+    ),
+    description: (
+      `${marked.parse(page.Intro_text)
+        .replace(/(<([^>]+)>)/gi, "")} ${
+          marked.parse(page.Block_text)
+            .replace(/(<([^>]+)>)/gi, "")
+      }`
+    ),
     sku: page.SKU,
-    mpn: page.Barcode,
+    gtin: (
+      page.GTIN_Barcode
+        .toString().length < 14 
+          ? ( `0` + page.GTIN_Barcode) 
+          : page.GTIN_Barcode
+    ),
     brand: {
       "@type": "Brand",
-      name: "Tea",
+      name: page.brand.data.attributes.Brand_name,
     },
     offers: {
-        "@type": "Offer",
-        url: `${ Astro.site.origin}/${page.locale}/${page.Meta.URL_slug === "/" 
-                ? "" 
-                : page.Meta.URL_slug}/`,
-        itemCondition: "https://schema.org/NewCondition",
-        availability: "https://schema.org/InStock",
-        price: page.Price,
-        priceCurrency: page.Currency,
-        priceValidUntil: new Date(),
-        "shippingDetails": {
-          "@type": "OfferShippingDetails",
-          "shippingDestination": {
-            "@type": "DefinedRegion",
-            "addressCountry": "EU"
-          },
-        }
-      },
+      "@type": "Offer",
+      url: (
+        `${ Astro.site.origin}/${page.locale}/${page.Meta.URL_slug === "/" 
+          ? "" 
+          : page.Meta.URL_slug}/`
+      ),
+      itemCondition: "https://schema.org/NewCondition",
+      availability: "https://schema.org/InStock",
+      price: page.Price,
+      priceCurrency: page.Currency,
+      priceValidUntil: new Date(),
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingDestination": {
+          "@type": "DefinedRegion",
+          "addressCountry": "EU"
+        },
+      }
+    },
   }}
 />
 
