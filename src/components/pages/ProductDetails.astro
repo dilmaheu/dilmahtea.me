@@ -710,7 +710,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       window.cart[id] = productData;
 
       form.reset();
-      productAmountPriceOutput.textContent = price.replace(".", ",");
+
+      productAmountPriceOutput.textContent = Number(price)
+        .toFixed(2)
+        .replace(".", ",");
     };
   });
 
