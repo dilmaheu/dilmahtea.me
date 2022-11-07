@@ -101,18 +101,21 @@
         updateUI(cart);
 
         if (productExistsInCart) {
-          const cartOverlayoutProductElement = document.getElementById(id),
-            cartOverlayoutProductAmountInput =
-              cartOverlayoutProductElement.querySelector(
-                ".cart-overlay-product-amount-input"
-              ),
-            cartOverlayoutProductPrice =
-              cartOverlayoutProductElement.querySelector(
-                ".cart-overlay-product-price"
-              );
+          const cartProductElement = document.getElementById(id),
+            cartProductAmountInputs = cartProductElement.querySelectorAll(
+              ".cart-product-amount-input, .cart-overlay-product-amount-input"
+            ),
+            cartProductPriceElements = cartProductElement.querySelectorAll(
+              ".cart-product-price, .cart-overlay-product-price"
+            );
 
-          cartOverlayoutProductAmountInput.value = productData.quantity;
-          cartOverlayoutProductPrice.textContent = "€" + productData.price;
+          cartProductAmountInputs.forEach((element) => {
+            element.value = productData.quantity;
+          });
+
+          cartProductPriceElements.forEach((element) => {
+            element.textContent = "€" + productData.price;
+          });
         } else {
           window.addProductToCart(id);
         }
