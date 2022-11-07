@@ -198,23 +198,13 @@ const footerText = recurData.Footer_text.replaceAll(
                   name = names[preferredLocale] || names["en"],
                   price = Number(productData.price)
                     .toFixed(2)
-                    .replace(".", ","),
-                  remove_icon_btn_hidden_class =
-                    productData.quantity === 1 ? "" : "hidden",
-                  remove_text_btn_hidden_class = remove_icon_btn_hidden_class
-                    ? ""
-                    : "hidden",
-                  amount_decrement_btn_hidden_class =
-                    remove_text_btn_hidden_class;
+                    .replace(".", ",");
 
                 return window.replacePlaceholders(content, {
                   ...productData,
                   id,
                   name,
                   price,
-                  remove_icon_btn_hidden_class,
-                  remove_text_btn_hidden_class,
-                  amount_decrement_btn_hidden_class,
                 });
               })
               .join("")}
@@ -338,26 +328,23 @@ const footerText = recurData.Footer_text.replaceAll(
       cart: Record<string, Record<string, string | number>>;
     }
   }
-
   const cartProductAmountInputs = document.querySelectorAll(
       ".cart-product-amount-input"
     ),
     cartProductAmountTweakBtns = document.querySelectorAll(
       ".cart-product-amount-tweak-btn"
+    ),
+    decreaseAmountBtns = document.querySelectorAll(
+      ".cart-product-amount-tweak-btn[data-action='decrement']"
     );
 
-  function tweakAmountCallback(input) {
-    if (
-      input.value === "1" ||
-      input.previousElementSibling.classList.contains("hidden")
-    ) {
-      input.previousElementSibling.classList.toggle("hidden");
-      input.parentElement.nextElementSibling.classList.toggle("hidden");
-      input.previousElementSibling.previousElementSibling.classList.toggle(
-        "hidden"
-      );
-    }
+  decreaseAmountBtns.forEach((button: HTMLButtonElement) => {
+    const input = button.nextElementSibling as HTMLInputElement;
 
+    input.value === "1" && (button.disabled = true);
+  });
+
+  function tweakAmountCallback(input) {
     const parentCartProduct = input.closest(".cart-product"),
       productPriceElements = parentCartProduct.querySelectorAll(
         ".cart-product-price"

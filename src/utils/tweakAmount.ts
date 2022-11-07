@@ -34,6 +34,10 @@ export default function (amountTweakBtns, amountInputs, tweakAmountCallback) {
         input.value = latestValidValue;
       }
 
+      const decrementBtn = input.previousElementSibling as HTMLButtonElement;
+
+      decrementBtn.disabled = input.value === "1" ? true : false;
+
       tweakAmountCallback(input);
     });
   });

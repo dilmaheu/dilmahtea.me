@@ -40,6 +40,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     @apply text-[1.125rem] sm:text-[1.5rem];
   }
 
+  .cart-overlay-product-amount-tweak-btn:disabled {
+    opacity: 30%;
+  }
+
   .cart-overlay-product-amount-input {
     -moz-appearance: textfield;
 
@@ -165,7 +169,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       >
                         <Icon
                           name="akar-icons:minus"
-                          class="w-5 h-5 select-none cursor-pointer"
+                          class="w-5 h-5 select-none"
                         />
                       </button>
 
@@ -186,7 +190,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       >
                         <Icon
                           name="akar-icons:plus"
-                          class="w-5 h-5 select-none cursor-pointer"
+                          class="w-5 h-5 select-none"
                         />
                       </button>
                     </div>
@@ -312,7 +316,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     ),
     cartOverlayProductAmountTweakBtns = document.querySelectorAll(
       ".cart-overlay-product-amount-tweak-btn"
+    ),
+    decreaseAmountBtns = document.querySelectorAll(
+      ".cart-overlay-product-amount-tweak-btn[data-action='decrement']"
     );
+
+  decreaseAmountBtns.forEach((button: HTMLButtonElement) => {
+    const input = button.nextElementSibling as HTMLInputElement;
+
+    input.value === "1" && (button.disabled = true);
+  });
 
   function tweakAmountCallback(input) {
     const parentCartProduct = input.closest(".cart-product"),
