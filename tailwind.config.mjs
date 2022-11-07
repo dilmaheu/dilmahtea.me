@@ -12,6 +12,7 @@ export default {
         dark2: "#2f2f2f",
         dark3: "#13110b",
         primary: "#2b4b50",
+        gray: "#8B8B8B",
         lightgray: "#e3dfde",
         lightgray2: "#faf4f2",
         lightgray3: "#e0e0e0",
