@@ -423,7 +423,10 @@ function totalTimeSm(x, y) {
             <div class="flex">
               <div class="w-auto recipe-sec-content-border" />
               <div class="w-full gap-[15px]">
-                <h3 class="alice leading-[130%] sm:leading-[120%] text-dark2 recipe-sec-coockingpart-title">
+                <h3 
+                  class="alice leading-[130%] sm:leading-[120%] text-dark2 recipe-sec-coockingpart-title"
+                  id={item.Cooking_part_name.replaceAll(" ", "-").replace(/\s+/g,'').trim()}
+                >
                   {item.Cooking_part_name}
                 </h3>
               </div>
@@ -431,7 +434,15 @@ function totalTimeSm(x, y) {
           </div>
 
           {item.Cooking_part_steps.map((step, idx) => (
-            <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+            <div 
+              class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+              id={ 
+                item.Cooking_part_name
+                  .replaceAll(" ", "-")
+                  .replace(/\s+/g,'').trim() + 
+                    `-step-` + ( idx + 1)
+              }
+            >
               <div class="flex gap-[15px]">
                 <div>
                   <div class="bg-primary flex items-center justify-center font-extrabold rounded-full recipe-sec-step-num",>
