@@ -1,6 +1,5 @@
 const recipesQuery = `
-  {
-    recipes {
+  recipes {
       data {
         id
         attributes {
@@ -21,6 +20,8 @@ const recipesQuery = `
                   }
                 }
                 Block_text
+                Cuisine
+                Category
                 Time_preparation
                 Time_cooking
                 Time_text
@@ -134,6 +135,8 @@ const recipesQuery = `
             }
           }
           Block_text
+          Cuisine
+          Category
           Time_preparation
           Time_cooking
           Time_text
@@ -233,7 +236,6 @@ const recipesQuery = `
         }
       }
     }
-  }
 `;
 
 export default recipesQuery;
