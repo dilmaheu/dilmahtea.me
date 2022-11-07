@@ -1,5 +1,6 @@
 const recipesQuery = `
-  recipes {
+  {
+    recipes {
       data {
         id
         attributes {
@@ -236,6 +237,7 @@ const recipesQuery = `
         }
       }
     }
+  }
 `;
 
 export default recipesQuery;
