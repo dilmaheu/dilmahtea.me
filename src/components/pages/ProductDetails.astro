@@ -655,14 +655,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       }`
     ),
     sku: page.SKU,
-    gtin: (
-      page?.GTIN_Barcode && (
-        page.GTIN_Barcode
-          .toString().length < 14 
-            ? ( `0` + page.GTIN_Barcode) 
-            : page.GTIN_Barcode
-      ) || ""
-    ),
+    gtin: page.GTIN_Barcode,
     brand: {
       "@type": "Brand",
       name: page.brand?.data?.attributes.Brand_name,
