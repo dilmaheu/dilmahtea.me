@@ -235,7 +235,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     openCartBtn = query("#open-cart-btn"),
     sidebarOpenButton = query("#sidebar-open-btn"),
     sidebarCloseButton = query("#sidebar-close-btn"),
-    isCartNavbar = navigation.classList.contains("cart-navbar");
+    isCartNavbar = !!navigation?.classList.contains("cart-navbar");
 
   window.disableScrolling = () => {
     const overflowY =
@@ -289,7 +289,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
   window.addEventListener("resize", () => {
     if (window.innerWidth > 639) {
       // enable scrolling only if cart and checkout is not open
-      if (cart.classList.contains("hidden")) window.enableScrolling();
+      if (cart?.classList.contains("hidden")) window.enableScrolling();
 
       window.removeEventListener("resize", updateSidebarTopPosition);
     } else if (sidebar.style.display === "block") {
