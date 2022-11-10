@@ -282,13 +282,14 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
                 ({ attributes }) => attributes.locale.substring(0, 2) === locale
               ).attributes;
 
-      const Layout = ["checkoutSuccess"].includes(page.type)
-        ? CheckoutPrePostLayout
-        : page.type === "cart"
-        ? Cart
-        : page.type.startsWith("checkout")
-        ? CheckoutLayout
-        : PageLayout;
+      const Layout =
+        page.type === "cart"
+          ? Cart
+          : page.type === "checkoutSuccess"
+          ? CheckoutSuccess
+          : page.type.startsWith("checkout")
+          ? CheckoutLayout
+          : PageLayout;
 
       return (
         <Layout
@@ -338,8 +339,6 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
             <CheckoutKindness page={page} recurData={recurData} />
           ) : page.type === `checkoutShipping` ? (
             <CheckoutShipping page={page} recurData={recurData} />
-          ) : page.type === `checkoutSuccess` ? (
-            <CheckoutSuccess page={page} recurData={recurData} />
           ) : page.type === `plan` ? (
             <CrowdfundingForm page={page} locale={locale} />
           ) : null}
