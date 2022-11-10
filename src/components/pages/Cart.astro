@@ -1,6 +1,5 @@
 ---
 import { Icon } from "astro-icon";
-import Markdown from "@astrojs/markdown-component";
 
 import CMS from "@store/CMS";
 import BaseLayout from "@layouts/BaseLayout.astro";
@@ -9,7 +8,7 @@ import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 import Navbar from "@components/Navbar.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
-import CartOverlay from "@components/CartOverlay.astro";
+import EmptyCartNotification from "@components/EmptyCartNotification.astro";
 import CartProductQuantityInput from "@components/CartProductQuantityInput.astro";
 
 interface Props {
@@ -173,31 +172,7 @@ const footerText = recurData.Footer_text.replaceAll(
   <div id="checkout-cart-container" class="min-h-screen flex flex-col">
     <UpdateTopMargin />
 
-    <div
-      id="empty-cart-notification"
-      class:list={[
-        "grow justify-self-center self-center text-primary",
-        "max-w-md gap-10 flex flex-col justify-center items-center",
-      ]}
-    >
-      <Icon
-        name="mi:shopping-cart"
-        class="w-[74px] h-[74px] md:w-[88px] md:h-[88px]"
-      />
-
-      <div
-        class="text-center font-semibold text-[1.125rem] md:text-[1.5rem] md:leading-[130%]"
-      >
-        <Markdown set:html={checkoutRecurData.text_empty_cart} />
-      </div>
-
-      <a
-        href="/tea"
-        class="w-full p-3.5 font-bold text-center text-lightgray bg-primary rounded-full"
-      >
-        {checkoutRecurData.text_continue_shopping}
-      </a>
-    </div>
+    <EmptyCartNotification locale={locale} />
 
     <div id="cart" class="grow flex flex-col text-primary">
       <h1 class="alice mb-4 md:mb-6">{page.text_cart}</h1>
@@ -339,13 +314,7 @@ const footerText = recurData.Footer_text.replaceAll(
   </div>
 </BaseLayout>
 
-<script>
-  declare global {
-    interface Window {
-      cart: Record<string, Record<string, string | number>>;
-    }
-  }
-
+<script defer>
   const removeItemBtns = document.querySelectorAll(".remove-item-btn"),
     cart = document.getElementById("cart"),
     emptyCartNotification = document.getElementById("empty-cart-notification");
@@ -360,9 +329,9 @@ const footerText = recurData.Footer_text.replaceAll(
       if (Object.keys(window.cart).length === 0) {
         cart.classList.add("hidden");
         emptyCartNotification.classList.remove("hidden");
-      } else {
-        parentCartProduct.remove();
       }
+
+      parentCartProduct.remove();
     });
   });
 </script>
