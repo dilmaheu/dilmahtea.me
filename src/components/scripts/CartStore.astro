@@ -101,7 +101,7 @@
         updateUI(cart);
 
         if (productExistsInCart) {
-          const cartProductElement = document.getElementById(productId),
+          const cartProductElement = id(productId),
             cartProductAmountInputs = cartProductElement.querySelectorAll(
               ".cart-product-amount-input, .cart-overlay-product-amount-input"
             ),
@@ -119,6 +119,19 @@
           });
         } else {
           window.addProductToCart(productId);
+
+          const newCartProductElement = id(productId),
+            newProductAmountInput = newCartProductElement.querySelectorAll(
+              ".cart-overlay-product-amount-input"
+            ),
+            newProductAmountTweakBtns = newCartProductElement.querySelectorAll(
+              ".cart-overlay-product-amount-tweak-btn"
+            );
+
+          window.listenToInputEvents(
+            newProductAmountTweakBtns,
+            newProductAmountInput
+          );
 
           if (Object.keys(cart).length === 1) {
             const cartOverlayContent = id("cart-overlay-content"),

@@ -132,14 +132,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       price,
                     })
                   );
-
-                  const newCartProduct = currentScript.previousElementSibling,
-                    newProductAmountInput = newCartProduct.querySelector(
-                      ".product-amount-input"
-                    );
-
-                  window.handleProductAmountInput &&
-                    window.handleProductAmountInput(newProductAmountInput);
                 };
 
                 if (Object.keys(window.cart).length === 0) {
@@ -262,6 +254,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       addProductToCart: (id: string) => void;
       cart: Record<string, Record<string, string | number>>;
       handleProductAmountInput: (input: HTMLInputElement) => void;
+      listenToInputEvents: (
+        tweakBtns: NodeListOf<HTMLButtonElement>,
+        input: HTMLInputElement
+      ) => void;
     }
   }
 </script>
@@ -378,4 +374,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     cartOverlayProductAmountInputs,
     tweakAmountCallback
   );
+
+  window.listenToInputEvents = (tweakBtns, input) => {
+    tweakAmount(tweakBtns, input, tweakAmountCallback);
+  };
 </script>
