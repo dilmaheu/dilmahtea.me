@@ -10,7 +10,6 @@ const recurringElementQuery = `
           text_add_to_cart
           text_add_to_cart_for
           text_edit_cart
-          text_empty_cart
           text_size
           text_quantity
           text_order_summary
@@ -23,6 +22,7 @@ const recurringElementQuery = `
           text_continue_to_payment
           text_return_to_information
           text_continue_shopping
+          text_empty_cart
           localizations {
             data {
               attributes {
@@ -32,7 +32,6 @@ const recurringElementQuery = `
                 text_add_to_cart
                 text_add_to_cart_for
                 text_edit_cart
-                text_empty_cart
                 text_size
                 text_quantity
                 text_order_summary
@@ -45,6 +44,7 @@ const recurringElementQuery = `
                 text_continue_to_payment
                 text_return_to_information
                 text_continue_shopping
+                text_empty_cart
               }
             }
           }

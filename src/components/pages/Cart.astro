@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon";
+import Markdown from "@astrojs/markdown-component";
 
 import CMS from "@store/CMS";
 import BaseLayout from "@layouts/BaseLayout.astro";
@@ -48,15 +49,15 @@ const footerText = recurData.Footer_text.replaceAll(
         2050px: 165px,
       )
     );
+  }
 
-    > div {
-      padding: poly-fluid-clamp(
-        (
-          375px: 13px 24px 24px,
-          1440px: 29px 56px 56px,
-        )
-      );
-    }
+  #cart {
+    padding: poly-fluid-clamp(
+      (
+        375px: 13px 24px 24px,
+        1440px: 29px 56px 56px,
+      )
+    );
   }
 
   h1,
@@ -172,7 +173,33 @@ const footerText = recurData.Footer_text.replaceAll(
   <div id="checkout-cart-container" class="min-h-screen flex flex-col">
     <UpdateTopMargin />
 
-    <div class="grow flex flex-col text-primary">
+    <div
+      id="empty-cart-notification"
+      class:list={[
+        "grow justify-self-center self-center text-primary",
+        "max-w-md gap-10 flex flex-col justify-center items-center",
+      ]}
+    >
+      <Icon
+        name="mi:shopping-cart"
+        class="w-[74px] h-[74px] md:w-[88px] md:h-[88px]"
+      />
+
+      <div
+        class="text-center font-semibold text-[1.125rem] md:text-[1.5rem] md:leading-[130%]"
+      >
+        <Markdown set:html={checkoutRecurData.text_empty_cart} />
+      </div>
+
+      <a
+        href="/tea"
+        class="w-full p-3.5 font-bold text-center text-lightgray bg-primary rounded-full"
+      >
+        {checkoutRecurData.text_continue_shopping}
+      </a>
+    </div>
+
+    <div id="cart" class="grow flex flex-col text-primary">
       <h1 class="alice mb-4 md:mb-6">{page.text_cart}</h1>
 
       <ClipPathSVG
@@ -190,24 +217,39 @@ const footerText = recurData.Footer_text.replaceAll(
         <hr />
 
         <DynamicHTML
-          htmlFn={(content) =>
-            Object.keys(window.cart)
-              .map((id) => {
-                const productData = window.cart[id],
-                  names = JSON.parse(productData.names),
-                  name = names[preferredLocale] || names["en"],
-                  price = Number(productData.price)
-                    .toFixed(2)
-                    .replace(".", ",");
+          voidFn={(content, currentScript) => {
+            const cart = document.getElementById("cart"),
+              emptyCartNotification = document.getElementById(
+                "empty-cart-notification"
+              );
 
-                return window.replacePlaceholders(content, {
-                  ...productData,
-                  id,
-                  name,
-                  price,
-                });
-              })
-              .join("")}
+            if (Object.keys(window.cart).length === 0) {
+              cart.classList.add("hidden");
+            } else {
+              emptyCartNotification.classList.add("hidden");
+            }
+
+            currentScript.insertAdjacentHTML(
+              "beforebegin",
+              Object.keys(window.cart)
+                .map((id) => {
+                  const productData = window.cart[id],
+                    names = JSON.parse(productData.names),
+                    name = names[preferredLocale] || names["en"],
+                    price = Number(productData.price)
+                      .toFixed(2)
+                      .replace(".", ",");
+
+                  return window.replacePlaceholders(content, {
+                    ...productData,
+                    id,
+                    name,
+                    price,
+                  });
+                })
+                .join("")
+            );
+          }}
         >
           <div
             id={`<placeholder name="id"></placeholder>`}
@@ -306,7 +348,9 @@ const footerText = recurData.Footer_text.replaceAll(
     }
   }
 
-  const removeItemBtns = document.querySelectorAll(".remove-item-btn");
+  const removeItemBtns = document.querySelectorAll(".remove-item-btn"),
+    cart = document.getElementById("cart"),
+    emptyCartNotification = document.getElementById("empty-cart-notification");
 
   removeItemBtns.forEach((button) => {
     button.addEventListener("click", () => {
@@ -315,7 +359,12 @@ const footerText = recurData.Footer_text.replaceAll(
 
       delete window.cart[productId];
 
-      parentCartProduct.remove();
+      if (Object.keys(window.cart).length === 0) {
+        cart.classList.add("hidden");
+        emptyCartNotification.classList.remove("hidden");
+      } else {
+        parentCartProduct.remove();
+      }
     });
   });
 </script>
@@ -328,6 +377,7 @@ const footerText = recurData.Footer_text.replaceAll(
       cart: Record<string, Record<string, string | number>>;
     }
   }
+
   const cartProductAmountInputs = document.querySelectorAll(
       ".cart-product-amount-input"
     ),
