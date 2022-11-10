@@ -44,6 +44,24 @@ const { page } = Astro.props,
     );
   }
 
+  .post-container {
+    > img {
+      clip-path: url(#post-container-top-curve);
+
+      @media (min-width: 640px) {
+        clip-path: url(#post-container-left-curve);
+      }
+    }
+
+    > div {
+      clip-path: url(#post-container-bottom-curve);
+
+      @media (min-width: 640px) {
+        clip-path: url(#post-container-right-curve);
+      }
+    }
+  }
+
   .linked-post-text {
     font-size: poly-fluid-clamp(
       (
@@ -54,15 +72,25 @@ const { page } = Astro.props,
   }
 </style>
 
-<!-- <ClipPathSVG
+<ClipPathSVG
+  id="post-container-top-curve"
+  path="M0.513,0.005 C0.359,0.005,0.102,-0.024,0.043,0.141 C-0.003,0.266,-0.005,0.637,0.005,1 h0.985 c0.005,-0.205,0.027,-0.443,-0.018,-0.74 C0.924,-0.057,0.729,0.004,0.513,0.004"
+/>
+
+<ClipPathSVG
+  id="post-container-bottom-curve"
+  path="M1,0 H0 v0.41 c0,0.698,0.081,0.583,0.526,0.583 S1,1,1,0.37 c0,-0.083,-0.003,-0.21,0,-0.37"
+/>
+
+<ClipPathSVG
   id="post-container-left-curve"
-  path="M0.007,0.487 C0.007,0.642,-0.022,0.898,0.143,0.958 C0.268,1,0.639,1,1,0.995 L1,0.01 C0.797,0.005,0.559,-0.018,0.262,0.028 C-0.054,0.076,0.007,0.271,0.007,0.487"
+  path="M0.005,0.487 c0,0.155,-0.028,0.411,0.137,0.471 c0.125,0.046,0.495,0.047,0.859,0.038 V0.009 C0.795,0.005,0.557,-0.017,0.26,0.028 C-0.057,0.076,0.005,0.271,0.005,0.486"
 />
 
 <ClipPathSVG
   id="post-container-right-curve"
-  path="M0.043,1 C0.043,1,0.043,1,0.043,1 C0.043,1,-0.053,1,0.043,1 C0.043,0.781,0.043,0.367,0.043,0 C0.191,0.003,0.339,0,0.416,0 C1,0,0.994,0.013,0.994,0.475 C0.994,0.936,1,1,0.453,1 C0.216,1,0.097,1,0.043,1"
-/> -->
+  path="M0,0 v1 h0.428 c0.676,0,0.565,-0.064,0.565,-0.526 S1,0,0.39,0 C0.31,0,0.155,0.003,0,0"
+/>
 
 <div class="flex flex-col gap-[30px] items-center">
   <div class="flex flex-col gap-5 items-center text-center">
@@ -73,10 +101,9 @@ const { page } = Astro.props,
     <div><Markdown>{page.Intro_text}</Markdown></div>
   </div>
 
-  <div class="max-w-4xl flex flex-col sm:flex-row bg-lightgray">
+  <div class="post-container max-w-4xl flex flex-col sm:flex-row">
     <img
       class="w-full sm:w-52 h-48 sm:h-auto object-cover"
-      style="clip-path: url(#post-container-left-curve);"
       alt={EnvironmentalAdvocacyImage.alternativeText}
       src={imgSrcPrefix +
         EnvironmentalAdvocacyImage.provider_metadata.public_id +
@@ -84,8 +111,7 @@ const { page } = Astro.props,
     />
 
     <div
-      class="grow flex flex-col gap-8 sm:gap-9 px-[22px] sm:px-8 pt-6 pb-9 sm:pb-5"
-      style="clip-path: url(#post-container-right-curve);"
+      class="grow flex flex-col gap-8 sm:gap-9 px-[22px] sm:px-8 pt-6 pb-9 sm:pb-5 bg-lightgray"
     >
       <div class="linked-post-text font-medium text-primary">
         <Markdown>{page.linked_post_text}</Markdown>
