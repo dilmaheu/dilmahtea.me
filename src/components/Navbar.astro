@@ -203,7 +203,8 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
 
       if (!isCartNavbar) {
         navigation.style.backgroundImage =
-          scrollY > 0 || document.body.style.position === "fixed"
+          window.innerWidth < 768 &&
+          (scrollY > 0 || document.body.style.position === "fixed")
             ? "url(/bg-images/nav-background.webp)"
             : "unset";
       }
