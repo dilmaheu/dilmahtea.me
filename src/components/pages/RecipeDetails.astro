@@ -367,12 +367,14 @@ function totalTimeSm(x, y) {
         >
           {recurData.recipe_ingredients}
         </h3>
-        <div
+
+        <label
           class="inline-grid grid-flow-col items-center relative recipe-sec-servingsize-input-container"
         >
-          <label class="text-xs leading-[150%] font-bold text-dark2"
-            >{recurData.recipe_serving_size}:</label
-          >
+          <span class="text-xs leading-[150%] font-bold text-dark2">
+            {recurData.recipe_serving_size}:
+          </span>
+
           <select
             id="recipeSecServingsize"
             name="recipeSecServingsize"
@@ -381,13 +383,13 @@ function totalTimeSm(x, y) {
               "max-w-[65px] md:max-w-[83px] text-lightgray2 py-[5px] pl-[11px] rounded-[7px] recipe-sec-servingsize-input",
             ]}
           >
-            <option value="1"> 1x</option>
-            <option value="2"> 2x</option>
-            <option value="3"> 3x</option>
-            <option value="5"> 5x</option>
-            <option value="10"> 10x</option>
+            <option value="1">1x</option>
+            <option value="2">2x</option>
+            <option value="3">3x</option>
+            <option value="5">5x</option>
+            <option value="10">10x</option>
           </select>
-        </div>
+        </label>
       </div>
 
       <div class="mt-5 md:mt-[25px] flex flex-wrap sm:flex-nowrap gap-2">
@@ -399,19 +401,20 @@ function totalTimeSm(x, y) {
               </h4>
 
               {item.Cooking_part_ingredients.map((item, idx) => (
-                <div class="inline-flex items-center w-full">
+                <label class="inline-flex items-center w-full">
                   <div class="flex">
-                    <label class="recipe-sec-ingridients-checkbox-label">
+                    <div class="recipe-sec-ingridients-checkbox-container">
                       <input type="checkbox" />
                       <span class="recipe-sec-ingridients-checkbox" />
-                    </label>
+                    </div>
                   </div>
+
                   <div class="text-base md:text-lg leading-[150%] text-dark2 ml-2.5">
                     {item.Cooking_part_ingredient_amount}
                     {item.Cooking_part_ingredient_measurements_unit}
                     {item.Cooking_part_ingredient_name}
                   </div>
-                </div>
+                </label>
               ))}
             </div>
           ))
