@@ -20,33 +20,6 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
   Astro.props as Props;
 ---
 
-{
-  isCartNavbar && (
-    <ClipPathSVG
-      id="cart-navbar-curve"
-      path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
-    />
-  )
-}
-
-<style
-  lang="scss"
-  define:vars={{
-    "cart-navbar-background": `url('${checkout_header_background.src}')`,
-    "cart-navbar-background-sm": `url('${checkout_header_background_sm.src}')`,
-  }}
->
-  .cart-navbar {
-    background-size: cover;
-    clip-path: url(#cart-navbar-curve);
-    background-image: var(--cart-navbar-background-sm);
-
-    @media (min-width: 768px) {
-      background-image: var(--cart-navbar-background);
-    }
-  }
-</style>
-
 <style lang="scss">
   .brand-logo {
     height: clamp(38px, 5vw, 50px);
@@ -69,9 +42,30 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
   id="navigation"
   class:list={[
     isCartNavbar && "cart-navbar",
-    "md:!static sticky !top-0 z-[999] w-full bg-cover bg-right-bottom",
+    "md:!relative sticky !top-0 z-[999] w-full bg-cover bg-right-bottom",
   ]}
 >
+  {
+    isCartNavbar && (
+      <Fragment>
+        <ClipPathSVG
+          id="cart-navbar-curve"
+          path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
+        />
+
+        <img
+          id="cart-navbar-bg"
+          class="absolute top-0 left-0 w-full h-full"
+          alt=""
+          src={checkout_header_background.src}
+          sizes="(min-width: 1440px) 1440px, 100vw"
+          srcset={`${checkout_header_background_sm.src} 640w, ${checkout_header_background.src} 1440w`}
+          style="clip-path: url(#cart-navbar-curve)"
+        />
+      </Fragment>
+    )
+  }
+
   <div
     class:list={[
       "flex justify-between items-center",
@@ -233,6 +227,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     sidebar = query("#sidebar"),
     navigation = query("#navigation"),
     openCartBtn = query("#open-cart-btn"),
+    cartNavbarBg = query("#cart-navbar-bg"),
     sidebarOpenButton = query("#sidebar-open-btn"),
     sidebarCloseButton = query("#sidebar-close-btn"),
     isCartNavbar = !!navigation?.classList.contains("cart-navbar");
@@ -292,11 +287,15 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
       if (cart?.classList.contains("hidden")) window.enableScrolling();
 
       window.removeEventListener("resize", updateSidebarTopPosition);
+
+      cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)";
     } else if (sidebar.style.display === "block") {
       // @ts-ignore
       window.disableScrolling();
 
       window.addEventListener("resize", updateSidebarTopPosition);
+
+      cartNavbarBg.style.clipPath = "none";
     }
   });
 
@@ -313,7 +312,9 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     sidebarOpenButton.style.display = "none";
     sidebarCloseButton.style.display = "block";
 
-    if (!isCartNavbar) {
+    if (isCartNavbar) {
+      cartNavbarBg.style.clipPath = "none";
+    } else {
       navigation.style.backgroundImage = "url(/bg-images/nav-background.webp)";
     }
 
@@ -327,7 +328,9 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     sidebarOpenButton.style.display = "block";
     sidebarCloseButton.style.display = "none";
 
-    if (!isCartNavbar) {
+    if (isCartNavbar) {
+      cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)";
+    } else {
       navigation.style.backgroundImage = "unset";
     }
 
