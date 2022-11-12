@@ -188,9 +188,7 @@ const shippingMethods = page.shipping_methods
               type="radio"
               name="shipping_method"
               value={method}
-              {
-              /* @ts-ignore */ }
-              cost={cost}
+              data-cost={cost}
               class:list={[
                 "hover:brightness-50 active:brightness-150",
                 "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
@@ -263,7 +261,7 @@ const shippingMethods = page.shipping_methods
     window.checkoutInfo[input.name] = input.value;
 
     if (isShippingMethodInput) {
-      window.checkoutInfo.shipping_cost = input.getAttribute("cost");
+      window.checkoutInfo.shipping_cost = input.getAttribute("data-cost");
     }
 
     isShippingMethodInput && window.cart.updateUI(window.cart);
