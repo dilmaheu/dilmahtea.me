@@ -1,7 +1,8 @@
 ---
 import RecurringImages from "@store/RecurringImages";
-import BasicPageHero from "@components/BasicPageHero.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
+import BasicPageHero from "@components/BasicPageHero.astro";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { light_green_cup, light_green_flower } = RecurringImages;
 
@@ -59,7 +60,9 @@ const { page, locale } = Astro.props,
 <form
   role="main"
   method="POST"
-  action="https://dev.pay.scripts.dilmahtea.me"
+  action={shouldDisplayExperimentals
+    ? "https://dev.pay.scripts.dilmahtea.me"
+    : "https://pay.scripts.dilmahtea.me"}
   class="mx-auto pt-[130px] pb-[100px] max-w-[940px]"
 >
   <div>

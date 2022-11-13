@@ -2,6 +2,7 @@
 import CMS from "@store/CMS";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import OrderSummary from "@components/OrderSummary.astro";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { page, recurData } = Astro.props,
   { locale } = page,
@@ -109,7 +110,9 @@ const shippingMethods = page.shipping_methods
     method="POST"
     id="shipping-details"
     class="flex flex-col gap-12"
-    action="https://dev.pay.scripts.dilmahtea.me"
+    action={shouldDisplayExperimentals
+      ? "https://dev.pay.scripts.dilmahtea.me"
+      : "https://pay.scripts.dilmahtea.me"}
   >
     <DynamicHTML
       htmlFn={() => {
