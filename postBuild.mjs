@@ -22,6 +22,7 @@ const CSPRecord = {
     "https://imagedelivery.net",
     "data:",
   ],
+  "media-src": ["data:"],
   "font-src": ["'self'"],
   "worker-src": ["blob:"],
   "connect-src": ["'self'", "https://api.openreplay.com"],

@@ -515,4 +515,52 @@ function totalTimeSm(x, y) {
       ))
     }
   </Chapterize>
+
+  <script slot="wake-lock-script">
+    const interactionEvents = [
+      "click",
+      "touchstart",
+      "keydown",
+      "scroll",
+      "mousemove",
+    ];
+
+    if ("wakeLock" in navigator) {
+      const firstInteractionEventListener = () => {
+        let wakeLock;
+
+        const requestWakeLock = async () => {
+          try {
+            wakeLock = await navigator.wakeLock.request();
+          } catch (err) {}
+        };
+
+        requestWakeLock();
+
+        document.addEventListener("visibilitychange", () => {
+          wakeLock &&
+            document.visibilityState === "visible" &&
+            requestWakeLock();
+        });
+
+        interactionEvents.forEach((eventType) => {
+          document.removeEventListener(
+            eventType,
+            firstInteractionEventListener
+          );
+        });
+      };
+
+      interactionEvents.forEach((eventType) => {
+        document.addEventListener(eventType, firstInteractionEventListener);
+      });
+    } else {
+      const playBackgroundVideoScript = document.createElement("script");
+
+      playBackgroundVideoScript.type = "module";
+      playBackgroundVideoScript.src = "/scripts/play-background-video.js";
+
+      document.body.appendChild(playBackgroundVideoScript);
+    }
+  </script>
 </PostDetailsLayout>
