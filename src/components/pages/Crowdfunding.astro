@@ -2,15 +2,14 @@
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
+import Hero from "@components/Hero.astro";
 import PlanCards from "@components/PlanCards.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
-import HeroBackground from "@components/HeroBackground.astro";
 import CrowdfundingProgress from "@components/CrowdfundingProgress.astro";
 
 import RecurringImages from "@store/RecurringImages";
-import UpdateHeroTopMargin from "@scripts/UpdateHeroTopMargin.astro";
 
 const {
   white_cup,
@@ -54,11 +53,7 @@ const goal = 100000,
 </style>
 
 {/* Hero Section */}
-<section class="hero overflow-hidden relative">
-  <UpdateHeroTopMargin />
-
-  <HeroBackground />
-
+<Hero>
   {/* Text Content */}
   <div class="wrapper hero-text-container h-full relative z-30">
     <div
@@ -146,7 +141,7 @@ const goal = 100000,
       </div>
     </div>
   </div>
-</section>
+</Hero>
 
 {/* Blob Image - Mobile View */}
 <div class="hero-img-sm-container block sm:hidden w-full -mt-20 relative z-20">
