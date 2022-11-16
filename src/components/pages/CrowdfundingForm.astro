@@ -1,7 +1,8 @@
 ---
 import RecurringImages from "@store/RecurringImages";
-import BasicPageHero from "@components/BasicPageHero.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
+import BasicPageHero from "@components/BasicPageHero.astro";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { light_green_cup, light_green_flower } = RecurringImages;
 
@@ -59,7 +60,9 @@ const { page, locale } = Astro.props,
 <form
   role="main"
   method="POST"
-  action="https://dev.pay.scripts.dilmahtea.me"
+  action={shouldDisplayExperimentals
+    ? "https://dev.pay.scripts.dilmahtea.me"
+    : "https://pay.scripts.dilmahtea.me"}
   class="mx-auto pt-[130px] pb-[100px] max-w-[940px]"
 >
   <div>
@@ -190,15 +193,15 @@ const { page, locale } = Astro.props,
       </label>
     </div>
 
-    <input type="hidden" name="perk" value={perk} required />
+    <input type="hidden" name="perk" value={perk} />
 
-    <input type="hidden" name="product_name" value={productName} required />
+    <input type="hidden" name="product_name" value={productName} />
 
-    <input type="hidden" name="price" value={price} required />
+    <input type="hidden" name="price" value={price} />
 
-    <input type="hidden" name="payment_type" value="crowdfunding" required />
+    <input type="hidden" name="payment_type" value="crowdfunding" />
 
-    <input type="hidden" name="locale" value={locale} required />
+    <input type="hidden" name="locale" value={locale} />
 
     <DynamicHTML
       htmlFn={(content) => {

@@ -2,18 +2,15 @@
 import CMS from "@store/CMS";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import OrderSummary from "@components/OrderSummary.astro";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
-const { page, recurData } = Astro.props;
+const { page, recurData } = Astro.props,
+  { locale } = page,
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
-const { locale } = page,
-  { data: checkoutInformationData } = CMS.get("checkoutInformation"),
-  { URL_slug: checkoutInfoPageSlug } = checkoutInformationData.attributes.Meta,
-  checkoutInfoPageLink = "/" + locale + "/" + checkoutInfoPageSlug;
-
-const checkoutShipping = CMS.get("checkoutShipping", locale),
-  shippingMethods = checkoutShipping.shipping_methods
-    .split("\n")
-    .map((methodString) => methodString.split(" - "));
+const shippingMethods = page.shipping_methods
+  .split("\n")
+  .map((methodString) => methodString.split(" - "));
 ---
 
 <style lang="scss">
@@ -62,13 +59,9 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
           )
         );
 
-        :global(input) {
-          all: unset;
-
+        p {
           @apply text-primary grow;
 
-          box-shadow: 0 4px theme("colors.lightgray2"),
-            0 6px theme("colors.primary");
           font-size: poly-fluid-clamp(
             (
               375px: 18px,
@@ -77,7 +70,7 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
           );
         }
 
-        button {
+        a {
           @apply font-semibold text-primary leading-[130%];
 
           font-size: poly-fluid-clamp(
@@ -102,26 +95,30 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
   }
 </style>
 
-<script
-  define:vars={{ checkoutInfoPageLink, companyName: recurData.Company_name }}
->
-  if (Object.keys(window.checkoutContactInfo).length === 0) {
-    location.href = checkoutInfoPageLink;
+<script define:vars={{ companyName: recurData.Company_name }}>
+  if (Object.keys(window.checkoutInfo).length === 0) {
+    location.href = "/" + window.preferredLocale + "/checkout/information";
+  } else if (!window.checkoutInfo.kindness_cause) {
+    location.href = "/" + window.preferredLocale + "/checkout/kindness";
   }
 
   window.companyName = companyName;
 </script>
 
-<form
-  method="POST"
-  id="shipping-details"
-  class="flex flex-col gap-12"
-  action="https://dev.pay.scripts.dilmahtea.me"
->
-  <DynamicHTML
-    htmlFn={() => {
-      const { origin, pathname } = location,
-        product_desc = Object.keys(window.cart)
+<section class="w-full lg:w-[66.67%]">
+  <form
+    method="POST"
+    id="shipping-details"
+    class="flex flex-col gap-12"
+    action={shouldDisplayExperimentals
+      ? "https://dev.pay.scripts.dilmahtea.me"
+      : "https://pay.scripts.dilmahtea.me"}
+  >
+    <DynamicHTML
+      htmlFn={() => {
+        const { origin, pathname } = location;
+
+        const product_desc = Object.keys(window.cart)
           .map((id) => {
             const productData = window.cart[id],
               names = JSON.parse(productData.names),
@@ -129,210 +126,171 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
 
             return `${productData.quantity}x ${name}`;
           })
-          .join(", "),
-        paymentInfo = {
-          ...window.checkoutContactInfo,
+          .join(", ");
+
+        const paymentInfo = {
+          ...window.checkoutInfo,
           product_name: window.companyName,
           product_desc,
-          price: window.cart.total,
+          tax: window.cart.tax.split(",").join("."),
+          price: window.cart.total.split(",").join("."),
           payment_type: "ecommerce",
           locale: preferredLocale,
           origin_url: origin + pathname,
-          success_url: `${origin}/${preferredLocale}/thank-you-for-your-order`,
+          success_url: `${origin}/${preferredLocale}/checkout/success?clear=cart`,
         };
 
-      delete paymentInfo.email;
-      delete paymentInfo.shipping_method;
+        return Object.keys(paymentInfo)
+          .map(
+            (name) =>
+              `<input type="hidden" name="${name}" value="${paymentInfo[name]}" />`
+          )
+          .join("");
+      }}
+    />
 
-      return Object.keys(paymentInfo)
-        .map(
-          (name) =>
-            `<input type="hidden" name="${name}" value="${paymentInfo[name]}" />`
-        )
-        .join("");
-    }}
-  />
+    <div class="p-4 gap-6 flex flex-col bg-lightgray2 rounded-2xl">
+      <div class="shipping-detail">
+        <div>{page.text_contact}</div>
 
-  <div class="p-4 gap-6 flex flex-col bg-lightgray2 rounded-2xl">
-    <div class="shipping-detail">
-      <div>{checkoutShipping.text_contact}</div>
+        <div>
+          <p>
+            <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
+          </p>
 
-      <div>
-        <DynamicHTML
-          htmlFn={() =>
-            `<input
-              type="email"
-              name="email"
-              value="${window.checkoutContactInfo.email}"
-              class="!shadow-none"
-              readonly
-              required
-            />`}
-        />
+          <a href="/checkout/information?change=email">
+            {page.text_change}
+          </a>
+        </div>
+      </div>
 
-        <button>{checkoutShipping.text_change}</button>
+      <div class="border border-dark opacity-80"></div>
+
+      <div class="shipping-detail">
+        <div>{page.text_delivery_address}</div>
+
+        <div>
+          <p>
+            <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
+          </p>
+
+          <a href="/checkout/information?change=street">
+            {page.text_change}
+          </a>
+        </div>
       </div>
     </div>
 
-    <div class="border border-dark opacity-80"></div>
+    <div class="flex flex-col gap-4">
+      <h4 class="alice">{page.text_shipping_method}</h4>
 
-    <div class="shipping-detail">
-      <div>{checkoutShipping.text_delivery_address}</div>
-
-      <div>
-        <DynamicHTML
-          htmlFn={() =>
-            `<input
-              type="text"
-              name="delivery_address"
-              value="${window.checkoutContactInfo.delivery_address}"
-              class="!shadow-none"
-              readonly
+      {
+        shippingMethods.map(([method, cost, methodLocalName], i) => (
+          <label class="gap-5 flex items-center">
+            <input
+              type="radio"
+              name="shipping_method"
+              value={method}
+              data-cost={cost}
+              class:list={[
+                "hover:brightness-50 active:brightness-150",
+                "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
+                "checked:before:block before:hidden before:w-2 before:h-2 before:bg-primary before:rounded-full",
+              ]}
+              checked={i === 0 ? "" : undefined}
               required
-            />`}
-        />
+            />
 
-        <button>{checkoutShipping.text_change}</button>
-      </div>
+            <span class="gap-3 flex items-center">
+              <span class="shipping-method font-semibold text-dark2 leading-[130%]">
+                {methodLocalName}
+              </span>
+
+              <span class="w-1 h-1 bg-primary rounded-full" />
+
+              <span class="shipping-cost font-semibold text-dark2 leading-[130%]">
+                €{cost}
+              </span>
+            </span>
+          </label>
+        ))
+      }
     </div>
-  </div>
 
-  <div class="flex flex-col gap-4">
-    <h4 class="alice">{checkoutShipping.text_shipping_method}</h4>
+    <div class="block lg:hidden -mb-6">
+      <OrderSummary page={page} />
+    </div>
 
-    {
-      shippingMethods.map(([method, cost, methodLocalName], i) => (
-        <label class="gap-5 flex items-center">
-          <input
-            type="radio"
-            name="shipping_method"
-            value={`${method}:${cost}`}
-            class:list={[
-              "hover:brightness-50 active:brightness-150",
-              "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
-              "checked:before:block before:hidden before:w-2 before:h-2 before:bg-primary before:rounded-full",
-            ]}
-            checked={i === 0}
-            required
-          />
-
-          <span class="gap-3 flex items-center">
-            <span class="shipping-method font-semibold text-dark2 leading-[130%]">
-              {methodLocalName}
-            </span>
-
-            <span class="w-1 h-1 bg-primary rounded-full" />
-
-            <span class="shipping-cost font-semibold text-dark2 leading-[130%]">
-              €{cost}
-            </span>
-          </span>
-        </label>
-      ))
-    }
-  </div>
-
-  <div class="block lg:hidden -mb-6">
-    <OrderSummary page={page} />
-  </div>
-
-  <div
-    class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-9 sm:gap-12"
-  >
-    <button
-      type="submit"
-      class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
+    <div
+      class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-9 sm:gap-12"
     >
-      {checkoutShipping.text_continue_to_payment}
-    </button>
+      <button
+        type="submit"
+        class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
+      >
+        {checkoutRecurData.text_continue_to_payment}
+      </button>
 
-    <a href={checkoutInfoPageLink} class="text-primary font-bold">
-      {checkoutShipping.text_return_to_information}
-    </a>
-  </div>
-</form>
+      <a href="/checkout/information" class="text-primary font-bold">
+        {checkoutRecurData.text_return_to_information}
+      </a>
+    </div>
+  </form>
+</section>
+
+<section class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-lightgreen">
+  <OrderSummary page={page} />
+</section>
 
 <script>
   declare global {
     interface Window {
-      checkoutContactInfo: Record<string, string>;
+      checkoutInfo: Record<string, string>;
     }
   }
 
-  const updateCheckoutContactInfo = (input) => {
-    let newProperties;
+  const shippingDetailsForm = document.getElementById("shipping-details"),
+    priceInputElement = document.querySelector(
+      "input[name='price']"
+    ) as HTMLInputElement;
+
+  let shippingCostInputElement = document.querySelector(
+    "input[name='shipping_cost']"
+  ) as HTMLInputElement;
+
+  const updateCheckoutInfo = (input) => {
     const isShippingMethodInput = input.name === "shipping_method";
 
-    if (!isShippingMethodInput) {
-      newProperties = {
-        [input.name]: input.value,
-      };
-    } else {
-      const [shipping_method, shipping_cost] = input.value.split(":");
+    window.checkoutInfo[input.name] = input.value;
 
-      newProperties = {
-        shipping_method,
-        shipping_cost: Number(shipping_cost),
-      };
+    if (isShippingMethodInput) {
+      window.checkoutInfo.shipping_cost = input.getAttribute("data-cost");
     }
-
-    window.checkoutContactInfo = {
-      ...window.checkoutContactInfo,
-      ...newProperties,
-    };
 
     isShippingMethodInput && window.cart.updateUI(window.cart);
 
-    localStorage.setItem(
-      "checkout-contact-info",
-      JSON.stringify(window.checkoutContactInfo)
-    );
+    localStorage.setItem("checkout-info", JSON.stringify(window.checkoutInfo));
+
+    priceInputElement.value = window.cart.total.split(",").join(".");
+
+    if (!shippingCostInputElement) {
+      shippingCostInputElement = document.createElement("input");
+
+      shippingCostInputElement.type = "hidden";
+      shippingCostInputElement.name = "shipping_cost";
+      shippingCostInputElement.value = window.checkoutInfo.shipping_cost;
+
+      shippingDetailsForm.prepend(shippingCostInputElement);
+    }
   };
 
-  const shippingDetailsForm = document.getElementById("shipping-details");
-
   if (shippingDetailsForm) {
-    const shippingDetailsChangeBtns = [
-        ...shippingDetailsForm.querySelectorAll(
-          '#shipping-details button:not([type="submit"])'
-        ),
-      ],
-      shippingDetailsFormSelectables = [
+    const shippingDetailsFormSelectables = [
         ...shippingDetailsForm.querySelectorAll<HTMLElement>("input, button"),
       ],
       shippingMethodInputs = shippingDetailsForm.querySelectorAll(
         'input[type="radio"]'
       );
-
-    shippingDetailsForm.addEventListener("submit", (event) => {
-      const button = event.submitter as HTMLElement;
-
-      if (shippingDetailsChangeBtns.includes(button)) {
-        event.preventDefault();
-
-        const detailInputElement = button.parentElement
-          .firstElementChild as HTMLInputElement;
-
-        const inputLength = detailInputElement.value.length;
-
-        detailInputElement.classList.toggle("!shadow-none");
-        detailInputElement.readOnly = !detailInputElement.readOnly;
-
-        if (!detailInputElement.readOnly) {
-          const { type: currentInputType } = detailInputElement;
-
-          detailInputElement.type = "text";
-
-          detailInputElement.setSelectionRange(inputLength, inputLength);
-
-          detailInputElement.type = currentInputType;
-
-          detailInputElement.focus();
-        } else {
-          updateCheckoutContactInfo(detailInputElement);
-        }
-      }
-    });
 
     shippingDetailsFormSelectables.forEach((selectable, i) => {
       if (selectable.tagName === "INPUT") {
@@ -351,13 +309,16 @@ const checkoutShipping = CMS.get("checkoutShipping", locale),
     });
 
     shippingMethodInputs.forEach((input: HTMLInputElement) => {
-      const { shipping_method } = window.checkoutContactInfo;
+      const { shipping_cost, shipping_method } = window.checkoutInfo;
 
-      if (!shipping_method && input.checked) updateCheckoutContactInfo(input);
-      else if (input.value === shipping_method) input.checked = true;
+      if (!(shipping_cost && shipping_method) && input.checked) {
+        updateCheckoutInfo(input);
+      } else if (input.value === shipping_method) {
+        input.checked = true;
+      }
 
       // the click event is named poorly, it handles all kinds of activation
-      input.addEventListener("click", () => updateCheckoutContactInfo(input));
+      input.addEventListener("click", () => updateCheckoutInfo(input));
     });
   }
 </script>

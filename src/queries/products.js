@@ -22,7 +22,7 @@ const productsQuery = `
           Price
           Currency
           SKU
-          Barcode
+          GTIN_Barcode
           Weight
           Weight_unit
           Weight_tea
@@ -63,6 +63,13 @@ const productsQuery = `
             }
           }
           createdAt
+          brand{
+            data{
+              attributes{
+                Brand_name
+              }
+            }
+          }
           product_infos{
             data{
               attributes{
@@ -220,7 +227,7 @@ const productsQuery = `
                 Price
                 Currency
                 SKU
-                Barcode
+                GTIN_Barcode
                 Weight
                 Weight_unit
                 Weight_tea
@@ -261,6 +268,13 @@ const productsQuery = `
                   }
                 }
                 createdAt
+                brand{
+                  data{
+                    attributes{
+                      Brand_name
+                    }
+                  }
+                }
                 product_infos{
                   data{
                     attributes{

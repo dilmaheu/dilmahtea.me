@@ -8,7 +8,8 @@ const htmlFilePaths = await globby([
     "./dist/**/*.html",
     "!./dist/**/404/index.html",
   ]),
-  _404HtmlFilePaths = await globby("./dist/**/404/index.html");
+  _404HtmlFilePaths = await globby("./dist/**/404/index.html"),
+  allHtmlFilePaths = [...htmlFilePaths, ..._404HtmlFilePaths];
 
 /* CSP = Content Security Policy */
 
@@ -21,6 +22,7 @@ const CSPRecord = {
     "https://imagedelivery.net",
     "data:",
   ],
+  "media-src": ["data:"],
   "font-src": ["'self'"],
   "worker-src": ["blob:"],
   "connect-src": ["'self'", "https://api.openreplay.com"],
@@ -29,25 +31,33 @@ const CSPRecord = {
 };
 
 await Promise.all(
-  htmlFilePaths.map(async (path) => {
-    const htmlContent = await fs.readFile(path, "utf8");
+  allHtmlFilePaths.map(async (path) => {
+    const htmlContent = await fs.readFile(path, "utf8"),
+      { document } = await parseHTML(htmlContent),
+      astroIcons = document.querySelectorAll("[astro-icon]");
 
-    const { document } = await parseHTML(htmlContent);
-
-    const scripts = document.querySelectorAll("script");
-
-    [...scripts].forEach(({ textContent }) => {
-      const hash = crypto
-        .createHash("sha256")
-        .update(textContent)
-        .digest("base64");
-
-      const source = `'sha256-${hash}'`;
-
-      if (!CSPRecord["script-src"].includes(source)) {
-        CSPRecord["script-src"].push(source);
-      }
+    [...astroIcons].forEach((icon) => {
+      icon.removeAttribute("astro-icon");
     });
+
+    await fs.writeFile(path, document.toString());
+
+    if (htmlFilePaths.includes(path)) {
+      const scripts = document.querySelectorAll("script");
+
+      [...scripts].forEach(({ textContent }) => {
+        const hash = crypto
+          .createHash("sha256")
+          .update(textContent)
+          .digest("base64");
+
+        const source = `'sha256-${hash}'`;
+
+        if (!CSPRecord["script-src"].includes(source)) {
+          CSPRecord["script-src"].push(source);
+        }
+      });
+    }
   })
 );
 

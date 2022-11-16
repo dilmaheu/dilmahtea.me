@@ -1,5 +1,7 @@
 ---
 import { Icon } from "astro-icon";
+import { marked } from 'marked';
+import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
@@ -52,6 +54,20 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     row-gap: clamp(0.938rem, 3vw + 0.3rem, 3.125rem);
   }
 
+  .product-amount-tweak-btn:disabled {
+    opacity: 30%;
+  }
+
+  .product-amount-input {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
   .product-details img {
     width: 100%;
     max-height: 530px;
@@ -70,7 +86,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     }
   }
 
-  .product-kindness-impact-img-container{
+  .product-kindness-impact-img-container {
     width: 100%;
     max-height: 310px;
     aspect-ratio: 4.23 / 3.1;
@@ -166,16 +182,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     slot="tea-details-header"
     class="cart-adding-form flex flex-wrap justify-between items-center gap-x-[31px] w-full xl:w-2/3"
   >
-    <input type="hidden" name="sku" value={productSKU} required />
-    <input type="hidden" name="names" value={productNames} required />
-    <input type="hidden" name="image" value={productImgURL} required />
-    <input type="hidden" name="tax" value={tax} required />
-    <input
-      type="hidden"
-      name="price"
-      value={productPriceIncludingTax}
-      required
-    />
+    <input type="hidden" name="sku" value={productSKU} />
+    <input type="hidden" name="names" value={productNames} />
+    <input type="hidden" name="image" value={productImgURL} />
+
+    <input type="hidden" name="tax" value={tax} />
+    <input type="hidden" name="price" value={productPriceIncludingTax} />
 
     <fieldset>
       <legend
@@ -205,38 +217,40 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       </label>
     </fieldset>
 
-    <fieldset>
-      <legend
+    <div>
+      <span
         class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
       >
         {checkoutRecurData.text_quantity}:
-      </legend>
+      </span>
 
       <div class="flex items-center text-primary bg-lightgray rounded-full">
-        <button data-action="decrement" class="w-10 h-11 py-2.5 pl-3 pr-1">
-          <Icon
-            name="akar-icons:minus"
-            class="w-6 h-6 select-none cursor-pointer"
-          />
+        <button
+          disabled
+          data-action="decrement"
+          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1"
+        >
+          <Icon name="akar-icons:minus" class="w-6 h-6 select-none" />
         </button>
 
         <input
           type="number"
           name="quantity"
+          aria-label="Quantity"
           min="1"
           value="1"
           class="product-amount-input w-12 h-full text-center lg:text-lg bg-lightgray outline-none"
           required
         />
 
-        <button data-action="increment" class="w-10 h-11 py-2.5 pl-1 pr-3">
-          <Icon
-            name="akar-icons:plus"
-            class="w-6 h-6 select-none cursor-pointer"
-          />
+        <button
+          data-action="increment"
+          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
+        >
+          <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
         </button>
       </div>
-    </fieldset>
+    </div>
 
     <button
       class:list={[
@@ -258,16 +272,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     slot="cart-adding-form-sm"
     class="cart-adding-form-sm flex justify-between flex-wrap gap-4 mt-8"
   >
-    <input type="hidden" name="sku" value={productSKU} required />
-    <input type="hidden" name="names" value={productNames} required />
-    <input type="hidden" name="image" value={productImgURL} required />
-    <input type="hidden" name="tax" value={tax} required />
-    <input
-      type="hidden"
-      name="price"
-      value={productPriceIncludingTax}
-      required
-    />
+    <input type="hidden" name="sku" value={productSKU} />
+    <input type="hidden" name="names" value={productNames} />
+    <input type="hidden" name="image" value={productImgURL} />
+
+    <input type="hidden" name="tax" value={tax} />
+    <input type="hidden" name="price" value={productPriceIncludingTax} />
 
     <fieldset>
       <legend
@@ -297,17 +307,20 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       </label>
     </fieldset>
 
-    <fieldset>
-      <legend
+    <div>
+      <span
         class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]"
       >
         {checkoutRecurData.text_quantity}:
-      </legend>
+      </span>
 
       <div
         class="w-fit flex items-center text-lightgray bg-primary rounded-full"
       >
-        <button data-action="decrement" class="w-10 h-11 py-2.5 pl-3 pr-1">
+        <button
+          data-action="decrement"
+          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1"
+        >
           <Icon
             name="akar-icons:minus"
             class="w-6 h-6 select-none cursor-pointer"
@@ -317,20 +330,24 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         <input
           type="number"
           name="quantity"
+          aria-label="Quantity"
           min="1"
           value="1"
           class="product-amount-input w-12 h-full text-center lg:text-lg bg-primary outline-none"
           required
         />
 
-        <button data-action="increment" class="w-10 h-11 py-2.5 pl-1 pr-3">
+        <button
+          data-action="increment"
+          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
+        >
           <Icon
             name="akar-icons:plus"
             class="w-6 h-6 select-none cursor-pointer"
           />
         </button>
       </div>
-    </fieldset>
+    </div>
 
     <button
       class:list={[
@@ -362,11 +379,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             </h2>
             <div>
               <Markdown>
-                {page.Price_breakdown_text.split('<')[0]}
+                {page.Price_breakdown_text.split("<")[0]}
                 <span class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] text-primary">
-                  {page.Price_breakdown_text.match("<total_spent>") && `€${Total_spent_amount.toFixed(2)}`}
+                  {page.Price_breakdown_text.match("<total_spent>") &&
+                    `€${Total_spent_amount.toFixed(2)}`}
                 </span>
-                {page.Price_breakdown_text.split('>')[1]}
+                {page.Price_breakdown_text.split(">")[1]}
               </Markdown>
             </div>
 
@@ -389,7 +407,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           clip-path: url(#price-breakdown-curve)`}
                     class="flex justify-center items-center w-[62px] h-[62px] text-sm lg:text-base font-medium lg:font-normal"
                   >
-                    { ((item.Spent_amount * 100) / Total_spent_amount).toFixed(2) }%
+                    {((item.Spent_amount * 100) / Total_spent_amount).toFixed(
+                      2
+                    )}
+                    %
                   </div>
 
                   <div class="grid">
@@ -410,7 +431,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       {
         page.Transparency.length > 0 && (
           <div class="chapter">
-            <h2 id="price-breakdown">{recurData.product_transparency_title}</h2>
+            <h2 id="transparency">{recurData.product_transparency_title}</h2>
             <p>{page.Transparency_text}</p>
 
             <div class="grid gap-5">
@@ -421,8 +442,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       <img
                         src={
                           imgSrcPrefix +
-                          item.Transparency_item_icon.data.attributes.provider_metadata
-                            .public_id +
+                          item.Transparency_item_icon.data.attributes
+                            .provider_metadata.public_id +
                           `/small`
                         }
                         alt=""
@@ -431,7 +452,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     </div>
 
                     <div class="w-full">
-                      <button 
+                      <button
                         class:list={[
                           "accordion w-full cursor-pointer text-left leading-[150%]",
                           index === 0 ? "is-active" : "",
@@ -439,7 +460,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       >
                         {item.Transparency_item_title}
                       </button>
-                      <div 
+                      <div
                         class:list={[
                           "accordion-content text-lg lg:text-xl leading-[150%] m-0",
                           index === 0 ? "is-open" : "",
@@ -459,7 +480,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       {
         page.Impact.length > 0 && (
           <div class="chapter">
-            <h2 id="price-breakdown">{recurData.product_impact_title}</h2>
+            <h2 id="impact">{recurData.product_impact_title}</h2>
             <p>{page.Impact_text}</p>
 
             <div class="grid gap-5">
@@ -470,8 +491,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       <img
                         src={
                           imgSrcPrefix +
-                          item.Impact_item_icon.data.attributes.provider_metadata
-                            .public_id +
+                          item.Impact_item_icon.data.attributes
+                            .provider_metadata.public_id +
                           `/small`
                         }
                         alt=""
@@ -480,7 +501,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     </div>
 
                     <div class="w-full">
-                      <button 
+                      <button
                         class:list={[
                           "accordion w-full cursor-pointer text-left leading-[150%]",
                           index === 0 ? "is-active" : "",
@@ -488,7 +509,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       >
                         {item.Impact_item_title}
                       </button>
-                      <div 
+                      <div
                         class:list={[
                           "accordion-content text-lg lg:text-xl leading-[150%] m-0",
                           index === 0 ? "is-open" : "",
@@ -580,7 +601,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   class="flex flex-wrap bg-lightgray"
                   style="clip-path: url(#card-curve)"
                 >
-                  <a class="product-kindness-impact-img-container block w-full" href={`/` + post.Meta.URL_slug}>
+                  <a
+                    class="product-kindness-impact-img-container block w-full"
+                    href={`/` + post.Meta.URL_slug}
+                  >
                     <img
                       src={
                         imgSrcPrefix +
@@ -635,7 +659,55 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   }
 </PostDetailsLayout>
 
+<Schema
+  item={{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: page.Title,
+    image: ( 
+      imgSrcPrefix +
+        page.Intro_blob.data.attributes.provider_metadata.public_id +
+        `/public` 
+    ),
+    description: (
+      `${marked.parse(page.Intro_text)
+        .replace(/(<([^>]+)>)/gi, "")} ${
+          marked.parse(page.Block_text)
+            .replace(/(<([^>]+)>)/gi, "")
+      }`
+    ),
+    sku: page.SKU,
+    gtin: page.GTIN_Barcode,
+    brand: {
+      "@type": "Brand",
+      name: page.brand?.data?.attributes.Brand_name,
+    },
+    offers: {
+      "@type": "Offer",
+      url: (
+        `${ Astro.site.origin}/${page.locale}/${page.Meta.URL_slug === "/" 
+          ? "" 
+          : page.Meta.URL_slug}/`
+      ),
+      itemCondition: "https://schema.org/NewCondition",
+      availability: "https://schema.org/InStock",
+      price: page.Price,
+      priceCurrency: page.Currency,
+      priceValidUntil: new Date(),
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingDestination": {
+          "@type": "DefinedRegion",
+          "addressCountry": "EU"
+        },
+      }
+    },
+  }}
+/>
+
 <script>
+  import tweakAmount from "@utils/tweakAmount";
+
   declare global {
     interface Window {
       cart: Record<string, Record<string, string | number>>;
@@ -644,11 +716,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
   type ProductData = Record<string, number | string>;
 
-  const accordions = document.querySelectorAll("button.accordion"),
-    cartAddingForms = document.querySelectorAll(
-      ".cart-adding-form, .cart-adding-form-sm"
-    ),
-    productAmountPriceOutput = document.querySelector(".product-amount-price");
+  const query = document.querySelector.bind(document),
+    queryAll = document.querySelectorAll.bind(document),
+    accordions = queryAll("button.accordion"),
+    cartAddingForms = queryAll(".cart-adding-form, .cart-adding-form-sm"),
+    productAmountPriceOutput = document.querySelector(".product-amount-price"),
+    productAmountOutput = query(".product-amount-price"),
+    productAmountInputs = queryAll(".product-amount-input"),
+    productAmountTweakBtns = queryAll(".product-amount-tweak-btn"),
+    productPrice = Number(query("input[name='price']")?.value);
 
   accordions.forEach((accordion) => {
     accordion.addEventListener("click", () => {
@@ -669,13 +745,32 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         Number(productData.quantity) +
         (existingCartProduct ? (existingCartProduct.quantity as number) : 0);
 
-      productData.price = (Number(price) * productData.quantity).toFixed(2);
-      productData.tax = (Number(tax) * productData.quantity).toFixed(2);
+      productData.price = +(Number(price) * productData.quantity).toFixed(2);
+      productData.tax = +(Number(tax) * productData.quantity).toFixed(2);
 
       window.cart[id] = productData;
 
       form.reset();
-      productAmountPriceOutput.textContent = price.replace(".", ",");
+
+      productAmountPriceOutput.textContent = Number(price)
+        .toFixed(2)
+        .replace(".", ",");
     };
   });
+
+  function tweakAmountCallback(input) {
+    productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
+      if (otherAmountInput !== input) {
+        otherAmountInput.value = input.value;
+      }
+    });
+
+    productAmountOutput.textContent = (
+      Number(input.value) * Number(productPrice)
+    )
+      .toFixed(2)
+      .replace(".", ",");
+  }
+
+  tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
 </script>

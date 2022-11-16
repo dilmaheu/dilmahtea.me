@@ -1,0 +1,211 @@
+---
+import CMS from "@store/CMS";
+import RecurringImages from "@store/RecurringImages";
+import Navbar from "@components/Navbar.astro";
+import CartOverlay from "@components/CartOverlay.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
+import Markdown from "@astrojs/markdown-component";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+
+interface Props {
+  page: Record<string, any>;
+  meta: Record<string, any>;
+  locale: string;
+  recurData: Record<string, any>;
+  metaImageID: string;
+  availableLocales: string[];
+}
+
+const {
+  white_cup,
+  checkout_pre_post_background,
+  checkout_pre_post_background_sm,
+} = RecurringImages;
+
+const { page, meta, locale, recurData, availableLocales, metaImageID } =
+  Astro.props;
+
+const footerText = recurData.Footer_text.replaceAll(
+  "<current_year>",
+  `${new Date().getFullYear()}`
+);
+
+const { data: checkoutKindnessData } = CMS.get("checkoutKindness"),
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+
+const EnvironmentalAdvocacyImage =
+  checkoutKindnessData.attributes.Kindness_Causes.find(
+    ({ cause }) => cause === "Environmental Advocacy"
+  ).featured_blob.data.attributes;
+---
+
+<style
+  lang="scss"
+  define:vars={{
+    "checkout-pre-post-background": `url('${checkout_pre_post_background.src}')`,
+    "checkout-pre-post-background-sm": `url('${checkout_pre_post_background_sm.src}')`,
+  }}
+>
+  @use "src/styles/poly-fluid" as *;
+
+  #checkout-cart-container {
+    background-size: cover;
+    background-image: var(--checkout-pre-post-background-sm);
+
+    @media (min-width: 768px) {
+      background-image: var(--checkout-pre-post-background);
+    }
+
+    padding-bottom: poly-fluid-clamp(
+      (
+        375px: 20px,
+        1440px: 56px,
+      )
+    );
+
+    @include poly-fluid-sizing(
+      "padding-top",
+      (
+        639px: 90px,
+        640px: 95px,
+        768px: 100px,
+        960px: 110px,
+        1024px: 120px,
+        1280px: 130px,
+        1536px: 145px,
+        2050px: 165px,
+      )
+    );
+  }
+
+  h1 {
+    @apply leading-[115%] md:tracking-[-0.02em];
+
+    font-size: poly-fluid-clamp(
+      (
+        375px: 32px,
+        1440px: 48px,
+      )
+    );
+  }
+
+  .hero-icon {
+    width: poly-fluid-clamp(
+      (
+        375px: 48px,
+        1440px: 100px,
+      )
+    );
+
+    height: poly-fluid-clamp(
+      (
+        375px: 48px,
+        1440px: 100px,
+      )
+    );
+  }
+
+  .post-container {
+    > img {
+      clip-path: url(#post-container-top-curve);
+
+      @media (min-width: 640px) {
+        clip-path: url(#post-container-left-curve);
+      }
+    }
+
+    > div {
+      clip-path: url(#post-container-bottom-curve);
+
+      @media (min-width: 640px) {
+        clip-path: url(#post-container-right-curve);
+      }
+    }
+  }
+
+  .linked-post-text {
+    font-size: poly-fluid-clamp(
+      (
+        375px: 18px,
+        1440px: 24px,
+      )
+    );
+  }
+</style>
+
+<BaseLayout
+  meta={meta}
+  locale={locale}
+  availableLocales={availableLocales}
+  metaImageID={metaImageID}
+>
+  <Navbar
+    docLocale={locale}
+    footerText={footerText}
+    availableLocales={availableLocales}
+  />
+
+  <div id="checkout-cart-container" class="min-h-screen flex flex-col">
+    <UpdateTopMargin />
+
+    <div class="wrapper grow flex flex-col">
+      <ClipPathSVG
+        id="post-container-top-curve"
+        path="M0.513,0.005 C0.359,0.005,0.102,-0.024,0.043,0.141 C-0.003,0.266,-0.005,0.637,0.005,1 h0.985 c0.005,-0.205,0.027,-0.443,-0.018,-0.74 C0.924,-0.057,0.729,0.004,0.513,0.004"
+      />
+
+      <ClipPathSVG
+        id="post-container-bottom-curve"
+        path="M1,0 H0 v0.41 c0,0.698,0.081,0.583,0.526,0.583 S1,1,1,0.37 c0,-0.083,-0.003,-0.21,0,-0.37"
+      />
+
+      <ClipPathSVG
+        id="post-container-left-curve"
+        path="M0.005,0.487 c0,0.155,-0.028,0.411,0.137,0.471 c0.125,0.046,0.495,0.047,0.859,0.038 V0.009 C0.795,0.005,0.557,-0.017,0.26,0.028 C-0.057,0.076,0.005,0.271,0.005,0.486"
+      />
+
+      <ClipPathSVG
+        id="post-container-right-curve"
+        path="M0,0 v1 h0.428 c0.676,0,0.565,-0.064,0.565,-0.526 S1,0,0.39,0 C0.31,0,0.155,0.003,0,0"
+      />
+
+      <div class="flex flex-col gap-[30px] items-center">
+        <div class="flex flex-col gap-5 items-center text-center">
+          <img class="hero-icon" {...white_cup} />
+
+          <h1 class="alice">{page.Title}</h1>
+
+          <div><Markdown>{page.Intro_text}</Markdown></div>
+        </div>
+
+        <div class="post-container max-w-4xl flex flex-col sm:flex-row">
+          <img
+            class="w-full sm:w-52 h-48 sm:h-auto object-cover"
+            alt={EnvironmentalAdvocacyImage.alternativeText}
+            src={imgSrcPrefix +
+              EnvironmentalAdvocacyImage.provider_metadata.public_id +
+              `/cms`}
+          />
+
+          <div
+            class="grow flex flex-col gap-8 sm:gap-9 px-[22px] sm:px-8 pt-6 pb-9 sm:pb-5 bg-lightgray"
+          >
+            <div class="linked-post-text font-medium text-primary">
+              <Markdown>{page.linked_post_text}</Markdown>
+            </div>
+
+            <a
+              href="/en/best-way-to-make-compost/"
+              class="w-fit px-16 py-4 sm:px-18 sm:py-[18px] font-bold leading-[117.1875%] bg-primary rounded-full"
+            >
+              {page.text_here_is_how}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <CartOverlay page={page} />
+</BaseLayout>

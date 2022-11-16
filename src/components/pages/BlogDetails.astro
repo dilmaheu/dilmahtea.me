@@ -1,4 +1,6 @@
 ---
+import { marked } from 'marked';
+import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
@@ -6,7 +8,8 @@ import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 const { page, recurData } = Astro.props,
   headingName = recurData.text_chapter,
-  { blogs } = page;
+  { blogs } = page,
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 ---
 
 <PostDetailsLayout {page} posts={blogs} {recurData} {headingName}>
@@ -24,3 +27,35 @@ const { page, recurData } = Astro.props,
     </Chapterize>
   </div>
 </PostDetailsLayout>
+
+<Schema
+  item={{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: page.Title,
+    alternativeHeadline: `The best things you need to know about ${page.Title}`,
+    image: ( imgSrcPrefix +
+            page.Intro_blob.data.attributes.provider_metadata.public_id +
+            `/public` ),
+    url: `${ Astro.site.origin}/${page.locale}/${page.Meta.URL_slug === "/" 
+            ? "" 
+            : page.Meta.URL_slug}/`,
+    publisher: recurData.Company_name,
+    dateCreated: page.createdAt,
+    datePublished: page.publishedAt,
+    dateModified: page.updatedAt,
+    inLanguage: page.locale,
+    copyrightYear: `${new Date().getFullYear()}`,
+    copyrightHolder: "Dilmah",
+    isFamilyFriendly: "True",
+    description: `${marked.parse(page.Intro_text).replace(/(<([^>]+)>)/gi, "")}`,
+    articleBody: `${marked.parse(page.Block_text).replace(/(<([^>]+)>)/gi, "")}`,
+    author: {
+      "@type": "Person",
+      name: page.authors.data.map(({ attributes }) => (
+              `${attributes.givenName}`
+            )),
+    },
+    mainEntityOfPage: "True",
+  }}
+/>
