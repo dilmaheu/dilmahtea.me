@@ -1,4 +1,6 @@
 ---
+import { marked } from 'marked';
+import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
 import ClippedImg from "@components/ClippedImg.astro";
@@ -19,6 +21,11 @@ const {
 const { page, recurData } = Astro.props,
   headingName = recurData.text_chapter,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+
+const url = 
+  `${ Astro.site.origin}/${page.locale}/${page.Meta.URL_slug === "/" 
+    ? "" 
+    : page.Meta.URL_slug}/`;
 
 function calcTime(x) {
   var d = x[0];
@@ -99,6 +106,16 @@ function totalTimeSm(x, y) {
 
   return calcTimeSm(a);
 }
+
+const nutrition = {
+  "@type": "NutritionInformation",
+};
+
+page.Nutrition.forEach((item) => {
+  nutrition[item.Nutrition_name] = 
+    (item.Nutrition_amount || "0") + 
+      item.Nutrition_measurements_unit
+});
 ---
 
 <PostDetailsLayout {page} {recurData} {headingName}>
@@ -436,7 +453,10 @@ function totalTimeSm(x, y) {
             <div class="flex">
               <div class="w-auto recipe-sec-content-border" />
               <div class="w-full gap-[15px]">
-                <h3 class="alice leading-[130%] sm:leading-[120%] text-dark2 recipe-sec-coockingpart-title">
+                <h3 
+                  class="alice leading-[130%] sm:leading-[120%] text-dark2 recipe-sec-coockingpart-title"
+                  id={item.Cooking_part_name.replaceAll(" ", "-").replace(/\s+/g,'').trim()}
+                >
                   {item.Cooking_part_name}
                 </h3>
               </div>
@@ -444,7 +464,15 @@ function totalTimeSm(x, y) {
           </div>
 
           {item.Cooking_part_steps.map((step, idx) => (
-            <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+            <div 
+              class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+              id={ 
+                item.Cooking_part_name
+                  .replaceAll(" ", "-")
+                  .replace(/\s+/g,'').trim() + 
+                    `-step-` + ( idx + 1)
+              }
+            >
               <div class="flex gap-[15px]">
                 <div>
                   <div class="bg-primary flex items-center justify-center font-extrabold rounded-full recipe-sec-step-num">
@@ -564,3 +592,88 @@ function totalTimeSm(x, y) {
     }
   </script>
 </PostDetailsLayout>
+
+<Schema
+  item={{
+    "@context": "https://schema.org",
+    "@type": "Recipe",
+    name: page.Title,
+    image: ( 
+      imgSrcPrefix +
+        page.Intro_blob.data.attributes.provider_metadata.public_id +
+        `/public` 
+    ),
+    author: {
+      "@type": "Person",
+      name: (
+        page.authors.data.map(({ attributes }) => (
+          `${attributes.givenName}`
+        )),
+      )
+    },
+    dateCreated: page.createdAt,
+    datePublished: page.publishedAt,
+    dateModified: page.updatedAt,
+    description: (
+      `${marked.parse(page.Intro_text)
+        .replace(/(<([^>]+)>)/gi, "")} ${
+          marked.parse(page.Block_text)
+            .replace(/(<([^>]+)>)/gi, "")
+      }`
+    ),
+    prepTime: (
+      `PT${timeSm(page.Time_preparation)
+        .toUpperCase()
+        .replace(/\s/g,'')}`
+    ),
+    cookTime: (
+      `PT${timeSm(page.Time_cooking)
+        .toUpperCase()
+        .replace(/\s/g,'')}`
+    ),
+    totalTime: (
+      `PT${totalTimeSm(page.Time_preparation, page.Time_cooking)
+        .toUpperCase()
+        .replace(/\s/g,'')}`
+    ),
+    recipeCuisine: page.Cuisine,
+    recipeCategory: page.Category,
+    recipeYield: page.Nutrition_yield,
+    nutrition,
+    recipeIngredient: (
+      page.Cooking_part.map(item => (
+        item.Cooking_part_ingredients.map(item => (
+          item.Cooking_part_ingredient_amount +
+            item.Cooking_part_ingredient_measurements_unit + ` ` +
+            item.Cooking_part_ingredient_name
+        ))
+      )).flat()
+    ),
+    recipeInstructions: (
+      page.Cooking_part.map(item => (
+        item.Cooking_part_steps.map((step, idx) => ({
+          "@type": "HowToStep",
+          name: item.Cooking_part_name,
+          text: step.Cooking_part_steps_text,
+          url: (
+            `${url + `#` + 
+                item.Cooking_part_name
+                  .replaceAll(" ", "-")
+                  .replace(/\s+/g,'').trim() + 
+                    `-step-` + ( idx + 1)
+            }`
+          ),
+          image: (
+            step.Cooking_part_steps_blob.data && (
+              imgSrcPrefix +
+                step.Cooking_part_steps_blob?.data?.attributes
+                  .provider_metadata.public_id +
+                `/public`
+            ) || "",
+          )
+        }
+        ))
+      )).flat()
+    ),
+  }}
+/>
