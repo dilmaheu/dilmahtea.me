@@ -54,6 +54,20 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     row-gap: clamp(0.938rem, 3vw + 0.3rem, 3.125rem);
   }
 
+  .product-amount-tweak-btn:disabled {
+    opacity: 30%;
+  }
+
+  .product-amount-input {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
   .product-details img {
     width: 100%;
     max-height: 530px;
@@ -211,11 +225,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       </span>
 
       <div class="flex items-center text-primary bg-lightgray rounded-full">
-        <button data-action="decrement" class="w-10 h-11 py-2.5 pl-3 pr-1">
-          <Icon
-            name="akar-icons:minus"
-            class="w-6 h-6 select-none cursor-pointer"
-          />
+        <button
+          disabled
+          data-action="decrement"
+          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1"
+        >
+          <Icon name="akar-icons:minus" class="w-6 h-6 select-none" />
         </button>
 
         <input
@@ -228,11 +243,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           required
         />
 
-        <button data-action="increment" class="w-10 h-11 py-2.5 pl-1 pr-3">
-          <Icon
-            name="akar-icons:plus"
-            class="w-6 h-6 select-none cursor-pointer"
-          />
+        <button
+          data-action="increment"
+          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
+        >
+          <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
         </button>
       </div>
     </div>
@@ -302,7 +317,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       <div
         class="w-fit flex items-center text-lightgray bg-primary rounded-full"
       >
-        <button data-action="decrement" class="w-10 h-11 py-2.5 pl-3 pr-1">
+        <button
+          data-action="decrement"
+          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1"
+        >
           <Icon
             name="akar-icons:minus"
             class="w-6 h-6 select-none cursor-pointer"
@@ -319,7 +337,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           required
         />
 
-        <button data-action="increment" class="w-10 h-11 py-2.5 pl-1 pr-3">
+        <button
+          data-action="increment"
+          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
+        >
           <Icon
             name="akar-icons:plus"
             class="w-6 h-6 select-none cursor-pointer"
@@ -685,6 +706,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 />
 
 <script>
+  import tweakAmount from "@utils/tweakAmount";
+
   declare global {
     interface Window {
       cart: Record<string, Record<string, string | number>>;
@@ -693,11 +716,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
   type ProductData = Record<string, number | string>;
 
-  const accordions = document.querySelectorAll("button.accordion"),
-    cartAddingForms = document.querySelectorAll(
-      ".cart-adding-form, .cart-adding-form-sm"
-    ),
-    productAmountPriceOutput = document.querySelector(".product-amount-price");
+  const query = document.querySelector.bind(document),
+    queryAll = document.querySelectorAll.bind(document),
+    accordions = queryAll("button.accordion"),
+    cartAddingForms = queryAll(".cart-adding-form, .cart-adding-form-sm"),
+    productAmountPriceOutput = document.querySelector(".product-amount-price"),
+    productAmountOutput = query(".product-amount-price"),
+    productAmountInputs = queryAll(".product-amount-input"),
+    productAmountTweakBtns = queryAll(".product-amount-tweak-btn"),
+    productPrice = Number(query("input[name='price']")?.value);
 
   accordions.forEach((accordion) => {
     accordion.addEventListener("click", () => {
@@ -718,13 +745,32 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         Number(productData.quantity) +
         (existingCartProduct ? (existingCartProduct.quantity as number) : 0);
 
-      productData.price = (Number(price) * productData.quantity).toFixed(2);
-      productData.tax = (Number(tax) * productData.quantity).toFixed(2);
+      productData.price = +(Number(price) * productData.quantity).toFixed(2);
+      productData.tax = +(Number(tax) * productData.quantity).toFixed(2);
 
       window.cart[id] = productData;
 
       form.reset();
-      productAmountPriceOutput.textContent = price.replace(".", ",");
+
+      productAmountPriceOutput.textContent = Number(price)
+        .toFixed(2)
+        .replace(".", ",");
     };
   });
+
+  function tweakAmountCallback(input) {
+    productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
+      if (otherAmountInput !== input) {
+        otherAmountInput.value = input.value;
+      }
+    });
+
+    productAmountOutput.textContent = (
+      Number(input.value) * Number(productPrice)
+    )
+      .toFixed(2)
+      .replace(".", ",");
+  }
+
+  tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
 </script>

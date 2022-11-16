@@ -6,15 +6,18 @@ import DynamicHTML from "@components/DynamicHTML.astro";
 import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
-const { logo } = RecurringImages;
+const { logo, checkout_header_background, checkout_header_background_sm } =
+  RecurringImages;
 
 interface Props {
   docLocale: string;
   footerText: string;
+  isCartNavbar?: boolean;
   availableLocales: string[];
 }
 
-const { docLocale, footerText, availableLocales } = Astro.props as Props;
+const { docLocale, footerText, isCartNavbar, availableLocales } =
+  Astro.props as Props;
 ---
 
 <style lang="scss">
@@ -37,8 +40,32 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
 
 <header
   id="navigation"
-  class="md:!static sticky top-0 z-[999] w-full bg-cover bg-right-bottom"
+  class:list={[
+    isCartNavbar && "cart-navbar",
+    "md:!relative sticky !top-0 z-[999] w-full bg-cover bg-right-bottom",
+  ]}
 >
+  {
+    isCartNavbar && (
+      <Fragment>
+        <ClipPathSVG
+          id="cart-navbar-curve"
+          path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
+        />
+
+        <img
+          id="cart-navbar-bg"
+          class="absolute top-0 left-0 w-full h-full"
+          alt=""
+          src={checkout_header_background.src}
+          sizes="(min-width: 1440px) 1440px, 100vw"
+          srcset={`${checkout_header_background_sm.src} 640w, ${checkout_header_background.src} 1440w`}
+          style="clip-path: url(#cart-navbar-curve)"
+        />
+      </Fragment>
+    )
+  }
+
   <div
     class:list={[
       "flex justify-between items-center",
@@ -66,41 +93,43 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
         />
       </div>
 
-      <button
-        id="open-cart-btn"
-        aria-label="Open Cart"
-        class:list={[
-          "relative scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]",
-          "mx-[calc(-24px*0.225)] sm:mx-[calc(-24px*0.15)] md:mx-[calc(-24px*0.075)] lg:mx-0",
-        ]}
-      >
-        <ClipPathSVG
-          id="cart-btn-curve"
-          path="M0.5,0 A0.5,0.5,0,0,0,0,0.5 a0.5,0.5,0,0,0,0.5,0.5 a0.5,0.5,0,0,0,0.5,-0.5 a0.5,0.5,0,0,0,-0.021,-0.146 a0.25,0.25,0,0,1,-0.104,0.021 A0.25,0.25,0,0,1,0.625,0.125 a0.25,0.25,0,0,1,0.021,-0.104 a0.5,0.5,0,0,0,-0.146,-0.021"
-        />
-
-        <div
-          style="clip-path: url(#cart-btn-curve);"
-          class="w-12 h-12 text-primary flex justify-center items-center bg-lightgray rounded-full"
-        >
-          <Icon name="mi:shopping-cart" class="w-[30px] h-[30px] mx-auto" />
-        </div>
-
-        <div
-          class:list={[
-            "w-6 h-6 absolute -top-1.5 -right-1.5",
-            "flex justify-center items-center rounded-full",
-          ]}
-        >
-          <div
-            class="w-5 h-5 text-white flex justify-center items-center rounded-full bg-red-600"
+      {
+        !isCartNavbar && (
+          <button
+            id="open-cart-btn"
+            aria-label="Open Cart"
+            class:list={[
+              "relative scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]",
+              "mx-[calc(-24px*0.225)] sm:mx-[calc(-24px*0.15)] md:mx-[calc(-24px*0.075)] lg:mx-0",
+            ]}
           >
-            <span id="cart-size">
-              <DynamicHTML htmlFn={() => Object.keys(window.cart).length} />
-            </span>
-          </div>
-        </div>
-      </button>
+            <ClipPathSVG
+              id="cart-btn-curve"
+              path="M0.5,0 A0.5,0.5,0,0,0,0,0.5 a0.5,0.5,0,0,0,0.5,0.5 a0.5,0.5,0,0,0,0.5,-0.5 a0.5,0.5,0,0,0,-0.021,-0.146 a0.25,0.25,0,0,1,-0.104,0.021 A0.25,0.25,0,0,1,0.625,0.125 a0.25,0.25,0,0,1,0.021,-0.104 a0.5,0.5,0,0,0,-0.146,-0.021"
+            />
+
+            <div
+              style="clip-path: url(#cart-btn-curve);"
+              class="w-12 h-12 text-primary flex justify-center items-center bg-lightgray rounded-full"
+            >
+              <Icon name="mi:shopping-cart" class="w-[30px] h-[30px] mx-auto" />
+            </div>
+
+            <div
+              class:list={[
+                "w-6 h-6 absolute -top-1.5 -right-1.5",
+                "flex justify-center items-center rounded-full",
+              ]}
+            >
+              <div class="w-5 h-5 text-white flex justify-center items-center rounded-full bg-red-600">
+                <span id="cart-size">
+                  <DynamicHTML htmlFn={() => Object.keys(window.cart).length} />
+                </span>
+              </div>
+            </div>
+          </button>
+        )
+      }
 
       <div class="block md:hidden w-[38px] h-[38px]">
         <button
@@ -152,9 +181,18 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
   </div>
 </header>
 
+<script>
+  declare global {
+    interface Window {
+      cart: Record<string, Record<string, string | number>>;
+    }
+  }
+</script>
+
 <script is:inline>
   {
     const navigation = document.getElementById("navigation"),
+      isCartNavbar = navigation.classList.contains("cart-navbar"),
       translationNotFoundNotification = document.querySelector(
         ".translation-not-found-notification"
       );
@@ -166,10 +204,13 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
       // fix sticky navbar position if top notification is shown
       navigation.style.top = `${translationNotFoundNotificationHeight}px`;
 
-      navigation.style.backgroundImage =
-        scrollY > 0 || document.body.style.position === "fixed"
-          ? "url(/bg-images/nav-background.webp)"
-          : "unset";
+      if (!isCartNavbar) {
+        navigation.style.backgroundImage =
+          window.innerWidth < 768 &&
+          (scrollY > 0 || document.body.style.position === "fixed")
+            ? "url(/bg-images/nav-background.webp)"
+            : "unset";
+      }
     });
   }
 </script>
@@ -190,8 +231,10 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     sidebar = query("#sidebar"),
     navigation = query("#navigation"),
     openCartBtn = query("#open-cart-btn"),
+    cartNavbarBg = query("#cart-navbar-bg"),
     sidebarOpenButton = query("#sidebar-open-btn"),
-    sidebarCloseButton = query("#sidebar-close-btn");
+    sidebarCloseButton = query("#sidebar-close-btn"),
+    isCartNavbar = !!navigation?.classList.contains("cart-navbar");
 
   window.disableScrolling = () => {
     const overflowY =
@@ -246,14 +289,18 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
   window.addEventListener("resize", () => {
     if (window.innerWidth > 767) {
       // enable scrolling only if cart and checkout is not open
-      if (cart.classList.contains("hidden")) window.enableScrolling();
+      if (cart?.classList.contains("hidden")) window.enableScrolling();
 
       window.removeEventListener("resize", updateSidebarTopPosition);
+
+      cartNavbarBg && (cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)");
     } else if (sidebar.style.display === "block") {
       // @ts-ignore
       window.disableScrolling();
 
       window.addEventListener("resize", updateSidebarTopPosition);
+
+      cartNavbarBg && (cartNavbarBg.style.clipPath = "none");
     }
   });
 
@@ -269,7 +316,12 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     sidebar.style.display = "block";
     sidebarOpenButton.style.display = "none";
     sidebarCloseButton.style.display = "block";
-    navigation.style.backgroundImage = "url(/bg-images/nav-background.webp)";
+
+    if (isCartNavbar) {
+      cartNavbarBg.style.clipPath = "none";
+    } else {
+      navigation.style.backgroundImage = "url(/bg-images/nav-background.webp)";
+    }
 
     window.disableScrolling();
 
@@ -280,7 +332,12 @@ const { docLocale, footerText, availableLocales } = Astro.props as Props;
     sidebar.style.display = "none";
     sidebarOpenButton.style.display = "block";
     sidebarCloseButton.style.display = "none";
-    navigation.style.backgroundImage = "unset";
+
+    if (isCartNavbar) {
+      cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)";
+    } else {
+      navigation.style.backgroundImage = "unset";
+    }
 
     window.enableScrolling();
   });

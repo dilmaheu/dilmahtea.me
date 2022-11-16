@@ -8,6 +8,8 @@ const images = [
   "footer_background_sm",
   "checkout_header_background",
   "checkout_header_background_sm",
+  "checkout_pre_post_background",
+  "checkout_pre_post_background_sm",
   "footer_leaf",
   "footer_leaf_sm",
   "error_notification",

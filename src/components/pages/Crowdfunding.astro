@@ -146,33 +146,35 @@ const goal = 100000,
 {/* Blob Image - Mobile View */}
 <div class="hero-img-sm-container block sm:hidden w-full -mt-20 relative z-20">
   <ClipPathSVG
-      id="hero-img-curve-sm"
-      path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
+    id="hero-img-curve-sm"
+    path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
+  />
+
+  <div
+    class="relative w-full h-full"
+    style="clip-path: url(#hero-img-curve-sm);"
+  >
+    <img
+      class="w-full h-full relative object-cover"
+      src={imgSrcPrefix +
+        page.Intro_blob.data.attributes.provider_metadata.public_id +
+        `/cms`}
     />
 
     <div
-      class="relative w-full h-full"
-      style="clip-path: url(#hero-img-curve-sm);"
+      class="absolute bottom-0 z-10 w-full flex items-center justify-center p-[25px]"
     >
-      <img
-        class="w-full h-full relative object-cover"
-        src={imgSrcPrefix +
-          page.Intro_blob.data.attributes.provider_metadata.public_id +
-          `/cms`}
-      />
-
-      <div class="absolute bottom-0 z-10 w-full flex items-center justify-center p-[25px]">
-        <div class="w-full h-full absolute top-0 left-0 bg-black opacity-70">
-        </div>
-
-        <CrowdfundingProgress
-          goalText={page.Heading_goal}
-          supportersText={page.Heading_supporters}
-          {supportersCount}
-          {totalAmountRaised}
-        />
+      <div class="w-full h-full absolute top-0 left-0 bg-black opacity-70">
       </div>
+
+      <CrowdfundingProgress
+        goalText={page.Heading_goal}
+        supportersText={page.Heading_supporters}
+        {supportersCount}
+        {totalAmountRaised}
+      />
     </div>
+  </div>
 </div>
 
 <script
