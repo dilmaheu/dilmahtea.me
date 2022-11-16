@@ -231,7 +231,10 @@ page.Nutrition.forEach((item) => {
     {
       page.Recipe_variations.data.length > 0 && (
         <>
-          <h2 class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title">
+          <h2
+            id="similar-recipe"
+            class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title"
+          >
             {recurData.recipe_similar}
             {page.Title}
           </h2>
@@ -250,8 +253,8 @@ page.Nutrition.forEach((item) => {
     }
 
     <h2
-      class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title"
       id="recipe"
+      class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title"
     >
       {page.Title}
       {recurData.recipe_recipe}
@@ -328,7 +331,9 @@ page.Nutrition.forEach((item) => {
         <div class="w-auto recipe-sec-content-border"></div>
 
         <div class="grid w-full items-center gap-[15px]">
-          <h3 class="font-bold sm:font-semibold text-primary sm:text-dark2 recipe-sec-content-title">
+          <h3
+            class="font-bold sm:font-semibold text-primary sm:text-dark2 recipe-sec-content-title"
+          >
             {recurData.recipe_nutrition_information}
           </h3>
 
@@ -374,15 +379,19 @@ page.Nutrition.forEach((item) => {
       class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
     >
       <div class="flex flex-wrap justify-between">
-        <h3 class="font-bold sm:font-semibold text-primary sm:text-dark2 recipe-sec-content-title">
+        <h3
+          class="font-bold sm:font-semibold text-primary sm:text-dark2 recipe-sec-content-title"
+        >
           {recurData.recipe_ingredients}
         </h3>
-        <div
+
+        <label
           class="inline-grid grid-flow-col items-center relative recipe-sec-servingsize-input-container"
         >
-          <label class="text-xs leading-[150%] font-bold text-dark2"
-            >{recurData.recipe_serving_size}:</label
-          >
+          <span class="text-xs leading-[150%] font-bold text-dark2">
+            {recurData.recipe_serving_size}:
+          </span>
+
           <select
             id="recipeSecServingsize"
             name="recipeSecServingsize"
@@ -391,13 +400,13 @@ page.Nutrition.forEach((item) => {
               "max-w-[65px] md:max-w-[83px] text-lightgray2 py-[5px] pl-[11px] rounded-[7px] recipe-sec-servingsize-input",
             ]}
           >
-            <option value="1"> 1x</option>
-            <option value="2"> 2x</option>
-            <option value="3"> 3x</option>
-            <option value="5"> 5x</option>
-            <option value="10"> 10x</option>
+            <option value="1">1x</option>
+            <option value="2">2x</option>
+            <option value="3">3x</option>
+            <option value="5">5x</option>
+            <option value="10">10x</option>
           </select>
-        </div>
+        </label>
       </div>
 
       <div class="mt-5 md:mt-[25px] flex flex-wrap sm:flex-nowrap gap-2">
@@ -409,19 +418,20 @@ page.Nutrition.forEach((item) => {
               </h4>
 
               {item.Cooking_part_ingredients.map((item, idx) => (
-                <div class="inline-flex items-center w-full">
+                <label class="inline-flex items-center w-full">
                   <div class="flex">
-                    <label class="recipe-sec-ingridients-checkbox-label">
+                    <div class="recipe-sec-ingridients-checkbox-container">
                       <input type="checkbox" />
                       <span class="recipe-sec-ingridients-checkbox" />
-                    </label>
+                    </div>
                   </div>
+
                   <div class="text-base md:text-lg leading-[150%] text-dark2 ml-2.5">
                     {item.Cooking_part_ingredient_amount}
                     {item.Cooking_part_ingredient_measurements_unit}
                     {item.Cooking_part_ingredient_name}
                   </div>
-                </div>
+                </label>
               ))}
             </div>
           ))
@@ -429,7 +439,10 @@ page.Nutrition.forEach((item) => {
       </div>
     </div>
 
-    <h2 class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title">
+    <h2
+      id="cooking-instructions"
+      class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title"
+    >
       {recurData.recipe_cooking_instructions}
     </h2>
 
@@ -462,7 +475,7 @@ page.Nutrition.forEach((item) => {
             >
               <div class="flex gap-[15px]">
                 <div>
-                  <div class="bg-primary flex items-center justify-center font-extrabold rounded-full recipe-sec-step-num",>
+                  <div class="bg-primary flex items-center justify-center font-extrabold rounded-full recipe-sec-step-num">
                     {idx + 1}
                   </div>
                 </div>
@@ -481,7 +494,10 @@ page.Nutrition.forEach((item) => {
                         .provider_metadata.public_id +
                       `/small`
                     }
-                    alt={step.Cooking_part_steps_blob.data.attributes.alternativeText}
+                    alt={
+                      step.Cooking_part_steps_blob.data.attributes
+                        .alternativeText
+                    }
                     path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
                   />
 
@@ -527,6 +543,54 @@ page.Nutrition.forEach((item) => {
       ))
     }
   </Chapterize>
+
+  <script slot="wake-lock-script">
+    const interactionEvents = [
+      "click",
+      "touchstart",
+      "keydown",
+      "scroll",
+      "mousemove",
+    ];
+
+    if ("wakeLock" in navigator) {
+      const firstInteractionEventListener = () => {
+        let wakeLock;
+
+        const requestWakeLock = async () => {
+          try {
+            wakeLock = await navigator.wakeLock.request();
+          } catch (err) {}
+        };
+
+        requestWakeLock();
+
+        document.addEventListener("visibilitychange", () => {
+          wakeLock &&
+            document.visibilityState === "visible" &&
+            requestWakeLock();
+        });
+
+        interactionEvents.forEach((eventType) => {
+          document.removeEventListener(
+            eventType,
+            firstInteractionEventListener
+          );
+        });
+      };
+
+      interactionEvents.forEach((eventType) => {
+        document.addEventListener(eventType, firstInteractionEventListener);
+      });
+    } else {
+      const playBackgroundVideoScript = document.createElement("script");
+
+      playBackgroundVideoScript.type = "module";
+      playBackgroundVideoScript.src = "/scripts/play-background-video.js";
+
+      document.body.appendChild(playBackgroundVideoScript);
+    }
+  </script>
 </PostDetailsLayout>
 
 <Schema

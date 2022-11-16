@@ -28,7 +28,6 @@ const PermissionsPolicyRecord = {
   "unoptimized-images": [],
   "unsized-media": [],
   usb: [],
-  "screen-wake-lock": [],
   "web-share": [],
   "xr-spatial-tracking": [],
 };
