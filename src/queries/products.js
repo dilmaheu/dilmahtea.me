@@ -63,6 +63,13 @@ const productsQuery = `
             }
           }
           createdAt
+          brand{
+            data{
+              attributes{
+                Brand_name
+              }
+            }
+          }
           product_infos{
             data{
               attributes{
@@ -261,6 +268,13 @@ const productsQuery = `
                   }
                 }
                 createdAt
+                brand{
+                  data{
+                    attributes{
+                      Brand_name
+                    }
+                  }
+                }
                 product_infos{
                   data{
                     attributes{

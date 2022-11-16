@@ -2,13 +2,12 @@
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
+import Hero from "@components/Hero.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
-import HeroBackground from "@components/HeroBackground.astro";
 
 import RecurringImages from "@store/RecurringImages";
-import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 
 const { white_cup, green_cup, left_post_leaf, green_leaf } = RecurringImages;
 
@@ -22,7 +21,11 @@ const { posts } = Astro.props.page,
 
   .hero-title,
   .post-title {
-    @apply underline decoration-[2.5px] underline-offset-[5px];
+    @apply decoration-[2.5px] underline-offset-[5px];
+
+    a {
+      text-decoration: underline;
+    }
   }
 
   .post-title {
@@ -68,11 +71,7 @@ const { posts } = Astro.props.page,
 </style>
 
 {/* Hero Section */}
-<section class="hero overflow-hidden relative">
-  <UpdateTopMargin />
-
-  <HeroBackground />
-
+<Hero>
   {/* Text Content */}
   <div class="wrapper hero-text-container h-full relative z-30">
     <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
@@ -99,9 +98,7 @@ const { posts } = Astro.props.page,
         }
 
         <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
-          <a href={`/` + firstPost.Meta.URL_slug}>
-            {firstPost.Title}
-          </a>
+          <a href={`/` + firstPost.Meta.URL_slug}>{firstPost.Title}</a>
 
           <span class="icon heading-inline-icon">
             <img class="w-full h-full" {...white_cup} />
@@ -145,7 +142,7 @@ const { posts } = Astro.props.page,
       ) */
     }
   </div>
-</section>
+</Hero>
 
 {/* Blob Image - Mobile View */}
 <div class="hero-img-sm-container block sm:hidden relative -mt-20 z-20 w-full">
@@ -281,9 +278,10 @@ const { posts } = Astro.props.page,
                 )}
 
                 <h1 class="post-title alice text-primary pt-[15px]">
-                  <a href={`/` + post.Meta.URL_slug}>
-                    {post.Title || post.Estate_name}
-                  </a>
+                  <a
+                    href={`/` + post.Meta.URL_slug}
+                    set:text={post.Title || post.Estate_name}
+                  />
 
                   <span class="icon heading-inline-icon">
                     <img class="w-full h-full" {...green_cup} />

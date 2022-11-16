@@ -38,7 +38,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
   }
 </style>
 
-<section
+<header
   id="navigation"
   class:list={[
     isCartNavbar && "cart-navbar",
@@ -97,6 +97,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
         !isCartNavbar && (
           <button
             id="open-cart-btn"
+            aria-label="Open Cart"
             class:list={[
               "relative scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]",
               "mx-[calc(-24px*0.225)] sm:mx-[calc(-24px*0.15)] md:mx-[calc(-24px*0.075)] lg:mx-0",
@@ -133,6 +134,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
       <div class="block md:hidden w-[38px] h-[38px]">
         <button
           id="sidebar-open-btn"
+          aria-label="Open Sidebar Menu"
           class="block w-full h-full select-none cursor-pointer"
         >
           <svg viewBox="0 0 22.4 19.2" xmlns="http://www.w3.org/2000/svg">
@@ -144,6 +146,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
 
         <button
           id="sidebar-close-btn"
+          aria-label="Close Sidebar Menu"
           class="hidden w-full h-full select-none cursor-pointer"
         >
           <svg viewBox="0 0 19.2 19.2" xmlns="http://www.w3.org/2000/svg">
@@ -176,7 +179,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
       <div class="text-xs font-normal leading-[150%]" set:html={footerText} />
     </div>
   </div>
-</section>
+</header>
 
 <script>
   declare global {
@@ -246,7 +249,8 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
   };
 
   window.enableScrolling = () => {
-    const scrollYPosition = parseInt(document.body.style.top.slice(1, -2));
+    const scrollYPosition =
+      parseInt(document.body.style.top.slice(1, -2)) || window.scrollY;
 
     Object.assign(document.body.style, {
       width: "auto",
@@ -283,7 +287,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
   window.addEventListener("resize", updateSidebarTopPosition);
 
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 639) {
+    if (window.innerWidth > 767) {
       // enable scrolling only if cart and checkout is not open
       if (cart?.classList.contains("hidden")) window.enableScrolling();
 

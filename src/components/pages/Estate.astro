@@ -2,11 +2,10 @@
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
+import Hero from "@components/Hero.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
-import HeroBackground from "@components/HeroBackground.astro";
-import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 import EstatesInfoSection from "@components/EstatesInfoSection.astro";
 
 import RecurringImages from "@store/RecurringImages";
@@ -162,11 +161,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 </style>
 
 <!-- Hero Section -->
-<section class="hero overflow-hidden relative">
-  <UpdateTopMargin />
-
-  <HeroBackground />
-
+<Hero>
   {/* Text Content */}
   <div class="wrapper hero-text-container h-full relative z-30">
     <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
@@ -219,7 +214,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       ) */
     }
   </div>
-</section>
+</Hero>
 
 {/* Blob Image - Mobile View */}
 <div class="hero-img-sm-container block sm:hidden relative -mt-20 z-20 w-full">
@@ -471,7 +466,10 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       </div>
 
       <div
-        class="flex flex-wrap w-full justify-center xl:justify-between gap-y-[35px] estate-impacts-container"
+        class:list={[
+          "grid grid-cols-[repeat(auto-fit,minmax(0,150px))] md:grid-cols-[repeat(auto-fit,minmax(0,250px))]", 
+          "justify-center md:justify-between gap-y-[35px] w-full estate-impacts-container"
+        ]}
       >
         {
           page.Block4_items.map((item) => (
