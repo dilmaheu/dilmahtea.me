@@ -63,24 +63,24 @@ const { document: contentBlocksDocument } = await parseHTML(contentBlocksHTML),
 
           {imgSrc && (
             <div class="recipe-info-img-container">
-              <ClippedImg
+              {/* <ClippedImg
                 id="recipe-img-curve"
                 className="w-full h-full"
                 src={imgSrc}
                 path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+              /> */}
+
+              <ClippedPicture
+                id="recipe-img-curve"
+                src={imgSrc}
+                path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+                attributes={{
+                  picture: {
+                    class: "recipe-content-img",
+                  },
+                }}
               />
             </div>
-
-            /* <ClippedPicture
-              id="recipe-img-curve"
-              src={imgSrc}
-              path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-              attributes={{
-                picture: {
-                  class: "recipe-content-img",
-                },
-              }}
-            /> */
           )}
         </div>
       </>
