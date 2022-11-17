@@ -78,11 +78,19 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     }
   }
 
-  .product-kindness-impact-container {
-    clip-path: url(#product-impact-bg-curve-sm);
+  .product-kindness-impact-top {
+    clip-path: url(#product-impact-top-curve-sm);
 
     @media (min-width: 768px) {
-      clip-path: url(#product-impact-bg-curve);
+      clip-path: url(#product-impact-top-curve);
+    }
+  }
+
+  .product-kindness-impact-bottom {
+    clip-path: url(#product-impact-bottom-curve-sm);
+
+    @media (min-width: 768px) {
+      clip-path: url(#product-impact-bottom-curve);
     }
   }
 
@@ -565,14 +573,25 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   {
     relevant_items.length > 0 && (
       <section class="mb-[50px]" slot="product-kindness-impact">
+      
         <ClipPathSVG
-          id="product-impact-bg-curve"
-          path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.23,-0.017 c0.074,0,0.2,0.037,0.315,0.009 S1,0.894,1,0.894 V0.055"
+          id="product-impact-top-curve"
+          path="M1,0.582 V1 H0 V0.582 S0.073,0.358,0.136,0.295 c0.103,-0.103,0.245,0.128,0.348,0.173 C0.602,0.52,0.729,0.058,0.847,0.003 L0.861,0 C0.965,0,1,0.582,1,0.582"
         />
 
         <ClipPathSVG
-          id="product-impact-bg-curve-sm"
-          path="M0.718,0 C0.853,0,0.938,0.021,1,0.064 V0.97 c-0.045,0.046,-0.195,0.006,-0.324,0 c-0.149,-0.007,-0.301,0.03,-0.45,0.03 C0.094,1,0,0.954,0,0.954 V0.064 c0.059,-0.061,0.237,0,0.32,0 S0.583,0,0.718,0"
+          id="product-impact-top-curve-sm"
+          path="M1,0.892 V1 H0 V0.892 c0.059,-1.237,0.238,-0.517,0.321,-0.517 S0.499,0.133,0.639,0.033 a0.799,4,0,0,1,0.088,-0.033 C0.84,0,0.951,0.193,1,0.892"
+        />
+
+        <ClipPathSVG
+          id="product-impact-bottom-curve"
+          path="M1,0 c-0.005,0.158,-0.026,0.437,-0.104,0.633 c-0.115,0.288,-0.242,-0.102,-0.316,-0.102 c-0.07,0,-0.171,0.017,-0.231,0.185 c-0.057,0.16,-0.132,0.283,-0.193,0.283 C0.032,1,0,0.633,0,0.633 V0"
+        />
+
+        <ClipPathSVG
+          id="product-impact-bottom-curve-sm"
+          path="M1,0 V0.722 c-0.095,0.278,-0.193,0,-0.324,0 C0.504,0.722,0.369,1,0.22,1 C0.088,1,0,0.382,0,0.382 V0"
         />
 
         <ClipPathSVG
@@ -580,79 +599,83 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
         />
 
-        <div class="bg-primary product-kindness-impact-container">
-          <div class="wrapper py-[70px] md:py-[100px]">
-            <div class="product-kindness-impact-text alice leading-[110%] md:leading-[115%] text-center">
-              <h2>{recurData.product_kindness_impact}</h2>
-            </div>
+        <div>
+          <div class="py-8 -mb-1 bg-primary product-kindness-impact-top"></div>
+          <div class="bg-primary">
+            <div class="wrapper py-2.5 md:py-[100px]">
+              <div class="product-kindness-impact-text alice leading-[110%] md:leading-[115%] text-center">
+                <h2>{recurData.product_kindness_impact}</h2>
+              </div>
 
-            <div
-              role="list"
-              aria-label="Kindness Items"
-              class:list={[
-                "wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]",
-                "justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
-              ]}
-            >
-              {relevant_items.map((post) => (
-                <div
-                  role="listitem"
-                  aria-label="Kindness Item"
-                  class="flex flex-wrap bg-lightgray"
-                  style="clip-path: url(#card-curve)"
-                >
-                  <a
-                    class="product-kindness-impact-img-container block w-full"
-                    href={`/` + post.Meta.URL_slug}
+              <div
+                role="list"
+                aria-label="Kindness Items"
+                class:list={[
+                  "wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]",
+                  "justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
+                ]}
+              >
+                {relevant_items.map((post) => (
+                  <div
+                    role="listitem"
+                    aria-label="Kindness Item"
+                    class="flex flex-wrap bg-lightgray"
+                    style="clip-path: url(#card-curve)"
                   >
-                    <img
-                      src={
-                        imgSrcPrefix +
-                        post.Intro_blob.data.attributes.provider_metadata
-                          .public_id +
-                        `/small`
-                      }
-                      alt={post.Intro_blob.data.attributes.alternativeText}
-                      class="w-full h-full object-cover"
-                    />
-                  </a>
+                    <a
+                      class="product-kindness-impact-img-container block w-full"
+                      href={`/` + post.Meta.URL_slug}
+                    >
+                      <img
+                        src={
+                          imgSrcPrefix +
+                          post.Intro_blob.data.attributes.provider_metadata
+                            .public_id +
+                          `/small`
+                        }
+                        alt={post.Intro_blob.data.attributes.alternativeText}
+                        class="w-full h-full object-cover"
+                      />
+                    </a>
 
-                  <div class="recent-post-card-content-container text-primary">
-                    {post.authors && (
-                      <div>
-                        <div class="recent-post-card-author flex flex-wrap font-bold">
-                          {post.authors.data.map(({ attributes }, index) => (
-                            <a href="#">
-                              {`${index > 0 ? ", " : " "}` +
-                                attributes.givenName}
-                            </a>
-                          ))}
-                        </div>
+                    <div class="recent-post-card-content-container text-primary">
+                      {post.authors && (
+                        <div>
+                          <div class="recent-post-card-author flex flex-wrap font-bold">
+                            {post.authors.data.map(({ attributes }, index) => (
+                              <a href="#">
+                                {`${index > 0 ? ", " : " "}` +
+                                  attributes.givenName}
+                              </a>
+                            ))}
+                          </div>
 
-                        <div class="post-publish-date">
-                          {new Date(post.createdAt).toLocaleString("en-US", {
-                            day: "numeric",
-                            month: "long",
-                          })}
+                          <div class="post-publish-date">
+                            {new Date(post.createdAt).toLocaleString("en-US", {
+                              day: "numeric",
+                              month: "long",
+                            })}
+                          </div>
                         </div>
+                      )}
+
+                      <div class="recent-post-card-title alice mt-[15px]">
+                        <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+
+                        <span class="icon recent-post-card-title-icon">
+                          <img
+                            class="recent-post-card-title-icon"
+                            {...green_right_arrow}
+                          />
+                        </span>
                       </div>
-                    )}
-
-                    <div class="recent-post-card-title alice mt-[15px]">
-                      <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
-
-                      <span class="icon recent-post-card-title-icon">
-                        <img
-                          class="recent-post-card-title-icon"
-                          {...green_right_arrow}
-                        />
-                      </span>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
+          <div class="py-8 -mt-1 bg-primary product-kindness-impact-bottom"></div>
         </div>
       </section>
     )
