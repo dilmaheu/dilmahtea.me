@@ -143,38 +143,38 @@ const contentHTML = await Astro.slots.render("post-details"),
               {page.authors.data.map(
                 (author, index) =>
                   author.attributes.Profile_picture.data && (
-                    <img
-                      class:list={[
-                        index > 0 && "relative -ml-5",
-                        "w-12 h-12 rounded-full object-cover overflow-hidden",
-                      ]}
+                    <Picture
+                      layout="fill"
                       alt={
-                        author.attributes.Profile_picture.data.attributes
-                          .alternativeText
+                        author.attributes.Profile_picture.data?.attributes
+                          ?.alternativeText
                       }
                       src={
                         imgSrcPrefix +
-                        author.attributes.Profile_picture.data.attributes
-                          .provider_metadata.public_id +
+                        author.attributes.Profile_picture.data?.attributes
+                          ?.provider_metadata.public_id +
                         `/authBlob`
                       }
                     />
                   )
-
-                /* <Picture
-                  layout="fill"
-                  alt={
-                    author.attributes.Profile_picture.data?.attributes
-                      ?.alternativeText
-                  }
-                  src={
-                    imgSrcPrefix +
-                    author.attributes.Profile_picture.data?.attributes
-                      ?.provider_metadata.public_id +
-                    `/authBlob`
-                  }
-                /> */
               )}
+
+              {/* <img
+                class:list={[
+                  index > 0 && "relative -ml-5",
+                  "w-12 h-12 rounded-full object-cover overflow-hidden",
+                ]}
+                alt={
+                  author.attributes.Profile_picture.data.attributes
+                    .alternativeText
+                }
+                src={
+                  imgSrcPrefix +
+                  author.attributes.Profile_picture.data.attributes
+                    .provider_metadata.public_id +
+                  `/authBlob`
+                }
+              /> */}
 
               <div class="grid content-between">
                 <div class="post-author flex flex-wrap font-bold">
@@ -467,7 +467,7 @@ const contentHTML = await Astro.slots.render("post-details"),
           >
             <a class="block w-full" href={`/` + post.Meta.URL_slug}>
               <div class="recent-posts-img-container">
-                <img
+                {/* <img
                   src={
                     imgSrcPrefix +
                     post.Intro_blob.data.attributes.provider_metadata
@@ -476,10 +476,9 @@ const contentHTML = await Astro.slots.render("post-details"),
                   }
                   alt={post.Intro_blob.data.attributes.alternativeText}
                   class="w-full h-full object-cover"
-                />
-              </div>
+                /> */}
 
-              {/* <Picture
+                <Picture
                   alt=""
                   layout="fill"
                   src={
@@ -488,12 +487,8 @@ const contentHTML = await Astro.slots.render("post-details"),
                       .public_id +
                     `/small`
                   }
-                  attributes={{
-                    picture: {
-                      style: "clip-path: url(#recent-post-card-curve);",
-                    },
-                  }}
-                /> */}
+                />
+              </div>
             </a>
 
             <div class="recent-post-card-content-container grid content-between">
