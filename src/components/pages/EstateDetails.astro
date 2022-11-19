@@ -3,6 +3,7 @@ import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 const { page, recurData } = Astro.props,
   headingName = recurData.text_chapter,
@@ -18,7 +19,9 @@ const { page, recurData } = Astro.props,
 <PostDetailsLayout {page} {recurData} {headingName}>
   <div slot="post-details" class="prose content-text">
     <Chapterize>
-      <Markdown>{page.Block_text}</Markdown>
+      <OptimizeContentImages>
+        <Markdown>{page.Block_text}</Markdown>
+      </OptimizeContentImages>
     </Chapterize>
   </div>
 
