@@ -1,9 +1,8 @@
 ---
-import { marked } from 'marked';
+import { marked } from "marked";
 import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
-import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import RecipesInfoSection from "@components/RecipesInfoSection.astro";
@@ -22,10 +21,9 @@ const { page, recurData } = Astro.props,
   headingName = recurData.text_chapter,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 
-const url = 
-  `${ Astro.site.origin}/${page.locale}/${page.Meta.URL_slug === "/" 
-    ? "" 
-    : page.Meta.URL_slug}/`;
+const url = `${Astro.site.origin}/${page.locale}/${
+  page.Meta.URL_slug === "/" ? "" : page.Meta.URL_slug
+}/`;
 
 function calcTime(x) {
   var d = x[0];
@@ -112,9 +110,8 @@ const nutrition = {
 };
 
 page.Nutrition.forEach((item) => {
-  nutrition[item.Nutrition_name] = 
-    (item.Nutrition_amount || "0") + 
-      item.Nutrition_measurements_unit
+  nutrition[item.Nutrition_name] =
+    (item.Nutrition_amount || "0") + item.Nutrition_measurements_unit;
 });
 ---
 
@@ -453,9 +450,11 @@ page.Nutrition.forEach((item) => {
             <div class="flex">
               <div class="w-auto recipe-sec-content-border" />
               <div class="w-full gap-[15px]">
-                <h3 
+                <h3
                   class="alice leading-[130%] sm:leading-[120%] text-dark2 recipe-sec-coockingpart-title"
-                  id={item.Cooking_part_name.replaceAll(" ", "-").replace(/\s+/g,'').trim()}
+                  id={item.Cooking_part_name.replaceAll(" ", "-")
+                    .replace(/\s+/g, "")
+                    .trim()}
                 >
                   {item.Cooking_part_name}
                 </h3>
@@ -464,13 +463,14 @@ page.Nutrition.forEach((item) => {
           </div>
 
           {item.Cooking_part_steps.map((step, idx) => (
-            <div 
+            <div
               class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
-              id={ 
-                item.Cooking_part_name
-                  .replaceAll(" ", "-")
-                  .replace(/\s+/g,'').trim() + 
-                    `-step-` + ( idx + 1)
+              id={
+                item.Cooking_part_name.replaceAll(" ", "-")
+                  .replace(/\s+/g, "")
+                  .trim() +
+                `-step-` +
+                (idx + 1)
               }
             >
               <div class="flex gap-[15px]">
@@ -486,31 +486,20 @@ page.Nutrition.forEach((item) => {
 
               {step.Cooking_part_steps_blob.data && (
                 <div class="recipe-step-img-container mt-2.5 sm:mt-[15px]">
-                  {/* <ClippedImg
+                  <ClippedPicture
                     id="recipe-img-curve"
+                    alt={
+                      step.Cooking_part_steps_blob.data.attributes
+                        .alternativeText
+                    }
                     src={
                       imgSrcPrefix +
                       step.Cooking_part_steps_blob.data.attributes
                         .provider_metadata.public_id +
                       `/small`
                     }
-                    alt={
-                      step.Cooking_part_steps_blob.data.attributes
-                        .alternativeText
-                    }
                     path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-                  /> */}
-
-                  <ClippedPicture
-                      id="recipe-img-curve"
-                      src={
-                        imgSrcPrefix +
-                        step.Cooking_part_steps_blob.data.attributes
-                          .provider_metadata.public_id +
-                        `/small`
-                      }
-                      path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-                    /> 
+                  />
                 </div>
               )}
             </div>
