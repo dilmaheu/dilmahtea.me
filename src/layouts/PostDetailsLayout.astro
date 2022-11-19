@@ -6,7 +6,6 @@ import { Picture } from "astro-imagetools/components";
 import Hero from "@components/Hero.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import HeadingLinks from "@components/HeadingLinks.astro";
-import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import ChaptersFunctionality from "@components/scripts/ChaptersFunctionality.astro";
 
@@ -113,12 +112,6 @@ const contentHTML = await Astro.slots.render("post-details"),
   .recent-post-card-title-icon {
     height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
   }
-
-  .recent-posts-img-container {
-    width: 100%;
-    max-height: 310px;
-    aspect-ratio: 4.23 / 3.1;
-  }
 </style>
 
 {/* Hero Section */}
@@ -133,38 +126,29 @@ const contentHTML = await Astro.slots.render("post-details"),
               {page.authors.data.map(
                 (author, index) =>
                   author.attributes.Profile_picture.data && (
-                    <Picture
-                      layout="fill"
-                      alt={
-                        author.attributes.Profile_picture.data?.attributes
-                          ?.alternativeText
-                      }
-                      src={
-                        imgSrcPrefix +
-                        author.attributes.Profile_picture.data?.attributes
-                          ?.provider_metadata.public_id +
-                        `/authBlob`
-                      }
-                    />
+                    <div
+                      class:list={[
+                        index > 0 && "relative -ml-5",
+                        "w-12 h-12 rounded-full overflow-hidden",
+                      ]}
+                    >
+                      <Picture
+                        width={48}
+                        height={48}
+                        alt={
+                          author.attributes.Profile_picture.data?.attributes
+                            ?.alternativeText
+                        }
+                        src={
+                          imgSrcPrefix +
+                          author.attributes.Profile_picture.data?.attributes
+                            ?.provider_metadata.public_id +
+                          `/authBlob`
+                        }
+                      />
+                    </div>
                   )
               )}
-
-              {/* <img
-                class:list={[
-                  index > 0 && "relative -ml-5",
-                  "w-12 h-12 rounded-full object-cover overflow-hidden",
-                ]}
-                alt={
-                  author.attributes.Profile_picture.data.attributes
-                    .alternativeText
-                }
-                src={
-                  imgSrcPrefix +
-                  author.attributes.Profile_picture.data.attributes
-                    .provider_metadata.public_id +
-                  `/authBlob`
-                }
-              /> */}
 
               <div class="grid content-between">
                 <div class="post-author flex flex-wrap font-bold">
@@ -263,46 +247,22 @@ const contentHTML = await Astro.slots.render("post-details"),
 
   {/* Blob Image - Desktop View */}
   <div class="hero-img-curve-container h-full hidden sm:block absolute z-20">
-    <ClippedImg
+    <ClippedPicture
       id="hero-img-curve"
-      className="relative object-cover"
+      alt={page.Intro_blob.data.attributes.alternativeText}
       src={imgSrcPrefix +
         page.Intro_blob.data.attributes.provider_metadata.public_id +
         `/small`}
-      alt={page.Intro_blob.data.attributes.alternativeText}
       path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
     />
-
-    {
-      /* (
-        <ClippedPicture
-          id="hero-img-curve"
-          pictureStyle="position: relative;"
-          src={
-            imgSrcPrefix +
-            page.Intro_blob.data.attributes.provider_metadata.public_id +
-            `/small`
-          }
-          path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
-        />
-      ) */
-    }
   </div>
 </Hero>
 
 {/* Blob Image - Mobile View */}
 <div class="hero-img-sm-container block sm:hidden w-full relative z-20 -mt-20">
-  <!-- <ClippedImg
-    id="hero-img-curve-sm"
-    src={imgSrcPrefix +
-      page.Intro_blob.data.attributes.provider_metadata.public_id +
-      `/small`}
-    alt={page.Intro_blob.data.attributes.alternativeText}
-    path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
-  /> -->
-
   <ClippedPicture
     id="hero-img-curve-sm"
+    alt={page.Intro_blob.data.attributes.alternativeText}
     src={imgSrcPrefix +
       page.Intro_blob.data.attributes.provider_metadata.public_id +
       `/small`}
@@ -456,29 +416,16 @@ const contentHTML = await Astro.slots.render("post-details"),
             style="clip-path: url(#recent-post-card-curve)"
           >
             <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-              <div class="recent-posts-img-container">
-                {/* <img
-                  src={
-                    imgSrcPrefix +
-                    post.Intro_blob.data.attributes.provider_metadata
-                      .public_id +
-                    `/small`
-                  }
-                  alt={post.Intro_blob.data.attributes.alternativeText}
-                  class="w-full h-full object-cover"
-                /> */}
-
-                <Picture
-                  alt=""
-                  layout="fill"
-                  src={
-                    imgSrcPrefix +
-                    post.Intro_blob.data.attributes.provider_metadata
-                      .public_id +
-                    `/small`
-                  }
-                />
-              </div>
+              <Picture
+                layout="fill"
+                ar={4.23 / 3.1}
+                alt={post.Intro_blob.data.attributes.alternativeText}
+                src={
+                  imgSrcPrefix +
+                  post.Intro_blob.data.attributes.provider_metadata.public_id +
+                  `/small`
+                }
+              />
             </a>
 
             <div class="recent-post-card-content-container grid content-between">
