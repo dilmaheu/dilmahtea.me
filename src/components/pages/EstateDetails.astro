@@ -14,15 +14,6 @@ const { page, recurData } = Astro.props,
   .map-title {
     font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
   }
-
-  .map-img-container {
-    width: 100%;
-    max-height: 530px;
-
-    @media (min-width: 640px) {
-      aspect-ratio: 5 / 3;
-    }
-  }
 </style>
 
 <PostDetailsLayout {page} {recurData} {headingName}>
@@ -45,19 +36,7 @@ const { page, recurData } = Astro.props,
         </h2>
 
         <a href={page.Location_link} class="block w-full">
-          <div class="hidden sm:block map-img-container">
-            {/* <ClippedImg
-              id="estate-map-curve"
-              className="w-full h-full object-fit"
-              src={
-                imgSrcPrefix +
-                page.Location?.data?.attributes.provider_metadata.public_id +
-                `/public`
-              }
-              alt={page.Location?.data?.attributes.alternativeText}
-              path="M.04.089C.086.001.164.009.262.005c.165-.007.26.005.425 0 .115-.003.179 0 .242.029C.977.057 1 .335 1 .513.996.676 1 .9.946.927.888.952.753.961.694.976.583 1 .464.97.363.976.271.982.156 1 .054.927 0 .859-.001.687 0 .513.002.348-.007.18.04.089"
-            /> */}
-
+          <div class="hidden sm:block h-[530px]">
             <ClippedPicture
               id="estate-map-curve"
               src={
@@ -67,27 +46,10 @@ const { page, recurData } = Astro.props,
               }
               alt={page.Location?.data?.attributes.alternativeText}
               path="M.04.089C.086.001.164.009.262.005c.165-.007.26.005.425 0 .115-.003.179 0 .242.029C.977.057 1 .335 1 .513.996.676 1 .9.946.927.888.952.753.961.694.976.583 1 .464.97.363.976.271.982.156 1 .054.927 0 .859-.001.687 0 .513.002.348-.007.18.04.089"
-              attributes={{
-                img: {
-                  style: "max-height: 375px;",
-                },
-              }}
             />
           </div>
 
           <div class="block sm:hidden h-[375px]">
-            {/* <ClippedImg
-              id="estate-map-curve-sm"
-              className="w-full h-full object-cover"
-              src={
-                imgSrcPrefix +
-                page.Location?.data?.attributes.provider_metadata.public_id +
-                `/public`
-              }
-              alt={page.Location?.data?.attributes.alternativeText}
-              path="M0.913,0.04 c0.088,0.046,0.08,0.124,0.084,0.222 c0.007,0.165,-0.005,0.26,0,0.425 c0.003,0.116,0,0.179,-0.029,0.242 c-0.022,0.048,-0.301,0.075,-0.479,0.071 c-0.162,-0.003,-0.386,0.008,-0.413,-0.054 C0.05,0.888,0.042,0.753,0.026,0.694 C-0.003,0.583,0.033,0.464,0.026,0.363 C0.021,0.271,-0.054,0.156,0.076,0.054 C0.144,0,0.315,-0.001,0.489,0 C0.655,0.002,0.823,-0.007,0.913,0.04"
-            /> */}
-
             <ClippedPicture
               id="estate-map-curve-sm"
               src={
@@ -97,11 +59,6 @@ const { page, recurData } = Astro.props,
               }
               alt={page.Location?.data?.attributes.alternativeText}
               path="M0.913,0.04 c0.088,0.046,0.08,0.124,0.084,0.222 c0.007,0.165,-0.005,0.26,0,0.425 c0.003,0.116,0,0.179,-0.029,0.242 c-0.022,0.048,-0.301,0.075,-0.479,0.071 c-0.162,-0.003,-0.386,0.008,-0.413,-0.054 C0.05,0.888,0.042,0.753,0.026,0.694 C-0.003,0.583,0.033,0.464,0.026,0.363 C0.021,0.271,-0.054,0.156,0.076,0.054 C0.144,0,0.315,-0.001,0.489,0 C0.655,0.002,0.823,-0.007,0.913,0.04"
-              attributes={{
-                img: {
-                  style: "max-height: 375px;",
-                },
-              }}
             />
           </div>
         </a>
