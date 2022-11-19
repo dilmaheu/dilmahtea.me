@@ -1,15 +1,17 @@
 ---
 import { Icon } from "astro-icon";
-import { marked } from 'marked';
+import { marked } from "marked";
 import { Schema } from "astro-seo-schema";
+import { Picture } from "astro-imagetools/components";
 import Markdown from "@astrojs/markdown-component";
+
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
-import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 const { green_right_arrow } = RecurringImages;
 
@@ -348,7 +350,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     <Chapterize slot="post-details">
       <Markdown>{page.Intro_text}</Markdown>
 
-      <Markdown>{page.Block_text}</Markdown>
+      <OptimizeContentImages>
+        <Markdown>{page.Block_text}</Markdown>
+      </OptimizeContentImages>
 
       {
         page.Price_breakdown.length > 0 && (
@@ -584,15 +588,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     class="product-kindness-impact-img-container block w-full"
                     href={`/` + post.Meta.URL_slug}
                   >
-                    <img
+                    <Picture
+                      layout="fill"
+                      alt={post.Intro_blob.data.attributes.alternativeText}
                       src={
                         imgSrcPrefix +
                         post.Intro_blob.data.attributes.provider_metadata
                           .public_id +
                         `/small`
                       }
-                      alt={post.Intro_blob.data.attributes.alternativeText}
-                      class="w-full h-full object-cover"
                     />
                   </a>
 
@@ -643,18 +647,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     "@context": "https://schema.org",
     "@type": "Product",
     name: page.Title,
-    image: ( 
+    image:
       imgSrcPrefix +
-        page.Intro_blob.data.attributes.provider_metadata.public_id +
-        `/public` 
-    ),
-    description: (
-      `${marked.parse(page.Intro_text)
-        .replace(/(<([^>]+)>)/gi, "")} ${
-          marked.parse(page.Block_text)
-            .replace(/(<([^>]+)>)/gi, "")
-      }`
-    ),
+      page.Intro_blob.data.attributes.provider_metadata.public_id +
+      `/public`,
+    description: `${marked
+      .parse(page.Intro_text)
+      .replace(/(<([^>]+)>)/gi, "")} ${marked
+      .parse(page.Block_text)
+      .replace(/(<([^>]+)>)/gi, "")}`,
     sku: page.SKU,
     gtin: page.GTIN_Barcode,
     brand: {
@@ -663,23 +664,21 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     },
     offers: {
       "@type": "Offer",
-      url: (
-        `${ Astro.site.origin}/${page.locale}/${page.Meta.URL_slug === "/" 
-          ? "" 
-          : page.Meta.URL_slug}/`
-      ),
+      url: `${Astro.site.origin}/${page.locale}/${
+        page.Meta.URL_slug === "/" ? "" : page.Meta.URL_slug
+      }/`,
       itemCondition: "https://schema.org/NewCondition",
       availability: "https://schema.org/InStock",
       price: page.Price,
       priceCurrency: page.Currency,
       priceValidUntil: new Date(),
-      "shippingDetails": {
+      shippingDetails: {
         "@type": "OfferShippingDetails",
-        "shippingDestination": {
+        shippingDestination: {
           "@type": "DefinedRegion",
-          "addressCountry": "EU"
+          addressCountry: "EU",
         },
-      }
+      },
     },
   }}
 />
