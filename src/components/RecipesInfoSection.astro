@@ -1,7 +1,6 @@
 ---
 import { parseHTML } from "linkedom";
 import Markdown from "@astrojs/markdown-component";
-import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
@@ -39,9 +38,10 @@ const { document: contentBlocksDocument } = await parseHTML(contentBlocksHTML),
 {
   titles.map((title) => {
     const { textContent: titleText } = title,
-      { textContent } = title.nextElementSibling;
-    // @ts-ignore
-    const imgSrc = title.nextElementSibling?.lastElementChild?.src;
+      { textContent } = title.nextElementSibling,
+      // @ts-ignore
+      { src: imgSrc, alt: imgAlt } =
+        title.nextElementSibling?.lastElementChild || {};
 
     return (
       <>
@@ -54,8 +54,6 @@ const { document: contentBlocksDocument } = await parseHTML(contentBlocksHTML),
 
         <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] mt-[25px]">
           <div class="prose max-w-none mb-[15px] text-dark recipe-sec-text">
-            <Markdown>{textContent}</Markdown>
-
             <OptimizeContentImages>
               <Markdown>{textContent}</Markdown>
             </OptimizeContentImages>
@@ -63,16 +61,10 @@ const { document: contentBlocksDocument } = await parseHTML(contentBlocksHTML),
 
           {imgSrc && (
             <div class="recipe-info-img-container">
-              {/* <ClippedImg
-                id="recipe-img-curve"
-                className="w-full h-full"
-                src={imgSrc}
-                path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-              /> */}
-
               <ClippedPicture
                 id="recipe-img-curve"
                 src={imgSrc}
+                alt={imgAlt}
                 path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
                 attributes={{
                   picture: {
