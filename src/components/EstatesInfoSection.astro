@@ -13,15 +13,6 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
 ---
 
 <style lang="scss">
-  .info-block-image-container {
-    width: 100%;
-    max-height: 530px;
-
-    @media (min-width: 640px) {
-      aspect-ratio: 5.65 / 5;
-    }
-  }
-
   .info-block-title {
     font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
   }
@@ -41,7 +32,8 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
         { textContent: titleText } = title,
         { textContent } = title.nextElementSibling,
         // @ts-ignore
-        { src: imgSrc } = title.nextElementSibling.lastElementChild;
+        { src: imgSrc, alt: imgAlt = "" } =
+          title.nextElementSibling.lastElementChild;
 
       return (
         <div class="flex flex-wrap items-center">
@@ -53,24 +45,16 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
                 : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
             ]}
           >
-            <div class="info-block-image-container">
-              {/* <img 
-                class="w-full h-full"
-                src={imgSrc} 
-                alt="estate-image"
-                style="clip-path: url(#estate-img-curve);" 
-              /> */}
-
-              <Picture
-                alt=""
-                src={imgSrc}
-                attributes={{
-                  picture: {
-                    style: "clip-path: url(#estate-img-curve);",
-                  },
-                }}
-              />
-            </div>
+            <Picture
+              src={imgSrc}
+              alt={imgAlt}
+              ar={5.65 / 5}
+              attributes={{
+                picture: {
+                  style: "clip-path: url(#estate-img-curve);",
+                },
+              }}
+            />
           </div>
 
           {/* Text content */}
