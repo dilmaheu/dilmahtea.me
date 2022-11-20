@@ -37,8 +37,10 @@ for (const value of Spent_amount) {
   Total_spent_amount += value;
 }
 
-const { url: productImgURL } = page.Intro_blob.data.attributes,
-  { SKU: productSKU } = page,
+const { url: productThumbnailURL } =
+  page.Intro_blob.data.attributes.formats.thumbnail;
+
+const { SKU: productSKU } = page,
   productPrice = Number(page.Price),
   tax = Math.round(productPrice * 9) / 100,
   productPriceIncludingTax = productPrice + tax,
@@ -172,7 +174,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   >
     <input type="hidden" name="sku" value={productSKU} />
     <input type="hidden" name="names" value={productNames} />
-    <input type="hidden" name="image" value={productImgURL} />
+    <input type="hidden" name="image" value={productThumbnailURL} />
 
     <input type="hidden" name="tax" value={tax} />
     <input type="hidden" name="price" value={productPriceIncludingTax} />
@@ -261,7 +263,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   >
     <input type="hidden" name="sku" value={productSKU} />
     <input type="hidden" name="names" value={productNames} />
-    <input type="hidden" name="image" value={productImgURL} />
+    <input type="hidden" name="image" value={productThumbnailURL} />
 
     <input type="hidden" name="tax" value={tax} />
     <input type="hidden" name="price" value={productPriceIncludingTax} />
