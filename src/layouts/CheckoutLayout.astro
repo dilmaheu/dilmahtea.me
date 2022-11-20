@@ -1,14 +1,9 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
-
-import { Picture } from "astro-imagetools/components";
-
-import Cart from "@components/Cart.astro";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
-import OrderSummary from "@components/OrderSummary.astro";
-
 import CMS from "@store/CMS";
+import BaseLayout from "@layouts/BaseLayout.astro";
 import RecurringImages from "@store/RecurringImages";
+import { Picture } from "astro-imagetools/components";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
 
 const { logo, checkout_header_background, checkout_header_background_sm } =
   RecurringImages;
@@ -22,7 +17,7 @@ interface Props {
   availableLocales: string[];
 }
 
-const { page, meta, locale, recurData, availableLocales, metaImageID } =
+const { page, meta, locale, availableLocales, metaImageID } =
   Astro.props as Props;
 
 const checkoutStepOrder = page.checkout_step_order,
@@ -90,10 +85,6 @@ const checkoutStepOrder = page.checkout_step_order,
       )
     );
   }
-
-  main > section:first-child {
-    @apply w-full lg:w-[66.67%];
-  }
 </style>
 
 <BaseLayout
@@ -106,11 +97,6 @@ const checkoutStepOrder = page.checkout_step_order,
     if (Object.keys(window.cart).length === 0) {
       history.back();
     }
-
-    const savedCheckoutContactInfo =
-      localStorage.getItem("checkout-contact-info") || "{}";
-
-    window.checkoutContactInfo = JSON.parse(savedCheckoutContactInfo);
   </script>
 
   <div id="checkout" class="bg-lightgray">
@@ -145,7 +131,12 @@ const checkoutStepOrder = page.checkout_step_order,
           <img {...logo} class="h-full" />
         </a>
 
-        <div class="flow flex-grow grid grid-cols-3 gap-[3.25%]">
+        <div
+          class="flow flex-grow grid gap-[3.25%]"
+          style={`grid-template-columns: ${Array.from({ length: steps.length })
+            .map(() => "1fr")
+            .join(" ")}`}
+        >
           {
             steps.map((step, i) => {
               const shortenedStep = shortenedSteps[i];
@@ -175,23 +166,13 @@ const checkoutStepOrder = page.checkout_step_order,
       </div>
     </header>
 
+    <ClipPathSVG
+      id="product-image-curve"
+      path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
+    />
+
     <main id="checkout-main" class="flex">
-      <section>
-        <slot />
-      </section>
-
-      <ClipPathSVG
-        id="shipping-product-image"
-        path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
-      />
-
-      <section
-        class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-lightgreen"
-      >
-        <OrderSummary page={page} />
-      </section>
+      <slot />
     </main>
   </div>
-
-  <Cart page={page} />
 </BaseLayout>

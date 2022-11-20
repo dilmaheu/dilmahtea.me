@@ -1,5 +1,6 @@
 @use "colors";
 @use "typography";
+@use "src/styles/poly-fluid" as *;
 
 .hero {
   @apply pb-20 sm:pb-8 md:pb-14 xl:pb-20 h-full md:h-[clamp(400px,35vw+180px,612px)];
@@ -8,8 +9,8 @@
 .hero-img-curve-container {
   @apply top-0 right-0;
 
-  width: clamp(330px,26.4vw + 150px,560px);
-  height: clamp(296px,24vw + 150px,526px);
+  width: clamp(330px, 26.4vw + 150px, 560px);
+  height: clamp(296px, 24vw + 150px, 526px);
 
   @media (max-width: 949.98px) {
     right: -1vw;
@@ -40,7 +41,7 @@
   }
 }
 
-.hero-img-sm-container img{
+.hero-img-sm-container img {
   width: 100%;
   max-height: 375px;
   object-fit: cover;
@@ -51,30 +52,27 @@
 }
 
 .hero-text-container {
-  padding-top: 100px;
-  padding-bottom: 25px;
+  @include poly-fluid-sizing(
+    "padding-bottom",
+    (
+      959px: 15px,
+      960px: 15px,
+      1280px: 20px,
+      1536px: 25px,
+    )
+  );
 
-  @media (max-width: 1535.98px) {
-    padding-top: 95px;
-  }
-
-  @media (max-width: 1279.98px) {
-    padding-top: 90px;
-    padding-bottom: 20px;
-  }
-
-  @media (max-width: 1023.98px) {
-    padding-top: 75px;
-  }
-
-  @media (max-width: 959.98px) {
-    padding-top: 70px;
-    padding-bottom: 15px;
-  }
-
-  @media (max-width: 767.98px) {
-    padding-top: 65px;
-  }
+  @include poly-fluid-sizing(
+    "padding-top",
+    (
+      767px: 65px,
+      768px: 70px,
+      960px: 75px,
+      1024px: 90px,
+      1280px: 95px,
+      1536px: 100px,
+    )
+  );
 }
 
 .hero-text-content {
@@ -86,7 +84,7 @@
   font-family: typography.$alice;
   font-size: clamp(1.75rem, 3vw + 0.3rem, 3rem);
 
-  @apply leading-[120%] sm:leading-[115%] ;
+  @apply leading-[120%] sm:leading-[115%];
 
   @media (min-width: 826px) {
     padding-right: 0;

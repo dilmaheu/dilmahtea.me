@@ -3,6 +3,7 @@ import CMS from "@store/CMS";
 import { Icon } from "astro-icon";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
+import EmptyCartNotification from "./EmptyCartNotification.astro";
 
 declare interface Props {
   page: Record<string, any>;
@@ -19,27 +20,31 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style lang="scss">
-  .cart-products-container {
+  .cart-overlay-products-container {
     @apply max-w-full w-[375px] sm:w-[528.96px];
   }
 
-  .cart-heading {
+  .cart-overlay-heading {
     line-height: 110%;
 
     @apply text-[2rem] sm:text-[2.625rem];
   }
 
-  .cart-product-details {
+  .cart-overlay-product-details {
     @apply max-w-full w-[272px];
   }
 
-  .cart-product-name {
+  .cart-overlay-product-name {
     line-height: 130%;
 
     @apply text-[1.125rem] sm:text-[1.5rem];
   }
 
-  :global(input[type="number"].product-amount-input) {
+  .cart-overlay-product-amount-tweak-btn:disabled {
+    opacity: 30%;
+  }
+
+  .cart-overlay-product-amount-input {
     -moz-appearance: textfield;
 
     &::-webkit-outer-spin-button,
@@ -53,14 +58,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     @apply text-base sm:text-[1.125rem];
   }
 
-  .cart-product-price,
+  .cart-overlay-product-price,
   #cart-subtotal {
     line-height: 110%;
 
     @apply text-[1.75rem] sm:text-[2rem];
   }
 
-  .cart-product-size,
+  .cart-overlay-product-size,
   .shipping-charge-info {
     @apply text-[0.875rem] sm:text-base;
   }
@@ -72,31 +77,44 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 >
   <div class="w-full max-w-[2050px] h-fit mx-auto bg-[rgba(0,0,0,0.5)]">
     <div
-      class="cart-products-container ml-auto overflow-y-auto text-dark2 bg-lightgray"
+      class="cart-overlay-products-container ml-auto overflow-y-auto text-dark2 bg-lightgray"
     >
       <ClipPathSVG
-        id="cart-product-image"
+        id="cart-overlay-product-image"
         path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
       />
 
       <div
         id="cart-products"
-        class="h-screen p-6 sm:py-9 sm:px-14 flex flex-col justify-between gap-[36px]"
+        class="h-screen p-6 sm:py-9 sm:px-14 flex flex-col gap-5"
       >
-        <div class="h-full flex flex-col gap-5">
+        <div class="flex flex-col gap-5">
           <div class="flex justify-between items-center">
-            <h3 class="cart-heading alice">{checkoutRecurData.text_cart}</h3>
+            <h3 class="cart-overlay-heading alice">
+              {checkoutRecurData.text_cart}
+            </h3>
 
-            <button id="close-cart-btn">
+            <button id="close-cart-btn" aria-label="Close Cart">
               <Icon name="heroicons-solid:x" class="w-14" />
             </button>
           </div>
 
           <div class="border border-solid border-lightgreen"></div>
+        </div>
 
+        <EmptyCartNotification locale={locale} />
+
+        <div id="cart-overlay-content" class="grow flex flex-col gap-[36px]">
           <div class="h-36 sm:h-44 grow flex flex-col gap-5 overflow-auto">
             <DynamicHTML
               voidFn={(content, currentScript) => {
+                const cartOverlayContent = document.getElementById(
+                    "cart-overlay-content"
+                  ),
+                  emptyCartNotification = document.getElementById(
+                    "empty-cart-notification"
+                  );
+
                 window.addProductToCart = (id) => {
                   const productData = window.cart[id],
                     names = JSON.parse(productData.names),
@@ -114,17 +132,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       price,
                     })
                   );
-
-                  const newCartProduct = currentScript.previousElementSibling,
-                    newProductAmountInput = newCartProduct.querySelector(
-                      ".product-amount-input"
-                    );
-
-                  window.handleProductAmountInput &&
-                    window.handleProductAmountInput(newProductAmountInput);
                 };
 
-                Object.keys(window.cart).forEach(window.addProductToCart);
+                if (Object.keys(window.cart).length === 0) {
+                  cartOverlayContent.classList.add("hidden");
+                } else {
+                  emptyCartNotification.classList.add("hidden");
+
+                  Object.keys(window.cart).forEach(window.addProductToCart);
+                }
               }}
             >
               <div
@@ -133,12 +149,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               >
                 <img
                   src={`<placeholder name="image"></placeholder>`}
-                  style="min-width: 100px; width: 100px; height: 100px; clip-path: url(#cart-product-image);"
+                  style="min-width: 100px; width: 100px; height: 100px; clip-path: url(#cart-overlay-product-image);"
                 />
 
-                <div class="cart-product-details flex flex-col gap-1">
+                <div class="cart-overlay-product-details flex flex-col gap-1">
                   <div class="flex justify-between items-center gap-1.5">
-                    <h6 class="alice cart-product-name">
+                    <h6 class="alice cart-overlay-product-name">
                       <placeholder name="name"></placeholder>
                     </h6>
 
@@ -147,7 +163,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     </button>
                   </div>
 
-                  <div class="cart-product-size">
+                  <div class="cart-overlay-product-size">
                     {checkoutRecurData.text_size}: <placeholder name="size"
                     ></placeholder>
                   </div>
@@ -158,20 +174,21 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     >
                       <button
                         data-action="decrement"
-                        class="w-8 h-8 py-1.5 pl-2 pr-1"
+                        class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-2 pr-1"
                       >
                         <Icon
                           name="akar-icons:minus"
-                          class="w-5 h-5 select-none cursor-pointer"
+                          class="w-5 h-5 select-none"
                         />
                       </button>
 
                       <input
                         type="number"
+                        aria-label="Quantity"
                         min="1"
                         value={`<placeholder name="quantity"></placeholder>`}
                         class:list={[
-                          "product-amount-input cart-product-quantity",
+                          "cart-overlay-product-amount-input",
                           "w-9 h-full text-center lg:text-lg bg-primary outline-none",
                         ]}
                         required
@@ -179,16 +196,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
                       <button
                         data-action="increment"
-                        class="w-8 h-8 py-1.5 pl-1 pr-2"
+                        class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-1 pr-2"
                       >
                         <Icon
                           name="akar-icons:plus"
-                          class="w-5 h-5 select-none cursor-pointer"
+                          class="w-5 h-5 select-none"
                         />
                       </button>
                     </div>
 
-                    <span class="cart-product-price alice text-dark3">
+                    <span class="cart-overlay-product-price alice text-dark3">
                       €<placeholder name="price"></placeholder>
                     </span>
                   </div>
@@ -196,31 +213,31 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               </div>
             </DynamicHTML>
           </div>
-        </div>
 
-        <div class="flex flex-col gap-5">
-          <div>
-            <div class="flex justify-between items-center">
-              <span class="subtotal-text font-medium">
-                {checkoutRecurData.text_subtotal}
-              </span>
+          <div class="flex flex-col gap-5">
+            <div>
+              <div class="flex justify-between items-center">
+                <span class="subtotal-text font-medium">
+                  {checkoutRecurData.text_subtotal}
+                </span>
 
-              <span id="cart-subtotal" class="alice">
-                €<DynamicHTML htmlFn={() => window.cart.subTotal} />
-              </span>
+                <span id="cart-subtotal" class="alice">
+                  €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+                </span>
+              </div>
+
+              <div class="shipping-charge-info">
+                {checkoutRecurData.text_shipping_calculated_at_checkout}
+              </div>
             </div>
 
-            <div class="shipping-charge-info">
-              {checkoutRecurData.text_shipping_calculated_at_checkout}
-            </div>
+            <a
+              href={checkoutInfoPageLink}
+              class="capitalize py-4 font-bold bg-primary text-center text-lightgray rounded-[9999px]"
+            >
+              {checkoutRecurData.text_proceed_to_checkout}
+            </a>
           </div>
-
-          <a
-            href={checkoutInfoPageLink}
-            class="capitalize py-4 font-bold bg-primary text-center text-lightgray rounded-[9999px]"
-          >
-            {checkoutRecurData.text_proceed_to_checkout}
-          </a>
         </div>
       </div>
     </div>
@@ -238,6 +255,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       addProductToCart: (id: string) => void;
       cart: Record<string, Record<string, string | number>>;
       handleProductAmountInput: (input: HTMLInputElement) => void;
+      listenToInputEvents: (
+        tweakBtns: NodeListOf<HTMLButtonElement>,
+        input: HTMLInputElement
+      ) => void;
     }
   }
 </script>
@@ -247,6 +268,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     cart = id("cart"),
     sidebar = id("sidebar"),
     closeCartBtn = id("close-cart-btn"),
+    cartOverlayContent = id("cart-overlay-content"),
+    emptyCartNotification = id("empty-cart-notification"),
     { overflowY: prevBodyOverflowYValue } = document.body.style;
 
   window.openCart = () => {
@@ -284,16 +307,21 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
       delete window.cart[productId];
 
+      if (Object.keys(window.cart).length === 0) {
+        cartOverlayContent.classList.add("hidden");
+        emptyCartNotification.classList.remove("hidden");
+      }
+
       productToRemove.remove();
     }
   });
 
-  closeCartBtn.addEventListener("click", closeCart);
+  closeCartBtn?.addEventListener("click", closeCart);
 
   window.addEventListener("resize", () => {
     const cartProducts = document.getElementById("cart-products");
 
-    if (cartProducts.scrollHeight > cartProducts.clientHeight) {
+    if (cartProducts?.scrollHeight > cartProducts?.clientHeight) {
       document.body.style.overflowY = "hidden";
     } else {
       document.body.style.overflowY = "scroll";
@@ -302,90 +330,53 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 </script>
 
 <script>
-  const query = document.querySelector.bind(document),
-    productAmountOutput = query(".product-amount-price"),
-    productAmountInputs = document.querySelectorAll(".product-amount-input"),
-    productPrice = Number(query("input[name='price']")?.value);
+  import tweakAmount from "@utils/tweakAmount";
 
-  const tweak = ({ target, action }) => {
-    const counter = target[
-        action === "decrement" ? "nextElementSibling" : "previousElementSibling"
-      ] as HTMLInputElement,
-      quantity = Number(counter.value);
-
-    counter.dispatchEvent(new Event("beforeinput"));
-
-    counter.value = String(
-      action === "decrement" ? quantity - 1 : quantity + 1
+  const cartOverlayProductAmountInputs = document.querySelectorAll(
+      ".cart-overlay-product-amount-input"
+    ),
+    cartOverlayProductAmountTweakBtns = document.querySelectorAll(
+      ".cart-overlay-product-amount-tweak-btn"
+    ),
+    decreaseAmountBtns = document.querySelectorAll(
+      ".cart-overlay-product-amount-tweak-btn[data-action='decrement']"
     );
 
-    counter.dispatchEvent(new Event("input"));
-  };
+  decreaseAmountBtns.forEach((button: HTMLButtonElement) => {
+    const input = button.nextElementSibling as HTMLInputElement;
 
-  window.handleProductAmountInput = (input: HTMLInputElement) => {
-    let latestValidValue;
-
-    input.addEventListener("beforeinput", () => {
-      input.validity.valid && (latestValidValue = input.value);
-    });
-
-    input.addEventListener("input", () => {
-      if (!input.validity.valid) {
-        input.value = latestValidValue;
-      }
-
-      const parentCartProduct = input.closest(".cart-product");
-
-      // check if the input is of a cart product
-      if (parentCartProduct) {
-        const productId = parentCartProduct.id,
-          productData = window.cart[productId],
-          { price, tax, quantity } = productData,
-          productPrice = Number(price) / Number(quantity),
-          productTax = Number(tax) / Number(quantity),
-          updatedQuantity = Number(input.value);
-
-        productData.quantity = updatedQuantity;
-        productData.tax = +(updatedQuantity * productTax).toFixed(2);
-        productData.price = +(updatedQuantity * productPrice).toFixed(2);
-
-        window.cart[productId] = productData;
-      }
-
-      // check if it's a product details page
-      else if (productPrice) {
-        productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
-          if (
-            otherAmountInput !== input &&
-            !otherAmountInput.classList.contains("cart-product-quantity")
-          ) {
-            otherAmountInput.value = input.value;
-          }
-        });
-
-        productAmountOutput.textContent = String(
-          (Number(input.value) * Number(productPrice))
-            .toFixed(2)
-            .replace(".", ",")
-        );
-      }
-    });
-  };
-
-  document.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement,
-      tweakBtn = target.closest(
-        "[data-action='decrement'], [data-action='increment']"
-      );
-
-    if (tweakBtn) {
-      event.preventDefault();
-
-      const action = tweakBtn.getAttribute("data-action");
-
-      tweak({ target: tweakBtn, action });
-    }
+    input.value === "1" && (button.disabled = true);
   });
 
-  productAmountInputs.forEach(window.handleProductAmountInput);
+  function tweakAmountCallback(input) {
+    const parentCartProduct = input.closest(".cart-product"),
+      productPriceElement = parentCartProduct.querySelector(
+        ".cart-overlay-product-price"
+      ),
+      productId = parentCartProduct.id,
+      productData = window.cart[productId],
+      { price, tax, quantity } = productData,
+      productPrice = Number(price) / Number(quantity),
+      productTax = Number(tax) / Number(quantity),
+      updatedQuantity = Number(input.value);
+
+    productData.quantity = updatedQuantity;
+    productData.tax = +(updatedQuantity * productTax).toFixed(2);
+    productData.price = +(updatedQuantity * productPrice).toFixed(2);
+
+    window.cart[productId] = productData;
+
+    productPriceElement.textContent =
+      "€" + Number(productData.price).toFixed(2).replace(".", ",");
+  }
+
+  tweakAmount(
+    cartOverlayProductAmountTweakBtns,
+    cartOverlayProductAmountInputs,
+    tweakAmountCallback
+  );
+
+  window.listenToInputEvents = (tweakBtns, input) => {
+    tweakAmount(tweakBtns, input, tweakAmountCallback);
+  };
 </script>

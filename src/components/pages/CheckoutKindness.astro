@@ -1,0 +1,191 @@
+---
+import CMS from "@store/CMS";
+import Markdown from "@astrojs/markdown-component";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+
+const { page } = Astro.props,
+  { locale } = page,
+  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env,
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+---
+
+<style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
+  .kindness-header {
+    h1 {
+      font-size: poly-fluid-clamp(
+        (
+          375px: 28px,
+          1440px: 48px,
+        )
+      );
+    }
+
+    .intro-text {
+      font-size: poly-fluid-clamp(
+        (
+          375px: 16px,
+          1440px: 18px,
+        )
+      );
+    }
+  }
+
+  .kindness-causes {
+    > .active-kindness-cause {
+      @apply -m-3 p-1.5 bg-primary;
+
+      clip-path: url(#kindness-cause-card-curve);
+
+      > div {
+        @apply p-1.5 bg-lightgray;
+
+        clip-path: url(#kindness-cause-card-curve);
+      }
+    }
+
+    h2 {
+      font-size: poly-fluid-clamp(
+        (
+          375px: 24px,
+          1440px: 28px,
+        )
+      );
+    }
+  }
+
+  #continue-to-payment-btn:disabled {
+    @apply bg-gray text-lightgray;
+  }
+</style>
+
+<script is:inline>
+  if (Object.keys(window.checkoutInfo).length === 0) {
+    location.href = "/" + window.preferredLocale + "/checkout/information";
+  }
+</script>
+
+<ClipPathSVG
+  id="kindness-cause-card-curve"
+  path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
+/>
+
+<div class="wrapper pt-6 pb-12 flex flex-col gap-12">
+  <section class="kindness-header text-center text-primary">
+    <h1 class="alice tracking-[-0.02em]">{page.Title}</h1>
+
+    <div class="intro-text"><Markdown>{page.Intro_text}</Markdown></div>
+  </section>
+
+  <section
+    class="kindness-causes flex flex-col sm:flex-row flex-wrap justify-center gap-10"
+  >
+    {
+      page.Kindness_Causes.map(({ cause, description, featured_blob }) => (
+        <div>
+          <div class="h-full">
+            <div
+              {
+              /* @ts-ignore */ }
+              cause={cause}
+              style="clip-path: url(#kindness-cause-card-curve);"
+              class="kindness-cause relative w-full h-full sm:w-80 flex flex-col bg-primary cursor-pointer"
+            >
+              <img
+                class="w-full h-48 object-cover"
+                alt={featured_blob.data.attributes.alternativeText}
+                src={
+                  imgSrcPrefix +
+                  featured_blob.data.attributes.provider_metadata.public_id +
+                  `/cms`
+                }
+              />
+
+              <div class="grow px-6 pt-5 pb-7 flex flex-col justify-center gap-2">
+                <h2 class="alice text-lightgray leading-[120%]">{cause}</h2>
+
+                <div class="font-medium text-base text-lightgray">
+                  <Markdown>{description}</Markdown>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </section>
+
+  <div
+    class="mx-auto flex flex-col sm:flex-row-reverse items-center justify-center sm:justify-start gap-9 sm:gap-12"
+  >
+    <button
+      disabled
+      id="continue-to-payment-btn"
+      class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
+    >
+      {checkoutRecurData.text_continue_to_payment}
+    </button>
+
+    <script is:inline>
+      const { kindness_cause } = window.checkoutInfo;
+
+      if (kindness_cause) {
+        document.currentScript.previousElementSibling.disabled = false;
+
+        const activeCauseCard = document.querySelector(
+          `.kindness-cause[cause="${kindness_cause}"]`
+        );
+
+        activeCauseCard?.parentElement.parentElement.classList.add(
+          "active-kindness-cause"
+        );
+      }
+    </script>
+
+    <a href="/checkout/information" class="text-primary font-bold">
+      {checkoutRecurData.text_return_to_information}
+    </a>
+  </div>
+</div>
+
+<script>
+  declare global {
+    interface Window {
+      preferredLocale: string;
+    }
+  }
+
+  const kindnessCausesCardsContainer =
+      document.querySelector(".kindness-causes"),
+    kindnessCausesCards = document.querySelectorAll(".kindness-cause"),
+    continueToPaymentBtn = document.getElementById(
+      "continue-to-payment-btn"
+    ) as HTMLButtonElement;
+
+  kindnessCausesCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const activeCauseCard = kindnessCausesCardsContainer.querySelector(
+          ".active-kindness-cause"
+        ),
+        kindness_cause = card.getAttribute("cause");
+
+      activeCauseCard?.classList?.remove("active-kindness-cause");
+
+      window.checkoutInfo.kindness_cause = kindness_cause;
+
+      localStorage.setItem(
+        "checkout-info",
+        JSON.stringify(window.checkoutInfo)
+      );
+
+      card.parentElement.parentElement.classList.add("active-kindness-cause");
+
+      continueToPaymentBtn.disabled = false;
+    });
+  });
+
+  continueToPaymentBtn?.addEventListener("click", () => {
+    location.href = "/" + window.preferredLocale + "/checkout/shipping";
+  });
+</script>

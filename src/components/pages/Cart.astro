@@ -1,0 +1,393 @@
+---
+import { Icon } from "astro-icon";
+
+import CMS from "@store/CMS";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
+
+import Navbar from "@components/Navbar.astro";
+import DynamicHTML from "@components/DynamicHTML.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import EmptyCartNotification from "@components/EmptyCartNotification.astro";
+import CartProductQuantityInput from "@components/CartProductQuantityInput.astro";
+
+interface Props {
+  page: Record<string, any>;
+  meta: Record<string, any>;
+  locale: string;
+  recurData: Record<string, any>;
+  metaImageID: string;
+  availableLocales: string[];
+}
+
+const { page, meta, locale, recurData, availableLocales, metaImageID } =
+  Astro.props;
+
+const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+
+const footerText = recurData.Footer_text.replaceAll(
+  "<current_year>",
+  `${new Date().getFullYear()}`
+);
+---
+
+<style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
+  #checkout-cart-container {
+    @include poly-fluid-sizing(
+      "padding-top",
+      (
+        639px: 90px,
+        640px: 95px,
+        768px: 100px,
+        960px: 110px,
+        1024px: 120px,
+        1280px: 130px,
+        1536px: 145px,
+        2050px: 165px,
+      )
+    );
+  }
+
+  #cart {
+    padding: poly-fluid-clamp(
+      (
+        375px: 13px 24px 24px,
+        1440px: 29px 56px 56px,
+      )
+    );
+  }
+
+  h1,
+  #cart-subtotal,
+  .text-total {
+    @apply leading-[115%] md:tracking-[-0.02em];
+  }
+
+  h1,
+  #cart-subtotal {
+    font-size: poly-fluid-clamp(
+      (
+        375px: 32px,
+        1440px: 48px,
+      )
+    );
+  }
+
+  .cart-products {
+    > div {
+      @media (min-width: 768px) {
+        @apply grid gap-4;
+
+        grid-template-columns: 3fr 1fr 1fr;
+
+        :global(div) {
+          &:nth-of-type(1) {
+            justify-self: start;
+          }
+
+          &:nth-of-type(2) {
+            justify-self: center;
+          }
+
+          &:nth-of-type(3) {
+            justify-self: end;
+          }
+        }
+      }
+    }
+
+    hr {
+      @apply border border-lightgreen opacity-50;
+    }
+
+    .details-headings {
+      @apply font-semibold text-primary text-[1.5rem] leading-[130%];
+    }
+  }
+
+  .cart-product-details {
+    gap: poly-fluid-clamp(
+      (
+        375px: 14px,
+        1440px: 35px,
+      )
+    );
+  }
+
+  .cart-product-name {
+    line-height: 110%;
+    font-size: poly-fluid-clamp(
+      (
+        375px: 20px,
+        1440px: 32px,
+      )
+    );
+  }
+
+  .cart-product-price {
+    line-height: 110%;
+    font-size: poly-fluid-clamp(
+      (
+        375px: 28px,
+        1440px: 32px,
+      )
+    );
+  }
+
+  .cart-product-size,
+  .text-shipping-charge-info {
+    font-size: poly-fluid-clamp(
+      (
+        375px: 14px,
+        1440px: 18px,
+      )
+    );
+  }
+
+  .text-total {
+    font-size: poly-fluid-clamp(
+      (
+        375px: 28px,
+        1440px: 48px,
+      )
+    );
+  }
+</style>
+
+<BaseLayout
+  meta={meta}
+  locale={locale}
+  availableLocales={availableLocales}
+  metaImageID={metaImageID}
+>
+  <Navbar
+    docLocale={locale}
+    footerText={footerText}
+    isCartNavbar={true}
+    availableLocales={availableLocales}
+  />
+
+  <div id="checkout-cart-container" class="min-h-screen flex flex-col">
+    <UpdateTopMargin />
+
+    <EmptyCartNotification locale={locale} />
+
+    <div id="cart" class="grow flex flex-col text-primary">
+      <h1 class="alice mb-4 md:mb-6">{page.text_cart}</h1>
+
+      <ClipPathSVG
+        id="cart-product-image"
+        path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
+      />
+
+      <div class="cart-products flex flex-col gap-6 md:gap-4 mb-9">
+        <div class="!hidden md:!grid details-headings">
+          <div>{page.text_product}</div>
+          <div>{checkoutRecurData.text_quantity}</div>
+          <div>{checkoutRecurData.text_subtotal}</div>
+        </div>
+
+        <hr />
+
+        <DynamicHTML
+          voidFn={(content, currentScript) => {
+            const cart = document.getElementById("cart"),
+              emptyCartNotification = document.getElementById(
+                "empty-cart-notification"
+              );
+
+            if (Object.keys(window.cart).length === 0) {
+              cart.classList.add("hidden");
+            } else {
+              emptyCartNotification.classList.add("hidden");
+            }
+
+            currentScript.insertAdjacentHTML(
+              "beforebegin",
+              Object.keys(window.cart)
+                .map((id) => {
+                  const productData = window.cart[id],
+                    names = JSON.parse(productData.names),
+                    name = names[preferredLocale] || names["en"],
+                    price = Number(productData.price)
+                      .toFixed(2)
+                      .replace(".", ",");
+
+                  return window.replacePlaceholders(content, {
+                    ...productData,
+                    id,
+                    name,
+                    price,
+                  });
+                })
+                .join("")
+            );
+          }}
+        >
+          <div
+            id={`<placeholder name="id"></placeholder>`}
+            class="cart-product items-center p-[15px] rounded-[19px] bg-lightgray2"
+          >
+            <div class="cart-product-details flex items-center">
+              <img
+                src={`<placeholder name="image"></placeholder>`}
+                style="min-width: 85px; width: 85px; height: 85px; clip-path: url(#cart-product-image);"
+              />
+
+              <div class="grow flex flex-col gap-2">
+                <div class="flex justify-between items-center gap-2.5">
+                  <div class="cart-product-name alice">
+                    <placeholder name="name"></placeholder>
+                  </div>
+
+                  <button class="remove-item-btn md:hidden">
+                    <Icon
+                      name="akar-icons:trash-can"
+                      class="w-[29px] h-[29px]"
+                    />
+                  </button>
+                </div>
+
+                <div class="cart-product-size">
+                  {checkoutRecurData.text_size}: <placeholder name="size"
+                  ></placeholder>
+                </div>
+
+                <div class="flex justify-between items-center">
+                  <div class="block md:hidden">
+                    <CartProductQuantityInput page={page} />
+                  </div>
+
+                  <div class="cart-product-price alice block md:hidden">
+                    €<placeholder name="price"></placeholder>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hidden md:flex gap-7">
+              <CartProductQuantityInput page={page} />
+
+              <button class="remove-item-btn">
+                <Icon name="akar-icons:trash-can" class="w-[29px] h-[29px]" />
+              </button>
+            </div>
+
+            <div class="cart-product-price alice hidden md:block">
+              €<placeholder name="price"></placeholder>
+            </div>
+          </div>
+        </DynamicHTML>
+
+        <hr />
+      </div>
+
+      <div class="flex flex-col mt-auto">
+        <div class="mb-3 md:mb-4 flex justify-between items-center">
+          <div class="flex flex-col gap-4">
+            <div class="alice text-total">{checkoutRecurData.text_total}</div>
+
+            <div class="hidden md:block text-shipping-charge-info">
+              {checkoutRecurData.text_shipping_calculated_at_checkout}
+            </div>
+          </div>
+
+          <div id="cart-subtotal" class="alice">
+            €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+          </div>
+        </div>
+
+        <div class="md:hidden mb-5 text-shipping-charge-info">
+          {checkoutRecurData.text_shipping_calculated_at_checkout}
+        </div>
+
+        <a
+          href="/checkout/information"
+          class="self-end px-32 py-3 bg-primary font-bold text-lightgray rounded-full"
+        >
+          {page.text_go_to_checkout}
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script defer>
+  const removeItemBtns = document.querySelectorAll(".remove-item-btn"),
+    cart = document.getElementById("cart"),
+    emptyCartNotification = document.getElementById("empty-cart-notification");
+
+  removeItemBtns.forEach((button) => {
+    button.addEventListener("click", () => {
+      const parentCartProduct = button.closest(".cart-product"),
+        productId = parentCartProduct.id;
+
+      delete window.cart[productId];
+
+      if (Object.keys(window.cart).length === 0) {
+        cart.classList.add("hidden");
+        emptyCartNotification.classList.remove("hidden");
+      }
+
+      parentCartProduct.remove();
+    });
+  });
+</script>
+
+<script>
+  import tweakAmount from "@utils/tweakAmount";
+
+  declare global {
+    interface Window {
+      cart: Record<string, Record<string, string | number>>;
+    }
+  }
+
+  const cartProductAmountInputs = document.querySelectorAll(
+      ".cart-product-amount-input"
+    ),
+    cartProductAmountTweakBtns = document.querySelectorAll(
+      ".cart-product-amount-tweak-btn"
+    ),
+    decreaseAmountBtns = document.querySelectorAll(
+      ".cart-product-amount-tweak-btn[data-action='decrement']"
+    );
+
+  decreaseAmountBtns.forEach((button: HTMLButtonElement) => {
+    const input = button.nextElementSibling as HTMLInputElement;
+
+    input.value === "1" && (button.disabled = true);
+  });
+
+  function tweakAmountCallback(input) {
+    const parentCartProduct = input.closest(".cart-product"),
+      productPriceElements = parentCartProduct.querySelectorAll(
+        ".cart-product-price"
+      ),
+      productId = parentCartProduct.id,
+      productData = window.cart[productId],
+      { price, tax, quantity } = productData,
+      productPrice = Number(price) / Number(quantity),
+      productTax = Number(tax) / Number(quantity),
+      updatedQuantity = Number(input.value);
+
+    productData.quantity = updatedQuantity;
+    productData.tax = +(updatedQuantity * productTax).toFixed(2);
+    productData.price = +(updatedQuantity * productPrice).toFixed(2);
+
+    window.cart[productId] = productData;
+
+    productPriceElements.forEach((element) => {
+      element.textContent =
+        "€" + Number(productData.price).toFixed(2).replace(".", ",");
+    });
+  }
+
+  tweakAmount(
+    cartProductAmountTweakBtns,
+    cartProductAmountInputs,
+    tweakAmountCallback
+  );
+</script>

@@ -1,0 +1,39 @@
+---
+import CMS from "@store/CMS";
+import Icon from "astro-icon";
+import Markdown from "@astrojs/markdown-component";
+
+declare interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props as Props;
+
+const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+---
+
+<div
+  id="empty-cart-notification"
+  class:list={[
+    "grow justify-self-center self-center text-primary",
+    "max-w-md gap-10 flex flex-col justify-center items-center",
+  ]}
+>
+  <Icon
+    name="mi:shopping-cart"
+    class="w-[74px] h-[74px] md:w-[88px] md:h-[88px]"
+  />
+
+  <div
+    class="text-center font-semibold text-[1.125rem] md:text-[1.5rem] md:leading-[130%]"
+  >
+    <Markdown set:html={checkoutRecurData.text_empty_cart} />
+  </div>
+
+  <a
+    href="/tea"
+    class="w-full p-3.5 font-bold text-center text-lightgray bg-primary rounded-full"
+  >
+    {checkoutRecurData.text_continue_shopping}
+  </a>
+</div>

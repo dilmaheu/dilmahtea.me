@@ -1,14 +1,16 @@
 <script is:inline>
   {
-    const hero = document.querySelector(".hero"),
+    const container = document.currentScript.parentElement,
       navigation = document.querySelector("#navigation");
 
-    const updateHeroTopMargin = () => {
-      hero.style.marginTop = `-${navigation.getBoundingClientRect().height}px`;
+    const UpdateTopMargin = () => {
+      container.style.marginTop = `-${
+        navigation.getBoundingClientRect().height
+      }px`;
     };
 
-    updateHeroTopMargin();
+    UpdateTopMargin();
 
-    window.addEventListener("resize", updateHeroTopMargin);
+    window.addEventListener("resize", UpdateTopMargin);
   }
 </script>
