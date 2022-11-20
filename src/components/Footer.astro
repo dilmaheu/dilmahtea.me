@@ -86,27 +86,22 @@ const { footerText } = Astro.props as Props;
   />
 
   <div class="footer-background absolute w-full h-[254px] sm:h-full top-0 z-10">
-    <img
-      class="hidden sm:block w-full h-full object-cover object-left-top"
-      src={footer_background.src}
+    <Picture
       alt=""
-    />
-    <img
-      class="block sm:hidden w-full h-full object-cover object-left-bottom"
+      layout="fill"
+      objectPosition="left bottom"
+      breakpoints={{ maxWidth: 640 }}
       src={footer_background_sm.src}
-      alt=""
+      artDirectives={[
+        {
+          src: footer_background.src,
+          media: "(min-width: 640px)",
+          objectPosition: "left top",
+          breakpoints: { minWidth: 640 },
+        },
+      ]}
     />
   </div>
-
-  {
-    /* (
-      <Picture
-        alt=""
-        src={footer_background.src}
-        attributes={{ picture: { class: "footer-background" } }}
-      />
-    ) */
-  }
 
   <div
     class="wrapper relative z-20 h-[254px] sm:h-full flex flex-wrap py-[clamp(24px,3vw+6.4px,56px)]"
@@ -132,30 +127,25 @@ const { footerText } = Astro.props as Props;
       <p
         class="copyright text-center leading-[150%] sm:font-medium"
         set:html={footerText}
-      >
-      </p>
+      />
     </div>
   </div>
 
   <div
     class="footer-leaf absolute z-30 flex md:items-end mt-auto top-0 right-0"
   >
-    <img class="hidden md:block w-full h-full" {...footer_leaf} />
-
-    <img class="block md:hidden w-full h-full" {...footer_leaf_sm} />
-
-    {
-      /* (
-        <>
-          <div class="hidden md:block w-full h-full">
-            <Picture layout="fill" {...footer_leaf} />
-          </div>
-
-          <div class="block md:hidden w-full h-full">
-            <Picture layout="fill" {...footer_leaf_sm} />
-          </div>
-        </>
-      ) */
-    }
+    <Picture
+      alt=""
+      layout="fill"
+      breakpoints={{ maxWidth: 640 }}
+      src={footer_leaf_sm.src}
+      artDirectives={[
+        {
+          src: footer_leaf.src,
+          media: "(min-width: 640px)",
+          breakpoints: { minWidth: 640 },
+        },
+      ]}
+    />
   </div>
 </footer>
