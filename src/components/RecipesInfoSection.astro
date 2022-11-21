@@ -1,14 +1,14 @@
 ---
+import he from "he";
 import { parseHTML } from "linkedom";
-import Markdown from "@astrojs/markdown-component";
-import ClippedImg from "@components/ClippedImg.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 const { page } = Astro.props;
 
-// @ts-ignore
-let contentBlocksHTML = await Astro.__renderMarkdown(page.Block_text);
+let contentBlocksHTML = he.decode(
+  // @ts-ignore
+  await Astro.__renderMarkdown(page.Block_text)
+);
 
 let { document: contentBlocksDocument } = await parseHTML(contentBlocksHTML),
   titles = [...contentBlocksDocument.querySelectorAll("h2")];
