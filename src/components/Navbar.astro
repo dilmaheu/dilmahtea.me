@@ -162,7 +162,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
   <div
     id="sidebar"
     class:list={[
-      "bg-cover bg-right-bottom bg-no-repeat",
+      "bg-primary bg-cover bg-right-bottom bg-no-repeat",
       "hidden md:!hidden fixed right-0 z-[40] w-[300px] max-w-full h-full pb-20",
     ]}
   >
@@ -205,11 +205,16 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
       navigation.style.top = `${translationNotFoundNotificationHeight}px`;
 
       if (!isCartNavbar) {
-        navigation.style.backgroundImage =
-          window.innerWidth < 768 &&
-          (scrollY > 0 || document.body.style.position === "fixed")
-            ? "url(/bg-images/nav-background.webp)"
-            : "unset";
+        window.innerWidth < 768 &&
+        (scrollY > 0 || document.body.style.position === "fixed")
+          ? navigation.style = `
+              background-color:#2b4b50; 
+              background-image:url(/bg-images/nav-background.webp);
+            `
+          : navigation.style = `
+              background-color:transparent; 
+              background-image:unset;
+            `
       }
     });
   }
@@ -320,6 +325,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     if (isCartNavbar) {
       cartNavbarBg.style.clipPath = "none";
     } else {
+      navigation.classList.add("bg-primary");
       navigation.style.backgroundImage = "url(/bg-images/nav-background.webp)";
     }
 
@@ -336,6 +342,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     if (isCartNavbar) {
       cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)";
     } else {
+      navigation.classList.remove("bg-primary");
       navigation.style.backgroundImage = "unset";
     }
 
