@@ -382,162 +382,159 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       <Markdown>{page.Intro_text}</Markdown>
 
       <Markdown>{page.Block_text}</Markdown>
-
-      {
-        page.Price_breakdown.length > 0 && (
-          <div class="chapter">
-            <h2 id="price-breakdown">
-              {recurData.product_price_breakdown_title}
-            </h2>
-            <div>
-              <Markdown>
-                {page.Price_breakdown_text.split("<")[0]}
-                <span class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] text-primary">
-                  {page.Price_breakdown_text.match("<total_spent>") &&
-                    `€${Total_spent_amount.toFixed(2)}`}
-                </span>
-                {page.Price_breakdown_text.split(">")[1]}
-              </Markdown>
-            </div>
-
-            <div class="flex overflow-hidden w-full my-2.5 md:my-[15px] h-[80px] rounded-[25px]">
-              {page.Price_breakdown.map((item) => (
-                <div
-                  class="h-full"
-                  style={`background-color: ${item.Item_color_code}; width:${
-                    (item.Spent_amount * 100) / Total_spent_amount
-                  }%`}
-                />
-              ))}
-            </div>
-
-            <div class="grid grid-cols-[repeat(auto-fit,minmax(0,250px))] gap-2.5 justify-between">
-              {page.Price_breakdown.map((item) => (
-                <div class="flex items-center gap-x-2.5">
-                  <div
-                    style={`background-color: ${item.Item_color_code};
-                          clip-path: url(#price-breakdown-curve)`}
-                    class="flex justify-center items-center w-[62px] h-[62px] text-sm lg:text-base font-medium lg:font-normal"
-                  >
-                    {((item.Spent_amount * 100) / Total_spent_amount).toFixed(
-                      2
-                    )}
-                    %
-                  </div>
-
-                  <div class="grid">
-                    <div class="alice text-[clamp(1.75rem,2.2vw+0.15rem,2rem)] text-primary">
-                      €{item.Spent_amount.toFixed(2)}
-                    </div>
-                    <div class="text-[clamp(0.875rem,1vw+0.25rem,1.125rem)]">
-                      {item.Item_name}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )
-      }
-
-      {
-        page.Transparency.length > 0 && (
-          <div class="chapter">
-            <h2 id="transparency">{recurData.product_transparency_title}</h2>
-            <p>{page.Transparency_text}</p>
-
-            <div class="grid gap-5">
-              {page.Transparency.map((item, index) => (
-                <div class="w-full lg:w-10/12">
-                  <div class="grid transparency-items-grid gap-x-2.5">
-                    <div class="transparency-item-icon flex items-center">
-                      <img
-                        src={
-                          imgSrcPrefix +
-                          item.Transparency_item_icon.data.attributes
-                            .provider_metadata.public_id +
-                          `/small`
-                        }
-                        alt=""
-                        class="w-full h-full object-contain p-1"
-                      />
-                    </div>
-
-                    <div class="w-full">
-                      <button
-                        class:list={[
-                          "accordion w-full cursor-pointer text-left leading-[150%]",
-                          index === 0 ? "is-active" : "",
-                        ]}
-                      >
-                        {item.Transparency_item_title}
-                      </button>
-                      <div
-                        class:list={[
-                          "accordion-content text-lg lg:text-xl leading-[150%] m-0",
-                          index === 0 ? "is-open" : "",
-                        ]}
-                      >
-                        <Markdown>{item.Transparency_item_text}</Markdown>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )
-      }
-
-      {
-        page.Impact.length > 0 && (
-          <div class="chapter">
-            <h2 id="impact">{recurData.product_impact_title}</h2>
-            <p>{page.Impact_text}</p>
-
-            <div class="grid gap-5">
-              {page.Impact.map((item, index) => (
-                <div class="w-full lg:w-10/12">
-                  <div class="grid transparency-items-grid gap-x-2.5">
-                    <div class="transparency-item-icon flex items-center">
-                      <img
-                        src={
-                          imgSrcPrefix +
-                          item.Impact_item_icon.data.attributes
-                            .provider_metadata.public_id +
-                          `/small`
-                        }
-                        alt=""
-                        class="w-full h-full object-contain p-1"
-                      />
-                    </div>
-
-                    <div class="w-full">
-                      <button
-                        class:list={[
-                          "accordion w-full cursor-pointer text-left leading-[150%]",
-                          index === 0 ? "is-active" : "",
-                        ]}
-                      >
-                        {item.Impact_item_title}
-                      </button>
-                      <div
-                        class:list={[
-                          "accordion-content text-lg lg:text-xl leading-[150%] m-0",
-                          index === 0 ? "is-open" : "",
-                        ]}
-                      >
-                        <Markdown>{item.Impact_item_text}</Markdown>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )
-      }
     </Chapterize>
+
+    {
+      page.Price_breakdown.length > 0 && (
+        <div class="chapter">
+          <h2 id="price-breakdown">
+            {recurData.product_price_breakdown_title}
+          </h2>
+          <div>
+            <Markdown>
+              {page.Price_breakdown_text.split("<")[0]}
+              <span class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] text-primary">
+                {page.Price_breakdown_text.match("<total_spent>") &&
+                  `€${Total_spent_amount.toFixed(2)}`}
+              </span>
+              {page.Price_breakdown_text.split(">")[1]}
+            </Markdown>
+          </div>
+
+          <div class="flex overflow-hidden w-full my-2.5 md:my-[15px] h-[80px] rounded-[25px]">
+            {page.Price_breakdown.map((item) => (
+              <div
+                class="h-full"
+                style={`background-color: ${item.Item_color_code}; width:${
+                  (item.Spent_amount * 100) / Total_spent_amount
+                }%`}
+              />
+            ))}
+          </div>
+
+          <div class="grid grid-cols-[repeat(auto-fit,minmax(0,250px))] gap-2.5 justify-between">
+            {page.Price_breakdown.map((item) => (
+              <div class="flex items-center gap-x-2.5">
+                <div
+                  style={`background-color: ${item.Item_color_code};
+                        clip-path: url(#price-breakdown-curve)`}
+                  class="flex justify-center items-center w-[62px] h-[62px] text-sm lg:text-base font-medium lg:font-normal"
+                >
+                  {((item.Spent_amount * 100) / Total_spent_amount).toFixed(2)}%
+                </div>
+
+                <div class="grid">
+                  <div class="alice text-[clamp(1.75rem,2.2vw+0.15rem,2rem)] text-primary">
+                    €{item.Spent_amount.toFixed(2)}
+                  </div>
+                  <div class="text-[clamp(0.875rem,1vw+0.25rem,1.125rem)]">
+                    {item.Item_name}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      page.Transparency.length > 0 && (
+        <div class="chapter">
+          <h2 id="transparency">{recurData.product_transparency_title}</h2>
+          <p>{page.Transparency_text}</p>
+
+          <div class="grid gap-5">
+            {page.Transparency.map((item, index) => (
+              <div class="w-full lg:w-10/12">
+                <div class="grid transparency-items-grid gap-x-2.5">
+                  <div class="transparency-item-icon flex items-center">
+                    <img
+                      src={
+                        imgSrcPrefix +
+                        item.Transparency_item_icon.data.attributes
+                          .provider_metadata.public_id +
+                        `/small`
+                      }
+                      alt=""
+                      class="w-full h-full object-contain p-1"
+                    />
+                  </div>
+
+                  <div class="w-full">
+                    <button
+                      class:list={[
+                        "accordion w-full cursor-pointer text-left leading-[150%]",
+                        index === 0 ? "is-active" : "",
+                      ]}
+                    >
+                      {item.Transparency_item_title}
+                    </button>
+                    <div
+                      class:list={[
+                        "accordion-content text-lg lg:text-xl leading-[150%] m-0",
+                        index === 0 ? "is-open" : "",
+                      ]}
+                    >
+                      <Markdown>{item.Transparency_item_text}</Markdown>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      page.Impact.length > 0 && (
+        <div class="chapter">
+          <h2 id="impact">{recurData.product_impact_title}</h2>
+          <p>{page.Impact_text}</p>
+
+          <div class="grid gap-5">
+            {page.Impact.map((item, index) => (
+              <div class="w-full lg:w-10/12">
+                <div class="grid transparency-items-grid gap-x-2.5">
+                  <div class="transparency-item-icon flex items-center">
+                    <img
+                      src={
+                        imgSrcPrefix +
+                        item.Impact_item_icon.data.attributes.provider_metadata
+                          .public_id +
+                        `/small`
+                      }
+                      alt=""
+                      class="w-full h-full object-contain p-1"
+                    />
+                  </div>
+
+                  <div class="w-full">
+                    <button
+                      class:list={[
+                        "accordion w-full cursor-pointer text-left leading-[150%]",
+                        index === 0 ? "is-active" : "",
+                      ]}
+                    >
+                      {item.Impact_item_title}
+                    </button>
+                    <div
+                      class:list={[
+                        "accordion-content text-lg lg:text-xl leading-[150%] m-0",
+                        index === 0 ? "is-open" : "",
+                      ]}
+                    >
+                      <Markdown>{item.Impact_item_text}</Markdown>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
   </div>
 
   {
@@ -646,10 +643,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                         <div>
                           <div class="recent-post-card-author flex flex-wrap font-bold">
                             {post.authors.data.map(({ attributes }, index) => (
-                              <a href="#">
+                              <div>
                                 {`${index > 0 ? ", " : " "}` +
                                   attributes.givenName}
-                              </a>
+                              </div>
                             ))}
                           </div>
 

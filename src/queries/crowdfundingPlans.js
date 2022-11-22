@@ -7,13 +7,14 @@ const crowdfundingPlansQuery = `
           locale
           Perk
           Title
-          TitleIcon_Name
           Title_icon {
             data {
               id
               attributes {
                 name
+                url
                 alternativeText
+                formats
               }
             }
           }
@@ -27,15 +28,14 @@ const crowdfundingPlansQuery = `
                 locale
                 Perk
                 Title
-                TitleIcon_Name
                 Title_icon {
                   data {
                     id
                     attributes {
                       name
                       url
-                      provider_metadata
                       alternativeText
+                      formats
                     }
                   }
                 }

@@ -198,15 +198,11 @@ export async function getStaticPaths() {
 
   const homepagePages = getPages(homepage, (page, { locale }) => ({
     type: "homepage",
-    posts:
-      locale &&
-      (!shouldDisplayExperimentals()
-        ? getPosts(blogs, locale)
-        : [
-            ...getPosts(blogs, locale),
-            ...getPosts(howTos, locale),
-            ...getPosts(recipes, locale),
-          ]),
+    posts: locale && [
+      ...getPosts(blogs, locale),
+      ...getPosts(howTos, locale),
+      ...getPosts(recipes, locale),
+    ],
   }));
 
   const cartPages = getPages(cart, () => ({
