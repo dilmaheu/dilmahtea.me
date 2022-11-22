@@ -30,6 +30,8 @@ const CSPRecord = {
   "script-src": ["'self'", "https://static.openreplay.com"],
 };
 
+const sitemap = [];
+
 await Promise.all(
   allHtmlFilePaths.map(async (path) => {
     const htmlContent = await fs.readFile(path, "utf8"),
@@ -56,6 +58,36 @@ await Promise.all(
         CSPRecord["script-src"].push(source);
       }
     });
+
+    if (htmlFilePaths.includes(path)) {
+      const siteURL = "https://dilmahtea.me",
+        pageURL = siteURL + path.slice(6, -10),
+        canonicalURL = document.querySelector("link[rel='canonical']");
+
+      const docLang = document.documentElement.lang,
+        robotsMeta = document
+          .querySelector("meta[name='robots']")
+          ?.content?.split(",");
+
+      if (
+        docLang &&
+        pageURL === canonicalURL?.href &&
+        !robotsMeta?.includes("noindex")
+      ) {
+        const alternateURLs = [
+          canonicalURL,
+          ...document.querySelectorAll("link[rel='alternate'][hreflang]"),
+        ];
+
+        sitemap.push({
+          loc: pageURL,
+          alternateURLs: [...alternateURLs].map((link) => [
+            link.hreflang,
+            link.href,
+          ]),
+        });
+      }
+    }
   })
 );
 
@@ -85,3 +117,24 @@ _404HtmlFilePaths.forEach((path) => {
   fs.rename(path, newPath);
   fs.rm(path.slice(0, -11), { recursive: true, force: true });
 });
+
+const sitemapXML = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemap
+  .map(({ loc, alternateURLs }) => {
+    const alternateXLinks = alternateURLs
+      .map(
+        ([hreflang, href]) =>
+          `<xhtml:link rel="alternate" hreflang="${hreflang}" href="${href}" />`
+      )
+      .join("\n    ");
+
+    return `  <url>
+    <loc>${loc}</loc>
+    ${alternateXLinks}
+  </url>`;
+  })
+  .join("\n\n")}
+</urlset>`;
+
+await fs.writeFile("./dist/sitemap.xml", sitemapXML);
