@@ -1,6 +1,6 @@
 ---
 import { Icon } from "astro-icon";
-import { marked } from 'marked';
+import { marked } from "marked";
 import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
@@ -236,6 +236,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         <button
           disabled
           data-action="decrement"
+          aria-label="Increase Quantity"
           class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1"
         >
           <Icon name="akar-icons:minus" class="w-6 h-6 select-none" />
@@ -253,6 +254,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
         <button
           data-action="increment"
+          aria-label="Decrease Quantity"
           class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
         >
           <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
@@ -327,6 +329,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       >
         <button
           data-action="decrement"
+          aria-label="Increase Quantity"
           class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1"
         >
           <Icon
@@ -347,6 +350,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
         <button
           data-action="increment"
+          aria-label="Decrease Quantity"
           class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
         >
           <Icon
@@ -573,7 +577,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   {
     relevant_items.length > 0 && (
       <section class="mb-[50px]" slot="product-kindness-impact">
-      
         <ClipPathSVG
           id="product-impact-top-curve"
           path="M1,0.582 V1 H0 V0.582 S0.073,0.358,0.136,0.295 c0.103,-0.103,0.245,0.128,0.348,0.173 C0.602,0.52,0.729,0.058,0.847,0.003 L0.861,0 C0.965,0,1,0.582,1,0.582"
@@ -600,7 +603,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         />
 
         <div>
-          <div class="py-8 -mb-1 bg-primary product-kindness-impact-top"></div>
+          <div class="py-8 -mb-1 bg-primary product-kindness-impact-top" />
           <div class="bg-primary">
             <div class="wrapper py-2.5 md:py-[100px]">
               <div class="product-kindness-impact-text alice leading-[110%] md:leading-[115%] text-center">
@@ -675,7 +678,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               </div>
             </div>
           </div>
-          <div class="py-8 -mt-1 bg-primary product-kindness-impact-bottom"></div>
+          <div class="py-8 -mt-1 bg-primary product-kindness-impact-bottom" />
         </div>
       </section>
     )
@@ -687,18 +690,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     "@context": "https://schema.org",
     "@type": "Product",
     name: page.Title,
-    image: ( 
+    image:
       imgSrcPrefix +
-        page.Intro_blob.data.attributes.provider_metadata.public_id +
-        `/public` 
-    ),
-    description: (
-      `${marked.parse(page.Intro_text)
-        .replace(/(<([^>]+)>)/gi, "")} ${
-          marked.parse(page.Block_text)
-            .replace(/(<([^>]+)>)/gi, "")
-      }`
-    ),
+      page.Intro_blob.data.attributes.provider_metadata.public_id +
+      `/public`,
+    description: `${marked
+      .parse(page.Intro_text)
+      .replace(/(<([^>]+)>)/gi, "")} ${marked
+      .parse(page.Block_text)
+      .replace(/(<([^>]+)>)/gi, "")}`,
     sku: page.SKU,
     gtin: page.GTIN_Barcode,
     brand: {
@@ -707,23 +707,21 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     },
     offers: {
       "@type": "Offer",
-      url: (
-        `${ Astro.site.origin}/${page.locale}/${page.Meta.URL_slug === "/" 
-          ? "" 
-          : page.Meta.URL_slug}/`
-      ),
+      url: `${Astro.site.origin}/${page.locale}/${
+        page.Meta.URL_slug === "/" ? "" : page.Meta.URL_slug
+      }/`,
       itemCondition: "https://schema.org/NewCondition",
       availability: "https://schema.org/InStock",
       price: page.Price,
       priceCurrency: page.Currency,
       priceValidUntil: new Date(),
-      "shippingDetails": {
+      shippingDetails: {
         "@type": "OfferShippingDetails",
-        "shippingDestination": {
+        shippingDestination: {
           "@type": "DefinedRegion",
-          "addressCountry": "EU"
+          addressCountry: "EU",
         },
-      }
+      },
     },
   }}
 />
