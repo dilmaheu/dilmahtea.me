@@ -118,6 +118,34 @@ _404HtmlFilePaths.forEach((path) => {
   fs.rm(path.slice(0, -11), { recursive: true, force: true });
 });
 
+import { writeFileSync } from "fs";
+import fetch from "node-fetch";
+
+import dotenv from "dotenv";
+dotenv.config({ path: "./.env" });
+
+const url = process.env.Assets_URL,
+  auth = process.env.ACCESS_TOKEN;
+
+const directory = "./dist/robots.txt";
+
+async function getData() {
+  const response = await fetch(`${url}/api/robots-text`, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${auth}` },
+  });
+  return await response.json();
+}
+const parsed = await getData();
+
+const text = parsed.data.attributes.Text;
+
+try {
+  const data = writeFileSync(directory, text);
+} catch (err) {
+  console.log(err);
+}
+
 const sitemapXML = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${sitemap
