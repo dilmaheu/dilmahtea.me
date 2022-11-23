@@ -119,7 +119,7 @@ const contentHTML = await Astro.slots.render("post-details"),
   {/* Text Content */}
   <div class="wrapper hero-text-container h-full relative z-30">
     <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
-      <div class="mt-[30px] sm:mt-4 lg:mt-0">
+      <div class="my-[30px]">
         {
           page.authors && (
             <div class="flex flex-wrap gap-x-2.5 mb-2.5">
@@ -153,10 +153,10 @@ const contentHTML = await Astro.slots.render("post-details"),
               <div class="grid content-between">
                 <div class="post-author flex flex-wrap font-bold">
                   {page.authors.data.map((author, index) => (
-                    <a href="#">
+                    <span>
                       {`${index > 0 ? ", " : " "}` +
                         author.attributes.givenName}
-                    </a>
+                    </span>
                   ))}
                 </div>
 
@@ -198,7 +198,7 @@ const contentHTML = await Astro.slots.render("post-details"),
         }
 
         <h1 class="hero-title pt-[5px]">
-          <a href="#">{page.Title || page.Estate_name}</a>
+          <span>{page.Title || page.Estate_name}</span>
 
           {
             page.Title && (
@@ -434,9 +434,9 @@ const contentHTML = await Astro.slots.render("post-details"),
                   <div>
                     <div class="recent-post-card-author flex flex-wrap font-bold">
                       {post.authors.data.map(({ attributes }, index) => (
-                        <a href="#">
+                        <span>
                           {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                        </a>
+                        </span>
                       ))}
                     </div>
 
