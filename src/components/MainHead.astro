@@ -25,7 +25,7 @@ const { meta, locale, metaImageID, availableLocales } = Astro.props as Props,
   alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
   documentHref = `${domain}/${locale}/${slugURL === "/" ? "" : slugURL + `/`}`,
   canonicalHref = 
-    `${domain}/en/${(canonicalURL !== undefined ? (canonicalURL === "/" ? "" : canonicalURL) : slugURL  + `/`)}`;
+    `${domain}/${locale}/${(canonicalURL !== undefined ? (canonicalURL === "/" ? "" : canonicalURL) : slugURL  + `/`)}`;
 ---
 
 <meta charset="UTF-8" />
@@ -56,7 +56,7 @@ const { meta, locale, metaImageID, availableLocales } = Astro.props as Props,
 <link rel="icon" href={favicon.src} />
 
 {/* SEO */}
-<link rel="canonical" href={canonicalHref} hreflang="en" />
+<link rel="canonical" href={canonicalHref} hreflang={locale} />
 
 {
   alternateLocales.map((alternateLocale) => (
