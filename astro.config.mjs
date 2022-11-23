@@ -2,11 +2,10 @@ import taiwlind from "@astrojs/tailwind";
 import { defineConfig } from "astro/config";
 import { astroImageTools } from "astro-imagetools";
 import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
+import postbuildIntegration from "./src/postbuild-integration/index.js";
 
 export default defineConfig({
   site: "https://dilmahtea.me",
-
-  integrations: [taiwlind(), astroImageTools],
 
   vite: {
     ssr: {
@@ -24,4 +23,6 @@ export default defineConfig({
       },
     ],
   },
+
+  integrations: [taiwlind(), astroImageTools, postbuildIntegration],
 });
