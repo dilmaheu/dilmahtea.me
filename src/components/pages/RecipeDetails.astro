@@ -611,10 +611,10 @@ page.Nutrition.forEach((item) => {
     dateCreated: page.createdAt,
     datePublished: page.publishedAt,
     dateModified: page.updatedAt,
-    description: `${marked
-      .parse(page.Intro_text)
-      .replace(/(<([^>]+)>)/gi, "")} ${marked
-      .parse(page.Block_text)
+    description: `${(await 
+      Astro.__renderMarkdown(page.Intro_text))
+      .replace(/(<([^>]+)>)/gi, "")} ${(await
+      Astro.__renderMarkdown(page.Block_text))
       .replace(/(<([^>]+)>)/gi, "")}`,
     prepTime: `PT${timeSm(page.Time_preparation)
       .toUpperCase()
