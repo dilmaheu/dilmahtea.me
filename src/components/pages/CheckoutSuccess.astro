@@ -1,6 +1,7 @@
 ---
 import CMS from "@store/CMS";
-import { BackgroundPicture } from "astro-imagetools/components";
+import { Picture, BackgroundPicture } from "astro-imagetools/components";
+
 import RecurringImages from "@store/RecurringImages";
 import Navbar from "@components/Navbar.astro";
 import CartOverlay from "@components/CartOverlay.astro";
@@ -97,7 +98,7 @@ const EnvironmentalAdvocacyImage =
   }
 
   .post-container {
-    > img {
+    > div:first-child {
       clip-path: url(#post-container-top-curve);
 
       @media (min-width: 640px) {
@@ -105,7 +106,7 @@ const EnvironmentalAdvocacyImage =
       }
     }
 
-    > div {
+    > div:last-child {
       clip-path: url(#post-container-bottom-curve);
 
       @media (min-width: 640px) {
@@ -186,16 +187,18 @@ const EnvironmentalAdvocacyImage =
         </div>
 
         <div class="post-container max-w-4xl flex flex-col sm:flex-row">
-          <img
-            class="w-full sm:w-52 h-48 sm:h-auto object-cover"
-            alt={EnvironmentalAdvocacyImage.alternativeText}
-            src={imgSrcPrefix +
-              EnvironmentalAdvocacyImage.provider_metadata.public_id +
-              `/cms`}
-          />
+          <div class="w-full sm:w-[37.5%] h-48 sm:h-auto">
+            <Picture
+              layout="fill"
+              alt={EnvironmentalAdvocacyImage.alternativeText}
+              src={imgSrcPrefix +
+                EnvironmentalAdvocacyImage.provider_metadata.public_id +
+                `/cms`}
+            />
+          </div>
 
           <div
-            class="grow flex flex-col gap-8 sm:gap-9 px-[22px] sm:px-8 pt-6 pb-9 sm:pb-5 bg-lightgray"
+            class="flex flex-col gap-8 sm:gap-9 px-[22px] sm:px-8 pt-6 pb-9 sm:pb-5 bg-lightgray"
           >
             <div class="linked-post-text font-medium text-primary">
               <Markdown>{page.linked_post_text}</Markdown>
