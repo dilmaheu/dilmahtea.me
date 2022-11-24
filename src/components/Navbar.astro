@@ -44,7 +44,19 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
   ]}
 >
   {
-    isCartNavbar && (
+    !isCartNavbar ? (
+      <Picture
+        alt=""
+        layout="fill"
+        src="/bg-images/nav-background.webp"
+        attributes={{
+          picture: {
+            id: "navbar-bg",
+            style: "display: none; position: absolute;",
+          },
+        }}
+      />
+    ) : (
       <Fragment>
         <ClipPathSVG
           id="cart-navbar-curve"
@@ -209,7 +221,8 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
 
 <script is:inline>
   {
-    const navigation = document.getElementById("navigation"),
+    const navbarBg = document.getElementById("navbar-bg"),
+      navigation = document.getElementById("navigation"),
       isCartNavbar = navigation.classList.contains("cart-navbar"),
       translationNotFoundNotification = document.querySelector(
         ".translation-not-found-notification"
@@ -223,16 +236,11 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
       navigation.style.top = `${translationNotFoundNotificationHeight}px`;
 
       if (!isCartNavbar) {
-        window.innerWidth < 768 &&
-        (scrollY > 0 || document.body.style.position === "fixed")
-          ? (navigation.style = `
-              background-color:#2b4b50; 
-              background-image:url(/bg-images/nav-background.webp);
-            `)
-          : (navigation.style = `
-              background-color:transparent; 
-              background-image:unset;
-            `);
+        navbarBg.style.display =
+          window.innerWidth < 768 &&
+          (scrollY > 0 || document.body.style.position === "fixed")
+            ? "inline-block"
+            : "none";
       }
     });
   }
@@ -252,6 +260,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     rootElement = query(":root"),
     cart = query("#cart"),
     sidebar = query("#sidebar"),
+    navbarBg = query("#navbar-bg"),
     navigation = query("#navigation"),
     openCartBtn = query("#open-cart-btn"),
     cartNavbarBg = query("#cart-navbar-bg"),
@@ -343,8 +352,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     if (isCartNavbar) {
       cartNavbarBg.style.clipPath = "none";
     } else {
-      navigation.classList.add("bg-primary");
-      navigation.style.backgroundImage = "url(/bg-images/nav-background.webp)";
+      navbarBg.style.display = "inline-block";
     }
 
     window.disableScrolling();
@@ -360,8 +368,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     if (isCartNavbar) {
       cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)";
     } else {
-      navigation.classList.remove("bg-primary");
-      navigation.style.backgroundImage = "unset";
+      navbarBg.style.display = "none";
     }
 
     window.enableScrolling();
