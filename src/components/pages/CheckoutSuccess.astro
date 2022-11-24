@@ -1,5 +1,6 @@
 ---
 import CMS from "@store/CMS";
+import { BackgroundPicture } from "astro-imagetools/components";
 import RecurringImages from "@store/RecurringImages";
 import Navbar from "@components/Navbar.astro";
 import CartOverlay from "@components/CartOverlay.astro";
@@ -40,43 +41,32 @@ const EnvironmentalAdvocacyImage =
   ).featured_blob.data.attributes;
 ---
 
-<style
-  lang="scss"
-  define:vars={{
-    "checkout-pre-post-background": `url('${checkout_pre_post_background.src}')`,
-    "checkout-pre-post-background-sm": `url('${checkout_pre_post_background_sm.src}')`,
-  }}
->
+<style lang="scss">
   @use "src/styles/poly-fluid" as *;
 
-  #checkout-cart-container {
-    background-size: cover;
-    background-image: var(--checkout-pre-post-background-sm);
+  :global(#checkout-cart-container) {
+    > div {
+      padding-bottom: poly-fluid-clamp(
+        (
+          375px: 20px,
+          1440px: 56px,
+        )
+      );
 
-    @media (min-width: 768px) {
-      background-image: var(--checkout-pre-post-background);
+      @include poly-fluid-sizing(
+        "padding-top",
+        (
+          639px: 90px,
+          640px: 95px,
+          768px: 100px,
+          960px: 110px,
+          1024px: 120px,
+          1280px: 130px,
+          1536px: 145px,
+          2050px: 165px,
+        )
+      );
     }
-
-    padding-bottom: poly-fluid-clamp(
-      (
-        375px: 20px,
-        1440px: 56px,
-      )
-    );
-
-    @include poly-fluid-sizing(
-      "padding-top",
-      (
-        639px: 90px,
-        640px: 95px,
-        768px: 100px,
-        960px: 110px,
-        1024px: 120px,
-        1280px: 130px,
-        1536px: 145px,
-        2050px: 165px,
-      )
-    );
   }
 
   h1 {
@@ -146,10 +136,26 @@ const EnvironmentalAdvocacyImage =
     availableLocales={availableLocales}
   />
 
-  <div id="checkout-cart-container" class="min-h-screen flex flex-col">
+  <BackgroundPicture
+    layout="fill"
+    src={checkout_pre_post_background_sm.src}
+    artDirectives={[
+      {
+        media: "(min-width: 768px)",
+        breakpoints: { minWidth: 768 },
+        src: checkout_pre_post_background.src,
+      },
+    ]}
+    attributes={{
+      container: {
+        id: "checkout-cart-container",
+        style: "min-height: 100vh; display: flex; flex-direction: column;",
+      },
+    }}
+  >
     <UpdateTopMargin />
 
-    <div class="wrapper grow flex flex-col">
+    <div class="relative z-10 wrapper grow flex flex-col">
       <ClipPathSVG
         id="post-container-top-curve"
         path="M0.513,0.005 C0.359,0.005,0.102,-0.024,0.043,0.141 C-0.003,0.266,-0.005,0.637,0.005,1 h0.985 c0.005,-0.205,0.027,-0.443,-0.018,-0.74 C0.924,-0.057,0.729,0.004,0.513,0.004"
@@ -205,7 +211,7 @@ const EnvironmentalAdvocacyImage =
         </div>
       </div>
     </div>
-  </div>
+  </BackgroundPicture>
 
   <CartOverlay page={page} />
 </BaseLayout>
