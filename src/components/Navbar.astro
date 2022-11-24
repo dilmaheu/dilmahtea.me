@@ -1,5 +1,6 @@
 ---
 import Icon from "astro-icon";
+import { BackgroundPicture } from "astro-imagetools/components";
 import RecurringImages from "@store/RecurringImages";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
@@ -31,10 +32,6 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     a {
       @apply text-[32px] md:text-[clamp(0.875rem,1.5vw+0.1rem,1.125rem)] font-semibold md:font-bold leading-[150%];
     }
-  }
-
-  #sidebar {
-    background-image: url(/bg-images/sidebar.webp);
   }
 </style>
 
@@ -162,22 +159,32 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
   <div
     id="sidebar"
     class:list={[
-      "bg-primary bg-cover bg-right-bottom bg-no-repeat",
       "hidden md:!hidden fixed right-0 z-[40] w-[300px] max-w-full h-full pb-20",
     ]}
   >
-    <div class="grid content-between h-full px-[30px] pt-[26px] pb-9">
-      <nav class="flex flex-col text-white">
-        <a href="/blog">Blog</a>
-        <a href="/tea-estates">Tea Estates</a>
-        <a href="/howto">How-to</a>
-        <a href="/recipes">Recipe</a>
+    <BackgroundPicture
+      layout="fill"
+      src="/bg-images/sidebar.webp"
+      objectPosition="right bottom"
+      attributes={{
+        container: {
+          style: "height: 100%;",
+        },
+      }}
+    >
+      <div class="grid content-between h-full px-[30px] pt-[26px] pb-9">
+        <nav class="flex flex-col text-white">
+          <a href="/blog">Blog</a>
+          <a href="/tea-estates">Tea Estates</a>
+          <a href="/howto">How-to</a>
+          <a href="/recipes">Recipe</a>
 
-        {shouldDisplayExperimentals() && <a href="/tea">Tea</a>}
-      </nav>
+          {shouldDisplayExperimentals() && <a href="/tea">Tea</a>}
+        </nav>
 
-      <div class="text-xs font-normal leading-[150%]" set:html={footerText} />
-    </div>
+        <div class="text-xs font-normal leading-[150%]" set:html={footerText} />
+      </div>
+    </BackgroundPicture>
   </div>
 </header>
 
@@ -207,14 +214,14 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
       if (!isCartNavbar) {
         window.innerWidth < 768 &&
         (scrollY > 0 || document.body.style.position === "fixed")
-          ? navigation.style = `
+          ? (navigation.style = `
               background-color:#2b4b50; 
               background-image:url(/bg-images/nav-background.webp);
-            `
-          : navigation.style = `
+            `)
+          : (navigation.style = `
               background-color:transparent; 
               background-image:unset;
-            `
+            `);
       }
     });
   }
