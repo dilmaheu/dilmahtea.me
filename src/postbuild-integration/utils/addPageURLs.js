@@ -13,7 +13,8 @@ export default async function addPageURLs(
     const docLang = document.documentElement.lang,
       robotsMeta = document
         .querySelector("meta[name='robots']")
-        ?.content?.split(",");
+        ?.getAttribute("content")
+        ?.split(", ");
 
     if (
       docLang &&
