@@ -5,6 +5,7 @@ const blogsQuery = `
         id
         attributes {
           locale
+          updatedAt
           Title
           Intro_text
           Intro_blob {
@@ -50,6 +51,7 @@ const blogsQuery = `
             data {
               attributes {
                 locale
+                updatedAt
                 Title
                 Intro_text
                 Intro_blob {

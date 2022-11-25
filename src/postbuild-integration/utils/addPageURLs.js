@@ -10,14 +10,16 @@ export default async function addPageURLs(
     const pageURL = siteURL + path.slice(6, -10),
       canonicalURL = document.querySelector("link[rel='canonical']");
 
-    const docLang = document.documentElement.lang,
+    const lastModifiedDate = document
+        .querySelector("meta[http-equiv='last-modified']")
+        ?.getAttribute("content"),
       robotsMeta = document
         .querySelector("meta[name='robots']")
         ?.getAttribute("content")
         ?.split(", ");
 
     if (
-      docLang &&
+      lastModifiedDate &&
       pageURL === canonicalURL?.href &&
       !robotsMeta?.includes("noindex")
     ) {
@@ -28,6 +30,7 @@ export default async function addPageURLs(
 
       sitemap.push({
         loc: pageURL,
+        lastModifiedDate,
         alternateURLs: [...alternateURLs].map((link) => [
           link.hreflang,
           link.href,

@@ -5,6 +5,7 @@ const basicPagesQuery = `
         id
         attributes {
           locale
+          updatedAt
           Title
           Intro_text
           Heading_block
@@ -32,6 +33,7 @@ const basicPagesQuery = `
             data {
               attributes {
                 locale
+                updatedAt
                 Title
                 Intro_text
                 Heading_block

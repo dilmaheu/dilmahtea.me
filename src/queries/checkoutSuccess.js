@@ -2,8 +2,7 @@ const checkoutSuccessQuery = `
   {
     checkoutSuccess {
       data {
-        id
-        
+        id        
         attributes {
           locale          
           Title
@@ -22,6 +21,7 @@ const checkoutSuccessQuery = `
             data {
               attributes {
                 locale
+                updatedAt
                 Title
                 Intro_text  
                 linked_post_text

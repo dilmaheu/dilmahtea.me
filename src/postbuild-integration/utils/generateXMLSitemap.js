@@ -2,7 +2,7 @@ import fs from "fs/promises";
 
 export default async function generateXMLSitemap(sitemap) {
   const sitemapURLs = sitemap
-    .map(({ loc, alternateURLs }) => {
+    .map(({ loc, lastModifiedDate, alternateURLs }) => {
       const alternateXLinks = alternateURLs
         .map(
           ([hreflang, href]) =>
@@ -12,6 +12,7 @@ export default async function generateXMLSitemap(sitemap) {
 
       return `<url>
         <loc>${loc}</loc>
+        <lastmod>${lastModifiedDate}</lastmod>
         ${alternateXLinks}
       </url>`;
     })

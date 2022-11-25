@@ -5,6 +5,7 @@ const crowdfundingHomeQuery = `
         id
         attributes {
           locale
+          updatedAt
           Meta {
             HTML_Title
             Meta_description
@@ -48,6 +49,7 @@ const crowdfundingHomeQuery = `
             data {
               attributes {
                 locale
+                updatedAt
                 Meta {
                   HTML_Title
                   Meta_description

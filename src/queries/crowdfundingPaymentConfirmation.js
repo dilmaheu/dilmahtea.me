@@ -5,6 +5,7 @@ const crowdfundingPaymentConfirmationQuery = `
         id
         attributes {
           locale
+          updatedAt
           Title
           Intro_text
           Heading_block
@@ -32,6 +33,7 @@ const crowdfundingPaymentConfirmationQuery = `
             data {
               attributes {
                 locale
+                updatedAt
                 Title
                 Intro_text
                 Heading_block

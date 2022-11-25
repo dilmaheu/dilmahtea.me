@@ -5,6 +5,7 @@ const productsQuery = `
         id
         attributes {
           locale
+          updatedAt
           Title
           Intro_text
           Intro_blob {
@@ -210,6 +211,7 @@ const productsQuery = `
             data {
               attributes {
                 locale
+                updatedAt
                 Title
                 Intro_text
                 Intro_blob {

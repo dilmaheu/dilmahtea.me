@@ -5,26 +5,36 @@ import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 const { favicon } = RecurringImages;
 
 declare interface Props {
-  meta: any;
+  page: Record<string, any>;
+  meta: Record<string, any>;
   locale: string;
   metaImageID: string;
   availableLocales: string[];
 }
 
-const { meta, locale, metaImageID, availableLocales } = Astro.props as Props,
-  {
-    noindex,
-    nofollow,
-    HTML_Title: title,
-    URL_slug: slugURL,
-    Canonical_link: canonicalURL,
-    Meta_description: description,
-  } = meta,
-  domain = Astro.site.origin,
+const { page, meta, locale, metaImageID, availableLocales } =
+  Astro.props as Props;
+
+const {
+  noindex,
+  nofollow,
+  HTML_Title: title,
+  URL_slug: slugURL,
+  Canonical_link: canonicalURL,
+  Meta_description: description,
+} = meta;
+
+const domain = Astro.site.origin,
+  { updatedAt: lastModifiedDate } = page,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env,
-  alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
-  documentHref = `${domain}/${locale}/${slugURL === "/" ? "" : slugURL + `/`}`,
-  canonicalHref = `${domain}/en/${canonicalURL === "/" ? "" : canonicalURL + `/`}`;
+  alternateLocales = availableLocales.filter((lcl) => lcl !== locale);
+
+const documentHref = `${domain}/${locale}/${
+    slugURL === "/" ? "" : slugURL + "/"
+  }`,
+  canonicalHref = `${domain}/en/${
+    canonicalURL === "/" ? "" : canonicalURL + "/"
+  }`;
 ---
 
 <meta charset="UTF-8" />
@@ -56,16 +66,20 @@ const { meta, locale, metaImageID, availableLocales } = Astro.props as Props,
 
 {/* SEO */}
 <link rel="canonical" href={canonicalHref} hreflang={locale} />
-
 {
   alternateLocales.map((alternateLocale) => (
     <link
       rel="alternate"
       hreflang={alternateLocale}
-      href={`${domain}/${alternateLocale}/${slugURL === "/" ? "" : slugURL + `/`}`}
+      href={`${domain}/${alternateLocale}/${
+        slugURL === "/" ? "" : slugURL + "/"
+      }`}
     />
   ))
 }
+
+{/* Last Modified Meta Tag */}
+<meta http-equiv="last-modified" content={lastModifiedDate} />
 
 {/* OpenGraph */}
 <meta property="og:title" content={title} />
