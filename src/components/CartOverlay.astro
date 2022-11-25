@@ -86,159 +86,165 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
       <div
         id="cart-products"
-        class="h-screen p-6 sm:py-9 sm:px-14 flex flex-col gap-5"
+        class="h-screen p-6 sm:py-9 sm:px-14"
       >
-        <div class="flex flex-col gap-5">
-          <div class="flex justify-between items-center">
-            <h3 class="cart-overlay-heading alice">
-              {checkoutRecurData.text_cart}
-            </h3>
-
-            <button id="close-cart-btn" aria-label="Close Cart">
-              <Icon name="heroicons-solid:x" class="w-14" />
-            </button>
-          </div>
-
-          <div class="border border-solid border-lightgreen"></div>
-        </div>
-
-        <EmptyCartNotification locale={locale} />
-
-        <div id="cart-overlay-content" class="grow flex flex-col gap-[36px]">
-          <div class="h-36 sm:h-44 grow flex flex-col gap-5 overflow-auto">
-            <DynamicHTML
-              voidFn={(content, currentScript) => {
-                const cartOverlayContent = document.getElementById(
-                    "cart-overlay-content"
-                  ),
-                  emptyCartNotification = document.getElementById(
-                    "empty-cart-notification"
-                  );
-
-                window.addProductToCart = (id) => {
-                  const productData = window.cart[id],
-                    names = JSON.parse(productData.names),
-                    name = names[preferredLocale] || names["en"],
-                    price = Number(productData.price)
-                      .toFixed(2)
-                      .replace(".", ",");
-
-                  currentScript.insertAdjacentHTML(
-                    "beforebegin",
-                    window.replacePlaceholders(content, {
-                      ...productData,
-                      id,
-                      name,
-                      price,
-                    })
-                  );
-                };
-
-                if (Object.keys(window.cart).length === 0) {
-                  cartOverlayContent.classList.add("hidden");
-                } else {
-                  emptyCartNotification.classList.add("hidden");
-
-                  Object.keys(window.cart).forEach(window.addProductToCart);
-                }
-              }}
-            >
-              <div
-                id={`<placeholder name="id"></placeholder>`}
-                class="cart-product p-4 gap-3.5 flex justify-between items-center bg-lightgray2 rounded-[10px]"
-              >
-                <img
-                  src={`<placeholder name="image"></placeholder>`}
-                  style="min-width: 100px; width: 100px; height: 100px; clip-path: url(#cart-overlay-product-image);"
-                />
-
-                <div class="cart-overlay-product-details flex flex-col gap-1">
-                  <div class="flex justify-between items-center gap-1.5">
-                    <h6 class="alice cart-overlay-product-name">
-                      <placeholder name="name"></placeholder>
-                    </h6>
-
-                    <button class="remove-item-btn">
-                      <Icon name="akar-icons:trash-can" class="w-6 h-6" />
-                    </button>
-                  </div>
-
-                  <div class="cart-overlay-product-size">
-                    {checkoutRecurData.text_size}: <placeholder name="size"
-                    ></placeholder>
-                  </div>
-
-                  <div class="flex justify-between items-center gap-1.5">
-                    <div
-                      class="flex items-center bg-primary text-lightgray rounded-full"
-                    >
-                      <button
-                        data-action="decrement"
-                        class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-2 pr-1"
-                      >
-                        <Icon
-                          name="akar-icons:minus"
-                          class="w-5 h-5 select-none"
-                        />
-                      </button>
-
-                      <input
-                        type="number"
-                        aria-label="Quantity"
-                        min="1"
-                        value={`<placeholder name="quantity"></placeholder>`}
-                        class:list={[
-                          "cart-overlay-product-amount-input",
-                          "w-9 h-full text-center lg:text-lg bg-primary outline-none",
-                        ]}
-                        required
-                      />
-
-                      <button
-                        data-action="increment"
-                        class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-1 pr-2"
-                      >
-                        <Icon
-                          name="akar-icons:plus"
-                          class="w-5 h-5 select-none"
-                        />
-                      </button>
-                    </div>
-
-                    <span class="cart-overlay-product-price alice text-dark3">
-                      €<placeholder name="price"></placeholder>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </DynamicHTML>
-          </div>
-
+        <div class="flex flex-col gap-5 h-full">
           <div class="flex flex-col gap-5">
-            <div>
-              <div class="flex justify-between items-center">
-                <span class="subtotal-text font-medium">
-                  {checkoutRecurData.text_subtotal}
-                </span>
+            <div class="flex justify-between items-center">
+              <h3 class="cart-overlay-heading alice">
+                {checkoutRecurData.text_cart}
+              </h3>
 
-                <span id="cart-subtotal" class="alice">
-                  €<DynamicHTML htmlFn={() => window.cart.subTotal} />
-                </span>
-              </div>
-
-              <div class="shipping-charge-info">
-                {checkoutRecurData.text_shipping_calculated_at_checkout}
-              </div>
+              <button id="close-cart-btn" aria-label="Close Cart">
+                <Icon name="heroicons-solid:x" class="w-14" />
+              </button>
             </div>
 
-            <a
-              href={checkoutInfoPageLink}
-              class="capitalize py-4 font-bold bg-primary text-center text-lightgray rounded-[9999px]"
-            >
-              {checkoutRecurData.text_proceed_to_checkout}
-            </a>
+            <div class="border border-solid border-lightgreen"></div>
+          </div>
+
+          <EmptyCartNotification locale={locale} />
+
+          <div id="cart-overlay-content" class="grid gap-[36px]">
+            <div class="h-[calc(100vh-340px)] flex flex-col gap-5 overflow-auto">
+              <DynamicHTML
+                voidFn={(content, currentScript) => {
+                  const cartOverlayContent = document.getElementById(
+                      "cart-overlay-content"
+                    ),
+                    emptyCartNotification = document.getElementById(
+                      "empty-cart-notification"
+                    );
+
+                  window.addProductToCart = (id) => {
+                    const productData = window.cart[id],
+                      names = JSON.parse(productData.names),
+                      name = names[preferredLocale] || names["en"],
+                      price = Number(productData.price)
+                        .toFixed(2)
+                        .replace(".", ",");
+
+                    currentScript.insertAdjacentHTML(
+                      "beforebegin",
+                      window.replacePlaceholders(content, {
+                        ...productData,
+                        id,
+                        name,
+                        price,
+                      })
+                    );
+                  };
+
+                  if (Object.keys(window.cart).length === 0) {
+                    cartOverlayContent.classList.add("hidden");
+                  } else {
+                    emptyCartNotification.classList.add("hidden");
+
+                    Object.keys(window.cart).forEach(window.addProductToCart);
+                  }
+                }}
+              >
+                <div class="flex">
+                  <div
+                    id={`<placeholder name="id"></placeholder>`}
+                    class="cart-product p-4 gap-3.5 flex justify-between items-center w-full bg-lightgray2 rounded-[10px]"
+                  >
+                    <img
+                      src={`<placeholder name="image"></placeholder>`}
+                      style="min-width: 100px; width: 100px; height: 100px; clip-path: url(#cart-overlay-product-image);"
+                    />
+
+                    <div class="cart-overlay-product-details flex flex-col gap-1">
+                      <div class="flex justify-between items-start gap-1.5">
+                        <h6 class="alice cart-overlay-product-name">
+                          <placeholder name="name"></placeholder>
+                        </h6>
+
+                        <button class="remove-item-btn">
+                          <Icon name="akar-icons:trash-can" class="w-6 h-6" />
+                        </button>
+                      </div>
+
+                      <div class="cart-overlay-product-size">
+                        {checkoutRecurData.text_size}: <placeholder name="size"
+                        ></placeholder>
+                      </div>
+
+                      <div class="flex flex-wrap justify-between items-center gap-1.5">
+                        <div
+                          class="flex items-center bg-primary text-lightgray rounded-full"
+                        >
+                          <button
+                            data-action="decrement"
+                            class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-2 pr-1"
+                          >
+                            <Icon
+                              name="akar-icons:minus"
+                              class="w-5 h-5 select-none"
+                            />
+                          </button>
+
+                          <input
+                            type="number"
+                            aria-label="Quantity"
+                            min="1"
+                            value={`<placeholder name="quantity"></placeholder>`}
+                            class:list={[
+                              "cart-overlay-product-amount-input",
+                              "w-9 h-full text-center lg:text-lg bg-primary outline-none",
+                            ]}
+                            required
+                          />
+
+                          <button
+                            data-action="increment"
+                            class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-1 pr-2"
+                          >
+                            <Icon
+                              name="akar-icons:plus"
+                              class="w-5 h-5 select-none"
+                            />
+                          </button>
+                        </div>
+
+                        <span class="cart-overlay-product-price alice text-dark3">
+                          €<placeholder name="price"></placeholder>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                  
+              </DynamicHTML>
+            </div>
+
+            <div class="flex flex-col gap-5">
+              <div>
+                <div class="flex justify-between items-center">
+                  <span class="subtotal-text font-medium">
+                    {checkoutRecurData.text_subtotal}
+                  </span>
+
+                  <span id="cart-subtotal" class="alice">
+                    €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+                  </span>
+                </div>
+
+                <div class="shipping-charge-info">
+                  {checkoutRecurData.text_shipping_calculated_at_checkout}
+                </div>
+              </div>
+
+              <a
+                href={checkoutInfoPageLink}
+                class="capitalize py-4 font-bold bg-primary text-center text-lightgray rounded-[9999px]"
+              >
+                {checkoutRecurData.text_proceed_to_checkout}
+              </a>
+            </div>
           </div>
         </div>
+          
       </div>
     </div>
   </div>
