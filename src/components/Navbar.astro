@@ -8,8 +8,13 @@ import DynamicHTML from "@components/DynamicHTML.astro";
 import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
-const { logo, checkout_header_background, checkout_header_background_sm } =
-  RecurringImages;
+const {
+  logo,
+  nav_background,
+  sidebar_background,
+  checkout_header_background,
+  checkout_header_background_sm,
+} = RecurringImages;
 
 interface Props {
   docLocale: string;
@@ -45,17 +50,19 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
 >
   {
     !isCartNavbar ? (
-      <Picture
-        alt=""
-        layout="fill"
-        src="/bg-images/nav-background.webp"
-        attributes={{
-          picture: {
-            id: "navbar-bg",
-            style: "display: none; position: absolute;",
-          },
-        }}
-      />
+      <Fragment>
+        <Picture
+          alt=""
+          layout="fill"
+          src={nav_background.src}
+          attributes={{
+            picture: {
+              id: "navbar-bg",
+              style: "display: none; position: absolute;",
+            },
+          }}
+        />
+      </Fragment>
     ) : (
       <Fragment>
         <ClipPathSVG
@@ -187,7 +194,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
   >
     <BackgroundPicture
       layout="fill"
-      src="/bg-images/sidebar.webp"
+      src={sidebar_background.src}
       objectPosition="right bottom"
       attributes={{
         container: {

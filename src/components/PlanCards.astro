@@ -3,13 +3,11 @@ import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 import RecurringImages from "@store/RecurringImages";
 
-const { green_leaf } = RecurringImages;
-
 const { allPlans } = Astro.props,
-  imgSrcPrefix = Astro.site.origin + `/images/`;
+  { tick, green_leaf } = RecurringImages;
 ---
 
-<style lang="scss">
+<style lang="scss" define:vars={{ tick: `url("${tick.src}")` }}>
   .plan-card {
     padding: calc(2.5vw + 17.5px);
   }
@@ -21,7 +19,7 @@ const { allPlans } = Astro.props,
       @apply inline-block pl-0 items-center text-[1.125rem];
 
       &::before {
-        background-image: url(/bg-images/tick.svg);
+        background-image: var(--tick);
 
         @apply content-[""] inline-block w-[18px] h-[18px] mr-[10px] align-middle;
       }
@@ -51,10 +49,10 @@ const { allPlans } = Astro.props,
           <img
             class="h-[35px] max-w-[35px]"
             src={
-              plan.Title_icon?.data?.attributes?.formats?.thumbnail?.url || 
-              plan.Title_icon?.data?.attributes?.url 
+              plan.Title_icon?.data?.attributes?.formats?.thumbnail?.url ||
+              plan.Title_icon?.data?.attributes?.url
             }
-            alt="" 
+            alt=""
           />
         </div>
 
