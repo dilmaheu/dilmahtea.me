@@ -7,5 +7,4 @@ export default defineConfig({
   fit: "cover",
   position: "attention",
   fadeInTransition: false,
-  cacheDir: "/.cache/astro-imagetools",
 });
