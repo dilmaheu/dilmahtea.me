@@ -6,5 +6,6 @@ export default defineConfig({
   placeholder: "dominantColor",
   fit: "cover",
   position: "attention",
+  fadeInTransition: false,
   cacheDir: "/.cache/astro-imagetools",
 });
