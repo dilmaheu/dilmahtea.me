@@ -132,6 +132,7 @@ const shippingMethods = page.shipping_methods
           ...window.checkoutInfo,
           product_name: window.companyName,
           product_desc,
+          cart: JSON.stringify(window.cart),
           tax: window.cart.tax.split(",").join("."),
           price: window.cart.total.split(",").join("."),
           payment_type: "ecommerce",
@@ -143,7 +144,7 @@ const shippingMethods = page.shipping_methods
         return Object.keys(paymentInfo)
           .map(
             (name) =>
-              `<input type="hidden" name="${name}" value="${paymentInfo[name]}" />`
+              `<input type="hidden" name="${name}" value='${paymentInfo[name]}' />`
           )
           .join("");
       }}
