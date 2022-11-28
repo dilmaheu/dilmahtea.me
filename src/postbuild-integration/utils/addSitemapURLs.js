@@ -1,6 +1,6 @@
 const siteURL = "https://dilmahtea.me";
 
-export default async function addPageURLs(
+export default async function addSitemapURLs(
   path,
   document,
   sitemap,

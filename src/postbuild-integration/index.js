@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import { globby } from "globby";
 import { parseHTML } from "linkedom";
-import addPageURLs from "./utils/addPageURLs.js";
+import addSitemapURLs from "./utils/addSitemapURLs.js";
 import addScriptsHashes from "./utils/addScriptsHashes.js";
 import generateXMLSitemap from "./utils/generateXMLSitemap.js";
 import rewrite404RoutesPaths from "./utils/rewrite404RoutesPaths.js";
@@ -48,7 +48,7 @@ const postbuildIntegration = {
             return [
               removeAstroIconAttributes(path, document),
               addScriptsHashes(document, CSPRecord),
-              addPageURLs(path, document, sitemap, htmlFilePaths),
+              addSitemapURLs(path, document, sitemap, htmlFilePaths),
             ];
           })
           .flat()
