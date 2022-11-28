@@ -268,6 +268,10 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
       const { page } = Astro.props;
 
       page.locale = page.locale.substring(0, 2);
+      
+      page.type === `plan` 
+        ? page.Meta.URL_slug = `plan/` + page.Title.toLowerCase()
+        : page.Meta.URL_slug;
 
       const { Meta: meta, locale, availableLocales } = page,
         recurData =

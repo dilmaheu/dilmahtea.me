@@ -43,12 +43,8 @@ const { page, recurData } = Astro.props,
     copyrightYear: `${new Date().getFullYear()}`,
     copyrightHolder: "Dilmah",
     isFamilyFriendly: "True",
-    description: `${marked
-      .parse(page.Intro_text)
-      .replace(/(<([^>]+)>)/gi, "")}`,
-    articleBody: `${marked
-      .parse(page.Block_text)
-      .replace(/(<([^>]+)>)/gi, "")}`,
+    description: `${(await Astro.__renderMarkdown(page.Intro_text)).replace(/(<([^>]+)>)/gi, "")}`,
+    articleBody: `${(await Astro.__renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
     author: {
       "@type": "Person",
       name: page.authors.data.map(

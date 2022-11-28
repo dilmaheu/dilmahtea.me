@@ -23,8 +23,9 @@ const { meta, locale, metaImageID, availableLocales } = Astro.props as Props,
   domain = Astro.site.origin,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env,
   alternateLocales = availableLocales.filter((lcl) => lcl !== locale),
-  documentHref = `${domain}/${locale}/${slugURL === "/" ? "" : slugURL + `/`}`,
-  canonicalHref = `${domain}/en/${canonicalURL === "/" ? "" : canonicalURL + `/`}`;
+  documentHref = `${domain}/${locale}/${slugURL === "/" ? "" : slugURL + "/"}`,
+  canonicalHref = 
+    `${domain}/${locale}/${canonicalURL !== undefined ? (canonicalURL === "/" ? "" : canonicalURL + "/") : slugURL  + "/"}`;
 ---
 
 <meta charset="UTF-8" />

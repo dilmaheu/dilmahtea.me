@@ -25,46 +25,46 @@ const url = `${Astro.site.origin}/${page.locale}/${
   page.Meta.URL_slug === "/" ? "" : page.Meta.URL_slug
 }/`;
 
-function calcTime(x) {
-  var d = x[0];
-  var h = x[1];
-  var m = x[2];
+function calcTime(timeArray) {
 
-  var day =
-    d > 0
-      ? d +
-        (d === 1
+  const [ day, hour, minute ] = timeArray;
+
+  const calcDay =
+    day > 0
+      ? day +
+        (day === 1
           ? ` ${recurData.recipe_day}\xa0\xa0`
           : ` ${recurData.recipe_day}\xa0\xa0`)
       : "";
-  var hour =
-    h > 0
-      ? h +
-        (h === 1
+  const calcHour =
+    hour > 0
+      ? hour +
+        (hour === 1
           ? ` ${recurData.recipe_hour}\xa0\xa0`
           : ` ${recurData.recipe_hours}\xa0\xa0`)
       : "";
-  var min =
-    m > 0
-      ? m +
-        (m === 1
+  const calcMinute =
+    minute > 0
+      ? minute +
+        (minute === 1
           ? ` ${recurData.recipe_minute}`
           : ` ${recurData.recipe_minutes}`)
       : "";
 
-  return day + hour + min;
+  return calcDay + calcHour + calcMinute;
 }
 
-function calcTimeSm(x) {
-  var d = x[0];
-  var h = x[1];
-  var m = x[2];
+function calcTimeSm(timeArray) {
+  const [ day, hour, minute ] = timeArray;
 
-  var day = d > 0 ? d + `${recurData.recipe_day.substring(0, 1)}\xa0` : "";
-  var hour = h > 0 ? h + `${recurData.recipe_hour.substring(0, 1)}\xa0` : "";
-  var min = m > 0 ? m + `${recurData.recipe_minute.substring(0, 1)}\xa0` : "";
+  const calcDay = 
+    day > 0 ? day + `${recurData.recipe_day.substring(0, 1)}\xa0` : "";
+  const calcHour = 
+    hour > 0 ? hour + `${recurData.recipe_hour.substring(0, 1)}\xa0` : "";
+  const calcMinute = 
+    minute > 0 ? minute + `${recurData.recipe_minute.substring(0, 1)}\xa0` : "";
 
-  return day + hour + min;
+  return calcDay + calcHour + calcMinute;
 }
 
 function time(x) {
@@ -600,10 +600,10 @@ page.Nutrition.forEach((item) => {
     dateCreated: page.createdAt,
     datePublished: page.publishedAt,
     dateModified: page.updatedAt,
-    description: `${marked
-      .parse(page.Intro_text)
-      .replace(/(<([^>]+)>)/gi, "")} ${marked
-      .parse(page.Block_text)
+    description: `${(await 
+      Astro.__renderMarkdown(page.Intro_text))
+      .replace(/(<([^>]+)>)/gi, "")} ${(await
+      Astro.__renderMarkdown(page.Block_text))
       .replace(/(<([^>]+)>)/gi, "")}`,
     prepTime: `PT${timeSm(page.Time_preparation)
       .toUpperCase()
