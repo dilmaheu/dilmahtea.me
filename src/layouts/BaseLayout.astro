@@ -12,13 +12,15 @@ import NotificationAnimations from "@scripts/NotificationAnimations.astro";
 import getLangNotAvailableNotification from "@utils/getLangNotAvailableNotification";
 
 interface Props {
+  page: Record<string, any>;
   meta: Record<string, any>;
   locale: string;
   metaImageID: string;
   availableLocales: string[];
 }
 
-const { meta, locale, availableLocales, metaImageID } = Astro.props as Props;
+const { page, meta, locale, availableLocales, metaImageID } =
+  Astro.props as Props;
 
 const { URL_slug: slugURL } = meta;
 
@@ -29,6 +31,7 @@ const { Type: notificationType, localizedNotifications } =
 <html lang={locale}>
   <head>
     <MainHead
+      page={page}
       meta={meta}
       locale={locale}
       metaImageID={metaImageID}

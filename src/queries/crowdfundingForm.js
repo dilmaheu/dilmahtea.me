@@ -5,6 +5,7 @@ const crowdfundingFormQuery = `
         id
         attributes {
           locale
+          updatedAt
           Title
           Intro_text
           Meta {
@@ -18,6 +19,7 @@ const crowdfundingFormQuery = `
             data {
               attributes {
                 locale
+                updatedAt
                 Title
                 Intro_text
                 Meta {

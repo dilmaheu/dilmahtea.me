@@ -5,6 +5,7 @@ const homeProductQuery = `
         id
         attributes {
           locale
+          updatedAt
           Title
           Intro_text
           Heading_button_text
@@ -69,6 +70,7 @@ const homeProductQuery = `
             data {
               attributes {
                 locale
+                updatedAt
                 Title
                 Intro_text
                 Heading_button_text
