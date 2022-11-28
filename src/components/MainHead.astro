@@ -32,8 +32,12 @@ const domain = Astro.site.origin,
 const documentHref = `${domain}/${locale}/${
     slugURL === "/" ? "" : slugURL + "/"
   }`,
-  canonicalHref = `${domain}/en/${
-    canonicalURL === "/" ? "" : canonicalURL + "/"
+  canonicalHref = `${domain}/${locale}/${
+    canonicalURL !== undefined
+      ? canonicalURL === "/"
+        ? ""
+        : canonicalURL + "/"
+      : slugURL + "/"
   }`;
 ---
 
