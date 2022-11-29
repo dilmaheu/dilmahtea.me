@@ -5,6 +5,7 @@ const crowdfundingPlansQuery = `
         id
         attributes {
           locale
+          updatedAt
           Perk
           Title
           Title_icon {
@@ -26,6 +27,7 @@ const crowdfundingPlansQuery = `
             data {
               attributes {
                 locale
+                updatedAt
                 Perk
                 Title
                 Title_icon {

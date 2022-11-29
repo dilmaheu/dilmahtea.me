@@ -5,6 +5,7 @@ const checkoutKindnessQuery = `
         id
         attributes {
           locale
+          updatedAt
           checkout_step_order
           Title
           Intro_text
@@ -34,7 +35,8 @@ const checkoutKindnessQuery = `
           localizations {
             data {
               attributes {
-                locale                
+                locale
+                updatedAt                
                 checkout_step_order
                 Title
                 Intro_text

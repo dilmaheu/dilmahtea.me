@@ -5,6 +5,7 @@ const checkoutShippingQuery = `
         id
         attributes {
           locale
+          updatedAt
           checkout_step_order
           text_contact
           text_delivery_address
@@ -25,6 +26,7 @@ const checkoutShippingQuery = `
             data {
               attributes {
                 locale
+                updatedAt
                 checkout_step_order
                 text_contact
                 text_delivery_address

@@ -691,10 +691,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       imgSrcPrefix +
       page.Intro_blob.data.attributes.provider_metadata.public_id +
       `/public`,
-    description: `${marked
-      .parse(page.Intro_text)
-      .replace(/(<([^>]+)>)/gi, "")} ${marked
-      .parse(page.Block_text)
+    description: `${(await
+      Astro.__renderMarkdown(page.Intro_text))
+      .replace(/(<([^>]+)>)/gi, "")} ${(await
+      Astro.__renderMarkdown(page.Block_text))
       .replace(/(<([^>]+)>)/gi, "")}`,
     sku: page.SKU,
     gtin: page.GTIN_Barcode,
