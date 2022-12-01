@@ -17,3 +17,8 @@ const securityMetaData = await response.json();
 const securityTXT = securityMetaData.data.attributes.Text;
 
 await fs.writeFile("./dist/security.txt", securityTXT);
+
+const secondaryFilePath = "./dist/.well-known/";
+fs.mkdir(secondaryFilePath);
+
+await fs.writeFile((secondaryFilePath + "security.txt"), securityTXT);
