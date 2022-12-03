@@ -1,29 +1,11 @@
-import sitemap from "@astrojs/sitemap";
 import taiwlind from "@astrojs/tailwind";
 import { defineConfig } from "astro/config";
 import { astroImageTools } from "astro-imagetools";
 import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
+import postbuildIntegration from "./src/postbuild-integration/index.js";
 
 export default defineConfig({
   site: "https://dilmahtea.me",
-
-  integrations: [
-    // sitemap({
-    //   serialize(item) {
-    //     if (/exclude-from-sitemap/.test(item.url)) {
-    //       return undefined;
-    //     }
-    //     if (/your-special-page/.test(item.url)) {
-    //       item.changefreq = "daily";
-    //       item.lastmod = new Date();
-    //       item.priority = 0.9;
-    //     }
-    //     return item;
-    //   },
-    // }),
-    taiwlind(),
-    astroImageTools,
-  ],
 
   vite: {
     ssr: {
@@ -41,4 +23,6 @@ export default defineConfig({
       },
     ],
   },
+
+  integrations: [taiwlind(), astroImageTools, postbuildIntegration],
 });

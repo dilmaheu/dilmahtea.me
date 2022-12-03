@@ -5,6 +5,7 @@ const cartQuery = `
         id
         attributes {
           locale
+          updatedAt
           text_cart
           text_product
           text_remove
@@ -21,6 +22,7 @@ const cartQuery = `
             data {
               attributes {
                 locale
+                updatedAt
                 text_cart
                 text_product
                 text_remove

@@ -5,6 +5,7 @@ const recurringElementQuery = `
         id
         attributes {
           locale
+          updatedAt
           text_add
           text_cart
           text_add_to_cart
@@ -27,6 +28,7 @@ const recurringElementQuery = `
             data {
               attributes {
                 locale
+                updatedAt
                 text_add
                 text_cart
                 text_add_to_cart

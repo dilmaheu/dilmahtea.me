@@ -5,6 +5,7 @@ const homepageQuery = `
         id
         attributes {
           locale
+          updatedAt
           Meta {
             HTML_Title
             Meta_description
@@ -17,6 +18,7 @@ const homepageQuery = `
             data {
               attributes {
                 locale
+                updatedAt
                 Meta {
                   HTML_Title
                   Meta_description
