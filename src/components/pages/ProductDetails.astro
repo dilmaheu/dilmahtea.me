@@ -236,6 +236,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         <button
           disabled
           data-action="decrement"
+          aria-label="Increase Quantity"
           class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1"
         >
           <Icon name="akar-icons:minus" class="w-6 h-6 select-none" />
@@ -252,7 +253,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         />
 
         <button
-          data-action="increment"
+          data-action="decrement"
+          aria-label="Increase Quantity"
           class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
         >
           <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
@@ -327,6 +329,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       >
         <button
           data-action="decrement"
+          aria-label="Increase Quantity"
           class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1"
         >
           <Icon
@@ -346,7 +349,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         />
 
         <button
-          data-action="increment"
+          data-action="decrement"
+          aria-label="Increase Quantity"
           class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
         >
           <Icon
@@ -687,11 +691,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       imgSrcPrefix +
       page.Intro_blob.data.attributes.provider_metadata.public_id +
       `/public`,
-    description: `${(await
-      Astro.__renderMarkdown(page.Intro_text))
-      .replace(/(<([^>]+)>)/gi, "")} ${(await
-      Astro.__renderMarkdown(page.Block_text))
-      .replace(/(<([^>]+)>)/gi, "")}`,
+    description: `${(await Astro.__renderMarkdown(page.Intro_text)).replace(
+      /(<([^>]+)>)/gi,
+      ""
+    )} ${(await Astro.__renderMarkdown(page.Block_text)).replace(
+      /(<([^>]+)>)/gi,
+      ""
+    )}`,
     sku: page.SKU,
     gtin: page.GTIN_Barcode,
     brand: {
