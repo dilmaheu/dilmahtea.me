@@ -56,6 +56,7 @@ const postbuildIntegration = {
 
       await Promise.all([
         import("./utils/generateRobotsMeta.js"),
+        import("./utils/generateSecurityMeta.js"),
         rewrite404RoutesPaths(_404HtmlFilePaths),
         generateXMLSitemap(sitemap),
         generateSecurityHeaders(CSPRecord),
