@@ -16,20 +16,35 @@
       [firstHeadingID] = headingIDs,
       readingProgressBar = query("#reading-progress-bar");
 
-    const isOnScreen = (element) => {
-      const { top, bottom } = element.getBoundingClientRect(),
-        // consider an element on screen only if it's at least 50px on screen
-        safeAreaHeight = 50;
+    const isChapterOnScreen = (chapterElement) => {
+      const { top, bottom } = chapterElement.getBoundingClientRect(),
+        topSafeAreaHeight = readingProgressBar.getBoundingClientRect().bottom,
+        // consider a chapter element on screen only if it's at least 50px on screen
+        bottomSafeAreaHeight = 50;
 
-      if (top < window.innerHeight - safeAreaHeight && bottom > 0) return true;
+      if (
+        top < window.innerHeight - bottomSafeAreaHeight &&
+        bottom > topSafeAreaHeight
+      )
+        return true;
 
       return false;
     };
 
+    const getActiveChapter = () => {
+      const visibleChapters = chapters.filter(isChapterOnScreen);
+
+      const activeChapter =
+        visibleChapters.find((chapterElement) =>
+          isChapterOnScreen(chapterElement.firstElementChild)
+        ) || visibleChapters[0];
+
+      return activeChapter;
+    };
+
     const styleActiveChapter = () => {
-      // find active chapter
-      const { length, [length - 1]: activeChapter = chapters[0] } =
-          chapters.filter((chapter) => isOnScreen(chapter)),
+      // mark first chapter on screen as active and fallback to the first chapter
+      const activeChapter = getActiveChapter(),
         chapterIndex = chapters.indexOf(activeChapter),
         activeChapterHeading = activeChapter.querySelector("h2");
 
