@@ -12,6 +12,8 @@
       headingLinks = [...queryAll("#heading-links a")],
       stickyHeadingLinks = [...queryAll("#sticky-heading-links a")],
       stickyHeadingLinksContainer = query("#sticky-heading-links"),
+      headingIDs = headingLinks.map((link) => link.hash.slice(1)),
+      [firstHeadingID] = headingIDs,
       readingProgressBar = query("#reading-progress-bar");
 
     const isOnScreen = (element) => {
@@ -77,36 +79,36 @@
     });
 
     // collapse dropdown when an item is clicked
-    [...headingLinks, ...stickyHeadingLinks].forEach((link) => {
-      link.addEventListener("click", (event) => {
-        event.preventDefault();
+    [...document.links].forEach((link) => {
+      if (link.hash && headingIDs.includes(link.hash.slice(1))) {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
 
-        const headingID = link.getAttribute("href").slice(1),
-          heading = document.getElementById(headingID);
+          const headingID = link.hash.slice(1),
+            heading = document.getElementById(headingID);
 
-        let blockedAreaBottom = 0;
+          let blockedAreaBottom = 0;
 
-        if (window.innerWidth < 640) {
-          const isFirstLink =
-            headingLinks.indexOf(link) === 0 ||
-            stickyHeadingLinks.indexOf(link) === 0;
+          if (window.innerWidth < 640) {
+            const isFirstHeadingLink = firstHeadingID === headingID;
 
-          stickyHeadingLinksContainer.classList.add("hidden");
+            stickyHeadingLinksContainer.classList.add("hidden");
 
-          const navbarHeight = navbar.getBoundingClientRect().height,
-            stickyHeaderHeight = stickyHeader.getBoundingClientRect().height;
+            const navbarHeight = navbar.getBoundingClientRect().height,
+              stickyHeaderHeight = stickyHeader.getBoundingClientRect().height;
 
-          blockedAreaBottom =
-            navbarHeight + (isFirstLink ? 0 : stickyHeaderHeight);
-        }
+            blockedAreaBottom =
+              navbarHeight + (isFirstHeadingLink ? 0 : stickyHeaderHeight);
+          }
 
-        const { offsetTop: headingOffsetTop } = heading;
+          const { offsetTop: headingOffsetTop } = heading;
 
-        window.scrollTo({
-          top: headingOffsetTop - blockedAreaBottom - 25,
-          /* offset by 25px on top for better UX */
+          window.scrollTo({
+            top: headingOffsetTop - blockedAreaBottom - 25,
+            /* offset by 25px on top for better UX */
+          });
         });
-      });
+      }
     });
   }
 </script>
