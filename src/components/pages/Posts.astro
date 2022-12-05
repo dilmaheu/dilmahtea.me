@@ -12,12 +12,13 @@ import RecurringImages from "@store/RecurringImages";
 const { white_cup, green_cup, left_post_leaf, green_leaf } = RecurringImages;
 
 const { posts } = Astro.props.page,
-  [firstPost] = posts,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 
 posts.sort((a, b) => {
   return new Date(b.createdAt) - new Date(a.createdAt); 
 });
+
+const [firstPost] = posts;
 ---
 
 <style lang="scss">
