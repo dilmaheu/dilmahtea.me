@@ -197,7 +197,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
         ".translation-not-found-notification"
       );
 
-    window.addEventListener("scroll", () => {
+    const updateNavbarStyles = () => {
       const translationNotFoundNotificationHeight =
         translationNotFoundNotification.getBoundingClientRect().height;
 
@@ -205,18 +205,25 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
       navigation.style.top = `${translationNotFoundNotificationHeight}px`;
 
       if (!isCartNavbar) {
-        window.innerWidth < 768 &&
-        (scrollY > 0 || document.body.style.position === "fixed")
-          ? navigation.style = `
-              background-color:#2b4b50; 
-              background-image:url(/bg-images/nav-background.webp);
-            `
-          : navigation.style = `
-              background-color:transparent; 
-              background-image:unset;
-            `
+        if (
+          window.innerWidth < 768 &&
+          (window.scrollY > 0 || document.body.style.position === "fixed")
+        ) {
+          navigation.style = `
+            background-color: #2b4b50;
+            background-image: url(/bg-images/nav-background.webp);
+          `;
+        } else {
+          navigation.style = `
+            background-color: transparent;
+            background-image: unset;
+          `;
+        }
       }
-    });
+    };
+
+    window.addEventListener("scroll", updateNavbarStyles);
+    window.addEventListener("resize", updateNavbarStyles);
   }
 </script>
 
