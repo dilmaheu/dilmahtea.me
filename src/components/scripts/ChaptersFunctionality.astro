@@ -19,7 +19,10 @@
 
     const isChapterOnScreen = (chapterElement) => {
       const { top, bottom } = chapterElement.getBoundingClientRect(),
-        topSafeAreaHeight = readingProgressBar.getBoundingClientRect().bottom,
+        topSafeAreaHeight =
+          window.innerWidth < 768
+            ? readingProgressBar.getBoundingClientRect().bottom
+            : 0,
         // consider a chapter element on screen only if it's at least 50px on screen
         bottomSafeAreaHeight = 50;
 
