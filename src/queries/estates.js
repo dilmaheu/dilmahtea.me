@@ -58,6 +58,16 @@ const estatesQuery = `
             }
           }
           Location_link
+          Optional_data{
+            Telephone
+            Street_address
+            Locality
+            Region
+            Postal_code
+            Country
+            Geo_latitude
+            Geo_longitude
+          }
           Meta {
             HTML_Title
             Meta_description
@@ -121,6 +131,16 @@ const estatesQuery = `
                       }
                     }
                   }
+                }
+                Optional_data{
+                  Telephone
+                  Street_address
+                  Locality
+                  Region
+                  Postal_code
+                  Country
+                  Geo_latitude
+                  Geo_longitude
                 }
                 Meta {
                   HTML_Title
