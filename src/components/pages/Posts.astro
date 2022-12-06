@@ -12,12 +12,13 @@ import RecurringImages from "@store/RecurringImages";
 const { white_cup, green_cup, left_post_leaf, green_leaf } = RecurringImages;
 
 const { posts } = Astro.props.page,
-  [firstPost] = posts,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 
 posts.sort((a, b) => {
   return new Date(b.createdAt) - new Date(a.createdAt);
 });
+
+const [firstPost] = posts;
 ---
 
 <style lang="scss">
@@ -275,7 +276,7 @@ posts.sort((a, b) => {
                   </div>
                 )}
 
-                <h1 class="post-title alice text-primary pt-[15px]">
+                <h2 class="post-title alice text-primary pt-[15px]">
                   <a
                     href={`/` + post.Meta.URL_slug}
                     set:text={post.Title || post.Estate_name}
@@ -284,7 +285,7 @@ posts.sort((a, b) => {
                   <span class="icon heading-inline-icon">
                     <img class="w-full h-full" {...green_cup} />
                   </span>
-                </h1>
+                </h2>
 
                 <div class="post-intro texr-dark block pt-[15px] prose max-w-none">
                   <Markdown>{post.Intro_text}</Markdown>
