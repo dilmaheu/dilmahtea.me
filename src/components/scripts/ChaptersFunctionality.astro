@@ -11,6 +11,7 @@
       stickyDropdownToggle = query("#sticky-dropdown-toggle"),
       headingLinks = [...queryAll(".chapter-link")],
       stickyHeadingLinks = [...queryAll(".chapter-link-sm")],
+      headingLinksContainer = query("#heading-links"),
       stickyHeadingLinksContainer = query("#sticky-heading-links"),
       headingIDs = headingLinks.map((link) => link.hash.slice(1)),
       [firstHeadingID] = headingIDs,
@@ -85,6 +86,32 @@
       stickyHeader.classList[displayStickyHeader ? "remove" : "add"](
         "invisible"
       );
+
+      const visibleLinksContainer =
+        window.innerWidth >= 768
+          ? headingLinksContainer
+          : !stickyHeadingLinksContainer.parentElement.classList.contains(
+              "hidden"
+            )
+          ? stickyHeadingLinksContainer
+          : null;
+
+      if (visibleLinksContainer) {
+        visibleLinksContainer.style.height = "auto";
+
+        const visibleLinksContainerHeight =
+          visibleLinksContainer.getBoundingClientRect().height;
+
+        visibleLinksContainer.style.flexGrow = 1;
+
+        const availableHeight =
+          visibleLinksContainer.getBoundingClientRect().height;
+
+        visibleLinksContainer.style.flexGrow = 0;
+
+        visibleLinksContainer.style.height =
+          Math.min(visibleLinksContainerHeight, availableHeight) + "px";
+      }
     };
 
     styleActiveChapter();
@@ -93,7 +120,7 @@
     window.addEventListener("resize", styleActiveChapter);
 
     stickyDropdownToggle.addEventListener("click", () => {
-      stickyHeadingLinksContainer.classList.toggle("hidden");
+      stickyHeadingLinksContainer.parentElement.classList.toggle("hidden");
     });
 
     // collapse dropdown when an item is clicked

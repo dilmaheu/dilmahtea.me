@@ -367,13 +367,18 @@ const contentHTML = await Astro.slots.render("post-details"),
       {
         headings.length > 0 && (
           <div
-            id="sticky-heading-links"
-            class="hidden pt-[15px] pb-[25px] max-h-[70vh] border-t border-solid overflow-y-auto"
+            id="sticky-headings"
+            class:list={[
+              "flex flex-col max-h-[70vh]",
+              "hidden pt-[15px] pb-[25px] border-t border-solid overflow-y-auto",
+            ]}
           >
-            <HeadingLinks type="mobile" headings={headings}>
-              {/* html source to extract heading links from */}
-              <slot name="post-details" />
-            </HeadingLinks>
+            <div id="sticky-heading-links" class="overflow-y-auto">
+              <HeadingLinks type="mobile" headings={headings}>
+                {/* html source to extract heading links from */}
+                <slot name="post-details" />
+              </HeadingLinks>
+            </div>
 
             {/* Jump to Recipe Small Button */}
             <slot name="jump-to-recipe-sm" />
@@ -405,8 +410,9 @@ const contentHTML = await Astro.slots.render("post-details"),
         <div
           id="headings"
           class:list={[
+            "w-full md:w-1/3 md:h-screen self-start flex flex-col",
+            "md:sticky top-0 py-6 mb-[75px] text-primary overflow-hidden",
             "pl-[clamp(24px,3.8vw+0.16px,50px)] lg:pl-[clamp(70px,11.3125vw-46px,128px)]",
-            "self-start md:sticky top-0 mb-[75px] w-full md:w-1/3 text-primary overflow-hidden",
           ]}
         >
           <h3
@@ -419,15 +425,18 @@ const contentHTML = await Astro.slots.render("post-details"),
           {/* Jump to Recipe Button */}
           <slot name="jump-to-recipe" />
 
-          <div id="heading-links" class="grid leading-[130%] lg:leading-[150%]">
+          <div
+            id="heading-links"
+            class="flex flex-col leading-[130%] lg:leading-[150%] overflow-y-auto"
+          >
             <HeadingLinks headings={headings}>
               {/* html source to extract heading links from */}
               <slot name="post-details" />
             </HeadingLinks>
-
-            {/* Cart Adding Form (Sm) */}
-            <slot name="cart-adding-form-sm" />
           </div>
+
+          {/* Cart Adding Form (Sm) */}
+          <slot name="cart-adding-form-sm" />
         </div>
       )
     }
