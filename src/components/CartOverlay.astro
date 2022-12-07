@@ -20,7 +20,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style lang="scss">
-  .cart-overlay-products-container {
+  #cart-overlay-products-container {
     @apply max-w-full w-[375px] sm:w-[528.96px];
   }
 
@@ -77,7 +77,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 >
   <div class="w-full max-w-[2050px] h-full mx-auto bg-[rgba(0,0,0,0.5)]">
     <div
-      class="cart-overlay-products-container h-full ml-auto overflow-y-auto text-dark2 bg-lightgray"
+      role="alert"
+      tabindex="0"
+      aria-label="Cart is in focus now"
+      id="cart-overlay-products-container"
+      class="h-full ml-auto overflow-y-auto text-dark2 bg-lightgray -outline-offset-1"
     >
       <ClipPathSVG
         id="cart-overlay-product-image"
@@ -287,13 +291,17 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   const id: (string) => HTMLElement = document.getElementById.bind(document),
     cart = id("cart"),
     sidebar = id("sidebar"),
+    // the open cart button is in Navbar.astro
+    openCartBtn = id("open-cart-btn"),
     closeCartBtn = id("close-cart-btn"),
     cartOverlayContent = id("cart-overlay-content"),
     emptyCartNotification = id("empty-cart-notification"),
+    cartOverlayProductsContainer = id("cart-overlay-products-container"),
     { overflowY: prevBodyOverflowYValue } = document.body.style;
 
   window.openCart = () => {
     cart.classList.toggle("hidden");
+    cartOverlayProductsContainer.focus();
 
     window.disableScrolling();
 
@@ -304,6 +312,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
   const closeCart = () => {
     cart.classList.toggle("hidden");
+    openCartBtn.focus();
 
     (!sidebar || sidebar.offsetWidth === 0) && window.enableScrolling();
 
