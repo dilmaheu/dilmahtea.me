@@ -101,17 +101,23 @@ const [firstPost] = posts;
           )
         }
 
-        <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
-          <a href={`/` + firstPost.Meta.URL_slug}>{firstPost.Title}</a>
+        <section class="link-section">
+          <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
+            <a
+              class="main-link"
+              set:text={firstPost.Title}
+              href={`/` + firstPost.Meta.URL_slug}
+            />
 
-          <span class="icon heading-inline-icon">
-            <img class="w-full h-full" {...white_cup} />
-          </span>
-        </h1>
+            <span class="icon heading-inline-icon">
+              <img class="w-full h-full" {...white_cup} />
+            </span>
+          </h1>
 
-        <div class="hero-text pt-2.5 block prose text-lightgray max-w-none">
-          <Markdown>{firstPost.Intro_text}</Markdown>
-        </div>
+          <div class="hero-text pt-2.5 prose text-lightgray max-w-none">
+            <Markdown>{firstPost.Intro_text}</Markdown>
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -184,7 +190,7 @@ const [firstPost] = posts;
         const isEven = index % 2 === 0;
 
         return (
-          <div class="flex flex-wrap items-center">
+          <section class="link-section flex flex-wrap items-center">
             <div
               class:list={[
                 "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
@@ -278,6 +284,7 @@ const [firstPost] = posts;
 
                 <h2 class="post-title alice text-primary pt-[15px]">
                   <a
+                    class="main-link"
                     href={`/` + post.Meta.URL_slug}
                     set:text={post.Title || post.Estate_name}
                   />
@@ -287,12 +294,12 @@ const [firstPost] = posts;
                   </span>
                 </h2>
 
-                <div class="post-intro texr-dark block pt-[15px] prose max-w-none">
+                <div class="post-intro texr-dark pt-[15px] prose max-w-none">
                   <Markdown>{post.Intro_text}</Markdown>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
         );
       })
     }
