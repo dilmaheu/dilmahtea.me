@@ -55,7 +55,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     width: 100%;
     max-height: 530px;
     aspect-ratio: 2.8 / 2;
-    
+
     @media (min-width: 640px) {
       aspect-ratio: 5.65 / 5;
     }
@@ -309,7 +309,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   </div>
 
   {/* All Estates Section */}
-  <section id="estates">
+  <div id="estates">
     <ClipPathSVG
       id="estate-img-curve"
       path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
@@ -323,7 +323,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
           const isEven = index % 2 === 0;
 
           return (
-            <div class="flex flex-wrap items-center">
+            <section class="link-section flex flex-wrap items-center">
               <div
                 class:list={[
                   "relative w-full sm:w-1/2 order-1 mb-4 sm:mb-0",
@@ -332,22 +332,21 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                     : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
                 ]}
               >
-                <a href={`/` + estate.Meta.URL_slug}>
-                  <div class="post-img-curve-container">
-                    <img
-                      src={
-                        imgSrcPrefix +
-                        estate.Intro_blob.data.attributes.provider_metadata
-                          .public_id +
-                        `/small`
-                      }
-                      alt={estate.Intro_blob.data.attributes.alternativeText}
-                      class="w-full h-full"
-                      style="clip-path: url(#estate-img-curve);"
-                    />
-                  </div>
+                <div class="post-img-curve-container">
+                  <img
+                    src={
+                      imgSrcPrefix +
+                      estate.Intro_blob.data.attributes.provider_metadata
+                        .public_id +
+                      `/small`
+                    }
+                    alt={estate.Intro_blob.data.attributes.alternativeText}
+                    class="w-full h-full"
+                    style="clip-path: url(#estate-img-curve);"
+                  />
+                </div>
 
-                  {/* <Picture
+                {/* <Picture
                       alt=""
                       src={
                         imgSrcPrefix +
@@ -359,7 +358,6 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                         picture: { style: "clip-path: url(#estate-img-curve);" },
                       }}
                     /> */}
-                </a>
               </div>
 
               {/* Text content */}
@@ -390,25 +388,24 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                   </ul>*/}
 
                   <h2 class="post-title alice text-primary pt-[15px]">
-                    <a href={`/` + estate.Meta.URL_slug}>
-                      {estate.Estate_name}
-                    </a>
+                    <a
+                      class="main-link"
+                      set:text={estate.Estate_name}
+                      href={`/` + estate.Meta.URL_slug}
+                    />
                   </h2>
 
-                  <a
-                    href={`/` + estate.Meta.URL_slug}
-                    class="post-intro texr-dark block pt-[15px] prose max-w-none"
-                  >
+                  <div class="post-intro texr-dark pt-[15px] prose max-w-none">
                     <Markdown>{estate.Intro_text}</Markdown>
-                  </a>
+                  </div>
                 </div>
               </div>
-            </div>
+            </section>
           );
         })
       }
     </div>
-  </section>
+  </div>
 
   <ClipPathSVG
     id="quote-bg-curve"
@@ -468,8 +465,8 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
       <div
         class:list={[
-          "grid grid-cols-[repeat(auto-fit,minmax(0,150px))] md:grid-cols-[repeat(auto-fit,minmax(0,250px))]", 
-          "justify-center md:justify-between gap-y-[35px] w-full estate-impacts-container"
+          "grid grid-cols-[repeat(auto-fit,minmax(0,150px))] md:grid-cols-[repeat(auto-fit,minmax(0,250px))]",
+          "justify-center md:justify-between gap-y-[35px] w-full estate-impacts-container",
         ]}
       >
         {
@@ -515,24 +512,22 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
         {blogs.slice(0, 3).map((post) => (
           <div
             role="listitem"
-            class="bg-primary recent-post-card"
             aria-label="Kindness Item"
             style="clip-path: url(#recent-post-card-curve);"
+            class="link-section bg-primary recent-post-card"
           >
             <div class="relative">
-              <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-                <img
-                  class="w-full h-full"
-                  src={
-                    imgSrcPrefix +
-                    post.Intro_blob.data.attributes.provider_metadata
-                      .public_id +
-                    `/small`
-                  }
-                  alt={post.Intro_blob.data.attributes.alternativeText}
-                />
+              <img
+                class="w-full h-full"
+                src={
+                  imgSrcPrefix +
+                  post.Intro_blob.data.attributes.provider_metadata.public_id +
+                  `/small`
+                }
+                alt={post.Intro_blob.data.attributes.alternativeText}
+              />
 
-                {/* <Picture
+              {/* <Picture
                     alt=""
                     layout="fill"
                     src={
@@ -547,7 +542,6 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                       },
                     }}
                   /> */}
-              </a>
 
               <div class="recent-post-card-content-container">
                 <div>
@@ -568,7 +562,11 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                 </div>
 
                 <div class="recent-post-card-title alice mt-[15px]">
-                  <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+                  <a
+                    class="main-link"
+                    set:text={post.Title}
+                    href={`/` + post.Meta.URL_slug}
+                  />
 
                   <span class="icon recent-post-card-title-icon">
                     <img
