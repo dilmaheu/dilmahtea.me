@@ -81,7 +81,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       tabindex="0"
       aria-label="Cart is in focus now"
       id="cart-overlay-products-container"
-      class="h-full ml-auto overflow-y-auto text-dark2 bg-lightgray -outline-offset-1"
+      class:list={[
+        "focus:outline-1 outline-black -outline-offset-1",
+        "h-full ml-auto overflow-y-auto text-dark2 bg-lightgray",
+      ]}
     >
       <ClipPathSVG
         id="cart-overlay-product-image"
@@ -255,6 +258,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               </div>
 
               <a
+                id="checkout-info-link"
                 href={checkoutInfoPageLink}
                 class="capitalize py-4 font-bold bg-primary text-center text-lightgray rounded-[9999px]"
               >
@@ -294,6 +298,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     // the open cart button is in Navbar.astro
     openCartBtn = id("open-cart-btn"),
     closeCartBtn = id("close-cart-btn"),
+    checkoutInfoLink = id("checkout-info-link"),
     cartOverlayContent = id("cart-overlay-content"),
     emptyCartNotification = id("empty-cart-notification"),
     cartOverlayProductsContainer = id("cart-overlay-products-container"),
@@ -346,6 +351,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   });
 
   closeCartBtn?.addEventListener("click", closeCart);
+
+  checkoutInfoLink.addEventListener("keydown", (event) => {
+    if (event.key === "Tab" && !event.shiftKey) {
+      event.preventDefault();
+
+      closeCartBtn.focus();
+    }
+  });
 
   window.addEventListener("resize", () => {
     const cartProducts = document.getElementById("cart-products");
