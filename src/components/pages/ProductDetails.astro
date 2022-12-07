@@ -619,13 +619,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   <div
                     role="listitem"
                     aria-label="Kindness Item"
-                    class="flex flex-wrap bg-lightgray"
                     style="clip-path: url(#card-curve)"
+                    class="link-section flex flex-wrap bg-lightgray"
                   >
-                    <a
-                      class="product-kindness-impact-img-container block w-full"
-                      href={`/` + post.Meta.URL_slug}
-                    >
+                    <div class="product-kindness-impact-img-container">
                       <img
                         src={
                           imgSrcPrefix +
@@ -636,7 +633,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                         alt={post.Intro_blob.data.attributes.alternativeText}
                         class="w-full h-full object-cover"
                       />
-                    </a>
+                    </div>
 
                     <div class="recent-post-card-content-container text-primary">
                       {post.authors && (
@@ -660,7 +657,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       )}
 
                       <div class="recent-post-card-title alice mt-[15px]">
-                        <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+                        <a
+                          class="main-link"
+                          set:text={post.Title}
+                          href={`/` + post.Meta.URL_slug}
+                        />
 
                         <span class="icon recent-post-card-title-icon">
                           <img

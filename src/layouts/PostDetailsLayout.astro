@@ -466,26 +466,24 @@ const contentHTML = await Astro.slots.render("post-details"),
       >
         {recentPosts.slice(0, 3).map((post) => (
           <div
-            class="bg-primary recent-post-card"
             role="listitem"
             aria-label="Kindness Item"
             style="clip-path: url(#recent-post-card-curve)"
+            class="link-section bg-primary recent-post-card"
           >
-            <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-              <div class="recent-posts-img-container">
-                <img
-                  src={
-                    imgSrcPrefix +
-                    post.Intro_blob.data.attributes.provider_metadata
-                      .public_id +
-                    `/small`
-                  }
-                  alt={post.Intro_blob.data.attributes.alternativeText}
-                  class="w-full h-full object-cover"
-                />
-              </div>
+            <div class="recent-posts-img-container">
+              <img
+                src={
+                  imgSrcPrefix +
+                  post.Intro_blob.data.attributes.provider_metadata.public_id +
+                  `/small`
+                }
+                alt={post.Intro_blob.data.attributes.alternativeText}
+                class="w-full h-full object-cover"
+              />
+            </div>
 
-              {/* <Picture
+            {/* <Picture
                   alt=""
                   layout="fill"
                   src={
@@ -500,7 +498,6 @@ const contentHTML = await Astro.slots.render("post-details"),
                     },
                   }}
                 /> */}
-            </a>
 
             <div class="recent-post-card-content-container grid content-between">
               <div>
@@ -524,9 +521,11 @@ const contentHTML = await Astro.slots.render("post-details"),
                 )}
 
                 <div class="recent-post-card-title mt-[15px]">
-                  <a class="alice" href={`/` + post.Meta.URL_slug}>
-                    {post.Title}
-                  </a>
+                  <a
+                    class="main-link"
+                    set:text={post.Title}
+                    href={`/` + post.Meta.URL_slug}
+                  />
 
                   {!page.related_products && (
                     <span class="icon recent-post-card-title-icon">
@@ -538,12 +537,9 @@ const contentHTML = await Astro.slots.render("post-details"),
                   )}
 
                   {page.related_products && (
-                    <a
-                      href={`/` + post.Meta.URL_slug}
-                      class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
-                    >
+                    <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
                       <Markdown>{post.Intro_text}</Markdown>
-                    </a>
+                    </div>
                   )}
                 </div>
               </div>
