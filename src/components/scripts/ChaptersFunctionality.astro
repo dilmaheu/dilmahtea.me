@@ -51,7 +51,7 @@
     const styleActiveChapter = () => {
       // mark first chapter on screen as active and fallback to the first chapter
       const activeChapter = getActiveChapter(),
-        chapterIndex = chapters.indexOf(activeChapter),
+        activeChapterIndex = chapters.indexOf(activeChapter),
         activeChapterHeading = activeChapter.querySelector("h2");
 
       [...headingLinks, ...stickyHeadingLinks].forEach((link) =>
@@ -59,8 +59,8 @@
       );
 
       // highlight active chapter link
-      headingLinks[chapterIndex].classList.add("active");
-      stickyHeadingLinks[chapterIndex].classList.add("active");
+      headingLinks[activeChapterIndex].classList.add("active");
+      stickyHeadingLinks[activeChapterIndex].classList.add("active");
 
       const { bottom: navbarBottom } = navbar.getBoundingClientRect(),
         displayStickyHeader =
@@ -90,16 +90,18 @@
         "invisible"
       );
 
-      const visibleLinksContainer =
+      const [visibleHeadingLinks, visibleLinksContainer] =
         window.innerWidth >= 768
-          ? headingLinksContainer
+          ? [headingLinks, headingLinksContainer]
           : !stickyHeadingLinksContainer.parentElement.classList.contains(
               "hidden"
             )
-          ? stickyHeadingLinksContainer
-          : null;
+          ? [stickyHeadingLinks, stickyHeadingLinksContainer]
+          : [];
 
       if (visibleLinksContainer) {
+        const activeHeadingLink = visibleHeadingLinks[activeChapterIndex];
+
         visibleLinksContainer.style.height = "auto";
 
         const visibleLinksContainerHeight =
@@ -110,10 +112,17 @@
         const availableHeight =
           visibleLinksContainer.getBoundingClientRect().height;
 
+        const containerHeight = Math.min(
+          visibleLinksContainerHeight,
+          availableHeight
+        );
+
         visibleLinksContainer.style.flexGrow = 0;
 
-        visibleLinksContainer.style.height =
-          Math.min(visibleLinksContainerHeight, availableHeight) + "px";
+        visibleLinksContainer.style.height = containerHeight + "px";
+
+        visibleLinksContainer.scrollTop =
+          activeHeadingLink.offsetTop - containerHeight;
       }
     };
 
