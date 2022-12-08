@@ -1,4 +1,5 @@
 ---
+import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
 import ClippedImg from "@components/ClippedImg.astro";
@@ -7,6 +8,7 @@ import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 const { page, recurData } = Astro.props,
   headingName = recurData.text_chapter,
+  optional_data = page.Optional_data,
   { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
 ---
 
@@ -94,3 +96,36 @@ const { page, recurData } = Astro.props,
     )
   }
 </PostDetailsLayout>
+
+<Schema
+  item={{
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    image: (
+      imgSrcPrefix +
+        page.Intro_blob?.data.attributes.provider_metadata.public_id +
+        `/public`
+    ),
+    name: page.Estate_name,
+    description: `${(
+      await Astro.__renderMarkdown(page.Intro_text))
+        .replace(/(<([^>]+)>)/gi, "")} ${(
+      await Astro.__renderMarkdown(page.Block_text))
+        .replace(/(<([^>]+)>)/gi, "")}`,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: optional_data?.Street_address,
+      addressLocality: optional_data?.Locality,
+      addressRegion: optional_data?.Region,
+      postalCode: optional_data?.Postal_code,
+      addressCountry: optional_data?.Country
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: optional_data?.Geo_latitude,
+      longitude: optional_data?.Geo_longitude
+    },
+    url: `${Astro.site.origin}/${page.Meta.URL_slug}`,
+    telephone: optional_data?.Telephone,
+  }}
+/>

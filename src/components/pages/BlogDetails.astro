@@ -1,5 +1,4 @@
 ---
-import { marked } from 'marked';
 import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
@@ -34,12 +33,14 @@ const { page, recurData } = Astro.props,
     "@type": "BlogPosting",
     headline: page.Title,
     alternativeHeadline: `The best things you need to know about ${page.Title}`,
-    image: ( imgSrcPrefix +
-            page.Intro_blob.data.attributes.provider_metadata.public_id +
-            `/public` ),
-    url: `${ Astro.site.origin}/${page.locale}/${page.Meta.URL_slug === "/" 
-            ? "" 
-            : page.Meta.URL_slug}/`,
+    image: 
+      imgSrcPrefix +
+        page.Intro_blob.data.attributes.provider_metadata.public_id +
+        `/public`,
+    url: 
+      `${ Astro.site.origin}/${page.locale}/${page.Meta.URL_slug === "/" 
+        ? "" 
+        : page.Meta.URL_slug}/`,
     publisher: recurData.Company_name,
     dateCreated: page.createdAt,
     datePublished: page.publishedAt,
@@ -52,9 +53,10 @@ const { page, recurData } = Astro.props,
     articleBody: `${(await Astro.__renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
     author: {
       "@type": "Person",
-      name: page.authors.data.map(({ attributes }) => (
-              `${attributes.givenName}`
-            )),
+      name: 
+        page.authors.data.map(({ attributes }) => (
+          `${attributes.givenName}`
+        )),
     },
     mainEntityOfPage: "True",
   }}

@@ -1,6 +1,5 @@
 ---
 import { Icon } from "astro-icon";
-import { marked } from "marked";
 import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
@@ -685,13 +684,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     name: page.Title,
     image:
       imgSrcPrefix +
-      page.Intro_blob.data.attributes.provider_metadata.public_id +
-      `/public`,
-    description: `${(await
-      Astro.__renderMarkdown(page.Intro_text))
-      .replace(/(<([^>]+)>)/gi, "")} ${(await
-      Astro.__renderMarkdown(page.Block_text))
-      .replace(/(<([^>]+)>)/gi, "")}`,
+        page.Intro_blob.data.attributes.provider_metadata.public_id +
+        `/public`,
+    description: `${(
+      await Astro.__renderMarkdown(page.Intro_text))
+        .replace(/(<([^>]+)>)/gi, "")} ${(
+      await Astro.__renderMarkdown(page.Block_text))
+        .replace(/(<([^>]+)>)/gi, "")}`,
     sku: page.SKU,
     gtin: page.GTIN_Barcode,
     brand: {
