@@ -233,7 +233,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
         ".translation-not-found-notification"
       );
 
-    window.addEventListener("scroll", () => {
+    const updateNavbarStyles = () => {
       const translationNotFoundNotificationHeight =
         translationNotFoundNotification.getBoundingClientRect().height;
 
@@ -247,7 +247,10 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
             ? "inline-block"
             : "none";
       }
-    });
+    };
+
+    window.addEventListener("scroll", updateNavbarStyles);
+    window.addEventListener("resize", updateNavbarStyles);
   }
 </script>
 
