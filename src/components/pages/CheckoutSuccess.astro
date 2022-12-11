@@ -13,7 +13,7 @@ interface Props {
   meta: Record<string, any>;
   locale: string;
   recurData: Record<string, any>;
-  metaImageID: string;
+  metaImageSrc: string;
   availableLocales: string[];
 }
 
@@ -23,7 +23,7 @@ const {
   checkout_pre_post_background_sm,
 } = RecurringImages;
 
-const { page, meta, locale, recurData, availableLocales, metaImageID } =
+const { page, meta, locale, recurData, availableLocales, metaImageSrc } =
   Astro.props;
 
 const footerText = recurData.Footer_text.replaceAll(
@@ -32,7 +32,7 @@ const footerText = recurData.Footer_text.replaceAll(
 );
 
 const { data: checkoutKindnessData } = CMS.get("checkoutKindness"),
-  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+  { ASSETS_URL } = import.meta.env;
 
 const EnvironmentalAdvocacyImage =
   checkoutKindnessData.attributes.Kindness_Causes.find(
@@ -139,7 +139,7 @@ const EnvironmentalAdvocacyImage =
   meta={meta}
   locale={locale}
   availableLocales={availableLocales}
-  metaImageID={metaImageID}
+  metaImageSrc={metaImageSrc}
 >
   <Navbar
     docLocale={locale}
@@ -184,9 +184,7 @@ const EnvironmentalAdvocacyImage =
           <img
             class="w-full sm:w-52 h-48 sm:h-auto object-cover"
             alt={EnvironmentalAdvocacyImage.alternativeText}
-            src={imgSrcPrefix +
-              EnvironmentalAdvocacyImage.provider_metadata.public_id +
-              `/cms`}
+            src={ASSETS_URL + EnvironmentalAdvocacyImage.url}
           />
 
           <div

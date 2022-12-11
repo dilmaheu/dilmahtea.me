@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 
 dotenv.config({ path: "./.env" });
 
-const CMS_ENDPOINT = process.env.Assets_URL,
+const CMS_ENDPOINT = process.env.ASSETS_URL,
   ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
 const response = await fetch(`${CMS_ENDPOINT}/api/robots-text`, {

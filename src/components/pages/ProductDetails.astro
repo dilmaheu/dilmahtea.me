@@ -15,7 +15,7 @@ const { green_right_arrow } = RecurringImages;
 const { page, recurData } = Astro.props,
   { locale } = page,
   headingName = recurData.text_chapter,
-  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+  { ASSETS_URL } = import.meta.env;
 
 const infos = page.product_infos.data.map(({ attributes }) => attributes),
   blogs = page.related_blogs?.data?.map(({ attributes }) => attributes),
@@ -34,7 +34,7 @@ for (const value of Spent_amount) {
   Total_spent_amount += value;
 }
 
-const { url: productImgURL } = page.Intro_blob.data.attributes,
+const productImgURL = ASSETS_URL + page.Intro_blob.data.attributes.url,
   { SKU: productSKU } = page,
   productPrice = Number(page.Price),
   tax = Math.round(productPrice * 9) / 100,
@@ -446,13 +446,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <div class="grid transparency-items-grid gap-x-2.5">
                   <div class="transparency-item-icon flex items-center">
                     <img
-                      src={
-                        imgSrcPrefix +
-                        item.Transparency_item_icon.data.attributes
-                          .provider_metadata.public_id +
-                        `/small`
-                      }
                       alt=""
+                      src={
+                        ASSETS_URL +
+                        item.Transparency_item_icon.data.attributes.url
+                      }
                       class="w-full h-full object-contain p-1"
                     />
                   </div>
@@ -495,13 +493,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <div class="grid transparency-items-grid gap-x-2.5">
                   <div class="transparency-item-icon flex items-center">
                     <img
-                      src={
-                        imgSrcPrefix +
-                        item.Impact_item_icon.data.attributes.provider_metadata
-                          .public_id +
-                        `/small`
-                      }
                       alt=""
+                      src={
+                        ASSETS_URL + item.Impact_item_icon.data.attributes.url
+                      }
                       class="w-full h-full object-contain p-1"
                     />
                   </div>
@@ -547,13 +542,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               <div class="h-[clamp(1.125rem,4vw+0.4rem,4rem)] mx-auto">
                 <img
                   class="w-full h-full"
-                  src={
-                    imgSrcPrefix +
-                    info.Product_info_icon.data.attributes.provider_metadata
-                      .public_id +
-                    `/small`
-                  }
                   alt=""
+                  src={ASSETS_URL + info.Product_info_icon.data.attributes.url}
                 />
               </div>
 
@@ -623,13 +613,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       href={`/` + post.Meta.URL_slug}
                     >
                       <img
-                        src={
-                          imgSrcPrefix +
-                          post.Intro_blob.data.attributes.provider_metadata
-                            .public_id +
-                          `/small`
-                        }
                         alt={post.Intro_blob.data.attributes.alternativeText}
+                        src={ASSETS_URL + post.Intro_blob.data.attributes.url}
                         class="w-full h-full object-cover"
                       />
                     </a>
@@ -683,15 +668,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     "@context": "https://schema.org",
     "@type": "Product",
     name: page.Title,
-    image:
-      imgSrcPrefix +
-        page.Intro_blob.data.attributes.provider_metadata.public_id +
-        `/public`,
-    description: `${(
-      await Astro.__renderMarkdown(page.Intro_text))
-        .replace(/(<([^>]+)>)/gi, "")} ${(
-      await Astro.__renderMarkdown(page.Block_text))
-        .replace(/(<([^>]+)>)/gi, "")}`,
+    image: ASSETS_URL + page.Intro_blob.data.attributes.url,
+    description: `${(await Astro.__renderMarkdown(page.Intro_text)).replace(
+      /(<([^>]+)>)/gi,
+      ""
+    )} ${(await Astro.__renderMarkdown(page.Block_text)).replace(
+      /(<([^>]+)>)/gi,
+      ""
+    )}`,
     sku: page.SKU,
     gtin: page.GTIN_Barcode,
     brand: {
