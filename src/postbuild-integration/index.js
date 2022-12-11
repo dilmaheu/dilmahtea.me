@@ -14,7 +14,7 @@ const CSPRecord = {
   "img-src": [
     "'self'",
     "https://dilmahtea.me",
-    "https://imagedelivery.net",
+    "https://cms.dilmahtea.me",
     "data:",
   ],
   "media-src": ["data:"],

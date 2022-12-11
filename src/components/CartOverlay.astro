@@ -143,6 +143,18 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           price,
                         })
                       );
+
+                      const { previousElementSibling: productElement } =
+                          currentScript,
+                        quantityDecrementBtn = productElement.querySelector(
+                          'button[data-action="decrement"]'
+                        ),
+                        quantityInput = productElement.querySelector(
+                          ".cart-overlay-product-amount-input"
+                        );
+
+                      quantityDecrementBtn.disabled =
+                        quantityInput.value === "1" ? true : false;
                     };
 
                     if (Object.keys(window.cart).length === 0) {
@@ -196,6 +208,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                               data-action="decrement"
                               aria-label="Decrease Quantity"
                               class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-2 pr-1"
+                              disabled
                             >
                               <Icon
                                 name="akar-icons:minus"
@@ -379,16 +392,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     ),
     cartOverlayProductAmountTweakBtns = document.querySelectorAll(
       ".cart-overlay-product-amount-tweak-btn"
-    ),
-    decreaseAmountBtns = document.querySelectorAll(
-      ".cart-overlay-product-amount-tweak-btn[data-action='decrement']"
     );
-
-  decreaseAmountBtns.forEach((button: HTMLButtonElement) => {
-    const input = button.nextElementSibling as HTMLInputElement;
-
-    input.value === "1" && (button.disabled = true);
-  });
 
   function tweakAmountCallback(input) {
     const parentCartProduct = input.closest(".cart-product"),

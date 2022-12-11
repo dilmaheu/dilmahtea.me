@@ -5,15 +5,17 @@ import PageLayout from "@layouts/PageLayout.astro";
 import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 
 // fetching the error page
-const basicPagesData = CMS.get("basicPages");
+const basicPagesData = CMS.get("basicPages"),
+  // saving it's page attributes like meta and other components
+  requestPath = Astro.url.pathname,
+  { ASSETS_URL } = import.meta.env;
+
+let [, locale] = requestPath.match(/^\/([a-z]{2})\//) ?? [];
 
 let recurringElements = CMS.get("recurringElement").data.attributes,
   { attributes: _404Page } = basicPagesData.data.find(
     ({ attributes }) => attributes.Meta.URL_slug === "404"
   );
-
-// saving it's page attributes like meta and other components
-const requestPath = Astro.url.pathname;
 
 const availableLocales = [
   "en",
@@ -21,8 +23,6 @@ const availableLocales = [
     attributes.locale.substring(0, 2)
   ),
 ];
-
-let [, locale] = requestPath.match(/^\/([a-z]{2})\//) ?? [];
 
 if (!(locale && availableLocales.includes(locale))) locale = "en";
 
@@ -64,10 +64,9 @@ if (locale !== "en") {
   availableLocales={availableLocales}
   meta={_404Page.Meta}
   recurData={recurringElements}
-  metaImageID={_404Page.Block_blob?.data?.attributes.provider_metadata
-    .public_id ||
-    recurringElements.OpenGraph_default.data.attributes.provider_metadata
-      .public_id}
+  metaImageSrc={ASSETS_URL +
+    (_404Page.Block_blob?.data?.url ||
+      recurringElements.OpenGraph_default.data.attributes.url)}
 >
   <BasicPage page={_404Page} />
 </PageLayout>

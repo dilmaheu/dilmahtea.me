@@ -15,7 +15,7 @@ import RecurringImages from "@store/RecurringImages";
 const { white_cup, green_book, white_right_arrow } = RecurringImages;
 
 const { page, posts, recurData, headingName } = Astro.props,
-  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+  { ASSETS_URL } = import.meta.env;
 
 // display relevant recipes instead of recent posts for RecipeDetails pages
 const recentPosts =
@@ -153,10 +153,8 @@ const contentHTML = await Astro.slots.render("post-details"),
                           .alternativeText
                       }
                       src={
-                        imgSrcPrefix +
-                        author.attributes.Profile_picture.data.attributes
-                          .provider_metadata.public_id +
-                        `/authBlob`
+                        ASSETS_URL +
+                        author.attributes.Profile_picture.data.attributes.url
                       }
                     />
                   )
@@ -164,14 +162,12 @@ const contentHTML = await Astro.slots.render("post-details"),
                 /* <Picture
                   layout="fill"
                   alt={
-                    author.attributes.Profile_picture.data?.attributes
-                      ?.alternativeText
+                    author.attributes.Profile_picture.data.attributes
+                      .alternativeText
                   }
                   src={
-                    imgSrcPrefix +
-                    author.attributes.Profile_picture.data?.attributes
-                      ?.provider_metadata.public_id +
-                    `/authBlob`
+                    ASSETS_URL +
+                    author.attributes.Profile_picture.data.attributes.url
                   }
                 /> */
               )}
@@ -276,10 +272,8 @@ const contentHTML = await Astro.slots.render("post-details"),
     <ClippedImg
       id="hero-img-curve"
       className="relative object-cover"
-      src={imgSrcPrefix +
-        page.Intro_blob.data.attributes.provider_metadata.public_id +
-        `/small`}
       alt={page.Intro_blob.data.attributes.alternativeText}
+      src={ASSETS_URL + page.Intro_blob.data.attributes.url}
       path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
     />
 
@@ -288,11 +282,8 @@ const contentHTML = await Astro.slots.render("post-details"),
         <ClippedPicture
           id="hero-img-curve"
           pictureStyle="position: relative;"
-          src={
-            imgSrcPrefix +
-            page.Intro_blob.data.attributes.provider_metadata.public_id +
-            `/small`
-          }
+          alt={page.Intro_blob.data.attributes.alternativeText}
+          src={ASSETS_URL + page.Intro_blob.data.attributes.url}
           path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
         />
       ) */
@@ -304,10 +295,8 @@ const contentHTML = await Astro.slots.render("post-details"),
 <div class="hero-img-sm-container block sm:hidden w-full relative z-20 -mt-20">
   <ClippedImg
     id="hero-img-curve-sm"
-    src={imgSrcPrefix +
-      page.Intro_blob.data.attributes.provider_metadata.public_id +
-      `/small`}
     alt={page.Intro_blob.data.attributes.alternativeText}
+    src={ASSETS_URL + page.Intro_blob.data.attributes.url}
     path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
   />
 
@@ -315,11 +304,8 @@ const contentHTML = await Astro.slots.render("post-details"),
     /* (
       <ClippedPicture
         id="hero-img-curve-sm"
-        src={
-          imgSrcPrefix +
-          page.Intro_blob.data.attributes.provider_metadata.public_id +
-          `/small`
-        }
+        alt={page.Intro_blob.data.attributes.alternativeText}
+        src={ASSETS_URL + page.Intro_blob.data.attributes.url}
         path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
       />
     ) */
@@ -367,13 +353,18 @@ const contentHTML = await Astro.slots.render("post-details"),
       {
         headings.length > 0 && (
           <div
-            id="sticky-heading-links"
-            class="hidden pt-[15px] pb-[25px] max-h-[70vh] border-t border-solid overflow-y-auto"
+            id="sticky-headings"
+            class:list={[
+              "flex flex-col max-h-[70vh]",
+              "hidden pt-[15px] pb-[25px] border-t border-solid overflow-y-auto",
+            ]}
           >
-            <HeadingLinks type="mobile" headings={headings}>
-              {/* html source to extract heading links from */}
-              <slot name="post-details" />
-            </HeadingLinks>
+            <div id="sticky-heading-links" class="overflow-y-auto">
+              <HeadingLinks type="mobile" headings={headings}>
+                {/* html source to extract heading links from */}
+                <slot name="post-details" />
+              </HeadingLinks>
+            </div>
 
             {/* Jump to Recipe Small Button */}
             <slot name="jump-to-recipe-sm" />
@@ -405,8 +396,9 @@ const contentHTML = await Astro.slots.render("post-details"),
         <div
           id="headings"
           class:list={[
+            "w-full md:w-1/3 md:h-screen self-start flex flex-col",
+            "md:sticky top-0 py-6 mb-[75px] text-primary overflow-hidden",
             "pl-[clamp(24px,3.8vw+0.16px,50px)] lg:pl-[clamp(70px,11.3125vw-46px,128px)]",
-            "self-start md:sticky top-0 mb-[75px] w-full md:w-1/3 text-primary overflow-hidden",
           ]}
         >
           <h3
@@ -419,15 +411,18 @@ const contentHTML = await Astro.slots.render("post-details"),
           {/* Jump to Recipe Button */}
           <slot name="jump-to-recipe" />
 
-          <div id="heading-links" class="grid leading-[130%] lg:leading-[150%]">
+          <div
+            id="heading-links"
+            class="flex flex-col leading-[130%] lg:leading-[150%] overflow-y-auto"
+          >
             <HeadingLinks headings={headings}>
               {/* html source to extract heading links from */}
               <slot name="post-details" />
             </HeadingLinks>
-
-            {/* Cart Adding Form (Sm) */}
-            <slot name="cart-adding-form-sm" />
           </div>
+
+          {/* Cart Adding Form (Sm) */}
+          <slot name="cart-adding-form-sm" />
         </div>
       )
     }
@@ -473,25 +468,17 @@ const contentHTML = await Astro.slots.render("post-details"),
           >
             <div class="recent-posts-img-container">
               <img
-                src={
-                  imgSrcPrefix +
-                  post.Intro_blob.data.attributes.provider_metadata.public_id +
-                  `/small`
-                }
-                alt={post.Intro_blob.data.attributes.alternativeText}
                 class="w-full h-full object-cover"
+                alt={post.Intro_blob.data.attributes.alternativeText}
+                src={ASSETS_URL + post.Intro_blob.data.attributes.url}
               />
             </div>
 
             {/* <Picture
                   alt=""
                   layout="fill"
-                  src={
-                    imgSrcPrefix +
-                    post.Intro_blob.data.attributes.provider_metadata
-                      .public_id +
-                    `/small`
-                  }
+                  alt={post.Intro_blob.data.attributes.alternativeText}
+                  src={ASSETS_URL + post.Intro_blob.data.attributes.url}
                   attributes={{
                     picture: {
                       style: "clip-path: url(#recent-post-card-curve);",

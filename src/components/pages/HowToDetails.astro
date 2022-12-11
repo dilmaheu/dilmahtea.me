@@ -1,5 +1,4 @@
 ---
-import { marked } from 'marked';
 import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
@@ -8,12 +7,11 @@ import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 const { page, recurData } = Astro.props,
   { howTos } = page,
   headingName = recurData.text_practices,
-  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+  { ASSETS_URL } = import.meta.env;
 
-const url = 
-  `${ Astro.site.origin}/${page.locale}/${page.Meta.URL_slug === "/" 
-    ? "" 
-    : page.Meta.URL_slug}/`
+const url = `${Astro.site.origin}/${page.locale}/${
+  page.Meta.URL_slug === "/" ? "" : page.Meta.URL_slug
+}/`;
 ---
 
 <style lang="scss">
@@ -27,7 +25,8 @@ const url =
     font-size: clamp(1.5rem, 2.2vw + 0.15rem, 2rem);
   }
 
-  .howto-header-method-text, .method-text {
+  .howto-header-method-text,
+  .method-text {
     font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
   }
 
@@ -40,7 +39,7 @@ const url =
     }
   }
 
-  .chapter:nth-child(1) .method-title{
+  .chapter:nth-child(1) .method-title {
     margin-top: 0;
   }
 
@@ -49,7 +48,7 @@ const url =
     padding: clamp(15px, 2.875vw, 36px) 36px;
   }
 
-  .step-img-container{
+  .step-img-container {
     width: 100%;
     max-height: 420px;
 
@@ -99,16 +98,20 @@ const url =
         <div class="chapter">
           <h2
             class="method-title alice text-lightgray2 leading-[110%] mt-[50px] bg-primary rounded-[10px]"
-            id={method.Method_title.replaceAll(" ", "-").replace(/\s+/g,'').trim()}
+            id={method.Method_title.replaceAll(" ", "-")
+              .replace(/\s+/g, "")
+              .trim()}
           >
             {method.Method_title}
           </h2>
 
           {method.Steps.map((step, index) => (
             <div class="method-step my-[30px] rounded-[10px]">
-              <h3 
+              <h3
                 class="font-semibold text-primary text-2xl leading-[130%]"
-                id={step.Step_title.replaceAll(" ", "-").replace(/\s+/g,'').trim()}
+                id={step.Step_title.replaceAll(" ", "-")
+                  .replace(/\s+/g, "")
+                  .trim()}
               >
                 {index + 1 + ". " + step.Step_title}
               </h3>
@@ -118,26 +121,17 @@ const url =
               </div>
 
               {step.Step_blob.data !== null && (
-
                 <div class="step-img-container">
                   <img
                     class="w-full h-full"
-                    src={
-                      imgSrcPrefix +
-                      step.Step_blob.data.attributes.provider_metadata.public_id +
-                      `/small`
-                    }
                     alt={step.Step_blob.data.attributes.alternativeText}
+                    src={ASSETS_URL + step.Step_blob.data.attributes.url}
                   />
                 </div>
 
                 /* <Picture
-                  alt=""
-                  src={
-                    imgSrcPrefix +
-                    step.Step_blob.data.attributes.provider_metadata.public_id +
-                    `/small`
-                  }
+                  alt={step.Step_blob.data.attributes.alternativeText}
+                  src={ASSETS_URL + step.Step_blob.data.attributes.url}
                   attributes={{ picture: { style: "margin-top: 20px;" } }}
                 /> */
               )}
@@ -156,10 +150,7 @@ const url =
     name: page.Title,
     image: {
       "@type": "ImageObject",
-      url:
-        imgSrcPrefix +
-        page.Intro_blob.data.attributes.provider_metadata.public_id +
-        `/public`,
+      url: ASSETS_URL + page.Intro_blob.data.attributes.url,
     },
     step: page.Method.map((method) => ({
       "@type": "HowToSection",
@@ -171,10 +162,7 @@ const url =
         url: `${url + `#` + step.Step_title.replaceAll(" ", "-")}`,
         image: {
           "@type": "ImageObject",
-          url:
-            imgSrcPrefix +
-            step.Step_blob?.data?.attributes.provider_metadata.public_id +
-            `/public`,
+          url: ASSETS_URL + step.Step_blob?.data?.attributes.url,
         },
       })),
     })),
