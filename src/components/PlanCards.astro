@@ -6,7 +6,7 @@ import RecurringImages from "@store/RecurringImages";
 const { green_leaf } = RecurringImages;
 
 const { allPlans } = Astro.props,
-  imgSrcPrefix = Astro.site.origin + `/images/`;
+  { ASSETS_URL } = import.meta.env;
 ---
 
 <style lang="scss">
@@ -51,10 +51,11 @@ const { allPlans } = Astro.props,
           <img
             class="h-[35px] max-w-[35px]"
             src={
-              plan.Title_icon?.data?.attributes?.formats?.thumbnail?.url || 
-              plan.Title_icon?.data?.attributes?.url 
+              ASSETS_URL +
+              (plan.Title_icon?.data?.attributes?.formats?.thumbnail?.url ||
+                plan.Title_icon?.data?.attributes?.url)
             }
-            alt="" 
+            alt=""
           />
         </div>
 
