@@ -12,21 +12,6 @@ const { page, recurData } = Astro.props,
   { ASSETS_URL } = import.meta.env;
 ---
 
-<style lang="scss">
-  .map-title {
-    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
-  }
-
-  .map-img-container {
-    width: 100%;
-    max-height: 530px;
-
-    @media (min-width: 640px) {
-      aspect-ratio: 5 / 3;
-    }
-  }
-</style>
-
 <PostDetailsLayout {page} {recurData} {headingName}>
   <div slot="post-details" class="prose content-text">
     <Chapterize>
@@ -42,12 +27,12 @@ const { page, recurData } = Astro.props,
         class="wrapper pb-[50px]"
         aria-label="location-inforamtion"
       >
-        <h2 class="alice map-title leading-[110%] mb-[15px] sm:mb-5 text-dark">
+        <h2 class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[110%] mb-[15px] sm:mb-5 text-dark">
           {page.Estate_name} {recurData.estate_location}
         </h2>
 
         <a href={page.Location_link} class="block w-full">
-          <div class="hidden sm:block map-img-container">
+          <div class="hidden sm:block w-full h-[500px]">
             <ClippedImg
               id="estate-map-curve"
               className="w-full h-full object-fit"
@@ -57,7 +42,7 @@ const { page, recurData } = Astro.props,
             />
           </div>
 
-          <div class="block sm:hidden h-[375px]">
+          <div class="block sm:hidden w-full h-[375px]">
             <ClippedImg
               id="estate-map-curve-sm"
               className="w-full h-full object-cover"

@@ -47,15 +47,6 @@ const url = `${Astro.site.origin}/${page.locale}/${
     background-color: colors.$howto-white;
     padding: clamp(15px, 2.875vw, 36px) 36px;
   }
-
-  .step-img-container {
-    width: 100%;
-    max-height: 420px;
-
-    @media (min-width: 640px) {
-      aspect-ratio: 7.3 / 3.9;
-    }
-  }
 </style>
 
 <PostDetailsLayout {page} posts={howTos} {recurData} {headingName}>
@@ -121,9 +112,9 @@ const url = `${Astro.site.origin}/${page.locale}/${
               </div>
 
               {step.Step_blob.data !== null && (
-                <div class="step-img-container">
+                <div class="aspect-[2/1] w-full h-full">
                   <img
-                    class="w-full h-full"
+                    class="w-full h-full object-cover"
                     alt={step.Step_blob.data.attributes.alternativeText}
                     src={ASSETS_URL + step.Step_blob.data.attributes.url}
                   />
