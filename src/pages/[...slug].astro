@@ -249,6 +249,8 @@ export async function getStaticPaths() {
   ];
 }
 
+const { ASSETS_URL } = import.meta.env;
+
 const { defaultRoute, translationNotFound } = Astro.props.page,
   isRedirectionNecessary = defaultRoute || translationNotFound;
 ---
@@ -268,9 +270,9 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
       const { page } = Astro.props;
 
       page.locale = page.locale.substring(0, 2);
-      
-      page.type === `plan` 
-        ? page.Meta.URL_slug = `plan/` + page.Title.toLowerCase()
+
+      page.type === `plan`
+        ? (page.Meta.URL_slug = `plan/` + page.Title.toLowerCase())
         : page.Meta.URL_slug;
 
       const { Meta: meta, locale, availableLocales } = page,
@@ -299,11 +301,11 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
           locale={locale}
           recurData={recurData}
           availableLocales={availableLocales}
-          metaImageID={
-            page.Intro_blob?.data?.attributes.provider_metadata.public_id ||
-            page.Block_blob?.data?.attributes.provider_metadata.public_id ||
-            recurData.OpenGraph_default?.data?.attributes.provider_metadata
-              .public_id
+          metaImageSrc={
+            ASSETS_URL +
+            (page.Intro_blob?.data?.attributes.url ||
+              page.Block_blob?.data?.attributes.url ||
+              recurData.OpenGraph_default?.data?.attributes.url)
           }
         >
           {page.type === `homepage` ? (

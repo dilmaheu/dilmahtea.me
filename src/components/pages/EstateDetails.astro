@@ -1,4 +1,5 @@
 ---
+import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
@@ -7,7 +8,8 @@ import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 const { page, recurData } = Astro.props,
   headingName = recurData.text_chapter,
-  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+  optional_data = page.Optional_data,
+  { ASSETS_URL } = import.meta.env;
 ---
 
 <style lang="scss">
@@ -41,12 +43,9 @@ const { page, recurData } = Astro.props,
           <div class="hidden sm:block h-[530px]">
             <ClippedPicture
               id="estate-map-curve"
-              src={
-                imgSrcPrefix +
-                page.Location?.data?.attributes.provider_metadata.public_id +
-                `/public`
-              }
+              className="w-full h-full object-fit"
               alt={page.Location?.data?.attributes.alternativeText}
+              src={ASSETS_URL + page.Location?.data?.attributes.url}
               path="M.04.089C.086.001.164.009.262.005c.165-.007.26.005.425 0 .115-.003.179 0 .242.029C.977.057 1 .335 1 .513.996.676 1 .9.946.927.888.952.753.961.694.976.583 1 .464.97.363.976.271.982.156 1 .054.927 0 .859-.001.687 0 .513.002.348-.007.18.04.089"
             />
           </div>
@@ -54,12 +53,9 @@ const { page, recurData } = Astro.props,
           <div class="block sm:hidden h-[375px]">
             <ClippedPicture
               id="estate-map-curve-sm"
-              src={
-                imgSrcPrefix +
-                page.Location?.data?.attributes.provider_metadata.public_id +
-                `/public`
-              }
+              className="w-full h-full object-cover"
               alt={page.Location?.data?.attributes.alternativeText}
+              src={ASSETS_URL + page.Location?.data?.attributes.url}
               path="M0.913,0.04 c0.088,0.046,0.08,0.124,0.084,0.222 c0.007,0.165,-0.005,0.26,0,0.425 c0.003,0.116,0,0.179,-0.029,0.242 c-0.022,0.048,-0.301,0.075,-0.479,0.071 c-0.162,-0.003,-0.386,0.008,-0.413,-0.054 C0.05,0.888,0.042,0.753,0.026,0.694 C-0.003,0.583,0.033,0.464,0.026,0.363 C0.021,0.271,-0.054,0.156,0.076,0.054 C0.144,0,0.315,-0.001,0.489,0 C0.655,0.002,0.823,-0.007,0.913,0.04"
             />
           </div>
@@ -68,3 +64,34 @@ const { page, recurData } = Astro.props,
     )
   }
 </PostDetailsLayout>
+
+<Schema
+  item={{
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    image: ASSETS_URL + page.Intro_blob?.data.attributes.url,
+    name: page.Estate_name,
+    description: `${(await Astro.__renderMarkdown(page.Intro_text)).replace(
+      /(<([^>]+)>)/gi,
+      ""
+    )} ${(await Astro.__renderMarkdown(page.Block_text)).replace(
+      /(<([^>]+)>)/gi,
+      ""
+    )}`,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: optional_data?.Street_address,
+      addressLocality: optional_data?.Locality,
+      addressRegion: optional_data?.Region,
+      postalCode: optional_data?.Postal_code,
+      addressCountry: optional_data?.Country,
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: optional_data?.Geo_latitude,
+      longitude: optional_data?.Geo_longitude,
+    },
+    url: `${Astro.site.origin}/${page.Meta.URL_slug}`,
+    telephone: optional_data?.Telephone,
+  }}
+/>

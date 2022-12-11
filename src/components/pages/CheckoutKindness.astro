@@ -6,7 +6,7 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 
 const { page } = Astro.props,
   { locale } = page,
-  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env,
+  { ASSETS_URL } = import.meta.env,
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
@@ -97,11 +97,7 @@ const { page } = Astro.props,
                 <Picture
                   layout="fill"
                   alt={featured_blob.data.attributes.alternativeText}
-                  src={
-                    imgSrcPrefix +
-                    featured_blob.data.attributes.provider_metadata.public_id +
-                    `/cms`
-                  }
+                  src={ASSETS_URL + featured_blob.data.attributes.url}
                 />
               </div>
 

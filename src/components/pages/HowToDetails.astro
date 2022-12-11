@@ -1,5 +1,4 @@
 ---
-import { marked } from "marked";
 import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
@@ -8,7 +7,7 @@ import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 const { page, recurData } = Astro.props,
   { howTos } = page,
   headingName = recurData.text_practices,
-  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+  { ASSETS_URL } = import.meta.env;
 
 const url = `${Astro.site.origin}/${page.locale}/${
   page.Meta.URL_slug === "/" ? "" : page.Meta.URL_slug
@@ -127,12 +126,7 @@ const url = `${Astro.site.origin}/${page.locale}/${
                     ar={8 / 5}
                     layout="fullWidth"
                     alt={step.Step_blob.data.attributes.alternativeText}
-                    src={
-                      imgSrcPrefix +
-                      step.Step_blob.data.attributes.provider_metadata
-                        .public_id +
-                      `/small`
-                    }
+                    src={ASSETS_URL + step.Step_blob.data.attributes.url}
                     attributes={{ picture: { style: "margin-top: 20px;" } }}
                   />
                 </div>
@@ -152,10 +146,7 @@ const url = `${Astro.site.origin}/${page.locale}/${
     name: page.Title,
     image: {
       "@type": "ImageObject",
-      url:
-        imgSrcPrefix +
-        page.Intro_blob.data.attributes.provider_metadata.public_id +
-        `/public`,
+      url: ASSETS_URL + page.Intro_blob.data.attributes.url,
     },
     step: page.Method.map((method) => ({
       "@type": "HowToSection",
@@ -167,10 +158,7 @@ const url = `${Astro.site.origin}/${page.locale}/${
         url: `${url + `#` + step.Step_title.replaceAll(" ", "-")}`,
         image: {
           "@type": "ImageObject",
-          url:
-            imgSrcPrefix +
-            step.Step_blob?.data?.attributes.provider_metadata.public_id +
-            `/public`,
+          url: ASSETS_URL + step.Step_blob?.data?.attributes.url,
         },
       })),
     })),

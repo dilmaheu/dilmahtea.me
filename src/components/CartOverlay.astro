@@ -20,7 +20,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style lang="scss">
-  .cart-overlay-products-container {
+  #cart-overlay-products-container {
     @apply max-w-full w-[375px] sm:w-[528.96px];
   }
 
@@ -77,7 +77,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 >
   <div class="w-full max-w-[2050px] h-full mx-auto bg-[rgba(0,0,0,0.5)]">
     <div
-      class="cart-overlay-products-container h-full ml-auto overflow-y-auto text-dark2 bg-lightgray"
+      role="alert"
+      tabindex="0"
+      aria-label="Cart is in focus now"
+      id="cart-overlay-products-container"
+      class:list={[
+        "focus:outline-1 outline-black -outline-offset-1",
+        "h-full ml-auto overflow-y-auto text-dark2 bg-lightgray",
+      ]}
     >
       <ClipPathSVG
         id="cart-overlay-product-image"
@@ -136,6 +143,18 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           price,
                         })
                       );
+
+                      const { previousElementSibling: productElement } =
+                          currentScript,
+                        quantityDecrementBtn = productElement.querySelector(
+                          'button[data-action="decrement"]'
+                        ),
+                        quantityInput = productElement.querySelector(
+                          ".cart-overlay-product-amount-input"
+                        );
+
+                      quantityDecrementBtn.disabled =
+                        quantityInput.value === "1" ? true : false;
                     };
 
                     if (Object.keys(window.cart).length === 0) {
@@ -153,6 +172,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       class="cart-product p-4 gap-3.5 flex justify-between items-center w-full bg-lightgray2 rounded-[10px]"
                     >
                       <img
+                        alt=""
                         src={`<placeholder name="image"></placeholder>`}
                         style="min-width: 100px; width: 100px; height: 100px; clip-path: url(#cart-overlay-product-image);"
                       />
@@ -165,7 +185,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                             <placeholder name="name"></placeholder>
                           </h3>
 
-                          <button class="remove-item-btn">
+                          <button
+                            class="remove-item-btn"
+                            aria-label="Remove Item"
+                          >
                             <Icon name="akar-icons:trash-can" class="w-6 h-6" />
                           </button>
                         </div>
@@ -183,7 +206,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           >
                             <button
                               data-action="decrement"
+                              aria-label="Decrease Quantity"
                               class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-2 pr-1"
+                              disabled
                             >
                               <Icon
                                 name="akar-icons:minus"
@@ -205,6 +230,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
                             <button
                               data-action="increment"
+                              aria-label="Increase Quantity"
                               class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-1 pr-2"
                             >
                               <Icon
@@ -245,6 +271,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               </div>
 
               <a
+                id="checkout-info-link"
                 href={checkoutInfoPageLink}
                 class="capitalize py-4 font-bold bg-primary text-center text-lightgray rounded-[9999px]"
               >
@@ -281,13 +308,18 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   const id: (string) => HTMLElement = document.getElementById.bind(document),
     cart = id("cart"),
     sidebar = id("sidebar"),
+    // the open cart button is in Navbar.astro
+    openCartBtn = id("open-cart-btn"),
     closeCartBtn = id("close-cart-btn"),
+    checkoutInfoLink = id("checkout-info-link"),
     cartOverlayContent = id("cart-overlay-content"),
     emptyCartNotification = id("empty-cart-notification"),
+    cartOverlayProductsContainer = id("cart-overlay-products-container"),
     { overflowY: prevBodyOverflowYValue } = document.body.style;
 
   window.openCart = () => {
     cart.classList.toggle("hidden");
+    cartOverlayProductsContainer.focus();
 
     window.disableScrolling();
 
@@ -298,6 +330,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
   const closeCart = () => {
     cart.classList.toggle("hidden");
+    openCartBtn.focus();
 
     (!sidebar || sidebar.offsetWidth === 0) && window.enableScrolling();
 
@@ -332,6 +365,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
   closeCartBtn?.addEventListener("click", closeCart);
 
+  checkoutInfoLink.addEventListener("keydown", (event) => {
+    if (event.key === "Tab" && !event.shiftKey) {
+      event.preventDefault();
+
+      closeCartBtn.focus();
+    }
+  });
+
   window.addEventListener("resize", () => {
     const cartProducts = document.getElementById("cart-products");
 
@@ -351,16 +392,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     ),
     cartOverlayProductAmountTweakBtns = document.querySelectorAll(
       ".cart-overlay-product-amount-tweak-btn"
-    ),
-    decreaseAmountBtns = document.querySelectorAll(
-      ".cart-overlay-product-amount-tweak-btn[data-action='decrement']"
     );
-
-  decreaseAmountBtns.forEach((button: HTMLButtonElement) => {
-    const input = button.nextElementSibling as HTMLInputElement;
-
-    input.value === "1" && (button.disabled = true);
-  });
 
   function tweakAmountCallback(input) {
     const parentCartProduct = input.closest(".cart-product"),

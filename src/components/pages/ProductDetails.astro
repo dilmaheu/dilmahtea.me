@@ -1,6 +1,5 @@
 ---
 import { Icon } from "astro-icon";
-import { marked } from "marked";
 import { Schema } from "astro-seo-schema";
 import { Picture } from "astro-imagetools/components";
 import Markdown from "@astrojs/markdown-component";
@@ -18,7 +17,7 @@ const { green_right_arrow } = RecurringImages;
 const { page, recurData } = Astro.props,
   { locale } = page,
   headingName = recurData.text_chapter,
-  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+  { ASSETS_URL } = import.meta.env;
 
 const infos = page.product_infos.data.map(({ attributes }) => attributes),
   blogs = page.related_blogs?.data?.map(({ attributes }) => attributes),
@@ -38,7 +37,7 @@ for (const value of Spent_amount) {
 }
 
 const { url: productThumbnailURL } =
-  page.Intro_blob.data.attributes.formats.thumbnail;
+  ASSETS_URL + page.Intro_blob.data.attributes.formats.thumbnail;
 
 const { SKU: productSKU } = page,
   productPrice = Number(page.Price),
@@ -238,9 +237,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
       <div class="flex items-center text-primary bg-lightgray rounded-full">
         <button
-          disabled
           data-action="decrement"
+          aria-label="Decrease Quantity"
           class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1"
+          disabled
         >
           <Icon name="akar-icons:minus" class="w-6 h-6 select-none" />
         </button>
@@ -257,6 +257,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
         <button
           data-action="increment"
+          aria-label="Increase Quantity"
           class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
         >
           <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
@@ -331,7 +332,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       >
         <button
           data-action="decrement"
+          aria-label="Decrease Quantity"
           class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1"
+          disabled
         >
           <Icon
             name="akar-icons:minus"
@@ -351,6 +354,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
         <button
           data-action="increment"
+          aria-label="Increase Quantity"
           class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
         >
           <Icon
@@ -452,13 +456,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <div class="grid transparency-items-grid gap-x-2.5">
                   <div class="transparency-item-icon flex items-center">
                     <img
-                      src={
-                        imgSrcPrefix +
-                        item.Transparency_item_icon.data.attributes
-                          .provider_metadata.public_id +
-                        `/small`
-                      }
                       alt=""
+                      src={
+                        ASSETS_URL +
+                        item.Transparency_item_icon.data.attributes.url
+                      }
                       class="w-full h-full object-contain p-1"
                     />
                   </div>
@@ -501,13 +503,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <div class="grid transparency-items-grid gap-x-2.5">
                   <div class="transparency-item-icon flex items-center">
                     <img
-                      src={
-                        imgSrcPrefix +
-                        item.Impact_item_icon.data.attributes.provider_metadata
-                          .public_id +
-                        `/small`
-                      }
                       alt=""
+                      src={
+                        ASSETS_URL + item.Impact_item_icon.data.attributes.url
+                      }
                       class="w-full h-full object-contain p-1"
                     />
                   </div>
@@ -553,13 +552,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               <div class="h-[clamp(1.125rem,4vw+0.4rem,4rem)] mx-auto">
                 <img
                   class="w-full h-full"
-                  src={
-                    imgSrcPrefix +
-                    info.Product_info_icon.data.attributes.provider_metadata
-                      .public_id +
-                    `/small`
-                  }
                   alt=""
+                  src={ASSETS_URL + info.Product_info_icon.data.attributes.url}
                 />
               </div>
 
@@ -621,24 +615,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   <div
                     role="listitem"
                     aria-label="Kindness Item"
-                    class="flex flex-wrap bg-lightgray"
                     style="clip-path: url(#card-curve)"
+                    class="link-section flex flex-wrap bg-lightgray"
                   >
-                    <a
-                      class="product-kindness-impact-img-container block w-full"
-                      href={`/` + post.Meta.URL_slug}
-                    >
+                    <div class="product-kindness-impact-img-container">
                       <Picture
                         layout="fill"
                         alt={post.Intro_blob.data.attributes.alternativeText}
-                        src={
-                          imgSrcPrefix +
-                          post.Intro_blob.data.attributes.provider_metadata
-                            .public_id +
-                          `/small`
-                        }
+                        src={ASSETS_URL + post.Intro_blob.data.attributes.url}
                       />
-                    </a>
+                    </div>
 
                     <div class="recent-post-card-content-container text-primary">
                       {post.authors && (
@@ -662,7 +648,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       )}
 
                       <div class="recent-post-card-title alice mt-[15px]">
-                        <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+                        <a
+                          class="main-link"
+                          set:text={post.Title}
+                          href={`/` + post.Meta.URL_slug}
+                        />
 
                         <span class="icon recent-post-card-title-icon">
                           <img
@@ -689,15 +679,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     "@context": "https://schema.org",
     "@type": "Product",
     name: page.Title,
-    image:
-      imgSrcPrefix +
-      page.Intro_blob.data.attributes.provider_metadata.public_id +
-      `/public`,
-    description: `${(await
-      Astro.__renderMarkdown(page.Intro_text))
-      .replace(/(<([^>]+)>)/gi, "")} ${(await
-      Astro.__renderMarkdown(page.Block_text))
-      .replace(/(<([^>]+)>)/gi, "")}`,
+    image: ASSETS_URL + page.Intro_blob.data.attributes.url,
+    description: `${(await Astro.__renderMarkdown(page.Intro_text)).replace(
+      /(<([^>]+)>)/gi,
+      ""
+    )} ${(await Astro.__renderMarkdown(page.Block_text)).replace(
+      /(<([^>]+)>)/gi,
+      ""
+    )}`,
     sku: page.SKU,
     gtin: page.GTIN_Barcode,
     brand: {
@@ -775,6 +764,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       productAmountPriceOutput.textContent = Number(price)
         .toFixed(2)
         .replace(".", ",");
+
+      window.openCart();
     };
   });
 

@@ -9,11 +9,11 @@ interface Props {
   meta: Record<string, any>;
   locale: string;
   recurData: Record<string, any>;
-  metaImageID: string;
+  metaImageSrc: string;
   availableLocales: string[];
 }
 
-const { page, meta, locale, recurData, availableLocales, metaImageID } =
+const { page, meta, locale, recurData, availableLocales, metaImageSrc } =
   Astro.props as Props;
 
 const footerText = recurData.Footer_text.replaceAll(
@@ -22,12 +22,18 @@ const footerText = recurData.Footer_text.replaceAll(
 );
 ---
 
+<style is:global>
+  .link-section {
+    cursor: pointer;
+  }
+</style>
+
 <BaseLayout
   page={page}
   meta={meta}
   locale={locale}
   availableLocales={availableLocales}
-  metaImageID={metaImageID}
+  metaImageSrc={metaImageSrc}
 >
   <Navbar
     docLocale={locale}
@@ -42,3 +48,26 @@ const footerText = recurData.Footer_text.replaceAll(
   <Footer footerText={footerText} />
   <CartOverlay page={page} />
 </BaseLayout>
+
+<script>
+  const linkSections = [...document.querySelectorAll(".link-section")],
+    sectionChildrenLinks = [...document.querySelectorAll(".link-section a")];
+
+  linkSections.forEach((section) => {
+    const sectionHeadingLink = section.querySelector(
+      "a.main-link"
+    ) as HTMLAnchorElement;
+
+    section.addEventListener("click", () => {
+      if (window.getSelection().type !== "Range") {
+        sectionHeadingLink.click();
+      }
+    });
+  });
+
+  sectionChildrenLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+  });
+</script>

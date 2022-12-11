@@ -13,11 +13,11 @@ interface Props {
   meta: Record<string, any>;
   locale: string;
   recurData: Record<string, any>;
-  metaImageID: string;
+  metaImageSrc: string;
   availableLocales: string[];
 }
 
-const { page, meta, locale, availableLocales, metaImageID } =
+const { page, meta, locale, availableLocales, metaImageSrc } =
   Astro.props as Props;
 
 const checkoutStepOrder = page.checkout_step_order,
@@ -75,17 +75,6 @@ const checkoutStepOrder = page.checkout_step_order,
       }
     }
   }
-
-  :global(#checkout h2) {
-    @apply font-normal text-primary leading-[110%];
-
-    font-size: poly-fluid-clamp(
-      (
-        375px: 28px,
-        1440px: 32px,
-      )
-    );
-  }
 </style>
 
 <BaseLayout
@@ -93,7 +82,7 @@ const checkoutStepOrder = page.checkout_step_order,
   meta={meta}
   locale={locale}
   availableLocales={availableLocales}
-  metaImageID={metaImageID}
+  metaImageSrc={metaImageSrc}
 >
   <script is:inline>
     if (Object.keys(window.cart).length === 0) {
@@ -185,4 +174,3 @@ const checkoutStepOrder = page.checkout_step_order,
     </main>
   </div>
 </BaseLayout>
-

@@ -14,11 +14,9 @@ const { white_cup, white_right_arrow } = RecurringImages;
 const { page, recurData } = Astro.props,
   { posts: products, locale } = page,
   [firstProduct] = products,
-  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+  { ASSETS_URL } = import.meta.env;
 
 const blogs = page.blogs.data.map(({ attributes }) => attributes);
-
-const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style lang="scss">
@@ -122,13 +120,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
         {
           page.Heading_button_text && (
-            <div class="flex">
-              <a href={page.Heading_button_link}>
-                <div class="bg-white rounded-[40px] text-base font-bold leading-[19px] text-primary py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9">
-                  {page.Heading_button_text}
-                </div>
-              </a>
-            </div>
+            <a
+              href={page.Heading_button_link}
+              class:list={[
+                "flex w-fit text-primary font-bold leading-[120%]",
+                "py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9 bg-white rounded-full",
+              ]}
+            >
+              {page.Heading_button_text}
+            </a>
           )
         }
       </div>
@@ -141,9 +141,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       id="hero-img-curve"
       pictureStyle="position: relative;"
       alt={page.Intro_blob.data.attributes.alternativeText}
-      src={imgSrcPrefix +
-        page.Intro_blob.data.attributes.provider_metadata.public_id +
-        `/small`}
+      src={ASSETS_URL + page.Intro_blob.data.attributes.url}
       path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
     />
   </div>
@@ -154,9 +152,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   <ClippedPicture
     id="hero-img-curve-sm"
     alt={page.Intro_blob.data.attributes.alternativeText}
-    src={imgSrcPrefix +
-      page.Intro_blob.data.attributes.provider_metadata.public_id +
-      `/small`}
+    src={ASSETS_URL + page.Intro_blob.data.attributes.url}
     path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
   />
 </div>
@@ -180,39 +176,33 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <div
             role="listitem"
             aria-label="Kindness Item"
-            class="flex flex-wrap bg-primary"
             style="clip-path: url(#product-card-curve)"
+            class="link-section flex flex-wrap bg-primary"
           >
-            <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-              <div class="product-img-container">
-                <Picture
-                  layout="fill"
-                  alt={post.Intro_blob.data.attributes.alternativeText}
-                  src={
-                    imgSrcPrefix +
-                    post.Intro_blob.data.attributes.provider_metadata
-                      .public_id +
-                    `/small`
-                  }
-                />
-              </div>
-            </a>
+            <div class="product-img-container">
+              <Picture
+                layout="fill"
+                alt={post.Intro_blob.data.attributes.alternativeText}
+                src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+              />
+            </div>
 
             <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
               <div class="product-card-title alice leading-[120%] md:leading-[110%]">
-                <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+                <a
+                  class="main-link"
+                  set:text={post.Title}
+                  href={`/` + post.Meta.URL_slug}
+                />
 
                 <span class="icon product-card-title-icon">
                   <img class="w-full h-full" {...white_right_arrow} />
                 </span>
               </div>
 
-              <a
-                href={`/` + post.Meta.URL_slug}
-                class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
-              >
+              <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
                 <Markdown>{post.Intro_text}</Markdown>
-              </a>
+              </div>
             </div>
           </div>
         ))
@@ -238,12 +228,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               <Picture
                 alt=""
                 layout="fill"
-                src={
-                  imgSrcPrefix +
-                  firstProduct.Intro_blob.data.attributes.provider_metadata
-                    .public_id +
-                  `/small`
-                }
+                src={ASSETS_URL + firstProduct.Intro_blob.data.attributes.url}
               />
             </div>
           )
@@ -263,15 +248,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             >
               {page.Block2_title}
             </div>
-            <a href={page.Block2_button_link}>
-              <div
-                class:list={[
-                  "product-impact-btn bg-lightgray flex",
-                  "font-bold md:font-semibold leading-[150%] text-primary rounded-[40px]",
-                ]}
-              >
-                {page.Block2_button_text}
-              </div>
+
+            <a
+              href={page.Block2_button_link}
+              class:list={[
+                "flex product-impact-btn bg-lightgray rounded-full",
+                "text-primary font-bold md:font-semibold leading-[150%]",
+              ]}
+            >
+              {page.Block2_button_text}
             </a>
           </div>
         </div>
@@ -295,28 +280,22 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           >
             {blogs.slice(0, 3).map((post) => (
               <div
-                class="bg-primary recent-post-card"
                 role="listitem"
                 aria-label="Kindness Item"
                 style="clip-path: url(#product-card-curve)"
+                class="link-section bg-primary recent-post-card"
               >
-                <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-                  <Picture
-                    alt=""
-                    layout="fill"
-                    src={
-                      imgSrcPrefix +
-                      post.Intro_blob.data.attributes.provider_metadata
-                        .public_id +
-                      `/small`
-                    }
-                    attributes={{
-                      picture: {
-                        style: "clip-path: url(#recent-post-card-curve);",
-                      },
-                    }}
-                  />
-                </a>
+                <Picture
+                  alt=""
+                  layout="fullWidth"
+                  alt={post.Intro_blob.data.attributes.alternativeText}
+                  src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                  attributes={{
+                    picture: {
+                      style: "clip-path: url(#recent-post-card-curve);",
+                    },
+                  }}
+                />
 
                 <div class="recent-post-card-content-container">
                   {post.authors && (
@@ -339,7 +318,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   )}
 
                   <div class="recent-post-card-title alice mt-[15px]">
-                    <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+                    <a
+                      class="main-link"
+                      set:text={post.Title}
+                      href={`/` + post.Meta.URL_slug}
+                    />
 
                     <span class="icon recent-post-card-title-icon">
                       <img

@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 
 dotenv.config({ path: "./.env" });
 
-const CMS_ENDPOINT = process.env.Assets_URL,
+const CMS_ENDPOINT = process.env.ASSETS_URL,
   ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
 const response = await fetch(`${CMS_ENDPOINT}/api/security-text`, {
@@ -16,9 +16,7 @@ const securityMetaData = await response.json();
 
 const securityTXT = securityMetaData.data.attributes.Text;
 
+fs.mkdir("./dist/.well-known/", { recursive: true });
+
 await fs.writeFile("./dist/security.txt", securityTXT);
-
-const secondaryFilePath = "./dist/.well-known/";
-fs.mkdir(secondaryFilePath);
-
-await fs.writeFile((secondaryFilePath + "security.txt"), securityTXT);
+await fs.writeFile("./dist/.well-known/security.txt", securityTXT);
