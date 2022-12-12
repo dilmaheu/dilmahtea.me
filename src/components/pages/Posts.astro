@@ -99,20 +99,23 @@ const [firstPost] = posts;
           )
         }
 
-        <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
-          <a href={`/` + firstPost.Meta.URL_slug}>{firstPost.Title}</a>
+        <section class="link-section">
+          <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
+            <a
+              class="main-link"
+              set:text={firstPost.Title}
+              href={`/` + firstPost.Meta.URL_slug}
+            />
 
-          <span class="icon heading-inline-icon">
-            <img class="w-full h-full" {...white_cup} />
-          </span>
-        </h1>
+            <span class="icon heading-inline-icon">
+              <img class="w-full h-full" {...white_cup} />
+            </span>
+          </h1>
 
-        <a
-          href={`/` + firstPost.Meta.URL_slug}
-          class="hero-text pt-2.5 block prose text-lightgray max-w-none"
-        >
-          <Markdown>{firstPost.Intro_text}</Markdown>
-        </a>
+          <div class="hero-text pt-2.5 prose text-lightgray max-w-none">
+            <Markdown>{firstPost.Intro_text}</Markdown>
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -175,7 +178,7 @@ const [firstPost] = posts;
         const isEven = index % 2 === 0;
 
         return (
-          <div class="flex flex-wrap items-center">
+          <section class="link-section flex flex-wrap items-center">
             <div
               class:list={[
                 "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
@@ -184,33 +187,28 @@ const [firstPost] = posts;
                   : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
               ]}
             >
-              <div 
+              <div class="post-img-curve-container">
+                <img
+                  class="w-full h-full object-cover"
+                  style="clip-path: url(#post-img-curve);"
+                  alt={post.Intro_blob.data.attributes.alternativeText}
+                  src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                />
+              </div>
+
+              <div
                 class:list={[
-                  "post-img-curve-container",
-                  isEven ? "mr-auto" : "ml-auto"
+                  "post-leaf absolute z-20",
+                  isEven ? "post-leaf-left" : "post-leaf-right",
                 ]}
               >
-                <a href={`/` + post.Meta.URL_slug}>
-                  <img
-                    class="w-full h-full object-cover"
-                    style="clip-path: url(#post-img-curve);"
-                    alt={post.Intro_blob.data.attributes.alternativeText}
-                    src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-                  />
+                <img
+                  class="w-full h-full"
+                  {...(isEven ? left_post_leaf : green_leaf)}
+                />
+              </div>
 
-                  <div
-                    class:list={[
-                      "post-leaf absolute z-20",
-                      isEven ? "post-leaf-left" : "post-leaf-right",
-                    ]}
-                  >
-                    <img
-                      class="w-full h-full"
-                      {...(isEven ? left_post_leaf : green_leaf)}
-                    />
-                  </div>
-
-                  {/* <>
+              {/* <>
                     <Picture
                       layout="fill"
                       alt={post.Intro_blob.data.attributes.alternativeText}
@@ -233,8 +231,6 @@ const [firstPost] = posts;
                       }}
                     />
                   </> */}
-                </a>
-              </div>
             </div>
 
             {/* Text content */}
@@ -266,6 +262,7 @@ const [firstPost] = posts;
 
                 <h2 class="post-title alice text-primary pt-[15px]">
                   <a
+                    class="main-link"
                     href={`/` + post.Meta.URL_slug}
                     set:text={post.Title || post.Estate_name}
                   />
@@ -275,15 +272,12 @@ const [firstPost] = posts;
                   </span>
                 </h2>
 
-                <a
-                  href={`/` + post.Meta.URL_slug}
-                  class="post-intro texr-dark block pt-[15px] prose max-w-none"
-                >
+                <div class="post-intro pt-[15px] prose max-w-none">
                   <Markdown>{post.Intro_text}</Markdown>
-                </a>
+                </div>
               </div>
             </div>
-          </div>
+          </section>
         );
       })
     }

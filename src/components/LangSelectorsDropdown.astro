@@ -64,6 +64,9 @@ langSelectorsData.sort(
 </style>
 
 <div
+  role="menu"
+  tabindex="0"
+  aria-label="Language Selectors Dropdown"
   id="lang-selector-dropdown"
   class:list={[
     "relative font-bold text-primary text-sm lg:text-base select-none",
@@ -122,6 +125,14 @@ langSelectorsData.sort(
     dropdown?.classList[dropdown.contains(target) ? "toggle" : "remove"](
       "dropdown-open"
     );
+  });
+
+  dropdown.addEventListener("keyup", (event) => {
+    const { key } = event as KeyboardEvent;
+
+    if (key === "Enter") {
+      dropdown.classList.toggle("dropdown-open");
+    }
   });
 
   document.querySelectorAll(".lang-selector").forEach((langSelector) => {

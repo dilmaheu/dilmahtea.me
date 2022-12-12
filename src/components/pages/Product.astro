@@ -117,13 +117,15 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
         {
           page.Heading_button_text && (
-            <div class="flex">
-              <a href={page.Heading_button_link}>
-                <div class="bg-white rounded-[40px] text-base font-bold leading-[19px] text-primary py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9">
-                  {page.Heading_button_text}
-                </div>
-              </a>
-            </div>
+            <a
+              href={page.Heading_button_link}
+              class:list={[
+                "flex w-fit text-primary font-bold leading-[120%]",
+                "py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9 bg-white rounded-full",
+              ]}
+            >
+              {page.Heading_button_text}
+            </a>
           )
         }
       </div>
@@ -194,34 +196,33 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
           <div
             role="listitem"
             aria-label="Kindness Item"
-            class="bg-primary"
             style="clip-path: url(#product-card-curve)"
+            class="link-section flex flex-wrap bg-primary"
           >
-            <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-              <div class="aspect-[6/5] w-full h-full">
-                <img
-                  alt={post.Intro_blob.data.attributes.alternativeText}
-                  src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-                  class="w-full h-full object-cover"
-                />
-              </div>
-            </a>
+            <div class="product-img-container">
+              <img
+                class="w-full h-full object-cover"
+                alt={post.Intro_blob.data.attributes.alternativeText}
+                src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+              />
+            </div>
 
             <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
               <div class="product-card-title alice leading-[120%] md:leading-[110%]">
-                <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+                <a
+                  class="main-link"
+                  set:text={post.Title}
+                  href={`/` + post.Meta.URL_slug}
+                />
 
                 <span class="icon product-card-title-icon">
                   <img class="w-full h-full" {...white_right_arrow} />
                 </span>
               </div>
 
-              <a
-                href={`/` + post.Meta.URL_slug}
-                class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
-              >
+              <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
                 <Markdown>{post.Intro_text}</Markdown>
-              </a>
+              </div>
             </div>
           </div>
         ))
@@ -267,15 +268,15 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
             >
               {page.Block2_title}
             </div>
-            <a href={page.Block2_button_link}>
-              <div
-                class:list={[
-                  "product-impact-btn bg-lightgray flex",
-                  "font-bold md:font-semibold leading-[150%] text-primary rounded-[40px]",
-                ]}
-              >
-                {page.Block2_button_text}
-              </div>
+
+            <a
+              href={page.Block2_button_link}
+              class:list={[
+                "flex product-impact-btn bg-lightgray rounded-full",
+                "text-primary font-bold md:font-semibold leading-[150%]",
+              ]}
+            >
+              {page.Block2_button_text}
             </a>
           </div>
         </div>
@@ -299,31 +300,30 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
           >
             {blogs.slice(0, 3).map((post) => (
               <div
-                class="bg-primary recent-post-card"
                 role="listitem"
                 aria-label="Kindness Item"
                 style="clip-path: url(#product-card-curve)"
+                class="link-section bg-primary recent-post-card"
               >
-                <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-                  <div class="aspect-[6/5] w-full h-full">
-                    <img
-                      alt={post.Intro_blob.data.attributes.alternativeText}
-                      src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-                      class="w-full h-full object-cover"
-                    />
+                <div>
+                  <img
+                    alt={post.Intro_blob.data.attributes.alternativeText}
+                    src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                    class="w-full h-full"
+                  />
+                </div>
 
-                    {/* <Picture
-                      layout="fill"
-                      alt={post.Intro_blob.data.attributes.alternativeText}
-                      src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-                      attributes={{
-                        picture: {
-                          style: "clip-path: url(#recent-post-card-curve);",
-                        },
-                      }}
-                    /> */}
-                  </div>
-                </a>
+                {/* <Picture
+                    alt=""
+                    layout="fill"
+                    alt={post.Intro_blob.data.attributes.alternativeText}
+                    src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                    attributes={{
+                      picture: {
+                        style: "clip-path: url(#recent-post-card-curve);",
+                      },
+                    }}
+                  /> */}
 
                 <div class="recent-post-card-content-container">
                   {post.authors && (
@@ -346,7 +346,11 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                   )}
 
                   <div class="recent-post-card-title alice mt-[15px]">
-                    <a href={`/` + post.Meta.URL_slug}>{post.Title}</a>
+                    <a
+                      class="main-link"
+                      set:text={post.Title}
+                      href={`/` + post.Meta.URL_slug}
+                    />
 
                     <span class="icon recent-post-card-title-icon">
                       <img
