@@ -187,26 +187,33 @@ const [firstPost] = posts;
                   : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
               ]}
             >
-              <div class="post-img-curve-container">
+              <div 
+                class:list={[
+                  "post-img-curve-container",
+                  isEven ? "mr-auto" : "ml-auto"
+                ]}
+              >
                 <img
                   class="w-full h-full object-cover"
                   style="clip-path: url(#post-img-curve);"
                   alt={post.Intro_blob.data.attributes.alternativeText}
                   src={ASSETS_URL + post.Intro_blob.data.attributes.url}
                 />
+                
+                <div
+                  class:list={[
+                    "post-leaf absolute z-20",
+                    isEven ? "post-leaf-left" : "post-leaf-right",
+                  ]}
+                >
+                  <img
+                    class="w-full h-full"
+                    {...(isEven ? left_post_leaf : green_leaf)}
+                  />
+                </div>
               </div>
 
-              <div
-                class:list={[
-                  "post-leaf absolute z-20",
-                  isEven ? "post-leaf-left" : "post-leaf-right",
-                ]}
-              >
-                <img
-                  class="w-full h-full"
-                  {...(isEven ? left_post_leaf : green_leaf)}
-                />
-              </div>
+              
 
               {/* <>
                     <Picture
