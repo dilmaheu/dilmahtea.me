@@ -88,19 +88,14 @@ async function catchError(error) {
       "error",
       "Failed to fetch data from CMS, serving from the cache"
     );
-  } else
+  } else {
     printMessage(
       "error",
       "Failed to fetch data from CMS, nothing found in cache!"
     );
-
-  if (error.message) {
-    try {
-      throw error;
-    } catch (error) {}
-  } else {
-    console.error(error);
   }
+
+  console.error(error);
 
   return cachedData;
 }
