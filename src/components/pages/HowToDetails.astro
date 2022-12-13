@@ -47,15 +47,6 @@ const url = `${Astro.site.origin}/${page.locale}/${
     background-color: colors.$howto-white;
     padding: clamp(15px, 2.875vw, 36px) 36px;
   }
-
-  .step-img-container {
-    width: 100%;
-    max-height: 420px;
-
-    @media (min-width: 640px) {
-      aspect-ratio: 7.3 / 3.9;
-    }
-  }
 </style>
 
 <PostDetailsLayout {page} posts={howTos} {recurData} {headingName}>
@@ -121,15 +112,17 @@ const url = `${Astro.site.origin}/${page.locale}/${
               </div>
 
               {step.Step_blob.data !== null && (
-                <div class="step-img-container">
-                  <Picture
-                    ar={8 / 5}
-                    layout="fullWidth"
-                    alt={step.Step_blob.data.attributes.alternativeText}
-                    src={ASSETS_URL + step.Step_blob.data.attributes.url}
-                    attributes={{ picture: { style: "margin-top: 20px;" } }}
-                  />
-                </div>
+                <Picture
+                  layout="fill"
+                  alt={step.Step_blob.data.attributes.alternativeText}
+                  src={ASSETS_URL + step.Step_blob.data.attributes.url}
+                  attributes={{
+                    picture: { style: "margin-top: 20px;" },
+                    img: {
+                      style: "aspect-ratio: 2 / 1;",
+                    },
+                  }}
+                />
               )}
             </div>
           ))}

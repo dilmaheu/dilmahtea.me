@@ -47,6 +47,14 @@ const [firstPost] = posts;
     font-size: clamp(1rem, 1.5vw + 0.15rem, 1.5rem);
     line-height: 150%;
   }
+
+  .post-img-curve-container {
+    aspect-ratio: 6 / 5;
+    width: 100%;
+    height: 100%;
+    max-width: 600px;
+    max-height: 500px;
+  }
 </style>
 
 <style lang="scss" is:global>
@@ -159,11 +167,16 @@ const [firstPost] = posts;
                   : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
               ]}
             >
-              <a href={`/` + post.Meta.URL_slug}>
+              <div
+                class:list={[
+                  "post-img-curve-container",
+                  isEven ? "mr-auto" : "ml-auto",
+                ]}
+              >
                 <Picture
                   alt=""
                   src={postImgURL}
-                  layout="fullWidth"
+                  layout="fill"
                   breakpoints={{ maxWidth: 640 }}
                   alt={post.Intro_blob.data.attributes.alternativeText}
                   artDirectives={[
@@ -187,12 +200,12 @@ const [firstPost] = posts;
                 >
                   <Picture
                     alt=""
-                    layout="fullWidth"
+                    layout="fill"
                     placeholder="blurred"
                     src={(isEven ? left_post_leaf : green_leaf).src}
                   />
                 </div>
-              </a>
+              </div>
             </div>
 
             {/* Text content */}

@@ -12,12 +12,6 @@ const { page, recurData } = Astro.props,
   { ASSETS_URL } = import.meta.env;
 ---
 
-<style lang="scss">
-  .map-title {
-    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
-  }
-</style>
-
 <PostDetailsLayout {page} {recurData} {headingName}>
   <div slot="post-details" class="prose content-text">
     <Chapterize>
@@ -35,12 +29,12 @@ const { page, recurData } = Astro.props,
         class="wrapper pb-[50px]"
         aria-label="location-inforamtion"
       >
-        <h2 class="alice map-title leading-[110%] mb-[15px] sm:mb-5 text-dark">
+        <h2 class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[110%] mb-[15px] sm:mb-5 text-dark">
           {page.Estate_name} {recurData.estate_location}
         </h2>
 
         <a href={page.Location_link} class="block w-full">
-          <div class="hidden sm:block h-[530px]">
+          <div class="hidden sm:block h-[500px]">
             <ClippedPicture
               id="estate-map-curve"
               alt={page.Location?.data?.attributes.alternativeText}

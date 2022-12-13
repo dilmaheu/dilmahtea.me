@@ -13,6 +13,14 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
 ---
 
 <style lang="scss">
+  .info-block-image-container {
+    aspect-ratio: 6 / 5;
+    width: 100%;
+    height: 100%;
+    max-width: 600px;
+    max-height: 500px;
+  }
+
   .info-block-title {
     font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
   }
@@ -39,22 +47,29 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
         <div class="flex flex-wrap items-center">
           <div
             class:list={[
-              "relative w-full sm:w-1/2 order-1 mb-4 sm:mb-0",
+              "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
               isEven
-                ? "pr-0 sm:pr-5 md:pr-12 lg:pr-24"
-                : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
+                ? "pr-0 sm:pr-5 md:pr-12"
+                : "sm:order-2 pl-0 sm:pl-5 md:pl-12",
             ]}
           >
-            <Picture
-              src={imgSrc}
-              alt={imgAlt}
-              ar={5.65 / 5}
-              attributes={{
-                picture: {
-                  style: "clip-path: url(#estate-img-curve);",
-                },
-              }}
-            />
+            <div
+              class:list={[
+                "info-block-image-container",
+                isEven ? "mr-auto" : "ml-auto",
+              ]}
+            >
+              <Picture
+                src={imgSrc}
+                alt={imgAlt}
+                layout="fill"
+                attributes={{
+                  picture: {
+                    style: "clip-path: url(#estate-img-curve);",
+                  },
+                }}
+              />
+            </div>
           </div>
 
           {/* Text content */}

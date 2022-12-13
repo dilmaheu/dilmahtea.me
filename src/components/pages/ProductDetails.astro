@@ -97,12 +97,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     }
   }
 
-  .product-kindness-impact-img-container {
-    width: 100%;
-    max-height: 310px;
-    aspect-ratio: 4.23 / 3.1;
-  }
-
   .product-kindness-impact-text {
     font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
   }
@@ -618,13 +612,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     style="clip-path: url(#card-curve)"
                     class="link-section flex flex-wrap bg-lightgray"
                   >
-                    <div class="product-kindness-impact-img-container">
-                      <Picture
-                        layout="fill"
-                        alt={post.Intro_blob.data.attributes.alternativeText}
-                        src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-                      />
-                    </div>
+                    <Picture
+                      layout="fullWidth"
+                      alt={post.Intro_blob.data.attributes.alternativeText}
+                      src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                      attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
+                    />
 
                     <div class="recent-post-card-content-container text-primary">
                       {post.authors && (

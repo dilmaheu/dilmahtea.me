@@ -67,12 +67,6 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     height: clamp(27px, 3.5vw + 6px, 42px);
   }
 
-  .product-img-container {
-    width: 100%;
-    max-height: 400px;
-    aspect-ratio: 5.8 / 4;
-  }
-
   .product-card-info {
     height: clamp(27px, 3.5vw + 6px, 42px);
   }
@@ -80,11 +74,12 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   .product-impact-container {
     width: 100%;
     height: 100%;
+    max-height: 500px;
+    aspect-ratio: 1 / 1;
     clip-path: url(#product-impact-bg-curve-sm);
 
     @media (min-width: 768px) {
-      max-height: 530px;
-      aspect-ratio: 144 / 55;
+      aspect-ratio: 2 / 1;
       clip-path: url(#product-impact-bg-curve);
     }
   }
@@ -179,14 +174,13 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
             style="clip-path: url(#product-card-curve)"
             class="link-section flex flex-wrap bg-primary"
           >
-            <div class="product-img-container">
-              <Picture
-                layout="fill"
-                alt={post.Intro_blob.data.attributes.alternativeText}
-                src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-              />
-            </div>
-
+            <Picture
+              layout="fullWidth"
+              alt={post.Intro_blob.data.attributes.alternativeText}
+              src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+              attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
+            />
+            >
             <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
               <div class="product-card-title alice leading-[120%] md:leading-[110%]">
                 <a
@@ -241,7 +235,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
         <div class="relative z-50 h-full flex flex-wrap items-center">
           <div
-            class="wrapper flex flex-wrap justify-center text-center py-[95px] md:py-[50px]"
+            class="wrapper flex flex-wrap justify-center text-center py-[20px]"
           >
             <div
               class="product-impact-text alice leading-[110%] md:leading-[115%] w-full"
@@ -291,6 +285,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                   alt={post.Intro_blob.data.attributes.alternativeText}
                   src={ASSETS_URL + post.Intro_blob.data.attributes.url}
                   attributes={{
+                    img: { style: "aspect-ratio: 6 / 5;" },
                     picture: {
                       style: "clip-path: url(#recent-post-card-curve);",
                     },
