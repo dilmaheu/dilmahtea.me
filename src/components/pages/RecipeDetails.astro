@@ -1,5 +1,4 @@
 ---
-import { marked } from 'marked';
 import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
@@ -20,16 +19,14 @@ const {
 
 const { page, recurData } = Astro.props,
   headingName = recurData.text_chapter,
-  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+  { ASSETS_URL } = import.meta.env;
 
-const url = 
-  `${ Astro.site.origin}/${page.locale}/${page.Meta.URL_slug === "/" 
-    ? "" 
-    : page.Meta.URL_slug}/`;
+const url = `${Astro.site.origin}/${page.locale}/${
+  page.Meta.URL_slug === "/" ? "" : page.Meta.URL_slug
+}/`;
 
 function calcTime(timeArray) {
-
-  const [ day, hour, minute ] = timeArray;
+  const [day, hour, minute] = timeArray;
 
   const calcDay =
     day > 0
@@ -57,13 +54,13 @@ function calcTime(timeArray) {
 }
 
 function calcTimeSm(timeArray) {
-  const [ day, hour, minute ] = timeArray;
+  const [day, hour, minute] = timeArray;
 
-  const calcDay = 
+  const calcDay =
     day > 0 ? day + `${recurData.recipe_day.substring(0, 1)}\xa0` : "";
-  const calcHour = 
+  const calcHour =
     hour > 0 ? hour + `${recurData.recipe_hour.substring(0, 1)}\xa0` : "";
-  const calcMinute = 
+  const calcMinute =
     minute > 0 ? minute + `${recurData.recipe_minute.substring(0, 1)}\xa0` : "";
 
   return calcDay + calcHour + calcMinute;
@@ -112,9 +109,8 @@ const nutrition = {
 };
 
 page.Nutrition.forEach((item) => {
-  nutrition[item.Nutrition_name] = 
-    (item.Nutrition_amount || "0") + 
-      item.Nutrition_measurements_unit
+  nutrition[item.Nutrition_name] =
+    (item.Nutrition_amount || "0") + item.Nutrition_measurements_unit;
 });
 ---
 
@@ -453,9 +449,11 @@ page.Nutrition.forEach((item) => {
             <div class="flex">
               <div class="w-auto recipe-sec-content-border" />
               <div class="w-full gap-[15px]">
-                <h3 
+                <h3
                   class="alice leading-[130%] sm:leading-[120%] text-dark2 recipe-sec-coockingpart-title"
-                  id={item.Cooking_part_name.replaceAll(" ", "-").replace(/\s+/g,'').trim()}
+                  id={item.Cooking_part_name.replaceAll(" ", "-")
+                    .replace(/\s+/g, "")
+                    .trim()}
                 >
                   {item.Cooking_part_name}
                 </h3>
@@ -464,13 +462,14 @@ page.Nutrition.forEach((item) => {
           </div>
 
           {item.Cooking_part_steps.map((step, idx) => (
-            <div 
+            <div
               class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
-              id={ 
-                item.Cooking_part_name
-                  .replaceAll(" ", "-")
-                  .replace(/\s+/g,'').trim() + 
-                    `-step-` + ( idx + 1)
+              id={
+                item.Cooking_part_name.replaceAll(" ", "-")
+                  .replace(/\s+/g, "")
+                  .trim() +
+                `-step-` +
+                (idx + 1)
               }
             >
               <div class="flex gap-[15px]">
@@ -485,14 +484,12 @@ page.Nutrition.forEach((item) => {
               </div>
 
               {step.Cooking_part_steps_blob.data && (
-                <div class="recipe-step-img-container mt-2.5 sm:mt-[15px]">
+                <div class="aspect-[2/1] w-full h-full mt-2.5 sm:mt-[15px]">
                   <ClippedImg
                     id="recipe-img-curve"
                     src={
-                      imgSrcPrefix +
-                      step.Cooking_part_steps_blob.data.attributes
-                        .provider_metadata.public_id +
-                      `/small`
+                      ASSETS_URL +
+                      step.Cooking_part_steps_blob.data.attributes.url
                     }
                     alt={
                       step.Cooking_part_steps_blob.data.attributes
@@ -504,10 +501,12 @@ page.Nutrition.forEach((item) => {
                   {/* <ClippedPicture
                       id="recipe-img-curve"
                       src={
-                        imgSrcPrefix +
+                        ASSETS_URL +
+                        step.Cooking_part_steps_blob.data.attributes.url
+                      }
+                      alt={
                         step.Cooking_part_steps_blob.data.attributes
-                          .provider_metadata.public_id +
-                        `/small`
+                          .alternativeText
                       }
                       path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
                     /> */}
@@ -598,10 +597,7 @@ page.Nutrition.forEach((item) => {
     "@context": "https://schema.org",
     "@type": "Recipe",
     name: page.Title,
-    image:
-      imgSrcPrefix +
-      page.Intro_blob.data.attributes.provider_metadata.public_id +
-      `/public`,
+    image: ASSETS_URL + page.Intro_blob.data.attributes.url,
     author: {
       "@type": "Person",
       name: page.authors.data.map(
@@ -611,11 +607,13 @@ page.Nutrition.forEach((item) => {
     dateCreated: page.createdAt,
     datePublished: page.publishedAt,
     dateModified: page.updatedAt,
-    description: `${(await 
-      Astro.__renderMarkdown(page.Intro_text))
-      .replace(/(<([^>]+)>)/gi, "")} ${(await
-      Astro.__renderMarkdown(page.Block_text))
-      .replace(/(<([^>]+)>)/gi, "")}`,
+    description: `${(await Astro.__renderMarkdown(page.Intro_text)).replace(
+      /(<([^>]+)>)/gi,
+      ""
+    )} ${(await Astro.__renderMarkdown(page.Block_text)).replace(
+      /(<([^>]+)>)/gi,
+      ""
+    )}`,
     prepTime: `PT${timeSm(page.Time_preparation)
       .toUpperCase()
       .replace(/\s/g, "")}`,
@@ -651,10 +649,7 @@ page.Nutrition.forEach((item) => {
           (idx + 1)
         }`,
         image: step.Cooking_part_steps_blob.data
-          ? imgSrcPrefix +
-            step.Cooking_part_steps_blob?.data?.attributes.provider_metadata
-              .public_id +
-            `/public`
+          ? ASSETS_URL + step.Cooking_part_steps_blob?.data?.attributes.url
           : "",
       }))
     ).flat(),

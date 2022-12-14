@@ -9,39 +9,62 @@
       stickyHeader = query("#sticky-header"),
       stickyHeaderHeading = query("#sticky-header-heading"),
       stickyDropdownToggle = query("#sticky-dropdown-toggle"),
-      headingLinks = queryAll("#heading-links a"),
-      stickyheadingLinksContainer = query("#sticky-heading-links"),
-      stickyheadingLinks = queryAll("#sticky-heading-links a"),
+      headingLinks = [...queryAll(".chapter-link")],
+      stickyHeadingLinks = [...queryAll(".chapter-link-sm")],
+      headingLinksContainer = query("#heading-links"),
+      stickyHeadingLinksContainer = query("#sticky-heading-links"),
+      headingIDs = headingLinks.map((link) => link.hash.slice(1)),
+      [firstHeadingID] = headingIDs,
       readingProgressBar = query("#reading-progress-bar");
 
-    const isOnScreen = (element) => {
-      const { top, bottom } = element.getBoundingClientRect(),
-        // consider an element on screen only if it's at least 50px on screen
-        safeAreaHeight = 50;
+    const isChapterOnScreen = (chapterElement) => {
+      const { top, bottom } = chapterElement.getBoundingClientRect(),
+        topSafeAreaHeight =
+          window.innerWidth < 768
+            ? readingProgressBar.getBoundingClientRect().bottom
+            : 0,
+        // consider a chapter element on screen only if it's at least 50px on screen
+        bottomSafeAreaHeight = 50;
 
-      if (top < window.innerHeight - safeAreaHeight && bottom > 0) return true;
+      if (
+        top < window.innerHeight - bottomSafeAreaHeight &&
+        bottom > topSafeAreaHeight
+      )
+        return true;
 
       return false;
     };
 
+    const getActiveChapter = () => {
+      const visibleChapters = chapters.filter(isChapterOnScreen);
+
+      const activeChapter =
+        visibleChapters.find((chapterElement) =>
+          isChapterOnScreen(chapterElement.firstElementChild)
+        ) ||
+        visibleChapters[0] ||
+        chapters[0];
+
+      return activeChapter;
+    };
+
     const styleActiveChapter = () => {
-      // find active chapter
-      const { length, [length - 1]: activeChapter = chapters[0] } =
-          chapters.filter((chapter) => isOnScreen(chapter)),
-        chapterIndex = chapters.indexOf(activeChapter),
+      // mark first chapter on screen as active and fallback to the first chapter
+      const activeChapter = getActiveChapter(),
+        activeChapterIndex = chapters.indexOf(activeChapter),
         activeChapterHeading = activeChapter.querySelector("h2");
 
-      [...headingLinks, ...stickyheadingLinks].forEach((link) =>
+      [...headingLinks, ...stickyHeadingLinks].forEach((link) =>
         link.classList.remove("active")
       );
 
       // highlight active chapter link
-      headingLinks[chapterIndex].classList.add("active");
-      stickyheadingLinks[chapterIndex].classList.add("active");
+      headingLinks[activeChapterIndex].classList.add("active");
+      stickyHeadingLinks[activeChapterIndex].classList.add("active");
 
       const { bottom: navbarBottom } = navbar.getBoundingClientRect(),
         displayStickyHeader =
-          window.innerWidth < 640 &&
+          window.innerWidth < 768 &&
           firstChapter.getBoundingClientRect().y - navbarBottom < 0;
 
       if (displayStickyHeader) {
@@ -63,37 +86,86 @@
       }
 
       // display sticky header
-      stickyHeader.classList[displayStickyHeader ? "remove" : "add"]("hidden");
+      stickyHeader.classList[displayStickyHeader ? "remove" : "add"](
+        "invisible"
+      );
+
+      const [visibleHeadingLinks, visibleLinksContainer] =
+        window.innerWidth >= 768
+          ? [headingLinks, headingLinksContainer]
+          : !stickyHeadingLinksContainer.parentElement.classList.contains(
+              "hidden"
+            )
+          ? [stickyHeadingLinks, stickyHeadingLinksContainer]
+          : [];
+
+      if (visibleLinksContainer) {
+        const activeHeadingLink = visibleHeadingLinks[activeChapterIndex];
+
+        visibleLinksContainer.style.height = "auto";
+
+        const visibleLinksContainerHeight =
+          visibleLinksContainer.getBoundingClientRect().height;
+
+        visibleLinksContainer.style.flexGrow = 1;
+
+        const availableHeight =
+          visibleLinksContainer.getBoundingClientRect().height;
+
+        const containerHeight = Math.min(
+          visibleLinksContainerHeight,
+          availableHeight
+        );
+
+        visibleLinksContainer.style.flexGrow = 0;
+
+        visibleLinksContainer.style.height = containerHeight + "px";
+
+        visibleLinksContainer.scrollTop =
+          activeHeadingLink.offsetTop - containerHeight;
+      }
     };
 
     styleActiveChapter();
 
-    document.addEventListener("scroll", styleActiveChapter);
+    window.addEventListener("scroll", styleActiveChapter);
+    window.addEventListener("resize", styleActiveChapter);
 
     stickyDropdownToggle.addEventListener("click", () => {
-      stickyheadingLinksContainer.classList.toggle("hidden");
+      stickyHeadingLinksContainer.parentElement.classList.toggle("hidden");
     });
 
     // collapse dropdown when an item is clicked
-    [...headingLinks, ...stickyheadingLinks].forEach((link) => {
-      link.addEventListener("click", (event) => {
-        if (window.innerWidth < 640) {
+    [...document.links].forEach((link) => {
+      if (link.hash && headingIDs.includes(link.hash.slice(1))) {
+        link.addEventListener("click", (event) => {
           event.preventDefault();
 
-          const target = query(link.getAttribute("href")),
-            { offsetTop: targetOffsetTop } = target,
-            blockedAreaHeight =
-              readingProgressBar.getBoundingClientRect().bottom;
+          const headingID = link.hash.slice(1),
+            heading = document.getElementById(headingID);
 
-          stickyheadingLinksContainer.classList.add("hidden");
+          let blockedAreaBottom = 0;
 
-          location.href = link.href;
+          if (window.innerWidth < 640) {
+            const isFirstHeadingLink = firstHeadingID === headingID;
+
+            stickyHeadingLinksContainer.classList.add("hidden");
+
+            const navbarHeight = navbar.getBoundingClientRect().height,
+              stickyHeaderHeight = stickyHeader.getBoundingClientRect().height;
+
+            blockedAreaBottom =
+              navbarHeight + (isFirstHeadingLink ? 0 : stickyHeaderHeight);
+          }
+
+          const { offsetTop: headingOffsetTop } = heading;
 
           window.scrollTo({
-            top: targetOffsetTop - blockedAreaHeight,
+            top: headingOffsetTop - blockedAreaBottom - 25,
+            /* offset by 25px on top for better UX */
           });
-        }
-      });
+        });
+      }
     });
   }
 </script>

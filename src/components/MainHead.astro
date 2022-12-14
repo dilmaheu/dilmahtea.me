@@ -8,11 +8,11 @@ declare interface Props {
   page: Record<string, any>;
   meta: Record<string, any>;
   locale: string;
-  metaImageID: string;
+  metaImageSrc: string;
   availableLocales: string[];
 }
 
-const { page, meta, locale, metaImageID, availableLocales } =
+const { page, meta, locale, metaImageSrc, availableLocales } =
   Astro.props as Props;
 
 const {
@@ -26,7 +26,6 @@ const {
 
 const domain = Astro.site.origin,
   { updatedAt: lastModifiedDate } = page,
-  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env,
   alternateLocales = availableLocales.filter((lcl) => lcl !== locale);
 
 const documentHref = `${domain}/${locale}/${
@@ -92,7 +91,7 @@ const documentHref = `${domain}/${locale}/${
 <meta property="og:url" content={documentHref} />
 <meta property="og:site_name" content="Dilmah" />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={imgSrcPrefix + metaImageID + `/opengraph`} />
+<meta property="og:image" content={metaImageSrc} />
 
 {/* Twitter */}
 <meta name="twitter:title" content={title} />
@@ -100,10 +99,7 @@ const documentHref = `${domain}/${locale}/${
 <meta property="twitter:domain" content="dilmahtea.me" />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:card" content="summary_large_image" />
-<meta
-  name="twitter:image"
-  content={imgSrcPrefix + metaImageID + `/twittercard`}
-/>
+<meta name="twitter:image" content={metaImageSrc} />
 
 {
   !shouldDisplayExperimentals() && (

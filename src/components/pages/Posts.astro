@@ -12,12 +12,13 @@ import RecurringImages from "@store/RecurringImages";
 const { white_cup, green_cup, left_post_leaf, green_leaf } = RecurringImages;
 
 const { posts } = Astro.props.page,
-  [firstPost] = posts,
-  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+  { ASSETS_URL } = import.meta.env;
 
 posts.sort((a, b) => {
-  return new Date(b.createdAt) - new Date(a.createdAt); 
+  return new Date(b.createdAt) - new Date(a.createdAt);
 });
+
+const [firstPost] = posts;
 ---
 
 <style lang="scss">
@@ -49,13 +50,11 @@ posts.sort((a, b) => {
   }
 
   .post-img-curve-container {
+    aspect-ratio: 6 / 5;
     width: 100%;
-    max-height: 530px;
-    aspect-ratio: 3.26 / 2;
-
-    @media (min-width: 640px) {
-      aspect-ratio: 5.65 / 5;
-    }
+    height: 100%;
+    max-width: 600px;
+    max-height: 500px;
   }
 
   .post-leaf {
@@ -86,9 +85,7 @@ posts.sort((a, b) => {
             <div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
               <div class="post-author flex flex-wrap font-bold text-lightgray">
                 {firstPost.authors.data.map(({ attributes }, i) => (
-                  <div>
-                    {`${i > 0 ? ", " : " "}` + attributes.givenName}
-                  </div>
+                  <div>{`${i > 0 ? ", " : " "}` + attributes.givenName}</div>
                 ))}
               </div>
 
@@ -102,20 +99,23 @@ posts.sort((a, b) => {
           )
         }
 
-        <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
-          <a href={`/` + firstPost.Meta.URL_slug}>{firstPost.Title}</a>
+        <section class="link-section">
+          <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
+            <a
+              class="main-link"
+              set:text={firstPost.Title}
+              href={`/` + firstPost.Meta.URL_slug}
+            />
 
-          <span class="icon heading-inline-icon">
-            <img class="w-full h-full" {...white_cup} />
-          </span>
-        </h1>
+            <span class="icon heading-inline-icon">
+              <img class="w-full h-full" {...white_cup} />
+            </span>
+          </h1>
 
-        <a
-          href={`/` + firstPost.Meta.URL_slug}
-          class="hero-text pt-2.5 block prose text-lightgray max-w-none"
-        >
-          <Markdown>{firstPost.Intro_text}</Markdown>
-        </a>
+          <div class="hero-text pt-2.5 prose text-lightgray max-w-none">
+            <Markdown>{firstPost.Intro_text}</Markdown>
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -125,10 +125,8 @@ posts.sort((a, b) => {
     <ClippedImg
       id="hero-img-curve"
       className="relative object-cover"
-      src={imgSrcPrefix +
-        firstPost.Intro_blob.data.attributes.provider_metadata.public_id +
-        `/small`}
       alt={firstPost.Intro_blob.data.attributes.alternativeText}
+      src={ASSETS_URL + firstPost.Intro_blob.data.attributes.url}
       path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
     />
 
@@ -137,11 +135,8 @@ posts.sort((a, b) => {
         <ClippedPicture
           id="hero-img-curve"
           pictureStyle="position: relative;"
-          src={
-            imgSrcPrefix +
-            firstPost.Intro_blob.data.attributes.provider_metadata.public_id +
-            `/small`
-          }
+          alt={firstPost.Intro_blob.data.attributes.alternativeText}
+          src={ASSETS_URL + firstPost.Intro_blob.data.attributes.url}
           path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
         />
       ) */
@@ -153,10 +148,8 @@ posts.sort((a, b) => {
 <div class="hero-img-sm-container block sm:hidden relative -mt-20 z-20 w-full">
   <ClippedImg
     id="hero-img-curve-sm"
-    src={imgSrcPrefix +
-      firstPost.Intro_blob.data.attributes.provider_metadata.public_id +
-      `/small`}
     alt={firstPost.Intro_blob.data.attributes.alternativeText}
+    src={ASSETS_URL + firstPost.Intro_blob.data.attributes.url}
     path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
   />
 
@@ -164,11 +157,8 @@ posts.sort((a, b) => {
     /* (
       <ClippedPicture
         id="hero-img-curve-sm"
-        src={
-          imgSrcPrefix +
-          firstPost.Intro_blob.data.attributes.provider_metadata.public_id +
-          `/small`
-        }
+        alt={firstPost.Intro_blob.data.attributes.alternativeText}
+        src={ASSETS_URL + firstPost.Intro_blob.data.attributes.url}
         path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
       />
     ) */
@@ -188,7 +178,7 @@ posts.sort((a, b) => {
         const isEven = index % 2 === 0;
 
         return (
-          <div class="flex flex-wrap items-center">
+          <section class="link-section flex flex-wrap items-center">
             <div
               class:list={[
                 "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
@@ -197,21 +187,19 @@ posts.sort((a, b) => {
                   : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
               ]}
             >
-              <a href={`/` + post.Meta.URL_slug}>
-                <div class="post-img-curve-container">
-                  <img
-                    src={
-                      imgSrcPrefix +
-                      post.Intro_blob.data.attributes.provider_metadata
-                        .public_id +
-                      `/small`
-                    }
-                    alt={post.Intro_blob.data.attributes.alternativeText}
-                    class="w-full h-full object-cover"
-                    style="clip-path: url(#post-img-curve);"
-                  />
-                </div>
-
+              <div 
+                class:list={[
+                  "post-img-curve-container",
+                  isEven ? "mr-auto" : "ml-auto"
+                ]}
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  style="clip-path: url(#post-img-curve);"
+                  alt={post.Intro_blob.data.attributes.alternativeText}
+                  src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                />
+                
                 <div
                   class:list={[
                     "post-leaf absolute z-20",
@@ -223,17 +211,15 @@ posts.sort((a, b) => {
                     {...(isEven ? left_post_leaf : green_leaf)}
                   />
                 </div>
+              </div>
 
-                {/* <>
+              
+
+              {/* <>
                     <Picture
-                      alt=""
                       layout="fill"
-                      src={
-                        imgSrcPrefix +
-                        post.Intro_blob.data.attributes.provider_metadata
-                          .public_id +
-                        `/small`
-                      }
+                      alt={post.Intro_blob.data.attributes.alternativeText}
+                      src={ASSETS_URL + post.Intro_blob.data.attributes.url}
                       attributes={{
                         picture: { style: "clip-path: url(#post-img-curve);" },
                       }}
@@ -252,7 +238,6 @@ posts.sort((a, b) => {
                       }}
                     />
                   </> */}
-              </a>
             </div>
 
             {/* Text content */}
@@ -282,8 +267,9 @@ posts.sort((a, b) => {
                   </div>
                 )}
 
-                <h1 class="post-title alice text-primary pt-[15px]">
+                <h2 class="post-title alice text-primary pt-[15px]">
                   <a
+                    class="main-link"
                     href={`/` + post.Meta.URL_slug}
                     set:text={post.Title || post.Estate_name}
                   />
@@ -291,17 +277,14 @@ posts.sort((a, b) => {
                   <span class="icon heading-inline-icon">
                     <img class="w-full h-full" {...green_cup} />
                   </span>
-                </h1>
+                </h2>
 
-                <a
-                  href={`/` + post.Meta.URL_slug}
-                  class="post-intro texr-dark block pt-[15px] prose max-w-none"
-                >
+                <div class="post-intro pt-[15px] prose max-w-none">
                   <Markdown>{post.Intro_text}</Markdown>
-                </a>
+                </div>
               </div>
             </div>
-          </div>
+          </section>
         );
       })
     }

@@ -16,11 +16,11 @@ interface Props {
   meta: Record<string, any>;
   locale: string;
   recurData: Record<string, any>;
-  metaImageID: string;
+  metaImageSrc: string;
   availableLocales: string[];
 }
 
-const { page, meta, locale, recurData, availableLocales, metaImageID } =
+const { page, meta, locale, recurData, availableLocales, metaImageSrc } =
   Astro.props;
 
 const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
@@ -161,7 +161,7 @@ const footerText = recurData.Footer_text.replaceAll(
   meta={meta}
   locale={locale}
   availableLocales={availableLocales}
-  metaImageID={metaImageID}
+  metaImageSrc={metaImageSrc}
 >
   <Navbar
     docLocale={locale}
@@ -233,17 +233,21 @@ const footerText = recurData.Footer_text.replaceAll(
           >
             <div class="cart-product-details flex items-center">
               <img
+                alt=""
                 src={`<placeholder name="image"></placeholder>`}
                 style="min-width: 85px; width: 85px; height: 85px; clip-path: url(#cart-product-image);"
               />
 
               <div class="grow flex flex-col gap-2">
                 <div class="flex justify-between items-center gap-2.5">
-                  <div class="cart-product-name alice">
+                  <h2 class="cart-product-name alice">
                     <placeholder name="name"></placeholder>
-                  </div>
+                  </h2>
 
-                  <button class="remove-item-btn md:hidden">
+                  <button
+                    aria-label="Remove Item"
+                    class="remove-item-btn md:hidden"
+                  >
                     <Icon
                       name="akar-icons:trash-can"
                       class="w-[29px] h-[29px]"
@@ -271,7 +275,7 @@ const footerText = recurData.Footer_text.replaceAll(
             <div class="hidden md:flex gap-7">
               <CartProductQuantityInput page={page} />
 
-              <button class="remove-item-btn">
+              <button class="remove-item-btn" aria-label="Remove Item">
                 <Icon name="akar-icons:trash-can" class="w-[29px] h-[29px]" />
               </button>
             </div>

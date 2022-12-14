@@ -1,5 +1,4 @@
 ---
-import { marked } from 'marked';
 import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
@@ -9,7 +8,7 @@ import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 const { page, recurData } = Astro.props,
   headingName = recurData.text_chapter,
   { blogs } = page,
-  { CF_IMAGE_DELIVERY_ENDPOINT: imgSrcPrefix } = import.meta.env;
+  { ASSETS_URL } = import.meta.env;
 ---
 
 <PostDetailsLayout {page} posts={blogs} {recurData} {headingName}>
@@ -34,12 +33,10 @@ const { page, recurData } = Astro.props,
     "@type": "BlogPosting",
     headline: page.Title,
     alternativeHeadline: `The best things you need to know about ${page.Title}`,
-    image: ( imgSrcPrefix +
-            page.Intro_blob.data.attributes.provider_metadata.public_id +
-            `/public` ),
-    url: `${ Astro.site.origin}/${page.locale}/${page.Meta.URL_slug === "/" 
-            ? "" 
-            : page.Meta.URL_slug}/`,
+    image: ASSETS_URL + page.Intro_blob.data.attributes.url,
+    url: `${Astro.site.origin}/${page.locale}/${
+      page.Meta.URL_slug === "/" ? "" : page.Meta.URL_slug
+    }/`,
     publisher: recurData.Company_name,
     dateCreated: page.createdAt,
     datePublished: page.publishedAt,
@@ -48,13 +45,19 @@ const { page, recurData } = Astro.props,
     copyrightYear: `${new Date().getFullYear()}`,
     copyrightHolder: "Dilmah",
     isFamilyFriendly: "True",
-    description: `${(await Astro.__renderMarkdown(page.Intro_text)).replace(/(<([^>]+)>)/gi, "")}`,
-    articleBody: `${(await Astro.__renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
+    description: `${(await Astro.__renderMarkdown(page.Intro_text)).replace(
+      /(<([^>]+)>)/gi,
+      ""
+    )}`,
+    articleBody: `${(await Astro.__renderMarkdown(page.Block_text)).replace(
+      /(<([^>]+)>)/gi,
+      ""
+    )}`,
     author: {
       "@type": "Person",
-      name: page.authors.data.map(({ attributes }) => (
-              `${attributes.givenName}`
-            )),
+      name: page.authors.data.map(
+        ({ attributes }) => `${attributes.givenName}`
+      ),
     },
     mainEntityOfPage: "True",
   }}

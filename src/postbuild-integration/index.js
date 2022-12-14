@@ -14,7 +14,7 @@ const CSPRecord = {
   "img-src": [
     "'self'",
     "https://dilmahtea.me",
-    "https://imagedelivery.net",
+    "https://cms.dilmahtea.me",
     "data:",
   ],
   "media-src": ["data:"],
@@ -56,6 +56,7 @@ const postbuildIntegration = {
 
       await Promise.all([
         import("./utils/generateRobotsMeta.js"),
+        import("./utils/generateSecurityMeta.js"),
         rewrite404RoutesPaths(_404HtmlFilePaths),
         generateXMLSitemap(sitemap),
         generateSecurityHeaders(CSPRecord),
