@@ -199,7 +199,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
             style="clip-path: url(#product-card-curve)"
             class="link-section flex flex-wrap bg-primary"
           >
-            <div class="block">
+            <div class="relative block">
               <div class="aspect-[6/5] w-full h-full">
                 <img
                   class="w-full h-full object-cover"
@@ -207,6 +207,38 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                   src={ASSETS_URL + post.Intro_blob.data.attributes.url}
                 />
               </div>
+
+              { 
+                post.Stock_out && (
+                  <>
+                    <div 
+                      class:list={[
+                        "absolute top-[15%] right-[15%] px-4 sm:px-9 py-1.5 sm:py-2.5 flex items-center", 
+                        "sm:text-xl font-semibold text-lightgray2 bg-[#fabf21]/80 rounded-[11px]",
+                        "border-2 border-[#fabf21]",
+                      ]}
+                    >
+                      {recurData.Product_sold_out_text}
+                    </div>
+
+                    <div 
+                      class:list={[
+                        "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none", 
+                        "w-full text-sm sm:text-base font-semibold text-dark2 bg-[#faf8e5]/80"
+                      ]}
+                    >
+                      <Icon 
+                        name="healthicons:alert-circle-negative" 
+                        class="inline-flex w-4 md:w-5 text-[#febf21] bg-white drop-shadow-md rounded-full select-none"
+                      />
+                      {recurData.Item_stock_text} 
+                      { new Date(post.In_stock_date)
+                          .toLocaleString("en-GB", { year: "2-digit", month: "short", day: "numeric"})
+                      }
+                    </div>
+                  </>
+                )
+              }
             </div>
 
             <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">

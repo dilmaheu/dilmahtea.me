@@ -22,6 +22,8 @@ const productsQuery = `
           Block_text
           Price
           Currency
+          Stock_out
+          In_stock_date
           SKU
           GTIN_Barcode
           Weight
@@ -228,6 +230,8 @@ const productsQuery = `
                 Block_text
                 Price
                 Currency
+                Stock_out
+                In_stock_date
                 SKU
                 GTIN_Barcode
                 Weight
