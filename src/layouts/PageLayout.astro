@@ -35,17 +35,23 @@ const footerText = recurData.Footer_text.replaceAll(
   availableLocales={availableLocales}
   metaImageSrc={metaImageSrc}
 >
-  <Navbar
-    docLocale={locale}
-    footerText={footerText}
-    availableLocales={availableLocales}
-  />
+  <div class="flex flex-wrap w-full h-full">
+    
+    <div class="block w-full bg-lightgray">
+      <Navbar
+        docLocale={locale}
+        footerText={footerText}
+        availableLocales={availableLocales}
+      />
 
-  <main>
-    <slot />
-  </main>
+      <main>
+        <slot />
+      </main>
+    </div>
 
-  <Footer footerText={footerText} />
+    <Footer footerText={footerText} />
+  </div>
+
   <CartOverlay page={page} />
 </BaseLayout>
 
