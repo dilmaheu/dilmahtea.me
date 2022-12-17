@@ -1,8 +1,9 @@
 ---
 import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
+import { Picture } from "astro-imagetools/components";
+
 import Chapterize from "@components/Chapterize.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import RecipesInfoSection from "@components/RecipesInfoSection.astro";
 
@@ -484,8 +485,9 @@ page.Nutrition.forEach((item) => {
 
               {step.Cooking_part_steps_blob.data && (
                 <div class="aspect-[2/1] w-full mt-2.5 sm:mt-[15px]">
-                  <ClippedPicture
-                    id="recipe-img-curve"
+                  <Picture
+                    layout="fill"
+                    sizes="(min-width: 768px) calc(90vw * 2/3 - 72px), calc(90vw - 72px)"
                     alt={
                       step.Cooking_part_steps_blob.data.attributes
                         .alternativeText
@@ -494,7 +496,6 @@ page.Nutrition.forEach((item) => {
                       ASSETS_URL +
                       step.Cooking_part_steps_blob.data.attributes.url
                     }
-                    path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
                   />
                 </div>
               )}

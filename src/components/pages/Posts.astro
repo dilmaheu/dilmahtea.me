@@ -8,7 +8,12 @@ import ClippedPicture from "@components/ClippedPicture.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
-const { white_cup, green_cup, left_post_leaf, green_leaf } = RecurringImages;
+const {
+  white_cup,
+  green_cup,
+  left_post_leaf,
+  green_leaf: right_post_leaf,
+} = RecurringImages;
 
 const { posts } = Astro.props.page,
   { ASSETS_URL } = import.meta.env;
@@ -125,11 +130,14 @@ const [firstPost] = posts;
   {/* Blob Image - Desktop View */}
   <div class="h-full hidden sm:block absolute z-30 hero-img-curve-container">
     <ClippedPicture
+      preload="avif"
       id="hero-img-curve"
-      pictureStyle="position: relative;"
+      breakpoints={{ minWidth: 640 }}
+      sizes="clamp(330px, 26.4vw + 150px, 560px)"
       alt={firstPost.Intro_blob.data.attributes.alternativeText}
       src={ASSETS_URL + firstPost.Intro_blob.data.attributes.url}
       path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
+      attributes={{ link: { media: "(min-width: 640px)" } }}
     />
   </div>
 </Hero>
@@ -139,9 +147,11 @@ const [firstPost] = posts;
   <ClippedPicture
     preload="avif"
     id="hero-img-curve-sm"
+    breakpoints={{ maxWidth: 640 }}
     alt={firstPost.Intro_blob.data.attributes.alternativeText}
     src={ASSETS_URL + firstPost.Intro_blob.data.attributes.url}
     path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
+    attributes={{ link: { media: "(max-width: 639.98px)" } }}
   />
 </div>
 
@@ -156,7 +166,8 @@ const [firstPost] = posts;
     {
       posts.slice(1).map((post, index) => {
         const isEven = index % 2 === 0,
-          postImgURL = ASSETS_URL + post.Intro_blob.data.attributes.url;
+          postImgURL = ASSETS_URL + post.Intro_blob.data.attributes.url,
+          postLeafWidthMultiplier = isEven ? 0.24 : 0.18;
 
         return (
           <section class="link-section flex flex-wrap items-center">
@@ -175,20 +186,15 @@ const [firstPost] = posts;
                 ]}
               >
                 <Picture
-                  alt=""
-                  src={postImgURL}
                   layout="fill"
-                  breakpoints={{ maxWidth: 640 }}
+                  src={postImgURL}
                   alt={post.Intro_blob.data.attributes.alternativeText}
-                  artDirectives={[
-                    {
-                      src: postImgURL,
-                      media: "(min-width: 640px)",
-                      breakpoints: { minWidth: 640 },
-                    },
-                  ]}
+                  sizes={[
+                    "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
+                    "(min-width: 640px) min(600px, calc(45vw - 20px))",
+                    "90vw",
+                  ].join(", ")}
                   attributes={{
-                    img: { style: "aspect-ratio: 1.13 / 1;" },
                     picture: { style: "clip-path: url(#post-img-curve);" },
                   }}
                 />
@@ -203,7 +209,11 @@ const [firstPost] = posts;
                     alt=""
                     layout="fill"
                     placeholder="blurred"
-                    src={(isEven ? left_post_leaf : green_leaf).src}
+                    src={(isEven ? left_post_leaf : right_post_leaf).src}
+                    sizes={[
+                      `(min-width: 640px) min(600px, calc((50vw - min(100px, 5vw)) * ${postLeafWidthMultiplier}))`,
+                      `calc(90vw * ${postLeafWidthMultiplier})`,
+                    ].join(", ")}
                   />
                 </div>
               </div>

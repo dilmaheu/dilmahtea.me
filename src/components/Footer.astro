@@ -72,14 +72,15 @@ const { footerText } = Astro.props as Props;
       alt=""
       layout="fill"
       objectPosition="left bottom"
-      breakpoints={{ maxWidth: 640 }}
+      breakpoints={{ maxWidth: 768 }}
       src={footer_background_sm.src}
+      sizes="(min-width: 640px) 100vw - 72px, 100vw"
       artDirectives={[
         {
           src: footer_background.src,
           media: "(min-width: 640px)",
           objectPosition: "left top",
-          breakpoints: { minWidth: 640 },
+          breakpoints: { minWidth: 768 - 72 },
         },
       ]}
     />
@@ -121,12 +122,14 @@ const { footerText } = Astro.props as Props;
       layout="fill"
       placeholder="blurred"
       breakpoints={{ maxWidth: 768 }}
+      sizes="calc(clamp(120px, 35vw + 10px, 165px) * 0.87)"
       src={footer_leaf_sm.src}
       artDirectives={[
         {
           src: footer_leaf.src,
           media: "(min-width: 768px)",
           breakpoints: { minWidth: 768 },
+          sizes: "calc(clamp(100px, 15vw + 10px, 206px) * 1.15)",
         },
       ]}
     />
