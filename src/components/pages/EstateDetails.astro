@@ -2,9 +2,9 @@
 import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import Chapterize from "@components/Chapterize.astro";
+import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
-import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 const { page, recurData } = Astro.props,
   headingName = recurData.text_chapter,
@@ -15,9 +15,7 @@ const { page, recurData } = Astro.props,
 <PostDetailsLayout {page} {recurData} {headingName}>
   <div slot="post-details" class="prose content-text">
     <Chapterize>
-      <OptimizeContentImages>
-        <Markdown>{page.Block_text}</Markdown>
-      </OptimizeContentImages>
+      <Markdown>{page.Block_text}</Markdown>
     </Chapterize>
   </div>
 
@@ -34,25 +32,39 @@ const { page, recurData } = Astro.props,
         </h2>
 
         <a href={page.Location_link} class="block w-full">
-          <div class="hidden sm:block h-[500px]">
-            <ClippedPicture
+          <div class="hidden sm:block w-full h-[500px]">
+            <ClippedImg
               id="estate-map-curve"
-              sizes="calc(100vw - min(10vw, 200px))"
+              className="w-full h-full object-fit"
               alt={page.Location?.data?.attributes.alternativeText}
               src={ASSETS_URL + page.Location?.data?.attributes.url}
               path="M.04.089C.086.001.164.009.262.005c.165-.007.26.005.425 0 .115-.003.179 0 .242.029C.977.057 1 .335 1 .513.996.676 1 .9.946.927.888.952.753.961.694.976.583 1 .464.97.363.976.271.982.156 1 .054.927 0 .859-.001.687 0 .513.002.348-.007.18.04.089"
             />
           </div>
 
-          <div class="block sm:hidden h-[375px]">
-            <ClippedPicture
+          <div class="block sm:hidden w-full h-[375px]">
+            <ClippedImg
               id="estate-map-curve-sm"
-              sizes="90vw"
+              className="w-full h-full object-cover"
               alt={page.Location?.data?.attributes.alternativeText}
               src={ASSETS_URL + page.Location?.data?.attributes.url}
               path="M0.913,0.04 c0.088,0.046,0.08,0.124,0.084,0.222 c0.007,0.165,-0.005,0.26,0,0.425 c0.003,0.116,0,0.179,-0.029,0.242 c-0.022,0.048,-0.301,0.075,-0.479,0.071 c-0.162,-0.003,-0.386,0.008,-0.413,-0.054 C0.05,0.888,0.042,0.753,0.026,0.694 C-0.003,0.583,0.033,0.464,0.026,0.363 C0.021,0.271,-0.054,0.156,0.076,0.054 C0.144,0,0.315,-0.001,0.489,0 C0.655,0.002,0.823,-0.007,0.913,0.04"
             />
           </div>
+
+          {/* (
+              <ClippedPicture
+                id="estate-map-curve"
+                alt={page.Location?.data?.attributes.alternativeText}
+                src={ASSETS_URL + page.Location?.data?.attributes.url}
+                path="M.04.089C.086.001.164.009.262.005c.165-.007.26.005.425 0 .115-.003.179 0 .242.029C.977.057 1 .335 1 .513.996.676 1 .9.946.927.888.952.753.961.694.976.583 1 .464.97.363.976.271.982.156 1 .054.927 0 .859-.001.687 0 .513.002.348-.007.18.04.089"
+                attributes={{
+                  img: {
+                    style: "max-height: 375px;",
+                  },
+                }}
+              />
+            ) */}
         </a>
       </div>
     )

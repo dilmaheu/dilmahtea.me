@@ -3,7 +3,6 @@ import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
-import { join } from "path";
 
 const { page, recurData } = Astro.props,
   { howTos } = page,
@@ -113,18 +112,19 @@ const url = `${Astro.site.origin}/${page.locale}/${
               </div>
 
               {step.Step_blob.data !== null && (
-                <Picture
-                  layout="fill"
+                <div class="aspect-[2/1] w-full h-full">
+                  <img
+                    class="w-full h-full object-cover"
+                    alt={step.Step_blob.data.attributes.alternativeText}
+                    src={ASSETS_URL + step.Step_blob.data.attributes.url}
+                  />
+                </div>
+
+                /* <Picture
                   alt={step.Step_blob.data.attributes.alternativeText}
                   src={ASSETS_URL + step.Step_blob.data.attributes.url}
-                  sizes="(min-width: 768px) calc(90vw * 2/3 - 72px), calc(90vw - 72px)"
-                  attributes={{
-                    picture: { style: "margin-top: 20px;" },
-                    img: {
-                      style: "aspect-ratio: 2 / 1;",
-                    },
-                  }}
-                />
+                  attributes={{ picture: { style: "margin-top: 20px;" } }}
+                /> */
               )}
             </div>
           ))}

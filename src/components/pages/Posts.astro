@@ -4,16 +4,12 @@ import { Picture } from "astro-imagetools/components";
 
 import Hero from "@components/Hero.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
-const {
-  white_cup,
-  green_cup,
-  left_post_leaf,
-  green_leaf: right_post_leaf,
-} = RecurringImages;
+const { white_cup, green_cup, left_post_leaf, green_leaf } = RecurringImages;
 
 const { posts } = Astro.props.page,
   { ASSETS_URL } = import.meta.env;
@@ -60,11 +56,8 @@ const [firstPost] = posts;
     max-width: 600px;
     max-height: 500px;
   }
-</style>
 
-<style lang="scss" is:global>
   .post-leaf {
-    @apply absolute z-20;
     filter: drop-shadow(0px 8px 9px rgba(0, 0, 0, 0.5));
   }
 
@@ -128,31 +121,48 @@ const [firstPost] = posts;
   </div>
 
   {/* Blob Image - Desktop View */}
-  <div class="h-full hidden sm:block absolute z-30 hero-img-curve-container">
-    <ClippedPicture
-      preload="avif"
+  <div class="h-full hidden sm:block absolute z-20 hero-img-curve-container">
+    <ClippedImg
       id="hero-img-curve"
-      breakpoints={{ minWidth: 640 }}
-      sizes="clamp(330px, 26.4vw + 150px, 560px)"
+      className="relative object-cover"
       alt={firstPost.Intro_blob.data.attributes.alternativeText}
       src={ASSETS_URL + firstPost.Intro_blob.data.attributes.url}
       path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
-      attributes={{ link: { media: "(min-width: 640px)" } }}
     />
+
+    {
+      /* (
+        <ClippedPicture
+          id="hero-img-curve"
+          pictureStyle="position: relative;"
+          alt={firstPost.Intro_blob.data.attributes.alternativeText}
+          src={ASSETS_URL + firstPost.Intro_blob.data.attributes.url}
+          path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
+        />
+      ) */
+    }
   </div>
 </Hero>
 
 {/* Blob Image - Mobile View */}
 <div class="hero-img-sm-container block sm:hidden relative -mt-20 z-20 w-full">
-  <ClippedPicture
-    preload="avif"
+  <ClippedImg
     id="hero-img-curve-sm"
-    breakpoints={{ maxWidth: 640 }}
     alt={firstPost.Intro_blob.data.attributes.alternativeText}
     src={ASSETS_URL + firstPost.Intro_blob.data.attributes.url}
     path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
-    attributes={{ link: { media: "(max-width: 639.98px)" } }}
   />
+
+  {
+    /* (
+      <ClippedPicture
+        id="hero-img-curve-sm"
+        alt={firstPost.Intro_blob.data.attributes.alternativeText}
+        src={ASSETS_URL + firstPost.Intro_blob.data.attributes.url}
+        path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
+      />
+    ) */
+  }
 </div>
 
 {/* All Posts Section */}
@@ -165,9 +175,7 @@ const [firstPost] = posts;
   <div class="flex flex-wrap items-center gap-y-[50px] py-[50px]">
     {
       posts.slice(1).map((post, index) => {
-        const isEven = index % 2 === 0,
-          postImgURL = ASSETS_URL + post.Intro_blob.data.attributes.url,
-          postLeafWidthMultiplier = isEven ? 0.24 : 0.18;
+        const isEven = index % 2 === 0;
 
         return (
           <section class="link-section flex flex-wrap items-center">
@@ -179,44 +187,57 @@ const [firstPost] = posts;
                   : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
               ]}
             >
-              <div
+              <div 
                 class:list={[
                   "post-img-curve-container",
-                  isEven ? "mr-auto" : "ml-auto",
+                  isEven ? "mr-auto" : "ml-auto"
                 ]}
               >
-                <Picture
-                  layout="fill"
-                  src={postImgURL}
+                <img
+                  class="w-full h-full object-cover"
+                  style="clip-path: url(#post-img-curve);"
                   alt={post.Intro_blob.data.attributes.alternativeText}
-                  sizes={[
-                    "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
-                    "(min-width: 640px) min(600px, calc(45vw - 20px))",
-                    "90vw",
-                  ].join(", ")}
-                  attributes={{
-                    picture: { style: "clip-path: url(#post-img-curve);" },
-                  }}
+                  src={ASSETS_URL + post.Intro_blob.data.attributes.url}
                 />
-
+                
                 <div
                   class:list={[
-                    "post-leaf",
+                    "post-leaf absolute z-20",
                     isEven ? "post-leaf-left" : "post-leaf-right",
                   ]}
                 >
-                  <Picture
-                    alt=""
-                    layout="fill"
-                    placeholder="blurred"
-                    src={(isEven ? left_post_leaf : right_post_leaf).src}
-                    sizes={[
-                      `(min-width: 640px) min(600px, calc((50vw - min(100px, 5vw)) * ${postLeafWidthMultiplier}))`,
-                      `calc(90vw * ${postLeafWidthMultiplier})`,
-                    ].join(", ")}
+                  <img
+                    class="w-full h-full"
+                    {...(isEven ? left_post_leaf : green_leaf)}
                   />
                 </div>
               </div>
+
+              
+
+              {/* <>
+                    <Picture
+                      layout="fill"
+                      alt={post.Intro_blob.data.attributes.alternativeText}
+                      src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                      attributes={{
+                        picture: { style: "clip-path: url(#post-img-curve);" },
+                      }}
+                    />
+
+                    <Picture
+                      {...(isEven ? left_post_leaf : green_leaf)}
+                      attributes={{
+                        picture: {
+                          class: `post-leaf ${
+                            isEven ? "post-leaf-left" : "post-leaf-right"
+                          }`,
+                          style:
+                            "position: absolute; z-index: 20; clip-path: url(#post-img-curve);",
+                        },
+                      }}
+                    />
+                  </> */}
             </div>
 
             {/* Text content */}

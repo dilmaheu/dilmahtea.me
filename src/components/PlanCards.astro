@@ -3,12 +3,13 @@ import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 import RecurringImages from "@store/RecurringImages";
 
+const { green_leaf } = RecurringImages;
+
 const { allPlans } = Astro.props,
-  { ASSETS_URL } = import.meta.env,
-  { tick, green_leaf } = RecurringImages;
+  { ASSETS_URL } = import.meta.env;
 ---
 
-<style lang="scss" define:vars={{ tick: `url("${tick.src}")` }}>
+<style lang="scss">
   .plan-card {
     padding: calc(2.5vw + 17.5px);
   }
@@ -20,7 +21,7 @@ const { allPlans } = Astro.props,
       @apply inline-block pl-0 items-center text-[1.125rem];
 
       &::before {
-        background-image: var(--tick);
+        background-image: url(/bg-images/tick.svg);
 
         @apply content-[""] inline-block w-[18px] h-[18px] mr-[10px] align-middle;
       }
@@ -79,6 +80,20 @@ const { allPlans } = Astro.props,
   }
 </div>
 
-<div class="plan-section-leaf hidden xl:inline-block -mt-20 -ml-12">
-  <Picture alt="" src={green_leaf.src} sizes="120px" placeholder="blurred" />
-</div>
+<img
+  width="120"
+  height="115"
+  {...green_leaf}
+  class="plan-section-leaf hidden xl:block -mt-20 -ml-12"
+/>
+
+{
+  /* (
+    <div
+      class="plan-section-leaf hidden xl:inline-block"
+      style="margin-top: -80px; margin-left: -48px;"
+    >
+      <Picture width={120} height={115} {...green_leaf} />
+    </div>
+  ) */
+}

@@ -1,16 +1,14 @@
 ---
 import { Icon } from "astro-icon";
 import { Schema } from "astro-seo-schema";
-import { Picture } from "astro-imagetools/components";
 import Markdown from "@astrojs/markdown-component";
-
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
-import OptimizeContentImages from "@components/OptimizeContentImages.astro";
+import ClippedPicture from "@components/ClippedPicture.astro";
+import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
-import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 const { green_right_arrow } = RecurringImages;
 
@@ -36,10 +34,8 @@ for (const value of Spent_amount) {
   Total_spent_amount += value;
 }
 
-const productThumbnailURL =
-  ASSETS_URL + page.Intro_blob.data.attributes.formats.thumbnail.url;
-
-const { SKU: productSKU } = page,
+const productImgURL = ASSETS_URL + page.Intro_blob.data.attributes.url,
+  { SKU: productSKU } = page,
   productPrice = Number(page.Price),
   tax = Math.round(productPrice * 9) / 100,
   productPriceIncludingTax = productPrice + tax,
@@ -189,7 +185,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   >
     <input type="hidden" name="sku" value={productSKU} />
     <input type="hidden" name="names" value={productNames} />
-    <input type="hidden" name="image" value={productThumbnailURL} />
+    <input type="hidden" name="image" value={productImgURL} />
 
     <input type="hidden" name="tax" value={tax} />
     <input type="hidden" name="price" value={productPriceIncludingTax} />
@@ -281,7 +277,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   >
     <input type="hidden" name="sku" value={productSKU} />
     <input type="hidden" name="names" value={productNames} />
-    <input type="hidden" name="image" value={productThumbnailURL} />
+    <input type="hidden" name="image" value={productImgURL} />
 
     <input type="hidden" name="tax" value={tax} />
     <input type="hidden" name="price" value={productPriceIncludingTax} />
@@ -379,9 +375,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     <Chapterize slot="post-details">
       <Markdown>{page.Intro_text}</Markdown>
 
-      <OptimizeContentImages>
-        <Markdown>{page.Block_text}</Markdown>
-      </OptimizeContentImages>
+      <Markdown>{page.Block_text}</Markdown>
     </Chapterize>
 
     {
@@ -609,26 +603,28 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   <div
                     role="listitem"
                     aria-label="Kindness Item"
-                    class="link-section bg-lightgray"
                     style="clip-path: url(#card-curve)"
+                    class="link-section bg-lightgray"
                   >
-                    <Picture
-                      layout="fullWidth"
-                      alt={post.Intro_blob.data.attributes.alternativeText}
-                      src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-                      attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                      sizes="(min-width: 768px) min(580px, calc(40vw - 25px)), min(80vw, 420px)"
-                    />
+                    <div class="block">
+                      <div class="aspect-[6/5] w-full h-full">
+                        <img
+                          alt={post.Intro_blob.data.attributes.alternativeText}
+                          src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                          class="w-full h-full object-cover"
+                        />
+                      </div>
+                    </div>
 
                     <div class="recent-post-card-content-container text-primary">
                       {post.authors && (
                         <div>
                           <div class="recent-post-card-author flex flex-wrap font-bold">
                             {post.authors.data.map(({ attributes }, index) => (
-                              <span>
+                              <div>
                                 {`${index > 0 ? ", " : " "}` +
                                   attributes.givenName}
-                              </span>
+                              </div>
                             ))}
                           </div>
 

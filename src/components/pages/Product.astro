@@ -1,9 +1,11 @@
 ---
+import Icon from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
 import Hero from "@components/Hero.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import ClippedImg from "@components/ClippedImg.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 
 import CMS from "@store/CMS";
@@ -131,31 +133,48 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   </div>
 
   {/* Blob Image - Desktop View */}
-  <div class="hero-img-curve-container h-full hidden sm:block absolute z-30">
-    <ClippedPicture
-      preload="avif"
+  <div class="hero-img-curve-container h-full hidden sm:block absolute z-20">
+    <ClippedImg
       id="hero-img-curve"
-      breakpoints={{ minWidth: 640 }}
-      sizes="clamp(330px, 26.4vw + 150px, 560px)"
+      className="relative"
       alt={page.Intro_blob.data.attributes.alternativeText}
       src={ASSETS_URL + page.Intro_blob.data.attributes.url}
       path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
-      attributes={{ link: { media: "(min-width: 640px)" } }}
     />
+
+    {
+      /* (
+        <ClippedPicture
+          id="hero-img-curve"
+          pictureStyle="position: relative;"
+          alt={page.Intro_blob.data.attributes.alternativeText}
+          src={ASSETS_URL + page.Intro_blob.data.attributes.url}
+          path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
+        />
+      ) */
+    }
   </div>
 </Hero>
 
 {/* Blob Image - Mobile View */}
-<div class="hero-img-sm-container block sm:hidden w-full relative z-20 -mt-20">
-  <ClippedPicture
-    preload="avif"
+<div class="hero-img-sm-container block sm:hidden relative -mt-20 z-20 w-full">
+  <ClippedImg
     id="hero-img-curve-sm"
-    breakpoints={{ maxWidth: 640 }}
     alt={page.Intro_blob.data.attributes.alternativeText}
     src={ASSETS_URL + page.Intro_blob.data.attributes.url}
     path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
-    attributes={{ link: { media: "(max-width: 639.98px)" } }}
   />
+
+  {
+    /* (
+      <ClippedPicture
+        id="hero-img-curve-sm"
+        alt={page.Intro_blob.data.attributes.alternativeText}
+        src={ASSETS_URL + page.Intro_blob.data.attributes.url}
+        path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
+      />
+    ) */
+  }
 </div>
 
 <div class="py-[50px]">
@@ -180,13 +199,16 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
             style="clip-path: url(#product-card-curve)"
             class="link-section flex flex-wrap bg-primary"
           >
-            <Picture
-              layout="fullWidth"
-              alt={post.Intro_blob.data.attributes.alternativeText}
-              src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-              attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-              sizes="(min-width: 768px) min(580px, calc(45vw - 25px)), min(90vw, 420px)"
-            />
+            <div class="block">
+              <div class="aspect-[6/5] w-full h-full">
+                <img
+                  class="w-full h-full object-cover"
+                  alt={post.Intro_blob.data.attributes.alternativeText}
+                  src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                />
+              </div>
+            </div>
+
             <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
               <div class="product-card-title alice leading-[120%] md:leading-[110%]">
                 <a
@@ -224,10 +246,10 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       <div class="relative w-full h-full product-impact-container">
         {
           firstProduct && (
-            <div class="absolute inset-0 w-full h-full bg-primary">
-              <Picture
+            <div class="absolute inset-0 w-full h-full">
+              <img
+                class="bg-primary w-full h-full object-cover"
                 alt=""
-                layout="fill"
                 src={ASSETS_URL + firstProduct.Intro_blob.data.attributes.url}
               />
             </div>
@@ -285,18 +307,27 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                 style="clip-path: url(#product-card-curve)"
                 class="link-section bg-primary recent-post-card"
               >
-                <Picture
-                  alt=""
-                  layout="fullWidth"
-                  alt={post.Intro_blob.data.attributes.alternativeText}
-                  src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-                  attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                  sizes={[
-                    "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
-                    "(min-width: 640px) calc(45vw - 16px)",
-                    "min(90vw, 380px)",
-                  ].join(", ")}
-                />
+                <div class="block">
+                  <div class="aspect-[6/5] w-full h-full">
+                    <img
+                      alt={post.Intro_blob.data.attributes.alternativeText}
+                      src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+
+                {/* <Picture
+                    alt=""
+                    layout="fill"
+                    alt={post.Intro_blob.data.attributes.alternativeText}
+                    src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                    attributes={{
+                      picture: {
+                        style: "clip-path: url(#recent-post-card-curve);",
+                      },
+                    }}
+                  /> */}
+                *</div>
 
                 <div class="recent-post-card-content-container">
                   {post.authors && (
