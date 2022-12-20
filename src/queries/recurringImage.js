@@ -1,6 +1,8 @@
 const images = [
   "logo",
   "favicon",
+  "nav_background",
+  "sidebar_background",
   "hero_background",
   "hero_background_sm",
   "crowdfunding_info_section_background",
@@ -42,6 +44,7 @@ const images = [
   "green_product_cart_plus",
   "green_no_icon",
   "green_package_icon",
+  "tick",
 ];
 
 const recurringImageQuery = `
