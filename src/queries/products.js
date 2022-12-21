@@ -22,7 +22,7 @@ const productsQuery = `
           Block_text
           Price
           Currency
-          Stock_out
+          Stock_amount
           In_stock_date
           SKU
           GTIN_Barcode
@@ -230,7 +230,7 @@ const productsQuery = `
                 Block_text
                 Price
                 Currency
-                Stock_out
+                Stock_amount
                 In_stock_date
                 SKU
                 GTIN_Barcode

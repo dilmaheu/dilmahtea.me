@@ -190,7 +190,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   >
     <input type="hidden" name="sku" value={productSKU} />
     <input type="hidden" name="names" value={productNames} />
-    <input type="hidden" name="image" value={productThumbnailURL} />
+    <input type="hidden" name="image" value={productImgURL} />
 
     <input type="hidden" name="tax" value={tax} />
     <input type="hidden" name="price" value={productPriceIncludingTax} />
@@ -214,8 +214,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
         <span
           class:list={[
-            "inline-block bg-lightgray text-primary border border-lightgray",
-            "py-2.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal rounded-full",
+            "inline-block py-2.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal",
+            "text-lightgray border-2 border-lightgray bg-[#405658] rounded-full",
           ]}
         >
           {productSize}
@@ -230,7 +230,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         {checkoutRecurData.text_quantity}:
       </div>
 
-      <div class="flex items-center text-primary bg-lightgray rounded-full">
+      <div class="flex items-center text-lightgray border-2 border-lightgray bg-[#405658] rounded-full">
         <button
           data-action="decrement"
           aria-label="Decrease Quantity"
@@ -245,8 +245,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           name="quantity"
           aria-label="Quantity"
           min="1"
+          max={stock_amount}
           value="1"
-          class="product-amount-input w-12 h-full text-center lg:text-lg bg-lightgray outline-none"
+          class="product-amount-input w-12 h-full text-center lg:text-lg bg-transparent outline-none"
           required
         />
 
@@ -265,26 +266,26 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         class:list={[
           "w-full gap-4 flex justify-center items-center",
           "p-3 mt-auto font-bold text-base rounded-full",
-          stock_out
+          stock_amount < 1
             ? "text-white bg-[#8b8b8b] cursor-not-allowed"
             : "text-primary bg-lightgray"
         ]}
         disabled={
-          stock_out && (
+          stock_amount < 1 && (
             "disabled"
           )
         }
       >
         <Icon 
           name={
-            stock_out
+            stock_amount < 1
               ? "tabler:shopping-cart-x"
               : "mi:shopping-cart" 
           } 
           class="w-[26px] h-[26px]" 
         />
         {
-          stock_out
+          stock_amount < 1
             ? recurData.Product_sold_out_text
             :(
               <span>
@@ -297,7 +298,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         }
       </button>
       { 
-        stock_out && (
+        stock_amount < 1 && (
           <div 
             class:list={[
               "flex items-center gap-2.5 pt-2.5 w-full", 
@@ -328,20 +329,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   >
     <input type="hidden" name="sku" value={productSKU} />
     <input type="hidden" name="names" value={productNames} />
-    <input type="hidden" name="image" value={productThumbnailURL} />
+    <input type="hidden" name="image" value={productImgURL} />
 
     <input type="hidden" name="tax" value={tax} />
     <input type="hidden" name="price" value={productPriceIncludingTax} />
 
     <fieldset>
-      <legend
-        class:list={[
-          "text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]",
-          stock_out
-            ? "text-primary/50 cursor-not-allowed"
-            : "text-primary"
-        ]}
-      >
+      <legend class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]">
         {checkoutRecurData.text_size}:
       </legend>
 
@@ -357,11 +351,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
         <span
           class:list={[
-            "inline-block text-lightgray border border-primary",
-            "py-2.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal rounded-full",
-            stock_out
-              ? "bg-primary/50 border-0 cursor-not-allowed"
-              : "bg-primary"
+            "inline-block border-2 border-primary py-2.5 lg:py-[7px] px-5",
+            "lg:text-lg lg:font-normal text-primary rounded-full bg-lightgray2",
           ]}
         >
           {productSize}
@@ -370,25 +361,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     </fieldset>
 
     <div>
-      <div
-        class:list={[
-          "text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]",
-          stock_out
-            ? "text-primary/50 cursor-not-allowed"
-            : "text-primary"
-        ]}
-      >
+      <div class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]">
         {checkoutRecurData.text_quantity}:
       </div>
 
-      <div
-        class:list={[
-          "w-fit flex items-center text-lightgray rounded-full",
-          stock_out
-            ? "bg-primary/50 cursor-not-allowed"
-            : "bg-primary"
-        ]}
-      >
+      <div class="w-fit flex items-center text-primary bg-lightgray2 border-2 border-primary rounded-full">
         <button
           data-action="decrement"
           aria-label="Decrease Quantity"
@@ -406,11 +383,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           name="quantity"
           aria-label="Quantity"
           min="1"
+          max={stock_amount}
           value="1"
           class="product-amount-input w-12 h-full text-center lg:text-lg bg-transparent outline-none"
           required
           disabled={
-            stock_out && (
+            stock_amount < 1 && (
               "disabled"
             )
           }
@@ -433,26 +411,26 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       class:list={[
         "w-full gap-4 flex justify-center items-center p-3 mt-auto",
         "font-bold text-base text-lightgray leading-[19px] rounded-full",
-        stock_out
-          ? "bg-primary/50 cursor-not-allowed"
+        stock_amount < 1
+          ? "bg-[#8b8b8b] cursor-not-allowed"
           : "bg-primary"
       ]}
       disabled={
-        stock_out && (
+        stock_amount < 1 && (
           "disabled"
         )
       }
     >
       <Icon 
           name={
-            stock_out
+            stock_amount < 1
               ? "tabler:shopping-cart-x"
               : "mi:shopping-cart" 
           } 
           class="w-8 h-8" 
         />
       { 
-        stock_out
+        stock_amount < 1
           ? recurData.Product_sold_out_text
           : checkoutRecurData.text_add_to_cart
       }
