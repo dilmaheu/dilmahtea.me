@@ -389,8 +389,7 @@ page.Nutrition.forEach((item) => {
           </span>
 
           <select
-            id="recipeSecServingsize"
-            name="recipeSecServingsize"
+            id="recipe-section-serving-size"
             class:list={[
               "focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring cursor-pointer",
               "max-w-[65px] md:max-w-[83px] text-lightgray2 py-[5px] pl-[11px] rounded-[7px] recipe-sec-servingsize-input",
@@ -423,7 +422,12 @@ page.Nutrition.forEach((item) => {
                   </div>
 
                   <div class="text-base md:text-lg leading-[150%] text-dark2 ml-2.5">
-                    {item.Cooking_part_ingredient_amount}
+                    <span
+                      class="ingredient-amount"
+                      data-amount={item.Cooking_part_ingredient_amount}
+                    >
+                      {item.Cooking_part_ingredient_amount}
+                    </span>
                     {item.Cooking_part_ingredient_measurements_unit}
                     {item.Cooking_part_ingredient_name}
                   </div>
@@ -434,6 +438,29 @@ page.Nutrition.forEach((item) => {
         }
       </div>
     </div>
+
+    <script>
+      const ingredientAmountElements =
+        document.querySelectorAll(".ingredient-amount");
+
+      const recipeSectionServingSizeInput = document.getElementById(
+        "recipe-section-serving-size"
+      ) as HTMLSelectElement;
+
+      recipeSectionServingSizeInput?.addEventListener("change", (e) => {
+        const recipeSectionServingSize = Number(
+          recipeSectionServingSizeInput.selectedOptions[0].value
+        );
+
+        ingredientAmountElements.forEach((element: HTMLElement) => {
+          const ingredientAmount = Number(element.dataset.amount);
+
+          element.textContent = String(
+            ingredientAmount * recipeSectionServingSize
+          );
+        });
+      });
+    </script>
 
     <h2
       id="cooking-instructions"
