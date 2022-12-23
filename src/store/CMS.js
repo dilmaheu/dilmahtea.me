@@ -32,10 +32,11 @@ const { data } = await fetch(import.meta.env.DB_URL, {
   .then(async (res) => {
     const cacheDir = "./.cache/",
       response = await res.text(),
-      data = JSON.parse(response);
+      data = JSON.parse(response),
+      error = data.error || data.errors;
 
-    if (data.errors) {
-      return catchError(data.errors);
+    if (error) {
+      return catchError(error);
     }
 
     fs.existsSync(cacheDir) || (await fs.promises.mkdir(cacheDir));
@@ -87,19 +88,14 @@ async function catchError(error) {
       "error",
       "Failed to fetch data from CMS, serving from the cache"
     );
-  } else
+  } else {
     printMessage(
       "error",
       "Failed to fetch data from CMS, nothing found in cache!"
     );
-
-  if (error.message) {
-    try {
-      throw error;
-    } catch (error) {}
-  } else {
-    console.error(error);
   }
+
+  console.error(error);
 
   return cachedData;
 }

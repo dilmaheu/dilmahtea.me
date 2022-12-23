@@ -1,13 +1,20 @@
 ---
 import Icon from "astro-icon";
+import { Picture, BackgroundPicture } from "astro-imagetools/components";
+
 import RecurringImages from "@store/RecurringImages";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
-const { logo, checkout_header_background, checkout_header_background_sm } =
-  RecurringImages;
+const {
+  logo,
+  nav_background,
+  sidebar_background,
+  checkout_header_background,
+  checkout_header_background_sm,
+} = RecurringImages;
 
 interface Props {
   docLocale: string;
@@ -32,10 +39,6 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
       @apply text-[32px] md:text-[clamp(0.875rem,1.5vw+0.1rem,1.125rem)] font-semibold md:font-bold leading-[150%];
     }
   }
-
-  #sidebar {
-    background-image: url(/bg-images/sidebar.webp);
-  }
 </style>
 
 <header
@@ -46,21 +49,45 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
   ]}
 >
   {
-    isCartNavbar && (
+    !isCartNavbar ? (
+      <Picture
+        alt=""
+        layout="fill"
+        loading="eager"
+        src={nav_background.src}
+        attributes={{
+          picture: {
+            id: "navbar-bg",
+            style: "display: none; position: absolute;",
+          },
+        }}
+      />
+    ) : (
       <Fragment>
         <ClipPathSVG
           id="cart-navbar-curve"
           path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
         />
 
-        <img
-          id="cart-navbar-bg"
-          class="absolute top-0 left-0 w-full h-full"
+        <Picture
           alt=""
-          src={checkout_header_background.src}
-          sizes="(min-width: 1440px) 1440px, 100vw"
-          srcset={`${checkout_header_background_sm.src} 640w, ${checkout_header_background.src} 1440w`}
-          style="clip-path: url(#cart-navbar-curve)"
+          layout="fill"
+          preload="avif"
+          breakpoints={{ maxWidth: 640 }}
+          src={checkout_header_background_sm.src}
+          artDirectives={[
+            {
+              media: "(min-width: 640px)",
+              breakpoints: { minWidth: 640 },
+              src: checkout_header_background.src,
+            },
+          ]}
+          attributes={{
+            picture: {
+              id: "cart-navbar-bg",
+              style: "position: absolute; clip-path: url(#cart-navbar-curve);",
+            },
+          }}
         />
       </Fragment>
     )
@@ -73,7 +100,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     ]}
   >
     <a href="/" class="brand-logo my-auto">
-      <img class="w-full h-full" {...logo} />
+      <img class="h-full" {...logo} />
     </a>
 
     <nav class="hidden md:flex m-auto ml-14 text-white">
@@ -161,23 +188,37 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
 
   <div
     id="sidebar"
-    class:list={[
-      "bg-primary bg-cover bg-right-bottom bg-no-repeat",
-      "hidden md:!hidden fixed right-0 z-[40] w-[300px] max-w-full h-full pb-20",
-    ]}
+    class="hidden md:!hidden fixed right-0 z-[40] w-[300px] max-w-full h-full pb-20"
   >
-    <div class="grid content-between h-full px-[30px] pt-[26px] pb-9">
-      <nav class="flex flex-col text-white">
-        <a href="/blog">Blog</a>
-        <a href="/tea-estates">Tea Estates</a>
-        <a href="/howto">How-to</a>
-        <a href="/recipes">Recipe</a>
+    <BackgroundPicture
+      sizes="300px"
+      layout="fill"
+      preload="avif"
+      loading="lazy"
+      src={sidebar_background.src}
+      objectPosition="right bottom"
+      breakpoints={{ minWidth: 300 }}
+      attributes={{
+        container: { style: "height: 100%;" },
+        link: { media: "(max-width: 767.98px)" },
+      }}
+    >
+      <div class="grid content-between h-full px-[30px] pt-[26px] pb-9">
+        <nav class="flex flex-col text-white z-10">
+          <a href="/blog">Blog</a>
+          <a href="/tea-estates">Tea Estates</a>
+          <a href="/howto">How-to</a>
+          <a href="/recipes">Recipe</a>
 
-        {shouldDisplayExperimentals() && <a href="/tea">Tea</a>}
-      </nav>
+          {shouldDisplayExperimentals() && <a href="/tea">Tea</a>}
+        </nav>
 
-      <div class="text-xs font-normal leading-[150%]" set:html={footerText} />
-    </div>
+        <div
+          class="text-xs font-normal leading-[150%] z-10"
+          set:html={footerText}
+        />
+      </div>
+    </BackgroundPicture>
   </div>
 </header>
 
@@ -191,7 +232,8 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
 
 <script is:inline>
   {
-    const navigation = document.getElementById("navigation"),
+    const navbarBg = document.getElementById("navbar-bg"),
+      navigation = document.getElementById("navigation"),
       isCartNavbar = navigation.classList.contains("cart-navbar"),
       translationNotFoundNotification = document.querySelector(
         ".translation-not-found-notification"
@@ -205,20 +247,11 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
       navigation.style.top = `${translationNotFoundNotificationHeight}px`;
 
       if (!isCartNavbar) {
-        if (
+        navbarBg.style.display =
           window.innerWidth < 768 &&
-          (window.scrollY > 0 || document.body.style.position === "fixed")
-        ) {
-          navigation.style = `
-            background-color: #2b4b50;
-            background-image: url(/bg-images/nav-background.webp);
-          `;
-        } else {
-          navigation.style = `
-            background-color: transparent;
-            background-image: unset;
-          `;
-        }
+          (scrollY > 0 || document.body.style.position === "fixed")
+            ? "inline-block"
+            : "none";
       }
     };
 
@@ -241,6 +274,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     rootElement = query(":root"),
     cart = query("#cart"),
     sidebar = query("#sidebar"),
+    navbarBg = query("#navbar-bg"),
     navigation = query("#navigation"),
     openCartBtn = query("#open-cart-btn"),
     cartNavbarBg = query("#cart-navbar-bg"),
@@ -305,6 +339,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
 
       window.removeEventListener("resize", updateSidebarTopPosition);
 
+      navbarBg && (navbarBg.style.display = "none");
       cartNavbarBg && (cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)");
     } else if (sidebar.style.display === "block") {
       // @ts-ignore
@@ -312,6 +347,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
 
       window.addEventListener("resize", updateSidebarTopPosition);
 
+      navbarBg && (navbarBg.style.display = "inline-block");
       cartNavbarBg && (cartNavbarBg.style.clipPath = "none");
     }
   });
@@ -332,8 +368,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     if (isCartNavbar) {
       cartNavbarBg.style.clipPath = "none";
     } else {
-      navigation.classList.add("bg-primary");
-      navigation.style.backgroundImage = "url(/bg-images/nav-background.webp)";
+      navbarBg.style.display = "inline-block";
     }
 
     window.disableScrolling();
@@ -349,8 +384,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     if (isCartNavbar) {
       cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)";
     } else {
-      navigation.classList.remove("bg-primary");
-      navigation.style.backgroundImage = "unset";
+      navbarBg.style.display = "none";
     }
 
     window.enableScrolling();

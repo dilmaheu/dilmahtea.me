@@ -19,26 +19,6 @@ declare interface Props {
 const { footerText } = Astro.props as Props;
 ---
 
-{
-  /* <style lang="scss" is:global>
-    .footer-background {
-      @apply z-10 w-full;
-
-      height: 100% !important;
-      position: absolute !important;
-      clip-path: url(#footer-curve);
-
-      img {
-        height: inherit !important;
-      }
-
-      @media screen and (min-width: 768px) {
-        clip-path: url(#footer-curve-md);
-      }
-    }
-  </style> */
-}
-
 <style lang="scss">
   footer {
     height: clamp(230px, 35vw + 30px, 300px);
@@ -74,7 +54,7 @@ const { footerText } = Astro.props as Props;
   }
 </style>
 
-<footer class="relative">
+<footer class="relative block w-full mt-auto bg-lightgray">
   <ClipPathSVG
     id="footer-curve"
     path="M0 1V0h.918S.98.021.989.129c.01.12-.003.243-.007.367C.979.593 1.01.827.997 1"
@@ -85,31 +65,29 @@ const { footerText } = Astro.props as Props;
     path="M0 1V0h.956C.981.012 1 .081 1 .16S.995.318.981.458C.972.552.975.614.968.71.962.797.925 1 .882 1"
   />
 
-  <div class="footer-background absolute w-full h-[254px] sm:h-full top-0 z-10">
-    <img
-      class="hidden sm:block w-full h-full object-cover object-left-top"
-      src={footer_background.src}
+  <div
+    class="footer-background absolute w-full md:w-[calc(100%-72px)] h-full z-10"
+  >
+    <Picture
       alt=""
-    />
-    <img
-      class="block sm:hidden w-full h-full object-cover object-left-bottom"
+      layout="fill"
+      objectPosition="left bottom"
+      breakpoints={{ maxWidth: 768 }}
       src={footer_background_sm.src}
-      alt=""
+      sizes="(min-width: 640px) 100vw - 72px, 100vw"
+      artDirectives={[
+        {
+          src: footer_background.src,
+          media: "(min-width: 640px)",
+          objectPosition: "left top",
+          breakpoints: { minWidth: 768 - 72 },
+        },
+      ]}
     />
   </div>
 
-  {
-    /* (
-      <Picture
-        alt=""
-        src={footer_background.src}
-        attributes={{ picture: { class: "footer-background" } }}
-      />
-    ) */
-  }
-
   <div
-    class="wrapper relative z-20 h-[254px] sm:h-full flex flex-wrap py-[clamp(24px,3vw+6.4px,56px)]"
+    class="wrapper relative z-20 w-full h-full flex flex-wrap py-[clamp(24px,3vw+6.4px,56px)]"
   >
     <div class="grid sm:flex flex-wrap items-center gap-[25px] md:gap-14">
       <a href="/" class="brand-logo mr-auto">
@@ -132,30 +110,28 @@ const { footerText } = Astro.props as Props;
       <p
         class="copyright text-center leading-[150%] sm:font-medium"
         set:html={footerText}
-      >
-      </p>
+      />
     </div>
   </div>
 
   <div
     class="footer-leaf absolute z-30 flex md:items-end mt-auto top-0 right-0"
   >
-    <img class="hidden md:block w-full h-full" {...footer_leaf} />
-
-    <img class="block md:hidden w-full h-full" {...footer_leaf_sm} />
-
-    {
-      /* (
-        <>
-          <div class="hidden md:block w-full h-full">
-            <Picture layout="fill" {...footer_leaf} />
-          </div>
-
-          <div class="block md:hidden w-full h-full">
-            <Picture layout="fill" {...footer_leaf_sm} />
-          </div>
-        </>
-      ) */
-    }
+    <Picture
+      alt=""
+      layout="fill"
+      placeholder="blurred"
+      breakpoints={{ maxWidth: 768 }}
+      sizes="calc(clamp(120px, 35vw + 10px, 165px) * 0.87)"
+      src={footer_leaf_sm.src}
+      artDirectives={[
+        {
+          src: footer_leaf.src,
+          media: "(min-width: 768px)",
+          breakpoints: { minWidth: 768 },
+          sizes: "calc(clamp(100px, 15vw + 10px, 206px) * 1.15)",
+        },
+      ]}
+    />
   </div>
 </footer>

@@ -1,9 +1,9 @@
 ---
 import CMS from "@store/CMS";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
-
 import RecurringImages from "@store/RecurringImages";
+import { Picture } from "astro-imagetools/components";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
 
 const { logo, checkout_header_background, checkout_header_background_sm } =
   RecurringImages;
@@ -97,17 +97,29 @@ const checkoutStepOrder = page.checkout_step_order,
         path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
       />
 
-      <img
-        class="absolute top-0 left-0 w-full h-full"
+      <Picture
         alt=""
-        src={checkout_header_background.src}
-        sizes="(min-width: 1440px) 1440px, 100vw"
-        srcset={`${checkout_header_background_sm.src} 640w, ${checkout_header_background.src} 1440w`}
-        style="clip-path: url(#checkout-header-curve)"
+        layout="fill"
+        preload="avif"
+        breakpoints={{ maxWidth: 640 }}
+        src={checkout_header_background_sm.src}
+        artDirectives={[
+          {
+            media: "(min-width: 640px)",
+            breakpoints: { minWidth: 640 },
+            src: checkout_header_background.src,
+          },
+        ]}
+        attributes={{
+          picture: {
+            style:
+              "position: absolute; top: 0; left: 0; clip-path: url(#checkout-header-curve);",
+          },
+        }}
       />
 
       <div class="relative flex justify-between gap-[5%]">
-        <a href="/">
+        <a href="/" class="h-full">
           <img {...logo} class="h-full" />
         </a>
 
