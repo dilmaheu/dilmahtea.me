@@ -52,6 +52,8 @@ const recurringElementQuery = `
           product_price_breakdown_title
           product_transparency_title
           product_impact_title
+          Item_stock_text
+          Product_sold_out_text
           localizations {
             data {
               attributes {
@@ -103,6 +105,8 @@ const recurringElementQuery = `
                 product_price_breakdown_title
                 product_transparency_title
                 product_impact_title
+                Item_stock_text
+                Product_sold_out_text
               }
             }
           }
