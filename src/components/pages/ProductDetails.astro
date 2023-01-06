@@ -16,6 +16,7 @@ const { green_right_arrow } = RecurringImages;
 
 const { page, recurData } = Astro.props,
   { locale } = page,
+  stock_amount = page.Stock_amount,
   headingName = recurData.text_chapter,
   { ASSETS_URL } = import.meta.env;
 
@@ -196,7 +197,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
     <fieldset>
       <legend
-        tabindex="0"
         class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
       >
         {checkoutRecurData.text_size}:
@@ -214,8 +214,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
         <span
           class:list={[
-            "inline-block bg-lightgray text-primary border border-lightgray",
-            "py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal rounded-[22px]",
+            "inline-block py-2.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal",
+            "text-lightgray border-2 border-lightgray bg-[#405658] rounded-full",
           ]}
         >
           {productSize}
@@ -224,17 +224,27 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     </fieldset>
 
     <div>
-      <span
+      <div
         class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
       >
         {checkoutRecurData.text_quantity}:
-      </span>
+      </div>
 
-      <div class="flex items-center text-primary bg-lightgray rounded-full">
+      <div 
+        class:list={[
+          "flex items-center text-lightgray border-2 border-lightgray bg-[#405658] rounded-full",
+          stock_amount < 1 &&
+            "cursor-not-allowed"
+        ]}
+      >
         <button
           data-action="decrement"
           aria-label="Decrease Quantity"
-          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1"
+          class:list={[
+            "product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1 select-none",
+            stock_amount < 1 &&
+              "cursor-not-allowed"
+          ]}
           disabled
         >
           <Icon name="akar-icons:minus" class="w-6 h-6 select-none" />
@@ -244,36 +254,89 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           type="number"
           name="quantity"
           aria-label="Quantity"
-          min="1"
-          value="1"
-          class="product-amount-input w-12 h-full text-center lg:text-lg bg-lightgray outline-none"
+          min={stock_amount > 0 ? 1 : 0}
+          max={stock_amount}
+          value={stock_amount > 0 ? 1 : 0}
+          class:list={[
+            "product-amount-input w-12 h-full text-center lg:text-lg bg-transparent outline-none",
+            stock_amount < 1 &&
+              "cursor-not-allowed"
+          ]}
           required
+          disabled={stock_amount < 1 && "disabled"}
         />
 
         <button
           data-action="increment"
           aria-label="Increase Quantity"
-          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
+          class:list={[
+            "product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3",
+            stock_amount < 1 &&
+              "cursor-not-allowed"
+          ]}
+          disabled={stock_amount < 1 && "disabled"}
         >
           <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
         </button>
       </div>
     </div>
 
-    <button
-      class:list={[
-        "w-full gap-4 flex justify-center items-center bg-lightgray",
-        "py-2.5 px-[52px] mt-auto font-bold text-base text-primary rounded-[40px]",
-      ]}
-    >
-      <Icon name="mi:shopping-cart" class="w-[26px] h-[26px]" />
-      <span>
-        {checkoutRecurData.text_add_to_cart_for}
-        €<output class="product-amount-price"
-          >{productPriceIncludingTax.toFixed(2).replace(".", ",")}
-        </output>
-      </span>
-    </button>
+    <div class="w-full">
+      <button
+        class:list={[
+          "w-full gap-4 flex justify-center items-center",
+          "p-3 mt-auto font-bold text-base rounded-full",
+          stock_amount < 1
+            ? "text-white bg-[#8b8b8b] cursor-not-allowed"
+            : "text-primary bg-lightgray"
+        ]}
+        disabled={stock_amount < 1 && "disabled"}
+      >
+        <Icon 
+          name={
+            stock_amount < 1
+              ? "tabler:shopping-cart-x"
+              : "mi:shopping-cart" 
+          } 
+          class="w-[26px] h-[26px]" 
+        />
+        {
+          stock_amount < 1
+            ? recurData.Product_sold_out_text
+            :(
+              <span>
+                {checkoutRecurData.text_add_to_cart_for}
+                €<output class="product-amount-price"
+                  >{productPriceIncludingTax.toFixed(2).replace(".", ",")}
+                </output>
+              </span>
+            )
+        }
+      </button>
+      { 
+        stock_amount < 1 && (
+          <div 
+            class:list={[
+              "flex items-center gap-2.5 pt-2.5 w-full", 
+              "text-sm sm:text-base font-medium text-white2"
+            ]}
+          >
+            <Icon 
+              name="mdi:alert-circle" 
+              class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+            />
+            {recurData.Item_stock_text} 
+            { new Date(page.In_stock_date)
+                .toLocaleString(
+                  "en-GB", 
+                  { year: "2-digit", month: "short", day: "numeric"}
+                )
+            }
+          </div>
+        )
+      }
+    </div>
+      
   </form>
 
   <form
@@ -288,10 +351,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     <input type="hidden" name="price" value={productPriceIncludingTax} />
 
     <fieldset>
-      <legend
-        tabindex="0"
-        class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]"
-      >
+      <legend class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]">
         {checkoutRecurData.text_size}:
       </legend>
 
@@ -307,8 +367,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
         <span
           class:list={[
-            "inline-block border border-primary bg-primary text-lightgray",
-            "py-1.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal rounded-[22px]",
+            "inline-block border-2 border-primary py-2.5 lg:py-[7px] px-5",
+            "lg:text-lg lg:font-normal text-primary rounded-full bg-lightgray2",
           ]}
         >
           {productSize}
@@ -317,24 +377,30 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     </fieldset>
 
     <div>
-      <span
-        class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]"
-      >
+      <div class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]">
         {checkoutRecurData.text_quantity}:
-      </span>
+      </div>
 
-      <div
-        class="w-fit flex items-center text-lightgray bg-primary rounded-full"
+      <div 
+        class:list={[
+          "w-fit flex items-center text-primary bg-lightgray2 border-2 border-primary rounded-full",
+          stock_amount < 1 &&
+              "cursor-not-allowed"
+        ]}
       >
         <button
           data-action="decrement"
           aria-label="Decrease Quantity"
-          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1"
+          class:list={[
+            "product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1",
+            stock_amount < 1 &&
+              "cursor-not-allowed"
+          ]}
           disabled
         >
           <Icon
             name="akar-icons:minus"
-            class="w-6 h-6 select-none cursor-pointer"
+            class="w-6 h-6 select-none"
           />
         </button>
 
@@ -342,20 +408,31 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           type="number"
           name="quantity"
           aria-label="Quantity"
-          min="1"
-          value="1"
-          class="product-amount-input w-12 h-full text-center lg:text-lg bg-primary outline-none"
+          min={stock_amount > 0 ? 1 : 0}
+          max={stock_amount}
+          value={stock_amount > 0 ? 1 : 0}
+          class:list={[
+            "product-amount-input w-12 h-full text-center lg:text-lg bg-transparent outline-none",
+            stock_amount < 1 &&
+              "cursor-not-allowed"
+          ]}
           required
+          disabled={stock_amount < 1 && "disabled"}
         />
 
         <button
           data-action="increment"
           aria-label="Increase Quantity"
-          class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
+          class:list={[
+            "product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3",
+            stock_amount < 1 &&
+              "cursor-not-allowed"
+          ]}
+          disabled={stock_amount < 1 && "disabled"}
         >
           <Icon
             name="akar-icons:plus"
-            class="w-6 h-6 select-none cursor-pointer"
+            class="w-6 h-6 select-none"
           />
         </button>
       </div>
@@ -363,12 +440,27 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
     <button
       class:list={[
-        "w-full gap-4 flex justify-center items-center bg-primary",
-        "p-[18px] mt-auto font-bold text-base text-lightgray leading-[19px] rounded-full",
+        "w-full gap-4 flex justify-center items-center p-3 mt-auto",
+        "font-bold text-base text-lightgray leading-[19px] rounded-full",
+        stock_amount < 1
+          ? "bg-[#8b8b8b] cursor-not-allowed"
+          : "bg-primary"
       ]}
+      disabled={stock_amount < 1 && "disabled"}
     >
-      <Icon name="mi:shopping-cart" class="w-8 h-8" />
-      {checkoutRecurData.text_add_to_cart}
+      <Icon 
+          name={
+            stock_amount < 1
+              ? "tabler:shopping-cart-x"
+              : "mi:shopping-cart" 
+          } 
+          class="w-8 h-8" 
+        />
+      { 
+        stock_amount < 1
+          ? recurData.Product_sold_out_text
+          : checkoutRecurData.text_add_to_cart
+      }
     </button>
   </form>
 
@@ -378,23 +470,21 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       path="M0.526,0.003 C0.368,0.003,0.173,0.042,0.111,0.133 C0.05,0.224,-0.008,0.58,0.013,0.696 C0.034,0.812,0.187,1,0.538,1 C0.826,1,0.917,0.939,0.99,0.718 C1,0.624,1,0.516,0.941,0.247 C0.892,0.073,0.747,0.003,0.526,0.003"
     />
 
-    <div tabindex="0">
-      <Chapterize slot="post-details">
-        <Markdown>{page.Intro_text}</Markdown>
+    <Chapterize slot="post-details">
+      <Markdown>{page.Intro_text}</Markdown>
 
-        <OptimizeContentImages>
-          <Markdown>{page.Block_text}</Markdown>
-        </OptimizeContentImages>
-      </Chapterize>
-    </div>
+      <OptimizeContentImages>
+        <Markdown>{page.Block_text}</Markdown>
+      </OptimizeContentImages>
+    </Chapterize>
 
     {
       page.Price_breakdown.length > 0 && (
         <div class="chapter">
-          <h2 tabindex="0" id="price-breakdown">
+          <h2 id="price-breakdown">
             {recurData.product_price_breakdown_title}
           </h2>
-          <div tabindex="0">
+          <div>
             <Markdown>
               {page.Price_breakdown_text.split("<")[0]}
               <span class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] text-primary">
@@ -416,9 +506,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             ))}
           </div>
 
-          <div role="list" class="grid grid-cols-[repeat(auto-fit,minmax(0,250px))] gap-2.5 justify-between">
+          <div class="grid grid-cols-[repeat(auto-fit,minmax(0,250px))] gap-2.5 justify-between">
             {page.Price_breakdown.map((item) => (
-              <div tabindex="0" role="listitem" class="flex items-center gap-x-2.5">
+              <div class="flex items-center gap-x-2.5">
                 <div
                   style={`background-color: ${item.Item_color_code};
                         clip-path: url(#price-breakdown-curve)`}
@@ -445,8 +535,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     {
       page.Transparency.length > 0 && (
         <div class="chapter">
-          <h2 tabindex="0" id="transparency">{recurData.product_transparency_title}</h2>
-          <p tabindex="0">{page.Transparency_text}</p>
+          <h2 id="transparency">{recurData.product_transparency_title}</h2>
+          <p>{page.Transparency_text}</p>
 
           <div class="grid gap-5">
             {page.Transparency.map((item, index) => (
@@ -465,7 +555,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
                   <div class="w-full">
                     <button
-                      tabindex="0"
                       class:list={[
                         "accordion w-full cursor-pointer text-left leading-[150%]",
                         index === 0 ? "is-active" : "",
@@ -474,7 +563,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       {item.Transparency_item_title}
                     </button>
                     <div
-                      tabindex="0"
                       class:list={[
                         "accordion-content text-lg lg:text-xl leading-[150%] m-0",
                         index === 0 ? "is-open" : "",
