@@ -84,19 +84,33 @@ const [firstPost] = posts;
 {/* Hero Section */}
 <Hero>
   {/* Text Content */}
-  <div class="wrapper hero-text-container h-full relative z-30">
-    <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
+  <div 
+    role="banner"
+    tabindex="0"
+    aria-label="latest post"
+    class="wrapper hero-text-container h-full relative z-30"
+  >
+    <div class="flex flex-wrap items-center sm:w-7/12 h-full">
       <div class="my-[30px]">
         {
           firstPost.authors && (
             <div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
-              <div class="post-author flex flex-wrap font-bold text-lightgray">
+              <div 
+                tabindex="0" 
+                role="presentation"
+                aria-label={
+                  firstPost.authors.data.map(({ attributes }, i) => (
+                    `wrote-by-${i > 0 ? ", " : " "}` + attributes.givenName
+                  ))
+                }
+                class="post-author flex flex-wrap font-bold text-lightgray"
+              >
                 {firstPost.authors.data.map(({ attributes }, i) => (
                   <div>{`${i > 0 ? ", " : " "}` + attributes.givenName}</div>
                 ))}
               </div>
 
-              <div class="post-publish-date">
+              <div tabindex="0" class="post-publish-date">
                 {new Date(firstPost.createdAt).toLocaleString("en-US", {
                   day: "numeric",
                   month: "long",
@@ -119,7 +133,7 @@ const [firstPost] = posts;
             </span>
           </h1>
 
-          <div class="hero-text pt-2.5 prose text-lightgray max-w-none">
+          <div tabindex="0" class="hero-text pt-2.5 prose text-lightgray max-w-none">
             <Markdown>{firstPost.Intro_text}</Markdown>
           </div>
         </section>
@@ -162,7 +176,12 @@ const [firstPost] = posts;
     path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
   />
 
-  <div class="flex flex-wrap items-center gap-y-[50px] py-[50px]">
+  <div 
+    role="list"
+    tabindex={posts.length > 1 ? "0" : "-1"}
+    aria-label="all posts"
+    class="flex flex-wrap items-center gap-y-[50px] py-[50px]"
+  >
     {
       posts.slice(1).map((post, index) => {
         const isEven = index % 2 === 0,
@@ -170,7 +189,12 @@ const [firstPost] = posts;
           postLeafWidthMultiplier = isEven ? 0.24 : 0.18;
 
         return (
-          <section class="link-section flex flex-wrap items-center">
+          <div 
+            role="listitem"
+            tabindex="0"
+            aria-label={`post ${index + 2}`}
+            class="link-section flex flex-wrap items-center"
+          >
             <div
               class:list={[
                 "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
@@ -229,7 +253,16 @@ const [firstPost] = posts;
               <div>
                 {post.authors && (
                   <div>
-                    <div class="post-author flex flex-wrap font-bold text-primary">
+                    <div 
+                      tabindex="0"
+                      role="presentation" 
+                      aria-label={
+                        post.authors.data.map(({ attributes }, i) => (
+                          `wrote by ${i > 0 ? ", " : " "}` + attributes.givenName
+                        ))
+                      }
+                      class="post-author flex flex-wrap font-bold text-primary"
+                    >
                       {post.authors.data.map(({ attributes }, i) => (
                         <div>
                           {`${i > 0 ? ", " : " "}` + attributes.givenName}
@@ -237,7 +270,7 @@ const [firstPost] = posts;
                       ))}
                     </div>
 
-                    <div class="post-publish-date text-dark">
+                    <div tabindex="0" class="post-publish-date text-dark">
                       {new Date(post.createdAt).toLocaleString("en-US", {
                         day: "numeric",
                         month: "long",
@@ -258,12 +291,12 @@ const [firstPost] = posts;
                   </span>
                 </h2>
 
-                <div class="post-intro pt-[15px] prose max-w-none">
+                <div tabindex="0" class="post-intro pt-[15px] prose max-w-none">
                   <Markdown>{post.Intro_text}</Markdown>
                 </div>
               </div>
             </div>
-          </section>
+          </div>
         );
       })
     }

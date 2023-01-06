@@ -32,6 +32,7 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
 </style>
 
 <section
+  role="list"
   class="flex flex-wrap items-center gap-y-20 py-20 py-[50px] lg:py-[75px]"
 >
   {
@@ -44,7 +45,12 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
           title.nextElementSibling.lastElementChild;
 
       return (
-        <div class="flex flex-wrap items-center">
+        <div 
+          tabindex="0"
+          role="listitem"
+          aria-label="Kindess from estates"
+          class="flex flex-wrap items-center"
+        >
           <div
             class:list={[
               "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
@@ -84,11 +90,11 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
               isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
             ]}
           >
-            <h2 class="info-block-title alice leading-[115% sm:leading-[120%] text-dark2">
+            <h2 tabindex="0" class="info-block-title alice leading-[115% sm:leading-[120%] text-dark2">
               {titleText}
             </h2>
 
-            <div class="info-block-text texr-dark block pt-[15px] prose max-w-none">
+            <div tabindex="0" class="info-block-text texr-dark block pt-[15px] prose max-w-none">
               <Markdown>{textContent}</Markdown>
             </div>
           </div>

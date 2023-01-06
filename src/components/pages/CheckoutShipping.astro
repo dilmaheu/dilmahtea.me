@@ -161,16 +161,29 @@ const shippingMethods = page.shipping_methods
       }}
     />
 
-    <div class="p-4 gap-6 flex flex-col bg-lightgray2 rounded-2xl">
-      <div class="shipping-detail">
+    <div 
+      role="list"
+      tabindex="0"
+      aria-label="delivery address details" 
+      class="p-4 gap-6 flex flex-col bg-lightgray2 rounded-2xl"
+    >
+      <div 
+        role="listitem"
+        tabindex="0"
+        aria-label="email-address" 
+        class="shipping-detail"
+      >
         <div>{page.text_contact}</div>
 
         <div>
-          <p>
+          <p tabindex="0" >
             <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
           </p>
 
-          <a href="/checkout/information?change=email">
+          <a 
+            aria-label="change email address"
+            href="/checkout/information?change=email"
+          >
             {page.text_change}
           </a>
         </div>
@@ -178,22 +191,34 @@ const shippingMethods = page.shipping_methods
 
       <div class="border border-dark opacity-80"></div>
 
-      <div class="shipping-detail">
+      <div 
+        role="listitem"
+        tabindex="0"
+        aria-label="delivery address" 
+        class="shipping-detail"
+      >
         <div>{page.text_delivery_address}</div>
 
         <div>
-          <p>
+          <p tabindex="0">
             <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
           </p>
 
-          <a href="/checkout/information?change=street">
+          <a 
+            aria-label="change delivery address"
+            href="/checkout/information?change=street"
+          >
             {page.text_change}
           </a>
         </div>
       </div>
     </div>
 
-    <div class="flex flex-col gap-4">
+    <div 
+      tabindex="0"
+      aria-label={page.text_shipping_method} 
+      class="flex flex-col gap-4"
+    >
       <h2 class="alice">{page.text_shipping_method}</h2>
 
       {
@@ -250,7 +275,12 @@ const shippingMethods = page.shipping_methods
   </form>
 </section>
 
-<section class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-lightgreen">
+<section
+  role="complementry"
+  tabindex="0"
+  aria-label="order summary" 
+  class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-lightgreen"
+>
   <OrderSummary page={page} />
 </section>
 

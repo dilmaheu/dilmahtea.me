@@ -115,6 +115,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           >
             <div class="relative grow w-full">
               <div
+                role="list"
+                aria-label="cart items"
                 class="absolute w-full h-full flex flex-col gap-5 overflow-auto"
               >
                 <DynamicHTML
@@ -166,7 +168,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     }
                   }}
                 >
-                  <div class="flex">
+                  <div 
+                    role="listitem" 
+                    tabindex="0"
+                    aria-label={`<placeholder name="name"></placeholder>`}
+                    class="flex" 
+                  >
                     <div
                       id={`<placeholder name="id"></placeholder>`}
                       class="cart-product p-4 gap-3.5 flex justify-between items-center w-full bg-lightgray2 rounded-[10px]"
@@ -187,7 +194,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
                           <button
                             class="remove-item-btn"
-                            aria-label="Remove Item"
+                            aria-label={`Remove-`+`<placeholder name="name"></placeholder>`}
                           >
                             <Icon name="akar-icons:trash-can" class="w-6 h-6" />
                           </button>
@@ -255,7 +262,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
             <div class="flex flex-col gap-5">
               <div>
-                <div class="flex justify-between items-center">
+                <div tabindex="0" class="flex justify-between items-center">
                   <span class="subtotal-text font-medium">
                     {checkoutRecurData.text_subtotal}
                   </span>

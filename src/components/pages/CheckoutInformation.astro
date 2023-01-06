@@ -71,11 +71,14 @@ const { page } = Astro.props,
 
 <section class="w-full lg:w-[66.67%]">
   <form
+    role="main"
+    tabindex="0"
+    aria-label={`input-your-${page.text_contact_info} & ${page.email_address_placeholder}`}
     id="checkout-info-form"
     class="flex flex-col gap-12"
     action="/checkout/shipping"
   >
-    <div class="form-grid-container">
+    <div role="form" aria-label={page.text_contact_info} class="form-grid-container">
       <h2 class="alice">{page.text_contact_info}</h2>
 
       <div class="form-grid">
@@ -92,7 +95,7 @@ const { page } = Astro.props,
       </div>
     </div>
 
-    <div class="form-grid-container">
+    <div role="form" aria-label={page.text_shipping_address} class="form-grid-container">
       <h2 class="alice">{page.text_shipping_address}</h2>
 
       <div class="form-grid">
