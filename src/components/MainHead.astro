@@ -38,6 +38,9 @@ const documentHref = `${domain}/${locale}/${
         : canonicalURL + "/"
       : slugURL + "/"
   }`;
+
+const openGraphImage = await importRemoteImage(metaImageSrc + "?w=1200&h=627"),
+  twitterImage = await importRemoteImage(metaImageSrc + "?w=800&h=418");
 ---
 
 <meta charset="UTF-8" />
@@ -91,7 +94,7 @@ const documentHref = `${domain}/${locale}/${
 <meta property="og:url" content={documentHref} />
 <meta property="og:site_name" content="Dilmah" />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={metaImageSrc} />
+<meta property="og:image" content={openGraphImage} />
 
 {/* Twitter */}
 <meta name="twitter:title" content={title} />
@@ -99,7 +102,7 @@ const documentHref = `${domain}/${locale}/${
 <meta property="twitter:domain" content="dilmahtea.me" />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content={metaImageSrc} />
+<meta name="twitter:image" content={twitterImage} />
 
 {
   !shouldDisplayExperimentals() && (

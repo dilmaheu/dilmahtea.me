@@ -266,7 +266,7 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
       </Fragment>
     )
   ) : (
-    () => {
+    async () => {
       const { page } = Astro.props;
 
       page.locale = page.locale.substring(0, 2);
@@ -292,6 +292,12 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
           ? CheckoutLayout
           : PageLayout;
 
+      const metaImageSrc =
+        ASSETS_URL +
+        (page.Intro_blob?.data?.attributes.url ||
+          page.Block_blob?.data?.attributes.url ||
+          recurData.OpenGraph_default?.data?.attributes.url);
+
       return (
         <Layout
           {
@@ -301,12 +307,7 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
           locale={locale}
           recurData={recurData}
           availableLocales={availableLocales}
-          metaImageSrc={
-            ASSETS_URL +
-            (page.Intro_blob?.data?.attributes.url ||
-              page.Block_blob?.data?.attributes.url ||
-              recurData.OpenGraph_default?.data?.attributes.url)
-          }
+          metaImageSrc={metaImageSrc}
         >
           {page.type === `homepage` ? (
             <Posts page={page} />
