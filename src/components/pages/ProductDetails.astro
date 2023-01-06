@@ -197,6 +197,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
     <fieldset>
       <legend
+        tabindex={stock_amount > 0 ? "0" : "-1"}
         class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
       >
         {checkoutRecurData.text_size}:
@@ -204,6 +205,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
       <label class="cursor-pointer">
         <input
+          tabindex={stock_amount > 0 ? "0" : "-1"}
           type="radio"
           name="size"
           value={productSize}
@@ -316,6 +318,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       { 
         stock_amount < 1 && (
           <div 
+            tabindex="0"
+            aria-label={recurData.Product_sold_out_text}
             class:list={[
               "flex items-center gap-2.5 pt-2.5 w-full", 
               "text-sm sm:text-base font-medium text-white2"
@@ -325,13 +329,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               name="mdi:alert-circle" 
               class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
             />
-            {recurData.Item_stock_text} 
-            { new Date(page.In_stock_date)
-                .toLocaleString(
-                  "en-GB", 
-                  { year: "2-digit", month: "short", day: "numeric"}
-                )
-            }
+            <span tabindex="0">
+              {recurData.Item_stock_text} 
+              { new Date(page.In_stock_date)
+                  .toLocaleString(
+                    "en-GB", 
+                    { year: "2-digit", month: "short", day: "numeric"}
+                  )
+              }
+            </span>
+            
           </div>
         )
       }
@@ -351,12 +358,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     <input type="hidden" name="price" value={productPriceIncludingTax} />
 
     <fieldset>
-      <legend class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]">
+      <legend
+        tabindex={stock_amount > 0 ? "0" : "-1"}
+        class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]"
+      >
         {checkoutRecurData.text_size}:
       </legend>
 
       <label class="cursor-pointer">
         <input
+          tabindex={stock_amount > 0 ? "0" : "-1"}
           type="radio"
           name="size"
           value={productSize}
@@ -470,21 +481,23 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       path="M0.526,0.003 C0.368,0.003,0.173,0.042,0.111,0.133 C0.05,0.224,-0.008,0.58,0.013,0.696 C0.034,0.812,0.187,1,0.538,1 C0.826,1,0.917,0.939,0.99,0.718 C1,0.624,1,0.516,0.941,0.247 C0.892,0.073,0.747,0.003,0.526,0.003"
     />
 
-    <Chapterize slot="post-details">
-      <Markdown>{page.Intro_text}</Markdown>
+    <div tabindex="0">
+      <Chapterize slot="post-details">
+        <Markdown>{page.Intro_text}</Markdown>
 
-      <OptimizeContentImages>
-        <Markdown>{page.Block_text}</Markdown>
-      </OptimizeContentImages>
-    </Chapterize>
+        <OptimizeContentImages>
+          <Markdown>{page.Block_text}</Markdown>
+        </OptimizeContentImages>
+      </Chapterize>
+    </div>
 
     {
       page.Price_breakdown.length > 0 && (
         <div class="chapter">
-          <h2 id="price-breakdown">
+          <h2 tabindex="0" id="price-breakdown">
             {recurData.product_price_breakdown_title}
           </h2>
-          <div>
+          <div tabindex="0">
             <Markdown>
               {page.Price_breakdown_text.split("<")[0]}
               <span class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] text-primary">
@@ -506,9 +519,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             ))}
           </div>
 
-          <div class="grid grid-cols-[repeat(auto-fit,minmax(0,250px))] gap-2.5 justify-between">
+          <div role="list" class="grid grid-cols-[repeat(auto-fit,minmax(0,250px))] gap-2.5 justify-between">
             {page.Price_breakdown.map((item) => (
-              <div class="flex items-center gap-x-2.5">
+              <div tabindex="0" role="listitem" class="flex items-center gap-x-2.5">
                 <div
                   style={`background-color: ${item.Item_color_code};
                         clip-path: url(#price-breakdown-curve)`}
@@ -535,8 +548,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     {
       page.Transparency.length > 0 && (
         <div class="chapter">
-          <h2 id="transparency">{recurData.product_transparency_title}</h2>
-          <p>{page.Transparency_text}</p>
+          <h2 tabindex="0" id="transparency">{recurData.product_transparency_title}</h2>
+          <p tabindex="0">{page.Transparency_text}</p>
 
           <div class="grid gap-5">
             {page.Transparency.map((item, index) => (
@@ -555,6 +568,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
                   <div class="w-full">
                     <button
+                      tabindex="0"
                       class:list={[
                         "accordion w-full cursor-pointer text-left leading-[150%]",
                         index === 0 ? "is-active" : "",
@@ -563,6 +577,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       {item.Transparency_item_title}
                     </button>
                     <div
+                      tabindex="0"
                       class:list={[
                         "accordion-content text-lg lg:text-xl leading-[150%] m-0",
                         index === 0 ? "is-open" : "",
@@ -630,13 +645,20 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     infos.length > 0 && (
       <section slot="product-info" class="wrapper">
         <div
+          tabindex={infos.length > 0 ? "0" : "-1"}
+          role="list"
+          aria-label="Related Kindess Info"
           class:list={[
             "grid gap-[14px] lg:gap-[21px] justify-between md:justify-center",
             "py-[50px] my-[50px] border-y border-solid product-info-container",
           ]}
         >
           {infos.map((info) => (
-            <div class="grid gap-[7px] md:gap-3.5 lg:gap-[20px]">
+            <div 
+              tabindex="0"
+              role="listitem" 
+              class="grid gap-[7px] md:gap-3.5 lg:gap-[20px]"
+            >
               <div class="h-[clamp(1.125rem,4vw+0.4rem,4rem)] mx-auto">
                 <img
                   class="w-full h-full"
