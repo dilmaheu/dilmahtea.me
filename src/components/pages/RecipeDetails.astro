@@ -320,57 +320,61 @@ page.Nutrition.forEach((item) => {
       </div>
     </div>
 
-    <div
-      class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
-    >
-      <div class="flex">
-        <div class="w-auto recipe-sec-content-border"></div>
+    {
+      page.Nutrition.length > 0 && (
+        <div
+          class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+        >
+          <div class="flex">
+            <div class="w-auto recipe-sec-content-border"></div>
 
-        <div class="grid w-full items-center gap-[15px]">
-          <h3
-            class="font-bold sm:font-semibold text-primary sm:text-dark2 recipe-sec-content-title"
-          >
-            {recurData.recipe_nutrition_information}
-          </h3>
+            <div class="grid w-full items-center gap-[15px]">
+              <h3
+                class="font-bold sm:font-semibold text-primary sm:text-dark2 recipe-sec-content-title"
+              >
+                {recurData.recipe_nutrition_information}
+              </h3>
 
-          <div class="flex items-center gap-2.5 w-full">
-            <div class="text-xs font-bold leading-[150%] text-dark2">
-              {recurData.recipe_yield}:
-            </div>
-
-            <div class="text-lg font-bold leading-[150%] text-primary">
-              {page.Nutrition_yield}
-            </div>
-          </div>
-
-          <div class="text-base md:text-lg font-bold leading-[150%] text-dark2">
-            {recurData.recipe_amount_per_serving}:
-          </div>
-
-          <div
-            class="grid grid-flow-row gap-[5px] recipe-sec-nutritions-container"
-          >
-            {
-              page.Nutrition.map((item, idx) => (
-                <div class="flex items-center text-base lg:text-lg leading-[150%] text-dark2">
-                  <div>{item.Nutrition_name}</div>
-
-                  <span class="mr-1">:</span>
-
-                  <div>
-                    {item.Nutrition_amount != null
-                      ? item.Nutrition_amount
-                      : "0"}
-                    {item.Nutrition_measurements_unit}
-                  </div>
+              <div class="flex items-center gap-2.5 w-full">
+                <div class="text-xs font-bold leading-[150%] text-dark2">
+                  {recurData.recipe_yield}:
                 </div>
-              ))
-            }
+
+                <div class="text-lg font-bold leading-[150%] text-primary">
+                  {page.Nutrition_yield}
+                </div>
+              </div>
+
+              <div class="text-base md:text-lg font-bold leading-[150%] text-dark2">
+                {recurData.recipe_amount_per_serving}:
+              </div>
+
+              <div
+                class="grid grid-flow-row gap-[5px] recipe-sec-nutritions-container"
+              >
+                {
+                  page.Nutrition.map((item, idx) => (
+                    <div class="flex items-center text-base lg:text-lg leading-[150%] text-dark2">
+                      <div>{item.Nutrition_name}</div>
+
+                      <span class="mr-1">:</span>
+
+                      <div>
+                        {item.Nutrition_amount != null
+                          ? item.Nutrition_amount
+                          : "0"}
+                        {item.Nutrition_measurements_unit}
+                      </div>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-
+      )
+    }
+        
     <div
       class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
     >
