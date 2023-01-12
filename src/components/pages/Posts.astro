@@ -86,7 +86,6 @@ const [firstPost] = posts;
   {/* Text Content */}
   <div 
     role="banner"
-    tabindex="0"
     aria-label="latest post"
     class="wrapper hero-text-container h-full relative z-30"
   >
@@ -96,7 +95,6 @@ const [firstPost] = posts;
           firstPost.authors && (
             <div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
               <div 
-                tabindex="0" 
                 role="presentation"
                 aria-label={
                   firstPost.authors.data.map(({ attributes }, i) => (
@@ -110,7 +108,7 @@ const [firstPost] = posts;
                 ))}
               </div>
 
-              <div tabindex="0" class="post-publish-date">
+              <div class="post-publish-date">
                 {new Date(firstPost.createdAt).toLocaleString("en-US", {
                   day: "numeric",
                   month: "long",
@@ -133,7 +131,7 @@ const [firstPost] = posts;
             </span>
           </h1>
 
-          <div tabindex="0" class="hero-text pt-2.5 prose text-lightgray max-w-none">
+          <div class="hero-text pt-2.5 prose text-lightgray max-w-none">
             <Markdown>{firstPost.Intro_text}</Markdown>
           </div>
         </section>
@@ -178,7 +176,6 @@ const [firstPost] = posts;
 
   <div 
     role="list"
-    tabindex={posts.length > 1 ? "0" : "-1"}
     aria-label="all posts"
     class="flex flex-wrap items-center gap-y-[50px] py-[50px]"
   >
@@ -191,7 +188,6 @@ const [firstPost] = posts;
         return (
           <div 
             role="listitem"
-            tabindex="0"
             aria-label={`post ${index + 2}`}
             class="link-section flex flex-wrap items-center"
           >
@@ -254,7 +250,6 @@ const [firstPost] = posts;
                 {post.authors && (
                   <div>
                     <div 
-                      tabindex="0"
                       role="presentation" 
                       aria-label={
                         post.authors.data.map(({ attributes }, i) => (
@@ -270,7 +265,7 @@ const [firstPost] = posts;
                       ))}
                     </div>
 
-                    <div tabindex="0" class="post-publish-date text-dark">
+                    <div class="post-publish-date text-dark">
                       {new Date(post.createdAt).toLocaleString("en-US", {
                         day: "numeric",
                         month: "long",
@@ -291,7 +286,7 @@ const [firstPost] = posts;
                   </span>
                 </h2>
 
-                <div tabindex="0" class="post-intro pt-[15px] prose max-w-none">
+                <div class="post-intro pt-[15px] prose max-w-none">
                   <Markdown>{post.Intro_text}</Markdown>
                 </div>
               </div>

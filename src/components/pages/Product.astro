@@ -101,13 +101,12 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   {/* Text Content */}
   <div
     role="banner"
-    tabindex="0"
     aria-label="intro"
     class="wrapper hero-text-container h-full relative z-30"
   >
     <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
       <div class="my-[30px]">
-        <h1 tabindex="0" class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
+        <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
           {page.Title}
           
           <span class="icon heading-inline-icon">
@@ -115,7 +114,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
           </span>
         </h1>
 
-        <div tabindex="0" class="hero-text pt-2.5 block prose text-lightgray max-w-none">
+        <div class="hero-text pt-2.5 block prose text-lightgray max-w-none">
           <Markdown>{page.Intro_text}</Markdown>
         </div>
 
@@ -181,7 +180,6 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       {
         products.map((post, index) => (
           <div
-            tabindex="0"
             role="listitem"
             aria-label={`tea-item-${index + 1}`}
             style="clip-path: url(#product-card-curve)"
@@ -233,6 +231,12 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
             <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
               <div class="product-card-title alice leading-[120%] md:leading-[110%]">
                 <a
+                  aria-label={
+                    (post.Stock_amount < 1
+                      ? `${recurData.Product_sold_out_text}, `
+                      : "" 
+                    ) + post.Title
+                  }
                   class="main-link"
                   set:text={post.Title}
                   href={`/` + post.Meta.URL_slug}
@@ -243,10 +247,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                 </span>
               </div>
 
-              <div 
-                tabindex="0"
-                class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
-              >
+              <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
                 <Markdown>{post.Intro_text}</Markdown>
               </div>
             </div>
@@ -285,10 +286,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
           <div
             class="wrapper flex flex-wrap justify-center text-center py-[20px]"
           >
-            <h2
-              tabindex="0"
-              class="product-impact-text alice leading-[110%] md:leading-[115%] w-full"
-            >
+            <h2 class="product-impact-text alice leading-[110%] md:leading-[115%] w-full">
               {page.Block2_title}
             </h2>
 
@@ -309,7 +307,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     {
       blogs.length > 0 && (
         <section class="wrapper" role="complementary">
-          <h2 tabindex="0" class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
+          <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
             {recurData.text_explore_the_world_of_kindness}
           </h2>
 
@@ -324,7 +322,6 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
             {blogs.slice(0, 3).map((post, index) => (
               <div
                 role="listitem"
-                tabindex={blogs.length > 0 ? "0" : "-1"}
                 aria-label={`Kindness-item-${index + 1}`}
                 style="clip-path: url(#product-card-curve)"
                 class="link-section bg-primary recent-post-card"
@@ -346,7 +343,6 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                   {post.authors && (
                     <div>
                       <div
-                        tabindex="0"
                         role="presentation"
                         aria-label={
                           post.authors.data.map(({ attributes }, i) => (
@@ -362,7 +358,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                         ))}
                       </div>
 
-                      <div tabindex="0" class="post-publish-date">
+                      <div class="post-publish-date">
                         {new Date(post.createdAt).toLocaleString("en-US", {
                           day: "numeric",
                           month: "long",

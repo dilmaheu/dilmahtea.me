@@ -40,13 +40,12 @@ const { allPlans } = Astro.props,
   {
     allPlans.map((plan, index) => (
       <div
-        tabindex="0"
         role="listitem"
         aria-label={`Plan ${index + 1}`}
         class="plan-card w-full h-auto bg-primary rounded-[45px] lg:rounded-[60px]"
       >
         <div class="inline-flex items-end gap-x-3.5">
-          <h3 tabindex="0" class="text-xl alice">{plan.Title}</h3>
+          <h3 class="text-xl alice">{plan.Title}</h3>
 
           <img
             class="h-[35px] max-w-[35px]"
@@ -59,17 +58,18 @@ const { allPlans } = Astro.props,
           />
         </div>
 
-        <div tabindex="0" class="alice pb-6 mb-0.5 text-[3.375rem]">
+        <div class="alice pb-6 mb-0.5 text-[3.375rem]">
           &#8364;{plan.Price_EUR_excl_VAT}
         </div>
 
-        <div tabindex="0" class="text-lg pb-6 mb-0.5">{plan.Intro_text}</div>
+        <div class="text-lg pb-6 mb-0.5">{plan.Intro_text}</div>
 
-        <div tabindex="0" class="plan-offerings prose max-w-none mb-5 text-white">
+        <div class="plan-offerings prose max-w-none mb-5 text-white">
           <Markdown>{plan.List}</Markdown>
         </div>
 
         <a
+          aria-label={`${plan.Title}, ${plan.Button_text}`}
           href={`/plans/${plan.Title.toLowerCase()}`}
           class="inline-block p-4 font-bold text-primary text-center min-w-[140px] bg-lightgray rounded-[20px]"
         >

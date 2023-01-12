@@ -163,20 +163,18 @@ const shippingMethods = page.shipping_methods
 
     <div 
       role="list"
-      tabindex="0"
       aria-label="delivery address details" 
       class="p-4 gap-6 flex flex-col bg-lightgray2 rounded-2xl"
     >
       <div 
         role="listitem"
-        tabindex="0"
         aria-label="email-address" 
         class="shipping-detail"
       >
         <div>{page.text_contact}</div>
 
         <div>
-          <p tabindex="0" >
+          <p>
             <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
           </p>
 
@@ -193,14 +191,13 @@ const shippingMethods = page.shipping_methods
 
       <div 
         role="listitem"
-        tabindex="0"
         aria-label="delivery address" 
         class="shipping-detail"
       >
         <div>{page.text_delivery_address}</div>
 
         <div>
-          <p tabindex="0">
+          <p>
             <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
           </p>
 
@@ -215,7 +212,7 @@ const shippingMethods = page.shipping_methods
     </div>
 
     <div 
-      tabindex="0"
+      role="list"
       aria-label={page.text_shipping_method} 
       class="flex flex-col gap-4"
     >
@@ -223,7 +220,7 @@ const shippingMethods = page.shipping_methods
 
       {
         shippingMethods.map(([method, cost, methodLocalName], i) => (
-          <label class="gap-5 flex items-center">
+          <label role="listitem" class="gap-5 flex items-center">
             <input
               type="radio"
               name="shipping_method"
@@ -277,7 +274,6 @@ const shippingMethods = page.shipping_methods
 
 <section
   role="complementry"
-  tabindex="0"
   aria-label="order summary" 
   class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-lightgreen"
 >

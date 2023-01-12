@@ -119,7 +119,6 @@ const contentHTML = await Astro.slots.render("post-details"),
   {/* Text Content */}
   <div 
     role="banner"
-    tabindex="0"
     aria-label="post-intro"
     class="wrapper hero-text-container h-full relative z-30"
   >
@@ -156,7 +155,6 @@ const contentHTML = await Astro.slots.render("post-details"),
 
               <div class="grid content-between">
                 <div 
-                  tabindex="0"
                   role="presentation"
                   aria-label={
                     page.authors.data.map(({ attributes }, i) => (
@@ -173,7 +171,7 @@ const contentHTML = await Astro.slots.render("post-details"),
                   ))}
                 </div>
 
-                <div tabindex="0" class="post-publish-date">
+                <div class="post-publish-date">
                   {new Date(page.createdAt).toLocaleString("en-US", {
                     day: "numeric",
                     month: "long",
@@ -187,7 +185,7 @@ const contentHTML = await Astro.slots.render("post-details"),
         {
           page.estate_name?.data.length > 0 && (
             <div class="flex flex-wrap items-center mt-[20px] md:mt-[25px]">
-              <div tabindex="0" class="flex flex-wrap items-center text-lg lg:text-xl leading-[150%]">
+              <div class="flex flex-wrap items-center text-lg lg:text-xl leading-[150%]">
                 {recurData.product_made_love_from + `\xa0`}
 
                 <div class="flex flex-wrap gap-x-1.5">
@@ -210,7 +208,7 @@ const contentHTML = await Astro.slots.render("post-details"),
           )
         }
 
-        <h1 tabindex="0" class="hero-title pt-[5px]">
+        <h1 class="hero-title pt-[5px]">
           {page.Title || page.Estate_name}
 
           {
@@ -226,7 +224,7 @@ const contentHTML = await Astro.slots.render("post-details"),
           page.estate_name ? (
             ""
           ) : (
-            <div tabindex="0" class="hero-text pt-2.5 block prose text-lightgray max-w-none">
+            <div class="hero-text pt-2.5 block prose text-lightgray max-w-none">
               <Markdown>{page.Intro_text}</Markdown>
             </div>
           )
@@ -241,7 +239,7 @@ const contentHTML = await Astro.slots.render("post-details"),
         {
           page.Price_breakdown?.length > 0 && (
             <div class="flex items-center mt-[20px] md:mt-[10px]">
-              <div tabindex="0" class="text-base lg:text-lg leading-[150%]">
+              <div class="text-base lg:text-lg leading-[150%]">
                 {recurData.product_each_penny_you_spend + `\xa0`}
 
                 <a
@@ -421,7 +419,7 @@ const contentHTML = await Astro.slots.render("post-details"),
       role="complementary"
       class="wrapper"
     >
-      <h2 tabindex="0" class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
+      <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
         {(page.Relevant_recipes && recurData.recipe_discover) ||
           recurData.text_explore_the_world_of_kindness}
       </h2>
@@ -441,7 +439,6 @@ const contentHTML = await Astro.slots.render("post-details"),
       >
         {recentPosts.slice(0, 3).map((post, index) => (
           <div
-            tabindex="0"
             role="listitem"
             aria-label={`Kindness-item-${index + 1}`}
             style="clip-path: url(#recent-post-card-curve)"
@@ -463,8 +460,7 @@ const contentHTML = await Astro.slots.render("post-details"),
               <div>
                 {post.authors && (
                   <div>
-                    <div  
-                      tabindex="0"
+                    <div
                       role="presentation"
                       aria-label={
                         post.authors.data.map(({ attributes }, i) => (
@@ -480,7 +476,7 @@ const contentHTML = await Astro.slots.render("post-details"),
                       ))}
                     </div>
 
-                    <div tabindex="0" class="post-publish-date">
+                    <div class="post-publish-date">
                       {new Date(post.createdAt).toLocaleString("en-US", {
                         day: "numeric",
                         month: "long",
@@ -489,7 +485,7 @@ const contentHTML = await Astro.slots.render("post-details"),
                   </div>
                 )}
 
-                <div class="recent-post-card-title mt-[15px]">
+                <div class="recent-post-card-title alice mt-[15px]">
                   <a
                     class="main-link"
                     set:text={post.Title}
@@ -506,7 +502,7 @@ const contentHTML = await Astro.slots.render("post-details"),
                   )}
 
                   {page.related_products && (
-                    <div tabindex="0" class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
+                    <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
                       <Markdown>{post.Intro_text}</Markdown>
                     </div>
                   )}
