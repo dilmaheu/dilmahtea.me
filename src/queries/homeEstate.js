@@ -37,6 +37,15 @@ const homeEstateQuery = `
           Block4_items {
             Block4_Value
             Block4_description
+            Block4_icon{
+              data {
+                attributes {
+                  url
+                  provider_metadata
+                  alternativeText
+                }
+              }
+            }
           }
           blogs {
             data {
@@ -110,6 +119,15 @@ const homeEstateQuery = `
                 Block4_items {
                   Block4_Value
                   Block4_description
+                  Block4_icon{
+                    data {
+                      attributes {
+                        url
+                        provider_metadata
+                        alternativeText
+                      }
+                    }
+                  }
                 }
                 blogs {
                   data {
