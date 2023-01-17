@@ -36,8 +36,9 @@ for (const value of Spent_amount) {
   Total_spent_amount += value;
 }
 
-const productThumbnailURL =
-  ASSETS_URL + page.Intro_blob.data.attributes.formats.thumbnail.url;
+const productThumbnailURL = await importRemoteImage(
+  ASSETS_URL + page.Intro_blob.data.attributes.formats.thumbnail.url
+);
 
 const { SKU: productSKU } = page,
   productPrice = Number(page.Price),
