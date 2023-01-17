@@ -63,7 +63,9 @@ const { page, recurData } = Astro.props,
   item={{
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    image: ASSETS_URL + page.Intro_blob?.data.attributes.url,
+    image: await importRemoteImage(
+      ASSETS_URL + page.Intro_blob?.data.attributes.url
+    ),
     name: page.Estate_name,
     description: `${(await Astro.__renderMarkdown(page.Intro_text)).replace(
       /(<([^>]+)>)/gi,

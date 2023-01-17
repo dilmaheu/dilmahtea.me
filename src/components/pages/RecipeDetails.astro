@@ -611,7 +611,9 @@ page.Nutrition.forEach((item) => {
     "@context": "https://schema.org",
     "@type": "Recipe",
     name: page.Title,
-    image: ASSETS_URL + page.Intro_blob.data.attributes.url,
+    image: await importRemoteImage(
+      ASSETS_URL + page.Intro_blob?.data.attributes.url
+    ),
     author: {
       "@type": "Person",
       name: page.authors.data.map(
@@ -648,24 +650,28 @@ page.Nutrition.forEach((item) => {
           item.Cooking_part_ingredient_name
       )
     ).flat(),
-    recipeInstructions: page.Cooking_part.map((item) =>
-      item.Cooking_part_steps.map((step, idx) => ({
-        "@type": "HowToStep",
-        name: item.Cooking_part_name,
-        text: step.Cooking_part_steps_text,
-        url: `${
-          url +
-          `#` +
-          item.Cooking_part_name.replaceAll(" ", "-")
-            .replace(/\s+/g, "")
-            .trim() +
-          `-step-` +
-          (idx + 1)
-        }`,
-        image: step.Cooking_part_steps_blob.data
-          ? ASSETS_URL + step.Cooking_part_steps_blob?.data?.attributes.url
-          : "",
-      }))
-    ).flat(),
+    recipeInstructions: await Promise.all(
+      page.Cooking_part.map((item) =>
+        item.Cooking_part_steps.map(async (step, idx) => ({
+          "@type": "HowToStep",
+          name: item.Cooking_part_name,
+          text: step.Cooking_part_steps_text,
+          url: `${
+            url +
+            `#` +
+            item.Cooking_part_name.replaceAll(" ", "-")
+              .replace(/\s+/g, "")
+              .trim() +
+            `-step-` +
+            (idx + 1)
+          }`,
+          image: step.Cooking_part_steps_blob.data
+            ? await importRemoteImage(
+                ASSETS_URL + step.Cooking_part_steps_blob?.data?.attributes.url
+              )
+            : "",
+        }))
+      ).flat()
+    ),
   }}
 />
