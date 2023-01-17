@@ -11,12 +11,7 @@ import removeAstroIconAttributes from "./utils/removeAstroIconAttributes.js";
 const CSPRecord = {
   "default-src": ["'none'"],
   "style-src": ["'self'", "'unsafe-inline'"],
-  "img-src": [
-    "'self'",
-    "https://dilmahtea.me",
-    "https://cms.dilmahtea.me",
-    "data:",
-  ],
+  "img-src": ["'self'", "data:"],
   "media-src": ["data:"],
   "font-src": ["'self'"],
   "worker-src": ["blob:"],
