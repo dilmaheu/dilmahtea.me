@@ -38,7 +38,7 @@ const { allPlans } = Astro.props,
   class="w-full grid md:grid-cols-2 xl:grid-cols-3 justify-center gap-6 lg:gap-10"
 >
   {
-    allPlans.map((plan) => (
+    allPlans.map(async (plan) => (
       <div
         role="listitem"
         aria-label={`Plan ${plan.Title}`}
@@ -49,11 +49,11 @@ const { allPlans } = Astro.props,
 
           <img
             class="h-[35px] max-w-[35px]"
-            src={
+            src={await importRemoteImage(
               ASSETS_URL +
-              (plan.Title_icon?.data?.attributes?.formats?.thumbnail?.url ||
-                plan.Title_icon?.data?.attributes?.url)
-            }
+                (plan.Title_icon?.data?.attributes?.formats?.thumbnail?.url ||
+                  plan.Title_icon?.data?.attributes?.url)
+            )}
             alt=""
           />
         </div>
