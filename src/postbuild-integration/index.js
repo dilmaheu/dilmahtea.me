@@ -24,7 +24,7 @@ const sitemap = [];
 
 /** @type {typeof import('astro').AstroIntegration} */
 const postbuildIntegration = {
-  name: "dilmahtea.me Custom Integration",
+  name: "PostBuild Integration",
   hooks: {
     "astro:build:done": async () => {
       const htmlFilePaths = await globby([
