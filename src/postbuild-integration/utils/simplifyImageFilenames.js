@@ -2,9 +2,15 @@ import fs from "node:fs";
 import path from "node:path";
 import { globby } from "globby";
 
+const CMSImagesDir = "./public/assets/",
+  CMSImagesDestDir = "./dist/assets/";
+
+// assetify CMS images
+await fs.promises.cp(CMSImagesDir, CMSImagesDestDir, { recursive: true });
+
 const assetsDir = "./dist/assets/",
   assetsPaths = await globby("./dist/assets/*"),
-  imageAssetBaseRegex = /([^]+_)+[0-9a-z]{10}(@\d+w.[0-9a-z]{8})/;
+  imageAssetBaseRegex = /([^]+_)+[0-9a-z]{10}(@\d+w.[0-9a-z]{8})?/;
 
 const htmlFilePaths = await globby("./dist/**/*.html");
 
@@ -21,7 +27,7 @@ assetsPaths.forEach((assetPath) => {
   const match = imageAssetBaseRegex.exec(basename);
 
   if (match) {
-    const [, rawFilename, uniqueSuffix] = match;
+    const [, rawFilename, uniqueSuffix = ""] = match;
 
     const filteredFilename = rawFilename.slice(0, -1).split("_").join("-"),
       newBasename = filteredFilename + uniqueSuffix + extname;
