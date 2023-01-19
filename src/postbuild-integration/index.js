@@ -50,6 +50,7 @@ const postbuildIntegration = {
       );
 
       await Promise.all([
+        import("./utils/assetifyCMSImages.js"),
         import("./utils/generateRobotsMeta.js"),
         import("./utils/generateSecurityMeta.js"),
         import("./utils/simplifyImageFilenames.js"),
