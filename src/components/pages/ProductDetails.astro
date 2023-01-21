@@ -10,6 +10,7 @@ import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+import localizeCMSImage from "@utils/localizeCMSImage";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 const { green_right_arrow } = RecurringImages;
@@ -446,16 +447,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <p>{page.Transparency_text}</p>
 
           <div class="grid gap-5">
-            {page.Transparency.map((item, index) => (
+            {page.Transparency.map(async (item, index) => (
               <div class="w-full lg:w-10/12">
                 <div class="grid transparency-items-grid gap-x-2.5">
                   <div class="transparency-item-icon flex items-center">
                     <img
                       alt=""
-                      src={
+                      src={await localizeCMSImage(
                         ASSETS_URL +
-                        item.Transparency_item_icon.data.attributes.url
-                      }
+                          item.Transparency_item_icon.data.attributes.url
+                      )}
                       class="w-full h-full object-contain p-1"
                     />
                   </div>
