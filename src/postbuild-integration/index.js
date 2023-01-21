@@ -27,6 +27,8 @@ const postbuildIntegration = {
   name: "PostBuild Integration",
   hooks: {
     "astro:build:done": async () => {
+      const start = performance.now();
+
       const htmlFilePaths = await globby([
           "./dist/**/*.html",
           "!./dist/**/404/index.html",
@@ -35,28 +37,35 @@ const postbuildIntegration = {
         allHtmlFilePaths = [...htmlFilePaths, ..._404HtmlFilePaths];
 
       await Promise.all(
-        allHtmlFilePaths
-          .map(async (path) => {
-            const htmlContent = await fs.readFile(path, "utf8"),
-              { document } = await parseHTML(htmlContent);
+        allHtmlFilePaths.map(async (path) => {
+          const htmlContent = await fs.readFile(path, "utf8"),
+            { document } = await parseHTML(htmlContent);
 
-            return [
-              removeAstroIconAttributes(path, document),
-              addScriptsHashes(document, CSPRecord),
-              addSitemapURLs(path, document, sitemap, htmlFilePaths),
-            ];
-          })
-          .flat()
+          removeAstroIconAttributes(document);
+          addScriptsHashes(document, CSPRecord);
+          addSitemapURLs(path, document, sitemap, htmlFilePaths);
+
+          const { simplifyImageFilenames } = await import(
+            "./utils/simplifyImageFilenames.js"
+          );
+
+          const stringifiedDocument = simplifyImageFilenames(document);
+
+          await fs.writeFile(path, stringifiedDocument);
+        })
       );
 
       await Promise.all([
         import("./utils/generateRobotsMeta.js"),
         import("./utils/generateSecurityMeta.js"),
-        import("./utils/simplifyImageFilenames.js"),
-        rewrite404RoutesPaths(_404HtmlFilePaths),
         generateXMLSitemap(sitemap),
         generateSecurityHeaders(CSPRecord),
+        rewrite404RoutesPaths(_404HtmlFilePaths),
       ]);
+
+      const end = performance.now();
+
+      console.log(`PostBuild Integration took ${end - start}ms`);
     },
   },
 };

@@ -20,32 +20,35 @@ const htmlFiles = await Promise.all(
   )
 );
 
-assetsPaths.forEach((assetPath) => {
-  const extname = path.extname(assetPath),
-    basename = path.basename(assetPath, extname);
+const pathsDictionary = assetsPaths
+  .map((assetPath) => {
+    const extname = path.extname(assetPath),
+      basename = path.basename(assetPath, extname);
 
-  const match = imageAssetBaseRegex.exec(basename);
+    const match = imageAssetBaseRegex.exec(basename);
 
-  if (match) {
-    const [, rawFilename, uniqueSuffix = ""] = match;
+    if (match) {
+      const [, rawFilename, uniqueSuffix = ""] = match;
 
-    const filteredFilename = rawFilename.slice(0, -1).split("_").join("-"),
-      newBasename = filteredFilename + uniqueSuffix + extname;
+      const filteredFilename = rawFilename.slice(0, -1).split("_").join("-"),
+        newBasename = filteredFilename + uniqueSuffix + extname;
 
-    fs.renameSync(assetPath, path.join(assetsDir, newBasename));
+      fs.renameSync(assetPath, path.join(assetsDir, newBasename));
 
-    htmlFiles.forEach((html, i) => {
-      const oldPath = assetPath.slice(6);
+      const oldPath = assetPath.slice(6),
+        newPath = "/assets/" + newBasename;
 
-      if (html.includes(oldPath)) {
-        const newPath = "/assets/" + newBasename;
+      return { oldPath, newPath };
+    }
+  })
+  .filter(Boolean);
 
-        htmlFiles[i] = html.replaceAll(oldPath, newPath);
-      }
-    });
-  }
-});
+export function simplifyImageFilenames(document) {
+  let html = document.toString();
 
-htmlFilePaths.forEach((htmlFilePath, i) => {
-  fs.writeFileSync(htmlFilePath, htmlFiles[i]);
-});
+  pathsDictionary.forEach(({ oldPath, newPath }) => {
+    html = html.replaceAll(oldPath, newPath);
+  });
+
+  return html;
+}
