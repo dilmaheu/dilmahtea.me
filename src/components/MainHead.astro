@@ -24,7 +24,7 @@ const {
   Meta_description: description,
 } = meta;
 
-const { origin } = Astro.site,
+const { origin, hostname } = Astro.site,
   { updatedAt: lastModifiedDate } = page,
   alternateLocales = availableLocales.filter((lcl) => lcl !== locale);
 
@@ -101,7 +101,7 @@ const openGraphImage =
 {/* Twitter */}
 <meta name="twitter:title" content={title} />
 <meta property="twitter:url" content={documentHref} />
-<meta property="twitter:domain" content="dilmahtea.me" />
+<meta property="twitter:domain" content={hostname} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content={twitterImage} />
@@ -113,7 +113,7 @@ const openGraphImage =
       defer
       src="/rpcq/script.js"
       data-api="/rpcq/event"
-      data-domain="dilmahtea.me"
+      data-domain={hostname}
     />
   )
 }
