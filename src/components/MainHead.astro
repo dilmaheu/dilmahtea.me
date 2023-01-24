@@ -24,14 +24,14 @@ const {
   Meta_description: description,
 } = meta;
 
-const domain = Astro.site.origin,
+const { origin } = Astro.site,
   { updatedAt: lastModifiedDate } = page,
   alternateLocales = availableLocales.filter((lcl) => lcl !== locale);
 
-const documentHref = `${domain}/${locale}/${
+const documentHref = `${origin}/${locale}/${
     slugURL === "/" ? "" : slugURL + "/"
   }`,
-  canonicalHref = `${domain}/${locale}/${
+  canonicalHref = `${origin}/${locale}/${
     canonicalURL !== undefined
       ? canonicalURL === "/"
         ? ""
@@ -39,8 +39,10 @@ const documentHref = `${domain}/${locale}/${
       : slugURL + "/"
   }`;
 
-const openGraphImage = await importRemoteImage(metaImageSrc + "?w=1200&h=627"),
-  twitterImage = await importRemoteImage(metaImageSrc + "?w=800&h=418");
+const openGraphImage =
+    origin + (await importRemoteImage(metaImageSrc + "?w=1200&h=627")),
+  twitterImage =
+    origin + (await importRemoteImage(metaImageSrc + "?w=800&h=418"));
 ---
 
 <meta charset="UTF-8" />
@@ -77,7 +79,7 @@ const openGraphImage = await importRemoteImage(metaImageSrc + "?w=1200&h=627"),
     <link
       rel="alternate"
       hreflang={alternateLocale}
-      href={`${domain}/${alternateLocale}/${
+      href={`${origin}/${alternateLocale}/${
         slugURL === "/" ? "" : slugURL + "/"
       }`}
     />
