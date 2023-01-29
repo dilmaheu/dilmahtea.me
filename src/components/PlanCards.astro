@@ -3,7 +3,7 @@ import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 import RecurringImages from "@store/RecurringImages";
 
-const { allPlans } = Astro.props,
+const { allPlans, ariaLabelRecurData } = Astro.props,
   { ASSETS_URL } = import.meta.env,
   { tick, green_leaf } = RecurringImages;
 ---
@@ -34,14 +34,14 @@ const { allPlans } = Astro.props,
 
 <div
   role="list"
-  aria-label="Plans"
+  aria-label={ariaLabelRecurData.Crowdfunding_plans_text}
   class="w-full grid md:grid-cols-2 xl:grid-cols-3 justify-center gap-6 lg:gap-10"
 >
   {
     allPlans.map((plan, index) => (
       <div
         role="listitem"
-        aria-label={`Plan ${index + 1}`}
+        aria-label={ariaLabelRecurData.Crowdfunding_plan_text + (index + 1)}
         class="plan-card w-full h-auto bg-primary rounded-[45px] lg:rounded-[60px]"
       >
         <div class="inline-flex items-end gap-x-3.5">

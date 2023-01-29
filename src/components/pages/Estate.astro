@@ -11,7 +11,7 @@ import RecurringImages from "@store/RecurringImages";
 
 const { left_quote, love_gift, white_right_arrow } = RecurringImages;
 
-const { page, recurData } = Astro.props,
+const { page, recurData, ariaLabelRecurData } = Astro.props,
   { posts } = page,
   { ASSETS_URL } = import.meta.env;
 
@@ -164,7 +164,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   {/* Text Content */}
   <div 
     role="banner"
-    aria-label="Intro"
+    aria-label={ariaLabelRecurData.Intro_text}
     class="wrapper hero-text-container h-full relative z-30"
   >
     <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
@@ -292,7 +292,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
     <div
       role="list" 
-      aria-label="all estates"
+      aria-label={page.Aria_label_all_estates_text}
       class="flex flex-wrap items-center gap-y-[50px] py-[50px] lg:py-[75px]"
     >
       {
@@ -387,7 +387,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   />
 
   <section
-    aria-label="quote"
+    aria-label={page.Block2_aria_label_text}
     class="bg-primary w-full h-full estate-quote-container"
   >
     <div class="flex flex-wrap w-full gap-y-6 items-center relative z-20">
@@ -436,7 +436,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
       <div
         role="list"
-        aria-label="all impacts"
+        aria-label={page.Block4_items_aria_label_text}
         class:list={[
           "grid grid-cols-[repeat(auto-fit,minmax(0,150px))] md:grid-cols-[repeat(auto-fit,minmax(0,250px))]",
           "justify-center md:justify-between gap-y-[35px] w-full estate-impacts-container",
@@ -487,7 +487,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
       <div
         role="list"
-        aria-label="Kindness Items"
+        aria-label={ariaLabelRecurData.Kindness_Items_text}
         class:list={[
           "w-full mx-auto mb-[50px] grid sm:grid-cols-2 lg:grid-cols-3",
           "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
@@ -496,7 +496,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
         {blogs.slice(0, 3).map((post, index) => (
           <div
             role="listitem"
-            aria-label={`Kindness Item ${index + 1}`}
+            aria-label={ariaLabelRecurData.Kindness_Item_text + (index + 1)}
             style="clip-path: url(#recent-post-card-curve);"
             class="link-section bg-primary recent-post-card"
           >
@@ -519,7 +519,9 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                     role="presentation"
                     aria-label={
                       post.authors.data.map(({ attributes }, i) => (
-                        `Wrote by${i > 0 ? ", " : " "}` + attributes.givenName
+                        ariaLabelRecurData.Wrote_by_text 
+                          + (i > 0 ? ", " : " ") 
+                          + attributes.givenName
                       ))
                     }
                     class="recent-post-card-author flex flex-wrap font-bold"

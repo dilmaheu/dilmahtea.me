@@ -15,8 +15,10 @@ const {
   green_leaf: right_post_leaf,
 } = RecurringImages;
 
-const { posts } = Astro.props.page,
-  { ASSETS_URL } = import.meta.env;
+
+const { page, ariaLabelRecurData } = Astro.props,
+  { ASSETS_URL } = import.meta.env,
+  { posts } = page;
 
 posts.sort((a, b) => {
   return new Date(b.createdAt) - new Date(a.createdAt);
@@ -86,7 +88,7 @@ const [firstPost] = posts;
   {/* Text Content */}
   <div 
     role="banner"
-    aria-label="latest post"
+    aria-label={`${ariaLabelRecurData.Post_text} 1 ${ariaLabelRecurData.Product_post_of_text} ${posts.length}`}
     class="wrapper hero-text-container h-full relative z-30"
   >
     <div class="flex flex-wrap items-center sm:w-7/12 h-full">
@@ -98,7 +100,9 @@ const [firstPost] = posts;
                 role="presentation"
                 aria-label={
                   firstPost.authors.data.map(({ attributes }, i) => (
-                    `wrote-by-${i > 0 ? ", " : " "}` + attributes.givenName
+                    ariaLabelRecurData.Wrote_by_text 
+                      + (i > 0 ? ", " : " ") 
+                      + attributes.givenName
                   ))
                 }
                 class="post-author flex flex-wrap font-bold text-lightgray"
@@ -176,7 +180,7 @@ const [firstPost] = posts;
 
   <div 
     role="list"
-    aria-label="all posts"
+    aria-label={ariaLabelRecurData.All_posts_text}
     class="flex flex-wrap items-center gap-y-[50px] py-[50px]"
   >
     {
@@ -186,9 +190,12 @@ const [firstPost] = posts;
           postLeafWidthMultiplier = isEven ? 0.24 : 0.18;
 
         return (
-          <div 
+          <div
             role="listitem"
-            aria-label={`post ${index + 2}`}
+            aria-label={
+              `${ariaLabelRecurData.Post_text
+                  + (index + 2)} ${ariaLabelRecurData.Product_post_of_text} ${posts.length}`
+            }
             class="link-section flex flex-wrap items-center"
           >
             <div
@@ -253,7 +260,9 @@ const [firstPost] = posts;
                       role="presentation" 
                       aria-label={
                         post.authors.data.map(({ attributes }, i) => (
-                          `wrote by ${i > 0 ? ", " : " "}` + attributes.givenName
+                          ariaLabelRecurData.Wrote_by_text 
+                            + (i > 0 ? ", " : " ") 
+                            + attributes.givenName
                         ))
                       }
                       class="post-author flex flex-wrap font-bold text-primary"

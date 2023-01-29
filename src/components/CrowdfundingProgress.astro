@@ -1,5 +1,5 @@
 ---
-const { goalText, supportersText, supportersCount, totalAmountRaised } =
+const { goalText, supportersText, supportersCount, totalAmountRaised, ariaLabelRecurData } =
   Astro.props;
 ---
 
@@ -50,7 +50,10 @@ const { goalText, supportersText, supportersCount, totalAmountRaised } =
   class="relative w-full progress-content-container"
 >
   <div
-    aria-label={`Total raised €${totalAmountRaised}`}
+    aria-label={
+      ariaLabelRecurData.Crowdfunding_total_raised_text 
+        + ` ` + totalAmountRaised
+    }
     class="progress-header"
   >
     €<span class="font-bold total-amount-raised">{totalAmountRaised}</span>

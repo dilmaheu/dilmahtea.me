@@ -163,12 +163,12 @@ const shippingMethods = page.shipping_methods
 
     <div 
       role="list"
-      aria-label="delivery address details" 
+      aria-label={page.Aria_label_kindness_delivery_address_section_text}
       class="p-4 gap-6 flex flex-col bg-lightgray2 rounded-2xl"
     >
       <div 
         role="listitem"
-        aria-label="email-address" 
+        aria-label={page.Aria_label_email_address_text}
         class="shipping-detail"
       >
         <div>{page.text_contact}</div>
@@ -179,7 +179,10 @@ const shippingMethods = page.shipping_methods
           </p>
 
           <a 
-            aria-label="change email address"
+            aria-label={
+              page.Aria_label_change_text 
+                + ` ` + page.Aria_label_email_address_text
+            }
             href="/checkout/information?change=email"
           >
             {page.text_change}
@@ -191,7 +194,7 @@ const shippingMethods = page.shipping_methods
 
       <div 
         role="listitem"
-        aria-label="delivery address" 
+        aria-label={page.Aria_label_delivery_address_text}
         class="shipping-detail"
       >
         <div>{page.text_delivery_address}</div>
@@ -202,7 +205,10 @@ const shippingMethods = page.shipping_methods
           </p>
 
           <a 
-            aria-label="change delivery address"
+            aria-label={
+              page.Aria_label_change_text 
+                + ` ` + page.Aria_label_delivery_address_text
+            }
             href="/checkout/information?change=street"
           >
             {page.text_change}
@@ -274,7 +280,7 @@ const shippingMethods = page.shipping_methods
 
 <section
   role="complementry"
-  aria-label="order summary" 
+  aria-label={checkoutRecurData.text_order_summary}
   class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-lightgreen"
 >
   <OrderSummary page={page} />

@@ -17,7 +17,7 @@ const {
   green_down_arrow,
 } = RecurringImages;
 
-const { page, recurData } = Astro.props,
+const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
   { ASSETS_URL } = import.meta.env;
 
@@ -114,11 +114,11 @@ page.Nutrition.forEach((item) => {
 });
 ---
 
-<PostDetailsLayout {page} {recurData} {headingName}>
+<PostDetailsLayout {page} {recurData} {ariaLabelRecurData} {headingName}>
   <Fragment slot="recipe-header">
     <div
       role="complementary"
-      aria-label={`${recurData.recipe_recipe} timing`}
+      aria-label={recurData.recipe_recipe + ariaLabelRecurData.Recipe_timing_text}
       class="flex flex-wrap items-center recipe-Time-Container"
     >
       <div class="inline-flex items-center gap-2 md:gap-2.5">
@@ -267,7 +267,7 @@ page.Nutrition.forEach((item) => {
 
       <div
         role="complementary"
-        aria-label={`${recurData.recipe_recipe} timing`} 
+        aria-label={recurData.recipe_recipe + ariaLabelRecurData.Recipe_timing_text} 
         class="flex flex-wrap mt-5 gap-y-5 recipe-sec-time-container"
       >
         <div class="inline-flex items-center gap-2.5">
@@ -517,7 +517,7 @@ page.Nutrition.forEach((item) => {
           {item.Cooking_part_steps.map((step, idx) => (
             <div
               role="listitem"
-              aria-label={`step ${idx + 1}`}
+              aria-label={ariaLabelRecurData.Recipe_step_text + (idx + 1)}
               class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
               id={
                 item.Cooking_part_name.replaceAll(" ", "-")

@@ -17,7 +17,7 @@ const {
   crowdfunding_info_section_background,
 } = RecurringImages;
 
-const { page } = Astro.props,
+const { page, ariaLabelRecurData } = Astro.props,
   { ASSETS_URL } = import.meta.env;
 
 // fetch crowdfunding stats from Cloudflare Worker
@@ -56,7 +56,7 @@ const goal = 100000,
   {/* Text Content */}
   <div 
     role="banner"
-    aria-label="Intro"
+    aria-label={ariaLabelRecurData.Intro_text}
     class="wrapper hero-text-container h-full relative z-30"
   >
     <div class="flex flex-wrap items-center sm:w-7/12 h-full sm:pb-8 md:pb-0">
@@ -125,6 +125,7 @@ const goal = 100000,
           supportersText={page.Heading_supporters}
           {supportersCount}
           {totalAmountRaised}
+          {ariaLabelRecurData}
         />
       </div>
     </div>
@@ -190,7 +191,7 @@ const goal = 100000,
     {page.Heading_plans}
   </h2>
 
-  <PlanCards allPlans={page.allPlans} />
+  <PlanCards allPlans={page.allPlans} {ariaLabelRecurData} />
 </section>
 
 {/* Info Section */}

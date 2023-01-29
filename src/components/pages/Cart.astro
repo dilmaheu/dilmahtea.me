@@ -24,6 +24,7 @@ const { page, meta, locale, recurData, availableLocales, metaImageSrc } =
   Astro.props;
 
 const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 
 const footerText = recurData.Footer_text.replaceAll(
   "<current_year>",
@@ -245,7 +246,7 @@ const footerText = recurData.Footer_text.replaceAll(
                   </h2>
 
                   <button
-                    aria-label="Remove Item"
+                    aria-label={checkoutRecurData.Aria_label_remove_item_button_text}
                     class="remove-item-btn md:hidden"
                   >
                     <Icon
@@ -275,7 +276,7 @@ const footerText = recurData.Footer_text.replaceAll(
             <div class="hidden md:flex gap-7">
               <CartProductQuantityInput page={page} />
 
-              <button class="remove-item-btn" aria-label="Remove Item">
+              <button class="remove-item-btn" aria-label={page.Aria_label_remove_item_button_text}>
                 <Icon name="akar-icons:trash-can" class="w-[29px] h-[29px]" />
               </button>
             </div>

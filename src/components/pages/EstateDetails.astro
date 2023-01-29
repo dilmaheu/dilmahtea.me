@@ -6,7 +6,7 @@ import ClippedPicture from "@components/ClippedPicture.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
-const { page, recurData } = Astro.props,
+const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
   optional_data = page.Optional_data,
   { ASSETS_URL } = import.meta.env;
@@ -27,7 +27,7 @@ const { page, recurData } = Astro.props,
         slot="estate-map"
         role="complementary"
         class="wrapper pb-[50px]"
-        aria-label="location-map"
+        aria-label={ariaLabelRecurData.Estate_location_map_text}
       >
         <h2 class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[110%] mb-[15px] sm:mb-5 text-dark">
           {page.Estate_name} {recurData.estate_location}

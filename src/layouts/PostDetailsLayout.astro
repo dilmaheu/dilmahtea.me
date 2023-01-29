@@ -13,7 +13,7 @@ import RecurringImages from "@store/RecurringImages";
 
 const { white_cup, green_book, white_right_arrow } = RecurringImages;
 
-const { page, posts, recurData, headingName } = Astro.props,
+const { page, posts, recurData, ariaLabelRecurData, headingName } = Astro.props,
   { ASSETS_URL } = import.meta.env;
 
 // display relevant recipes instead of recent posts for RecipeDetails pages
@@ -119,7 +119,7 @@ const contentHTML = await Astro.slots.render("post-details"),
   {/* Text Content */}
   <div 
     role="banner"
-    aria-label="post-intro"
+    aria-label={ariaLabelRecurData.Post_intro_text}
     class="wrapper hero-text-container h-full relative z-30"
   >
     <div class="flex flex-wrap items-center sm:w-7/12 h-full">
@@ -158,7 +158,9 @@ const contentHTML = await Astro.slots.render("post-details"),
                   role="presentation"
                   aria-label={
                     page.authors.data.map(({ attributes }, i) => (
-                      `wrote by ${i > 0 ? ", " : " "}` + attributes.givenName
+                      ariaLabelRecurData.Wrote_by_text 
+                        + (i > 0 ? ", " : " ") 
+                        + attributes.givenName
                     ))
                   }
                   class="post-author flex flex-wrap font-bold"
@@ -288,7 +290,7 @@ const contentHTML = await Astro.slots.render("post-details"),
 <slot name="howto-header" />
 
 {/* Blog Section */}
-<section class="py-[50px]" role="main" aria-label="post-details">
+<section class="py-[50px]" role="main" aria-label={ariaLabelRecurData.Post_details_text}>
   <div
     id="sticky-header"
     class="self-start invisible md:invisible w-full sticky top-0 z-[998] text-primary bg-lightgray overflow-hidden"
@@ -431,7 +433,7 @@ const contentHTML = await Astro.slots.render("post-details"),
 
       <div
         role="list"
-        aria-label="Kindness Items"
+        aria-label={ariaLabelRecurData.Kindness_Items_text}
         class:list={[
           "w-full mx-auto mb-[50px] grid sm:grid-cols-2 lg:grid-cols-3",
           "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
@@ -440,7 +442,7 @@ const contentHTML = await Astro.slots.render("post-details"),
         {recentPosts.slice(0, 3).map((post, index) => (
           <div
             role="listitem"
-            aria-label={`Kindness-item-${index + 1}`}
+            aria-label={ariaLabelRecurData.Kindness_Item_text + (index + 1)}
             style="clip-path: url(#recent-post-card-curve)"
             class="link-section bg-primary recent-post-card"
           >
@@ -464,7 +466,9 @@ const contentHTML = await Astro.slots.render("post-details"),
                       role="presentation"
                       aria-label={
                         post.authors.data.map(({ attributes }, i) => (
-                          `Wrote by${i > 0 ? ", " : " "}` + attributes.givenName
+                          ariaLabelRecurData.Wrote_by_text 
+                            + (i > 0 ? ", " : " ") 
+                            + attributes.givenName
                         ))
                       }
                       class="recent-post-card-author flex flex-wrap font-bold"

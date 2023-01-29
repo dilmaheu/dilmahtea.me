@@ -5,7 +5,7 @@ import { Picture } from "astro-imagetools/components";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import { join } from "path";
 
-const { page, recurData } = Astro.props,
+const { page, recurData, ariaLabelRecurData } = Astro.props,
   { howTos } = page,
   headingName = recurData.text_practices,
   { ASSETS_URL } = import.meta.env;
@@ -50,7 +50,7 @@ const url = `${Astro.site.origin}/${page.locale}/${
   }
 </style>
 
-<PostDetailsLayout {page} posts={howTos} {recurData} {headingName}>
+<PostDetailsLayout {page} posts={howTos} {recurData} {ariaLabelRecurData} {headingName}>
   {/* Howto Header */}
   <div
     slot="howto-header"
@@ -75,7 +75,7 @@ const url = `${Astro.site.origin}/${page.locale}/${
       >
         {
           page.Method.map((method, index) => (
-            <span role="listitem" aria-label={`Method ${index + 1}`}>
+            <span role="listitem" aria-label={ariaLabelRecurData.Howto_method_text + (index + 1)}>
               <a
                 href={`#` + method.Method_title.replaceAll(" ", "-")}
                 class:list={[
