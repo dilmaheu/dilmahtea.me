@@ -6,11 +6,15 @@ import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { page, recurData } = Astro.props,
   { locale } = page,
+  englishVersionData = CMS.get("checkoutShipping", "en"),
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
 const shippingMethods = page.shipping_methods
-  .split("\n")
-  .map((methodString) => methodString.split(" - "));
+    .split("\n")
+    .map((methodString) => methodString.split(" - ")),
+  englishShippingMethods = englishVersionData.shipping_methods
+    .split("\n")
+    .map((methodString) => methodString.split(" - ")[0]);
 ---
 
 <style lang="scss">
@@ -197,12 +201,12 @@ const shippingMethods = page.shipping_methods
       <h2 class="alice">{page.text_shipping_method}</h2>
 
       {
-        shippingMethods.map(([method, cost, methodLocalName], i) => (
+        shippingMethods.map(([method, cost, description], i) => (
           <label class="gap-5 flex items-center">
             <input
               type="radio"
               name="shipping_method"
-              value={method}
+              value={englishShippingMethods[i]}
               data-cost={cost}
               class:list={[
                 "hover:brightness-50 active:brightness-150",
@@ -215,7 +219,7 @@ const shippingMethods = page.shipping_methods
 
             <span class="gap-3 flex items-center">
               <span class="shipping-method font-semibold text-dark2 leading-[130%]">
-                {methodLocalName}
+                {description}
               </span>
 
               <span class="w-1 h-1 bg-primary rounded-full" />

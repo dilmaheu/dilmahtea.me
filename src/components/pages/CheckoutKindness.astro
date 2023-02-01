@@ -7,6 +7,7 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 const { page } = Astro.props,
   { locale } = page,
   { ASSETS_URL } = import.meta.env,
+  englishVersionData = CMS.get("checkoutKindness", "en"),
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
@@ -83,13 +84,13 @@ const { page } = Astro.props,
     class="kindness-causes flex flex-col sm:flex-row flex-wrap justify-center gap-10"
   >
     {
-      page.Kindness_Causes.map(({ cause, description, featured_blob }) => (
+      page.Kindness_Causes.map(({ cause, description, featured_blob }, i) => (
         <div>
           <div class="h-full">
             <div
               {
               /* @ts-ignore */ }
-              cause={cause}
+              data-cause={englishVersionData.Kindness_Causes[i].cause}
               style="clip-path: url(#kindness-cause-card-curve);"
               class="kindness-cause relative w-full h-full sm:w-80 flex flex-col bg-primary cursor-pointer"
             >
@@ -158,7 +159,8 @@ const { page } = Astro.props,
 
   const kindnessCausesCardsContainer =
       document.querySelector(".kindness-causes"),
-    kindnessCausesCards = document.querySelectorAll(".kindness-cause"),
+    kindnessCausesCards =
+      document.querySelectorAll<HTMLElement>(".kindness-cause"),
     continueToPaymentBtn = document.getElementById(
       "continue-to-payment-btn"
     ) as HTMLButtonElement;
@@ -168,7 +170,7 @@ const { page } = Astro.props,
       const activeCauseCard = kindnessCausesCardsContainer.querySelector(
           ".active-kindness-cause"
         ),
-        kindness_cause = card.getAttribute("cause");
+        kindness_cause = card.dataset.cause;
 
       activeCauseCard?.classList?.remove("active-kindness-cause");
 
