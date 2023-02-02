@@ -11,7 +11,7 @@ import RecurringImages from "@store/RecurringImages";
 
 const { left_quote, love_gift, white_right_arrow } = RecurringImages;
 
-const { page, recurData } = Astro.props,
+const { page, recurData, ariaLabelRecurData } = Astro.props,
   { posts } = page,
   { ASSETS_URL } = import.meta.env;
 
@@ -162,7 +162,11 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 <!-- Hero Section -->
 <Hero>
   {/* Text Content */}
-  <div class="wrapper hero-text-container h-full relative z-30">
+  <div 
+    role="banner"
+    aria-label={ariaLabelRecurData.Intro_text}
+    class="wrapper hero-text-container h-full relative z-30"
+  >
     <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
       <div class="my-[30px]">
         <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
@@ -217,15 +221,15 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 <!-- Home Estate Details Section -->
 
 <div class="wrapper py-[50px]" role="main">
-  <div class="flex flex-wrap justify-between items-center gap-y-[15px]">
+  <div
+    class="flex flex-wrap justify-between items-center gap-y-[15px]"
+  >
     <div
       class="flex flex-wrap items-center justify-between gap-x-6 gap-y-[15px]"
     >
-      <div
-        class="alice text-[42px] leading-[3.15rem] tracking-[-0.03rem] text-dark2"
-      >
+      <h2 class="alice text-[42px] leading-[3.15rem] tracking-[-0.03rem] text-dark2">
         {page.Heading_block}
-      </div>
+      </h2>
 
       {
         /* (
@@ -287,6 +291,8 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     />
 
     <div
+      role="list" 
+      aria-label={page.Aria_label_all_estates_text}
       class="flex flex-wrap items-center gap-y-[50px] py-[50px] lg:py-[75px]"
     >
       {
@@ -294,7 +300,10 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
           const isEven = index % 2 === 0;
 
           return (
-            <section class="link-section flex flex-wrap items-center">
+            <div
+              role="listitem"
+              class="link-section flex flex-wrap items-center"
+            >
               <div
                 class:list={[
                   "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
@@ -360,7 +369,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                   </div>
                 </div>
               </div>
-            </section>
+            </div>
           );
         })
       }
@@ -377,7 +386,10 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     path="M0.913,0.04 c0.088,0.046,0.08,0.124,0.084,0.222 c0.007,0.165,-0.005,0.26,0,0.425 c0.003,0.116,0,0.179,-0.029,0.242 c-0.022,0.048,-0.301,0.075,-0.479,0.071 c-0.162,-0.003,-0.386,0.008,-0.413,-0.054 C0.05,0.888,0.042,0.753,0.026,0.694 C-0.003,0.583,0.033,0.464,0.026,0.363 C0.021,0.271,-0.054,0.156,0.076,0.054 C0.144,0,0.315,-0.001,0.489,0 C0.655,0.002,0.823,-0.007,0.913,0.04"
   />
 
-  <div class="bg-primary w-full h-full estate-quote-container">
+  <section
+    aria-label={page.Block2_aria_label_text}
+    class="bg-primary w-full h-full estate-quote-container"
+  >
     <div class="flex flex-wrap w-full gap-y-6 items-center relative z-20">
       <!-- Quote Image -->
       <div class="w-full sm:w-1/2">
@@ -412,17 +424,19 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
   <EstatesInfoSection page={page} />
 
-  <div class="bg-lightgray2 lg:mb-[25px] estate-impact-container">
+  <section class="bg-lightgray2 lg:mb-[25px] estate-impact-container">
     <div class="flex flex-wrap items-center relative z-20 gap-y-[25px]">
-      <div class="w-full font-medium text-dark text-center estate-impact-title">
+      <h3 class="w-full font-medium text-dark text-center estate-impact-title">
         {page.Block4_heading}
-      </div>
+      </h3>
 
       <div
+        role="list"
+        aria-label={page.Block4_items_aria_label_text}
         class:list={[
           "grid grid-cols-[repeat(auto-fit,minmax(0,150px))] md:grid-cols-[repeat(auto-fit,minmax(0,250px))]",
           "justify-center md:justify-between gap-y-[35px] w-full estate-impacts-container",
@@ -430,7 +444,11 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       >
         {
           page.Block4_items.map((item) => (
-            <div class="grid justify-items-center">
+            <div
+              role="listitem"
+              aria-label={item.Block4_Value + item.Block4_description}
+              class="grid justify-items-center"
+            >
               <div class="h-[43px]">
                 <img 
                   class="w-full h-full" 
@@ -450,11 +468,14 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       </div>
     </div>
   </div>
-</div>
+</section>
 
 {
   blogs.length > 0 && (
-    <section class="wrapper">
+    <section
+      role="complementary"
+      class="wrapper"
+    >
       <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
         {recurData.text_explore_the_world_of_kindness}
       </h2>
@@ -466,16 +487,16 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
       <div
         role="list"
-        aria-label="Kindness Items"
+        aria-label={ariaLabelRecurData.Kindness_Items_text}
         class:list={[
           "w-full mx-auto mb-[50px] grid sm:grid-cols-2 lg:grid-cols-3",
           "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
         ]}
       >
-        {blogs.slice(0, 3).map((post) => (
+        {blogs.slice(0, 3).map((post, index) => (
           <div
             role="listitem"
-            aria-label="Kindness Item"
+            aria-label={ariaLabelRecurData.Kindness_Item_text + (index + 1)}
             style="clip-path: url(#recent-post-card-curve);"
             class="link-section bg-primary recent-post-card"
           >
@@ -494,7 +515,17 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
               <div class="recent-post-card-content-container">
                 <div>
-                  <div class="recent-post-card-author flex flex-wrap font-bold">
+                  <div
+                    role="presentation"
+                    aria-label={
+                      post.authors.data.map(({ attributes }, i) => (
+                        ariaLabelRecurData.Wrote_by_text 
+                          + (i > 0 ? ", " : " ") 
+                          + attributes.givenName
+                      ))
+                    }
+                    class="recent-post-card-author flex flex-wrap font-bold"
+                  >
                     {post.authors.data.map(({ attributes }, index) => (
                       <div>
                         {`${index > 0 ? ", " : " "}` + attributes.givenName}

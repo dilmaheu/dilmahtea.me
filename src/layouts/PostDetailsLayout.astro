@@ -13,7 +13,7 @@ import RecurringImages from "@store/RecurringImages";
 
 const { white_cup, green_book, white_right_arrow } = RecurringImages;
 
-const { page, posts, recurData, headingName } = Astro.props,
+const { page, posts, recurData, ariaLabelRecurData, headingName } = Astro.props,
   { ASSETS_URL } = import.meta.env;
 
 // display relevant recipes instead of recent posts for RecipeDetails pages
@@ -117,8 +117,12 @@ const contentHTML = await Astro.slots.render("post-details"),
 {/* Hero Section */}
 <Hero>
   {/* Text Content */}
-  <div class="wrapper hero-text-container h-full relative z-30">
-    <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
+  <div 
+    role="banner"
+    aria-label={ariaLabelRecurData.Post_intro_text}
+    class="wrapper hero-text-container h-full relative z-30"
+  >
+    <div class="flex flex-wrap items-center sm:w-7/12 h-full">
       <div class="my-[30px]">
         {
           page.authors && (
@@ -150,7 +154,17 @@ const contentHTML = await Astro.slots.render("post-details"),
               )}
 
               <div class="grid content-between">
-                <div class="post-author flex flex-wrap font-bold">
+                <div 
+                  role="presentation"
+                  aria-label={
+                    page.authors.data.map(({ attributes }, i) => (
+                      ariaLabelRecurData.Wrote_by_text 
+                        + (i > 0 ? ", " : " ") 
+                        + attributes.givenName
+                    ))
+                  }
+                  class="post-author flex flex-wrap font-bold"
+                >
                   {page.authors.data.map((author, index) => (
                     <span>
                       {`${index > 0 ? ", " : " "}` +
@@ -197,12 +211,12 @@ const contentHTML = await Astro.slots.render("post-details"),
         }
 
         <h1 class="hero-title pt-[5px]">
-          <span>{page.Title || page.Estate_name}</span>
+          {page.Title || page.Estate_name}
 
           {
             page.Title && (
               <span class="icon heading-inline-icon">
-                <img class="w-full h-full" {...white_cup} />
+                <img class="w-full h-full" alt="" {...white_cup} />
               </span>
             )
           }
@@ -276,7 +290,7 @@ const contentHTML = await Astro.slots.render("post-details"),
 <slot name="howto-header" />
 
 {/* Blog Section */}
-<section class="py-[50px]" role="main">
+<section class="py-[50px]" role="main" aria-label={ariaLabelRecurData.Post_details_text}>
   <div
     id="sticky-header"
     class="self-start invisible md:invisible w-full sticky top-0 z-[998] text-primary bg-lightgray overflow-hidden"
@@ -319,7 +333,7 @@ const contentHTML = await Astro.slots.render("post-details"),
               "hidden pt-[15px] pb-[25px] border-t border-solid overflow-y-auto",
             ]}
           >
-            <div id="sticky-heading-links" class="overflow-y-auto">
+            <div role="list" id="sticky-heading-links" class="overflow-y-auto">
               <HeadingLinks type="mobile" headings={headings}>
                 {/* html source to extract heading links from */}
                 <slot name="post-details" />
@@ -354,6 +368,8 @@ const contentHTML = await Astro.slots.render("post-details"),
     {
       headings.length > 0 && (
         <div
+          role="complementary"
+          aria-label={headingName}
           id="headings"
           class:list={[
             "w-full md:w-1/3 md:h-screen self-start flex flex-col",
@@ -372,6 +388,7 @@ const contentHTML = await Astro.slots.render("post-details"),
           <slot name="jump-to-recipe" />
 
           <div
+            role="list"
             id="heading-links"
             class="flex flex-col leading-[130%] lg:leading-[150%] overflow-y-auto"
           >
@@ -400,7 +417,10 @@ const contentHTML = await Astro.slots.render("post-details"),
 
 {
   recentPosts?.length > 0 && (
-    <section class="wrapper">
+    <section
+      role="complementary"
+      class="wrapper"
+    >
       <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
         {(page.Relevant_recipes && recurData.recipe_discover) ||
           recurData.text_explore_the_world_of_kindness}
@@ -413,38 +433,46 @@ const contentHTML = await Astro.slots.render("post-details"),
 
       <div
         role="list"
-        aria-label="Kindness Items"
+        aria-label={ariaLabelRecurData.Kindness_Items_text}
         class:list={[
           "w-full mx-auto mb-[50px] grid sm:grid-cols-2 lg:grid-cols-3",
           "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
         ]}
       >
-        {recentPosts.slice(0, 3).map((post) => (
+        {recentPosts.slice(0, 3).map((post, index) => (
           <div
             role="listitem"
-            aria-label="Kindness Item"
+            aria-label={ariaLabelRecurData.Kindness_Item_text + (index + 1)}
             style="clip-path: url(#recent-post-card-curve)"
             class="link-section bg-primary recent-post-card"
           >
-            <a class="block w-full" href={`/` + post.Meta.URL_slug}>
-              <Picture
-                layout="fullWidth"
-                alt={post.Intro_blob.data.attributes.alternativeText}
-                src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-                attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                sizes={[
-                  "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
-                  "(min-width: 640px) calc(45vw - 16px)",
-                  "min(90vw, 380px)",
-                ].join(", ")}
-              />
-            </a>
+            <Picture
+              layout="fullWidth"
+              alt={post.Intro_blob.data.attributes.alternativeText}
+              src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+              attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
+              sizes={[
+                "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
+                "(min-width: 640px) calc(45vw - 16px)",
+                "min(90vw, 380px)",
+              ].join(", ")}
+            />
 
             <div class="recent-post-card-content-container grid content-between">
               <div>
                 {post.authors && (
                   <div>
-                    <div class="recent-post-card-author flex flex-wrap font-bold">
+                    <div
+                      role="presentation"
+                      aria-label={
+                        post.authors.data.map(({ attributes }, i) => (
+                          ariaLabelRecurData.Wrote_by_text 
+                            + (i > 0 ? ", " : " ") 
+                            + attributes.givenName
+                        ))
+                      }
+                      class="recent-post-card-author flex flex-wrap font-bold"
+                    >
                       {post.authors.data.map(({ attributes }, index) => (
                         <span>
                           {`${index > 0 ? ", " : " "}` + attributes.givenName}
@@ -461,7 +489,7 @@ const contentHTML = await Astro.slots.render("post-details"),
                   </div>
                 )}
 
-                <div class="recent-post-card-title mt-[15px]">
+                <div class="recent-post-card-title alice mt-[15px]">
                   <a
                     class="main-link"
                     set:text={post.Title}

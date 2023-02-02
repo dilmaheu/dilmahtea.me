@@ -24,6 +24,14 @@ const recurringElementQuery = `
           text_return_to_information
           text_continue_shopping
           text_empty_cart
+          Aria_label_cart_focus_text
+          Aria_label_cart_close_button_text
+          Aria_label_cart_items_text
+          Aria_label_remove_cart_item_button_text
+          Aria_label_cart_item_quantity_minus_button_text
+          Aria_label_cart_item_quantity_plus_button_text
+          Aria_label_cart_item_quantity_text
+          Aria_label_kindness_cause_items_text
           localizations {
             data {
               attributes {
@@ -47,6 +55,14 @@ const recurringElementQuery = `
                 text_return_to_information
                 text_continue_shopping
                 text_empty_cart
+                Aria_label_cart_focus_text
+                Aria_label_cart_close_button_text
+                Aria_label_cart_items_text
+                Aria_label_remove_cart_item_button_text
+                Aria_label_cart_item_quantity_minus_button_text
+                Aria_label_cart_item_quantity_plus_button_text
+                Aria_label_cart_item_quantity_text
+                Aria_label_kindness_cause_items_text
               }
             }
           }

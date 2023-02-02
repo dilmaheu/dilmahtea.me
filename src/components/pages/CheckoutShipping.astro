@@ -161,8 +161,16 @@ const shippingMethods = page.shipping_methods
       }}
     />
 
-    <div class="p-4 gap-6 flex flex-col bg-lightgray2 rounded-2xl">
-      <div class="shipping-detail">
+    <div 
+      role="list"
+      aria-label={page.Aria_label_kindness_delivery_address_section_text}
+      class="p-4 gap-6 flex flex-col bg-lightgray2 rounded-2xl"
+    >
+      <div 
+        role="listitem"
+        aria-label={page.Aria_label_email_address_text}
+        class="shipping-detail"
+      >
         <div>{page.text_contact}</div>
 
         <div>
@@ -170,7 +178,13 @@ const shippingMethods = page.shipping_methods
             <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
           </p>
 
-          <a href="/checkout/information?change=email">
+          <a 
+            aria-label={
+              page.Aria_label_change_text 
+                + ` ` + page.Aria_label_email_address_text
+            }
+            href="/checkout/information?change=email"
+          >
             {page.text_change}
           </a>
         </div>
@@ -178,7 +192,11 @@ const shippingMethods = page.shipping_methods
 
       <div class="border border-dark opacity-80"></div>
 
-      <div class="shipping-detail">
+      <div 
+        role="listitem"
+        aria-label={page.Aria_label_delivery_address_text}
+        class="shipping-detail"
+      >
         <div>{page.text_delivery_address}</div>
 
         <div>
@@ -186,19 +204,29 @@ const shippingMethods = page.shipping_methods
             <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
           </p>
 
-          <a href="/checkout/information?change=street">
+          <a 
+            aria-label={
+              page.Aria_label_change_text 
+                + ` ` + page.Aria_label_delivery_address_text
+            }
+            href="/checkout/information?change=street"
+          >
             {page.text_change}
           </a>
         </div>
       </div>
     </div>
 
-    <div class="flex flex-col gap-4">
+    <div 
+      role="list"
+      aria-label={page.text_shipping_method} 
+      class="flex flex-col gap-4"
+    >
       <h2 class="alice">{page.text_shipping_method}</h2>
 
       {
         shippingMethods.map(([method, cost, methodLocalName], i) => (
-          <label class="gap-5 flex items-center">
+          <label role="listitem" class="gap-5 flex items-center">
             <input
               type="radio"
               name="shipping_method"
@@ -250,7 +278,11 @@ const shippingMethods = page.shipping_methods
   </form>
 </section>
 
-<section class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-lightgreen">
+<section
+  role="complementry"
+  aria-label={checkoutRecurData.text_order_summary}
+  class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-lightgreen"
+>
   <OrderSummary page={page} />
 </section>
 
