@@ -8,6 +8,8 @@ const images = [
   "crowdfunding_info_section_background",
   "footer_background",
   "footer_background_sm",
+  "user_account_nav_background",
+  "user_account_nav_background_sm",
   "checkout_header_background",
   "checkout_header_background_sm",
   "checkout_pre_post_background",

@@ -1,0 +1,336 @@
+---
+import CMS from "@store/CMS";
+import RecurringImages from "@store/RecurringImages";
+import Markdown from "@astrojs/markdown-component";
+
+const { green_cup } = RecurringImages;
+
+const { page } = Astro.props,
+  { locale,
+    Form: form,
+    Social_media: social_media,
+    Block_text: block_text
+  } = page,
+  { URL_slug: slug } = page.Meta,
+  { ASSETS_URL } = import.meta.env,
+  userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
+
+const {
+  Facebook_icon: fb_icon,
+  Google_icon: g_icon,
+  Twitter_icon: twitter_icon
+} = userAccountRecurData;
+
+const loginPage = slug.substring(8, 13) ! == ( "login" || "signin" );
+
+function fromEntries(array){
+    const formInputItems = 
+      Object.fromEntries(
+        Object.entries(array).slice(0, 4)
+      ),
+    formIputs = 
+      Object.values(formInputItems)
+        .filter(val => val === true).length;
+    return formIputs;
+}
+---
+<style lang="scss">
+  @use "src/styles/colors";
+
+  .form-heading-icon {
+    height: clamp(38px, 3.5vw + 6px, 58px);
+  }
+
+  .form-grid {
+    @apply gap-x-[35px] gap-y-[25px];
+
+    label {
+      @apply w-full md:w-[330px] lg:w-[350px] text-[1.125rem] font-bold leading-[150%] text-dark;
+
+      width: 100%;
+      color: colors.$input-label;
+
+      @media (min-width: 768px) {
+        width: 330px;
+      }
+
+      @media (min-width: 1024px) {
+        width: 350px;
+      }
+
+      input{
+        border: 1px solid colors.$primary;
+
+        @apply block w-full mt-2.5 px-4 py-3 text-lg font-normal leading-[115%] text-dark2 rounded-[20px] bg-transparent;
+        @apply focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring;
+      }
+
+      input:is([type="text"], [type="email"])::placeholder {
+        color: colors.$input;
+
+        @apply text-[1.125rem];
+      }
+    }
+
+    .form-item{
+      @apply w-full md:w-[330px] lg:w-[350px] mx-auto;
+    }
+  }
+
+  .hero-text-markdown{
+    a{
+      color: colors.$primary;
+      font-weight: 700;
+    }
+  }
+</style>
+
+<div class="wrapper py-[50px]">
+  <div role="banner">
+    {page.Intro_blob?.data &&(
+      <div class="w-full h-full md:max-w-[740px] p-2.5 mb-[35px] mx-auto">
+        <img
+          class="w-full max-h-[330px] object-contain"
+          src={ASSETS_URL + page.Intro_blob?.data?.attributes?.url}
+          alt={page.Intro_blob?.data?.attributes?.alternativeText}
+        />
+      </div>
+    )}
+
+    <h1 class="hero-title alice text-primary text-center">
+      {page.Title}
+
+      <span class="icon heading-inline-icon">
+        <img class="w-full h-full" {...green_cup} />
+      </span>
+    </h1>
+  </div>
+
+  {
+    page.Intro_text &&(
+      <div 
+        class:list={[
+          "hero-text hero-text-markdown w-full md:max-w-[740px]",
+          "pt-2.5 prose text-dark text-center mx-auto"
+        ]}
+      >
+        <Markdown>{page.Intro_text}</Markdown>
+      </div>
+    )
+  }
+
+
+  <section class="w-full md:max-w-[740px] pt-[35px] mx-auto">
+    <div 
+      class:list={[
+        form?.Blob?.data
+          ? "grid md:grid-cols-2 gap-[35px]"
+          : "flex flex-wrap justify-center "
+      ]}
+    >
+      <div>
+        {form &&(
+          <form>
+            <div 
+              class:list={[
+                "flex flex-wrap form-grid",
+                (form &&(fromEntries(form)) === 1 ) 
+                  ? "justify-center" : "justify-between"
+              ]}
+            >
+              {loginPage
+                ?(
+                  <label class="mx-auto">
+                    {userAccountRecurData.Input_label_email + ` / `
+                      + userAccountRecurData.Input_label_phone}
+
+                    <input
+                      type="text"
+                      name="first_name"
+                      placeholder={
+                        userAccountRecurData.Input_placeholder_your_text + ` `
+                          + userAccountRecurData.Input_label_email + ` / `
+                          + userAccountRecurData.Input_label_phone
+                      }
+                      required
+                    />
+                  </label>
+                ) 
+                :(
+                  <>
+                    {form.First_name && (
+                      <label>
+                        {userAccountRecurData.Input_label_first_name}
+
+                        <input
+                          type="text"
+                          name="first_name"
+                          placeholder={
+                            userAccountRecurData.Input_placeholder_your_text + ` `
+                              + userAccountRecurData.Input_label_first_name
+                          }
+                          required
+                        />
+                      </label>
+                    )}
+                    {form.Last_name && (
+                      <label>
+                        {userAccountRecurData.Input_label_last_name}
+
+                        <input
+                          type="text"
+                          name="last_name"
+                          placeholder={
+                            userAccountRecurData.Input_placeholder_your_text + ` ` 
+                              + userAccountRecurData.Input_label_last_name
+                          }
+                          required
+                        />
+                      </label>
+                    )}
+                    {form.Email && (
+                      <label>
+                        {userAccountRecurData.Input_label_email}
+
+                        <input
+                          type="email"
+                          name="email"
+                          placeholder={
+                            userAccountRecurData.Input_placeholder_your_text + ` ` 
+                              + userAccountRecurData.Input_label_email
+                          }
+                          required
+                        />
+                      </label>
+                    )}
+                    {form.Phone && (
+                      <label>
+                        {userAccountRecurData.Input_label_phone}
+
+                        <input
+                          type="text"
+                          name="phone_number"
+                          placeholder={
+                            userAccountRecurData.Input_placeholder_your_text + ` ` 
+                              + userAccountRecurData.Input_label_phone
+                          }
+                          required
+                        />
+                      </label>
+                    )}
+                  </>
+                )
+              }
+
+              <div class="w-full">
+                <button
+                  class:list={[
+                    "flex justify-center py-3 px-20 mt-2.5 mx-auto",
+                    "w-full md:w-auto md:min-w-[330px] lg:min-w-[350px]",
+                    "font-bold text-lightgray bg-primary rounded-full"
+                  ]}
+                >
+                  {form?.Submit_button_text}
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
+          
+        <div class="flex flex-wrap mx-auto justify-between form-grid">
+          <div class="w-full">
+            {social_media &&(
+              <div class="form-item mt-[35px] text-dark">
+                <div class="flex items-center">
+                  <hr class="w-full"/>
+                  <span class="text-gray px-3">OR</span>
+                  <hr class="w-full"/>
+                </div>
+              </div>
+            )}
+
+            {block_text &&(
+              <div 
+                class:list={[
+                  "hero-text-markdown mt-[35px] text-center text-dark",
+                  (loginPage || form &&(fromEntries(form) === 1)) && "form-item"
+                ]}
+              >
+                <Markdown>{block_text}</Markdown>
+              </div>
+            )}
+
+            {social_media &&(
+              <div 
+                class:list={[
+                  "flex flex-wrap gap-[25px] justify-center mt-[25px] text-center text-dark",
+                  (loginPage || form &&(fromEntries(form) === 1)) && "form-item"
+                ]}
+              >
+                {
+                  social_media.Facebook && (
+                    <div class="w-[70px] h-[70px] p-3 bg-lightgray2 rounded-full">
+                      <img
+                        class="w-full h-full" 
+                        src={ASSETS_URL + fb_icon?.data?.attributes.url} 
+                        alt={fb_icon?.data?.attributes.alternativeText}
+                      />
+                    </div>
+                  )
+                }
+                {
+                  social_media.Google && (
+                    <div class="w-[70px] h-[70px] p-3 bg-lightgray2 rounded-full">
+                      <img
+                        class="w-full h-full" 
+                        src={ASSETS_URL + g_icon?.data?.attributes.url} 
+                        alt={g_icon?.data?.attributes.alternativeText}
+                      />
+                    </div>
+                  )
+                }
+                {
+                  social_media.Twitter && (
+                    <div class="w-[70px] h-[70px] p-3 bg-lightgray2 rounded-full">
+                      <img
+                        class="w-full h-full" 
+                        src={ASSETS_URL + twitter_icon?.data?.attributes.url} 
+                        alt={twitter_icon?.data?.attributes.alternativeText}
+                      />
+                    </div>
+                  )
+                }
+              </div>
+            )}
+
+            {page?.Button_text &&(
+              <div class="flex flex-wrap justify-center text-center items-center gap-[25px] mt-[35px]">
+                <div class="text-dark">
+                  {page?.Button_pretext}
+                </div>
+                <div 
+                  class:list={[
+                    "flex justify-center py-3 px-20 mt-2.5 cursor-pointer",
+                    "font-bold text-lightgray bg-primary rounded-full"
+                    ]}
+                  >
+                  {page?.Button_text}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {form?.Blob?.data &&(
+        <div class="w-full h-full p-2.5 mx-auto">
+          <img
+            class="w-full max-h-[320px] object-contain"
+            src={ASSETS_URL + form.Blob?.data?.attributes?.url}
+            alt={form.Blob?.data?.attributes?.alternativeText}
+          />
+        </div>
+      )}
+    </div>
+  </section>
+</div>

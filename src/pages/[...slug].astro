@@ -2,6 +2,7 @@
 import CMS from "@store/CMS";
 import PageLayout from "@layouts/PageLayout.astro";
 import CheckoutLayout from "@layouts/CheckoutLayout.astro";
+import UserAccountLayout from "@layouts/UserAccountLayout.astro";
 
 import Cart from "@pages/Cart.astro";
 import Posts from "@pages/Posts.astro";
@@ -19,6 +20,7 @@ import CheckoutSuccess from "@pages/CheckoutSuccess.astro";
 import CheckoutKindness from "@pages/CheckoutKindness.astro";
 import CheckoutShipping from "@pages/CheckoutShipping.astro";
 import CheckoutInformation from "@pages/CheckoutInformation.astro";
+import UserAccount from "@pages/UserAccount.astro";
 
 import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 import DefaultRouteRedirect from "@scripts/DefaultRouteRedirect.astro";
@@ -49,6 +51,7 @@ export async function getStaticPaths() {
     checkoutInformation,
     checkoutShipping,
     checkoutSuccess,
+    userAccounts,
   } = CMS.get("all");
 
   const allLocales = i18NLocales.data.map(({ attributes }) =>
@@ -224,6 +227,14 @@ export async function getStaticPaths() {
     type: "checkoutSuccess",
   }));
 
+  const userAccountPages = getPages(userAccounts, ( page ) => ({
+    type: "account",
+    slug: 
+      page.attributes.Meta.URL_slug.substring(0, 8) !== `account/`
+       ? page.attributes.Meta.URL_slug = `account/` + page.attributes.Meta.URL_slug.toLowerCase()
+       : page.attributes.Meta.URL_slug
+  }));
+
   return [
     ...plansPages,
     ...crowdfundingPages,
@@ -245,6 +256,7 @@ export async function getStaticPaths() {
     ...checkoutInformationPages,
     ...checkoutShippingPages,
     ...checkoutSuccessPages,
+    ...userAccountPages,
   ];
 }
 
@@ -272,6 +284,11 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
 
       page.type === `plan`
         ? (page.Meta.URL_slug = `plan/` + page.Title.toLowerCase())
+        : page.type === `account`
+        ? (page.Meta.URL_slug.substring(0, 8) !== `account/`
+           ? page.Meta.URL_slug = `account/` + page.Meta.URL_slug.toLowerCase()
+           : page.Meta.URL_slug
+          )
         : page.Meta.URL_slug;
 
       const { Meta: meta, locale, availableLocales } = page,
@@ -289,7 +306,11 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
           ? CheckoutSuccess
           : page.type.startsWith("checkout")
           ? CheckoutLayout
+          : page.type === "account"
+          ? UserAccountLayout
           : PageLayout;
+
+          
 
       return (
         <Layout
@@ -302,9 +323,10 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
           availableLocales={availableLocales}
           metaImageSrc={
             ASSETS_URL +
-            (page.Intro_blob?.data?.attributes.url ||
-              page.Block_blob?.data?.attributes.url ||
-              recurData.OpenGraph_default?.data?.attributes.url)
+            (page.Intro_blob?.data?.attributes ||
+              page.Block_blob?.data?.attributes ||
+              recurData.OpenGraph_default?.data?.attributes)
+            .url
           }
         >
           {page.type === `homepage` ? (
@@ -341,6 +363,8 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
             <CheckoutShipping page={page} recurData={recurData} />
           ) : page.type === `plan` ? (
             <CrowdfundingForm page={page} locale={locale} />
+          ) : page.type === `account` ? (
+            <UserAccount page={page} locale={locale} />
           ) : null}
         </Layout>
       );
