@@ -12,14 +12,6 @@ const assetsDir = "./dist/assets/",
   assetsPaths = await globby("./dist/assets/*"),
   imageAssetBaseRegex = /([^]+_)+[0-9a-z]{10}(@\d+w.[0-9a-z]{8})?/;
 
-const htmlFilePaths = await globby("./dist/**/*.html");
-
-const htmlFiles = await Promise.all(
-  htmlFilePaths.map((htmlFilePath) =>
-    fs.promises.readFile(htmlFilePath, "utf8")
-  )
-);
-
 const pathsDictionary = assetsPaths
   .map((assetPath) => {
     const extname = path.extname(assetPath),
