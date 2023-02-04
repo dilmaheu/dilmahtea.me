@@ -8,5 +8,6 @@ export default defineConfig({
   includeSourceFormat: false,
   placeholder: "dominantColor",
   cacheDir: "/.cache/astro-imagetools",
+  assetFileNames: "_astro/[name]-[width][extname]",
   globalImportRemoteImage: true,
 });
