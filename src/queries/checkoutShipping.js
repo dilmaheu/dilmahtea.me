@@ -13,6 +13,10 @@ const checkoutShippingQuery = `
           text_shipping_method
           text_continue_to_payment
           text_return_to_information
+          Aria_label_kindness_delivery_address_form_text
+          Aria_label_delivery_address_text
+          Aria_label_email_address_text
+          Aria_label_change_text
           shipping_methods {
             data {
               attributes {
@@ -42,6 +46,10 @@ const checkoutShippingQuery = `
                 text_shipping_method
                 text_continue_to_payment
                 text_return_to_information
+                Aria_label_kindness_delivery_address_form_text
+                Aria_label_delivery_address_text
+                Aria_label_email_address_text
+                Aria_label_change_text
                 shipping_methods {
                   data {
                     attributes {

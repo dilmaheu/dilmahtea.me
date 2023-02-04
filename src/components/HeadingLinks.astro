@@ -40,21 +40,24 @@ const { type = "desktop", headings } = Astro.props as Props;
 
 {
   [...headings].map(({ id, innerText }, i) => (
-    <a
-      href={"#" + id}
-      class:list={[
-        "text-primary",
-        i === 0 && "active",
-        type !== "mobile"
-          ? "chapter-link pt-4 xl:pt-5"
-          : "chapter-link-sm flex items-center pt-2.5 font-normal",
-      ]}
-    >
-      <div class="chapter-top-icon">
-        <img {...green_right_arrow} />
-      </div>
+    <span role="listitem">
+      <a
+        href={"#" + id}
+        class:list={[
+          "text-primary",
+          i === 0 && "active",
+          type !== "mobile"
+            ? "chapter-link pt-4 xl:pt-5"
+            : "chapter-link-sm flex items-center pt-2.5 font-normal",
+        ]}
+      >
+        <div class="chapter-top-icon">
+          <img {...green_right_arrow} />
+        </div>
 
-      <Fragment set:text={innerText} />
-    </a>
+        <Fragment set:text={innerText} />
+      </a>
+    </span>
+      
   ))
 }
