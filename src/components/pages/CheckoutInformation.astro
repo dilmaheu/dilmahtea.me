@@ -2,9 +2,7 @@
 import CMS from "@store/CMS";
 import OrderSummary from "@components/OrderSummary.astro";
 
-const { page } = Astro.props,
-  countries = page.countries.split("\n"),
-  englishCountries = CMS.get("checkoutInformation", "en").countries.split("\n");
+const { page } = Astro.props;
 ---
 
 <style lang="scss">
@@ -129,9 +127,15 @@ const { page } = Astro.props,
             </option>
 
             {
-              countries.map((country, i) => (
-                <option value={englishCountries[i]}>{country}</option>
-              ))
+              page.countries.data.map(
+                ({ attributes: { name, localizations } }) => (
+                  <option
+                    value={localizations?.data[0]?.attributes?.name || name}
+                  >
+                    {name}
+                  </option>
+                )
+              )
             }
           </select>
         </label>

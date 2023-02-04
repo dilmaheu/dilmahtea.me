@@ -7,7 +7,6 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 const { page } = Astro.props,
   { locale } = page,
   { ASSETS_URL } = import.meta.env,
-  englishVersionData = CMS.get("checkoutKindness", "en"),
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
@@ -84,36 +83,40 @@ const { page } = Astro.props,
     class="kindness-causes flex flex-col sm:flex-row flex-wrap justify-center gap-10"
   >
     {
-      page.Kindness_Causes.map(({ cause, description, featured_blob }, i) => (
-        <div>
-          <div class="h-full">
-            <div
-              {
-              /* @ts-ignore */ }
-              data-cause={englishVersionData.Kindness_Causes[i].cause}
-              style="clip-path: url(#kindness-cause-card-curve);"
-              class="kindness-cause relative w-full h-full sm:w-80 flex flex-col bg-primary cursor-pointer"
-            >
-              <div class="h-48">
-                <Picture
-                  layout="fill"
-                  sizes="(min-width: 640px) 320px, 90vw)"
-                  alt={featured_blob.data.attributes.alternativeText}
-                  src={ASSETS_URL + featured_blob.data.attributes.url}
-                />
-              </div>
+      page.kindness_causes.data.map(
+        ({
+          attributes: { cause, description, featured_blob, localizations },
+        }) => (
+          <div>
+            <div class="h-full">
+              <div
+                {
+                /* @ts-ignore */ }
+                data-cause={localizations?.data[0]?.attributes?.cause || cause}
+                style="clip-path: url(#kindness-cause-card-curve);"
+                class="kindness-cause relative w-full h-full sm:w-80 flex flex-col bg-primary cursor-pointer"
+              >
+                <div class="h-48">
+                  <Picture
+                    layout="fill"
+                    sizes="(min-width: 640px) 320px, 90vw)"
+                    alt={featured_blob.data.attributes.alternativeText}
+                    src={ASSETS_URL + featured_blob.data.attributes.url}
+                  />
+                </div>
 
-              <div class="grow px-6 pt-5 pb-7 flex flex-col justify-center gap-2">
-                <h2 class="alice text-lightgray leading-[120%]">{cause}</h2>
+                <div class="grow px-6 pt-5 pb-7 flex flex-col justify-center gap-2">
+                  <h2 class="alice text-lightgray leading-[120%]">{cause}</h2>
 
-                <div class="font-medium text-base text-lightgray">
-                  <Markdown>{description}</Markdown>
+                  <div class="font-medium text-base text-lightgray">
+                    <Markdown>{description}</Markdown>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      ))
+        )
+      )
     }
   </section>
 
