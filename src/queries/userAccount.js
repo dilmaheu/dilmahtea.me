@@ -74,6 +74,16 @@ const userAccountQuery = `
                   Email
                   Phone
                   Submit_button_text
+                  Blob{
+                    data {
+                      attributes {
+                        url
+                        provider_metadata
+                        formats
+                        alternativeText
+                      }
+                    }
+                  }
                 }
                 Block_text
                 Social_media{
