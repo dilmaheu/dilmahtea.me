@@ -39,12 +39,12 @@ const userAccountRecurringElementQuery = `
           Input_label_last_name
           Input_label_email
           Input_label_phone
-          Input_placeholder_your_text
           Input_placeholder_first_name
           Input_placeholder_last_name
           Input_placeholder_email
           Input_placeholder_phone
           Input_placeholder_email_or_phone
+          Social_media_divider_or_text
           localizations {
             data {
               attributes {
@@ -83,12 +83,12 @@ const userAccountRecurringElementQuery = `
                 Input_label_last_name
                 Input_label_email
                 Input_label_phone
-                Input_placeholder_your_text
                 Input_placeholder_first_name
                 Input_placeholder_last_name
                 Input_placeholder_email
                 Input_placeholder_phone
                 Input_placeholder_email_or_phone
+                Social_media_divider_or_text
               }
             }
           }

@@ -11,9 +11,9 @@ const { page } = Astro.props,
     Social_media: social_media,
     Block_text: block_text
   } = page,
-  { URL_slug: slug } = page.Meta,
-  { ASSETS_URL } = import.meta.env,
-  userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
+  { ASSETS_URL } = import.meta.env;
+  
+const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
 
 const {
   Facebook_icon: fb_icon,
@@ -21,17 +21,18 @@ const {
   Twitter_icon: twitter_icon
 } = userAccountRecurData;
 
-const loginPage = slug.substring(8, 13) ! == ( "login" || "signin" );
+const emailOrPhone = page?.Form?.Email_or_phone === true;
 
 function fromEntries(array){
-    const formInputItems = 
-      Object.fromEntries(
-        Object.entries(array).slice(0, 4)
-      ),
-    formIputs = 
-      Object.values(formInputItems)
-        .filter(val => val === true).length;
-    return formIputs;
+  const formInputItems = 
+    Object.fromEntries(
+      Object.entries(array).slice(0, 4)
+    ),
+  formIputs = 
+    Object.values(formInputItems)
+      .filter(val => val === true).length;
+
+  return formIputs;
 }
 ---
 <style lang="scss">
@@ -138,7 +139,7 @@ function fromEntries(array){
                   ? "justify-center" : "justify-between"
               ]}
             >
-              {loginPage
+              {emailOrPhone
                 ?(
                   <label class="mx-auto">
                     {userAccountRecurData.Input_label_email + ` / `
@@ -239,7 +240,7 @@ function fromEntries(array){
               <div 
                 class:list={[
                   "hero-text-markdown prose mt-[35px] text-center text-dark",
-                  (loginPage || form &&(fromEntries(form) === 1)) && "form-item"
+                  (emailOrPhone || form &&(fromEntries(form) === 1)) && "form-item"
                 ]}
               >
                 <Markdown>{block_text}</Markdown>
@@ -250,7 +251,7 @@ function fromEntries(array){
               <div 
                 class:list={[
                   "flex flex-wrap gap-[25px] justify-center mt-[25px] text-center text-dark",
-                  (loginPage || form &&(fromEntries(form) === 1)) && "form-item"
+                  (emailOrPhone || form &&(fromEntries(form) === 1)) && "form-item"
                 ]}
               >
                 {

@@ -18,6 +18,7 @@ const userAccountQuery = `
             }
           }
           Form{
+            Email_or_phone
             First_name
             Last_name
             Email
@@ -67,6 +68,7 @@ const userAccountQuery = `
                   }
                 }
                 Form{
+                  Email_or_phone
                   First_name
                   Last_name
                   Email
