@@ -9,17 +9,21 @@ const checkoutKindnessQuery = `
           checkout_step_order
           Title
           Intro_text
-          Kindness_Causes {
-            cause
-            description
-            featured_blob {
-              data {
-                id
-                attributes {
-                  url
-                  provider_metadata
-                  formats
-                  alternativeText                  
+          kindness_causes {
+            data {
+              attributes {
+                cause
+                description
+                featured_blob {
+                  data {
+                    id
+                    attributes {
+                      url
+                      provider_metadata
+                      formats
+                      alternativeText
+                    }
+                  }
                 }
               }
             }
@@ -36,21 +40,32 @@ const checkoutKindnessQuery = `
             data {
               attributes {
                 locale
-                updatedAt                
+                updatedAt
                 checkout_step_order
                 Title
                 Intro_text
-                Kindness_Causes {
-                  cause
-                  description
-                  featured_blob {
-                    data {
-                      id
-                      attributes {
-                        url
-                        provider_metadata
-                        formats
-                        alternativeText
+                kindness_causes {
+                  data {
+                    attributes {
+                      cause
+                      description
+                      featured_blob {
+                        data {
+                          id
+                          attributes {
+                            url
+                            provider_metadata
+                            formats
+                            alternativeText
+                          }
+                        }
+                      }
+                      localizations(filters: { locale: { eq: "en" } }) {
+                        data {
+                          attributes {
+                            cause
+                          }
+                        }
                       }
                     }
                   }

@@ -7,10 +7,6 @@ import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 const { page, recurData } = Astro.props,
   { locale } = page,
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
-
-const shippingMethods = page.shipping_methods
-  .split("\n")
-  .map((methodString) => methodString.split(" - "));
 ---
 
 <style lang="scss">
@@ -197,35 +193,37 @@ const shippingMethods = page.shipping_methods
       <h2 class="alice">{page.text_shipping_method}</h2>
 
       {
-        shippingMethods.map(([method, cost, methodLocalName], i) => (
-          <label class="gap-5 flex items-center">
-            <input
-              type="radio"
-              name="shipping_method"
-              value={method}
-              data-cost={cost}
-              class:list={[
-                "hover:brightness-50 active:brightness-150",
-                "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
-                "checked:before:block before:hidden before:w-2 before:h-2 before:bg-primary before:rounded-full",
-              ]}
-              checked={i === 0 ? "" : undefined}
-              required
-            />
+        page.shipping_methods.data.map(
+          ({ attributes: { method, cost, description, localizations } }, i) => (
+            <label class="gap-5 flex items-center">
+              <input
+                type="radio"
+                name="shipping_method"
+                value={localizations?.data[0]?.attributes?.method || method}
+                data-cost={cost}
+                class:list={[
+                  "hover:brightness-50 active:brightness-150",
+                  "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
+                  "checked:before:block before:hidden before:w-2 before:h-2 before:bg-primary before:rounded-full",
+                ]}
+                checked={i === 0 ? "" : undefined}
+                required
+              />
 
-            <span class="gap-3 flex items-center">
-              <span class="shipping-method font-semibold text-dark2 leading-[130%]">
-                {methodLocalName}
+              <span class="gap-3 flex items-center">
+                <span class="shipping-method font-semibold text-dark2 leading-[130%]">
+                  {description}
+                </span>
+
+                <span class="w-1 h-1 bg-primary rounded-full" />
+
+                <span class="shipping-cost font-semibold text-dark2 leading-[130%]">
+                  €{cost}
+                </span>
               </span>
-
-              <span class="w-1 h-1 bg-primary rounded-full" />
-
-              <span class="shipping-cost font-semibold text-dark2 leading-[130%]">
-                €{cost}
-              </span>
-            </span>
-          </label>
-        ))
+            </label>
+          )
+        )
       }
     </div>
 
