@@ -2,15 +2,15 @@ import fs from "node:fs";
 import path from "node:path";
 import { globby } from "globby";
 
-const CMSImagesDir = "./public/assets/",
-  CMSImagesDestDir = "./dist/assets/";
+const CMSImagesDir = "./public/_astro/",
+  CMSImagesDestDir = "./dist/_astro/";
 
 // assetify CMS images
 await fs.promises.cp(CMSImagesDir, CMSImagesDestDir, { recursive: true });
 
-const assetsDir = "./dist/assets/",
-  assetsPaths = await globby("./dist/assets/*"),
-  imageAssetBaseRegex = /([^]+_)+[0-9a-z]{10}(@\d+w.[0-9a-z]{8})?/;
+const assetsDir = "./dist/_astro/",
+  assetsPaths = await globby("./dist/_astro/*"),
+  imageAssetBaseRegex = /([^]+_)+[0-9a-z]{10}(-\d+w)?/;
 
 const pathsDictionary = assetsPaths
   .map((assetPath) => {
@@ -28,7 +28,7 @@ const pathsDictionary = assetsPaths
       fs.renameSync(assetPath, path.join(assetsDir, newBasename));
 
       const oldPath = assetPath.slice(6),
-        newPath = "/assets/" + newBasename;
+        newPath = "/_astro/" + newBasename;
 
       return { oldPath, newPath };
     }

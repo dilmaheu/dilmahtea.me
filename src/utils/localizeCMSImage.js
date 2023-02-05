@@ -1,11 +1,11 @@
-const imagesDir = "./public/assets/";
+const imagesDir = "./public/_astro/";
 
 if (!fs.existsSync(imagesDir)) {
   await fs.promises.mkdir(imagesDir, { recursive: true });
 }
 
 export default async function localizeCMSImage(relativeUrl) {
-  const src = "/assets/" + relativeUrl.slice(9),
+  const src = "/_astro/" + relativeUrl.slice(9),
     imagePath = "./public" + src;
 
   if (!fs.existsSync(imagePath)) {
