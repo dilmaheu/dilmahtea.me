@@ -7,6 +7,7 @@ const checkoutInformationQuery = `
           locale
           updatedAt
           checkout_step_order
+          Aria_label_form_text
           text_contact_info
           text_shipping_address
           text_email_address
@@ -46,6 +47,7 @@ const checkoutInformationQuery = `
                 locale
                 updatedAt
                 checkout_step_order
+                Aria_label_form_text
                 text_contact_info
                 text_shipping_address
                 text_email_address

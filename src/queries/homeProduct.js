@@ -31,6 +31,8 @@ const homeProductQuery = `
               }
             }
           }
+          Aria_label_all_teas_text
+          Aria_label_tea_item_text
           blogs {
             data{
               attributes{
@@ -96,6 +98,8 @@ const homeProductQuery = `
                     }
                   }
                 }
+                Aria_label_all_teas_text
+                Aria_label_tea_item_text
                 blogs {
                   data{
                     attributes{
