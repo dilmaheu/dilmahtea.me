@@ -17,8 +17,7 @@ const checkoutInformationQuery = `
           text_last_name
           last_name_placeholder
           text_country
-          country_placeholder
-          countries
+          country_placeholder          
           text_city
           city_placeholder
           text_street
@@ -27,6 +26,13 @@ const checkoutInformationQuery = `
           postal_code_placeholder
           text_continue_to_shipping
           text_return_to_cart
+          countries {
+            data {
+              attributes {
+                name
+              }
+            }
+          }
           Meta {
             HTML_Title
             Meta_description
@@ -52,7 +58,6 @@ const checkoutInformationQuery = `
                 last_name_placeholder
                 text_country
                 country_placeholder
-                countries
                 text_city
                 city_placeholder
                 text_street
@@ -61,6 +66,20 @@ const checkoutInformationQuery = `
                 postal_code_placeholder
                 text_continue_to_shipping
                 text_return_to_cart
+                countries {
+                  data {
+                    attributes {
+                      name
+                      localizations(filters: { locale: { eq: "en" } }) {
+                        data {
+                          attributes {
+                            name
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
                 Meta {
                   HTML_Title
                   Meta_description

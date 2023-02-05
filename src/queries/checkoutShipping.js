@@ -13,11 +13,19 @@ const checkoutShippingQuery = `
           text_shipping_method
           text_continue_to_payment
           text_return_to_information
-          shipping_methods
           Aria_label_kindness_delivery_address_form_text
           Aria_label_delivery_address_text
           Aria_label_email_address_text
           Aria_label_change_text
+          shipping_methods {
+            data {
+              attributes {
+                method
+                cost
+                description
+              }
+            }
+          }
           Meta {
             HTML_Title
             Meta_description
@@ -38,11 +46,26 @@ const checkoutShippingQuery = `
                 text_shipping_method
                 text_continue_to_payment
                 text_return_to_information
-                shipping_methods
                 Aria_label_kindness_delivery_address_form_text
                 Aria_label_delivery_address_text
                 Aria_label_email_address_text
                 Aria_label_change_text
+                shipping_methods {
+                  data {
+                    attributes {
+                      method
+                      cost
+                      description
+                      localizations(filters: { locale: { eq: "en" } }) {
+                        data {
+                          attributes {
+                            method
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
                 Meta {
                   HTML_Title
                   Meta_description
