@@ -21,14 +21,17 @@ const CSPRecord = {
   "font-src": ["'self'", "https://use.fontawesome.com"],
   "worker-src": ["blob:"],
   "connect-src": [
-    "'self'", 
-    "https://api.openreplay.com", 
-    "https://cse.expertrec.com", 
+    "'self'",
+    "https://log.expertrec.com",
     "https://searchv7.expertrec.com",
-    "http://log.expertrec.com"
+    "https://api.openreplay.com",
   ],
   "upgrade-insecure-requests": [],
-  "script-src": ["'self'", "https://static.openreplay.com", "https://cse.expertrec.com"],
+  "script-src": [
+    "'self'",
+    "https://cse.expertrec.com",
+    "https://static.openreplay.com",
+  ],
 };
 
 const sitemap = [];
