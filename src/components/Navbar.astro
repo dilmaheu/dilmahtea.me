@@ -48,6 +48,15 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
   ]}
 >
   {
+    !isCartNavbar && (
+      <ClipPathSVG
+        id="cart-btn-curve"
+        path="M0.5,0 A0.5,0.5,0,0,0,0,0.5 a0.5,0.5,0,0,0,0.5,0.5 a0.5,0.5,0,0,0,0.5,-0.5 a0.5,0.5,0,0,0,-0.021,-0.146 a0.25,0.25,0,0,1,-0.104,0.021 A0.25,0.25,0,0,1,0.625,0.125 a0.25,0.25,0,0,1,0.021,-0.104 a0.5,0.5,0,0,0,-0.146,-0.021"
+      />
+    )
+  }
+
+  {
     !isCartNavbar ? (
       <Picture
         alt=""
@@ -125,18 +134,13 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
       {
         !isCartNavbar && (
           <button
-            id="open-cart-btn"
             aria-label="Open Cart"
             class:list={[
-              "hidden xl:inline-block relative scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]",
+              "open-cart-btn hidden xl:inline-block relative",
+              "scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]",
               "mx-[calc(-24px*0.225)] sm:mx-[calc(-24px*0.15)] md:mx-[calc(-24px*0.075)] lg:mx-0",
             ]}
           >
-            <ClipPathSVG
-              id="cart-btn-curve"
-              path="M0.5,0 A0.5,0.5,0,0,0,0,0.5 a0.5,0.5,0,0,0,0.5,0.5 a0.5,0.5,0,0,0,0.5,-0.5 a0.5,0.5,0,0,0,-0.021,-0.146 a0.25,0.25,0,0,1,-0.104,0.021 A0.25,0.25,0,0,1,0.625,0.125 a0.25,0.25,0,0,1,0.021,-0.104 a0.5,0.5,0,0,0,-0.146,-0.021"
-            />
-
             <span
               style="clip-path: url(#cart-btn-curve);"
               class="w-12 h-12 text-primary flex justify-center items-center bg-lightgray rounded-full"
@@ -206,23 +210,21 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
             {
               !isCartNavbar && (
                 <button
-                  id="open-cart-btn"
                   aria-label="Open Cart"
                   class:list={[
-                    "relative scale-[0.775]",
+                    "open-cart-btn relative",
+                    "scale-[0.775] sm:scale-[0.85]",
                     "mx-[calc(-24px*0.225)] sm:mx-[calc(-24px*0.15)] md:mx-[calc(-24px*0.075)] lg:mx-0",
                   ]}
                 >
-                  <ClipPathSVG
-                    id="cart-btn-curve"
-                    path="M0.5,0 A0.5,0.5,0,0,0,0,0.5 a0.5,0.5,0,0,0,0.5,0.5 a0.5,0.5,0,0,0,0.5,-0.5 a0.5,0.5,0,0,0,-0.021,-0.146 a0.25,0.25,0,0,1,-0.104,0.021 A0.25,0.25,0,0,1,0.625,0.125 a0.25,0.25,0,0,1,0.021,-0.104 a0.5,0.5,0,0,0,-0.146,-0.021"
-                  />
-
                   <span
                     style="clip-path: url(#cart-btn-curve);"
                     class="w-12 h-12 text-primary flex justify-center items-center bg-lightgray rounded-full"
                   >
-                    <Icon name="mi:shopping-cart" class="w-[30px] h-[30px] mx-auto" />
+                    <Icon
+                      name="mi:shopping-cart"
+                      class="w-[30px] h-[30px] mx-auto"
+                    />
                   </span>
 
                   <span
@@ -233,7 +235,9 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
                   >
                     <span class="w-5 h-5 text-white flex justify-center items-center rounded-full bg-red-600">
                       <span id="cart-size">
-                        <DynamicHTML htmlFn={() => Object.keys(window.cart).length} />
+                        <DynamicHTML
+                          htmlFn={() => Object.keys(window.cart).length}
+                        />
                       </span>
                     </span>
                   </span>
@@ -328,11 +332,12 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     sidebar = query("#sidebar"),
     navbarBg = query("#navbar-bg"),
     navigation = query("#navigation"),
-    openCartBtn = query("#open-cart-btn"),
     cartNavbarBg = query("#cart-navbar-bg"),
     sidebarOpenButton = query("#sidebar-open-btn"),
     sidebarCloseButton = query("#sidebar-close-btn"),
     isCartNavbar = !!navigation?.classList.contains("cart-navbar");
+
+  const openCartBtns = document.querySelectorAll(".open-cart-btn");
 
   window.disableScrolling = () => {
     const overflowY =
@@ -405,8 +410,10 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
     }
   });
 
-  openCartBtn?.addEventListener("click", () => {
-    window.openCart();
+  openCartBtns.forEach((openCartBtn) => {
+    openCartBtn.addEventListener("click", () => {
+      window.openCart();
+    });
   });
 
   sidebarOpenButton?.addEventListener("click", () => {
@@ -445,14 +452,13 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
 </script>
 
 <script is:inline>
-  (function() {
-    var id = '888e9a2bb7bb4df2ab6ac60cc9fb16cf';
-    var ci_search = document.createElement('script');
-    ci_search.type = 'text/javascript';
+  (function () {
+    var id = "888e9a2bb7bb4df2ab6ac60cc9fb16cf";
+    var ci_search = document.createElement("script");
+    ci_search.type = "text/javascript";
     ci_search.async = true;
-    ci_search.src = 'https://cse.expertrec.com/api/js/ci_common.js?id=' + id;
-    var s = document.getElementsByTagName('script')[0];
+    ci_search.src = "https://cse.expertrec.com/api/js/ci_common.js?id=" + id;
+    var s = document.getElementsByTagName("script")[0];
     s.parentNode.insertBefore(ci_search, s);
   })();
-</script> 
-
+</script>
