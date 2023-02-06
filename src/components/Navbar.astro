@@ -1,4 +1,5 @@
 ---
+import CMS from "@store/CMS";
 import Icon from "astro-icon";
 import { Picture, BackgroundPicture } from "astro-imagetools/components";
 
@@ -24,6 +25,8 @@ interface Props {
 
 const { docLocale, footerText, isCartNavbar, availableLocales } =
   Astro.props as Props;
+
+const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", docLocale);
 ---
 
 <style lang="scss">
@@ -134,7 +137,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
       {
         !isCartNavbar && (
           <button
-            aria-label="Open Cart"
+            aria-label={ariaLabelRecurData.Navbar_open_cart_text}
             class:list={[
               "open-cart-btn hidden xl:inline-block relative",
               "scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]",
@@ -167,7 +170,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
       <div class="block xl:hidden w-[38px] h-[38px]">
         <button
           id="sidebar-open-btn"
-          aria-label="Open Sidebar Menu"
+          aria-label={ariaLabelRecurData.Navbar_open_sidebar_menu_text}
           class="block w-full h-full select-none cursor-pointer"
         >
           <svg viewBox="0 0 22.4 19.2" xmlns="http://www.w3.org/2000/svg">
