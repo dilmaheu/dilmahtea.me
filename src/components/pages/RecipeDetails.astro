@@ -118,7 +118,8 @@ page.Nutrition.forEach((item) => {
   <Fragment slot="recipe-header">
     <div
       role="complementary"
-      aria-label={recurData.recipe_recipe + ariaLabelRecurData.Recipe_timing_text}
+      aria-label={recurData.recipe_recipe +
+        ariaLabelRecurData.Recipe_timing_text}
       class="flex flex-wrap items-center recipe-Time-Container"
     >
       <div class="inline-flex items-center gap-2 md:gap-2.5">
@@ -260,14 +261,17 @@ page.Nutrition.forEach((item) => {
       {recurData.recipe_recipe}
     </h2>
 
-    <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+    <div
+      class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+    >
       <div class="prose max-w-none mb-[15px] leading-[150%] recipe-sec-text">
         <Markdown>{page.Time_text}</Markdown>
       </div>
 
       <div
         role="complementary"
-        aria-label={recurData.recipe_recipe + ariaLabelRecurData.Recipe_timing_text} 
+        aria-label={recurData.recipe_recipe +
+          ariaLabelRecurData.Recipe_timing_text}
         class="flex flex-wrap mt-5 gap-y-5 recipe-sec-time-container"
       >
         <div class="inline-flex items-center gap-2.5">
@@ -334,12 +338,10 @@ page.Nutrition.forEach((item) => {
           class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
         >
           <div class="flex">
-            <div class="w-auto recipe-sec-content-border"></div>
+            <div class="w-auto recipe-sec-content-border" />
 
             <div class="grid w-full items-center gap-[15px]">
-              <h3
-                class="font-bold sm:font-semibold text-primary sm:text-dark2 recipe-sec-content-title"
-              >
+              <h3 class="font-bold sm:font-semibold text-primary sm:text-dark2 recipe-sec-content-title">
                 {recurData.recipe_nutrition_information}
               </h3>
 
@@ -362,33 +364,30 @@ page.Nutrition.forEach((item) => {
                 aria-label={recurData.recipe_amount_per_serving}
                 class="grid grid-flow-row gap-[5px] recipe-sec-nutritions-container"
               >
-                {
-                  page.Nutrition.map((item, idx) => (
-                    <div 
-                      role="list"
-                      class="flex items-center text-base lg:text-lg leading-[150%] text-dark2"
-                    >
-                      <div>{item.Nutrition_name}</div>
+                {page.Nutrition.map((item, idx) => (
+                  <div
+                    role="list"
+                    class="flex items-center text-base lg:text-lg leading-[150%] text-dark2"
+                  >
+                    <div>{item.Nutrition_name}</div>
 
-                      <span class="mr-1">:</span>
+                    <span class="mr-1">:</span>
 
-                      <div>
-                        {item.Nutrition_amount != null
-                          ? item.Nutrition_amount
-                          : "0"}
-                        {item.Nutrition_measurements_unit}
-                      </div>
+                    <div>
+                      {item.Nutrition_amount != null
+                        ? item.Nutrition_amount
+                        : "0"}
+                      {item.Nutrition_measurements_unit}
                     </div>
-                  ))
-                }
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-          
         </div>
       )
     }
-        
+
     <div
       aria-label={recurData.recipe_ingredients}
       class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
@@ -423,9 +422,10 @@ page.Nutrition.forEach((item) => {
         </label>
       </div>
 
-      <div 
+      <div
         role="list"
-        class="mt-5 md:mt-[25px] flex flex-wrap sm:flex-nowrap gap-2">
+        class="mt-5 md:mt-[25px] flex flex-wrap sm:flex-nowrap gap-2"
+      >
         {
           page.Cooking_part.map((item, idx) => (
             <div
@@ -557,29 +557,25 @@ page.Nutrition.forEach((item) => {
             </div>
           ))}
 
-
-          {
-            item.Cooking_part_step_tip && (
-              <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
-                <div class="flex flex-wrap items-center gap-2.5">
-                  <div class="flex items-center gap-[15px] sm:gap-5 w-full">
-                    <div class="recipe-sec-icon">
-                      <img class="w-full h-full object-contain" {...green_bulb} />
-                    </div>
-
-                    <h3 class="font-bold leading-[150%] text-primary recipe-sec-tips-title">
-                      {recurData.recipe_tips}
-                    </h3>
+          {item.Cooking_part_step_tip && (
+            <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+              <div class="flex flex-wrap items-center gap-2.5">
+                <div class="flex items-center gap-[15px] sm:gap-5 w-full">
+                  <div class="recipe-sec-icon">
+                    <img class="w-full h-full object-contain" {...green_bulb} />
                   </div>
 
-                  <div class="prose max-w-none font-medium sm:font-bold text-primary leading-[150%] recipe-sec-text">
-                    {item.Cooking_part_step_tip}
-                  </div>
+                  <h3 class="font-bold leading-[150%] text-primary recipe-sec-tips-title">
+                    {recurData.recipe_tips}
+                  </h3>
+                </div>
+
+                <div class="prose max-w-none font-medium sm:font-bold text-primary leading-[150%] recipe-sec-text">
+                  {item.Cooking_part_step_tip}
                 </div>
               </div>
-            )
-          }
-              
+            </div>
+          )}
         </div>
       ))
     }

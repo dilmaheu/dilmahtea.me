@@ -50,7 +50,13 @@ const url = `${Astro.site.origin}/${page.locale}/${
   }
 </style>
 
-<PostDetailsLayout {page} posts={howTos} {recurData} {ariaLabelRecurData} {headingName}>
+<PostDetailsLayout
+  {page}
+  posts={howTos}
+  {recurData}
+  {ariaLabelRecurData}
+  {headingName}
+>
   {/* Howto Header */}
   <div
     slot="howto-header"
@@ -75,7 +81,10 @@ const url = `${Astro.site.origin}/${page.locale}/${
       >
         {
           page.Method.map((method, index) => (
-            <span role="listitem" aria-label={ariaLabelRecurData.Howto_method_text + (index + 1)}>
+            <span
+              role="listitem"
+              aria-label={ariaLabelRecurData.Howto_method_text + (index + 1)}
+            >
               <a
                 href={`#` + method.Method_title.replaceAll(" ", "-")}
                 class:list={[
