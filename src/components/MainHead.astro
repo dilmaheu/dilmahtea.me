@@ -24,20 +24,25 @@ const {
   Meta_description: description,
 } = meta;
 
-const domain = Astro.site.origin,
+const { origin, hostname } = Astro.site,
   { updatedAt: lastModifiedDate } = page,
   alternateLocales = availableLocales.filter((lcl) => lcl !== locale);
 
-const documentHref = `${domain}/${locale}/${
+const documentHref = `${origin}/${locale}/${
     slugURL === "/" ? "" : slugURL + "/"
   }`,
-  canonicalHref = `${domain}/${locale}/${
+  canonicalHref = `${origin}/${locale}/${
     canonicalURL !== undefined
       ? canonicalURL === "/"
         ? ""
         : canonicalURL + "/"
       : slugURL + "/"
   }`;
+
+const openGraphImage =
+    origin + (await importRemoteImage(metaImageSrc + "?w=1200&h=627")),
+  twitterImage =
+    origin + (await importRemoteImage(metaImageSrc + "?w=800&h=418"));
 ---
 
 <meta charset="UTF-8" />
@@ -74,7 +79,7 @@ const documentHref = `${domain}/${locale}/${
     <link
       rel="alternate"
       hreflang={alternateLocale}
-      href={`${domain}/${alternateLocale}/${
+      href={`${origin}/${alternateLocale}/${
         slugURL === "/" ? "" : slugURL + "/"
       }`}
     />
@@ -91,15 +96,15 @@ const documentHref = `${domain}/${locale}/${
 <meta property="og:url" content={documentHref} />
 <meta property="og:site_name" content="Dilmah" />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={metaImageSrc} />
+<meta property="og:image" content={openGraphImage} />
 
 {/* Twitter */}
 <meta name="twitter:title" content={title} />
 <meta property="twitter:url" content={documentHref} />
-<meta property="twitter:domain" content="dilmahtea.me" />
+<meta property="twitter:domain" content={hostname} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content={metaImageSrc} />
+<meta name="twitter:image" content={twitterImage} />
 
 {
   !shouldDisplayExperimentals && (
@@ -108,7 +113,7 @@ const documentHref = `${domain}/${locale}/${
       defer
       src="/rpcq/script.js"
       data-api="/rpcq/event"
-      data-domain="dilmahtea.me"
+      data-domain={hostname}
     />
   )
 }

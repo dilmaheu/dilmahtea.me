@@ -10,6 +10,7 @@ import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+import localizeCMSImage from "@utils/localizeCMSImage";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 const { green_right_arrow } = RecurringImages;
@@ -37,8 +38,9 @@ for (const value of Spent_amount) {
   Total_spent_amount += value;
 }
 
-const productThumbnailURL =
-  ASSETS_URL + page.Intro_blob.data.attributes.formats.thumbnail.url;
+const productThumbnailURL = await importRemoteImage(
+  ASSETS_URL + page.Intro_blob.data.attributes.formats.thumbnail.url
+);
 
 const { SKU: productSKU } = page,
   productPrice = Number(page.Price),
@@ -554,16 +556,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <p>{page.Transparency_text}</p>
 
           <div class="grid gap-5">
-            {page.Transparency.map((item, index) => (
+            {page.Transparency.map(async (item, index) => (
               <div class="w-full lg:w-10/12">
                 <div class="grid transparency-items-grid gap-x-2.5">
                   <div class="transparency-item-icon flex items-center">
                     <img
                       alt=""
-                      src={
-                        ASSETS_URL +
+                      src={await localizeCMSImage(
                         item.Transparency_item_icon.data.attributes.url
-                      }
+                      )}
                       class="w-full h-full object-contain p-1"
                     />
                   </div>
@@ -787,7 +788,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     "@context": "https://schema.org",
     "@type": "Product",
     name: page.Title,
-    image: ASSETS_URL + page.Intro_blob.data.attributes.url,
+    image: await importRemoteImage(
+      ASSETS_URL + page.Intro_blob?.data.attributes.url
+    ),
     description: `${(await Astro.__renderMarkdown(page.Intro_text)).replace(
       /(<([^>]+)>)/gi,
       ""

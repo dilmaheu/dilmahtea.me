@@ -27,7 +27,9 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
     "@type": "BlogPosting",
     headline: page.Title,
     alternativeHeadline: `The best things you need to know about ${page.Title}`,
-    image: ASSETS_URL + page.Intro_blob.data.attributes.url,
+    image: await importRemoteImage(
+      ASSETS_URL + page.Intro_blob?.data.attributes.url
+    ),
     url: `${Astro.site.origin}/${page.locale}/${
       page.Meta.URL_slug === "/" ? "" : page.Meta.URL_slug
     }/`,
