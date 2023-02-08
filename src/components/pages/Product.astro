@@ -1,4 +1,5 @@
 ---
+import Icon from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
@@ -11,7 +12,7 @@ import RecurringImages from "@store/RecurringImages";
 
 const { white_cup, white_right_arrow } = RecurringImages;
 
-const { page, recurData } = Astro.props,
+const { page, recurData, ariaLabelRecurData } = Astro.props,
   { posts: products, locale } = page,
   [firstProduct] = products,
   { ASSETS_URL } = import.meta.env;
@@ -98,14 +99,18 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 <!-- Hero Section -->
 <Hero>
   {/* Text Content */}
-  <div class="wrapper hero-text-container h-full relative z-30">
+  <div
+    role="banner"
+    aria-label={ariaLabelRecurData.Intro_text}
+    class="wrapper hero-text-container h-full relative z-30"
+  >
     <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
       <div class="my-[30px]">
         <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
           {page.Title}
-
+          
           <span class="icon heading-inline-icon">
-            <img class="w-full h-full" {...white_cup} />
+            <img class="w-full h-full" alt="" {...white_cup} />
           </span>
         </h1>
 
@@ -169,27 +174,69 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     <div
       id="products"
       role="list"
-      aria-label="Kindness Items"
+      aria-label={page.Aria_label_all_teas_text}
       class="wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))] justify-center gap-[50px]"
     >
       {
-        products.map((post) => (
+        products.map((post, index) => (
           <div
             role="listitem"
-            aria-label="Kindness Item"
+            aria-label={page.Aria_label_tea_item_text + (index + 1) }
             style="clip-path: url(#product-card-curve)"
             class="link-section flex flex-wrap bg-primary"
           >
-            <Picture
-              layout="fullWidth"
-              alt={post.Intro_blob.data.attributes.alternativeText}
-              src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-              attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-              sizes="(min-width: 768px) min(580px, calc(45vw - 25px)), min(90vw, 420px)"
-            />
+            <div class="relative block w-full">
+              <Picture
+                layout="fullWidth"
+                alt={post.Intro_blob.data.attributes.alternativeText}
+                src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
+                sizes="(min-width: 768px) min(580px, calc(45vw - 25px)), min(90vw, 420px)"
+              />
+              { 
+                post.Stock_amount < 1 && (
+                  <>
+                    <div 
+                      class:list={[
+                        "absolute top-[12%] right-[12%] flex items-center px-5 sm:px-[37px]", 
+                        "py-[5px] sm:py-[7px] sm:text-xl font-semibold text-dark2",
+                        "border-2 border-[#fabf21] bg-[#fabf21]/80 rounded-full",
+                      ]}
+                    >
+                      {recurData.Product_sold_out_text}
+                    </div>
+
+                    <div 
+                      class:list={[
+                        "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none", 
+                        "w-full text-sm sm:text-base font-medium text-dark2 bg-[#faf8e5]/80"
+                      ]}
+                    >
+                      <Icon 
+                        name="mdi:alert-circle" 
+                        class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+                      />
+                      {recurData.Item_stock_text} 
+                      { new Date(post.In_stock_date)
+                          .toLocaleString(
+                            "en-GB", 
+                            { year: "2-digit", month: "short", day: "numeric"}
+                          )
+                      }
+                    </div>
+                  </>
+                )
+              }
+            </div>
             <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
               <div class="product-card-title alice leading-[120%] md:leading-[110%]">
                 <a
+                  aria-label={
+                    (post.Stock_amount < 1
+                      ? `${recurData.Product_sold_out_text}, `
+                      : "" 
+                    ) + post.Title
+                  }
                   class="main-link"
                   set:text={post.Title}
                   href={`/` + post.Meta.URL_slug}
@@ -222,17 +269,13 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       />
 
       <div class="relative w-full h-full product-impact-container">
-        {
-          firstProduct && (
-            <div class="absolute inset-0 w-full h-full bg-primary">
-              <Picture
-                alt=""
-                layout="fill"
-                src={ASSETS_URL + firstProduct.Intro_blob.data.attributes.url}
-              />
-            </div>
-          )
-        }
+        <div class="absolute inset-0 w-full h-full bg-primary">
+          <Picture
+            alt=""
+            layout="fill"
+            src={ASSETS_URL + page.Block2_blob.data.attributes.url}
+          />
+        </div>
 
         <div
           class="absolute inset-0 w-full h-full bg-gradient-to-b from-[#000] to-[#2f2f2f] opacity-[0.4]"
@@ -243,11 +286,9 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
           <div
             class="wrapper flex flex-wrap justify-center text-center py-[20px]"
           >
-            <div
-              class="product-impact-text alice leading-[110%] md:leading-[115%] w-full"
-            >
+            <h2 class="product-impact-text alice leading-[110%] md:leading-[115%] w-full">
               {page.Block2_title}
-            </div>
+            </h2>
 
             <a
               href={page.Block2_button_link}
@@ -272,16 +313,16 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
           <div
             role="list"
-            aria-label="Kindness Items"
+            aria-label={ariaLabelRecurData.Kindness_Items_text}
             class:list={[
               "w-full mx-auto mb-[50px] grid sm:grid-cols-2 lg:grid-cols-3",
               "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
             ]}
           >
-            {blogs.slice(0, 3).map((post) => (
+            {blogs.slice(0, 3).map((post, index) => (
               <div
                 role="listitem"
-                aria-label="Kindness Item"
+                aria-label={ariaLabelRecurData.Kindness_Item_text + (index + 1)}
                 style="clip-path: url(#product-card-curve)"
                 class="link-section bg-primary recent-post-card"
               >
@@ -301,7 +342,17 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                 <div class="recent-post-card-content-container">
                   {post.authors && (
                     <div>
-                      <div class="recent-post-card-author flex flex-wrap font-bold">
+                      <div
+                        role="presentation"
+                        aria-label={
+                          post.authors.data.map(({ attributes }, i) => (
+                            ariaLabelRecurData.Wrote_by_text 
+                              + (i > 0 ? ", " : " ") 
+                              + attributes.givenName
+                          ))
+                        }
+                        class="recent-post-card-author flex flex-wrap font-bold"
+                      >
                         {post.authors.data.map(({ attributes }, index) => (
                           <div>
                             {`${index > 0 ? ", " : " "}` + attributes.givenName}

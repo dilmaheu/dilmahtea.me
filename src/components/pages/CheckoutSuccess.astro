@@ -37,9 +37,9 @@ const { data: checkoutKindnessData } = CMS.get("checkoutKindness"),
   { ASSETS_URL } = import.meta.env;
 
 const EnvironmentalAdvocacyImage =
-  checkoutKindnessData.attributes.Kindness_Causes.find(
-    ({ cause }) => cause === "Environmental Advocacy"
-  ).featured_blob.data.attributes;
+  checkoutKindnessData.attributes.kindness_causes.data.find(
+    ({ attributes: { cause } }) => cause === "Environmental Advocacy"
+  ).attributes.featured_blob.data.attributes;
 ---
 
 <style lang="scss">

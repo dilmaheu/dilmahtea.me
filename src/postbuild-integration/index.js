@@ -11,12 +11,7 @@ import removeAstroIconAttributes from "./utils/removeAstroIconAttributes.js";
 const CSPRecord = {
   "default-src": ["'none'"],
   "style-src": ["'self'", "'unsafe-inline'"],
-  "img-src": [
-    "'self'",
-    "https://dilmahtea.me",
-    "https://cms.dilmahtea.me",
-    "data:",
-  ],
+  "img-src": ["'self'", "data:"],
   "media-src": ["data:"],
   "font-src": ["'self'"],
   "worker-src": ["blob:"],
@@ -29,9 +24,11 @@ const sitemap = [];
 
 /** @type {typeof import('astro').AstroIntegration} */
 const postbuildIntegration = {
-  name: "dilmahtea.me Custom Integration",
+  name: "PostBuild Integration",
   hooks: {
     "astro:build:done": async () => {
+      const start = performance.now();
+
       const htmlFilePaths = await globby([
           "./dist/**/*.html",
           "!./dist/**/404/index.html",
@@ -40,27 +37,35 @@ const postbuildIntegration = {
         allHtmlFilePaths = [...htmlFilePaths, ..._404HtmlFilePaths];
 
       await Promise.all(
-        allHtmlFilePaths
-          .map(async (path) => {
-            const htmlContent = await fs.readFile(path, "utf8"),
-              { document } = await parseHTML(htmlContent);
+        allHtmlFilePaths.map(async (path) => {
+          const htmlContent = await fs.readFile(path, "utf8"),
+            { document } = await parseHTML(htmlContent);
 
-            return [
-              removeAstroIconAttributes(path, document),
-              addScriptsHashes(document, CSPRecord),
-              addSitemapURLs(path, document, sitemap, htmlFilePaths),
-            ];
-          })
-          .flat()
+          removeAstroIconAttributes(document);
+          addScriptsHashes(document, CSPRecord);
+          addSitemapURLs(path, document, sitemap, htmlFilePaths);
+
+          const { simplifyImageFilenames } = await import(
+            "./utils/simplifyImageFilenames.js"
+          );
+
+          const stringifiedDocument = simplifyImageFilenames(document);
+
+          await fs.writeFile(path, stringifiedDocument);
+        })
       );
 
       await Promise.all([
         import("./utils/generateRobotsMeta.js"),
         import("./utils/generateSecurityMeta.js"),
-        rewrite404RoutesPaths(_404HtmlFilePaths),
         generateXMLSitemap(sitemap),
         generateSecurityHeaders(CSPRecord),
+        rewrite404RoutesPaths(_404HtmlFilePaths),
       ]);
+
+      const end = performance.now();
+
+      console.log(`PostBuild Integration took ${end - start}ms`);
     },
   },
 };

@@ -17,7 +17,7 @@ const {
   crowdfunding_info_section_background,
 } = RecurringImages;
 
-const { page } = Astro.props,
+const { page, ariaLabelRecurData } = Astro.props,
   { ASSETS_URL } = import.meta.env;
 
 // fetch crowdfunding stats from Cloudflare Worker
@@ -54,17 +54,18 @@ const goal = 100000,
 {/* Hero Section */}
 <Hero>
   {/* Text Content */}
-  <div class="wrapper hero-text-container h-full relative z-30">
-    <div
-      role="banner"
-      class="flex flex-wrap items-center sm:w-7/12 h-full sm:pb-8 md:pb-0"
-    >
+  <div 
+    role="banner"
+    aria-label={ariaLabelRecurData.Intro_text}
+    class="wrapper hero-text-container h-full relative z-30"
+  >
+    <div class="flex flex-wrap items-center sm:w-7/12 h-full sm:pb-8 md:pb-0">
       <div class="mt-[30px] sm:mt-4 lg:mt-0">
         <h1 class="hero-title">
           {page.Title}
 
           <span class="icon">
-            <img class="heading-inline-icon" {...white_cup} />
+            <img class="heading-inline-icon" alt="" {...white_cup} />
           </span>
         </h1>
 
@@ -80,7 +81,7 @@ const goal = 100000,
           ]}
         >
           <span class="icon h-6">
-            <img class="w-full h-full" {...green_love_ribbon} />
+            <img class="w-full h-full" alt="" {...green_love_ribbon} />
           </span>
 
           {page.Heading_button_text}
@@ -124,6 +125,7 @@ const goal = 100000,
           supportersText={page.Heading_supporters}
           {supportersCount}
           {totalAmountRaised}
+          {ariaLabelRecurData}
         />
       </div>
     </div>
@@ -161,6 +163,7 @@ const goal = 100000,
         supportersText={page.Heading_supporters}
         {supportersCount}
         {totalAmountRaised}
+        {ariaLabelRecurData}
       />
     </div>
   </div>
@@ -184,16 +187,17 @@ const goal = 100000,
 </script>
 
 {/* Plans Section */}
-<section class="wrapper py-6 sm:py-[50px]" role="main">
+<section role="main" class="wrapper py-6 sm:py-[50px]">
   <h2 id="plans" class="heading-primary text-primary">
     {page.Heading_plans}
   </h2>
 
-  <PlanCards allPlans={page.allPlans} />
+  <PlanCards allPlans={page.allPlans} {ariaLabelRecurData} />
 </section>
 
 {/* Info Section */}
 <section
+  role="complementary"
   class="relative h-[400px] sm:h-[clamp(400px,20vw+430px,840px)] overflow-hidden"
 >
   {/* Background  */}
@@ -224,7 +228,6 @@ const goal = 100000,
 
   {/* Text Content */}
   <div
-    role="complementary"
     class="wrapper h-full relative z-30 flex flex-wrap justify-end"
   >
     <div
@@ -234,7 +237,7 @@ const goal = 100000,
         {page.Heading_block}
 
         <span class="icon">
-          <img class="heading-inline-icon" {...white_flower} />
+          <img class="heading-inline-icon" alt="" {...white_flower} />
         </span>
       </h2>
 
