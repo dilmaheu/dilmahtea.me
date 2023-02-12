@@ -1,6 +1,7 @@
 ---
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+import localizeCMSImage from "@utils/localizeCMSImage";
 import Markdown from "@astrojs/markdown-component";
 
 const { green_cup } = RecurringImages;
@@ -92,7 +93,7 @@ function fromEntries(array){
       <div class="w-full h-full md:max-w-[740px] p-2.5 mb-[35px] mx-auto">
         <img
           class="w-full max-h-[330px] object-contain"
-          src={ASSETS_URL + page.Intro_blob?.data?.attributes?.url}
+          src={await localizeCMSImage(page.Intro_blob?.data?.attributes?.url)}
           alt={page.Intro_blob?.data?.attributes?.alternativeText}
         />
       </div>
@@ -259,7 +260,7 @@ function fromEntries(array){
                     <div class="w-[70px] h-[70px] p-3 bg-lightgray2 rounded-full">
                       <img
                         class="w-full h-full" 
-                        src={ASSETS_URL + fb_icon?.data?.attributes.url} 
+                        src={await localizeCMSImage(fb_icon?.data?.attributes.url)} 
                         alt={fb_icon?.data?.attributes.alternativeText}
                       />
                     </div>
@@ -270,7 +271,7 @@ function fromEntries(array){
                     <div class="w-[70px] h-[70px] p-3 bg-lightgray2 rounded-full">
                       <img
                         class="w-full h-full" 
-                        src={ASSETS_URL + g_icon?.data?.attributes.url} 
+                        src={await localizeCMSImage(g_icon?.data?.attributes.url)} 
                         alt={g_icon?.data?.attributes.alternativeText}
                       />
                     </div>
@@ -281,7 +282,7 @@ function fromEntries(array){
                     <div class="w-[70px] h-[70px] p-3 bg-lightgray2 rounded-full">
                       <img
                         class="w-full h-full" 
-                        src={ASSETS_URL + twitter_icon?.data?.attributes.url} 
+                        src={await localizeCMSImage(twitter_icon?.data?.attributes.url)} 
                         alt={twitter_icon?.data?.attributes.alternativeText}
                       />
                     </div>
@@ -316,7 +317,7 @@ function fromEntries(array){
         <div class="w-full h-full p-2.5 mx-auto">
           <img
             class="w-full max-h-[320px] object-contain"
-            src={ASSETS_URL + form.Blob?.data?.attributes?.url}
+            src={await localizeCMSImage(form.Blob?.data?.attributes?.url)}
             alt={form.Blob?.data?.attributes?.alternativeText}
           />
         </div>

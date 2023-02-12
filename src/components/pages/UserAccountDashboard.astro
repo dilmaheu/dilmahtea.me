@@ -1,10 +1,11 @@
 ---
+import CMS from "@store/CMS";
+import RecurringImages from "@store/RecurringImages";
+import localizeCMSImage from "@utils/localizeCMSImage";
 import { Icon } from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
 import { Img, Picture } from "astro-imagetools/components";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
-import CMS from "@store/CMS";
-import RecurringImages from "@store/RecurringImages";
 
 const { success_notification, green_right_arrow } = RecurringImages;
 
@@ -99,7 +100,7 @@ const title = page.Title.replaceAll(
         }
       }
     }
-    
+
     .kindness-causes {
       .kindness-cause {
         clip-path: url(#kindness-cause-card-curve-sm);
@@ -272,7 +273,7 @@ const title = page.Title.replaceAll(
                   <div class="w-[60px] h-[60px] p-[5px]">
                     <img 
                       class="w-full h-full"
-                      src={ ASSETS_URL + fb_icon.data.attributes.url } 
+                      src={await localizeCMSImage(fb_icon.data.attributes.url)} 
                       alt={ fb_icon.data.attributes.alternativeText }
                     />
                   </div>
@@ -309,7 +310,7 @@ const title = page.Title.replaceAll(
                   <div class="w-[60px] h-[60px] p-[5px]">
                     <img 
                       class="w-full h-full"
-                      src={ ASSETS_URL + g_icon.data.attributes.url } 
+                      src={await localizeCMSImage(g_icon.data.attributes.url)} 
                       alt={ g_icon.data.attributes.alternativeText }
                     />
                   </div>
@@ -330,7 +331,7 @@ const title = page.Title.replaceAll(
                   <div class="w-[60px] h-[60px] p-[5px]">
                     <img 
                       class="w-full h-full"
-                      src={ ASSETS_URL + twitter_icon.data.attributes.url } 
+                      src={await localizeCMSImage(twitter_icon.data.attributes.url)} 
                       alt={ twitter_icon.data.attributes.alternativeText }
                     />
                   </div>
@@ -666,7 +667,7 @@ const title = page.Title.replaceAll(
       <div class="w-full max-h-[200px]">
         <img
           class="w-full h-full"
-          src={ASSETS_URL + block3?.Empty_order_blob.data.attributes.url}
+          src={await localizeCMSImage(block3?.Empty_order_blob.data.attributes.url)}
           alt={block3?.Empty_order_blob.data.attributes.alternativeText}
         />
       </div>

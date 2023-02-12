@@ -12,7 +12,6 @@ const userAccountQuery = `
               attributes {
                 url
                 provider_metadata
-                formats
                 alternativeText
               }
             }
@@ -29,7 +28,6 @@ const userAccountQuery = `
                 attributes {
                   url
                   provider_metadata
-                  formats
                   alternativeText
                 }
               }
@@ -62,7 +60,6 @@ const userAccountQuery = `
                     attributes {
                       url
                       provider_metadata
-                      formats
                       alternativeText
                     }
                   }
@@ -79,7 +76,6 @@ const userAccountQuery = `
                       attributes {
                         url
                         provider_metadata
-                        formats
                         alternativeText
                       }
                     }
