@@ -14,72 +14,70 @@ const { Title: title } = page,
 
 <BasicPageHero {title} {introText} />
 
-{
-  contentDescription.length > 1 && (
-    // Intro description
-    <div class="wrapper block pt-[100px]">
-      <div class="content-text prose line-clamp-5">
-        <Markdown>{contentDescription}</Markdown>
+<div role="main">
+  {
+    contentDescription.length > 1 && (
+      // Intro description
+      <div class="wrapper block pt-[100px]">
+        <div class="content-text prose line-clamp-5">
+          <Markdown>{contentDescription}</Markdown>
+        </div>
       </div>
-    </div>
-  )
-}
+    )
+  }
 
-{
-  page.Block_blob.data === null && page.Block_text && (
-    // Text content
-    <div
-      role="complementary"
-      class="wrapper w-full h-full p-6 sm:px-0 sm:py-12"
-    >
-      <BasicPageInfoSectionTextContent page={page} />
-    </div>
-  )
-}
+  {
+    page.Block_blob.data === null && page.Block_text && (
+      // Text content
+      <div
+        class="wrapper w-full h-full p-6 sm:px-0 sm:py-12"
+      >
+        <BasicPageInfoSectionTextContent page={page} />
+      </div>
+    )
+  }
 
-{
-  page.Block_blob.data !== null && (
-    <Fragment>
-      {/* Information Section */}
-      <section class="relative overflow-hidden h-full sm:h-[clamp(550px,22vw+420px,820px)]">
-        {/* Blob Image - Desktop view */}
-        <div class="hidden sm:block absolute left-0 z-20 right-0 w-full w-1/2 h-full py-12 pr-6 lg:pr-24">
+  {
+    page.Block_blob.data !== null && (
+      <Fragment>
+        {/* Information Section */}
+        <section class="relative overflow-hidden h-full sm:h-[clamp(550px,22vw+420px,820px)]">
+          {/* Blob Image - Desktop view */}
+          <div class="hidden sm:block absolute left-0 z-20 right-0 w-full w-1/2 h-full py-12 pr-6 lg:pr-24">
+            <ClippedPicture
+              id="info-section-curve"
+              breakpoints={{ minWidth: 640 }}
+              pictureStyle="position: relative; left: -20px;"
+              alt={page.Block_blob.data.attributes.alternativeText}
+              src={ASSETS_URL + page.Block_blob.data.attributes.url}
+              sizes={[
+                "(min-width: 1024px) calc(50vw - min(100px, 5vw) - 96px)",
+                "(min-width: 640px) calc(50vw - min(100px, 5vw) - 24px)",
+              ].join(", ")}
+              path="M1 .494V.507A.019.028 0 0 0 1 .51v.016A.024.035 0 0 0 1 .53L.998.579C.991.693.986.856.835.945a.362.362 0 0 1-.222.05C.567.992.521.984.473.981L.438.98C.357.98.275 1 .204 1A.19.19 0 0 1 .079.961C-.011.886.018.658.018.485.018.396.005.337.001.277A.191.28 0 0 1 0 .244C0 .206.004.166.018.115.041.025.106.004.189.003c.071 0 .155.015.238.015L.45.017C.494.014.551.006.612.002.708-.004.816.001.893.063.976.13.997.311 1 .449v.025"
+            />
+          </div>
+
+          {/* Text content */}
+          <div class="wrapper h-full flex flex-wrap justify-end p-6 sm:px-0 sm:py-12">
+            <div class="w-full sm:w-1/2 h-full flex flex-col sm:justify-center px-0 sm:pl-[10px] sm:pr-24">
+              <BasicPageInfoSectionTextContent page={page} />
+            </div>
+          </div>
+        </section>
+
+        {/* Blob Image - Mobile view */}
+        <div class="block sm:hidden w-screen">
           <ClippedPicture
-            id="info-section-curve"
-            breakpoints={{ minWidth: 640 }}
-            pictureStyle="position: relative; left: -20px;"
+            id="info-section-curve-sm"
             alt={page.Block_blob.data.attributes.alternativeText}
             src={ASSETS_URL + page.Block_blob.data.attributes.url}
-            sizes={[
-              "(min-width: 1024px) calc(50vw - min(100px, 5vw) - 96px)",
-              "(min-width: 640px) calc(50vw - min(100px, 5vw) - 24px)",
-            ].join(", ")}
-            path="M1 .494V.507A.019.028 0 0 0 1 .51v.016A.024.035 0 0 0 1 .53L.998.579C.991.693.986.856.835.945a.362.362 0 0 1-.222.05C.567.992.521.984.473.981L.438.98C.357.98.275 1 .204 1A.19.19 0 0 1 .079.961C-.011.886.018.658.018.485.018.396.005.337.001.277A.191.28 0 0 1 0 .244C0 .206.004.166.018.115.041.025.106.004.189.003c.071 0 .155.015.238.015L.45.017C.494.014.551.006.612.002.708-.004.816.001.893.063.976.13.997.311 1 .449v.025"
+            path="M.282 0C.147 0 .062.021 0 .064V.97c.045.046.195.006.324 0C.473.963.625 1 .774 1A.561.561 0 0 0 1 .954v-.89c-.059-.061-.237 0-.32 0S.417 0 .282 0"
           />
         </div>
-
-        {/* Text content */}
-        <div class="wrapper h-full flex flex-wrap justify-end p-6 sm:px-0 sm:py-12">
-          <div
-            role="complementary"
-            class="w-full sm:w-1/2 h-full flex flex-col sm:justify-center px-0 sm:pl-[10px] sm:pr-24"
-          >
-            <BasicPageInfoSectionTextContent page={page} />
-          </div>
-        </div>
-      </section>
-
-      {/* Blob Image - Mobile view */}
-      <div class="block sm:hidden w-screen">
-        <ClippedPicture
-          id="info-section-curve-sm"
-          alt={page.Block_blob.data.attributes.alternativeText}
-          src={ASSETS_URL + page.Block_blob.data.attributes.url}
-          path="M.282 0C.147 0 .062.021 0 .064V.97c.045.046.195.006.324 0C.473.963.625 1 .774 1A.561.561 0 0 0 1 .954v-.89c-.059-.061-.237 0-.32 0S.417 0 .282 0"
-        />
-      </div>
-    </Fragment>
-  )
-}
+      </Fragment>
+    )
+  }  
+</div>
 
 <div class="h-8 sm:h-16"></div>

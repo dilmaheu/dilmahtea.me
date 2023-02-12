@@ -2,9 +2,9 @@
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 import RecurringImages from "@store/RecurringImages";
+import localizeCMSImage from "@utils/localizeCMSImage";
 
-const { allPlans } = Astro.props,
-  { ASSETS_URL } = import.meta.env,
+const { allPlans, ariaLabelRecurData } = Astro.props,
   { tick, green_leaf } = RecurringImages;
 ---
 
@@ -34,14 +34,14 @@ const { allPlans } = Astro.props,
 
 <div
   role="list"
-  aria-label="Plans"
+  aria-label={ariaLabelRecurData.Crowdfunding_plans_text}
   class="w-full grid md:grid-cols-2 xl:grid-cols-3 justify-center gap-6 lg:gap-10"
 >
   {
-    allPlans.map((plan) => (
+    allPlans.map(async (plan, index) => (
       <div
         role="listitem"
-        aria-label={`Plan ${plan.Title}`}
+        aria-label={ariaLabelRecurData.Crowdfunding_plan_text + (index + 1)}
         class="plan-card w-full h-auto bg-primary rounded-[45px] lg:rounded-[60px]"
       >
         <div class="inline-flex items-end gap-x-3.5">
@@ -49,11 +49,10 @@ const { allPlans } = Astro.props,
 
           <img
             class="h-[35px] max-w-[35px]"
-            src={
-              ASSETS_URL +
-              (plan.Title_icon?.data?.attributes?.formats?.thumbnail?.url ||
-                plan.Title_icon?.data?.attributes?.url)
-            }
+            src={await localizeCMSImage(
+              plan.Title_icon?.data?.attributes?.formats?.thumbnail?.url ||
+                plan.Title_icon?.data?.attributes?.url
+            )}
             alt=""
           />
         </div>
@@ -69,6 +68,7 @@ const { allPlans } = Astro.props,
         </div>
 
         <a
+          aria-label={`${plan.Title}, ${plan.Button_text}`}
           href={`/plans/${plan.Title.toLowerCase()}`}
           class="inline-block p-4 font-bold text-primary text-center min-w-[140px] bg-lightgray rounded-[20px]"
         >

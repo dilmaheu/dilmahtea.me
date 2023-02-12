@@ -15,8 +15,10 @@ const {
   green_leaf: right_post_leaf,
 } = RecurringImages;
 
-const { posts } = Astro.props.page,
-  { ASSETS_URL } = import.meta.env;
+
+const { page, ariaLabelRecurData } = Astro.props,
+  { ASSETS_URL } = import.meta.env,
+  { posts } = page;
 
 posts.sort((a, b) => {
   return new Date(b.createdAt) - new Date(a.createdAt);
@@ -84,13 +86,27 @@ const [firstPost] = posts;
 {/* Hero Section */}
 <Hero>
   {/* Text Content */}
-  <div class="wrapper hero-text-container h-full relative z-30">
-    <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
+  <div 
+    role="banner"
+    aria-label={`${ariaLabelRecurData.Post_text} 1 ${ariaLabelRecurData.Product_post_of_text} ${posts.length}`}
+    class="wrapper hero-text-container h-full relative z-30"
+  >
+    <div class="flex flex-wrap items-center sm:w-7/12 h-full">
       <div class="my-[30px]">
         {
           firstPost.authors && (
             <div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
-              <div class="post-author flex flex-wrap font-bold text-lightgray">
+              <div 
+                role="presentation"
+                aria-label={
+                  firstPost.authors.data.map(({ attributes }, i) => (
+                    ariaLabelRecurData.Wrote_by_text 
+                      + (i > 0 ? ", " : " ") 
+                      + attributes.givenName
+                  ))
+                }
+                class="post-author flex flex-wrap font-bold text-lightgray"
+              >
                 {firstPost.authors.data.map(({ attributes }, i) => (
                   <div>{`${i > 0 ? ", " : " "}` + attributes.givenName}</div>
                 ))}
@@ -162,7 +178,11 @@ const [firstPost] = posts;
     path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
   />
 
-  <div class="flex flex-wrap items-center gap-y-[50px] py-[50px]">
+  <div 
+    role="list"
+    aria-label={ariaLabelRecurData.All_posts_text}
+    class="flex flex-wrap items-center gap-y-[50px] py-[50px]"
+  >
     {
       posts.slice(1).map((post, index) => {
         const isEven = index % 2 === 0,
@@ -170,7 +190,14 @@ const [firstPost] = posts;
           postLeafWidthMultiplier = isEven ? 0.24 : 0.18;
 
         return (
-          <section class="link-section flex flex-wrap items-center">
+          <div
+            role="listitem"
+            aria-label={
+              `${ariaLabelRecurData.Post_text
+                  + (index + 2)} ${ariaLabelRecurData.Product_post_of_text} ${posts.length}`
+            }
+            class="link-section flex flex-wrap items-center"
+          >
             <div
               class:list={[
                 "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
@@ -229,7 +256,17 @@ const [firstPost] = posts;
               <div>
                 {post.authors && (
                   <div>
-                    <div class="post-author flex flex-wrap font-bold text-primary">
+                    <div 
+                      role="presentation" 
+                      aria-label={
+                        post.authors.data.map(({ attributes }, i) => (
+                          ariaLabelRecurData.Wrote_by_text 
+                            + (i > 0 ? ", " : " ") 
+                            + attributes.givenName
+                        ))
+                      }
+                      class="post-author flex flex-wrap font-bold text-primary"
+                    >
                       {post.authors.data.map(({ attributes }, i) => (
                         <div>
                           {`${i > 0 ? ", " : " "}` + attributes.givenName}
@@ -263,7 +300,7 @@ const [firstPost] = posts;
                 </div>
               </div>
             </div>
-          </section>
+          </div>
         );
       })
     }

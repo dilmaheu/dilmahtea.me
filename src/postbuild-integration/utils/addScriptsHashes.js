@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-export default async function addScriptsHashes(document, CSPRecord) {
+export default function addScriptsHashes(document, CSPRecord) {
   const scripts = document.querySelectorAll("script");
 
   [...scripts].forEach(({ textContent }) => {

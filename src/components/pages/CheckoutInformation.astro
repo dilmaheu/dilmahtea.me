@@ -1,8 +1,8 @@
 ---
+import CMS from "@store/CMS";
 import OrderSummary from "@components/OrderSummary.astro";
 
-const { page } = Astro.props,
-  countries = page.countries.split("\n");
+const { page } = Astro.props;
 ---
 
 <style lang="scss">
@@ -71,11 +71,13 @@ const { page } = Astro.props,
 
 <section class="w-full lg:w-[66.67%]">
   <form
+    role="main"
+    aria-label={page.Aria_label_form_text}
     id="checkout-info-form"
     class="flex flex-col gap-12"
     action="/checkout/shipping"
   >
-    <div class="form-grid-container">
+    <div role="form" aria-label={page.text_contact_info} class="form-grid-container">
       <h2 class="alice">{page.text_contact_info}</h2>
 
       <div class="form-grid">
@@ -92,7 +94,7 @@ const { page } = Astro.props,
       </div>
     </div>
 
-    <div class="form-grid-container">
+    <div role="form" aria-label={page.text_shipping_address} class="form-grid-container">
       <h2 class="alice">{page.text_shipping_address}</h2>
 
       <div class="form-grid">
@@ -127,9 +129,15 @@ const { page } = Astro.props,
             </option>
 
             {
-              countries.map((country) => (
-                <option value={country}>{country}</option>
-              ))
+              page.countries.data.map(
+                ({ attributes: { name, localizations } }) => (
+                  <option
+                    value={localizations?.data[0]?.attributes?.name || name}
+                  >
+                    {name}
+                  </option>
+                )
+              )
             }
           </select>
         </label>

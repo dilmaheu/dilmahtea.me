@@ -5,7 +5,7 @@ import { Picture } from "astro-imagetools/components";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import { join } from "path";
 
-const { page, recurData } = Astro.props,
+const { page, recurData, ariaLabelRecurData } = Astro.props,
   { howTos } = page,
   headingName = recurData.text_practices,
   { ASSETS_URL } = import.meta.env;
@@ -50,13 +50,17 @@ const url = `${Astro.site.origin}/${page.locale}/${
   }
 </style>
 
-<PostDetailsLayout {page} posts={howTos} {recurData} {headingName}>
+<PostDetailsLayout {page} posts={howTos} {recurData} {ariaLabelRecurData} {headingName}>
   {/* Howto Header */}
   <div
     slot="howto-header"
     class="wrapper flex relative z-20 -top-8 lg:top-0 lg:-mt-16 xl:-mt-24"
   >
-    <div class="howto-header-method py-7 px-5 rounded-[10px]">
+    <div
+      role="complementary"
+      aria-label={page.Method.length + recurData.text_practices_to_follow}
+      class="howto-header-method py-7 px-5 rounded-[10px]"
+    >
       <h2
         class="alice text-primary text-center sm:text-left leading-[110%] sm:leading-[130%] howto-header-method-title"
       >
@@ -65,19 +69,23 @@ const url = `${Astro.site.origin}/${page.locale}/${
       </h2>
 
       <div
+        role="list"
+        aria-label={`${recurData.text_practices_to_follow} items`}
         class="flex flex-wrap justify-center sm:justify-start gap-x-5 gap-y-2.5 mt-[18px] sm:mt-[23px]"
       >
         {
-          page.Method.map((method) => (
-            <a
-              href={`#` + method.Method_title.replaceAll(" ", "-")}
-              class:list={[
-                "py-1.5 md:py-[13px] px-5 md:px-[35px] flex items-center justify-center bg-primary cursor-pointer text-white leading-[150%]",
-                "text-center sm:text-left w-full max-w-[300px] sm:max-w-[240px] min-h-[80px] rounded-[58px] howto-header-method-text",
-              ]}
-            >
-              {method.Method_title}
-            </a>
+          page.Method.map((method, index) => (
+            <span role="listitem" aria-label={ariaLabelRecurData.Howto_method_text + (index + 1)}>
+              <a
+                href={`#` + method.Method_title.replaceAll(" ", "-")}
+                class:list={[
+                  "py-1.5 md:py-[13px] px-5 md:px-[35px] flex items-center justify-center bg-primary cursor-pointer text-white leading-[150%]",
+                  "text-center sm:text-left w-full max-w-[300px] sm:max-w-[240px] min-h-[80px] rounded-[58px] howto-header-method-text",
+                ]}
+              >
+                {method.Method_title}
+              </a>
+            </span>
           ))
         }
       </div>
@@ -141,21 +149,31 @@ const url = `${Astro.site.origin}/${page.locale}/${
     name: page.Title,
     image: {
       "@type": "ImageObject",
-      url: ASSETS_URL + page.Intro_blob.data.attributes.url,
+      url: await importRemoteImage(
+        ASSETS_URL + page.Intro_blob?.data.attributes.url
+      ),
     },
-    step: page.Method.map((method) => ({
-      "@type": "HowToSection",
-      name: method.Method_title,
-      itemListElement: method.Steps.map((step) => ({
-        "@type": "HowToStep",
-        name: step.Step_title,
-        text: step.Step_text,
-        url: `${url + `#` + step.Step_title.replaceAll(" ", "-")}`,
-        image: {
-          "@type": "ImageObject",
-          url: ASSETS_URL + step.Step_blob?.data?.attributes.url,
-        },
-      })),
-    })),
+    step: await Promise.all(
+      page.Method.map(async (method) => ({
+        "@type": "HowToSection",
+        name: method.Method_title,
+        itemListElement: await Promise.all(
+          method.Steps.map(async (step) => ({
+            "@type": "HowToStep",
+            name: step.Step_title,
+            text: step.Step_text,
+            url: `${url + `#` + step.Step_title.replaceAll(" ", "-")}`,
+            image: {
+              "@type": "ImageObject",
+              url: !step.Step_blob?.data
+                ? ""
+                : await importRemoteImage(
+                    ASSETS_URL + step.Step_blob?.data?.attributes.url
+                  ),
+            },
+          }))
+        ),
+      }))
+    ),
   }}
 />

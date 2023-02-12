@@ -1,16 +1,19 @@
 import CMS from "@store/CMS";
+import localizeCMSImage from "@utils/localizeCMSImage";
 
 const { data: recurringImageData } = CMS.get("recurringImage");
 
 const RecurringImages = {};
 
-Object.keys(recurringImageData.attributes).map((key) => {
-  const { url: relativeSrc, alternativeText: alt } =
-    recurringImageData.attributes[key].data.attributes;
+await Promise.all(
+  Object.keys(recurringImageData.attributes).map(async (key) => {
+    const { url: relativeSrc, alternativeText: alt } =
+      recurringImageData.attributes[key].data.attributes;
 
-  const src = import.meta.env.ASSETS_URL + relativeSrc;
+    const src = await localizeCMSImage(relativeSrc);
 
-  RecurringImages[key] = { src, alt };
-});
+    RecurringImages[key] = { src, alt };
+  })
+);
 
 export default RecurringImages;

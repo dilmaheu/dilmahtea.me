@@ -32,6 +32,7 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
 </style>
 
 <section
+  role="list"
   class="flex flex-wrap items-center gap-y-20 py-20 py-[50px] lg:py-[75px]"
 >
   {
@@ -44,7 +45,11 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
           title.nextElementSibling.lastElementChild;
 
       return (
-        <div class="flex flex-wrap items-center">
+        <div
+          role="listitem"
+          aria-label={page.Block3_aria_label_text}
+          class="flex flex-wrap items-center"
+        >
           <div
             class:list={[
               "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",

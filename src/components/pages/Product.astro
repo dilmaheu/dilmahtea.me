@@ -12,7 +12,7 @@ import RecurringImages from "@store/RecurringImages";
 
 const { white_cup, white_right_arrow } = RecurringImages;
 
-const { page, recurData } = Astro.props,
+const { page, recurData, ariaLabelRecurData } = Astro.props,
   { posts: products, locale } = page,
   [firstProduct] = products,
   { ASSETS_URL } = import.meta.env;
@@ -99,14 +99,18 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 <!-- Hero Section -->
 <Hero>
   {/* Text Content */}
-  <div class="wrapper hero-text-container h-full relative z-30">
+  <div
+    role="banner"
+    aria-label={ariaLabelRecurData.Intro_text}
+    class="wrapper hero-text-container h-full relative z-30"
+  >
     <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
       <div class="my-[30px]">
         <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
           {page.Title}
-
+          
           <span class="icon heading-inline-icon">
-            <img class="w-full h-full" {...white_cup} />
+            <img class="w-full h-full" alt="" {...white_cup} />
           </span>
         </h1>
 
@@ -170,14 +174,14 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     <div
       id="products"
       role="list"
-      aria-label="Kindness Items"
+      aria-label={page.Aria_label_all_teas_text}
       class="wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))] justify-center gap-[50px]"
     >
       {
-        products.map((post) => (
+        products.map((post, index) => (
           <div
             role="listitem"
-            aria-label="Kindness Item"
+            aria-label={page.Aria_label_tea_item_text + (index + 1) }
             style="clip-path: url(#product-card-curve)"
             class="link-section flex flex-wrap bg-primary"
           >
@@ -227,6 +231,12 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
             <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
               <div class="product-card-title alice leading-[120%] md:leading-[110%]">
                 <a
+                  aria-label={
+                    (post.Stock_amount < 1
+                      ? `${recurData.Product_sold_out_text}, `
+                      : "" 
+                    ) + post.Title
+                  }
                   class="main-link"
                   set:text={post.Title}
                   href={`/` + post.Meta.URL_slug}
@@ -276,11 +286,9 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
           <div
             class="wrapper flex flex-wrap justify-center text-center py-[20px]"
           >
-            <div
-              class="product-impact-text alice leading-[110%] md:leading-[115%] w-full"
-            >
+            <h2 class="product-impact-text alice leading-[110%] md:leading-[115%] w-full">
               {page.Block2_title}
-            </div>
+            </h2>
 
             <a
               href={page.Block2_button_link}
@@ -305,16 +313,16 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
           <div
             role="list"
-            aria-label="Kindness Items"
+            aria-label={ariaLabelRecurData.Kindness_Items_text}
             class:list={[
               "w-full mx-auto mb-[50px] grid sm:grid-cols-2 lg:grid-cols-3",
               "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
             ]}
           >
-            {blogs.slice(0, 3).map((post) => (
+            {blogs.slice(0, 3).map((post, index) => (
               <div
                 role="listitem"
-                aria-label="Kindness Item"
+                aria-label={ariaLabelRecurData.Kindness_Item_text + (index + 1)}
                 style="clip-path: url(#product-card-curve)"
                 class="link-section bg-primary recent-post-card"
               >
@@ -334,7 +342,17 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                 <div class="recent-post-card-content-container">
                   {post.authors && (
                     <div>
-                      <div class="recent-post-card-author flex flex-wrap font-bold">
+                      <div
+                        role="presentation"
+                        aria-label={
+                          post.authors.data.map(({ attributes }, i) => (
+                            ariaLabelRecurData.Wrote_by_text 
+                              + (i > 0 ? ", " : " ") 
+                              + attributes.givenName
+                          ))
+                        }
+                        class="recent-post-card-author flex flex-wrap font-bold"
+                      >
                         {post.authors.data.map(({ attributes }, index) => (
                           <div>
                             {`${index > 0 ? ", " : " "}` + attributes.givenName}

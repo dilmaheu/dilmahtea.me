@@ -79,7 +79,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     <div
       role="alert"
       tabindex="0"
-      aria-label="Cart is in focus now"
+      aria-label={checkoutRecurData.Aria_label_cart_focus_text}
       id="cart-overlay-products-container"
       class:list={[
         "focus:outline-1 outline-black -outline-offset-1",
@@ -99,7 +99,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 {checkoutRecurData.text_cart}
               </h2>
 
-              <button id="close-cart-btn" aria-label="Close Cart">
+              <button id="close-cart-btn" aria-label={checkoutRecurData.Aria_label_cart_close_button_text}>
                 <Icon name="heroicons-solid:x" class="w-14" />
               </button>
             </div>
@@ -115,6 +115,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           >
             <div class="relative grow w-full">
               <div
+                role="list"
+                aria-label={checkoutRecurData.Aria_label_cart_items_text}
                 class="absolute w-full h-full flex flex-col gap-5 overflow-auto"
               >
                 <DynamicHTML
@@ -166,7 +168,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     }
                   }}
                 >
-                  <div class="flex">
+                  <div 
+                    role="listitem" 
+                    aria-label={`<placeholder name="name"></placeholder>`}
+                    class="flex" 
+                  >
                     <div
                       id={`<placeholder name="id"></placeholder>`}
                       class="cart-product p-4 gap-3.5 flex justify-between items-center w-full bg-lightgray2 rounded-[10px]"
@@ -187,7 +193,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
                           <button
                             class="remove-item-btn"
-                            aria-label="Remove Item"
+                            aria-label={
+                              checkoutRecurData.Aria_label_remove_cart_item_button_text 
+                                + ` <placeholder name="name"></placeholder>`
+                            }
                           >
                             <Icon name="akar-icons:trash-can" class="w-6 h-6" />
                           </button>
@@ -206,7 +215,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           >
                             <button
                               data-action="decrement"
-                              aria-label="Decrease Quantity"
+                              aria-label={
+                                checkoutRecurData.Aria_label_cart_item_quantity_minus_button_text 
+                                  + ` <placeholder name="name"></placeholder>`
+                              }
                               class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-2 pr-1"
                               disabled
                             >
@@ -218,7 +230,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
                             <input
                               type="number"
-                              aria-label="Quantity"
+                              aria-label={
+                                checkoutRecurData.Aria_label_cart_item_quantity_text 
+                                  + ` <placeholder name="name"></placeholder>`
+                              }
                               min="1"
                               value={`<placeholder name="quantity"></placeholder>`}
                               class:list={[
@@ -230,7 +245,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
                             <button
                               data-action="increment"
-                              aria-label="Increase Quantity"
+                              aria-label={
+                                checkoutRecurData.Aria_label_cart_item_quantity_plus_button_text 
+                                  + ` <placeholder name="name"></placeholder>`
+                              }
                               class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-1 pr-2"
                             >
                               <Icon

@@ -21,6 +21,7 @@ const homeEstateQuery = `
           }
           Heading_block
           Block_text
+          Block2_aria_label_text
           Block2_text
           Block2_blob {
             data {
@@ -32,8 +33,10 @@ const homeEstateQuery = `
               }
             }
           }
+          Block3_aria_label_text
           Block3
           Block4_heading
+          Block4_items_aria_label_text
           Block4_items {
             Block4_Value
             Block4_description
@@ -74,6 +77,7 @@ const homeEstateQuery = `
               }
             }
           }
+          Aria_label_all_estates_text
           Meta {
             HTML_Title
             Meta_description
@@ -103,6 +107,7 @@ const homeEstateQuery = `
                 }
                 Heading_block
                 Block_text
+                Block2_aria_label_text
                 Block2_text
                 Block2_blob {
                   data {
@@ -114,8 +119,10 @@ const homeEstateQuery = `
                     }
                   }
                 }
+                Block3_aria_label_text
                 Block3
                 Block4_heading
+                Block4_items_aria_label_text
                 Block4_items {
                   Block4_Value
                   Block4_description
@@ -156,6 +163,7 @@ const homeEstateQuery = `
                     }
                   }
                 }
+                Aria_label_all_estates_text
                 Meta {
                   HTML_Title
                   Meta_description

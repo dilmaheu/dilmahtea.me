@@ -5,13 +5,13 @@ import Chapterize from "@components/Chapterize.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
-const { page, recurData } = Astro.props,
+const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
   { blogs } = page,
   { ASSETS_URL } = import.meta.env;
 ---
 
-<PostDetailsLayout {page} posts={blogs} {recurData} {headingName}>
+<PostDetailsLayout {page} posts={blogs} {recurData} {ariaLabelRecurData} {headingName}>
   <div slot="post-details" class="prose content-text">
     <Chapterize>
       <OptimizeContentImages>
@@ -27,7 +27,9 @@ const { page, recurData } = Astro.props,
     "@type": "BlogPosting",
     headline: page.Title,
     alternativeHeadline: `The best things you need to know about ${page.Title}`,
-    image: ASSETS_URL + page.Intro_blob.data.attributes.url,
+    image: await importRemoteImage(
+      ASSETS_URL + page.Intro_blob?.data.attributes.url
+    ),
     url: `${Astro.site.origin}/${page.locale}/${
       page.Meta.URL_slug === "/" ? "" : page.Meta.URL_slug
     }/`,

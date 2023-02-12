@@ -1,4 +1,5 @@
 ---
+import CMS from "@store/CMS";
 import Icon from "astro-icon";
 import { Picture, BackgroundPicture } from "astro-imagetools/components";
 
@@ -24,6 +25,8 @@ interface Props {
 
 const { docLocale, footerText, isCartNavbar, availableLocales } =
   Astro.props as Props;
+
+const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", docLocale);
 ---
 
 <style lang="scss">
@@ -122,7 +125,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
         !isCartNavbar && (
           <button
             id="open-cart-btn"
-            aria-label="Open Cart"
+            aria-label={ariaLabelRecurData.Navbar_open_cart_text}
             class:list={[
               "relative scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]",
               "mx-[calc(-24px*0.225)] sm:mx-[calc(-24px*0.15)] md:mx-[calc(-24px*0.075)] lg:mx-0",
@@ -172,7 +175,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
       <div class="block md:hidden w-[38px] h-[38px]">
         <button
           id="sidebar-open-btn"
-          aria-label="Open Sidebar Menu"
+          aria-label={ariaLabelRecurData.Navbar_open_sidebar_menu_text}
           class="block w-full h-full select-none cursor-pointer"
         >
           <svg viewBox="0 0 22.4 19.2" xmlns="http://www.w3.org/2000/svg">
@@ -184,7 +187,7 @@ const { docLocale, footerText, isCartNavbar, availableLocales } =
 
         <button
           id="sidebar-close-btn"
-          aria-label="Close Sidebar Menu"
+          aria-label={ariaLabelRecurData.Navbar_close_sidebar_menu_text}
           class="hidden w-full h-full select-none cursor-pointer"
         >
           <svg viewBox="0 0 19.2 19.2" xmlns="http://www.w3.org/2000/svg">
