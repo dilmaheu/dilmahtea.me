@@ -19,6 +19,23 @@ const homeProductQuery = `
               }
             }
           }
+          Category_title
+          Categories {
+            data{
+              attributes{
+                Name
+                Blob{
+                  data{
+                    attributes{
+                      url
+                      provider_metadata
+                      alternativeText
+                    }
+                  }
+                }
+              }
+            }
+          }
           Block2_title
           Block2_button_text
           Block2_button_link
@@ -83,6 +100,23 @@ const homeProductQuery = `
                       url
                       provider_metadata
                       alternativeText
+                    }
+                  }
+                }
+                Category_title
+                Categories {
+                  data{
+                    attributes{
+                      Name
+                      Blob{
+                        data{
+                          attributes{
+                            url
+                            provider_metadata
+                            alternativeText
+                          }
+                        }
+                      }
                     }
                   }
                 }
