@@ -35,8 +35,6 @@ const userAccountDashboardQuery = `
             Label_let_dilmah_pick_cause
             Let_dilmah_pick_cause_text
             Button_change_cause_text
-            Button_update_text
-            Button_cancel_text
             Notification_cause_update_text
           }
           Block3_visibility
@@ -129,8 +127,6 @@ const userAccountDashboardQuery = `
                   Label_let_dilmah_pick_cause
                   Let_dilmah_pick_cause_text
                   Button_change_cause_text
-                  Button_update_text
-                  Button_cancel_text
                   Notification_cause_update_text
                 }
                 Block3_visibility
