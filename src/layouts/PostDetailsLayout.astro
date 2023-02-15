@@ -13,7 +13,7 @@ import RecurringImages from "@store/RecurringImages";
 
 const { white_cup, green_book, white_right_arrow } = RecurringImages;
 
-const { page, posts, recurData, ariaLabelRecurData, headingName } = Astro.props,
+const { page, posts, recurData, ariaLabelRecurData, headingName, type } = Astro.props,
   { ASSETS_URL } = import.meta.env;
 
 // display relevant recipes instead of recent posts for RecipeDetails pages
@@ -186,7 +186,7 @@ const contentHTML = await Astro.slots.render("post-details"),
 
         {
           page.estate_name?.data.length > 0 && (
-            <div class="flex flex-wrap items-center mt-[20px] md:mt-[25px]">
+            <div class="flex flex-wrap items-center mb-[5px]">
               <div class="flex flex-wrap items-center text-lg lg:text-xl leading-[150%]">
                 {recurData.product_made_love_from + `\xa0`}
 
@@ -210,7 +210,7 @@ const contentHTML = await Astro.slots.render("post-details"),
           )
         }
 
-        <h1 class="hero-title pt-[5px]">
+        <h1 class="hero-title">
           {page.Title || page.Estate_name}
 
           {
@@ -231,6 +231,18 @@ const contentHTML = await Astro.slots.render("post-details"),
             </div>
           )
         }
+
+        {page?.Heading_button_text && (
+          <a
+            href={page.Heading_button_link}
+            class:list={[
+              "flex w-fit text-primary font-bold leading-[120%]",
+              "py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9 bg-white rounded-full",
+            ]}
+          >
+            {page.Heading_button_text}
+          </a>
+        )}
 
         {/* Recipe Header */}
         <slot name="recipe-header" />
@@ -289,8 +301,15 @@ const contentHTML = await Astro.slots.render("post-details"),
 {/* howto header section */}
 <slot name="howto-header" />
 
+{/* product page sections */}
+<slot name="product-page-sections" />
+
 {/* Blog Section */}
-<section class="py-[50px]" role="main" aria-label={ariaLabelRecurData.Post_details_text}>
+<section 
+  class="py-[50px]" 
+  role={type !== "normal" && "main"}
+  aria-label={ariaLabelRecurData.Post_details_text}
+>
   <div
     id="sticky-header"
     class="self-start invisible md:invisible w-full sticky top-0 z-[998] text-primary bg-lightgray overflow-hidden"
