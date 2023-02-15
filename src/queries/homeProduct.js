@@ -36,6 +36,8 @@ const homeProductQuery = `
               }
             }
           }
+          Block_title
+          Block_text
           Block2_title
           Block2_button_text
           Block2_button_link
@@ -48,6 +50,7 @@ const homeProductQuery = `
               }
             }
           }
+          Block3_text
           Aria_label_all_teas_text
           Aria_label_tea_item_text
           blogs {
@@ -120,6 +123,8 @@ const homeProductQuery = `
                     }
                   }
                 }
+                Block_title
+                Block_text
                 Block2_title
                 Block2_button_text
                 Block2_button_link
@@ -132,6 +137,7 @@ const homeProductQuery = `
                     }
                   }
                 }
+                Block3_text
                 Aria_label_all_teas_text
                 Aria_label_tea_item_text
                 blogs {
