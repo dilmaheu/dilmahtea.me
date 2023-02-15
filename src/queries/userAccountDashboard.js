@@ -41,6 +41,7 @@ const userAccountDashboardQuery = `
           Block3{
             Block3_title
             Label_order
+            Button_track_package
             Button_track_package_text
             Button_buy_again_text
             Button_sold_out_text
@@ -133,6 +134,7 @@ const userAccountDashboardQuery = `
                 Block3{
                   Block3_title
                   Label_order
+                  Button_track_package
                   Button_track_package_text
                   Button_buy_again_text
                   Button_sold_out_text
