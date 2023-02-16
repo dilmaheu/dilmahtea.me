@@ -23,8 +23,8 @@ const homeProductQuery = `
           Categories {
             data{
               attributes{
-                Name
-                Blob{
+                Title
+                Intro_blob{
                   data{
                     attributes{
                       url
@@ -33,11 +33,23 @@ const homeProductQuery = `
                     }
                   }
                 }
+                Meta{
+                  URL_slug
+                }
               }
             }
           }
           Block_title
           Block_text
+          Variant_filter_title_text
+          Variants{
+            data{
+              attributes{
+                Name
+              }
+            }
+          }
+          Size_filter_title_text
           Block2_title
           Block2_button_text
           Block2_button_link
@@ -110,8 +122,8 @@ const homeProductQuery = `
                 Categories {
                   data{
                     attributes{
-                      Name
-                      Blob{
+                      Title
+                      Intro_blob{
                         data{
                           attributes{
                             url
@@ -120,11 +132,23 @@ const homeProductQuery = `
                           }
                         }
                       }
+                      Meta{
+                        URL_slug
+                      }
                     }
                   }
                 }
                 Block_title
                 Block_text
+                Variant_filter_title_text
+                Variants{
+                  data{
+                    attributes{
+                      Name
+                    }
+                  }
+                }
+                Size_filter_title_text
                 Block2_title
                 Block2_button_text
                 Block2_button_link
