@@ -158,34 +158,36 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
         </h2>
 
         <div class="category-container">
-          {page.Categories.data.map(({attributes: { Name, Blob }}) => (
+          {page.Categories.data.map(({attributes: { Title, Intro_blob, Meta }}) => (
             <div 
               style="clip-path: url(#product-category-card-curve)"
               class="bg-primary text-center"
             >
-              <div class="h-full w-full">
-                <div
-                  class:list={[
-                    "relative w-full h-full max-h-[clamp(110px,12vw+8px,170px);]",
-                    "flex flex-nowrap cursor-pointer"
-                  ]}
-                >
-                  <div class="w-auto h-full aspect-[6/5] block">
-                    <Picture
-                      layout="fullWidth"
-                      sizes="(min-width: 640px) 320px, 90vw)"
-                      alt={Blob.data.attributes.alternativeText}
-                      attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                      src={ASSETS_URL + Blob.data.attributes.url}
-                    />
-                  </div>
-                  <div class="flex grow justify-center items-center px-[25px] py-[15px]">
-                    <h3 class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[120%]">
-                      {Name}
-                    </h3>
+              <a href={Meta.URL_slug}>
+                <div class="h-full w-full">
+                  <div
+                    class:list={[
+                      "relative w-full h-full max-h-[clamp(110px,12vw+8px,170px);]",
+                      "flex flex-nowrap cursor-pointer"
+                    ]}
+                  >
+                    <div class="w-auto h-full aspect-[6/5] block">
+                      <Picture
+                        layout="fullWidth"
+                        sizes="(min-width: 640px) 320px, 90vw)"
+                        alt={Intro_blob.data.attributes.alternativeText}
+                        attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
+                        src={ASSETS_URL + Intro_blob.data.attributes.url}
+                      />
+                    </div>
+                    <div class="flex grow justify-center items-center px-[25px] py-[15px]">
+                      <h3 class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[120%]">
+                        {Title}
+                      </h3>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </a>
             </div>
           ))}
         </div>
@@ -194,12 +196,49 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
       {/* Products Section */}
       <section role="main">
         <div class="wrapper grid gap-5 mb-[30px]">
-          <h2 
-            id={page.Block_title.toLowerCase().replaceAll(" ", "-")}
-            class="heading-title"
-          >
-            {page.Block_title}
-          </h2>
+          <div class="flex flex-wrap items-center gap-6">
+            <h2 
+              id={page.Block_title.toLowerCase().replaceAll(" ", "-")}
+              class="heading-title"
+            >
+              {page.Block_title}
+            </h2>
+
+            <div class="flex flex-wrap gap-6">
+              <div>
+                <select
+                  id="TeaFormat"
+                  name="TeaFormat"
+                  class:list={[
+                    "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
+                    "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
+                    "border-primary bg-primary rounded-full cursor-pointer",
+                  ]}
+                >
+                  <option value="">{page.Variant_filter_title_text}</option>
+
+                  {page.Variants .data.map(({attributes: { Name }}) => (
+                    <option value="">{Name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <select
+                  id="teaSize"
+                  name="teaSize"
+                  class:list={[
+                    "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
+                    "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
+                    "border-primary bg-primary rounded-full cursor-pointer",
+                  ]}
+                >
+                  <option value="">{page.Size_filter_title_text}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+            
 
           <div class="prose max-w-none block-text text-dark2 prose-text">
             <Markdown>{page.Block_text}</Markdown>
