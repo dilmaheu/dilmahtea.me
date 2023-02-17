@@ -6,7 +6,9 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
-const { page } = Astro.props,
+const { warning_notification } = RecurringImages;
+
+const { page, recurData } = Astro.props,
   { locale} = page,
   { ASSETS_URL } = import.meta.env;
 
@@ -108,7 +110,7 @@ const {
             <div class="flex justify-between gap-4 w-full">
               <div class="flex flex-wrap gap-4 justify-between w-full">
                 <div class="grid gap-4">
-                <div class="flex gap-4 items-center">
+                  <div class="flex gap-4 items-center">
                     <div class="min-w-[62px]">
                       <Img
                         layout="fullWidth"
@@ -258,7 +260,7 @@ const {
             <div class="flex justify-between gap-4 w-full">
               <div class="flex flex-wrap gap-4 justify-between w-full">
                 <div class="grid gap-4">
-                <div class="flex gap-4 items-center">
+                  <div class="flex gap-4 items-center">
                     <div class="min-w-[62px]">
                       <Img
                         layout="fullWidth"
@@ -315,7 +317,7 @@ const {
             <div class="flex justify-between gap-4 w-full">
               <div class="flex flex-wrap gap-4 justify-between w-full">
                 <div class="grid gap-4">
-                <div class="flex gap-4 items-center">
+                  <div class="flex gap-4 items-center">
                     <div class="min-w-[62px]">
                       <Img
                         layout="fullWidth"
@@ -363,6 +365,19 @@ const {
               <div class="text-gray">
                 {orders.text_estimated_shipment} 18-Feb-2023
               </div>
+            </div>
+
+            <div 
+              class:list={[
+                "flex items-center gap-2.5 w-full p-[15px] sm:py-2.5 select-none", 
+                "text-sm sm:text-base font-medium text-dark2 bg-[#FFFCE1] rounded-[5px]"
+              ]}
+            >
+              <img 
+                class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+                {...warning_notification}
+              />
+              {recurData.Item_stock_text} 23 Jun 2023 
             </div>
 
             <div class="flex justify-between gap-4 w-full">
@@ -478,7 +493,7 @@ const {
             <div class="flex justify-between gap-4 w-full">
               <div class="flex flex-wrap gap-4 justify-between w-full">
                 <div class="grid gap-4">
-                <div class="flex gap-4 items-center">
+                  <div class="flex gap-4 items-center">
                     <div class="min-w-[62px]">
                       <Img
                         layout="fullWidth"
