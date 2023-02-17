@@ -3,9 +3,7 @@ import Icon from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
-import Hero from "@components/Hero.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
 import Chapterize from "@components/Chapterize.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
@@ -19,10 +17,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_content,
   { posts: products } = page,
   { ASSETS_URL } = import.meta.env;
-
-console.log(products)
 ---
-
 <style lang="scss">
   @use "src/styles/typography";
 
@@ -143,11 +138,98 @@ console.log(products)
       path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
     />
 
-    <div class="grid gap-y-[50px]">
+    
       {/* Products Section */}
-      <section role="main">
+      <section 
+        class="grid gap-y-[50px]"
+        role="main"
+      >
+        <div
+          role="list"
+          aria-label={page.Aria_label_all_teas_text}
+          class="wrapper grid sm:grid-cols-2 lg:grid-cols-3 gap-[50px] overflow-hidden"
+        >
+          {
+            products.map((post, index) => (
+              <div
+                role="listitem"
+                aria-label={page.Aria_label_tea_item_text + (index + 1) }
+                style="clip-path: url(#product-card-curve)"
+                class="post-card link-section flex flex-wrap bg-primary"
+              >
+                <div class="relative block w-full">
+                  <Picture
+                    layout="fullWidth"
+                    alt={post.Intro_blob.data.attributes.alternativeText}
+                    src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                    attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
+                    sizes="(min-width: 768px) min(580px, calc(45vw - 25px)), min(90vw, 420px)"
+                  />
+                  { 
+                    post.Stock_amount < 1 && (
+                      <>
+                        <div 
+                          class:list={[
+                            "absolute top-[12%] right-[12%] flex items-center px-5 sm:px-[37px]", 
+                            "py-[5px] sm:py-[7px] sm:text-xl font-semibold text-dark2",
+                            "border-2 border-[#fabf21] bg-[#fabf21]/80 rounded-full",
+                          ]}
+                        >
+                          {recurData.Product_sold_out_text}
+                        </div>
+
+                        <div 
+                          class:list={[
+                            "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none", 
+                            "w-full text-sm sm:text-base font-medium text-dark2 bg-[#faf8e5]/80"
+                          ]}
+                        >
+                          <Icon 
+                            name="mdi:alert-circle" 
+                            class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+                          />
+                          {recurData.Item_stock_text} 
+                          { new Date(post.In_stock_date)
+                              .toLocaleString(
+                                "en-GB", 
+                                { year: "2-digit", month: "short", day: "numeric"}
+                              )
+                          }
+                        </div>
+                      </>
+                    )
+                  }
+                </div>
+                <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
+                  <div class="product-card-title alice leading-[120%] md:leading-[110%]">
+                    <a
+                      aria-label={
+                        (post.Stock_amount < 1
+                          ? `${recurData.Product_sold_out_text}, `
+                          : "" 
+                        ) + post.Title
+                      }
+                      class="main-link"
+                      set:text={post.Title}
+                      href={`/` + post.Meta.URL_slug}
+                    />
+
+                    <span class="icon product-card-title-icon">
+                      <img class="w-full h-full" {...white_right_arrow} />
+                    </span>
+                  </div>
+
+                  <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
+                    <Markdown>{post.Intro_text}</Markdown>
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
         {page.Sub_categories.data.map(({attributes: { Title, Intro_text }}) => (
-          <>
+          <div>
             <div class="wrapper grid gap-5 mb-[30px]">
               <h2 
                 id={Title.toLowerCase().replaceAll(" ", "-")}
@@ -162,9 +244,8 @@ console.log(products)
             </div>
             
             <div
-              id="products"
               role="list"
-              aria-label={page.Aria_label_all_teas_text}
+              aria-label={page.Title}
               class="wrapper grid sm:grid-cols-2 lg:grid-cols-3 gap-[50px] overflow-hidden"
             >
               {
@@ -245,11 +326,9 @@ console.log(products)
                 ))
               }
             </div>
-          </>
+          </div>
         ))}
       </section>
-
-    </div>
   </div>
 
   {page.Block_text &&(
