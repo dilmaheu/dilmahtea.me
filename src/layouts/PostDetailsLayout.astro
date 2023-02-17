@@ -13,7 +13,8 @@ import RecurringImages from "@store/RecurringImages";
 
 const { white_cup, green_book, white_right_arrow } = RecurringImages;
 
-const { page, posts, recurData, ariaLabelRecurData, headingName, type } = Astro.props,
+const { page, posts, recurData, ariaLabelRecurData, headingName, type } =
+    Astro.props,
   { ASSETS_URL } = import.meta.env;
 
 // display relevant recipes instead of recent posts for RecipeDetails pages
@@ -117,7 +118,7 @@ const contentHTML = await Astro.slots.render("post-details"),
 {/* Hero Section */}
 <Hero>
   {/* Text Content */}
-  <div 
+  <div
     role="banner"
     aria-label={ariaLabelRecurData.Post_intro_text}
     class="wrapper hero-text-container h-full relative z-30"
@@ -154,15 +155,14 @@ const contentHTML = await Astro.slots.render("post-details"),
               )}
 
               <div class="grid content-between">
-                <div 
+                <div
                   role="presentation"
-                  aria-label={
-                    page.authors.data.map(({ attributes }, i) => (
-                      ariaLabelRecurData.Wrote_by_text 
-                        + (i > 0 ? ", " : " ") 
-                        + attributes.givenName
-                    ))
-                  }
+                  aria-label={page.authors.data.map(
+                    ({ attributes }, i) =>
+                      ariaLabelRecurData.Wrote_by_text +
+                      (i > 0 ? ", " : " ") +
+                      attributes.givenName
+                  )}
                   class="post-author flex flex-wrap font-bold"
                 >
                   {page.authors.data.map((author, index) => (
@@ -232,17 +232,19 @@ const contentHTML = await Astro.slots.render("post-details"),
           )
         }
 
-        {page?.Heading_button_text && (
-          <a
-            href={page.Heading_button_link}
-            class:list={[
-              "flex w-fit text-primary font-bold leading-[120%]",
-              "py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9 bg-white rounded-full",
-            ]}
-          >
-            {page.Heading_button_text}
-          </a>
-        )}
+        {
+          page?.Heading_button_text && (
+            <a
+              href={page.Heading_button_link}
+              class:list={[
+                "flex w-fit text-primary font-bold leading-[120%]",
+                "py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9 bg-white rounded-full",
+              ]}
+            >
+              {page.Heading_button_text}
+            </a>
+          )
+        }
 
         {/* Recipe Header */}
         <slot name="recipe-header" />
@@ -305,8 +307,8 @@ const contentHTML = await Astro.slots.render("post-details"),
 <slot name="product-page-sections" />
 
 {/* Blog Section */}
-<section 
-  class="py-[50px]" 
+<section
+  class="py-[50px]"
   role={type !== "normal" && "main"}
   aria-label={ariaLabelRecurData.Post_details_text}
 >
@@ -436,10 +438,7 @@ const contentHTML = await Astro.slots.render("post-details"),
 
 {
   recentPosts?.length > 0 && (
-    <section
-      role="complementary"
-      class="wrapper"
-    >
+    <section role="complementary" class="wrapper">
       <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
         {page.Relevant_items_title ||
           (page.Relevant_recipes && recurData.recipe_discover) ||
@@ -484,13 +483,12 @@ const contentHTML = await Astro.slots.render("post-details"),
                   <div>
                     <div
                       role="presentation"
-                      aria-label={
-                        post.authors.data.map(({ attributes }, i) => (
-                          ariaLabelRecurData.Wrote_by_text 
-                            + (i > 0 ? ", " : " ") 
-                            + attributes.givenName
-                        ))
-                      }
+                      aria-label={post.authors.data.map(
+                        ({ attributes }, i) =>
+                          ariaLabelRecurData.Wrote_by_text +
+                          (i > 0 ? ", " : " ") +
+                          attributes.givenName
+                      )}
                       class="recent-post-card-author flex flex-wrap font-bold"
                     >
                       {post.authors.data.map(({ attributes }, index) => (
