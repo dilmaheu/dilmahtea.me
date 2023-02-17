@@ -14,7 +14,9 @@ const { page } = Astro.props,
     Personal_information: information,
     Block2: block2,
     Block3: block3,
-    kindnessCauses
+    kindnessCauses,
+    Support_visibility,
+    Support
   }= page,
   { locale} = page,
   { ASSETS_URL } = import.meta.env;
@@ -193,7 +195,7 @@ const title = page.Title.replaceAll(
               {information.Label_phone}
             </div>
 
-            <div class="flex items-center gap-2.5 justify-between">
+            <div class="flex flex-wrap items-center gap-2.5 justify-between">
               <div class="information-text">
                 91-9978676545
               </div>
@@ -212,7 +214,7 @@ const title = page.Title.replaceAll(
               {information.Label_email}
             </div>
 
-            <div class="flex items-center gap-2.5 justify-between">
+            <div class="flex flex-wrap items-center gap-2.5 justify-between">
               <div class="information-text">
                 marverick.john@gmail.com
               </div>
@@ -231,7 +233,7 @@ const title = page.Title.replaceAll(
               {information.Label_address}
             </div>
 
-            <div class="flex items-center gap-2.5 justify-between">
+            <div class="flex flex-wrap items-center gap-2.5 justify-between">
               <div class="information-text">
                 456B, Oakwoods, Germany
               </div>
@@ -761,6 +763,25 @@ const title = page.Title.replaceAll(
       </div>
     </div>
 </div>
+
+{(Support_visibility && Support) &&(
+  <div class="fixed bottom-[clamp(15px,3vw+5px,50px)] right-[clamp(15px,3vw+5px,50px)]">
+    <a href={Support.Button_link}>
+      <div class="flex items-center gap-3 sm:gap-4 p-3 sm:py-5 sm:px-[34px] rounded-full bg-[#3C994E]">
+        <div class="w-[clamp(25px,3vw+5px,40px)] h-[clamp(25px,3vw+5px,40px)]">
+          <img
+            class="w-full h-full object-contain"
+            src={await localizeCMSImage(Support.Button_icon.data.attributes.url)}
+            alt={Support.Button_icon?.data?.attributes?.alternativeText}
+          />
+        </div>
+        <div class="sm:text-lg text-white">
+          {Support.Button_text}
+        </div>
+      </div>
+    </a>
+  </div>
+)}
 
 <script>
   declare global {
