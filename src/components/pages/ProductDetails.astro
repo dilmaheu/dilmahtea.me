@@ -59,7 +59,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     margin-top: clamp(0.625rem, 1vw + 0.35rem, 1.25em);
     row-gap: clamp(0.938rem, 3vw + 0.3rem, 3.125rem);
   }
-  
+
   form{
     *:focus {
       outline: none;
@@ -335,30 +335,29 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             </button>
           )
         }
-
-        { 
-          stock_amount < 1 && (
-            <div 
-              class:list={[
-                "flex items-center gap-2.5 pt-2.5 w-full", 
-                "text-sm sm:text-base font-medium text-white2"
-              ]}
-            >
-              <Icon 
-                name="mdi:alert-circle" 
-                class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
-              />
-              {recurData.Item_stock_text} 
-              { new Date(page.In_stock_date)
-                  .toLocaleString(
-                    "en-GB", 
-                    { year: "2-digit", month: "short", day: "numeric"}
-                  )
-              }
-            </div>
-          )
-        }
       </div>
+      { 
+        stock_amount < 1 && (
+          <div 
+            class:list={[
+              "flex items-center gap-2.5 w-full", 
+              "text-sm sm:text-base font-medium text-white2"
+            ]}
+          >
+            <Icon 
+              name="mdi:alert-circle" 
+              class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+            />
+            {recurData.Item_stock_text} 
+            { new Date(page.In_stock_date)
+                .toLocaleString(
+                  "en-GB", 
+                  { year: "2-digit", month: "short", day: "numeric"}
+                )
+            }
+          </div>
+        )
+      }
     </div>
   </form>
 
