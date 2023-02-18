@@ -25,7 +25,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
 <style lang="scss">
   @use "src/styles/typography";
 
-  .heading-title{
+  .heading-title {
     @apply leading-[110%] sm:leading-[115%] text-dark2;
 
     font-family: typography.$alice;
@@ -37,7 +37,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
     line-height: 150%;
   }
 
-  .category-container{
+  .category-container {
     @apply grid sm:grid-cols-[repeat(auto-fill,minmax(300px,2fr))] 
       md:grid-cols-2 gap-y-[30px] gap-x-[30px] mt-[30px] overflow-hidden;
   }
@@ -46,7 +46,8 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
     font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
   }
 
-  .post-card, .recent-post-card {
+  .post-card,
+  .recent-post-card {
     @apply w-full max-w-[380px] sm:max-w-none;
   }
 
@@ -134,8 +135,13 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   }
 </style>
 
-
-<PostDetailsLayout {page} {recurData} {ariaLabelRecurData} {headingName} type="normal">
+<PostDetailsLayout
+  {page}
+  {recurData}
+  {ariaLabelRecurData}
+  {headingName}
+  type="normal"
+>
   <div slot="product-page-sections" class="mt-[50px]">
     <ClipPathSVG
       id="product-card-curve"
@@ -150,7 +156,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
           path="M0.547,0.01 c0.072,0.003,0.13,0,0.167,0 c0.315,0,0.282,0.03,0.282,0.467 s0.052,0.518,-0.264,0.518 c-0.105,0,-0.154,0,-0.174,-0.001 l-0.011,0.001 h-0.001 c-0.199,0.01,-0.401,0.008,-0.47,-0.037 C-0.013,0.898,0.003,0.642,0.003,0.487 c0,-0.216,-0.034,-0.411,0.14,-0.459 C0.305,-0.018,0.435,0.005,0.547,0.01"
         />
 
-        <h2 
+        <h2
           id={page.Category_title.toLowerCase().replaceAll(" ", "-")}
           class="heading-title"
         >
@@ -158,38 +164,44 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
         </h2>
 
         <div class="category-container">
-          {page.Categories.data.map(({attributes: { Title, Intro_blob, Meta }}) => (
-            <div 
-              style="clip-path: url(#product-category-card-curve)"
-              class="bg-primary text-center"
-            >
-              <a href={Meta.URL_slug}>
-                <div class="h-full w-full">
-                  <div
-                    class:list={[
-                      "relative w-full h-full max-h-[clamp(110px,12vw+8px,170px);]",
-                      "flex flex-nowrap cursor-pointer"
-                    ]}
-                  >
-                    <div class="w-auto h-full aspect-[6/5] block">
-                      <Picture
-                        layout="fullWidth"
-                        sizes="(min-width: 640px) 320px, 90vw)"
-                        alt={Intro_blob.data.attributes.alternativeText}
-                        attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                        src={ASSETS_URL + Intro_blob.data.attributes.url}
-                      />
+          {
+            page.Categories.data.map(
+              ({ attributes: { Title, Intro_blob, Meta } }) => (
+                <div
+                  style="clip-path: url(#product-category-card-curve)"
+                  class="bg-primary text-center"
+                >
+                  <a href={Meta.URL_slug}>
+                    <div class="h-full w-full">
+                      <div
+                        class:list={[
+                          "relative w-full h-[clamp(110px,12vw+8px,170px);]",
+                          "flex flex-nowrap cursor-pointer",
+                        ]}
+                      >
+                        <div class="w-auto h-full aspect-[6/5] block">
+                          <Picture
+                            layout="fullWidth"
+                            sizes="(min-width: 640px) 320px, 90vw)"
+                            alt={Intro_blob.data.attributes.alternativeText}
+                            attributes={{
+                              img: { style: "aspect-ratio: 6 / 5;" },
+                            }}
+                            src={ASSETS_URL + Intro_blob.data.attributes.url}
+                          />
+                        </div>
+                        <div class="flex grow justify-center items-center px-[25px] py-[15px]">
+                          <h3 class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[120%]">
+                            {Title}
+                          </h3>
+                        </div>
+                      </div>
                     </div>
-                    <div class="flex grow justify-center items-center px-[25px] py-[15px]">
-                      <h3 class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[120%]">
-                        {Title}
-                      </h3>
-                    </div>
-                  </div>
+                  </a>
                 </div>
-              </a>
-            </div>
-          ))}
+              )
+            )
+          }
         </div>
       </section>
 
@@ -197,7 +209,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
       <section role="main">
         <div class="wrapper grid gap-5 mb-[30px]">
           <div class="flex flex-wrap items-center gap-6">
-            <h2 
+            <h2
               id={page.Block_title.toLowerCase().replaceAll(" ", "-")}
               class="heading-title"
             >
@@ -217,9 +229,11 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                 >
                   <option value="">{page.Variant_filter_title_text}</option>
 
-                  {page.Variants.data.map(({attributes: { Name }}) => (
-                    <option value="">{Name}</option>
-                  ))}
+                  {
+                    page.Variants.data.map(({ attributes: { Name } }) => (
+                      <option value="">{Name}</option>
+                    ))
+                  }
                 </select>
               </div>
 
@@ -238,7 +252,6 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
               </div>
             </div>
           </div>
-            
 
           <div class="prose max-w-none block-text text-dark2 prose-text">
             <Markdown>{page.Block_text}</Markdown>
@@ -255,7 +268,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
             products.map((post, index) => (
               <div
                 role="listitem"
-                aria-label={page.Aria_label_tea_item_text + (index + 1) }
+                aria-label={page.Aria_label_tea_item_text + (index + 1)}
                 style="clip-path: url(#product-card-curve)"
                 class="post-card link-section flex flex-wrap bg-primary"
               >
@@ -267,40 +280,37 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                     attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
                     sizes="(min-width: 768px) min(580px, calc(45vw - 25px)), min(90vw, 420px)"
                   />
-                  { 
-                    post.Stock_amount < 1 && (
-                      <>
-                        <div 
-                          class:list={[
-                            "absolute top-[12%] right-[12%] flex items-center px-5 sm:px-[37px]", 
-                            "py-[5px] sm:py-[7px] sm:text-xl font-semibold text-dark2",
-                            "border-2 border-[#fabf21] bg-[#fabf21]/80 rounded-full",
-                          ]}
-                        >
-                          {recurData.Product_sold_out_text}
-                        </div>
+                  {post.Stock_amount < 1 && (
+                    <>
+                      <div
+                        class:list={[
+                          "absolute top-[12%] right-[12%] flex items-center px-5 sm:px-[37px]",
+                          "py-[5px] sm:py-[7px] sm:text-xl font-semibold text-dark2",
+                          "border-2 border-[#fabf21] bg-[#fabf21]/80 rounded-full",
+                        ]}
+                      >
+                        {recurData.Product_sold_out_text}
+                      </div>
 
-                        <div 
-                          class:list={[
-                            "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none", 
-                            "w-full text-sm sm:text-base font-medium text-dark2 bg-[#faf8e5]/80"
-                          ]}
-                        >
-                          <Icon 
-                            name="mdi:alert-circle" 
-                            class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
-                          />
-                          {recurData.Item_stock_text} 
-                          { new Date(post.In_stock_date)
-                              .toLocaleString(
-                                "en-GB", 
-                                { year: "2-digit", month: "short", day: "numeric"}
-                              )
-                          }
-                        </div>
-                      </>
-                    )
-                  }
+                      <div
+                        class:list={[
+                          "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none",
+                          "w-full text-sm sm:text-base font-medium text-dark2 bg-[#faf8e5]/80",
+                        ]}
+                      >
+                        <Icon
+                          name="mdi:alert-circle"
+                          class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+                        />
+                        {recurData.Item_stock_text}
+                        {new Date(post.In_stock_date).toLocaleString("en-GB", {
+                          year: "2-digit",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </div>
+                    </>
+                  )}
                 </div>
                 <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
                   <div class="product-card-title alice leading-[120%] md:leading-[110%]">
@@ -308,8 +318,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                       aria-label={
                         (post.Stock_amount < 1
                           ? `${recurData.Product_sold_out_text}, `
-                          : "" 
-                        ) + post.Title
+                          : "") + post.Title
                       }
                       class="main-link"
                       set:text={post.Title}
@@ -330,7 +339,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
           }
         </div>
       </section>
-        
+
       {/* Products impact Section */}
       <section role="complementary">
         <ClipPathSVG
@@ -361,7 +370,9 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
             <div
               class="wrapper flex flex-wrap justify-center text-center py-[20px]"
             >
-              <h2 class="product-impact-text alice leading-[110%] md:leading-[115%] w-full">
+              <h2
+                class="product-impact-text alice leading-[110%] md:leading-[115%] w-full"
+              >
                 {page.Block2_title}
               </h2>
 
@@ -381,15 +392,15 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
     </div>
   </div>
 
-  {page.Block3_text &&(
-    <div slot="post-details" class="prose content-text">
-      <Chapterize>
-        <OptimizeContentImages>
-          <Markdown>{page.Block3_text}</Markdown>
-        </OptimizeContentImages>
-      </Chapterize>
-    </div>
-  )}
+  {
+    page.Block3_text && (
+      <div slot="post-details" class="prose content-text">
+        <Chapterize>
+          <OptimizeContentImages>
+            <Markdown>{page.Block3_text}</Markdown>
+          </OptimizeContentImages>
+        </Chapterize>
+      </div>
+    )
+  }
 </PostDetailsLayout>
-
-

@@ -15,7 +15,6 @@ const {
   green_leaf: right_post_leaf,
 } = RecurringImages;
 
-
 const { page, ariaLabelRecurData } = Astro.props,
   { ASSETS_URL } = import.meta.env,
   { posts } = page;
@@ -86,7 +85,7 @@ const [firstPost] = posts;
 {/* Hero Section */}
 <Hero>
   {/* Text Content */}
-  <div 
+  <div
     role="banner"
     aria-label={`${ariaLabelRecurData.Post_text} 1 ${ariaLabelRecurData.Product_post_of_text} ${posts.length}`}
     class="wrapper hero-text-container h-full relative z-30"
@@ -96,15 +95,14 @@ const [firstPost] = posts;
         {
           firstPost.authors && (
             <div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
-              <div 
+              <div
                 role="presentation"
-                aria-label={
-                  firstPost.authors.data.map(({ attributes }, i) => (
-                    ariaLabelRecurData.Wrote_by_text 
-                      + (i > 0 ? ", " : " ") 
-                      + attributes.givenName
-                  ))
-                }
+                aria-label={firstPost.authors.data.map(
+                  ({ attributes }, i) =>
+                    ariaLabelRecurData.Wrote_by_text +
+                    (i > 0 ? ", " : " ") +
+                    attributes.givenName
+                )}
                 class="post-author flex flex-wrap font-bold text-lightgray"
               >
                 {firstPost.authors.data.map(({ attributes }, i) => (
@@ -178,7 +176,7 @@ const [firstPost] = posts;
     path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
   />
 
-  <div 
+  <div
     role="list"
     aria-label={ariaLabelRecurData.All_posts_text}
     class="flex flex-wrap items-center gap-y-[50px] py-[50px]"
@@ -192,10 +190,9 @@ const [firstPost] = posts;
         return (
           <div
             role="listitem"
-            aria-label={
-              `${ariaLabelRecurData.Post_text
-                  + (index + 2)} ${ariaLabelRecurData.Product_post_of_text} ${posts.length}`
-            }
+            aria-label={`${ariaLabelRecurData.Post_text + (index + 2)} ${
+              ariaLabelRecurData.Product_post_of_text
+            } ${posts.length}`}
             class="link-section flex flex-wrap items-center"
           >
             <div
@@ -256,15 +253,14 @@ const [firstPost] = posts;
               <div>
                 {post.authors && (
                   <div>
-                    <div 
-                      role="presentation" 
-                      aria-label={
-                        post.authors.data.map(({ attributes }, i) => (
-                          ariaLabelRecurData.Wrote_by_text 
-                            + (i > 0 ? ", " : " ") 
-                            + attributes.givenName
-                        ))
-                      }
+                    <div
+                      role="presentation"
+                      aria-label={post.authors.data.map(
+                        ({ attributes }, i) =>
+                          ariaLabelRecurData.Wrote_by_text +
+                          (i > 0 ? ", " : " ") +
+                          attributes.givenName
+                      )}
                       class="post-author flex flex-wrap font-bold text-primary"
                     >
                       {post.authors.data.map(({ attributes }, i) => (
