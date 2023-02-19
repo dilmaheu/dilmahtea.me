@@ -60,6 +60,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     row-gap: clamp(0.938rem, 3vw + 0.3rem, 3.125rem);
   }
 
+  form {
+    *:focus {
+      outline: none;
+    }
+  }
+
   .product-amount-tweak-btn:disabled {
     opacity: 30%;
   }
@@ -173,7 +179,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 </style>
 
 <style lang="scss" is:global>
-  #post-details .transparency-item-icon {
+  #post-details,
+  .transparency-item-icon {
     img {
       @apply block mx-auto;
 
@@ -188,7 +195,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 <PostDetailsLayout {page} {recurData} {ariaLabelRecurData} {headingName}>
   <form
     slot="tea-details-header"
-    class="cart-adding-form flex flex-wrap justify-between items-center gap-x-[31px] w-full xl:w-2/3"
+    class="cart-adding-form flex flex-wrap items-center w-full xl:w-2/3"
   >
     <input type="hidden" name="sku" value={productSKU} />
     <input type="hidden" name="names" value={productNames} />
@@ -197,46 +204,56 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     <input type="hidden" name="tax" value={tax} />
     <input type="hidden" name="price" value={productPriceIncludingTax} />
 
-    <fieldset>
-      <legend
-        class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
-      >
-        {checkoutRecurData.text_size}:
-      </legend>
-
-      <label class="cursor-pointer">
-        <input
-          tabindex={stock_amount > 0 ? "0" : "-1"}
-          aria-label={checkoutRecurData.text_size + productSize}
-          type="radio"
-          name="size"
-          value={productSize}
-          class="sr-only"
-          checked
-          required
-        />
-
-        <span
-          class:list={[
-            "inline-block py-2.5 lg:py-[7px] px-5 lg:text-lg lg:font-normal",
-            "text-lightgray border-2 border-lightgray bg-[#405658] rounded-full",
-          ]}
+    <div class="flex flex-wrap gap-5 items-center w-full justify-between">
+      <fieldset>
+        <legend
+          class="text-sm lg:text-base font-medium leading-[150%] mb-[5px]"
         >
-          {productSize}
-        </span>
-      </label>
-    </fieldset>
+          {checkoutRecurData.text_variant}:
+        </legend>
 
-    <div>
-      <div
-        class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
-      >
-        {checkoutRecurData.text_quantity}:
-      </div>
+        <div class="border-2 border-lightgray overflow-hidden rounded-full">
+          <select
+            name="variant"
+            class:list={[
+              "inline-block py-[9px] pl-5 lg:text-lg lg:font-normal text-lightgray",
+              "border-r-[20px] border-[#405658] bg-[#405658]",
+            ]}
+          >
+            <option value="">Loose Leaf tea</option>
+            <option value="">Tea Bag</option>
+            <option value="">Sachet</option>
+          </select>
+        </div>
+      </fieldset>
 
+      <fieldset>
+        <legend
+          class="text-sm lg:text-base font-medium leading-[150%] mb-[5px]"
+        >
+          {checkoutRecurData.text_size}:
+        </legend>
+
+        <div class="border-2 border-lightgray overflow-hidden rounded-full">
+          <select
+            name="size"
+            class:list={[
+              "inline-block py-[9px] pl-5 lg:text-lg lg:font-normal text-lightgray",
+              "border-r-[20px] border-[#405658] bg-[#405658]",
+            ]}
+          >
+            <option value="">{productSize}</option>
+            <option value="">250gm</option>
+            <option value="">500gm</option>
+          </select>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="flex flex-wrap gap-5 items-center w-full justify-between">
       <div
         class:list={[
-          "flex items-center text-lightgray border-2 border-lightgray bg-[#405658] rounded-full",
+          "flex items-center text-primary bg-lightgray rounded-full",
           stock_amount < 1 && "cursor-not-allowed",
         ]}
       >
@@ -279,47 +296,46 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
         </button>
       </div>
-    </div>
 
-    <div class="w-full">
-      {
-        stock_amount > 0 && (
-          <button
-            class:list={[
-              "w-full gap-4 flex justify-center items-center p-3 mt-auto",
-              "font-bold text-base rounded-full text-primary bg-lightgray",
-            ]}
-          >
-            <Icon name="mi:shopping-cart" class="w-[26px] h-[26px]" />
-            <span>
-              {checkoutRecurData.text_add_to_cart_for}€
-              <output class="product-amount-price">
-                {productPriceIncludingTax.toFixed(2).replace(".", ",")}
-              </output>
-            </span>
-          </button>
-        )
-      }
-      {
-        stock_amount === 0 && (
-          <button
-            tabindex="0"
-            class:list={[
-              "w-full gap-4 flex justify-center items-center p-3 mt-auto text-base",
-              "font-bold text-white rounded-full bg-[#8b8b8b] cursor-not-allowed",
-            ]}
-          >
-            <Icon name="tabler:shopping-cart-x" class="w-[26px] h-[26px]" />
-            {recurData.Product_sold_out_text}
-          </button>
-        )
-      }
-
+      <div class="grow">
+        {
+          stock_amount > 0 && (
+            <button
+              class:list={[
+                "w-full gap-4 flex justify-center items-center p-3 mt-auto",
+                "font-bold text-base rounded-full text-primary bg-lightgray",
+              ]}
+            >
+              <Icon name="mi:shopping-cart" class="w-[26px] h-[26px]" />
+              <span>
+                {checkoutRecurData.text_add_to_cart_for}€
+                <output class="product-amount-price">
+                  {productPriceIncludingTax.toFixed(2).replace(".", ",")}
+                </output>
+              </span>
+            </button>
+          )
+        }
+        {
+          stock_amount === 0 && (
+            <button
+              tabindex="0"
+              class:list={[
+                "w-full gap-4 flex justify-center items-center p-3 mt-auto text-base",
+                "font-bold text-white rounded-full bg-[#8b8b8b] cursor-not-allowed",
+              ]}
+            >
+              <Icon name="tabler:shopping-cart-x" class="w-[26px] h-[26px]" />
+              {recurData.Product_sold_out_text}
+            </button>
+          )
+        }
+      </div>
       {
         stock_amount < 1 && (
           <div
             class:list={[
-              "flex items-center gap-2.5 pt-2.5 w-full",
+              "flex items-center gap-2.5 w-full",
               "text-sm sm:text-base font-medium text-white2",
             ]}
           >
@@ -341,7 +357,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
   <form
     slot="cart-adding-form-sm"
-    class="cart-adding-form-sm flex justify-between flex-wrap gap-4 mt-8"
+    class="flex flex-wrap justify-between gap-6 mt-8 w-full"
   >
     <input type="hidden" name="sku" value={productSKU} />
     <input type="hidden" name="names" value={productNames} />
@@ -350,46 +366,56 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     <input type="hidden" name="tax" value={tax} />
     <input type="hidden" name="price" value={productPriceIncludingTax} />
 
-    <fieldset>
-      <legend
-        class="text-sm lg:text-base font-medium leading-[150%] text-primary mb-[3px] lg:mb-[5px]"
-      >
-        {checkoutRecurData.text_size}:
-      </legend>
-
-      <label class="cursor-pointer">
-        <input
-          tabindex={stock_amount > 0 ? "0" : "-1"}
-          aria-label={checkoutRecurData.text_size + productSize}
-          type="radio"
-          name="size"
-          value={productSize}
-          class="sr-only"
-          checked
-          required
-        />
-
-        <span
-          class:list={[
-            "inline-block border-2 border-primary py-2.5 lg:py-[7px] px-5",
-            "lg:text-lg lg:font-normal text-primary rounded-full bg-lightgray2",
-          ]}
+    <div class="flex flex-wrap gap-4 items-center w-full justify-between">
+      <fieldset>
+        <legend
+          class="text-sm lg:text-base font-medium leading-[150%] mb-[5px] outline-none"
         >
-          {productSize}
-        </span>
-      </label>
-    </fieldset>
+          {checkoutRecurData.text_variant}:
+        </legend>
 
-    <div>
-      <div
-        class="text-sm lg:text-base font-medium leading-[150%] mb-[3px] lg:mb-[5px]"
-      >
-        {checkoutRecurData.text_quantity}:
-      </div>
+        <div class="border-2 border-primary overflow-hidden rounded-full">
+          <select
+            name="variant"
+            class:list={[
+              "inline-block py-[9px] pl-[15px] lg:text-lg lg:font-normal text-primary",
+              "border-r-[15px] border-lightgray2 bg-lightgray2",
+            ]}
+          >
+            <option value="">Loose Leaf tea</option>
+            <option value="">Tea Bag</option>
+            <option value="">Sachet</option>
+          </select>
+        </div>
+      </fieldset>
 
+      <fieldset>
+        <legend
+          class="text-sm lg:text-base font-medium leading-[150%] mb-[5px] outline-none"
+        >
+          {checkoutRecurData.text_size}:
+        </legend>
+
+        <div class="border-2 border-primary overflow-hidden rounded-full">
+          <select
+            name="size"
+            class:list={[
+              "inline-block py-[9px] pl-[15px] lg:text-lg lg:font-normal text-primary",
+              "border-r-[15px] border-lightgray2 bg-lightgray2",
+            ]}
+          >
+            <option value="">{productSize}</option>
+            <option value="">250gm</option>
+            <option value="">500gm</option>
+          </select>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="flex flex-wrap gap-4 items-center w-full justify-between">
       <div
         class:list={[
-          "w-fit flex items-center text-primary bg-lightgray2 border-2 border-primary rounded-full",
+          "w-fit flex items-center text-lightgray p-1 bg-primary rounded-full",
           stock_amount < 1 && "cursor-not-allowed",
         ]}
       >
@@ -397,7 +423,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           data-action="decrement"
           aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
           class:list={[
-            "product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1",
+            "product-amount-tweak-btn w-10 h-12 py-2.5 pl-3 pr-1",
             stock_amount < 1 && "cursor-not-allowed",
           ]}
           disabled
@@ -424,7 +450,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           data-action="increment"
           aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
           class:list={[
-            "product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3",
+            "product-amount-tweak-btn w-10 h-12 py-2.5 pl-1 pr-3",
             stock_amount < 1 && "cursor-not-allowed",
           ]}
           disabled={stock_amount < 1 && "disabled"}
@@ -432,35 +458,36 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
         </button>
       </div>
+      <div class="ml-auto grow">
+        {
+          stock_amount > 0 && (
+            <button
+              class:list={[
+                "w-full gap-4 flex justify-center items-center p-3 mt-auto text-base",
+                "font-bold text-lightgray leading-[19px] rounded-full bg-primary",
+              ]}
+            >
+              <Icon name="mi:shopping-cart" class="w-8 h-8" />
+              {checkoutRecurData.text_add_to_cart}
+            </button>
+          )
+        }
+        {
+          stock_amount === 0 && (
+            <button
+              tabindex="0"
+              class:list={[
+                "w-full gap-4 flex justify-center items-center p-3 mt-auto font-bold text-base",
+                " text-lightgray leading-[19px] rounded-full bg-[#8b8b8b] cursor-not-allowed",
+              ]}
+            >
+              <Icon name="mi:shopping-cart" class="w-8 h-8" />
+              {recurData.Product_sold_out_text}
+            </button>
+          )
+        }
+      </div>
     </div>
-
-    {
-      stock_amount > 0 && (
-        <button
-          class:list={[
-            "w-full gap-4 flex justify-center items-center p-3 mt-auto text-base",
-            "font-bold text-lightgray leading-[19px] rounded-full bg-primary",
-          ]}
-        >
-          <Icon name="mi:shopping-cart" class="w-8 h-8" />
-          {checkoutRecurData.text_add_to_cart}
-        </button>
-      )
-    }
-    {
-      stock_amount === 0 && (
-        <button
-          tabindex="0"
-          class:list={[
-            "w-full gap-4 flex justify-center items-center p-3 mt-auto font-bold text-base",
-            " text-lightgray leading-[19px] rounded-full bg-[#8b8b8b] cursor-not-allowed",
-          ]}
-        >
-          <Icon name="mi:shopping-cart" class="w-8 h-8" />
-          {recurData.Product_sold_out_text}
-        </button>
-      )
-    }
   </form>
 
   <div slot="post-details" class="product-details prose content-text">
