@@ -6,9 +6,10 @@ import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { light_green_cup, light_green_flower } = RecurringImages;
 
-const { page, locale } = Astro.props,
+const { locale, page, recurData } = Astro.props,
   { Perk: perk, Price_EUR_excl_VAT: price } = page,
-  productName = `${page.Title} Plan`;
+  product_desc = `${page.Title} Plan`,
+  product_name = recurData.Company_name;
 ---
 
 <style lang="scss">
@@ -195,7 +196,8 @@ const { page, locale } = Astro.props,
 
     <input type="hidden" name="perk" value={perk} />
 
-    <input type="hidden" name="product_name" value={productName} />
+    <input type="hidden" name="product_name" value={product_name} />
+    <input type="hidden" name="product_desc" value={product_desc} />
 
     <input type="hidden" name="price" value={price} />
 
