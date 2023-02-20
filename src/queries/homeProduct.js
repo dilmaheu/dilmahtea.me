@@ -10,9 +10,9 @@ const homeProductQuery = `
           Intro_text
           Heading_button_text
           Heading_button_link
-          Intro_blob{
-            data{
-              attributes{
+          Intro_blob {
+            data {
+              attributes {
                 url
                 provider_metadata
                 alternativeText
@@ -20,42 +20,16 @@ const homeProductQuery = `
             }
           }
           Category_title
-          Categories {
-            data{
-              attributes{
-                Title
-                Intro_blob{
-                  data{
-                    attributes{
-                      url
-                      provider_metadata
-                      alternativeText
-                    }
-                  }
-                }
-                Meta{
-                  URL_slug
-                }
-              }
-            }
-          }
           Block_title
           Block_text
           Variant_filter_title_text
-          Variants{
-            data{
-              attributes{
-                Name
-              }
-            }
-          }
           Size_filter_title_text
           Block2_title
           Block2_button_text
           Block2_button_link
-          Block2_blob{
-            data{
-              attributes{
+          Block2_blob {
+            data {
+              attributes {
                 url
                 provider_metadata
                 alternativeText
@@ -66,27 +40,27 @@ const homeProductQuery = `
           Aria_label_all_teas_text
           Aria_label_tea_item_text
           blogs {
-            data{
-              attributes{
+            data {
+              attributes {
                 Title
-                Intro_blob{
-                  data{
-                    attributes{
+                Intro_blob {
+                  data {
+                    attributes {
                       url
                       provider_metadata
                       alternativeText
                     }
                   }
                 }
-                authors{
-                  data{
-                    attributes{
+                authors {
+                  data {
+                    attributes {
                       givenName
                     }
                   }
                 }
                 createdAt
-                Meta{
+                Meta {
                   URL_slug
                 }
               }
@@ -109,9 +83,9 @@ const homeProductQuery = `
                 Intro_text
                 Heading_button_text
                 Heading_button_link
-                Intro_blob{
-                  data{
-                    attributes{
+                Intro_blob {
+                  data {
+                    attributes {
                       url
                       provider_metadata
                       alternativeText
@@ -120,19 +94,19 @@ const homeProductQuery = `
                 }
                 Category_title
                 Categories {
-                  data{
-                    attributes{
+                  data {
+                    attributes {
                       Title
-                      Intro_blob{
-                        data{
-                          attributes{
+                      Intro_blob {
+                        data {
+                          attributes {
                             url
                             provider_metadata
                             alternativeText
                           }
                         }
                       }
-                      Meta{
+                      Meta {
                         URL_slug
                       }
                     }
@@ -141,9 +115,9 @@ const homeProductQuery = `
                 Block_title
                 Block_text
                 Variant_filter_title_text
-                Variants{
-                  data{
-                    attributes{
+                Variants {
+                  data {
+                    attributes {
                       Name
                     }
                   }
@@ -152,9 +126,9 @@ const homeProductQuery = `
                 Block2_title
                 Block2_button_text
                 Block2_button_link
-                Block2_blob{
-                  data{
-                    attributes{
+                Block2_blob {
+                  data {
+                    attributes {
                       url
                       provider_metadata
                       alternativeText
@@ -165,27 +139,27 @@ const homeProductQuery = `
                 Aria_label_all_teas_text
                 Aria_label_tea_item_text
                 blogs {
-                  data{
-                    attributes{
+                  data {
+                    attributes {
                       Title
-                      Intro_blob{
-                        data{
-                          attributes{
+                      Intro_blob {
+                        data {
+                          attributes {
                             url
                             provider_metadata
                             alternativeText
                           }
                         }
                       }
-                      authors{
-                        data{
-                          attributes{
+                      authors {
+                        data {
+                          attributes {
                             givenName
                           }
                         }
                       }
                       createdAt
-                      Meta{
+                      Meta {
                         URL_slug
                       }
                     }

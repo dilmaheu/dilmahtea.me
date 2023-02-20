@@ -20,6 +20,10 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   { posts: products, locale } = page,
   [firstProduct] = products,
   { ASSETS_URL } = import.meta.env;
+
+const categories = CMS.get("productCategories", locale) || { data: [] },
+  productVariants = CMS.get("productVariants", locale) || { data: [] },
+  productSizes = CMS.get("productSizes", locale) || { data: [] };
 ---
 
 <style lang="scss">
@@ -165,7 +169,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
 
         <div class="category-container">
           {
-            page.Categories.data.map(
+            categories.data.map(
               ({ attributes: { Title, Intro_blob, Meta } }) => (
                 <div
                   style="clip-path: url(#product-category-card-curve)"
@@ -230,7 +234,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                   <option value="">{page.Variant_filter_title_text}</option>
 
                   {
-                    page.Variants.data.map(({ attributes: { Name } }) => (
+                    productVariants.data.map(({ attributes: { Name } }) => (
                       <option value="">{Name}</option>
                     ))
                   }
@@ -248,6 +252,12 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                   ]}
                 >
                   <option value="">{page.Size_filter_title_text}</option>
+
+                  {
+                    productSizes.map(({ attributes: { Size } }) => (
+                      <option value="">{Size}</option>
+                    ))
+                  }
                 </select>
               </div>
             </div>

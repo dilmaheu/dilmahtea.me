@@ -32,20 +32,20 @@ const productCategoriesQuery = `
           }
           Relevant_items_title
           Relevant_recipes {
-            data{
-              attributes{
+            data {
+              attributes {
                 Title
                 Intro_text
-                Intro_blob{
-                  data{
-                    attributes{
+                Intro_blob {
+                  data {
+                    attributes {
                       url
                       provider_metadata
                       alternativeText
                     }
                   }
                 }
-                Meta{
+                Meta {
                   URL_slug
                 }
               }
@@ -90,20 +90,20 @@ const productCategoriesQuery = `
                 }
                 Relevant_items_title
                 Relevant_recipes {
-                  data{
-                    attributes{
+                  data {
+                    attributes {
                       Title
                       Intro_text
-                      Intro_blob{
-                        data{
-                          attributes{
+                      Intro_blob {
+                        data {
+                          attributes {
                             url
                             provider_metadata
                             alternativeText
                           }
                         }
                       }
-                      Meta{
+                      Meta {
                         URL_slug
                       }
                     }
