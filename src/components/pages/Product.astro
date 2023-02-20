@@ -169,42 +169,40 @@ const categories = CMS.get("productCategories", locale) || { data: [] },
 
         <div class="category-container">
           {
-            categories.data.map(
-              ({ attributes: { Title, Intro_blob, Meta } }) => (
-                <div
-                  style="clip-path: url(#product-category-card-curve)"
-                  class="bg-primary text-center"
-                >
-                  <a href={Meta.URL_slug}>
-                    <div class="h-full w-full">
-                      <div
-                        class:list={[
-                          "relative w-full h-[clamp(110px,12vw+8px,170px);]",
-                          "flex flex-nowrap cursor-pointer",
-                        ]}
-                      >
-                        <div class="w-auto h-full aspect-[6/5] block">
-                          <Picture
-                            layout="fullWidth"
-                            sizes="(min-width: 640px) 320px, 90vw)"
-                            alt={Intro_blob.data.attributes.alternativeText}
-                            attributes={{
-                              img: { style: "aspect-ratio: 6 / 5;" },
-                            }}
-                            src={ASSETS_URL + Intro_blob.data.attributes.url}
-                          />
-                        </div>
-                        <div class="flex grow justify-center items-center px-[25px] py-[15px]">
-                          <h3 class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[120%]">
-                            {Title}
-                          </h3>
-                        </div>
+            categories.map(({ attributes: { Title, Intro_blob, Meta } }) => (
+              <div
+                style="clip-path: url(#product-category-card-curve)"
+                class="bg-primary text-center"
+              >
+                <a href={Meta.URL_slug}>
+                  <div class="h-full w-full">
+                    <div
+                      class:list={[
+                        "relative w-full h-[clamp(110px,12vw+8px,170px);]",
+                        "flex flex-nowrap cursor-pointer",
+                      ]}
+                    >
+                      <div class="w-auto h-full aspect-[6/5] block">
+                        <Picture
+                          layout="fullWidth"
+                          sizes="(min-width: 640px) 320px, 90vw)"
+                          alt={Intro_blob.data.attributes.alternativeText}
+                          attributes={{
+                            img: { style: "aspect-ratio: 6 / 5;" },
+                          }}
+                          src={ASSETS_URL + Intro_blob.data.attributes.url}
+                        />
+                      </div>
+                      <div class="flex grow justify-center items-center px-[25px] py-[15px]">
+                        <h3 class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[120%]">
+                          {Title}
+                        </h3>
                       </div>
                     </div>
-                  </a>
-                </div>
-              )
-            )
+                  </div>
+                </a>
+              </div>
+            ))
           }
         </div>
       </section>
@@ -234,7 +232,7 @@ const categories = CMS.get("productCategories", locale) || { data: [] },
                   <option value="">{page.Variant_filter_title_text}</option>
 
                   {
-                    productVariants.data.map(({ attributes: { Name } }) => (
+                    productVariants.map(({ attributes: { Name } }) => (
                       <option value="">{Name}</option>
                     ))
                   }
