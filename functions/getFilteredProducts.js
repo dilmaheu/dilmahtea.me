@@ -2,8 +2,18 @@ export async function onRequestGet(context) {
   const { PRODUCTS } = context.env;
 
   const productsKey = new URL(context.request.url).searchParams.get(
-    "productsKey"
-  );
+      "productsKey"
+    ),
+    products = await PRODUCTS.get(productsKey);
 
-  return new Response(await PRODUCTS.get(productsKey), { status: 200 });
+  if (!products) {
+    return new Response(
+      JSON.stringify({
+        error: "Bad request",
+      }),
+      { status: 400 }
+    );
+  }
+
+  return new Response(products, { status: 200 });
 }
