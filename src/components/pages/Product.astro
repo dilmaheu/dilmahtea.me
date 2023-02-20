@@ -3,27 +3,24 @@ import Icon from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
-import Hero from "@components/Hero.astro";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
 import Chapterize from "@components/Chapterize.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
-const { white_cup, white_right_arrow } = RecurringImages;
+const { white_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
   { posts: products, locale } = page,
-  [firstProduct] = products,
   { ASSETS_URL } = import.meta.env;
 
-const categories = CMS.get("productCategories", locale) || { data: [] },
-  productVariants = CMS.get("productVariants", locale) || { data: [] },
-  productSizes = CMS.get("productSizes", locale) || { data: [] };
+const categories = CMS.get("productCategories", locale),
+  productVariants = CMS.get("productVariants", locale),
+  productSizes = CMS.get("productSizes", locale);
 ---
 
 <style lang="scss">
