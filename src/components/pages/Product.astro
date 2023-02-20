@@ -407,3 +407,24 @@ const categories = CMS.get("productCategories", locale),
     )
   }
 </PostDetailsLayout>
+
+<script>
+  const productFiltersForm: HTMLFormElement =
+    document.querySelector("#product-filters");
+
+  productFiltersForm?.addEventListener("change", async (event) => {
+    const locale = document.documentElement.lang,
+      tea_format = productFiltersForm.tea_format.value,
+      tea_size = productFiltersForm.tea_size.value;
+
+    const productsKey = [locale, tea_format, tea_size].join(" | ");
+
+    const products = await fetch(
+      `/getFilteredProducts?productsKey=${productsKey}`
+    ).then((res) => res.json());
+
+    if (!products.error) {
+      console.log(products);
+    }
+  });
+</script>
