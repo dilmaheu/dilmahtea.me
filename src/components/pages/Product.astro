@@ -207,7 +207,7 @@ const categories = CMS.get("productCategories", locale),
       {/* Products Section */}
       <section role="main">
         <div class="wrapper grid gap-5 mb-[30px]">
-          <div class="flex flex-wrap items-center gap-6">
+          <form id="product-filters" class="flex flex-wrap items-center gap-6">
             <h2
               id={page.Block_title.toLowerCase().replaceAll(" ", "-")}
               class="heading-title"
@@ -215,48 +215,46 @@ const categories = CMS.get("productCategories", locale),
               {page.Block_title}
             </h2>
 
-            <div class="flex flex-wrap gap-6">
-              <div>
-                <select
-                  id="TeaFormat"
-                  name="TeaFormat"
-                  class:list={[
-                    "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
-                    "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
-                    "border-primary bg-primary rounded-full cursor-pointer",
-                  ]}
-                >
-                  <option value="">{page.Variant_filter_title_text}</option>
+            <select
+              id="tea_format"
+              name="tea_format"
+              class:list={[
+                "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
+                "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
+                "border-primary bg-primary rounded-full cursor-pointer",
+              ]}
+            >
+              <option value="" selected disabled hidden>
+                {page.Variant_filter_title_text}
+              </option>
 
-                  {
-                    productVariants.map(({ attributes: { Name } }) => (
-                      <option value="">{Name}</option>
-                    ))
-                  }
-                </select>
-              </div>
+              {
+                productVariants.map(({ attributes: { Name } }) => (
+                  <option value={Name}>{Name}</option>
+                ))
+              }
+            </select>
 
-              <div>
-                <select
-                  id="teaSize"
-                  name="teaSize"
-                  class:list={[
-                    "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
-                    "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
-                    "border-primary bg-primary rounded-full cursor-pointer",
-                  ]}
-                >
-                  <option value="">{page.Size_filter_title_text}</option>
+            <select
+              id="tea_size"
+              name="tea_size"
+              class:list={[
+                "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
+                "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
+                "border-primary bg-primary rounded-full cursor-pointer",
+              ]}
+            >
+              <option value="" selected disabled hidden>
+                {page.Size_filter_title_text}
+              </option>
 
-                  {
-                    productSizes.map(({ attributes: { Size } }) => (
-                      <option value="">{Size}</option>
-                    ))
-                  }
-                </select>
-              </div>
-            </div>
-          </div>
+              {
+                productSizes.map(({ attributes: { Size } }) => (
+                  <option value={Size}>{Size}</option>
+                ))
+              }
+            </select>
+          </form>
 
           <div class="prose max-w-none block-text text-dark2 prose-text">
             <Markdown>{page.Block_text}</Markdown>
