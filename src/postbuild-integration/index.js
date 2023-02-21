@@ -10,14 +10,23 @@ import removeAstroIconAttributes from "./utils/removeAstroIconAttributes.js";
 
 const CSPRecord = {
   "default-src": ["'none'"],
-  "style-src": ["'self'", "'unsafe-inline'"],
-  "img-src": ["'self'", "data:"],
+  "style-src": ["'self'", "'unsafe-inline'", "https://use.fontawesome.com"],
+  "img-src": ["'self'", "https://dilmahtea.me", "data:"],
   "media-src": ["data:"],
-  "font-src": ["'self'"],
+  "font-src": ["'self'", "https://use.fontawesome.com"],
   "worker-src": ["blob:"],
-  "connect-src": ["'self'", "https://api.openreplay.com"],
+  "connect-src": [
+    "'self'",
+    "https://log.expertrec.com",
+    "https://searchv7.expertrec.com",
+    "https://api.openreplay.com",
+  ],
   "upgrade-insecure-requests": [],
-  "script-src": ["'self'", "https://static.openreplay.com"],
+  "script-src": [
+    "'self'",
+    "https://cse.expertrec.com",
+    "https://static.openreplay.com",
+  ],
 };
 
 const sitemap = [];
