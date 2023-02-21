@@ -117,7 +117,7 @@ const contentHTML = await Astro.slots.render("post-details"),
 {/* Hero Section */}
 <Hero>
   {/* Text Content */}
-  <div 
+  <div
     role="banner"
     aria-label={ariaLabelRecurData.Post_intro_text}
     class="wrapper hero-text-container h-full relative z-30"
@@ -154,15 +154,14 @@ const contentHTML = await Astro.slots.render("post-details"),
               )}
 
               <div class="grid content-between">
-                <div 
+                <div
                   role="presentation"
-                  aria-label={
-                    page.authors.data.map(({ attributes }, i) => (
-                      ariaLabelRecurData.Wrote_by_text 
-                        + (i > 0 ? ", " : " ") 
-                        + attributes.givenName
-                    ))
-                  }
+                  aria-label={page.authors.data.map(
+                    ({ attributes }, i) =>
+                      ariaLabelRecurData.Wrote_by_text +
+                      (i > 0 ? ", " : " ") +
+                      attributes.givenName
+                  )}
                   class="post-author flex flex-wrap font-bold"
                 >
                   {page.authors.data.map((author, index) => (
@@ -290,7 +289,11 @@ const contentHTML = await Astro.slots.render("post-details"),
 <slot name="howto-header" />
 
 {/* Blog Section */}
-<section class="py-[50px]" role="main" aria-label={ariaLabelRecurData.Post_details_text}>
+<section
+  class="py-[50px]"
+  role="main"
+  aria-label={ariaLabelRecurData.Post_details_text}
+>
   <div
     id="sticky-header"
     class="self-start invisible md:invisible w-full sticky top-0 z-[998] text-primary bg-lightgray overflow-hidden"
@@ -417,10 +420,7 @@ const contentHTML = await Astro.slots.render("post-details"),
 
 {
   recentPosts?.length > 0 && (
-    <section
-      role="complementary"
-      class="wrapper"
-    >
+    <section role="complementary" class="wrapper">
       <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
         {(page.Relevant_recipes && recurData.recipe_discover) ||
           recurData.text_explore_the_world_of_kindness}
@@ -464,13 +464,12 @@ const contentHTML = await Astro.slots.render("post-details"),
                   <div>
                     <div
                       role="presentation"
-                      aria-label={
-                        post.authors.data.map(({ attributes }, i) => (
-                          ariaLabelRecurData.Wrote_by_text 
-                            + (i > 0 ? ", " : " ") 
-                            + attributes.givenName
-                        ))
-                      }
+                      aria-label={post.authors.data.map(
+                        ({ attributes }, i) =>
+                          ariaLabelRecurData.Wrote_by_text +
+                          (i > 0 ? ", " : " ") +
+                          attributes.givenName
+                      )}
                       class="recent-post-card-author flex flex-wrap font-bold"
                     >
                       {post.authors.data.map(({ attributes }, index) => (
