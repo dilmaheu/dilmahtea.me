@@ -158,21 +158,31 @@ const url = `${Astro.site.origin}/${page.locale}/${
     name: page.Title,
     image: {
       "@type": "ImageObject",
-      url: ASSETS_URL + page.Intro_blob.data.attributes.url,
+      url: await importRemoteImage(
+        ASSETS_URL + page.Intro_blob?.data.attributes.url
+      ),
     },
-    step: page.Method.map((method) => ({
-      "@type": "HowToSection",
-      name: method.Method_title,
-      itemListElement: method.Steps.map((step) => ({
-        "@type": "HowToStep",
-        name: step.Step_title,
-        text: step.Step_text,
-        url: `${url + `#` + step.Step_title.replaceAll(" ", "-")}`,
-        image: {
-          "@type": "ImageObject",
-          url: ASSETS_URL + step.Step_blob?.data?.attributes.url,
-        },
-      })),
-    })),
+    step: await Promise.all(
+      page.Method.map(async (method) => ({
+        "@type": "HowToSection",
+        name: method.Method_title,
+        itemListElement: await Promise.all(
+          method.Steps.map(async (step) => ({
+            "@type": "HowToStep",
+            name: step.Step_title,
+            text: step.Step_text,
+            url: `${url + `#` + step.Step_title.replaceAll(" ", "-")}`,
+            image: {
+              "@type": "ImageObject",
+              url: !step.Step_blob?.data
+                ? ""
+                : await importRemoteImage(
+                    ASSETS_URL + step.Step_blob?.data?.attributes.url
+                  ),
+            },
+          }))
+        ),
+      }))
+    ),
   }}
 />
