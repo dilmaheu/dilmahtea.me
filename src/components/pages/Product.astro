@@ -229,9 +229,7 @@ const productsAPIEndpoint = shouldDisplayExperimentals
                 "border-primary bg-primary rounded-full cursor-pointer",
               ]}
             >
-              <option value="" selected disabled hidden>
-                {page.Variant_filter_title_text}
-              </option>
+              <option value="" selected>{page.text_all_tea_variants}</option>
 
               {
                 productVariants.map(({ attributes: { Name, products } }) => (
@@ -263,9 +261,7 @@ const productsAPIEndpoint = shouldDisplayExperimentals
                 "border-primary bg-primary rounded-full cursor-pointer",
               ]}
             >
-              <option value="" selected disabled hidden>
-                {page.Size_filter_title_text}
-              </option>
+              <option value="" selected>{page.text_all_tea_sizes}</option>
 
               {
                 productSizes.map(({ attributes: { Size, products } }) => (
@@ -457,22 +453,30 @@ const productsAPIEndpoint = shouldDisplayExperimentals
 
   productFiltersForm?.addEventListener("change", async (event) => {
     const target = event.target as HTMLSelectElement,
-      [selectedOption] = target.selectedOptions,
-      availableCombinations = JSON.parse(
+      [selectedOption] = target.selectedOptions;
+
+    if (selectedOption.value === "") {
+      productFiltersForm.querySelectorAll("select option").forEach((option) => {
+        option.hidden = false;
+        option.disabled = false;
+      });
+    } else {
+      const availableCombinations = JSON.parse(
         selectedOption.dataset.availableCombinations
       );
 
-    (target.name === "tea_format"
-      ? target.nextElementSibling
-      : target.previousElementSibling
-    )
-      .querySelectorAll("option")
-      .forEach((option) => {
-        const shouldBeHidden = !availableCombinations.includes(option.value);
+      (target.name === "tea_format"
+        ? target.nextElementSibling
+        : target.previousElementSibling
+      )
+        .querySelectorAll("option:not([value=''])")
+        .forEach((option) => {
+          const shouldBeHidden = !availableCombinations.includes(option.value);
 
-        option.hidden = shouldBeHidden;
-        option.disabled = shouldBeHidden;
-      });
+          option.hidden = shouldBeHidden;
+          option.disabled = shouldBeHidden;
+        });
+    }
 
     const locale = document.documentElement.lang,
       tea_format = productFiltersForm.tea_format.value,

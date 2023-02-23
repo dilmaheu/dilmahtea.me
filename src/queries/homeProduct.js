@@ -22,8 +22,8 @@ const homeProductQuery = `
           Category_title
           Block_title
           Block_text
-          Variant_filter_title_text
-          Size_filter_title_text
+          text_all_tea_variants
+          text_all_tea_sizes
           Block2_title
           Block2_button_text
           Block2_button_link
@@ -95,8 +95,8 @@ const homeProductQuery = `
                 Category_title
                 Block_title
                 Block_text
-                Variant_filter_title_text
-                Size_filter_title_text
+                text_all_tea_variants
+                text_all_tea_sizes
                 Block2_title
                 Block2_button_text
                 Block2_button_link
