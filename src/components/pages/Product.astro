@@ -5,11 +5,12 @@ import { Picture } from "astro-imagetools/components";
 
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
-import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { white_right_arrow } = RecurringImages;
 
@@ -21,6 +22,10 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
 const categories = CMS.get("productCategories", locale),
   productVariants = CMS.get("productVariants", locale),
   productSizes = CMS.get("productSizes", locale);
+
+const productsAPIEndpoint = shouldDisplayExperimentals
+  ? "https://dev.products.scripts.dilmahtea.me"
+  : "/api/products";
 ---
 
 <style lang="scss">
@@ -229,8 +234,22 @@ const categories = CMS.get("productCategories", locale),
               </option>
 
               {
-                productVariants.map(({ attributes: { Name } }) => (
-                  <option value={Name}>{Name}</option>
+                productVariants.map(({ attributes: { Name, products } }) => (
+                  <option
+                    value={Name}
+                    data-available-combinations={JSON.stringify(
+                      Array.from(
+                        new Set(
+                          products.data.map(
+                            ({ attributes }) =>
+                              attributes.size.data.attributes.Size
+                          )
+                        )
+                      )
+                    )}
+                  >
+                    {Name}
+                  </option>
                 ))
               }
             </select>
@@ -249,8 +268,22 @@ const categories = CMS.get("productCategories", locale),
               </option>
 
               {
-                productSizes.map(({ attributes: { Size } }) => (
-                  <option value={Size}>{Size}</option>
+                productSizes.map(({ attributes: { Size, products } }) => (
+                  <option
+                    value={Size}
+                    data-available-combinations={JSON.stringify(
+                      Array.from(
+                        new Set(
+                          products.data.map(
+                            ({ attributes }) =>
+                              attributes.variant.data.attributes.Name
+                          )
+                        )
+                      )
+                    )}
+                  >
+                    {Size}
+                  </option>
                 ))
               }
             </select>
@@ -423,6 +456,24 @@ const categories = CMS.get("productCategories", locale),
     document.querySelector("#product-filters");
 
   productFiltersForm?.addEventListener("change", async (event) => {
+    const target = event.target as HTMLSelectElement,
+      [selectedOption] = target.selectedOptions,
+      availableCombinations = JSON.parse(
+        selectedOption.dataset.availableCombinations
+      );
+
+    (target.name === "tea_format"
+      ? target.nextElementSibling
+      : target.previousElementSibling
+    )
+      .querySelectorAll("option")
+      .forEach((option) => {
+        const shouldBeHidden = !availableCombinations.includes(option.value);
+
+        option.hidden = shouldBeHidden;
+        option.disabled = shouldBeHidden;
+      });
+
     const locale = document.documentElement.lang,
       tea_format = productFiltersForm.tea_format.value,
       tea_size = productFiltersForm.tea_size.value;
