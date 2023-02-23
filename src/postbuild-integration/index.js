@@ -7,6 +7,7 @@ import generateXMLSitemap from "./utils/generateXMLSitemap.js";
 import rewrite404RoutesPaths from "./utils/rewrite404RoutesPaths.js";
 import generateSecurityHeaders from "./utils/generateSecurityHeaders.js";
 import removeAstroIconAttributes from "./utils/removeAstroIconAttributes.js";
+import shouldDisplayExperimentals from "../utils/shouldDisplayExperimentals.js";
 
 const CSPRecord = {
   "default-src": ["'none'"],
@@ -19,6 +20,10 @@ const CSPRecord = {
   "upgrade-insecure-requests": [],
   "script-src": ["'self'", "https://static.openreplay.com"],
 };
+
+if (shouldDisplayExperimentals) {
+  CSPRecord["connect-src"].push("https://dev.products.scripts.dilmahtea.me");
+}
 
 const sitemap = [];
 

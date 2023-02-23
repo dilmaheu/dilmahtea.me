@@ -254,6 +254,10 @@ const categories = CMS.get("productCategories", locale),
                 ))
               }
             </select>
+
+            <script define:vars={{ productsAPIEndpoint }}>
+              window.productsAPIEndpoint = productsAPIEndpoint;
+            </script>
           </form>
 
           <div class="prose max-w-none block-text text-dark2 prose-text">
@@ -409,6 +413,12 @@ const categories = CMS.get("productCategories", locale),
 </PostDetailsLayout>
 
 <script>
+  declare global {
+    interface Window {
+      productsAPIEndpoint: string;
+    }
+  }
+
   const productFiltersForm: HTMLFormElement =
     document.querySelector("#product-filters");
 
@@ -417,10 +427,12 @@ const categories = CMS.get("productCategories", locale),
       tea_format = productFiltersForm.tea_format.value,
       tea_size = productFiltersForm.tea_size.value;
 
-    const productsKey = [locale, tea_format, tea_size].join(" | ");
+    const productsKey = [locale, tea_format, tea_size]
+      .filter(Boolean)
+      .join(" | ");
 
     const products = await fetch(
-      `/getFilteredProducts?productsKey=${productsKey}`
+      window.productsAPIEndpoint + "/?productsKey=" + productsKey
     ).then((res) => res.json());
 
     if (!products.error) {
