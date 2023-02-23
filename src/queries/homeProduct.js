@@ -93,35 +93,9 @@ const homeProductQuery = `
                   }
                 }
                 Category_title
-                Categories {
-                  data {
-                    attributes {
-                      Title
-                      Intro_blob {
-                        data {
-                          attributes {
-                            url
-                            provider_metadata
-                            alternativeText
-                          }
-                        }
-                      }
-                      Meta {
-                        URL_slug
-                      }
-                    }
-                  }
-                }
                 Block_title
                 Block_text
                 Variant_filter_title_text
-                Variants {
-                  data {
-                    attributes {
-                      Name
-                    }
-                  }
-                }
                 Size_filter_title_text
                 Block2_title
                 Block2_button_text
