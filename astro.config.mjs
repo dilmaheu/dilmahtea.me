@@ -3,7 +3,9 @@ import { defineConfig } from "astro/config";
 import { astroImageTools } from "astro-imagetools";
 import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
 import postbuildIntegration from "./src/postbuild-integration/index.js";
+import solid from "@astrojs/solid-js";
 
+// https://astro.build/config
 export default defineConfig({
   site: "https://dilmahtea.me",
 
@@ -24,5 +26,5 @@ export default defineConfig({
     ],
   },
 
-  integrations: [taiwlind(), astroImageTools, postbuildIntegration],
+  integrations: [solid(), taiwlind(), astroImageTools, postbuildIntegration],
 });
