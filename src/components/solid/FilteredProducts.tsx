@@ -1,4 +1,4 @@
-import { createSignal, For } from "solid-js";
+import { createSignal, For, onMount } from "solid-js";
 
 export default function FilteredProducts({
   formBody,
@@ -23,6 +23,14 @@ export default function FilteredProducts({
         window?.localStorage.getItem("preferredProductsFilters") || "{}"
       );
 
+    localStorage.setItem(
+      "preferredFilters",
+      JSON.stringify({
+        tea_variant,
+        tea_size,
+      })
+    );
+
     fetch(productsAPIEndpoint, {
       method: "POST",
       headers: {
@@ -45,9 +53,28 @@ export default function FilteredProducts({
       });
   }
 
+  function loadPreferredFilters() {
+    const preferredFilters = JSON.parse(
+      localStorage.getItem("preferredFilters") || "{}"
+    );
+
+    Object.keys(preferredFilters).forEach((filter) => {
+      const selectedOptionElement: HTMLOptionElement = document.querySelector(
+        `#product-filters [name="${filter}"] option[value="${preferredFilters[filter]}"]`
+      );
+
+      if (selectedOptionElement) {
+        selectedOptionElement.selected = true;
+      }
+    });
+  }
+
   if (!import.meta.env.SSR && typeof window !== "undefined") {
+    loadPreferredFilters();
     updateProducts();
   }
+
+  onMount(loadPreferredFilters);
 
   function filterProducts(event) {
     const target = event.target as HTMLSelectElement,
