@@ -7,6 +7,8 @@ import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
+import FilteredProducts from "@components/solid/FilteredProducts";
+
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
@@ -52,8 +54,7 @@ const productsAPIEndpoint = shouldDisplayExperimentals
     font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
   }
 
-  .post-card,
-  .recent-post-card {
+  :global(.product-card, .recent-post-card) {
     @apply w-full max-w-[380px] sm:max-w-none;
   }
 
@@ -81,21 +82,12 @@ const productsAPIEndpoint = shouldDisplayExperimentals
     font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
   }
 
-  .recent-post-card-title-icon,
-  .product-card-title-icon {
+  :global(.recent-post-card-title-icon, .product-card-title-icon) {
     height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
   }
 
-  .product-card-title {
-    font-size: clamp(1.75rem, 2vw + 0.3rem, 2rem);
-  }
-
-  .product-card-inline-icon {
-    height: clamp(27px, 3.5vw + 6px, 42px);
-  }
-
-  .product-card-info {
-    height: clamp(27px, 3.5vw + 6px, 42px);
+  :global(.product-card-title) {
+    font-size: clamp(1.75rem, 2vw + 0.3rem, 2rem) !important;
   }
 
   .product-impact-container {
@@ -210,171 +202,100 @@ const productsAPIEndpoint = shouldDisplayExperimentals
       </section>
 
       {/* Products Section */}
-      <section role="main">
-        <div class="wrapper grid gap-5 mb-[30px]">
-          <form id="product-filters" class="flex flex-wrap items-center gap-6">
-            <h2
-              id={page.Block_title.toLowerCase().replaceAll(" ", "-")}
-              class="heading-title"
-            >
-              {page.Block_title}
-            </h2>
+      <FilteredProducts
+        client:load
+        {page}
+        {recurData}
+        {ASSETS_URL}
+        {white_right_arrow}
+        productsAPIEndpoint={productsAPIEndpoint}
+      >
+        <Fragment slot="formBody">
+          <h2
+            id={page.Block_title.toLowerCase().replaceAll(" ", "-")}
+            class="heading-title"
+          >
+            {page.Block_title}
+          </h2>
 
-            <select
-              id="tea_format"
-              name="tea_format"
-              class:list={[
-                "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
-                "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
-                "border-primary bg-primary rounded-full cursor-pointer",
-              ]}
-            >
-              <option value="" selected>{page.text_all_tea_variants}</option>
+          <select
+            id="tea_format"
+            name="tea_format"
+            class:list={[
+              "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
+              "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
+              "border-primary bg-primary rounded-full cursor-pointer",
+            ]}
+          >
+            <option value="" selected>{page.text_all_tea_variants}</option>
 
-              {
-                productVariants.map(({ attributes: { Name, products } }) => (
-                  <option
-                    value={Name}
-                    data-available-combinations={JSON.stringify(
-                      Array.from(
-                        new Set(
-                          products.data.map(
-                            ({ attributes }) =>
-                              attributes.size.data.attributes.Size
-                          )
+            {
+              productVariants.map(({ attributes: { Name, products } }) => (
+                <option
+                  value={Name}
+                  data-available-combinations={JSON.stringify(
+                    Array.from(
+                      new Set(
+                        products.data.map(
+                          ({ attributes }) =>
+                            attributes.size.data.attributes.Size
                         )
                       )
-                    )}
-                  >
-                    {Name}
-                  </option>
-                ))
-              }
-            </select>
+                    )
+                  )}
+                >
+                  {Name}
+                </option>
+              ))
+            }
+          </select>
 
-            <select
-              id="tea_size"
-              name="tea_size"
-              class:list={[
-                "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
-                "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
-                "border-primary bg-primary rounded-full cursor-pointer",
-              ]}
-            >
-              <option value="" selected>{page.text_all_tea_sizes}</option>
+          <select
+            id="tea_size"
+            name="tea_size"
+            class:list={[
+              "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
+              "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
+              "border-primary bg-primary rounded-full cursor-pointer",
+            ]}
+          >
+            <option value="" selected>{page.text_all_tea_sizes}</option>
 
-              {
-                productSizes.map(({ attributes: { Size, products } }) => (
-                  <option
-                    value={Size}
-                    data-available-combinations={JSON.stringify(
-                      Array.from(
-                        new Set(
-                          products.data.map(
-                            ({ attributes }) =>
-                              attributes.variant.data.attributes.Name
-                          )
+            {
+              productSizes.map(({ attributes: { Size, products } }) => (
+                <option
+                  value={Size}
+                  data-available-combinations={JSON.stringify(
+                    Array.from(
+                      new Set(
+                        products.data.map(
+                          ({ attributes }) =>
+                            attributes.variant.data.attributes.Name
                         )
                       )
-                    )}
-                  >
-                    {Size}
-                  </option>
-                ))
-              }
-            </select>
-
-            <script define:vars={{ productsAPIEndpoint }}>
-              window.productsAPIEndpoint = productsAPIEndpoint;
-            </script>
-          </form>
-
-          <div class="prose max-w-none block-text text-dark2 prose-text">
-            <Markdown>{page.Block_text}</Markdown>
-          </div>
-        </div>
+                    )
+                  )}
+                >
+                  {Size}
+                </option>
+              ))
+            }
+          </select>
+        </Fragment>
 
         <div
-          id="products"
-          role="list"
-          aria-label={page.Aria_label_all_teas_text}
-          class="wrapper grid sm:grid-cols-2 lg:grid-cols-3 gap-[50px] overflow-hidden"
+          slot="blockText"
+          class="prose max-w-none block-text text-dark2 prose-text"
         >
-          {
-            products.map((post, index) => (
-              <div
-                role="listitem"
-                aria-label={page.Aria_label_tea_item_text + (index + 1)}
-                style="clip-path: url(#product-card-curve)"
-                class="post-card link-section flex flex-wrap bg-primary"
-              >
-                <div class="relative block w-full">
-                  <Picture
-                    layout="fullWidth"
-                    alt={post.Intro_blob.data.attributes.alternativeText}
-                    src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-                    attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                    sizes="(min-width: 768px) min(580px, calc(45vw - 25px)), min(90vw, 420px)"
-                  />
-                  {post.Stock_amount < 1 && (
-                    <>
-                      <div
-                        class:list={[
-                          "absolute top-[12%] right-[12%] flex items-center px-5 sm:px-[37px]",
-                          "py-[5px] sm:py-[7px] sm:text-xl font-semibold text-dark2",
-                          "border-2 border-[#fabf21] bg-[#fabf21]/80 rounded-full",
-                        ]}
-                      >
-                        {recurData.Product_sold_out_text}
-                      </div>
-
-                      <div
-                        class:list={[
-                          "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none",
-                          "w-full text-sm sm:text-base font-medium text-dark2 bg-[#faf8e5]/80",
-                        ]}
-                      >
-                        <Icon
-                          name="mdi:alert-circle"
-                          class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
-                        />
-                        {recurData.Item_stock_text}
-                        {new Date(post.In_stock_date).toLocaleString("en-GB", {
-                          year: "2-digit",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </div>
-                    </>
-                  )}
-                </div>
-                <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
-                  <div class="product-card-title alice leading-[120%] md:leading-[110%]">
-                    <a
-                      aria-label={
-                        (post.Stock_amount < 1
-                          ? `${recurData.Product_sold_out_text}, `
-                          : "") + post.Title
-                      }
-                      class="main-link"
-                      set:text={post.Title}
-                      href={`/` + post.Meta.URL_slug}
-                    />
-
-                    <span class="icon product-card-title-icon">
-                      <img class="w-full h-full" {...white_right_arrow} />
-                    </span>
-                  </div>
-
-                  <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
-                    <Markdown>{post.Intro_text}</Markdown>
-                  </div>
-                </div>
-              </div>
-            ))
-          }
+          <Markdown>{page.Block_text}</Markdown>
         </div>
-      </section>
+
+        <Icon
+          slot="alertCircleIcon"
+          name="mdi:alert-circle"
+          class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+        />
+      </FilteredProducts>
 
       {/* Products impact Section */}
       <section role="complementary">
@@ -440,58 +361,3 @@ const productsAPIEndpoint = shouldDisplayExperimentals
     )
   }
 </PostDetailsLayout>
-
-<script>
-  declare global {
-    interface Window {
-      productsAPIEndpoint: string;
-    }
-  }
-
-  const productFiltersForm: HTMLFormElement =
-    document.querySelector("#product-filters");
-
-  productFiltersForm?.addEventListener("change", async (event) => {
-    const target = event.target as HTMLSelectElement,
-      [selectedOption] = target.selectedOptions;
-
-    if (selectedOption.value === "") {
-      productFiltersForm.querySelectorAll("select option").forEach((option) => {
-        option.hidden = false;
-        option.disabled = false;
-      });
-    } else {
-      const availableCombinations = JSON.parse(
-        selectedOption.dataset.availableCombinations
-      );
-
-      (target.name === "tea_format"
-        ? target.nextElementSibling
-        : target.previousElementSibling
-      )
-        .querySelectorAll("option:not([value=''])")
-        .forEach((option) => {
-          const shouldBeHidden = !availableCombinations.includes(option.value);
-
-          option.hidden = shouldBeHidden;
-          option.disabled = shouldBeHidden;
-        });
-    }
-
-    const locale = document.documentElement.lang,
-      tea_format = productFiltersForm.tea_format.value,
-      tea_size = productFiltersForm.tea_size.value;
-
-    const productsKey = [locale, tea_format, tea_size]
-      .filter(Boolean)
-      .join(" | ");
-
-    const products = await fetch(
-      window.productsAPIEndpoint + "/?productsKey=" + productsKey
-    ).then((res) => res.json());
-
-    if (!products.error) {
-      console.log(products);
-    }
-  });
-</script>

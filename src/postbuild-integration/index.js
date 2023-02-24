@@ -12,7 +12,7 @@ import shouldDisplayExperimentals from "../utils/shouldDisplayExperimentals.js";
 const CSPRecord = {
   "default-src": ["'none'"],
   "style-src": ["'self'", "'unsafe-inline'"],
-  "img-src": ["'self'", "data:"],
+  "img-src": ["'self'", "data:", "https://cms.dilmahtea.me"],
   "media-src": ["data:"],
   "font-src": ["'self'"],
   "worker-src": ["blob:"],
