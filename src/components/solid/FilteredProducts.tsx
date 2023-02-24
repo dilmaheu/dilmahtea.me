@@ -17,19 +17,31 @@ export default function FilteredProducts({
       document.querySelector("#product-filters");
 
     const locale = document.documentElement.lang,
-      tea_format = productFiltersForm.tea_format.value,
-      tea_size = productFiltersForm.tea_size.value;
+      tea_variant = productFiltersForm.tea_variant.value,
+      tea_size = productFiltersForm.tea_size.value,
+      preferredProductsFilters = JSON.parse(
+        window?.localStorage.getItem("preferredProductsFilters") || "{}"
+      );
 
-    const productsKey = [locale, tea_format, tea_size]
-      .filter(Boolean)
-      .join(" | ");
-
-    fetch(productsAPIEndpoint + "/?productsKey=" + productsKey)
+    fetch(productsAPIEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        locale,
+        tea_variant,
+        tea_size,
+        preferredProductsFilters,
+      }),
+    })
       .then((res) => res.json())
       .then((products) => {
-        console.log(products);
-
-        setProducts(products);
+        if (products.error) {
+          console.error(products.error);
+        } else {
+          setProducts(products);
+        }
       });
   }
 
@@ -88,7 +100,7 @@ export default function FilteredProducts({
         class="wrapper grid sm:grid-cols-2 lg:grid-cols-3 gap-[50px] overflow-hidden"
       >
         <For each={products()}>
-          {({ attributes: product }, iSignal) => {
+          {(product, iSignal) => {
             return (
               <div
                 role="listitem"
