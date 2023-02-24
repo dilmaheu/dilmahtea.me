@@ -45,21 +45,21 @@ langSelectorsData.sort(
 ---
 
 <style lang="scss">
-  #lang-selector-dropdown {
-    #lang-selector-button {
+  .lang-selector-dropdown {
+    .lang-selector-button {
       border-radius: 25px;
     }
 
-    #lang-selector-dropdown-menu {
+    .lang-selector-dropdown-menu {
       border-radius: 0 0 25px 25px;
     }
 
     &.dropdown-open {
-      #lang-selector-button {
+      .lang-selector-button {
         border-radius: 25px 25px 0 0;
       }
 
-      #lang-selector-dropdown-menu {
+      .lang-selector-dropdown-menu {
         display: block;
       }
     }
@@ -70,18 +70,16 @@ langSelectorsData.sort(
   role="menu"
   tabindex="0"
   aria-label={ariaLabelRecurData.Navbar_language_selectors_text}
-  id="lang-selector-dropdown"
   class:list={[
-    "relative font-bold text-primary text-sm lg:text-base select-none",
-    "scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]",
-    "mx-[calc(-88px*0.225)] sm:mx-[calc(-88px*0.15)] md:mx-[calc(-88px*0.075)] lg:mx-0",
+    "lang-selector-dropdown relative",
+    "font-bold text-primary text-sm lg:text-base select-none",
+    "max-w-[150px] xl:max-w-full scale-[0.775] xl:scale-[1] mx-0",
   ]}
 >
   <div
     role="button"
-    id="lang-selector-button"
     class:list={[
-      "flex items-center justify-between gap-x-1.5 md:gap-x-3",
+      "lang-selector-button flex items-center justify-between gap-x-1.5 md:gap-x-3",
       "p-3.5 w-44 max-w-[40vw] font-bold bg-lightgray cursor-pointer focus:outline-none",
     ]}
   >
@@ -95,8 +93,10 @@ langSelectorsData.sort(
   </div>
 
   <ul
-    id="lang-selector-dropdown-menu"
-    class="absolute hidden overflow-hidden w-full font-bold rounded border-t border-solid border-primary"
+    class:list={[
+      "lang-selector-dropdown-menu absolute hidden overflow-hidden",
+      "w-full font-bold rounded border-t border-solid border-primary",
+    ]}
   >
     {
       langSelectorsData.map(
@@ -120,22 +120,27 @@ langSelectorsData.sort(
 </div>
 
 <script>
-  const dropdown = document.querySelector("#lang-selector-dropdown");
+  const dropdowns = document.querySelectorAll(".lang-selector-dropdown");
 
   // toggle language selectors dropdown
-  document.addEventListener("click", ({ target }) => {
-    // @ts-ignore
-    dropdown?.classList[dropdown.contains(target) ? "toggle" : "remove"](
-      "dropdown-open"
-    );
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+
+    dropdowns.forEach((dropdown) => {
+      dropdown.classList[dropdown.contains(target) ? "toggle" : "remove"](
+        "dropdown-open"
+      );
+    });
   });
 
-  dropdown?.addEventListener("keyup", (event) => {
-    const { key } = event as KeyboardEvent;
+  dropdowns.forEach((dropdown) => {
+    dropdown.addEventListener("keyup", (event) => {
+      const { key } = event as KeyboardEvent;
 
-    if (key === "Enter") {
-      dropdown.classList.toggle("dropdown-open");
-    }
+      if (key === "Enter") {
+        dropdown.classList.toggle("dropdown-open");
+      }
+    });
   });
 
   document.querySelectorAll(".lang-selector").forEach((langSelector) => {
