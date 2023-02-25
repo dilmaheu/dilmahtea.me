@@ -8,10 +8,9 @@ import Chapterize from "@components/Chapterize.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
-import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
-const { white_cup, white_right_arrow } = RecurringImages;
+const { white_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_content,
@@ -158,7 +157,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
               role="listitem"
               aria-label={page.Aria_label_tea_item_text + (index + 1)}
               style="clip-path: url(#product-card-curve)"
-              class="post-card link-section flex flex-wrap bg-primary"
+              class="post-card link-section flex flex-wrap mx-auto bg-primary"
             >
               <div class="relative block w-full">
                 <Picture
@@ -166,7 +165,11 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                   alt={post.Intro_blob.data.attributes.alternativeText}
                   src={ASSETS_URL + post.Intro_blob.data.attributes.url}
                   attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                  sizes="(min-width: 768px) min(580px, calc(45vw - 25px)), min(90vw, 420px)"
+                  sizes={[
+                    "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
+                    "(min-width: 640px) calc(45vw - 16px)",
+                    "min(90vw, 380px)",
+                  ].join(", ")}
                 />
                 {post.Stock_amount < 1 && (
                   <>
@@ -254,7 +257,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                     role="listitem"
                     aria-label={page.Aria_label_tea_item_text + (index + 1)}
                     style="clip-path: url(#product-card-curve)"
-                    class="post-card link-section flex flex-wrap bg-primary"
+                    class="post-card link-section flex flex-wrap mx-auto bg-primary"
                   >
                     <div class="relative block w-full">
                       <Picture
@@ -262,7 +265,11 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                         alt={post.Intro_blob.data.attributes.alternativeText}
                         src={ASSETS_URL + post.Intro_blob.data.attributes.url}
                         attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                        sizes="(min-width: 768px) min(580px, calc(45vw - 25px)), min(90vw, 420px)"
+                        sizes={[
+                          "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
+                          "(min-width: 640px) calc(45vw - 16px)",
+                          "min(90vw, 380px)",
+                        ].join(", ")}
                       />
                       {post.Stock_amount < 1 && (
                         <>
