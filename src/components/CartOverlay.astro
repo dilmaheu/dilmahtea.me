@@ -321,14 +321,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   const id: (string) => HTMLElement = document.getElementById.bind(document),
     cart = id("cart"),
     sidebar = id("sidebar"),
-    // the open cart button is in Navbar.astro
-    openCartBtn = id("open-cart-btn"),
     closeCartBtn = id("close-cart-btn"),
     checkoutInfoLink = id("checkout-info-link"),
     cartOverlayContent = id("cart-overlay-content"),
     emptyCartNotification = id("empty-cart-notification"),
     cartOverlayProductsContainer = id("cart-overlay-products-container"),
     { overflowY: prevBodyOverflowYValue } = document.body.style;
+
+  // the open cart buttons are in Navbar.astro
+  const openCartBtns = document.querySelectorAll(".open-cart-btn");
 
   window.openCart = () => {
     cart.classList.toggle("hidden");
@@ -343,7 +344,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
   const closeCart = () => {
     cart.classList.toggle("hidden");
-    openCartBtn.focus();
+    // openCartBtn.focus();
 
     (!sidebar || sidebar.offsetWidth === 0) && window.enableScrolling();
 

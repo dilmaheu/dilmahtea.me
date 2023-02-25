@@ -46,6 +46,8 @@ export async function getStaticPaths() {
     homeEstate,
     homeProduct,
     productCategories,
+    productVariants,
+    productSizes,
     homepage,
     cart,
     checkoutKindness,
@@ -197,6 +199,9 @@ export async function getStaticPaths() {
   const productPages = getPages(homeProduct, (page, { locale }) => ({
     type: "product",
     posts: locale && getPosts(products, locale),
+    categories: locale && getPosts(productCategories, locale),
+    variants: locale && getPosts(productVariants, locale),
+    sizes: locale && getPosts(productSizes, locale),
   }));
 
   const productCategoryPages = getPages(
@@ -394,7 +399,7 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
           ) : page.type === `checkoutShipping` ? (
             <CheckoutShipping page={page} recurData={recurData} />
           ) : page.type === `plan` ? (
-            <CrowdfundingForm page={page} locale={locale} />
+            <CrowdfundingForm page={page} recurData={recurData} locale={locale} />
           ) : null}
         </Layout>
       );

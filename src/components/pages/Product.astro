@@ -48,6 +48,29 @@ const productsAPIEndpoint = shouldDisplayExperimentals
   .category-container {
     @apply grid sm:grid-cols-[repeat(auto-fill,minmax(300px,2fr))] 
       md:grid-cols-2 gap-y-[30px] gap-x-[30px] mt-[30px] overflow-hidden;
+
+    .category-content-container {
+      @apply relative flex flex-nowrap cursor-pointer
+        w-full h-[clamp(110px,12vw+8px,170px)];
+
+      @media (max-width: 320px) {
+        @apply h-full;
+      }
+    }
+
+    .category-txt-container {
+      @apply flex grow justify-center items-center px-[25px] py-[15px];
+
+      @media (max-width: 320px) {
+        @apply w-3/5;
+      }
+    }
+
+    .category-img-container {
+      @media (max-width: 320px) {
+        @apply w-2/5;
+      }
+    }
   }
 
   .recent-posts-title {
@@ -131,6 +154,13 @@ const productsAPIEndpoint = shouldDisplayExperimentals
       }
     }
   }
+
+  select {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 </style>
 
 <PostDetailsLayout
@@ -148,7 +178,7 @@ const productsAPIEndpoint = shouldDisplayExperimentals
 
     <div class="grid gap-y-[50px]">
       {/* Categories Section */}
-      <section class="wrapper">
+      <section class="wrapper overflow-hidden">
         <ClipPathSVG
           id="product-category-card-curve"
           path="M0.547,0.01 c0.072,0.003,0.13,0,0.167,0 c0.315,0,0.282,0.03,0.282,0.467 s0.052,0.518,-0.264,0.518 c-0.105,0,-0.154,0,-0.174,-0.001 l-0.011,0.001 h-0.001 c-0.199,0.01,-0.401,0.008,-0.47,-0.037 C-0.013,0.898,0.003,0.642,0.003,0.487 c0,-0.216,-0.034,-0.411,0.14,-0.459 C0.305,-0.018,0.435,0.005,0.547,0.01"
@@ -161,7 +191,7 @@ const productsAPIEndpoint = shouldDisplayExperimentals
           {page.Category_title}
         </h2>
 
-        <div class="category-container">
+        <div class="category-container overflow-hidden">
           {
             categories.map(({ attributes: { Title, Intro_blob, Meta } }) => (
               <div
@@ -169,14 +199,9 @@ const productsAPIEndpoint = shouldDisplayExperimentals
                 class="bg-primary text-center"
               >
                 <a href={Meta.URL_slug}>
-                  <div class="h-full w-full">
-                    <div
-                      class:list={[
-                        "relative w-full h-[clamp(110px,12vw+8px,170px);]",
-                        "flex flex-nowrap cursor-pointer",
-                      ]}
-                    >
-                      <div class="w-auto h-full aspect-[6/5] block">
+                  <div class="category-content-container">
+                    <div class="category-img-container overflow-hidden">
+                      <div class="category-img w-auto h-full aspect-[6/5] block">
                         <Picture
                           layout="fullWidth"
                           sizes="(min-width: 640px) 320px, 90vw)"
@@ -187,11 +212,11 @@ const productsAPIEndpoint = shouldDisplayExperimentals
                           src={ASSETS_URL + Intro_blob.data.attributes.url}
                         />
                       </div>
-                      <div class="flex grow justify-center items-center px-[25px] py-[15px]">
-                        <h3 class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[120%]">
-                          {Title}
-                        </h3>
-                      </div>
+                    </div>
+                    <div class="category-txt-container">
+                      <h3 class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[120%]">
+                        {Title}
+                      </h3>
                     </div>
                   </div>
                 </a>
