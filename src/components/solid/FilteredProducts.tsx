@@ -133,7 +133,7 @@ export default function FilteredProducts({
                 role="listitem"
                 aria-label={page.Aria_label_tea_item_text + (iSignal() + 1)}
                 style="clip-path: url(#product-card-curve)"
-                class="product-card link-section flex flex-wrap bg-primary"
+                class="product-card link-section flex flex-wrap w-full max-w-[380px] sm:max-w-none bg-primary"
               >
                 <div class="relative block w-full">
                   <img
@@ -165,7 +165,12 @@ export default function FilteredProducts({
                   )}
                 </div>
                 <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
-                  <div class="product-card-title alice leading-[120%] md:leading-[110%]">
+                  <div
+                    class="product-card-title alice leading-[120%] md:leading-[110%]"
+                    style={{
+                      "font-size": "clamp(1.75rem, 2vw + 0.3rem, 2rem)",
+                    }}
+                  >
                     <a
                       aria-label={
                         (product.Stock_amount < 1
@@ -183,7 +188,12 @@ export default function FilteredProducts({
                       {product.Title}{" "}
                     </a>
 
-                    <span class="icon product-card-title-icon">
+                    <span
+                      class="icon product-card-title-icon"
+                      style={{
+                        height: "clamp(0.625rem, 1.5vw + 0.1rem, 1rem)",
+                      }}
+                    >
                       <img class="w-full h-full" {...white_right_arrow} />
                     </span>
                   </div>
