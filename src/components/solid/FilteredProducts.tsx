@@ -19,8 +19,8 @@ export default function FilteredProducts({
     const locale = document.documentElement.lang,
       tea_variant = productFiltersForm.tea_variant.value,
       tea_size = productFiltersForm.tea_size.value,
-      preferredProductsFilters = JSON.parse(
-        window?.localStorage.getItem("preferredProductsFilters") || "{}"
+      preferredProductsVariants = JSON.parse(
+        window?.localStorage.getItem("preferredProductsVariants") || "{}"
       );
 
     localStorage.setItem(
@@ -40,7 +40,7 @@ export default function FilteredProducts({
         locale,
         tea_variant,
         tea_size,
-        preferredProductsFilters,
+        preferredProductsVariants,
       }),
     })
       .then((res) => res.json())
