@@ -174,6 +174,7 @@ export default function FilteredProducts({
                       }
                       class="main-link"
                       href={
+                        "/" +
                         document.documentElement.lang +
                         "/" +
                         product.Meta.URL_slug
