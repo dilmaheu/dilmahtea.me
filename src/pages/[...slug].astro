@@ -34,7 +34,6 @@ export async function getStaticPaths() {
     howTos,
     recipes,
     estates,
-    products,
     crowdfundingForm,
     crowdfundingPlans,
     crowdfundingHome,
@@ -45,6 +44,7 @@ export async function getStaticPaths() {
     homeRecipe,
     homeEstate,
     homeProduct,
+    catalog,
     productCategories,
     productVariants,
     productSizes,
@@ -55,6 +55,64 @@ export async function getStaticPaths() {
     checkoutShipping,
     checkoutSuccess,
   } = CMS.get("all");
+
+  const products = {
+    data: catalog.data.attributes.Products.map(({ Title, products }) => {
+      const ArrayRecordsProxy = {
+        get: (target, key) => {
+          if (!(key in target)) {
+            target[key] = {};
+          }
+
+          return target[key];
+        },
+      };
+
+      const availableVariantsLinks = new Proxy({}, ArrayRecordsProxy),
+        availableSizesLinks = new Proxy({}, ArrayRecordsProxy);
+
+      const flattenedProducts = [
+        ...products.data,
+        ...products.data
+          .map(({ attributes }) => attributes.localizations.data)
+          .flat(),
+      ];
+
+      flattenedProducts.forEach(({ attributes }) => {
+        const { locale } = attributes,
+          variant = attributes.variant.data.attributes.Name,
+          size = attributes.size.data.attributes.Size,
+          link = "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
+
+        if (!(variant in availableVariantsLinks[locale]))
+          availableVariantsLinks[locale][variant] = link;
+
+        if (!(size in availableSizesLinks[locale]))
+          availableSizesLinks[locale][size] = link;
+      });
+
+      const processedProducts = products.data.map((data) => {
+        const { attributes } = data;
+
+        const flattenedVariants = [
+          attributes,
+          ...attributes.localizations.data.map(({ attributes }) => attributes),
+        ];
+
+        flattenedVariants.forEach((attributes) => {
+          attributes.baseProductTitle = Title;
+          attributes.availableVariantsLinks =
+            availableVariantsLinks[attributes.locale];
+          attributes.availableSizesLinks =
+            availableSizesLinks[attributes.locale];
+        });
+
+        return data;
+      });
+
+      return processedProducts;
+    }).flat(),
+  };
 
   const allLocales = i18NLocales.data.map(({ attributes }) =>
     attributes.code.substring(0, 2)
@@ -399,7 +457,11 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
           ) : page.type === `checkoutShipping` ? (
             <CheckoutShipping page={page} recurData={recurData} />
           ) : page.type === `plan` ? (
-            <CrowdfundingForm page={page} recurData={recurData} locale={locale} />
+            <CrowdfundingForm
+              page={page}
+              recurData={recurData}
+              locale={locale}
+            />
           ) : null}
         </Layout>
       );
