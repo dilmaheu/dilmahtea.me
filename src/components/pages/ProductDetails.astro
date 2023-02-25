@@ -16,7 +16,8 @@ import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 const { green_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
-  { locale } = page,
+  { locale, baseProductTitle, availableVariantsLinks, availableSizesLinks } =
+    page,
   stock_amount = page.Stock_amount,
   headingName = recurData.text_chapter,
   { ASSETS_URL } = import.meta.env;
@@ -220,9 +221,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               "border-r-[20px] border-[#405658] bg-[#405658]",
             ]}
           >
-            <option value="">Loose Leaf tea</option>
-            <option value="">Tea Bag</option>
-            <option value="">Sachet</option>
+            {
+              Object.keys(availableVariantsLinks).map((variant) => (
+                <option
+                  value={availableVariantsLinks[variant]}
+                  selected={variant === page.variant.data.attributes.Name}
+                >
+                  <a href={availableVariantsLinks[variant]}>{variant}</a>
+                </option>
+              ))
+            }
           </select>
         </div>
       </fieldset>
@@ -242,9 +250,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               "border-r-[20px] border-[#405658] bg-[#405658]",
             ]}
           >
-            <option value="">{productSize}</option>
-            <option value="">250gm</option>
-            <option value="">500gm</option>
+            {
+              Object.keys(availableSizesLinks).map((size) => (
+                <option
+                  value={availableSizesLinks[size]}
+                  selected={size === page.size.data.attributes.Size}
+                >
+                  <a href={availableSizesLinks[size]}>{size}</a>
+                </option>
+              ))
+            }
           </select>
         </div>
       </fieldset>
@@ -382,9 +397,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               "border-r-[15px] border-lightgray2 bg-lightgray2",
             ]}
           >
-            <option value="">Loose Leaf tea</option>
-            <option value="">Tea Bag</option>
-            <option value="">Sachet</option>
+            {
+              Object.keys(availableVariantsLinks).map((variant) => (
+                <option
+                  value={availableVariantsLinks[variant]}
+                  selected={variant === page.variant.data.attributes.Name}
+                >
+                  <a href={availableVariantsLinks[variant]}>{variant}</a>
+                </option>
+              ))
+            }
           </select>
         </div>
       </fieldset>
@@ -404,9 +426,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               "border-r-[15px] border-lightgray2 bg-lightgray2",
             ]}
           >
-            <option value="">{productSize}</option>
-            <option value="">250gm</option>
-            <option value="">500gm</option>
+            {
+              Object.keys(availableSizesLinks).map((size) => (
+                <option
+                  value={availableSizesLinks[size]}
+                  selected={size === page.size.data.attributes.Size}
+                >
+                  <a href={availableSizesLinks[size]}>{size}</a>
+                </option>
+              ))
+            }
           </select>
         </div>
       </fieldset>
@@ -868,7 +897,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   });
 
   cartAddingForms.forEach((form: HTMLFormElement) => {
-    form.onsubmit = (event) => {
+    form.addEventListener("change", (event) => {
+      const target = event.target as HTMLSelectElement;
+
+      if (["variant", "size"].includes(target.name))
+        location.href = target.value;
+    });
+
+    form.addEventListener("submit", (event) => {
       event.preventDefault();
 
       const productData = Object.fromEntries(new FormData(form)) as ProductData,
@@ -891,7 +927,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         .replace(".", ",");
 
       window.openCart();
-    };
+    });
   });
 
   function tweakAmountCallback(input) {
