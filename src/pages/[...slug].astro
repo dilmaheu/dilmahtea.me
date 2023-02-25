@@ -46,6 +46,8 @@ export async function getStaticPaths() {
     homeEstate,
     homeProduct,
     productCategories,
+    productVariants,
+    productSizes,
     homepage,
     cart,
     checkoutKindness,
@@ -197,6 +199,9 @@ export async function getStaticPaths() {
   const productPages = getPages(homeProduct, (page, { locale }) => ({
     type: "product",
     posts: locale && getPosts(products, locale),
+    categories: locale && getPosts(productCategories, locale),
+    variants: locale && getPosts(productVariants, locale),
+    sizes: locale && getPosts(productSizes, locale),
   }));
 
   const productCategoryPages = getPages(
