@@ -23,6 +23,14 @@ export default function FilteredProducts({
         window?.localStorage.getItem("preferredProductsVariants") || "{}"
       );
 
+    const teaVariantKey = productFiltersForm.querySelector<HTMLOptionElement>(
+      "select[name='tea_variant'] option:checked"
+    ).dataset.key;
+
+    const teaSizeKey = productFiltersForm.querySelector<HTMLOptionElement>(
+      "select[name='tea_size'] option:checked"
+    ).dataset.key;
+
     localStorage.setItem(
       "preferredFilters",
       JSON.stringify({
@@ -38,8 +46,8 @@ export default function FilteredProducts({
       },
       body: JSON.stringify({
         locale,
-        tea_variant,
-        tea_size,
+        tea_variant: teaVariantKey,
+        tea_size: teaSizeKey,
         preferredProductsVariants,
       }),
     })

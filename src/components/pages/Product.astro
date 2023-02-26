@@ -22,8 +22,8 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   { ASSETS_URL } = import.meta.env;
 
 const categories = CMS.get("productCategories", locale),
-  productVariants = CMS.get("productVariants", locale),
-  productSizes = CMS.get("productSizes", locale);
+  productVariants = CMS.get("productVariants"),
+  productSizes = CMS.get("productSizes");
 
 const productsAPIEndpoint = shouldDisplayExperimentals
   ? "https://dev.products.scripts.dilmahtea.me"
@@ -252,23 +252,36 @@ const productsAPIEndpoint = shouldDisplayExperimentals
               <option value="" selected>{page.text_all_tea_variants}</option>
 
               {
-                productVariants.map(({ attributes: { Name, products } }) => (
-                  <option
-                    value={Name}
-                    data-available-combinations={JSON.stringify(
-                      Array.from(
-                        new Set(
-                          products.data.map(
+                productVariants.data.map(
+                  ({ attributes: { Name, products, localizations } }) => {
+                    const localizedName =
+                      locale === "en"
+                        ? Name
+                        : localizations.data.find(
                             ({ attributes }) =>
-                              attributes.size.data.attributes.Size
+                              attributes.locale.substring(0, 2) === locale
+                          ).attributes.Name;
+
+                    return (
+                      <option
+                        value={Name}
+                        data-key={localizedName}
+                        data-available-combinations={JSON.stringify(
+                          Array.from(
+                            new Set(
+                              products.data.map(
+                                ({ attributes }) =>
+                                  attributes.size.data.attributes.Size
+                              )
+                            )
                           )
-                        )
-                      )
-                    )}
-                  >
-                    {Name}
-                  </option>
-                ))
+                        )}
+                      >
+                        {localizedName}
+                      </option>
+                    );
+                  }
+                )
               }
             </select>
 
@@ -284,23 +297,36 @@ const productsAPIEndpoint = shouldDisplayExperimentals
               <option value="" selected>{page.text_all_tea_sizes}</option>
 
               {
-                productSizes.map(({ attributes: { Size, products } }) => (
-                  <option
-                    value={Size}
-                    data-available-combinations={JSON.stringify(
-                      Array.from(
-                        new Set(
-                          products.data.map(
+                productSizes.data.map(
+                  ({ attributes: { Size, products, localizations } }) => {
+                    const localizedSize =
+                      locale === "en"
+                        ? Size
+                        : localizations.data.find(
                             ({ attributes }) =>
-                              attributes.variant.data.attributes.Name
+                              attributes.locale.substring(0, 2) === locale
+                          ).attributes.Size;
+
+                    return (
+                      <option
+                        value={Size}
+                        data-key={localizedSize}
+                        data-available-combinations={JSON.stringify(
+                          Array.from(
+                            new Set(
+                              products.data.map(
+                                ({ attributes }) =>
+                                  attributes.variant.data.attributes.Name
+                              )
+                            )
                           )
-                        )
-                      )
-                    )}
-                  >
-                    {Size}
-                  </option>
-                ))
+                        )}
+                      >
+                        {localizedSize}
+                      </option>
+                    );
+                  }
+                )
               }
             </select>
           </div>
