@@ -16,8 +16,7 @@ import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 const { green_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
-  { locale, baseProductTitle, availableVariantsLinks, availableSizesLinks } =
-    page,
+  { locale, baseProductTitle, availableVariants, availableSizes } = page,
   stock_amount = page.Stock_amount,
   headingName = recurData.text_chapter,
   { ASSETS_URL } = import.meta.env;
@@ -221,13 +220,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             ]}
           >
             {
-              Object.keys(availableVariantsLinks).map((variant) => (
+              availableVariants.map(({ value, variant, link }) => (
                 <option
-                  value={variant}
-                  data-href={availableVariantsLinks[variant]}
+                  {value}
+                  data-href={link}
                   selected={variant === page.variant.data.attributes.Name}
                 >
-                  <a href={availableVariantsLinks[variant]}>{variant}</a>
+                  {variant}
                 </option>
               ))
             }
@@ -251,13 +250,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             ]}
           >
             {
-              Object.keys(availableSizesLinks).map((size) => (
+              availableSizes.map(({ value, size, link }) => (
                 <option
-                  value={size}
-                  data-href={availableSizesLinks[size]}
+                  {value}
+                  data-href={link}
                   selected={size === page.size.data.attributes.Size}
                 >
-                  <a href={availableSizesLinks[size]}>{size}</a>
+                  {size}
                 </option>
               ))
             }
@@ -399,13 +398,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             ]}
           >
             {
-              Object.keys(availableVariantsLinks).map((variant) => (
+              availableVariants.map(({ value, variant, link }) => (
                 <option
-                  value={variant}
-                  data-href={availableVariantsLinks[variant]}
+                  {value}
+                  data-href={link}
                   selected={variant === page.variant.data.attributes.Name}
                 >
-                  <a href={availableVariantsLinks[variant]}>{variant}</a>
+                  {variant}
                 </option>
               ))
             }
@@ -429,13 +428,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             ]}
           >
             {
-              Object.keys(availableSizesLinks).map((size) => (
+              availableSizes.map(({ value, size, link }) => (
                 <option
-                  value={size}
-                  data-href={availableSizesLinks[size]}
+                  {value}
+                  data-href={link}
                   selected={size === page.size.data.attributes.Size}
                 >
-                  <a href={availableSizesLinks[size]}>{size}</a>
+                  {size}
                 </option>
               ))
             }

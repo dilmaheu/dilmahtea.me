@@ -61,34 +61,57 @@ export async function getStaticPaths() {
       const ArrayRecordsProxy = {
         get: (target, key) => {
           if (!(key in target)) {
-            target[key] = {};
+            target[key] = [];
           }
 
           return target[key];
         },
       };
 
-      const availableVariantsLinks = new Proxy({}, ArrayRecordsProxy),
-        availableSizesLinks = new Proxy({}, ArrayRecordsProxy);
+      const availableVariants = new Proxy({}, ArrayRecordsProxy),
+        availableSizes = new Proxy({}, ArrayRecordsProxy);
 
-      const flattenedProducts = [
-        ...products.data,
-        ...products.data
-          .map(({ attributes }) => attributes.localizations.data)
-          .flat(),
-      ];
-
-      flattenedProducts.forEach(({ attributes }) => {
+      products.data.forEach(({ attributes }) => {
         const { locale } = attributes,
           variant = attributes.variant.data.attributes.Name,
           size = attributes.size.data.attributes.Size,
           link = "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
 
-        if (!(variant in availableVariantsLinks[locale]))
-          availableVariantsLinks[locale][variant] = link;
+        if (!availableVariants[locale].find(({ value }) => value === variant))
+          availableVariants[locale].push({
+            value: variant,
+            variant,
+            link,
+          });
 
-        if (!(size in availableSizesLinks[locale]))
-          availableSizesLinks[locale][size] = link;
+        if (!availableSizes[locale].find(({ value }) => value === size))
+          availableSizes[locale].push({
+            value: size,
+            size,
+            link,
+          });
+
+        attributes.localizations.data.forEach(({ attributes }) => {
+          const { locale } = attributes,
+            localizedVariant = attributes.variant.data.attributes.Name,
+            localizedSize = attributes.size.data.attributes.Size,
+            link =
+              "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
+
+          if (!availableVariants[locale].find(({ value }) => value === variant))
+            availableVariants[locale].push({
+              value: variant,
+              variant: localizedVariant,
+              link,
+            });
+
+          if (!availableSizes[locale].find(({ value }) => value === size))
+            availableSizes[locale].push({
+              value: size,
+              size: localizedSize,
+              link,
+            });
+        });
       });
 
       const processedProducts = products.data.map((data) => {
@@ -101,10 +124,8 @@ export async function getStaticPaths() {
 
         flattenedVariants.forEach((attributes) => {
           attributes.baseProductTitle = Title;
-          attributes.availableVariantsLinks =
-            availableVariantsLinks[attributes.locale];
-          attributes.availableSizesLinks =
-            availableSizesLinks[attributes.locale];
+          attributes.availableVariants = availableVariants[attributes.locale];
+          attributes.availableSizes = availableSizes[attributes.locale];
         });
 
         return data;
