@@ -46,6 +46,11 @@ const recurringElementQuery = `
               }
             }
           }
+          Footer_menu {
+            Visibility
+            Title
+            Link
+          }
           text_chapter
           text_practices_to_follow
           text_practices
@@ -125,6 +130,11 @@ const recurringElementQuery = `
                       alternativeText
                     }
                   }
+                }
+                Footer_menu {
+                  Visibility
+                  Title
+                  Link
                 }
                 text_chapter
                 text_practices_to_follow
