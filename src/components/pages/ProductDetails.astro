@@ -48,6 +48,9 @@ const { SKU: productSKU } = page,
   productPriceIncludingTax = productPrice + tax,
   productNames = JSON.stringify(page.names);
 
+const productSize = page.size.data.attributes.Size,
+  productVariant = page.variant.data.attributes.Name;
+
 const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
@@ -219,7 +222,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <option
                   {value}
                   data-href={link}
-                  selected={variant === page.variant.data.attributes.Name}
+                  selected={variant === productVariant}
                 >
                   {variant}
                 </option>
@@ -249,7 +252,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <option
                   {value}
                   data-href={link}
-                  selected={size === page.size.data.attributes.Size}
+                  selected={size === productSize}
                 >
                   {size}
                 </option>
@@ -397,7 +400,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <option
                   {value}
                   data-href={link}
-                  selected={variant === page.variant.data.attributes.Name}
+                  selected={variant === productVariant}
                 >
                   {variant}
                 </option>
@@ -427,7 +430,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <option
                   {value}
                   data-href={link}
-                  selected={size === page.size.data.attributes.Size}
+                  selected={size === productSize}
                 >
                   {size}
                 </option>
@@ -865,8 +868,22 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   }}
 />
 
-<script define:vars={{ baseProductTitle }}>
+<script define:vars={{ baseProductTitle, productSize, productVariant }}>
   window.baseProductTitle = baseProductTitle;
+
+  const preferredProductsVariants = JSON.parse(
+    localStorage.getItem("preferredProductsVariants") || "{}"
+  );
+
+  preferredProductsVariants[baseProductTitle] = {
+    tea_variant: productVariant,
+    tea_size: productSize,
+  };
+
+  localStorage.setItem(
+    "preferredProductsVariants",
+    JSON.stringify(preferredProductsVariants)
+  );
 </script>
 
 <script>
