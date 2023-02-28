@@ -98,7 +98,7 @@ export default function FilteredProducts({
         selectedOption.dataset.availableCombinations
       );
 
-      (target.name === "tea_format"
+      (target.name === "tea_variant"
         ? target.nextElementSibling
         : target.previousElementSibling
       )
