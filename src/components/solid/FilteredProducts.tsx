@@ -67,33 +67,22 @@ export default function FilteredProducts({
     );
 
     Object.keys(preferredFilters).forEach((filter) => {
-      const selectedOptionElement: HTMLOptionElement = document.querySelector(
-        `#product-filters [name="${filter}"] option[value="${preferredFilters[filter]}"]`
+      const selectElement: HTMLOptionElement = document.querySelector(
+        `#product-filters [name="${filter}"]`
       );
 
-      if (selectedOptionElement) {
-        selectedOptionElement.selected = true;
+      if (selectElement) {
+        selectElement.value = preferredFilters[filter];
+
+        displayAvailableCombinations(selectElement);
       }
     });
   }
 
-  if (!import.meta.env.SSR && typeof window !== "undefined") {
-    loadPreferredFilters();
-    updateProducts();
-  }
+  function displayAvailableCombinations(target) {
+    const [selectedOption] = target.selectedOptions;
 
-  onMount(loadPreferredFilters);
-
-  function filterProducts(event) {
-    const target = event.target as HTMLSelectElement,
-      [selectedOption] = target.selectedOptions;
-
-    if (selectedOption.value === "") {
-      this.querySelectorAll("select option").forEach((option) => {
-        option.hidden = false;
-        option.disabled = false;
-      });
-    } else {
+    if (selectedOption.value !== "") {
       const availableCombinations = JSON.parse(
         selectedOption.dataset.availableCombinations
       );
@@ -110,9 +99,30 @@ export default function FilteredProducts({
           option.disabled = shouldBeHidden;
         });
     }
+  }
+
+  function filterProducts(event) {
+    const target = event.target as HTMLSelectElement,
+      [selectedOption] = target.selectedOptions;
+
+    if (selectedOption.value === "") {
+      this.querySelectorAll("select option").forEach((option) => {
+        option.hidden = false;
+        option.disabled = false;
+      });
+    } else {
+      displayAvailableCombinations(target);
+    }
 
     updateProducts();
   }
+
+  if (!import.meta.env.SSR && typeof window !== "undefined") {
+    loadPreferredFilters();
+    updateProducts();
+  }
+
+  onMount(loadPreferredFilters);
 
   return (
     <section role="main">
