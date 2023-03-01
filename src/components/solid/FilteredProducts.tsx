@@ -151,7 +151,7 @@ export default function FilteredProducts({
                 role="listitem"
                 aria-label={page.Aria_label_tea_item_text + (iSignal() + 1)}
                 style="clip-path: url(#product-card-curve)"
-                class="product-card link-section flex flex-wrap w-full max-w-[380px] sm:max-w-none bg-primary"
+                class="product-card link-section flex flex-wrap w-full mx-auto max-w-[380px] sm:max-w-none bg-primary"
               >
                 <div class="relative block w-full">
                   <img
