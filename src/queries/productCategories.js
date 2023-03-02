@@ -31,7 +31,7 @@ const productCategoriesQuery = `
             }
           }
           Relevant_items_title
-          Relevant_recipes {
+          Relevant_recipes (filters: { publishedAt: { ne: null } }) {
             data {
               attributes {
                 Title
@@ -45,6 +45,7 @@ const productCategoriesQuery = `
                     }
                   }
                 }
+                publishedAt
                 Meta {
                   URL_slug
                 }
@@ -89,7 +90,7 @@ const productCategoriesQuery = `
                   }
                 }
                 Relevant_items_title
-                Relevant_recipes {
+                Relevant_recipes (filters: { publishedAt: { ne: null } }) {
                   data {
                     attributes {
                       Title
@@ -103,6 +104,7 @@ const productCategoriesQuery = `
                           }
                         }
                       }
+                      publishedAt
                       Meta {
                         URL_slug
                       }
