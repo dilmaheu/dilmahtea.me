@@ -100,6 +100,14 @@ const { page, recurData } = Astro.props,
       )
     );
   }
+  .shipping-description {
+    font-size: poly-fluid-clamp(
+      (
+        375px: 16px,
+        1440px: 18px,
+      )
+    );
+  }
 </style>
 
 <script define:vars={{ companyName: recurData.Company_name }}>
@@ -221,7 +229,10 @@ const { page, recurData } = Astro.props,
       {
         page.shipping_methods.data.map(
           ({ attributes: { method, cost, description, localizations } }, i) => (
-            <label role="listitem" class="gap-5 flex items-center">
+            <label
+              role="listitem"
+              class="gap-5 flex items-center cursor-pointer"
+            >
               <input
                 type="radio"
                 name="shipping_method"
@@ -236,17 +247,21 @@ const { page, recurData } = Astro.props,
                 required
               />
 
-              <span class="gap-3 flex items-center">
-                <span class="shipping-method font-semibold text-dark2 leading-[130%]">
+              <div class="grid gap-[5px]">
+                <span class="gap-3 flex items-center">
+                  <span class="shipping-method font-semibold text-dark2 leading-[130%]">
+                    {method}
+                  </span>
+                  <span class="w-1 h-1 bg-primary rounded-full" />
+                  <span class="shipping-cost font-semibold text-dark2 leading-[130%]">
+                    €{cost}
+                  </span>
+                </span>
+
+                <span class="shipping-description text-dark2 leading-[130%]">
                   {description}
                 </span>
-
-                <span class="w-1 h-1 bg-primary rounded-full" />
-
-                <span class="shipping-cost font-semibold text-dark2 leading-[130%]">
-                  €{cost}
-                </span>
-              </span>
+              </div>
             </label>
           )
         )
