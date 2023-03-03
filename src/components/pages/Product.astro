@@ -218,25 +218,25 @@ const productsAPIEndpoint = shouldDisplayExperimentals
 
                 {
                   productVariants.data.map(
-                    ({ attributes: { Name, products, localizations } }) => {
+                    ({ attributes: { Title, products, localizations } }) => {
                       const localizedName =
                         locale === "en"
-                          ? Name
+                          ? Title
                           : localizations.data.find(
                               ({ attributes }) =>
                                 attributes.locale.substring(0, 2) === locale
-                            ).attributes.Name;
+                            ).attributes.Title;
 
                       return (
                         <option
-                          value={Name}
+                          value={Title}
                           data-key={localizedName}
                           data-available-combinations={JSON.stringify(
                             Array.from(
                               new Set(
                                 products.data.map(
                                   ({ attributes }) =>
-                                    attributes.size.data.attributes.Size
+                                    attributes.size.data.attributes.Title
                                 )
                               )
                             )
@@ -263,25 +263,25 @@ const productsAPIEndpoint = shouldDisplayExperimentals
 
                 {
                   productSizes.data.map(
-                    ({ attributes: { Size, products, localizations } }) => {
+                    ({ attributes: { Title, products, localizations } }) => {
                       const localizedSize =
                         locale === "en"
-                          ? Size
+                          ? Title
                           : localizations.data.find(
                               ({ attributes }) =>
                                 attributes.locale.substring(0, 2) === locale
-                            ).attributes.Size;
+                            ).attributes.Title;
 
                       return (
                         <option
-                          value={Size}
+                          value={Title}
                           data-key={localizedSize}
                           data-available-combinations={JSON.stringify(
                             Array.from(
                               new Set(
                                 products.data.map(
                                   ({ attributes }) =>
-                                    attributes.variant.data.attributes.Name
+                                    attributes.variant.data.attributes.Title
                                 )
                               )
                             )

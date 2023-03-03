@@ -73,8 +73,8 @@ export async function getStaticPaths() {
 
       products.data.forEach(({ attributes }) => {
         const { locale } = attributes,
-          variant = attributes.variant.data.attributes.Name,
-          size = attributes.size.data.attributes.Size,
+          variant = attributes.variant.data.attributes.Title,
+          size = attributes.size.data.attributes.Title,
           link = "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
 
         if (!availableVariants[locale].find(({ value }) => value === variant))
@@ -93,8 +93,8 @@ export async function getStaticPaths() {
 
         attributes.localizations.data.forEach(({ attributes }) => {
           const { locale } = attributes,
-            localizedVariant = attributes.variant.data.attributes.Name,
-            localizedSize = attributes.size.data.attributes.Size,
+            localizedVariant = attributes.variant.data.attributes.Title,
+            localizedSize = attributes.size.data.attributes.Title,
             link =
               "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
 

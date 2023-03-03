@@ -4,14 +4,14 @@ const productSizesQuery = `
       data {
         attributes {
           locale
-          Size
+          Title
           products(filters: { publishedAt: { ne: null } }) {
             data {
               attributes {
                 variant {
                   data {
                     attributes {
-                      Name
+                      Title
                     }
                   }
                 }
@@ -22,14 +22,14 @@ const productSizesQuery = `
             data {
               attributes {
                 locale
-                Size
+                Title
                 products(filters: { publishedAt: { ne: null } }) {
                   data {
                     attributes {
                       variant {
                         data {
                           attributes {
-                            Name
+                            Title
                           }
                         }
                       }

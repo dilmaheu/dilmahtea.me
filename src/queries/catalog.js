@@ -27,14 +27,14 @@ const catalogQuery = `
                   variant {
                     data {
                       attributes {
-                        Name
+                        Title
                       }
                     }
                   }
                   size {
                     data {
                       attributes {
-                        Size
+                        Title
                       }
                     }
                   }
@@ -250,14 +250,14 @@ const catalogQuery = `
                         variant {
                           data {
                             attributes {
-                              Name
+                              Title
                             }
                           }
                         }
                         size {
                           data {
                             attributes {
-                              Size
+                              Title
                             }
                           }
                         }
