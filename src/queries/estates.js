@@ -30,7 +30,7 @@ const estatesQuery = `
               }
             }
           }
-          blogs {
+          blogs (filters: { publishedAt: { ne: null } }) {
             data{
               attributes{
                 Title
@@ -51,6 +51,7 @@ const estatesQuery = `
                   }
                 }
                 createdAt
+                publishedAt
                 Meta{
                   URL_slug
                 }
@@ -105,7 +106,7 @@ const estatesQuery = `
                   }
                 }
                 Location_link
-                blogs {
+                blogs (filters: { publishedAt: { ne: null } }) {
                   data{
                     attributes{
                       Title
@@ -126,6 +127,7 @@ const estatesQuery = `
                         }
                       }
                       createdAt
+                      publishedAt
                       Meta{
                         URL_slug
                       }

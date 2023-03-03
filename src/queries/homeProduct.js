@@ -10,51 +10,58 @@ const homeProductQuery = `
           Intro_text
           Heading_button_text
           Heading_button_link
-          Intro_blob{
-            data{
-              attributes{
+          Intro_blob {
+            data {
+              attributes {
                 url
                 provider_metadata
                 alternativeText
               }
             }
           }
+          Category_title
+          Block_title
+          Block_text
+          text_all_tea_variants
+          text_all_tea_sizes
           Block2_title
           Block2_button_text
           Block2_button_link
-          Block2_blob{
-            data{
-              attributes{
+          Block2_blob {
+            data {
+              attributes {
                 url
                 provider_metadata
                 alternativeText
               }
             }
           }
+          Block3_text
           Aria_label_all_teas_text
           Aria_label_tea_item_text
-          blogs {
-            data{
-              attributes{
+          blogs (filters: { publishedAt: { ne: null } }) {
+            data {
+              attributes {
                 Title
-                Intro_blob{
-                  data{
-                    attributes{
+                Intro_blob {
+                  data {
+                    attributes {
                       url
                       provider_metadata
                       alternativeText
                     }
                   }
                 }
-                authors{
-                  data{
-                    attributes{
+                authors {
+                  data {
+                    attributes {
                       givenName
                     }
                   }
                 }
                 createdAt
-                Meta{
+                publishedAt
+                Meta {
                   URL_slug
                 }
               }
@@ -77,51 +84,58 @@ const homeProductQuery = `
                 Intro_text
                 Heading_button_text
                 Heading_button_link
-                Intro_blob{
-                  data{
-                    attributes{
+                Intro_blob {
+                  data {
+                    attributes {
                       url
                       provider_metadata
                       alternativeText
                     }
                   }
                 }
+                Category_title
+                Block_title
+                Block_text
+                text_all_tea_variants
+                text_all_tea_sizes
                 Block2_title
                 Block2_button_text
                 Block2_button_link
-                Block2_blob{
-                  data{
-                    attributes{
+                Block2_blob {
+                  data {
+                    attributes {
                       url
                       provider_metadata
                       alternativeText
                     }
                   }
                 }
+                Block3_text
                 Aria_label_all_teas_text
                 Aria_label_tea_item_text
-                blogs {
-                  data{
-                    attributes{
+                blogs (filters: { publishedAt: { ne: null } }) {
+                  data {
+                    attributes {
                       Title
-                      Intro_blob{
-                        data{
-                          attributes{
+                      Intro_blob {
+                        data {
+                          attributes {
                             url
                             provider_metadata
                             alternativeText
                           }
                         }
                       }
-                      authors{
-                        data{
-                          attributes{
+                      authors {
+                        data {
+                          attributes {
                             givenName
                           }
                         }
                       }
                       createdAt
-                      Meta{
+                      publishedAt
+                      Meta {
                         URL_slug
                       }
                     }

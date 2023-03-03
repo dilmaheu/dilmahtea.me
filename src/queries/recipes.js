@@ -62,7 +62,7 @@ const recipesQuery = `
               }
             }
           }
-          Relevant_recipes{
+          Relevant_recipes (filters: { publishedAt: { ne: null } }) {
             data{
               attributes{
                 Title
@@ -84,6 +84,7 @@ const recipesQuery = `
                   }
                 }
                 createdAt
+                publishedAt
                 Meta {
                   URL_slug
                 }
@@ -178,7 +179,7 @@ const recipesQuery = `
                     }
                   }
                 }
-                Relevant_recipes{
+                Relevant_recipes (filters: { publishedAt: { ne: null } }) {
                   data{
                     attributes{
                       Title
@@ -200,6 +201,7 @@ const recipesQuery = `
                         }
                       }
                       createdAt
+                      publishedAt
                       Meta {
                         URL_slug
                       }
