@@ -39,7 +39,7 @@ const homeProductQuery = `
           Block3_text
           Aria_label_all_teas_text
           Aria_label_tea_item_text
-          blogs {
+          blogs (filters: { publishedAt: { ne: null } }) {
             data {
               attributes {
                 Title
@@ -60,6 +60,7 @@ const homeProductQuery = `
                   }
                 }
                 createdAt
+                publishedAt
                 Meta {
                   URL_slug
                 }
@@ -112,7 +113,7 @@ const homeProductQuery = `
                 Block3_text
                 Aria_label_all_teas_text
                 Aria_label_tea_item_text
-                blogs {
+                blogs (filters: { publishedAt: { ne: null } }) {
                   data {
                     attributes {
                       Title
@@ -133,6 +134,7 @@ const homeProductQuery = `
                         }
                       }
                       createdAt
+                      publishedAt
                       Meta {
                         URL_slug
                       }
