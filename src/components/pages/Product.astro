@@ -7,18 +7,17 @@ import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
-import FilteredProducts from "@components/solid/FilteredProducts";
-
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+import products from "@store/products";
 
 const { white_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
-  { locale } = page,
+  { locale, variant, size } = page,
   { ASSETS_URL } = import.meta.env;
 
 const categories = CMS.get("productCategories", locale),
@@ -28,6 +27,33 @@ const categories = CMS.get("productCategories", locale),
 const productsAPIEndpoint = shouldDisplayExperimentals
   ? "https://dev.products.scripts.dilmahtea.me"
   : "/api/products";
+
+const productKey = [locale, variant, size].filter(Boolean).join(" | "),
+  filteredProducts = structuredClone(products.get(productKey))
+    .map((product, i) => {
+      if (Array.isArray(product)) {
+        const [baseProductTitle, variants] = product;
+
+        return variants.map(([variantKey, variant]) => {
+          variant.order = i + 1;
+          variant.variantKey = variantKey;
+          variant.baseProductTitle = baseProductTitle;
+
+          return variant;
+        });
+      }
+
+      return product;
+    })
+    .flat();
+
+const availableSizes = Array.from(
+  new Set(filteredProducts.map(({ size }) => size.data.attributes.Title))
+);
+
+const availableVariants = Array.from(
+  new Set(filteredProducts.map(({ variant }) => variant.data.attributes.Title))
+);
 ---
 
 <style lang="scss">
@@ -186,131 +212,205 @@ const productsAPIEndpoint = shouldDisplayExperimentals
         </div>
       </section>
 
-      {/* Products Section */}
-      <FilteredProducts
-        client:load
-        {page}
-        {recurData}
-        {ASSETS_URL}
-        {white_right_arrow}
-        productsAPIEndpoint={productsAPIEndpoint}
-      >
-        <Fragment slot="formBody">
-          <div class="flex flex-wrap items-center gap-6">
-            <h2
-              id={page.Block_title.toLowerCase().replaceAll(" ", "-")}
-              class="heading-title"
-            >
-              {page.Block_title}
-            </h2>
-
+      <section role="main">
+        <div class="wrapper grid gap-5 mb-[30px]">
+          <form id="product-filters" class="flex flex-wrap items-center gap-6">
             <div class="flex flex-wrap items-center gap-6">
-              <select
-                id="tea_variant"
-                name="tea_variant"
-                class:list={[
-                  "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
-                  "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
-                  "border-primary bg-primary rounded-full cursor-pointer",
-                ]}
+              <h2
+                id={page.Block_title.toLowerCase().replaceAll(" ", "-")}
+                class="heading-title"
               >
-                <option value="" selected>{page.text_all_tea_variants}</option>
+                {page.Block_title}
+              </h2>
 
-                {
-                  productVariants.data.map(
-                    ({ attributes: { Title, products, localizations } }) => {
-                      const localizedName =
-                        locale === "en"
-                          ? Title
-                          : localizations.data.find(
-                              ({ attributes }) =>
-                                attributes.locale.substring(0, 2) === locale
-                            ).attributes.Title;
+              <div class="flex flex-wrap items-center gap-6">
+                <select
+                  id="tea_variant"
+                  name="tea_variant"
+                  class:list={[
+                    "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
+                    "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
+                    "border-primary bg-primary rounded-full cursor-pointer",
+                  ]}
+                >
+                  <option value="" selected>{page.text_all_tea_variants}</option
+                  >
 
-                      return (
-                        <option
-                          value={Title}
-                          data-key={localizedName}
-                          data-available-combinations={JSON.stringify(
-                            Array.from(
-                              new Set(
-                                products.data.map(
-                                  ({ attributes }) =>
-                                    attributes.size.data.attributes.Title
-                                )
-                              )
-                            )
-                          )}
-                        >
-                          {localizedName}
-                        </option>
-                      );
-                    }
-                  )
-                }
-              </select>
+                  {
+                    productVariants.data.map(
+                      ({ attributes: { Title, products, localizations } }) => {
+                        const localizedVariant =
+                          locale === "en"
+                            ? Title
+                            : localizations.data.find(
+                                ({ attributes }) =>
+                                  attributes.locale.substring(0, 2) === locale
+                              ).attributes.Title;
 
-              <select
-                id="tea_size"
-                name="tea_size"
-                class:list={[
-                  "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
-                  "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
-                  "border-primary bg-primary rounded-full cursor-pointer",
-                ]}
-              >
-                <option value="" selected>{page.text_all_tea_sizes}</option>
+                        if (availableVariants.includes(localizedVariant)) {
+                          const slug =
+                            localizedVariant
+                              .toLowerCase()
+                              .replaceAll(" ", "-") +
+                            (size
+                              ? "/" + size?.toLowerCase().replaceAll(" ", "-")
+                              : "");
 
-                {
-                  productSizes.data.map(
-                    ({ attributes: { Title, products, localizations } }) => {
-                      const localizedSize =
-                        locale === "en"
-                          ? Title
-                          : localizations.data.find(
-                              ({ attributes }) =>
-                                attributes.locale.substring(0, 2) === locale
-                            ).attributes.Title;
+                          return (
+                            <option
+                              value={Title}
+                              data-slug={slug}
+                              selected={variant === localizedVariant}
+                            >
+                              {localizedVariant}
+                            </option>
+                          );
+                        }
+                      }
+                    )
+                  }
+                </select>
 
-                      return (
-                        <option
-                          value={Title}
-                          data-key={localizedSize}
-                          data-available-combinations={JSON.stringify(
-                            Array.from(
-                              new Set(
-                                products.data.map(
-                                  ({ attributes }) =>
-                                    attributes.variant.data.attributes.Title
-                                )
-                              )
-                            )
-                          )}
-                        >
-                          {localizedSize}
-                        </option>
-                      );
-                    }
-                  )
-                }
-              </select>
+                <select
+                  id="tea_size"
+                  name="tea_size"
+                  class:list={[
+                    "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
+                    "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
+                    "border-primary bg-primary rounded-full cursor-pointer",
+                  ]}
+                >
+                  <option value="" selected>{page.text_all_tea_sizes}</option>
+
+                  {
+                    productSizes.data.map(
+                      ({ attributes: { Title, localizations } }) => {
+                        const localizedSize =
+                          locale === "en"
+                            ? Title
+                            : localizations.data.find(
+                                ({ attributes }) =>
+                                  attributes.locale.substring(0, 2) === locale
+                              ).attributes.Title;
+
+                        if (availableSizes.includes(localizedSize)) {
+                          const slug =
+                            (variant
+                              ? variant?.toLowerCase().replaceAll(" ", "-") +
+                                "/"
+                              : "") +
+                            localizedSize.toLowerCase().replaceAll(" ", "-");
+
+                          return (
+                            <option
+                              value={Title}
+                              data-slug={slug}
+                              selected={size === localizedSize}
+                            >
+                              {localizedSize}
+                            </option>
+                          );
+                        }
+                      }
+                    )
+                  }
+                </select>
+              </div>
             </div>
-          </div>
-        </Fragment>
+          </form>
 
-        <div
-          slot="blockText"
-          class="prose max-w-none block-text text-dark2 prose-text"
-        >
-          <Markdown>{page.Block_text}</Markdown>
+          <div class="prose max-w-none block-text text-dark2 prose-text">
+            <Markdown>{page.Block_text}</Markdown>
+          </div>
         </div>
 
-        <Icon
-          slot="alertCircleIcon"
-          name="mdi:alert-circle"
-          class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
-        />
-      </FilteredProducts>
+        <div
+          id="products"
+          role="list"
+          aria-label={page.Aria_label_all_teas_text}
+          class="wrapper grid sm:grid-cols-2 lg:grid-cols-3 gap-[50px] overflow-hidden"
+        >
+          {
+            filteredProducts.map((product) => (
+              <div
+                role="listitem"
+                data-variant-key={product.variantKey}
+                data-base-product-title={product.baseProductTitle}
+                aria-label={page.Aria_label_tea_item_text + product.order}
+                style="clip-path: url(#product-card-curve)"
+                class="product-card link-section flex flex-wrap w-full mx-auto max-w-[380px] sm:max-w-none bg-primary"
+              >
+                <div class="relative block w-full">
+                  <Picture
+                    layout="fullWidth"
+                    alt={product.Intro_blob.data.attributes.alternativeText}
+                    src={ASSETS_URL + product.Intro_blob.data.attributes.url}
+                    attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
+                    sizes="(min-width: 768px) min(580px, calc(45vw - 25px)), min(90vw, 420px)"
+                  />
+
+                  {product.Stock_amount < 1 && (
+                    <>
+                      <div class="absolute top-[12%] right-[12%] flex items-center px-5 sm:px-[37px] py-[5px] sm:py-[7px] sm:text-xl font-semibold text-dark2 border-2 border-[#fabf21] bg-[#fabf21]/80 rounded-full">
+                        {recurData.Product_sold_out_text}
+                      </div>
+
+                      <div class="absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none w-full text-sm sm:text-base font-medium text-dark2 bg-[#faf8e5]/80">
+                        <Icon
+                          name="mdi:alert-circle"
+                          class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+                        />
+                        {recurData.Item_stock_text}{" "}
+                        {new Date(product.In_stock_date).toLocaleString(
+                          "en-GB",
+                          {
+                            year: "2-digit",
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+                <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
+                  <div
+                    class="product-card-title alice leading-[120%] md:leading-[110%]"
+                    style={{
+                      "font-size": "clamp(1.75rem, 2vw + 0.3rem, 2rem)",
+                    }}
+                  >
+                    <a
+                      aria-label={
+                        (product.Stock_amount < 1
+                          ? `${recurData.Product_sold_out_text}, `
+                          : "") + product.Title
+                      }
+                      class="main-link"
+                      href={"/" + locale + "/" + product.Meta.URL_slug}
+                    >
+                      {product.Title}
+                    </a>
+
+                    <span
+                      class="icon product-card-title-icon"
+                      style={{
+                        height: "clamp(0.625rem, 1.5vw + 0.1rem, 1rem)",
+                      }}
+                    >
+                      <img class="w-full h-full" {...white_right_arrow} />
+                    </span>
+                  </div>
+
+                  <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
+                    <Markdown>{product.Intro_text}</Markdown>
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </section>
 
       {/* Products impact Section */}
       <section role="complementary">
@@ -376,3 +476,23 @@ const productsAPIEndpoint = shouldDisplayExperimentals
     )
   }
 </PostDetailsLayout>
+
+<script>
+  const productFiltersForm = document.getElementById(
+    "product-filters"
+  ) as HTMLFormElement;
+
+  productFiltersForm.addEventListener("change", (event) => {
+    const target = event.target as HTMLSelectElement;
+
+    localStorage.setItem(
+      "preferredFilters",
+      JSON.stringify(Object.fromEntries(new FormData(productFiltersForm)))
+    );
+
+    location.href =
+      location.pathname.match(/\/\w{2}\/\w+(?=\/)?/) +
+      "/" +
+      target.selectedOptions[0].dataset.slug;
+  });
+</script>

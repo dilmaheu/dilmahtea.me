@@ -56,6 +56,59 @@ export async function getStaticPaths() {
     checkoutSuccess,
   } = CMS.get("all");
 
+  const homeProductVariations = { data: [homeProduct.data] };
+
+  const filterVariant = (variant) => {
+    const { products, localizations } = variant.attributes;
+
+    localizations.data = localizations.data.filter((localization) => {
+      const { products } = localization.attributes;
+
+      return products.data.length > 0;
+    });
+
+    return products.data.length > 0;
+  };
+
+  const generateProductVariation = (
+    homeProduct,
+    variantAttributes,
+    variantType
+  ) => {
+    const { Title } = variantAttributes,
+      slug = Title.toLowerCase().replace(/ /g, "-"),
+      homeProductVariation = structuredClone(homeProduct),
+      localizedVariantType =
+        "localized" + variantType[0].toUpperCase() + variantType.slice(1);
+
+    homeProductVariation.data.attributes[variantType] = Title;
+    homeProductVariation.data.attributes.Meta.URL_slug += "/" + slug;
+
+    homeProductVariation.data.attributes.localizations.data =
+      homeProductVariation.data.attributes.localizations.data.filter(
+        ({ attributes }) => {
+          const localVariantAttributes =
+            variantAttributes.localizations.data.find(
+              (variant) => variant.attributes.locale === attributes.locale
+            )?.attributes;
+
+          if (localVariantAttributes) {
+            const { Title } = localVariantAttributes,
+              slug = Title.toLowerCase().replace(/ /g, "-");
+
+            attributes[variantType] = Title;
+            attributes.Meta.URL_slug += "/" + slug;
+
+            return true;
+          }
+        }
+      );
+
+    homeProductVariations.data.push(homeProductVariation.data);
+
+    return homeProductVariation;
+  };
+
   const products = {
     data: catalog.data.attributes.Products.map(({ Title, products }) => {
       const ArrayRecordsProxy = {
@@ -78,18 +131,10 @@ export async function getStaticPaths() {
           link = "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
 
         if (!availableVariants[locale].find(({ value }) => value === variant))
-          availableVariants[locale].push({
-            value: variant,
-            variant,
-            link,
-          });
+          availableVariants[locale].push({ value: variant, variant, link });
 
         if (!availableSizes[locale].find(({ value }) => value === size))
-          availableSizes[locale].push({
-            value: size,
-            size,
-            link,
-          });
+          availableSizes[locale].push({ value: size, size, link });
 
         attributes.localizations.data.forEach(({ attributes }) => {
           const { locale } = attributes,
@@ -134,6 +179,31 @@ export async function getStaticPaths() {
       return processedProducts;
     }).flat(),
   };
+
+  productSizes.data = productSizes.data.filter(filterVariant);
+  productVariants.data = productVariants.data.filter(filterVariant);
+
+  productSizes.data.forEach(({ attributes }) =>
+    generateProductVariation(homeProduct, attributes, "size")
+  );
+
+  productVariants.data.forEach(({ attributes: variantAttributes }) => {
+    const generatedHomeProductVariation = generateProductVariation(
+      homeProduct,
+      variantAttributes,
+      "variant"
+    );
+
+    productSizes.data.forEach(({ attributes: sizeAttributes }) => {
+      sizeAttributes = structuredClone(sizeAttributes);
+
+      generateProductVariation(
+        generatedHomeProductVariation,
+        sizeAttributes,
+        "size"
+      );
+    });
+  });
 
   const allLocales = i18NLocales.data.map(({ attributes }) =>
     attributes.code.substring(0, 2)
@@ -275,7 +345,7 @@ export async function getStaticPaths() {
     posts: locale && getPosts(estates, locale),
   }));
 
-  const productPages = getPages(homeProduct, (page, { locale }) => ({
+  const productPages = getPages(homeProductVariations, (page, { locale }) => ({
     type: "product",
   }));
 
