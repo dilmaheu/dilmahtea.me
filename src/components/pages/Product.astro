@@ -10,7 +10,7 @@ import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
-import products from "@store/products";
+import getFilteredProducts from "@utils/getFilteredProducts";
 
 const { white_right_arrow } = RecurringImages;
 
@@ -23,24 +23,8 @@ const categories = CMS.get("productCategories", locale),
   productVariants = CMS.get("productVariants"),
   productSizes = CMS.get("productSizes");
 
-const productKey = [locale, variant, size].filter(Boolean).join(" | "),
-  filteredProducts = structuredClone(products.get(productKey))
-    .map((product, i) => {
-      if (Array.isArray(product)) {
-        const [baseProductTitle, variants] = product;
-
-        return variants.map(([variantKey, variant]) => {
-          variant.order = i + 1;
-          variant.variantKey = variantKey;
-          variant.baseProductTitle = baseProductTitle;
-
-          return variant;
-        });
-      }
-
-      return product;
-    })
-    .flat();
+// @ts-ignore
+const filteredProducts = getFilteredProducts({ locale, variant, size });
 
 const availableSizes =
   variant &&

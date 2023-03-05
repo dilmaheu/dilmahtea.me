@@ -24,6 +24,20 @@ const catalogQuery = `
                       }
                     }
                   }
+                  category {
+                    data {
+                      attributes {
+                        Title
+                      }
+                    }
+                  }
+                  sub_category {
+                    data {
+                      attributes {
+                        Title
+                      }
+                    }
+                  }
                   variant {
                     data {
                       attributes {
@@ -244,6 +258,20 @@ const catalogQuery = `
                               provider_metadata
                               formats
                               alternativeText
+                            }
+                          }
+                        }
+                        category {
+                          data {
+                            attributes {
+                              Title
+                            }
+                          }
+                        }
+                        sub_category {
+                          data {
+                            attributes {
+                              Title
                             }
                           }
                         }

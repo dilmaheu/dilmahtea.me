@@ -9,13 +9,26 @@ import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import RecurringImages from "@store/RecurringImages";
+import getFilteredProducts from "@utils/getFilteredProducts";
 
 const { white_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_content,
-  { posts: products } = page,
+  { locale, size, variant, Title: category } = page,
   { ASSETS_URL } = import.meta.env;
+
+const subCategories = page.Sub_categories.data.filter(
+  ({ attributes: { products } }) => products.data.length > 0
+);
+
+// @ts-ignore
+const filteredProducts = getFilteredProducts({
+  locale,
+  variant,
+  size,
+  category,
+});
 ---
 
 <style lang="scss">
@@ -122,20 +135,24 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
         class="wrapper grid sm:grid-cols-2 lg:grid-cols-3 gap-[50px] overflow-hidden"
       >
         {
-          products.map((post, index) => (
+          filteredProducts.map((product, i) => (
             <div
               role="listitem"
-              aria-label={
-                ariaLabelRecurData.Product_tea_item_text + (index + 1)
-              }
+              data-variant-key={product.variantKey}
+              data-base-product-title={product.baseProductTitle}
+              aria-label={page.Aria_label_tea_item_text + product.order}
               style="clip-path: url(#product-card-curve)"
-              class="post-card link-section flex flex-wrap mx-auto bg-primary"
+              class:list={[
+                filteredProducts[i - 1]?.baseProductTitle ===
+                  product.baseProductTitle && "hidden",
+                "product-card link-section flex flex-wrap w-full mx-auto max-w-[380px] sm:max-w-none bg-primary",
+              ]}
             >
               <div class="relative block w-full">
                 <Picture
                   layout="fullWidth"
-                  alt={post.Intro_blob.data.attributes.alternativeText}
-                  src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                  alt={product.Intro_blob.data.attributes.alternativeText}
+                  src={ASSETS_URL + product.Intro_blob.data.attributes.url}
                   attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
                   sizes={[
                     "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
@@ -143,7 +160,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                     "min(90vw, 380px)",
                   ].join(", ")}
                 />
-                {post.Stock_amount < 1 && (
+                {product.Stock_amount < 1 && (
                   <>
                     <div
                       class:list={[
@@ -166,7 +183,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                         class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
                       />
                       {recurData.Item_stock_text}
-                      {new Date(post.In_stock_date).toLocaleString("en-GB", {
+                      {new Date(product.In_stock_date).toLocaleString("en-GB", {
                         year: "2-digit",
                         month: "short",
                         day: "numeric",
@@ -179,13 +196,13 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                 <div class="product-card-title alice leading-[120%] md:leading-[110%]">
                   <a
                     aria-label={
-                      (post.Stock_amount < 1
+                      (product.Stock_amount < 1
                         ? `${recurData.Product_sold_out_text}, `
-                        : "") + post.Title
+                        : "") + product.Title
                     }
                     class="main-link"
-                    set:text={post.Title}
-                    href={`/` + post.Meta.URL_slug}
+                    set:text={product.Title}
+                    href={`/` + product.Meta.URL_slug}
                   />
 
                   <span class="icon product-card-title-icon">
@@ -194,7 +211,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                 </div>
 
                 <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
-                  <Markdown>{post.Intro_text}</Markdown>
+                  <Markdown>{product.Intro_text}</Markdown>
                 </div>
               </div>
             </div>
@@ -203,39 +220,53 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
       </div>
 
       {
-        page.Sub_categories.data.map(
-          ({ attributes: { Title, Intro_text } }) => (
-            <div>
-              <div class="wrapper grid gap-5 mb-[30px]">
-                <h2
-                  id={Title.toLowerCase().replaceAll(" ", "-")}
-                  class="heading-title"
-                >
-                  {Title}
-                </h2>
-
-                <div class="prose max-w-none block-text text-dark2 prose-text">
-                  <Markdown>{Intro_text}</Markdown>
-                </div>
-              </div>
-
-              <div
-                role="list"
-                aria-label={page.Title}
-                class="wrapper grid sm:grid-cols-2 lg:grid-cols-3 gap-[50px] overflow-hidden"
+        subCategories.map(({ attributes: { Title, Intro_text } }) => (
+          <div>
+            <div class="wrapper grid gap-5 mb-[30px]">
+              <h2
+                id={Title.toLowerCase().replaceAll(" ", "-")}
+                class="heading-title"
               >
-                {products.map((post, index) => (
+                {Title}
+              </h2>
+
+              <div class="prose max-w-none block-text text-dark2 prose-text">
+                <Markdown>{Intro_text}</Markdown>
+              </div>
+            </div>
+
+            <div
+              role="list"
+              aria-label={page.Title}
+              class="wrapper grid sm:grid-cols-2 lg:grid-cols-3 gap-[50px] overflow-hidden"
+            >
+              {
+                // @ts-ignore
+                getFilteredProducts({
+                  locale,
+                  variant,
+                  size,
+                  sub_category: Title,
+                }).map((product, i) => (
                   <div
                     role="listitem"
-                    aria-label={page.Aria_label_tea_item_text + (index + 1)}
+                    data-variant-key={product.variantKey}
+                    data-base-product-title={product.baseProductTitle}
+                    aria-label={page.Aria_label_tea_item_text + product.order}
                     style="clip-path: url(#product-card-curve)"
-                    class="post-card link-section flex flex-wrap mx-auto bg-primary"
+                    class:list={[
+                      filteredProducts[i - 1]?.baseProductTitle ===
+                        product.baseProductTitle && "hidden",
+                      "product-card link-section flex flex-wrap w-full mx-auto max-w-[380px] sm:max-w-none bg-primary",
+                    ]}
                   >
                     <div class="relative block w-full">
                       <Picture
                         layout="fullWidth"
-                        alt={post.Intro_blob.data.attributes.alternativeText}
-                        src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                        alt={product.Intro_blob.data.attributes.alternativeText}
+                        src={
+                          ASSETS_URL + product.Intro_blob.data.attributes.url
+                        }
                         attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
                         sizes={[
                           "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
@@ -243,7 +274,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                           "min(90vw, 380px)",
                         ].join(", ")}
                       />
-                      {post.Stock_amount < 1 && (
+                      {product.Stock_amount < 1 && (
                         <>
                           <div
                             class:list={[
@@ -266,7 +297,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                               class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
                             />
                             {recurData.Item_stock_text}
-                            {new Date(post.In_stock_date).toLocaleString(
+                            {new Date(product.In_stock_date).toLocaleString(
                               "en-GB",
                               {
                                 year: "2-digit",
@@ -282,13 +313,13 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                       <div class="product-card-title alice leading-[120%] md:leading-[110%]">
                         <a
                           aria-label={
-                            (post.Stock_amount < 1
+                            (product.Stock_amount < 1
                               ? `${recurData.Product_sold_out_text}, `
-                              : "") + post.Title
+                              : "") + product.Title
                           }
                           class="main-link"
-                          set:text={post.Title}
-                          href={`/` + post.Meta.URL_slug}
+                          set:text={product.Title}
+                          href={`/` + product.Meta.URL_slug}
                         />
 
                         <span class="icon product-card-title-icon">
@@ -297,15 +328,15 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                       </div>
 
                       <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
-                        <Markdown>{post.Intro_text}</Markdown>
+                        <Markdown>{product.Intro_text}</Markdown>
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                ))
+              }
             </div>
-          )
-        )
+          </div>
+        ))
       }
     </section>
   </div>
