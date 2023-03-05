@@ -248,8 +248,8 @@ const availableVariants =
                   >
 
                   {
-                    productVariants.data.map(
-                      ({ attributes: { Title, localizations } }) => {
+                    productVariants.data
+                      .map(({ attributes: { Title, localizations } }) => {
                         const localizedVariant =
                           locale === "en"
                             ? Title
@@ -268,18 +268,24 @@ const availableVariants =
                               ? "/" + size?.toLowerCase().replaceAll(" ", "-")
                               : "");
 
-                          return (
-                            <option
-                              value={Title}
-                              data-slug={slug}
-                              selected={variant === Title}
-                            >
-                              {localizedVariant}
-                            </option>
-                          );
+                          return { slug, Title, localizedVariant };
                         }
-                      }
-                    )
+                      })
+                      .filter(Boolean)
+                      .sort((a, b) =>
+                        a.localizedSize.localeCompare(b.localizedSize, locale, {
+                          numeric: true,
+                        })
+                      )
+                      .map(({ slug, Title, localizedVariant }) => (
+                        <option
+                          value={Title}
+                          data-slug={slug}
+                          selected={variant === Title}
+                        >
+                          {localizedVariant}
+                        </option>
+                      ))
                   }
                 </select>
 
@@ -295,8 +301,8 @@ const availableVariants =
                   <option value="" selected>{page.text_all_tea_sizes}</option>
 
                   {
-                    productSizes.data.map(
-                      ({ attributes: { Title, localizations } }) => {
+                    productSizes.data
+                      .map(({ attributes: { Title, localizations } }) => {
                         const localizedSize =
                           locale === "en"
                             ? Title
@@ -312,18 +318,24 @@ const availableVariants =
                                 "/"
                               : "") + Title.toLowerCase().replaceAll(" ", "-");
 
-                          return (
-                            <option
-                              value={Title}
-                              data-slug={slug}
-                              selected={size === Title}
-                            >
-                              {localizedSize}
-                            </option>
-                          );
+                          return { slug, Title, localizedSize };
                         }
-                      }
-                    )
+                      })
+                      .filter(Boolean)
+                      .sort((a, b) =>
+                        a.localizedSize.localeCompare(b.localizedSize, locale, {
+                          numeric: true,
+                        })
+                      )
+                      .map(({ slug, Title, localizedSize }) => (
+                        <option
+                          value={Title}
+                          data-slug={slug}
+                          selected={size === Title}
+                        >
+                          {localizedSize}
+                        </option>
+                      ))
                   }
                 </select>
               </div>
