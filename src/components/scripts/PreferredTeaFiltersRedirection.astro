@@ -1,22 +1,29 @@
-<script is:inline>
-  {
-    if (/^\/[a-z]{2}\/[a-z]+\/?$/.test(location.pathname)) {
-      const preferredFilters = JSON.parse(
-        localStorage.getItem("preferredFilters") || "{}"
-      );
+---
+const { variant, size } = Astro.props.page;
+---
 
-      const { tea_variant, tea_size } = preferredFilters,
-        redirectPath = (
-          location.pathname.match(/^\/[a-z]{2}\/[a-z]+(?=\/)?/)[0] +
-          `${tea_variant ? "/" + tea_variant : ""}` +
-          `${tea_size ? "/" + tea_size : ""}`
-        )
-          .toLowerCase()
-          .replaceAll(" ", "-");
+<script define:vars={{ variant, size }}>
+  const preferredFilters = JSON.parse(
+    localStorage.getItem("preferredFilters") || "{}"
+  );
 
-      if (redirectPath !== location.pathname.replace(/\/$/, "")) {
-        location.pathname = redirectPath;
-      }
+  if (variant) preferredFilters.tea_variant = variant;
+  if (size) preferredFilters.tea_size = size;
+
+  localStorage.setItem("preferredFilters", JSON.stringify(preferredFilters));
+
+  if (/^\/[a-z]{2}\/[a-z]+\/?$/.test(location.pathname)) {
+    const { tea_variant, tea_size } = preferredFilters,
+      redirectPath = (
+        location.pathname.match(/^\/[a-z]{2}\/[a-z]+(?=\/)?/)[0] +
+        `${tea_variant ? "/" + tea_variant : ""}` +
+        `${tea_size ? "/" + tea_size : ""}`
+      )
+        .toLowerCase()
+        .replaceAll(" ", "-");
+
+    if (redirectPath !== location.pathname.replace(/\/$/, "")) {
+      location.pathname = redirectPath;
     }
   }
 </script>
