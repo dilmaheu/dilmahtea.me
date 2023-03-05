@@ -1,5 +1,7 @@
 ---
 import CMS from "@store/CMS";
+import products from "@store/products";
+
 import PageLayout from "@layouts/PageLayout.astro";
 import CheckoutLayout from "@layouts/CheckoutLayout.astro";
 
@@ -104,83 +106,6 @@ export async function getStaticPaths() {
     return homeProductVariation;
   };
 
-  const products = {
-    data: catalog.data.attributes.Products.map(({ Title, products }) => {
-      const ArrayRecordsProxy = {
-        get: (target, key) => {
-          if (!(key in target)) {
-            target[key] = [];
-          }
-
-          return target[key];
-        },
-      };
-
-      const availableVariants = new Proxy({}, ArrayRecordsProxy),
-        availableSizes = new Proxy({}, ArrayRecordsProxy);
-
-      products.data.forEach(({ attributes }) => {
-        const { locale } = attributes,
-          variant = attributes.variant.data.attributes.Title,
-          size = attributes.size.data.attributes.Title,
-          link = "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
-
-        attributes.productVariant = variant;
-        attributes.productSize = size;
-
-        if (!availableVariants[locale].find(({ value }) => value === variant))
-          availableVariants[locale].push({ value: variant, variant, link });
-
-        if (!availableSizes[locale].find(({ value }) => value === size))
-          availableSizes[locale].push({ value: size, size, link });
-
-        attributes.localizations.data.forEach(({ attributes }) => {
-          const { locale } = attributes,
-            localizedVariant = attributes.variant.data.attributes.Title,
-            localizedSize = attributes.size.data.attributes.Title,
-            link =
-              "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
-
-          attributes.productVariant = variant;
-          attributes.productSize = size;
-
-          if (!availableVariants[locale].find(({ value }) => value === variant))
-            availableVariants[locale].push({
-              value: variant,
-              variant: localizedVariant,
-              link,
-            });
-
-          if (!availableSizes[locale].find(({ value }) => value === size))
-            availableSizes[locale].push({
-              value: size,
-              size: localizedSize,
-              link,
-            });
-        });
-      });
-
-      const processedProducts = products.data.map((data) => {
-        const { attributes } = data;
-
-        const flattenedVariants = [
-          attributes,
-          ...attributes.localizations.data.map(({ attributes }) => attributes),
-        ];
-
-        flattenedVariants.forEach((attributes) => {
-          attributes.baseProductTitle = Title;
-          attributes.availableVariants = availableVariants[attributes.locale];
-          attributes.availableSizes = availableSizes[attributes.locale];
-        });
-
-        return data;
-      });
-
-      return processedProducts;
-    }).flat(),
-  };
-
   productSizes.data = productSizes.data.filter(filterVariant);
   productVariants.data = productVariants.data.filter(filterVariant);
 
@@ -211,6 +136,8 @@ export async function getStaticPaths() {
         );
       });
   });
+
+  const allProducts = products.get("all");
 
   const allLocales = i18NLocales.data.map(({ attributes }) =>
     attributes.code.substring(0, 2)
@@ -316,7 +243,7 @@ export async function getStaticPaths() {
     type: "estateDetails",
   }));
 
-  const productDetailsPages = getPages(products, (page) => ({
+  const productDetailsPages = getPages(allProducts, (page) => ({
     type: "productDetails",
     names: (() => {
       const nameEntries = [page, ...page.attributes.localizations.data].map(
@@ -360,7 +287,7 @@ export async function getStaticPaths() {
     productCategories,
     (page, { locale }) => ({
       type: "productCategory",
-      posts: locale && getPosts(products, locale),
+      posts: locale && getPosts(allProducts, locale),
     })
   );
 

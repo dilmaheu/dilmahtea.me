@@ -28,8 +28,10 @@ const ProxyHandler = {
 
 const products = new Proxy({}, ProxyHandler);
 
-catalog.Products.forEach(({ Title, products: variants }) => {
-  const variantsPerProduct = new Proxy({}, ProxyHandler);
+const allProducts = catalog.Products.map(({ Title, products: variants }) => {
+  const variantsPerProduct = new Proxy({}, ProxyHandler),
+    availableVariants = new Proxy({}, ProxyHandler),
+    availableSizes = new Proxy({}, ProxyHandler);
 
   variants.data.forEach(({ attributes: { localizations, ...product } }) => {
     const size = product.size.data.attributes.Title,
@@ -38,21 +40,62 @@ catalog.Products.forEach(({ Title, products: variants }) => {
     [
       product,
       ...localizations.data.map(({ attributes }) => attributes),
-    ].forEach((productVariant) => {
-      const locale = productVariant.locale.substring(0, 2);
+    ].forEach((attributes) => {
+      const locale = attributes.locale.substring(0, 2),
+        localizedVariant = attributes.variant.data.attributes.Title,
+        localizedSize = attributes.size.data.attributes.Title,
+        link = "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
 
-      variantsPerProduct[locale].push([variant + " | " + size, productVariant]);
-      variantsPerProduct[locale + " | " + size].push([variant, productVariant]);
-      variantsPerProduct[locale + " | " + variant].push([size, productVariant]);
+      variantsPerProduct[locale].push([variant + " | " + size, attributes]);
+      variantsPerProduct[locale + " | " + size].push([variant, attributes]);
+      variantsPerProduct[locale + " | " + variant].push([size, attributes]);
 
-      products[locale + " | " + variant + " | " + size].push(productVariant);
+      products[locale + " | " + variant + " | " + size].push(attributes);
+
+      attributes.productVariant = variant;
+      attributes.productSize = size;
+
+      if (!availableVariants[locale].find(({ value }) => value === variant))
+        availableVariants[locale].push({
+          value: variant,
+          variant: localizedVariant,
+          link,
+        });
+
+      if (!availableSizes[locale].find(({ value }) => value === size))
+        availableSizes[locale].push({
+          value: size,
+          size: localizedSize,
+          link,
+        });
     });
   });
 
   Object.keys(variantsPerProduct).forEach((key) => {
     products[key].push([Title, variantsPerProduct[key]]);
   });
-});
+
+  const processedProducts = variants.data.map((data) => {
+    const { attributes } = data;
+
+    const flattenedVariants = [
+      attributes,
+      ...attributes.localizations.data.map(({ attributes }) => attributes),
+    ];
+
+    flattenedVariants.forEach((attributes) => {
+      attributes.baseProductTitle = Title;
+      attributes.availableVariants =
+        availableVariants[attributes.locale.substring(0, 2)];
+      attributes.availableSizes =
+        availableSizes[attributes.locale.substring(0, 2)];
+    });
+
+    return data;
+  });
+
+  return processedProducts;
+}).flat();
 
 // sort products by order of productSizes and productVariants
 Object.keys(products).forEach((key) => {
@@ -71,5 +114,5 @@ Object.keys(products).forEach((key) => {
 });
 
 export default {
-  get: (key) => products[key],
+  get: (key) => (key === "all" ? { data: allProducts } : products[key]),
 };
