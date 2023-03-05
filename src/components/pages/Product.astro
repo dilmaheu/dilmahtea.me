@@ -42,13 +42,29 @@ const productKey = [locale, variant, size].filter(Boolean).join(" | "),
     })
     .flat();
 
-const availableSizes = Array.from(
-  new Set(filteredProducts.map(({ size }) => size.data.attributes.Title))
-);
+const availableSizes =
+  variant &&
+  Array.from(
+    new Set(
+      productVariants.data
+        .find(({ attributes: { Title } }) => Title === variant)
+        .attributes.products.data.map(
+          ({ attributes }) => attributes.size.data.attributes.Title
+        )
+    )
+  );
 
-const availableVariants = Array.from(
-  new Set(filteredProducts.map(({ variant }) => variant.data.attributes.Title))
-);
+const availableVariants =
+  size &&
+  Array.from(
+    new Set(
+      productSizes.data
+        .find(({ attributes: { Title } }) => Title === size)
+        .attributes.products.data.map(
+          ({ attributes }) => attributes.variant.data.attributes.Title
+        )
+    )
+  );
 ---
 
 <style lang="scss">
@@ -242,7 +258,10 @@ const availableVariants = Array.from(
                                   attributes.locale.substring(0, 2) === locale
                               ).attributes.Title;
 
-                        if (availableVariants.includes(localizedVariant)) {
+                        if (
+                          !availableVariants ||
+                          availableVariants.includes(Title)
+                        ) {
                           const slug =
                             Title.toLowerCase().replaceAll(" ", "-") +
                             (size
@@ -286,7 +305,7 @@ const availableVariants = Array.from(
                                   attributes.locale.substring(0, 2) === locale
                               ).attributes.Title;
 
-                        if (availableSizes.includes(localizedSize)) {
+                        if (!availableSizes || availableSizes.includes(Title)) {
                           const slug =
                             (variant
                               ? variant?.toLowerCase().replaceAll(" ", "-") +
