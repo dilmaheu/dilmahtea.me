@@ -6,7 +6,7 @@ const catalogQuery = `
         attributes {
           Products {
             Title
-            products {
+            products(filters: { publishedAt: { ne: null } }) {
               data {
                 attributes {
                   locale
@@ -228,7 +228,7 @@ const catalogQuery = `
                     URL_slug
                     Canonical_link
                   }
-                  localizations {
+                  localizations(filters: { publishedAt: { ne: null } }) {
                     data {
                       id
                       attributes {
