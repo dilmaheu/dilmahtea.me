@@ -130,6 +130,9 @@ export async function getStaticPaths() {
           size = attributes.size.data.attributes.Title,
           link = "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
 
+        attributes.productVariant = variant;
+        attributes.productSize = size;
+
         if (!availableVariants[locale].find(({ value }) => value === variant))
           availableVariants[locale].push({ value: variant, variant, link });
 
@@ -142,6 +145,9 @@ export async function getStaticPaths() {
             localizedSize = attributes.size.data.attributes.Title,
             link =
               "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
+
+          attributes.productVariant = variant;
+          attributes.productSize = size;
 
           if (!availableVariants[locale].find(({ value }) => value === variant))
             availableVariants[locale].push({

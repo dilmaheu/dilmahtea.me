@@ -16,10 +16,18 @@ import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 const { green_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
-  { locale, baseProductTitle, availableVariants, availableSizes } = page,
-  stock_amount = page.Stock_amount,
   headingName = recurData.text_chapter,
   { ASSETS_URL } = import.meta.env;
+
+const {
+  locale,
+  baseProductTitle,
+  productVariant,
+  productSize,
+  availableVariants,
+  availableSizes,
+  Stock_amount: stock_amount,
+} = page;
 
 const infos = page.product_infos.data.map(({ attributes }) => attributes),
   blogs = page.related_blogs?.data?.map(({ attributes }) => attributes),
@@ -47,9 +55,6 @@ const { SKU: productSKU } = page,
   tax = Math.round(productPrice * 9) / 100,
   productPriceIncludingTax = productPrice + tax,
   productNames = JSON.stringify(page.names);
-
-const productSize = page.size.data.attributes.Title,
-  productVariant = page.variant.data.attributes.Title;
 
 const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
@@ -222,7 +227,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <option
                   {value}
                   data-href={link}
-                  selected={variant === productVariant}
+                  selected={value === productVariant}
                 >
                   {variant}
                 </option>
@@ -252,7 +257,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <option
                   {value}
                   data-href={link}
-                  selected={size === productSize}
+                  selected={value === productSize}
                 >
                   {size}
                 </option>
@@ -400,7 +405,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <option
                   {value}
                   data-href={link}
-                  selected={variant === productVariant}
+                  selected={value === productVariant}
                 >
                   {variant}
                 </option>
@@ -430,7 +435,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <option
                   {value}
                   data-href={link}
-                  selected={size === productSize}
+                  selected={value === productSize}
                 >
                   {size}
                 </option>
