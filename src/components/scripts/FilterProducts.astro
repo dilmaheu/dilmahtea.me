@@ -1,0 +1,19 @@
+---
+const { pathNameRegex } = Astro.props;
+---
+
+<script define:vars={{ pathNameRegex }}>
+  const productFiltersForm = document.getElementById("product-filters");
+
+  productFiltersForm?.addEventListener("change", ({ target }) => {
+    localStorage.setItem(
+      "preferredFilters",
+      JSON.stringify(Object.fromEntries(new FormData(productFiltersForm)))
+    );
+
+    location.href =
+      location.pathname.match(new RegExp(pathNameRegex))[0] +
+      "/" +
+      (target.selectedOptions[0].dataset.slug || "");
+  });
+</script>

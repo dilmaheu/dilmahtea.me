@@ -9,8 +9,13 @@ import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
-import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+import FilterProducts from "@scripts/FilterProducts.astro";
 import getFilteredProducts from "@utils/getFilteredProducts";
+import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+import {
+  getAvailableSizes,
+  getAvailableVariants,
+} from "@utils/getAvailableVariants";
 
 const { white_right_arrow } = RecurringImages;
 
@@ -26,29 +31,8 @@ const categories = CMS.get("productCategories", locale),
 // @ts-ignore
 const filteredProducts = getFilteredProducts({ locale, variant, size });
 
-const availableSizes =
-  variant &&
-  Array.from(
-    new Set(
-      productVariants.data
-        .find(({ attributes: { Title } }) => Title === variant)
-        .attributes.products.data.map(
-          ({ attributes }) => attributes.size.data.attributes.Title
-        )
-    )
-  );
-
-const availableVariants =
-  size &&
-  Array.from(
-    new Set(
-      productSizes.data
-        .find(({ attributes: { Title } }) => Title === size)
-        .attributes.products.data.map(
-          ({ attributes }) => attributes.variant.data.attributes.Title
-        )
-    )
-  );
+const availableSizes = getAvailableSizes(variant),
+  availableVariants = getAvailableVariants(size);
 ---
 
 <style lang="scss">
@@ -228,7 +212,8 @@ const availableVariants =
                     "border-primary bg-primary rounded-full cursor-pointer",
                   ]}
                 >
-                  <option value="" selected>{page.text_all_tea_variants}</option
+                  <option value="" selected
+                    >{recurData.text_all_tea_variants}</option
                   >
 
                   {
@@ -282,7 +267,9 @@ const availableVariants =
                     "border-primary bg-primary rounded-full cursor-pointer",
                   ]}
                 >
-                  <option value="" selected>{page.text_all_tea_sizes}</option>
+                  <option value="" selected
+                    >{recurData.text_all_tea_sizes}</option
+                  >
 
                   {
                     productSizes.data
@@ -539,22 +526,4 @@ const availableVariants =
   }
 </PostDetailsLayout>
 
-<script>
-  const productFiltersForm = document.getElementById(
-    "product-filters"
-  ) as HTMLFormElement;
-
-  productFiltersForm?.addEventListener("change", (event) => {
-    const target = event.target as HTMLSelectElement;
-
-    localStorage.setItem(
-      "preferredFilters",
-      JSON.stringify(Object.fromEntries(new FormData(productFiltersForm)))
-    );
-
-    location.href =
-      location.pathname.match(/^\/[a-z]{2}\/[a-z]+(?=\/)?/)[0] +
-      "/" +
-      (target.selectedOptions[0].dataset.slug || "");
-  });
-</script>
+<FilterProducts pathNameRegex={`^\\/[a-z]{2}\\/[a-z]+(?=\\/)?`} />

@@ -8,8 +8,14 @@ import Chapterize from "@components/Chapterize.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
+import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+import FilterProducts from "@scripts/FilterProducts.astro";
 import getFilteredProducts from "@utils/getFilteredProducts";
+import {
+  getAvailableSizes,
+  getAvailableVariants,
+} from "@utils/getAvailableVariants";
 
 const { white_right_arrow } = RecurringImages;
 
@@ -17,6 +23,9 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_content,
   { locale, size, variant, Title: category } = page,
   { ASSETS_URL } = import.meta.env;
+
+const productSizes = CMS.get("productSizes"),
+  productVariants = CMS.get("productVariants");
 
 const subCategories = page.Sub_categories.data.filter(
   ({ attributes: { products } }) => products.data.length > 0
@@ -29,6 +38,9 @@ const filteredProducts = getFilteredProducts({
   size,
   category,
 });
+
+const availableSizes = getAvailableSizes(variant),
+  availableVariants = getAvailableVariants(size);
 ---
 
 <style lang="scss">
@@ -126,6 +138,104 @@ const filteredProducts = getFilteredProducts({
       id="product-card-curve"
       path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
     />
+
+    <form
+      id="product-filters"
+      class="wrapper flex flex-wrap items-center gap-6 mb-[30px]"
+    >
+      <select
+        id="tea_variant"
+        name="tea_variant"
+        class:list={[
+          "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
+          "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
+          "border-primary bg-primary rounded-full cursor-pointer",
+        ]}
+      >
+        <option value="" selected>{recurData.text_all_tea_variants}</option>
+
+        {
+          productVariants.data
+            .map(({ attributes: { Title, localizations } }) => {
+              const localizedVariant =
+                locale === "en"
+                  ? Title
+                  : localizations.data.find(
+                      ({ attributes }) =>
+                        attributes.locale.substring(0, 2) === locale
+                    ).attributes.Title;
+
+              if (!availableVariants || availableVariants.includes(Title)) {
+                const slug =
+                  Title.toLowerCase().replaceAll(" ", "-") +
+                  (size ? "/" + size?.toLowerCase().replaceAll(" ", "-") : "");
+
+                return { slug, Title, localizedVariant };
+              }
+            })
+            .filter(Boolean)
+            .sort((a, b) =>
+              a.localizedSize.localeCompare(b.localizedSize, locale, {
+                numeric: true,
+              })
+            )
+            .map(({ slug, Title, localizedVariant }) => (
+              <option
+                value={Title}
+                data-slug={slug}
+                selected={variant === Title}
+              >
+                {localizedVariant}
+              </option>
+            ))
+        }
+      </select>
+
+      <select
+        id="tea_size"
+        name="tea_size"
+        class:list={[
+          "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
+          "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
+          "border-primary bg-primary rounded-full cursor-pointer",
+        ]}
+      >
+        <option value="" selected>{recurData.text_all_tea_sizes}</option>
+
+        {
+          productSizes.data
+            .map(({ attributes: { Title, localizations } }) => {
+              const localizedSize =
+                locale === "en"
+                  ? Title
+                  : localizations.data.find(
+                      ({ attributes }) =>
+                        attributes.locale.substring(0, 2) === locale
+                    ).attributes.Title;
+
+              if (!availableSizes || availableSizes.includes(Title)) {
+                const slug =
+                  (variant
+                    ? variant?.toLowerCase().replaceAll(" ", "-") + "/"
+                    : "") + Title.toLowerCase().replaceAll(" ", "-");
+
+                return { slug, Title, localizedSize };
+              }
+            })
+            .filter(Boolean)
+            .sort((a, b) =>
+              a.localizedSize.localeCompare(b.localizedSize, locale, {
+                numeric: true,
+              })
+            )
+            .map(({ slug, Title, localizedSize }) => (
+              <option value={Title} data-slug={slug} selected={size === Title}>
+                {localizedSize}
+              </option>
+            ))
+        }
+      </select>
+    </form>
 
     {/* Products Section */}
     <section class="grid gap-y-[50px]" role="main">
@@ -361,3 +471,5 @@ const filteredProducts = getFilteredProducts({
     )
   }
 </PostDetailsLayout>
+
+<FilterProducts pathNameRegex={`^\\/[a-z]{2}\\/[a-z-]+(?=\\/)?`} />
