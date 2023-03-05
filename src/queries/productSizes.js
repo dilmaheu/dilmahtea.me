@@ -1,6 +1,6 @@
 const productSizesQuery = `
   {
-    productSizes {
+    productSizes(sort: "rank:asc") {
       data {
         attributes {
           locale

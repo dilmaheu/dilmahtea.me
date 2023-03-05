@@ -1,6 +1,20 @@
 import CMS from "@store/CMS";
 
-const catalog = CMS.get("catalog").data.attributes;
+const catalog = CMS.get("catalog").data.attributes,
+  productSizes = CMS.get("productSizes").data.map(
+    ({ attributes }) => attributes.Title
+  ),
+  productVariants = CMS.get("productVariants").data.map(
+    ({ attributes }) => attributes.Title
+  );
+
+const variantsOrder = [
+  ...productVariants,
+  ...productSizes,
+  ...productVariants
+    .map((variant) => productSizes.map((size) => variant + " | " + size))
+    .flat(),
+];
 
 const ProxyHandler = {
   get: (target, key) => {
@@ -37,6 +51,22 @@ catalog.Products.forEach(({ Title, products: variants }) => {
 
   Object.keys(variantsPerProduct).forEach((key) => {
     products[key].push([Title, variantsPerProduct[key]]);
+  });
+});
+
+// sort products by order of productSizes and productVariants
+Object.keys(products).forEach((key) => {
+  const filteredProducts = products[key];
+
+  filteredProducts.forEach((product) => {
+    if (Array.isArray(product)) {
+      const [, variants] = product;
+
+      variants.sort(
+        ([aKey], [bKey]) =>
+          variantsOrder.indexOf(aKey) - variantsOrder.indexOf(bKey)
+      );
+    }
   });
 });
 

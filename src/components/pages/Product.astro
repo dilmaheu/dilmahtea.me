@@ -354,14 +354,18 @@ const availableVariants =
           class="wrapper grid sm:grid-cols-2 lg:grid-cols-3 gap-[50px] overflow-hidden"
         >
           {
-            filteredProducts.map((product) => (
+            filteredProducts.map((product, i) => (
               <div
                 role="listitem"
                 data-variant-key={product.variantKey}
                 data-base-product-title={product.baseProductTitle}
                 aria-label={page.Aria_label_tea_item_text + product.order}
                 style="clip-path: url(#product-card-curve)"
-                class="product-card link-section flex flex-wrap w-full mx-auto max-w-[380px] sm:max-w-none bg-primary"
+                class:list={[
+                  filteredProducts[i - 1]?.baseProductTitle ===
+                    product.baseProductTitle && "hidden",
+                  "product-card link-section flex flex-wrap w-full mx-auto max-w-[380px] sm:max-w-none bg-primary",
+                ]}
               >
                 <div class="relative block w-full">
                   <Picture
@@ -465,9 +469,15 @@ const availableVariants =
                     : `${tea_variant} | ${tea_size}`;
 
                   Array.from(variants)
-                    .filter(({ dataset }) => dataset.variantKey !== variantKey)
+                    .filter((variant) => {
+                      if (variant.dataset.variantKey === variantKey) {
+                        variant.classList.remove("hidden");
+                      } else {
+                        return true;
+                      }
+                    })
                     .forEach((variant) => {
-                      variant.style.display = "none";
+                      variant.classList.add("hidden");
                     });
                 }
               }

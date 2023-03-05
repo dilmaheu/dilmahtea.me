@@ -1,6 +1,6 @@
 const productVariantsQuery = `
   {
-    productVariants {
+    productVariants(sort: "rank:asc") {
       data {
         attributes {
           locale
