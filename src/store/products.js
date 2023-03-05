@@ -1,3 +1,6 @@
+// @ts-check
+
+// @ts-ignore
 import CMS from "@store/CMS";
 
 const catalog = CMS.get("catalog").data.attributes,
@@ -33,7 +36,9 @@ const allProducts = catalog.Products.map(({ Title, products: variants }) => {
     availableVariants = new Proxy({}, ProxyHandler),
     availableSizes = new Proxy({}, ProxyHandler);
 
-  variants.data.forEach(({ attributes: { localizations, ...product } }) => {
+  variants.data.forEach(({ attributes: product }) => {
+    const { localizations } = product;
+
     const size = product.size.data.attributes.Title,
       variant = product.variant.data.attributes.Title;
 
