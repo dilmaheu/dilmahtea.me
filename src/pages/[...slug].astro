@@ -195,15 +195,21 @@ export async function getStaticPaths() {
       "variant"
     );
 
-    productSizes.data.forEach(({ attributes: sizeAttributes }) => {
-      sizeAttributes = structuredClone(sizeAttributes);
+    const availableSizes = variantAttributes.products.data.map(
+      ({ attributes }) => attributes.size.data.attributes.Title
+    );
 
-      generateProductVariation(
-        generatedHomeProductVariation,
-        sizeAttributes,
-        "size"
-      );
-    });
+    productSizes.data
+      .filter(({ attributes }) => availableSizes.includes(attributes.Title))
+      .forEach(({ attributes: sizeAttributes }) => {
+        sizeAttributes = structuredClone(sizeAttributes);
+
+        generateProductVariation(
+          generatedHomeProductVariation,
+          sizeAttributes,
+          "size"
+        );
+      });
   });
 
   const allLocales = i18NLocales.data.map(({ attributes }) =>
