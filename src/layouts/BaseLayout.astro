@@ -31,7 +31,11 @@ const { Type: notificationType, localizedNotifications } =
 
 <html lang={locale}>
   <head>
-    {page.type === "product" && <PreferredTeaFiltersRedirection page={page} />}
+    {
+      ["product", "productCategory"].includes(page.type) && (
+        <PreferredTeaFiltersRedirection page={page} />
+      )
+    }
 
     <MainHead
       page={page}

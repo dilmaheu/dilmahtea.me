@@ -12,10 +12,11 @@ const { variant, size } = Astro.props.page;
 
   localStorage.setItem("preferredFilters", JSON.stringify(preferredFilters));
 
-  if (/^\/[a-z]{2}\/[a-z]+\/?$/.test(location.pathname)) {
+  // support both product overview & category filters redirection
+  if (/^\/[a-z]{2}\/[a-z-]+\/?$/.test(location.pathname)) {
     const { tea_variant, tea_size } = preferredFilters,
       redirectPath = (
-        location.pathname.match(/^\/[a-z]{2}\/[a-z]+(?=\/)?/)[0] +
+        location.pathname.replace(/\/$/, "") +
         `${tea_variant ? "/" + tea_variant : ""}` +
         `${tea_size ? "/" + tea_size : ""}`
       )
