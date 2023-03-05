@@ -77,9 +77,7 @@ export async function getStaticPaths() {
   ) => {
     const { Title } = variantAttributes,
       slug = Title.toLowerCase().replace(/ /g, "-"),
-      homeProductVariation = structuredClone(homeProduct),
-      localizedVariantType =
-        "localized" + variantType[0].toUpperCase() + variantType.slice(1);
+      homeProductVariation = structuredClone(homeProduct);
 
     homeProductVariation.data.attributes[variantType] = Title;
     homeProductVariation.data.attributes.Meta.URL_slug += "/" + slug;
@@ -93,8 +91,10 @@ export async function getStaticPaths() {
             )?.attributes;
 
           if (localVariantAttributes) {
-            const { Title } = localVariantAttributes,
-              slug = Title.toLowerCase().replace(/ /g, "-");
+            const slug = localVariantAttributes.Title.toLowerCase().replace(
+              / /g,
+              "-"
+            );
 
             attributes[variantType] = Title;
             attributes.Meta.URL_slug += "/" + slug;

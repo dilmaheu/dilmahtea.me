@@ -24,10 +24,6 @@ const categories = CMS.get("productCategories", locale),
   productVariants = CMS.get("productVariants"),
   productSizes = CMS.get("productSizes");
 
-const productsAPIEndpoint = shouldDisplayExperimentals
-  ? "https://dev.products.scripts.dilmahtea.me"
-  : "/api/products";
-
 const productKey = [locale, variant, size].filter(Boolean).join(" | "),
   filteredProducts = structuredClone(products.get(productKey))
     .map((product, i) => {
@@ -410,6 +406,47 @@ const availableVariants = Array.from(
             ))
           }
         </div>
+
+        <script
+          define:vars={{
+            variant,
+            size,
+          }}
+        >
+          if (!variant || !size) {
+            const productsContainer =
+              document.currentScript.previousElementSibling;
+
+            const preferredProductsVariants = JSON.parse(
+              localStorage.getItem("preferredProductsVariants")
+            );
+
+            Object.keys(preferredProductsVariants).forEach(
+              (baseProductTitle) => {
+                const variants = productsContainer.querySelectorAll(
+                  `[data-base-product-title="${baseProductTitle}"]`
+                );
+
+                if (variants.length > 1) {
+                  const { tea_variant, tea_size } =
+                    preferredProductsVariants[baseProductTitle];
+
+                  const variantKey = variant
+                    ? tea_size
+                    : size
+                    ? tea_variant
+                    : `${tea_variant} | ${tea_size}`;
+
+                  Array.from(variants)
+                    .filter(({ dataset }) => dataset.variantKey !== variantKey)
+                    .forEach((variant) => {
+                      variant.style.display = "none";
+                    });
+                }
+              }
+            );
+          }
+        </script>
       </section>
 
       {/* Products impact Section */}

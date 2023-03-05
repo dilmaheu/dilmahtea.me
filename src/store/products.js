@@ -18,19 +18,20 @@ catalog.Products.forEach(({ Title, products: variants }) => {
   const variantsPerProduct = new Proxy({}, ProxyHandler);
 
   variants.data.forEach(({ attributes: { localizations, ...product } }) => {
+    const size = product.size.data.attributes.Title,
+      variant = product.variant.data.attributes.Title;
+
     [
       product,
       ...localizations.data.map(({ attributes }) => attributes),
-    ].forEach((product) => {
-      const locale = product.locale.substring(0, 2),
-        size = product.size.data.attributes.Title,
-        variant = product.variant.data.attributes.Title;
+    ].forEach((productVariant) => {
+      const locale = productVariant.locale.substring(0, 2);
 
-      variantsPerProduct[locale].push([variant + " | " + size, product]);
-      variantsPerProduct[locale + " | " + size].push([variant, product]);
-      variantsPerProduct[locale + " | " + variant].push([size, product]);
+      variantsPerProduct[locale].push([variant + " | " + size, productVariant]);
+      variantsPerProduct[locale + " | " + size].push([variant, productVariant]);
+      variantsPerProduct[locale + " | " + variant].push([size, productVariant]);
 
-      products[locale + " | " + variant + " | " + size].push(product);
+      products[locale + " | " + variant + " | " + size].push(productVariant);
     });
   });
 
