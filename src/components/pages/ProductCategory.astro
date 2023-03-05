@@ -16,6 +16,7 @@ import {
   getAvailableSizes,
   getAvailableVariants,
 } from "@utils/getAvailableVariants";
+import ShowPreferredVariants from "@components/scripts/ShowPreferredVariants.astro";
 
 const { white_right_arrow } = RecurringImages;
 
@@ -333,6 +334,8 @@ const availableSizes = getAvailableSizes(variant),
         }
       </div>
 
+      <ShowPreferredVariants {variant} {size} />
+
       {
         subCategories.map(({ attributes: { Title, Intro_text } }) => (
           <div>
@@ -453,6 +456,8 @@ const availableSizes = getAvailableSizes(variant),
                 ))
               }
             </div>
+
+            <ShowPreferredVariants {variant} {size} />
           </div>
         ))
       }

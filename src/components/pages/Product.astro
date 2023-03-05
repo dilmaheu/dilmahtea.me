@@ -7,11 +7,13 @@ import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
+import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 import FilterProducts from "@scripts/FilterProducts.astro";
+import ShowPreferredVariants from "@scripts/ShowPreferredVariants.astro";
 import getFilteredProducts from "@utils/getFilteredProducts";
-import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import {
   getAvailableSizes,
   getAvailableVariants,
@@ -413,52 +415,7 @@ const availableSizes = getAvailableSizes(variant),
           }
         </div>
 
-        <script
-          define:vars={{
-            variant,
-            size,
-          }}
-        >
-          if (!variant || !size) {
-            const productsContainer =
-              document.currentScript.previousElementSibling;
-
-            const preferredProductsVariants = JSON.parse(
-              localStorage.getItem("preferredProductsVariants") || "{}"
-            );
-
-            Object.keys(preferredProductsVariants).forEach(
-              (baseProductTitle) => {
-                const variants = productsContainer.querySelectorAll(
-                  `[data-base-product-title="${baseProductTitle}"]`
-                );
-
-                if (variants.length > 1) {
-                  const { tea_variant, tea_size } =
-                    preferredProductsVariants[baseProductTitle];
-
-                  const variantKey = variant
-                    ? tea_size
-                    : size
-                    ? tea_variant
-                    : `${tea_variant} | ${tea_size}`;
-
-                  Array.from(variants)
-                    .filter((variant) => {
-                      if (variant.dataset.variantKey === variantKey) {
-                        variant.classList.remove("hidden");
-                      } else {
-                        return true;
-                      }
-                    })
-                    .forEach((variant) => {
-                      variant.classList.add("hidden");
-                    });
-                }
-              }
-            );
-          }
-        </script>
+        <ShowPreferredVariants {variant} {size} />
       </section>
 
       {/* Products impact Section */}
