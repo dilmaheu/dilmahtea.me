@@ -90,7 +90,7 @@ const CMS = {
       return data[contentType].data.attributes.localizations.data.find(
         ({ attributes }) =>
           attributes.locale.substring(0, 2) === locale.substring(0, 2)
-      );
+      ).attributes;
     }
 
     return content;
