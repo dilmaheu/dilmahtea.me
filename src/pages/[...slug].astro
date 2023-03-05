@@ -1,6 +1,7 @@
 ---
 import CMS from "@store/CMS";
 import products from "@store/products";
+import variations from "@store/variations";
 
 import PageLayout from "@layouts/PageLayout.astro";
 import CheckoutLayout from "@layouts/CheckoutLayout.astro";
@@ -45,11 +46,6 @@ export async function getStaticPaths() {
     homeHowTo,
     homeRecipe,
     homeEstate,
-    homeProduct,
-    catalog,
-    productCategories,
-    productVariants,
-    productSizes,
     homepage,
     cart,
     checkoutKindness,
@@ -58,86 +54,9 @@ export async function getStaticPaths() {
     checkoutSuccess,
   } = CMS.get("all");
 
-  const homeProductVariations = { data: [homeProduct.data] };
-
-  const filterVariant = (variant) => {
-    const { products, localizations } = variant.attributes;
-
-    localizations.data = localizations.data.filter((localization) => {
-      const { products } = localization.attributes;
-
-      return products.data.length > 0;
-    });
-
-    return products.data.length > 0;
-  };
-
-  const generateProductVariation = (
-    homeProduct,
-    variantAttributes,
-    variantType
-  ) => {
-    const { Title } = variantAttributes,
-      slug = Title.toLowerCase().replace(/ /g, "-"),
-      homeProductVariation = structuredClone(homeProduct);
-
-    homeProductVariation.data.attributes[variantType] = Title;
-    homeProductVariation.data.attributes.Meta.URL_slug += "/" + slug;
-
-    homeProductVariation.data.attributes.localizations.data =
-      homeProductVariation.data.attributes.localizations.data.filter(
-        ({ attributes }) => {
-          const localVariantAttributes =
-            variantAttributes.localizations.data.find(
-              (variant) => variant.attributes.locale === attributes.locale
-            )?.attributes;
-
-          if (localVariantAttributes) {
-            attributes[variantType] = Title;
-            attributes.Meta.URL_slug += "/" + slug;
-
-            return true;
-          }
-        }
-      );
-
-    homeProductVariations.data.push(homeProductVariation.data);
-
-    return homeProductVariation;
-  };
-
-  productSizes.data = productSizes.data.filter(filterVariant);
-  productVariants.data = productVariants.data.filter(filterVariant);
-
-  productSizes.data.forEach(({ attributes }) =>
-    generateProductVariation(homeProduct, attributes, "size")
-  );
-
-  productVariants.data.forEach(({ attributes: variantAttributes }) => {
-    const generatedHomeProductVariation = generateProductVariation(
-      homeProduct,
-      variantAttributes,
-      "variant"
-    );
-
-    const availableSizes = variantAttributes.products.data.map(
-      ({ attributes }) => attributes.size.data.attributes.Title
-    );
-
-    productSizes.data
-      .filter(({ attributes }) => availableSizes.includes(attributes.Title))
-      .forEach(({ attributes: sizeAttributes }) => {
-        sizeAttributes = structuredClone(sizeAttributes);
-
-        generateProductVariation(
-          generatedHomeProductVariation,
-          sizeAttributes,
-          "size"
-        );
-      });
-  });
-
   const allProducts = products.get("all");
+
+  const { homeProductVariations, productCategoriesVariations } = variations;
 
   const allLocales = i18NLocales.data.map(({ attributes }) =>
     attributes.code.substring(0, 2)
@@ -284,7 +203,7 @@ export async function getStaticPaths() {
   }));
 
   const productCategoryPages = getPages(
-    productCategories,
+    productCategoriesVariations,
     (page, { locale }) => ({
       type: "productCategory",
       posts: locale && getPosts(allProducts, locale),

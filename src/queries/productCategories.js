@@ -59,6 +59,43 @@ const productCategoriesQuery = `
             URL_slug
             Canonical_link
           }
+          products(filters: { publishedAt: { ne: null } }) {
+            data {
+              attributes {
+                locale
+                createdAt
+                Title
+                Intro_text
+                Stock_amount
+                In_stock_date
+                Intro_blob {
+                  data {
+                    attributes {
+                      url
+                      alternativeText
+                    }
+                  }
+                }
+                variant {
+                  data {
+                    attributes {
+                      Title
+                    }
+                  }
+                }
+                size {
+                  data {
+                    attributes {
+                      Title
+                    }
+                  }
+                }
+                Meta {
+                  URL_slug
+                }
+              }
+            }
+          }
           localizations {
             data {
               attributes {
@@ -116,6 +153,43 @@ const productCategoriesQuery = `
                   nofollow
                   URL_slug
                   Canonical_link
+                }
+                products(filters: { publishedAt: { ne: null } }) {
+                  data {
+                    attributes {
+                      locale
+                      createdAt
+                      Title
+                      Intro_text
+                      Stock_amount
+                      In_stock_date
+                      Intro_blob {
+                        data {
+                          attributes {
+                            url
+                            alternativeText
+                          }
+                        }
+                      }
+                      variant {
+                        data {
+                          attributes {
+                            Title
+                          }
+                        }
+                      }
+                      size {
+                        data {
+                          attributes {
+                            Title
+                          }
+                        }
+                      }
+                      Meta {
+                        URL_slug
+                      }
+                    }
+                  }
                 }
               }
             }
