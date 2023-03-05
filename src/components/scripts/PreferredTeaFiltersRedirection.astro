@@ -1,0 +1,22 @@
+<script is:inline>
+  {
+    if (/^\/[a-z]{2}\/[a-z]+\/?$/.test(location.pathname)) {
+      const preferredFilters = JSON.parse(
+        localStorage.getItem("preferredFilters") || "{}"
+      );
+
+      const { tea_variant, tea_size } = preferredFilters,
+        redirectPath = (
+          location.pathname.match(/^\/[a-z]{2}\/[a-z]+(?=\/)?/)[0] +
+          `${tea_variant ? "/" + tea_variant : ""}` +
+          `${tea_size ? "/" + tea_size : ""}`
+        )
+          .toLowerCase()
+          .replaceAll(" ", "-");
+
+      if (redirectPath !== location.pathname.replace(/\/$/, "")) {
+        location.pathname = redirectPath;
+      }
+    }
+  }
+</script>

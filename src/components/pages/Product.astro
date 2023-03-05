@@ -233,7 +233,7 @@ const availableVariants = Array.from(
 
                   {
                     productVariants.data.map(
-                      ({ attributes: { Title, products, localizations } }) => {
+                      ({ attributes: { Title, localizations } }) => {
                         const localizedVariant =
                           locale === "en"
                             ? Title
@@ -244,9 +244,7 @@ const availableVariants = Array.from(
 
                         if (availableVariants.includes(localizedVariant)) {
                           const slug =
-                            localizedVariant
-                              .toLowerCase()
-                              .replaceAll(" ", "-") +
+                            Title.toLowerCase().replaceAll(" ", "-") +
                             (size
                               ? "/" + size?.toLowerCase().replaceAll(" ", "-")
                               : "");
@@ -255,7 +253,7 @@ const availableVariants = Array.from(
                             <option
                               value={Title}
                               data-slug={slug}
-                              selected={variant === localizedVariant}
+                              selected={variant === Title}
                             >
                               {localizedVariant}
                             </option>
@@ -293,14 +291,13 @@ const availableVariants = Array.from(
                             (variant
                               ? variant?.toLowerCase().replaceAll(" ", "-") +
                                 "/"
-                              : "") +
-                            localizedSize.toLowerCase().replaceAll(" ", "-");
+                              : "") + Title.toLowerCase().replaceAll(" ", "-");
 
                           return (
                             <option
                               value={Title}
                               data-slug={slug}
-                              selected={size === localizedSize}
+                              selected={size === Title}
                             >
                               {localizedSize}
                             </option>

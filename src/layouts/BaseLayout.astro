@@ -10,6 +10,7 @@ import NotificationsObserver from "@scripts/NotificationsObserver.astro";
 import NotificationAnimations from "@scripts/NotificationAnimations.astro";
 
 import getLangNotAvailableNotification from "@utils/getLangNotAvailableNotification";
+import PreferredTeaFiltersRedirection from "@scripts/PreferredTeaFiltersRedirection.astro";
 
 interface Props {
   page: Record<string, any>;
@@ -30,6 +31,8 @@ const { Type: notificationType, localizedNotifications } =
 
 <html lang={locale}>
   <head>
+    {page.type === "product" && <PreferredTeaFiltersRedirection />}
+
     <MainHead
       page={page}
       meta={meta}
