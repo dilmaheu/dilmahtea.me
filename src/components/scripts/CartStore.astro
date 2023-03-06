@@ -1,159 +1,191 @@
 <script is:inline>
-  {
-    window.replacePlaceholders = (content, data) => {
-      const placeholderRegex =
-        /<placeholder\s+name=(?:"|&#34;)(\w+)(?:"|&#34;)[^>]*><\/placeholder>/g;
+  window.replacePlaceholders = (content, data) => {
+    const placeholderRegex =
+      /<placeholder\s+name=(?:"|&#34;)(\w+)(?:"|&#34;)[^>]*><\/placeholder>/g;
 
-      return content.replace(
-        placeholderRegex,
-        (match, placeholderName) => data[placeholderName]
-      );
-    };
+    return content.replace(
+      placeholderRegex,
+      (match, placeholderName) => data[placeholderName]
+    );
+  };
 
-    window.checkoutInfo = JSON.parse(
-      localStorage.getItem("checkout-info") || "{}"
+  window.checkoutInfo = JSON.parse(
+    localStorage.getItem("checkout-info") || "{}"
+  );
+
+  const queryParams = new URLSearchParams(location.search);
+
+  if (queryParams.get("clear") === "cart") {
+    localStorage.removeItem("cart");
+  }
+
+  const storedCart = JSON.parse(localStorage.getItem("cart") || "{}");
+
+  let subTotal, tax, shippingCost, total;
+
+  const updateAmounts = (cart) => {
+    [subTotal = 0, tax = 0] = Object.values(cart).reduce(
+      ([priceSum, taxSum], { price, tax }) => [
+        priceSum + Number(price),
+        taxSum + Number(tax),
+      ],
+      [0, 0]
     );
 
-    const queryParams = new URLSearchParams(location.search);
+    shippingCost = Number(window.checkoutInfo?.shipping_cost) || 0;
 
-    if (queryParams.get("clear") === "cart") {
-      localStorage.removeItem("cart");
-    }
+    total = subTotal + shippingCost;
 
-    const storedCart = JSON.parse(localStorage.getItem("cart") || "{}");
+    subTotal = subTotal.toFixed(2).replace(".", ",");
+    tax = tax.toFixed(2).replace(".", ",");
+    shippingCost = shippingCost?.toFixed(2)?.replace(".", ",");
+    total = total?.toFixed(2)?.replace(".", ",");
+  };
 
-    let subTotal, tax, shippingCost, total;
+  updateAmounts(storedCart);
 
-    const updateAmounts = (cart) => {
-      [subTotal = 0, tax = 0] = Object.values(cart).reduce(
-        ([priceSum, taxSum], { price, tax }) => [
-          priceSum + Number(price),
-          taxSum + Number(tax),
-        ],
-        [0, 0]
-      );
+  const id = document.getElementById.bind(document),
+    queryAll = document.querySelectorAll.bind(document);
 
-      shippingCost = Number(window.checkoutInfo?.shipping_cost) || 0;
+  let cartSize, cartSubTotal, orderTotal, orderShippingCost;
 
-      total = subTotal + shippingCost;
+  const updateUI = (cart) => {
+    cartSize ??= id("cart-size");
+    cartSubTotal ??= id("cart-subtotal");
 
-      subTotal = subTotal.toFixed(2).replace(".", ",");
-      tax = tax.toFixed(2).replace(".", ",");
-      shippingCost = shippingCost?.toFixed(2)?.replace(".", ",");
-      total = total?.toFixed(2)?.replace(".", ",");
-    };
+    orderTotal ??= queryAll(".order-total");
+    orderShippingCost ??= queryAll(".order-shipping-cost");
 
-    updateAmounts(storedCart);
+    updateAmounts(cart);
 
-    const id = document.getElementById.bind(document),
-      queryAll = document.querySelectorAll.bind(document);
+    cartSubTotal && (cartSubTotal.textContent = "€" + subTotal);
+    cartSize && (cartSize.textContent = Object.values(cart).length);
 
-    let cartSize, cartSubTotal, orderTotal, orderShippingCost;
+    orderTotal.forEach((span) => (span.textContent = "€" + total));
+    orderShippingCost.forEach(
+      (span) => (span.textContent = "€" + shippingCost)
+    );
+  };
 
-    const updateUI = (cart) => {
-      cartSize ??= id("cart-size");
-      cartSubTotal ??= id("cart-subtotal");
+  window.cart = new Proxy(storedCart, {
+    get(cart, property) {
+      switch (property) {
+        case "subTotal":
+          return subTotal;
 
-      orderTotal ??= queryAll(".order-total");
-      orderShippingCost ??= queryAll(".order-shipping-cost");
+        case "tax":
+          return tax;
 
-      updateAmounts(cart);
+        case "shippingCost":
+          return shippingCost;
 
-      cartSubTotal && (cartSubTotal.textContent = "€" + subTotal);
-      cartSize && (cartSize.textContent = Object.values(cart).length);
+        case "total":
+          return total;
 
-      orderTotal.forEach((span) => (span.textContent = "€" + total));
-      orderShippingCost.forEach(
-        (span) => (span.textContent = "€" + shippingCost)
-      );
-    };
+        case "updateUI":
+          return updateUI;
 
-    window.cart = new Proxy(storedCart, {
-      get(cart, property) {
-        switch (property) {
-          case "subTotal":
-            return subTotal;
+        default:
+          return cart[property];
+      }
+    },
 
-          case "tax":
-            return tax;
+    set(cart, productId, productData) {
+      const productExistsInCart = !!cart[productId];
 
-          case "shippingCost":
-            return shippingCost;
+      cart[productId] = productData;
 
-          case "total":
-            return total;
+      localStorage.setItem("cart", JSON.stringify(cart));
 
-          case "updateUI":
-            return updateUI;
+      updateUI(cart);
 
-          default:
-            return cart[property];
-        }
-      },
-
-      set(cart, productId, productData) {
-        const productExistsInCart = !!cart[productId];
-
-        cart[productId] = productData;
-
-        localStorage.setItem("cart", JSON.stringify(cart));
-
-        updateUI(cart);
-
-        if (productExistsInCart) {
-          const cartProductElement = id(productId),
-            cartProductAmountInputs = cartProductElement.querySelectorAll(
-              ".cart-product-amount-input, .cart-overlay-product-amount-input"
-            ),
-            cartProductPriceElements = cartProductElement.querySelectorAll(
-              ".cart-product-price, .cart-overlay-product-price"
-            );
-
-          cartProductAmountInputs.forEach((element) => {
-            element.value = productData.quantity;
-          });
-
-          cartProductPriceElements.forEach((element) => {
-            element.textContent =
-              "€" + productData.price.toFixed(2).replace(".", ",");
-          });
-        } else {
-          window.addProductToCart(productId);
-
-          const newCartProductElement = id(productId),
-            newProductAmountInput = newCartProductElement.querySelectorAll(
-              ".cart-overlay-product-amount-input"
-            ),
-            newProductAmountTweakBtns = newCartProductElement.querySelectorAll(
-              ".cart-overlay-product-amount-tweak-btn"
-            );
-
-          window.listenToInputEvents(
-            newProductAmountTweakBtns,
-            newProductAmountInput
+      if (productExistsInCart) {
+        const cartProductElement = id(productId),
+          cartProductAmountInputs = cartProductElement.querySelectorAll(
+            ".cart-product-amount-input, .cart-overlay-product-amount-input"
+          ),
+          cartProductPriceElements = cartProductElement.querySelectorAll(
+            ".cart-product-price, .cart-overlay-product-price"
           );
 
-          if (Object.keys(cart).length === 1) {
-            const cartOverlayContent = id("cart-overlay-content"),
-              emptyCartNotification = id("empty-cart-notification");
+        cartProductAmountInputs.forEach((element) => {
+          element.value = productData.quantity;
+        });
 
-            cartOverlayContent.classList.remove("hidden");
-            emptyCartNotification.classList.add("hidden");
-          }
+        cartProductPriceElements.forEach((element) => {
+          element.textContent =
+            "€" + productData.price.toFixed(2).replace(".", ",");
+        });
+      } else {
+        window.addProductToCart(productId);
+
+        const newCartProductElement = id(productId),
+          newProductAmountInput = newCartProductElement.querySelectorAll(
+            ".cart-overlay-product-amount-input"
+          ),
+          newProductAmountTweakBtns = newCartProductElement.querySelectorAll(
+            ".cart-overlay-product-amount-tweak-btn"
+          );
+
+        window.listenToInputEvents(
+          newProductAmountTweakBtns,
+          newProductAmountInput
+        );
+
+        if (Object.keys(cart).length === 1) {
+          const cartOverlayContent = id("cart-overlay-content"),
+            emptyCartNotification = id("empty-cart-notification");
+
+          cartOverlayContent.classList.remove("hidden");
+          emptyCartNotification.classList.add("hidden");
         }
+      }
 
-        return true;
-      },
+      return true;
+    },
 
-      deleteProperty(cart, property) {
-        delete cart[property];
+    deleteProperty(cart, property) {
+      delete cart[property];
 
-        localStorage.setItem("cart", JSON.stringify(cart));
+      localStorage.setItem("cart", JSON.stringify(cart));
 
-        updateUI(cart);
+      updateUI(cart);
 
-        return true;
-      },
-    });
-  }
+      return true;
+    },
+  });
+</script>
+
+<script>
+  const SKUs = Object.keys(window.cart);
+
+  const productsData = await fetch("/db/products.json").then((response) =>
+    response.json()
+  );
+
+  SKUs.forEach((SKU) => {
+    const existingProductData = window.cart[SKU],
+      productData = productsData[SKU];
+
+    const removeProductButton = document
+      .getElementById(SKU)
+      .querySelector(".remove-item-btn") as HTMLButtonElement;
+
+    if (!productData) {
+      removeProductButton.click();
+    } else if (
+      existingProductData.tax !== productData.tax ||
+      existingProductData.price !== productData.price ||
+      existingProductData.size !== productData.size ||
+      existingProductData.image !== productData.image ||
+      existingProductData.names !== productData.names
+    ) {
+      removeProductButton.click();
+
+      window.cart[SKU] = {
+        ...existingProductData,
+        ...productData,
+      };
+    }
+  });
 </script>
