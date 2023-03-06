@@ -173,92 +173,88 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 >
                   <div
                     role="listitem"
+                    id={`<placeholder name="id"></placeholder>`}
                     aria-label={`<placeholder name="name"></placeholder>`}
-                    class="flex"
+                    class="cart-product p-4 gap-3.5 flex justify-between items-center w-full bg-lightgray2 rounded-[10px]"
                   >
+                    <img
+                      alt=""
+                      src={`<placeholder name="image"></placeholder>`}
+                      style="min-width: 100px; width: 100px; height: 100px; clip-path: url(#cart-overlay-product-image);"
+                    />
+
                     <div
-                      id={`<placeholder name="id"></placeholder>`}
-                      class="cart-product p-4 gap-3.5 flex justify-between items-center w-full bg-lightgray2 rounded-[10px]"
+                      class="cart-overlay-product-details flex flex-col gap-1"
                     >
-                      <img
-                        alt=""
-                        src={`<placeholder name="image"></placeholder>`}
-                        style="min-width: 100px; width: 100px; height: 100px; clip-path: url(#cart-overlay-product-image);"
-                      />
+                      <div class="flex justify-between items-start gap-1.5">
+                        <h3 class="alice cart-overlay-product-name">
+                          <placeholder name="name"></placeholder>
+                        </h3>
+
+                        <button
+                          class="remove-item-btn"
+                          aria-label={checkoutRecurData.Aria_label_remove_cart_item_button_text +
+                            ` <placeholder name="name"></placeholder>`}
+                        >
+                          <Icon name="akar-icons:trash-can" class="w-6 h-6" />
+                        </button>
+                      </div>
+
+                      <div class="cart-overlay-product-size">
+                        {checkoutRecurData.text_size}: <placeholder name="size"
+                        ></placeholder>
+                      </div>
 
                       <div
-                        class="cart-overlay-product-details flex flex-col gap-1"
+                        class="flex flex-wrap justify-between items-center gap-1.5"
                       >
-                        <div class="flex justify-between items-start gap-1.5">
-                          <h3 class="alice cart-overlay-product-name">
-                            <placeholder name="name"></placeholder>
-                          </h3>
+                        <div
+                          class="flex items-center bg-primary text-lightgray rounded-full"
+                        >
+                          <button
+                            data-action="decrement"
+                            aria-label={checkoutRecurData.Aria_label_cart_item_quantity_minus_button_text +
+                              ` <placeholder name="name"></placeholder>`}
+                            class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-2 pr-1"
+                            disabled
+                          >
+                            <Icon
+                              name="akar-icons:minus"
+                              class="w-5 h-5 select-none"
+                            />
+                          </button>
+
+                          <input
+                            type="number"
+                            aria-label={checkoutRecurData.Aria_label_cart_item_quantity_text +
+                              ` <placeholder name="name"></placeholder>`}
+                            min="1"
+                            value={`<placeholder name="quantity"></placeholder>`}
+                            class:list={[
+                              "cart-overlay-product-amount-input",
+                              "w-9 h-full text-center lg:text-lg bg-primary outline-none",
+                            ]}
+                            required
+                          />
 
                           <button
-                            class="remove-item-btn"
-                            aria-label={checkoutRecurData.Aria_label_remove_cart_item_button_text +
+                            data-action="increment"
+                            aria-label={checkoutRecurData.Aria_label_cart_item_quantity_plus_button_text +
                               ` <placeholder name="name"></placeholder>`}
+                            class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-1 pr-2"
                           >
-                            <Icon name="akar-icons:trash-can" class="w-6 h-6" />
+                            <Icon
+                              name="akar-icons:plus"
+                              class="w-5 h-5 select-none"
+                            />
                           </button>
                         </div>
 
-                        <div class="cart-overlay-product-size">
-                          {checkoutRecurData.text_size}: <placeholder
-                            name="size"></placeholder>
-                        </div>
-
-                        <div
-                          class="flex flex-wrap justify-between items-center gap-1.5"
+                        <span
+                          class="cart-overlay-product-price alice text-dark3"
                         >
-                          <div
-                            class="flex items-center bg-primary text-lightgray rounded-full"
-                          >
-                            <button
-                              data-action="decrement"
-                              aria-label={checkoutRecurData.Aria_label_cart_item_quantity_minus_button_text +
-                                ` <placeholder name="name"></placeholder>`}
-                              class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-2 pr-1"
-                              disabled
-                            >
-                              <Icon
-                                name="akar-icons:minus"
-                                class="w-5 h-5 select-none"
-                              />
-                            </button>
-
-                            <input
-                              type="number"
-                              aria-label={checkoutRecurData.Aria_label_cart_item_quantity_text +
-                                ` <placeholder name="name"></placeholder>`}
-                              min="1"
-                              value={`<placeholder name="quantity"></placeholder>`}
-                              class:list={[
-                                "cart-overlay-product-amount-input",
-                                "w-9 h-full text-center lg:text-lg bg-primary outline-none",
-                              ]}
-                              required
-                            />
-
-                            <button
-                              data-action="increment"
-                              aria-label={checkoutRecurData.Aria_label_cart_item_quantity_plus_button_text +
-                                ` <placeholder name="name"></placeholder>`}
-                              class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-1 pr-2"
-                            >
-                              <Icon
-                                name="akar-icons:plus"
-                                class="w-5 h-5 select-none"
-                              />
-                            </button>
-                          </div>
-
-                          <span
-                            class="cart-overlay-product-price alice text-dark3"
-                          >
-                            €<placeholder name="price"></placeholder>
-                          </span>
-                        </div>
+                          €<placeholder name="price"></placeholder>
+                        </span>
                       </div>
                     </div>
                   </div>
