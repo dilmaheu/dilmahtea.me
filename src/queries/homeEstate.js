@@ -50,7 +50,7 @@ const homeEstateQuery = `
               }
             }
           }
-          blogs {
+          blogs (filters: { publishedAt: { ne: null } }) {
             data {
               attributes {
                 Title
@@ -71,6 +71,7 @@ const homeEstateQuery = `
                   }
                 }
                 createdAt
+                publishedAt
                 Meta {
                   URL_slug
                 }
@@ -136,7 +137,7 @@ const homeEstateQuery = `
                     }
                   }
                 }
-                blogs {
+                blogs (filters: { publishedAt: { ne: null } }) {
                   data {
                     attributes {
                       Title
@@ -157,6 +158,7 @@ const homeEstateQuery = `
                         }
                       }
                       createdAt
+                      publishedAt
                       Meta {
                         URL_slug
                       }

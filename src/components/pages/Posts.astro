@@ -8,6 +8,34 @@ import ClippedPicture from "@components/ClippedPicture.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
+interface Props {
+  page: {
+    posts: {
+      Estate_name: string;
+      authors: any;
+      locale: string | undefined;
+      localizations: { data: { attributes: any[] } };
+      updatedAt: string;
+      createdAt: string;
+      publishedAt: string;
+      Intro_text: string;
+      Intro_blob: any;
+      Block_text: string;
+      Category: any | undefined;
+      Cooking_part: any;
+      Cuisine: any;
+      Nutrition_yield: any;
+      Recipe_variations: any;
+      Title: String;
+      Time_preparation: any | undefined;
+      Time_text: any | undefined;
+      Time_cooking: any;
+      Relevant_recipes: any;
+      Meta: any;
+    }[];
+  };
+}
+
 const {
   white_cup,
   green_cup,
@@ -19,10 +47,10 @@ const { page, ariaLabelRecurData } = Astro.props,
   { ASSETS_URL } = import.meta.env,
   { posts } = page;
 
-posts.sort((a, b) => {
-  return new Date(b.createdAt) - new Date(a.createdAt);
-});
 
+posts.sort((a, b) => {
+  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+});
 const [firstPost] = posts;
 ---
 
