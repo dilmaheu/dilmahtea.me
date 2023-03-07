@@ -1,7 +1,6 @@
 ---
 import CMS from "@store/CMS";
 import Icon from "astro-icon";
-import localizeCMSImage from "@utils/localizeCMSImage";
 import { Picture, BackgroundPicture } from "astro-imagetools/components";
 
 import RecurringImages from "@store/RecurringImages";
@@ -25,21 +24,9 @@ interface Props {
 }
 
 const { docLocale, footerText, isCartNavbar, availableLocales } =
-    Astro.props as Props,
-  { ASSETS_URL } = import.meta.env;
+  Astro.props as Props;
 
-const recurData = CMS.get("recurringElement", docLocale),
-  ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", docLocale);
-
-const {
-  Nav_menu: menu,
-  Nav_menu_search_visibility: search,
-  Nav_menu_language_selector_visibility: language,
-  Nav_menu_cart_visibility: cart,
-  Nav_menu_cart_icon: cart_icon,
-  Nav_menu_profile_visibility: profile,
-  Nav_menu_profile_icon: profile_icon,
-} = recurData;
+const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", docLocale);
 ---
 
 <style lang="scss">
@@ -128,35 +115,27 @@ const {
     </a>
 
     <nav class="hidden md:flex m-auto ml-14 text-white">
-      {
-        menu.map(
-          ({ Visibility, Title, Link }) =>
-            Visibility && <a href={Link}>{Title}</a>
-        )
-      }
+      <a href="/blog">Blog</a>
+      <a href="/tea-estates">Tea Estates</a>
+      <a href="/howto">How-to</a>
+      <a href="/recipes">Recipe</a>
+      <a href="/tea">Tea</a>
     </nav>
 
     <div class="flex gap-4 items-center">
-      {
-        search && (
-          <div class="my-auto flex items-center overflow-hidden">
-            <ci-search />
-          </div>
-        )
-      }
-      {
-        language && (
-          <div class="hidden xl:flex items-center">
-            <LangSelectorsDropdown
-              docLocale={docLocale}
-              availableLocales={availableLocales}
-            />
-          </div>
-        )
-      }
+      <div class="my-auto flex items-center overflow-hidden">
+        <ci-search></ci-search>
+      </div>
+
+      <div class="hidden xl:flex items-center">
+        <LangSelectorsDropdown
+          docLocale={docLocale}
+          availableLocales={availableLocales}
+        />
+      </div>
 
       {
-        cart && !isCartNavbar && (
+        !isCartNavbar && (
           <button
             aria-label={ariaLabelRecurData.Navbar_open_cart_text}
             class:list={[
@@ -169,11 +148,7 @@ const {
               style="clip-path: url(#cart-btn-curve);"
               class="w-12 h-12 text-primary flex justify-center items-center bg-lightgray rounded-full"
             >
-              <img
-                class="w-[30px] h-[30px] mx-auto"
-                src={await localizeCMSImage(cart_icon?.data?.attributes.url)}
-                alt={cart_icon?.data?.attributes.alternativeText}
-              />
+              <Icon name="mi:shopping-cart" class="w-[30px] h-[30px] mx-auto" />
             </span>
 
             <span
@@ -236,7 +211,7 @@ const {
             </div>
 
             {
-              cart && !isCartNavbar && (
+              !isCartNavbar && (
                 <button
                   aria-label="Open Cart"
                   class:list={[
@@ -249,10 +224,9 @@ const {
                     style="clip-path: url(#cart-btn-curve);"
                     class="w-12 h-12 text-primary flex justify-center items-center bg-lightgray rounded-full"
                   >
-                    <img
+                    <Icon
+                      name="mi:shopping-cart"
                       class="w-[30px] h-[30px] mx-auto"
-                      src={ASSETS_URL + cart_icon?.data?.attributes.url}
-                      alt={cart_icon?.data?.attributes.alternativeText}
                     />
                   </span>
 
@@ -290,12 +264,11 @@ const {
           </div>
 
           <nav class="flex flex-col text-white">
-            {
-              menu.map(
-                ({ Visibility, Title, Link }) =>
-                  Visibility && <a href={Link}>{Title}</a>
-              )
-            }
+            <a href="/blog">Blog</a>
+            <a href="/tea-estates">Tea Estates</a>
+            <a href="/howto">How-to</a>
+            <a href="/recipes">Recipe</a>
+            <a href="/tea">Tea</a>
           </nav>
         </div>
 

@@ -13,11 +13,9 @@ const {
 
 declare interface Props {
   footerText: string;
-  recurData: Record<string, any>;
 }
 
-const { footerText, recurData } = Astro.props as Props,
-  { Footer_menu: menu } = recurData;
+const { footerText } = Astro.props as Props;
 ---
 
 <style lang="scss">
@@ -98,12 +96,11 @@ const { footerText, recurData } = Astro.props as Props,
       <nav
         class="grid grid-cols-2 grid-flow-row sm:flex flex-wrap items-center gap-x-9 gap-y-[7px] sm:gap-2.5 md:gap-5 font-medium md:font-bold text-white"
       >
-        {
-          menu.map(
-            ({ Visibility, Title, Link }) =>
-              Visibility && <a href={Link}>{Title}</a>
-          )
-        }
+        <a href="/blog">Blog</a>
+        <a href="/tea-estates">Tea Estates</a>
+        <a href="/howto">How-to</a>
+        <a href="/recipes">Recipe</a>
+        <a href="/tea">Tea</a>
       </nav>
     </div>
 
