@@ -163,6 +163,10 @@
     response.json()
   );
 
+  const isCheckoutCartPage = !!document.getElementById(
+    "checkout-cart-container"
+  );
+
   SKUs.forEach((SKU) => {
     const existingProductData = window.cart[SKU],
       productData = productsData[SKU];
@@ -180,12 +184,14 @@
       existingProductData.image !== productData.image ||
       existingProductData.names !== productData.names
     ) {
-      removeProductButton.click();
+      isCheckoutCartPage || removeProductButton.click();
 
-      window.cart[SKU] = {
-        ...existingProductData,
-        ...productData,
-      };
+      try {
+        window.cart[SKU] = {
+          ...existingProductData,
+          ...productData,
+        };
+      } catch (error) {}
     }
   });
 </script>
