@@ -164,9 +164,12 @@ const availableSizes = getAvailableSizes(variant),
                   : localizations.data.find(
                       ({ attributes }) =>
                         attributes.locale.substring(0, 2) === locale
-                    ).attributes.Title;
+                    )?.attributes.Title;
 
-              if (!availableVariants || availableVariants.includes(Title)) {
+              if (
+                localizedVariant &&
+                (!availableVariants || availableVariants.includes(Title))
+              ) {
                 const slug =
                   Title.toLowerCase().replaceAll(" ", "-") +
                   (size ? "/" + size?.toLowerCase().replaceAll(" ", "-") : "");
@@ -176,7 +179,7 @@ const availableSizes = getAvailableSizes(variant),
             })
             .filter(Boolean)
             .sort((a, b) =>
-              a.localizedSize.localeCompare(b.localizedSize, locale, {
+              a.localizedVariant.localeCompare(b.localizedVariant, locale, {
                 numeric: true,
               })
             )
@@ -212,9 +215,12 @@ const availableSizes = getAvailableSizes(variant),
                   : localizations.data.find(
                       ({ attributes }) =>
                         attributes.locale.substring(0, 2) === locale
-                    ).attributes.Title;
+                    )?.attributes.Title;
 
-              if (!availableSizes || availableSizes.includes(Title)) {
+              if (
+                localizedSize &&
+                (!availableSizes || availableSizes.includes(Title))
+              ) {
                 const slug =
                   (variant
                     ? variant?.toLowerCase().replaceAll(" ", "-") + "/"

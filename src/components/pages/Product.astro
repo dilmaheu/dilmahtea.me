@@ -227,11 +227,12 @@ const availableSizes = getAvailableSizes(variant),
                             : localizations.data.find(
                                 ({ attributes }) =>
                                   attributes.locale.substring(0, 2) === locale
-                              ).attributes.Title;
+                              )?.attributes.Title;
 
                         if (
-                          !availableVariants ||
-                          availableVariants.includes(Title)
+                          localizedVariant &&
+                          (!availableVariants ||
+                            availableVariants.includes(Title))
                         ) {
                           const slug =
                             Title.toLowerCase().replaceAll(" ", "-") +
@@ -244,9 +245,13 @@ const availableSizes = getAvailableSizes(variant),
                       })
                       .filter(Boolean)
                       .sort((a, b) =>
-                        a.localizedSize.localeCompare(b.localizedSize, locale, {
-                          numeric: true,
-                        })
+                        a.localizedVariant.localeCompare(
+                          b.localizedVariant,
+                          locale,
+                          {
+                            numeric: true,
+                          }
+                        )
                       )
                       .map(({ slug, Title, localizedVariant }) => (
                         <option
@@ -282,9 +287,12 @@ const availableSizes = getAvailableSizes(variant),
                             : localizations.data.find(
                                 ({ attributes }) =>
                                   attributes.locale.substring(0, 2) === locale
-                              ).attributes.Title;
+                              )?.attributes.Title;
 
-                        if (!availableSizes || availableSizes.includes(Title)) {
+                        if (
+                          localizedSize &&
+                          (!availableSizes || availableSizes.includes(Title))
+                        ) {
                           const slug =
                             (variant
                               ? variant?.toLowerCase().replaceAll(" ", "-") +
