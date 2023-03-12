@@ -10,6 +10,7 @@ await fs.promises.cp(CMSImagesDir, CMSImagesDestDir, { recursive: true });
 
 const assetsDir = "./dist/_astro/",
   assetsPaths = await globby("./dist/_astro/*"),
+  jsonFilesPaths = await globby("./dist/db/**/*.json"),
   imageAssetBaseRegex = /([^]+_)+[0-9a-z]{10}(-\d+w)?/;
 
 const pathsDictionary = assetsPaths
@@ -34,6 +35,18 @@ const pathsDictionary = assetsPaths
     }
   })
   .filter(Boolean);
+
+await Promise.all(
+  jsonFilesPaths.map(async (path) => {
+    let json = await fs.promises.readFile(path, "utf-8");
+
+    pathsDictionary.forEach(({ oldPath, newPath }) => {
+      json = json.replaceAll(oldPath, newPath);
+    });
+
+    await fs.promises.writeFile(path, json);
+  })
+);
 
 export function simplifyImageFilenames(document) {
   let html = document.toString();
