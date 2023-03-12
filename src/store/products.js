@@ -119,5 +119,10 @@ Object.keys(products).forEach((key) => {
 });
 
 export default {
-  get: (key) => (key === "all" ? { data: allProducts } : products[key]),
+  get: (key) =>
+    key === "all"
+      ? { data: allProducts }
+      : key === "store"
+      ? products
+      : products[key],
 };
