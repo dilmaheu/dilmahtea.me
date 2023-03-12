@@ -1,31 +1,24 @@
 ---
 import Icon from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
-import { Picture } from "astro-imagetools/components";
+
+import FilteredProducts from "@solid/FilteredProducts";
+import ProductFiltersForm from "@solid/ProductFiltersForm";
 
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
-import ProductFiltersForm from "@components/ProductFiltersForm.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
-import FilterProducts from "@scripts/FilterProducts.astro";
-import ShowPreferredVariants from "@scripts/ShowPreferredVariants.astro";
-import getFilteredProducts from "@utils/getFilteredProducts";
-import {
-  getAvailableSizes,
-  getAvailableVariants,
-} from "@utils/getAvailableVariants";
 
 const { white_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_content,
-  { locale, size, variant, Title: category } = page,
-  { ASSETS_URL } = import.meta.env;
+  { locale } = page;
 
 const productSizes = CMS.get("productSizes"),
   productVariants = CMS.get("productVariants");
@@ -33,17 +26,6 @@ const productSizes = CMS.get("productSizes"),
 const subCategories = page.Sub_categories.data.filter(
   ({ attributes: { products } }) => products.data.length > 0
 );
-
-// @ts-ignore
-const filteredProducts = getFilteredProducts({
-  locale,
-  variant,
-  size,
-  category,
-});
-
-const availableSizes = getAvailableSizes(variant),
-  availableVariants = getAvailableVariants(size);
 ---
 
 <style lang="scss">
@@ -144,112 +126,29 @@ const availableSizes = getAvailableSizes(variant),
 
     <div class="wrapper mb-[30px]">
       <ProductFiltersForm
-        {size}
-        {variant}
+        client:load
         {locale}
-        {availableSizes}
-        {availableVariants}
+        {productSizes}
+        {productVariants}
         {recurData}
       />
     </div>
 
     {/* Products Section */}
     <section class="grid gap-y-[50px]" role="main">
-      <div
-        role="list"
-        aria-label={ariaLabelRecurData.Product_all_teas_text}
-        class="wrapper grid sm:grid-cols-2 lg:grid-cols-3 gap-[50px] overflow-hidden"
+      <FilteredProducts
+        client:load
+        {page}
+        {recurData}
+        {white_right_arrow}
+        category={page.Title}
       >
-        {
-          filteredProducts.map((product, i) => (
-            <div
-              role="listitem"
-              data-variant-key={product.variantKey}
-              data-base-product-title={product.baseProductTitle}
-              aria-label={
-                page.Aria_label_tea_item_text + (product.order || i + 1)
-              }
-              style="clip-path: url(#product-card-curve)"
-              class:list={[
-                product.baseProductTitle &&
-                  filteredProducts[i - 1]?.baseProductTitle ===
-                    product.baseProductTitle &&
-                  "hidden",
-                "post-card link-section flex flex-wrap w-full mx-auto max-w-[380px] sm:max-w-none bg-primary",
-              ]}
-            >
-              <div class="relative block w-full">
-                <Picture
-                  layout="fullWidth"
-                  alt={product.Intro_blob.data.attributes.alternativeText}
-                  src={ASSETS_URL + product.Intro_blob.data.attributes.url}
-                  attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                  sizes={[
-                    "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
-                    "(min-width: 640px) calc(45vw - 16px)",
-                    "min(90vw, 380px)",
-                  ].join(", ")}
-                />
-                {product.Stock_amount < 1 && (
-                  <>
-                    <div
-                      class:list={[
-                        "absolute top-[12%] right-[12%] flex items-center px-5 sm:px-[37px]",
-                        "py-[5px] sm:py-[7px] sm:text-xl font-semibold text-dark2",
-                        "border-2 border-[#fabf21] bg-[#fabf21]/80 rounded-full",
-                      ]}
-                    >
-                      {recurData.Product_sold_out_text}
-                    </div>
-
-                    <div
-                      class:list={[
-                        "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none",
-                        "w-full text-sm sm:text-base font-medium text-dark2 bg-[#faf8e5]/80",
-                      ]}
-                    >
-                      <Icon
-                        name="mdi:alert-circle"
-                        class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
-                      />
-                      {recurData.Item_stock_text}
-                      {new Date(product.In_stock_date).toLocaleString("en-GB", {
-                        year: "2-digit",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </div>
-                  </>
-                )}
-              </div>
-              <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
-                <div class="product-card-title alice leading-[120%] md:leading-[110%]">
-                  <a
-                    aria-label={
-                      (product.Stock_amount < 1
-                        ? `${recurData.Product_sold_out_text}, `
-                        : "") + product.Title
-                    }
-                    class="main-link"
-                    set:text={product.Title}
-                    href={`/` + product.Meta.URL_slug}
-                  />
-
-                  <span class="icon product-card-title-icon">
-                    <img class="w-full h-full" {...white_right_arrow} />
-                  </span>
-                </div>
-
-                <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
-                  <Markdown>{product.Intro_text}</Markdown>
-                </div>
-              </div>
-            </div>
-          ))
-        }
-      </div>
-
-      <ShowPreferredVariants {variant} {size} />
+        <Icon
+          slot="alertCircleIcon"
+          name="mdi:alert-circle"
+          class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+        />
+      </FilteredProducts>
 
       {
         subCategories.map(({ attributes: { Title, Intro_text } }) => (
@@ -267,112 +166,19 @@ const availableSizes = getAvailableSizes(variant),
               </div>
             </div>
 
-            <div
-              role="list"
-              aria-label={page.Title}
-              class="wrapper grid sm:grid-cols-2 lg:grid-cols-3 gap-[50px] overflow-hidden"
+            <FilteredProducts
+              client:load
+              {page}
+              {recurData}
+              {white_right_arrow}
+              subCategory={Title}
             >
-              {
-                // @ts-ignore
-                getFilteredProducts({
-                  locale,
-                  variant,
-                  size,
-                  sub_category: Title,
-                }).map((product, i) => (
-                  <div
-                    role="listitem"
-                    data-variant-key={product.variantKey}
-                    data-base-product-title={product.baseProductTitle}
-                    aria-label={
-                      page.Aria_label_tea_item_text + (product.order || i + 1)
-                    }
-                    style="clip-path: url(#product-card-curve)"
-                    class:list={[
-                      product.baseProductTitle &&
-                        filteredProducts[i - 1]?.baseProductTitle ===
-                          product.baseProductTitle &&
-                        "hidden",
-                      "post-card link-section flex flex-wrap w-full mx-auto max-w-[380px] sm:max-w-none bg-primary",
-                    ]}
-                  >
-                    <div class="relative block w-full">
-                      <Picture
-                        layout="fullWidth"
-                        alt={product.Intro_blob.data.attributes.alternativeText}
-                        src={
-                          ASSETS_URL + product.Intro_blob.data.attributes.url
-                        }
-                        attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                        sizes={[
-                          "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
-                          "(min-width: 640px) calc(45vw - 16px)",
-                          "min(90vw, 380px)",
-                        ].join(", ")}
-                      />
-                      {product.Stock_amount < 1 && (
-                        <>
-                          <div
-                            class:list={[
-                              "absolute top-[12%] right-[12%] flex items-center px-5 sm:px-[37px]",
-                              "py-[5px] sm:py-[7px] sm:text-xl font-semibold text-dark2",
-                              "border-2 border-[#fabf21] bg-[#fabf21]/80 rounded-full",
-                            ]}
-                          >
-                            {recurData.Product_sold_out_text}
-                          </div>
-
-                          <div
-                            class:list={[
-                              "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none",
-                              "w-full text-sm sm:text-base font-medium text-dark2 bg-[#faf8e5]/80",
-                            ]}
-                          >
-                            <Icon
-                              name="mdi:alert-circle"
-                              class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
-                            />
-                            {recurData.Item_stock_text}
-                            {new Date(product.In_stock_date).toLocaleString(
-                              "en-GB",
-                              {
-                                year: "2-digit",
-                                month: "short",
-                                day: "numeric",
-                              }
-                            )}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                    <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
-                      <div class="product-card-title alice leading-[120%] md:leading-[110%]">
-                        <a
-                          aria-label={
-                            (product.Stock_amount < 1
-                              ? `${recurData.Product_sold_out_text}, `
-                              : "") + product.Title
-                          }
-                          class="main-link"
-                          set:text={product.Title}
-                          href={`/` + product.Meta.URL_slug}
-                        />
-
-                        <span class="icon product-card-title-icon">
-                          <img class="w-full h-full" {...white_right_arrow} />
-                        </span>
-                      </div>
-
-                      <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
-                        <Markdown>{product.Intro_text}</Markdown>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              }
-            </div>
-
-            <ShowPreferredVariants {variant} {size} />
+              <Icon
+                slot="alertCircleIcon"
+                name="mdi:alert-circle"
+                class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+              />
+            </FilteredProducts>
           </div>
         ))
       }
@@ -391,5 +197,3 @@ const availableSizes = getAvailableSizes(variant),
     )
   }
 </PostDetailsLayout>
-
-<FilterProducts pathNameRegex={`^\\/[a-z]{2}\\/[a-z-]+(?=\\/)?`} />

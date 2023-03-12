@@ -1,7 +1,6 @@
 ---
 import CMS from "@store/CMS";
 import products from "@store/products";
-import variations from "@store/variations";
 
 import PageLayout from "@layouts/PageLayout.astro";
 import CheckoutLayout from "@layouts/CheckoutLayout.astro";
@@ -47,6 +46,8 @@ export async function getStaticPaths() {
     homeRecipe,
     homeEstate,
     homepage,
+    homeProduct,
+    productCategories,
     cart,
     checkoutKindness,
     checkoutInformation,
@@ -55,8 +56,6 @@ export async function getStaticPaths() {
   } = CMS.get("all");
 
   const allProducts = products.get("all");
-
-  const { homeProductVariations, productCategoriesVariations } = variations;
 
   const allLocales = i18NLocales.data.map(({ attributes }) =>
     attributes.code.substring(0, 2)
@@ -198,17 +197,13 @@ export async function getStaticPaths() {
     posts: locale && getPosts(estates, locale),
   }));
 
-  const productPages = getPages(homeProductVariations, (page, { locale }) => ({
+  const productPages = getPages(homeProduct, () => ({
     type: "product",
   }));
 
-  const productCategoryPages = getPages(
-    productCategoriesVariations,
-    (page, { locale }) => ({
-      type: "productCategory",
-      posts: locale && getPosts(allProducts, locale),
-    })
-  );
+  const productCategoryPages = getPages(productCategories, () => ({
+    type: "productCategory",
+  }));
 
   const homepagePages = getPages(homepage, (page, { locale }) => ({
     type: "homepage",

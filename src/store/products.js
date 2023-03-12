@@ -4,18 +4,33 @@
 import CMS from "@store/CMS";
 
 const catalog = CMS.get("catalog").data.attributes,
-  productSizes = CMS.get("productSizes").data.map(
-    ({ attributes }) => attributes.Title
-  ),
-  productVariants = CMS.get("productVariants").data.map(
-    ({ attributes }) => attributes.Title
+  productSizes = CMS.get("productSizes"),
+  productVariants = CMS.get("productVariants"),
+  productCategories = CMS.get("productCategories");
+
+const filterUnavailableTypes = ({ attributes }) => {
+  const { products, localizations } = attributes;
+
+  localizations.data = localizations.data.filter(
+    (localization) => localization.attributes.products.data.length > 0
   );
 
+  return products.data.length > 0;
+};
+
+productSizes.data = productSizes.data.filter(filterUnavailableTypes);
+productVariants.data = productVariants.data.filter(filterUnavailableTypes);
+productCategories.data = productCategories.data.filter(filterUnavailableTypes);
+
 const variantsOrder = [
-  ...productVariants,
-  ...productSizes,
-  ...productVariants
-    .map((variant) => productSizes.map((size) => variant + " | " + size))
+  ...productVariants.data.map(({ attributes }) => attributes.Title),
+  ...productSizes.data.map(({ attributes }) => attributes.Title),
+  ...productVariants.data
+    .map(({ attributes: { Title: variant } }) =>
+      productSizes.data.map(
+        ({ attributes: { Title: size } }) => variant + " | " + size
+      )
+    )
     .flat(),
 ];
 
@@ -119,5 +134,10 @@ Object.keys(products).forEach((key) => {
 });
 
 export default {
-  get: (key) => (key === "all" ? { data: allProducts } : products[key]),
+  get: (key) =>
+    key === "all"
+      ? { data: allProducts }
+      : key === "store"
+      ? products
+      : products[key],
 };
