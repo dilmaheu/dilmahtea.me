@@ -1,8 +1,6 @@
 import { marked } from "marked";
-import { renderPicture } from "astro-imagetools/api";
-
 import productsStore from "@store/products";
-import localizeCMSImage from "@utils/localizeCMSImage";
+import { renderPicture } from "astro-imagetools/api";
 
 async function processProductData(attributes) {
   const {
@@ -17,22 +15,18 @@ async function processProductData(attributes) {
     Meta: { URL_slug },
   } = attributes;
 
-  // const Intro_blob_HTML = await renderPicture({
-  //   attributes: { img: { style: "aspect-ratio: 6 / 5;" } },
-  //   alt: Intro_blob.data.attributes.alternativeText,
-  //   src: import.meta.env.ASSETS_URL + Intro_blob.data.attributes.url,
-  //   sizes: [
-  //     "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
-  //     "(min-width: 640px) calc(45vw - 16px)",
-  //     "min(90vw, 380px)",
-  //   ].join(", "),
-  // });
-
-  const Intro_blob_HTML = `<img src="${await localizeCMSImage(
-    Intro_blob.data.attributes.url
-  )}" alt="${
-    Intro_blob.data.attributes.alternativeText
-  }" style="aspect-ratio: 6 / 5;">`;
+  const Intro_blob_HTML = Object.values(
+    await renderPicture({
+      attributes: { img: { style: "aspect-ratio: 6 / 5;" } },
+      alt: Intro_blob.data.attributes.alternativeText,
+      src: import.meta.env.ASSETS_URL + Intro_blob.data.attributes.url,
+      sizes: [
+        "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
+        "(min-width: 640px) calc(45vw - 16px)",
+        "min(90vw, 380px)",
+      ].join(", "),
+    })
+  ).join("");
 
   const Intro_text_HTML = marked(Intro_text);
 
