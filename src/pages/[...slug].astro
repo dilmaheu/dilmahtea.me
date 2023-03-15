@@ -23,6 +23,7 @@ import CheckoutInformation from "@pages/CheckoutInformation.astro";
 import UserAccount from "@pages/UserAccount.astro";
 import UserAccountDashboard from "@pages/UserAccountDashboard.astro";
 import UserAccountOrder from "@pages/UserAccountOrder.astro";
+import UserAccountAddress from "@pages/UserAccountAddress.astro";
 
 import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 import DefaultRouteRedirect from "@scripts/DefaultRouteRedirect.astro";
@@ -59,6 +60,7 @@ export async function getStaticPaths() {
     userAccounts,
     userAccountDashboard,
     userAccountOrder,
+    userAccountAddress,
   } = CMS.get("all");
 
   const allLocales = i18NLocales.data.map(({ attributes }) =>
@@ -235,20 +237,47 @@ export async function getStaticPaths() {
     type: "checkoutSuccess",
   }));
 
-  const userAccountPages = getPages(userAccounts, ( page ) => ({
-    type: "account",
-    slug: 
-      page.attributes.Meta.URL_slug.substring(0, 8) !== `account/`
-       ? page.attributes.Meta.URL_slug = `account/` + page.attributes.Meta.URL_slug.toLowerCase()
-       : page.attributes.Meta.URL_slug
-  }));
+  function getAccountUrls ({attributes: {Meta}}) {
+    Meta.URL_slug.substring(0, 8) !== `account/`
+      ?((Meta.URL_slug = `account/` 
+          + Meta.URL_slug.toLowerCase()
+        ) && ( Meta.Canonical_link = `account/` 
+          + Meta.Canonical_link.toLowerCase()
+        )
+      )
+      : Meta.URL_slug;
+  }
+
+  const getAccountSlug = ({attributes: {Meta}}) =>
+    Meta.URL_slug.substring(0, 8) !== `account/`
+      ?( Meta.URL_slug = `account/` 
+        + Meta.URL_slug.toLowerCase()
+      )
+      : Meta.URL_slug;
 
   const userAccountDashboardPages = getPages(userAccountDashboard, (page, { locale }) => ({
     type: "accountDashboard",
     kindnessCauses: locale && getPosts(kindnessCauses, locale),
   }));
 
-  const userAccountOrderPages = getPages(userAccountOrder, () => ({ type: "accountOrders"}));
+  const userAccountPages = getPages(userAccounts, ( page ) => ({
+    type: "account",
+    Meta: getAccountUrls(page),
+    slug: getAccountSlug(page),
+  }));
+
+  const userAccountOrderPages = getPages(userAccountOrder, ( page ) => ({ 
+    type: "accountOrders",
+    Meta: getAccountUrls(page),
+    slug: getAccountSlug(page),
+  }));
+
+  const userAccountAddressPages = getPages(userAccountAddress, ( page, { locale }) => ({ 
+    type: "accountAddress",
+    countries: locale && getPosts(countries, locale),
+    Meta: getAccountUrls(page),
+    slug: getAccountSlug(page),
+  }));
 
   return [
     ...plansPages,
@@ -274,6 +303,7 @@ export async function getStaticPaths() {
     ...userAccountPages,
     ...userAccountDashboardPages,
     ...userAccountOrderPages,
+    ...userAccountAddressPages,
   ];
 }
 
@@ -301,10 +331,12 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
 
       page.type === `plan`
         ? (page.Meta.URL_slug = `plan/` + page.Title.toLowerCase())
-        : page.type === `account`
+        : page.type === ( `account` || `accountAddress` || `accountOrders` )
         ? (page.Meta.URL_slug.substring(0, 8) !== `account/`
-           ? page.Meta.URL_slug = `account/` + page.Meta.URL_slug.toLowerCase()
-           : page.Meta.URL_slug
+            ?(page.Meta.URL_slug = `account/` 
+                + page.Meta.URL_slug.toLowerCase()
+              )
+            : page.Meta.URL_slug
           )
         : page.Meta.URL_slug;
 
@@ -393,6 +425,8 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
             <UserAccountDashboard page={page} />
           ) : page.type === `accountOrders` ? (
             <UserAccountOrder page={page} {recurData} />
+          ) : page.type === `accountAddress` ? (
+            <UserAccountAddress page={page} />
           ) : null}
         </Layout>
       );
