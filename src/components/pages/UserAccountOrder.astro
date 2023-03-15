@@ -9,16 +9,21 @@ import RecurringImages from "@store/RecurringImages";
 const { warning_notification } = RecurringImages;
 
 const { page, recurData } = Astro.props,
-  { locale} = page,
-  { ASSETS_URL } = import.meta.env;
+  { Title, locale } = page;
 
-const dashboard = CMS.get("userAccountDashboard", locale);
+const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
 
-const { 
-  Block3_visibility: orders_visibility,
-  Block3: orders,
-} = dashboard,
-{Block3_title: page_title} = orders;
+const {
+  Button_track_package,
+  Button_track_package_text,
+  Button_buy_again_text,
+  Button_sold_out_text,
+  Label_order,
+  text_estimated_delivery,
+  text_estimated_shipment,
+  text_delivered,
+  text_more_products_in_this_order,
+} = userAccountRecurData;
 ---
 <style lang="scss">
   @use "src/styles/colors";
@@ -35,7 +40,7 @@ const {
   }
 
   .dashboard-sec {
-    @apply bg-white2 rounded-[10px] text-dark;
+    @apply bg-white2 rounded-[10px] text-dark2;
 
     padding: clamp(15px, 2.08vw + 0.01rem, 25px) clamp(15px, 2.2vw + 0.1rem, 35px);
 
@@ -47,7 +52,7 @@ const {
     @apply grid grid-cols-[repeat(auto-fit,minmax(96px,1fr))] gap-y-[15px] items-center w-full;
 
     .month{
-      @apply px-2.5 py-0.5 lg:text-lg font-medium text-dark text-center rounded-full;
+      @apply px-2.5 py-0.5 lg:text-lg font-medium text-dark2 text-center rounded-full;
     }
     .active{
       @apply font-semibold text-primary bg-lightgreen;
@@ -64,7 +69,7 @@ const {
   {page.Breadcrumb && (
     <div 
       role="banner"
-      class="hidden md:flex flex-wrap gap-2 alice text-2xl leading-[110%] text-primary mt-[25px]" 
+      class="flex flex-wrap gap-2 alice text-2xl leading-[110%] text-primary mt-[25px]" 
     >
       {page.Breadcrumb?.Steps.map((step, index) => (
         <div class="flex items-center gap-2">
@@ -82,10 +87,9 @@ const {
 
 <div class="wrapper py-[50px] w-full flex flex-wrap">
   <div class="w-full md:w-2/3 order-2 md:order-1">
-    {(orders_visibility && orders) &&(
-      <section class="grid gap-[30px]">
+    <section class="grid gap-[30px]">
         <h1 class="dashboard-sec-title alice">
-          {page_title}
+          {Title}
         </h1>
 
         <div class="dashboard-sec grid gap-2.5">
@@ -96,14 +100,14 @@ const {
           <div class="flex flex-col gap-5">
             <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1">
               <div class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-dark2">
-                {orders.Label_order} #132131
+                {Label_order} #132131
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="8" height="16" viewBox="0 0 8 16.7">
                   <path d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z" style="fill:#2b4b50"/>
                 </svg>
               </div>
-              <div class="text-gray">
-                {orders.text_estimated_delivery} 18-Feb-2023
+              <div class="text-dark">
+                {text_estimated_delivery} 18-Feb-2023
               </div>
             </div>
 
@@ -126,18 +130,18 @@ const {
                         1x Chamomile tea
                       </h2>
 
-                      <div class="text-gray">
+                      <div class="text-dark">
                         Variant: 100gm
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {orders.Button_track_package &&(
+                {Button_track_package &&(
                   <div>
                     <a href="#">
                       <div class="px-[30px] py-1.5 font-bold leading-[150%] text-lightgray bg-primary rounded-full">
-                        {orders.Button_track_package_text}
+                        {Button_track_package_text}
                       </div>
                     </a>
                   </div>
@@ -149,14 +153,14 @@ const {
           <div class="flex flex-col gap-5 pt-2.5 border-t border-lightgray">
             <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1">
               <div class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-dark2">
-                {orders.Label_order} #35995
+                {Label_order} #35995
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="8" height="16" viewBox="0 0 8 16.7">
                   <path d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z" style="fill:#2b4b50"/>
                 </svg>
               </div>
-              <div class="text-gray">
-                {orders.text_estimated_shipment} 18-Feb-2023
+              <div class="text-dark">
+                {text_estimated_shipment} 18-Feb-2023
               </div>
             </div>
 
@@ -179,7 +183,7 @@ const {
                         2x Ceylon cinnamon spice tea
                       </h2>
 
-                      <div class="text-gray">
+                      <div class="text-dark">
                         Variant: 100gm
                       </div>
                     </div>
@@ -201,7 +205,7 @@ const {
                         1x Green tea
                       </h2>
 
-                      <div class="text-gray">
+                      <div class="text-dark">
                         Variant: 100gm
                       </div>
                     </div>
@@ -223,18 +227,18 @@ const {
                         3x Rose with french vanilla tea
                       </h2>
 
-                      <div class="text-gray">
+                      <div class="text-dark">
                         Variant: 100gm
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {orders.Button_track_package &&(
+                {Button_track_package &&(
                   <div>
                     <a href="#">
                       <div class="px-[30px] py-1.5 font-bold leading-[150%] text-lightgray bg-primary rounded-full">
-                        {orders.Button_track_package_text}
+                        {Button_track_package_text}
                       </div>
                     </a>
                   </div>
@@ -246,14 +250,14 @@ const {
           <div class="flex flex-col gap-5 pt-2.5 border-t border-lightgray">
             <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1">
               <div class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-dark2">
-                {orders.Label_order} #35995
+                {Label_order} #35995
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="8" height="17" viewBox="0 0 8 16.7">
                   <path d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z" style="fill:#2b4b50"/>
                 </svg>
               </div>
-              <div class="text-gray">
-                {orders.text_delivered} 18-Feb-2023
+              <div class="text-dark">
+                {text_delivered} 18-Feb-2023
               </div>
             </div>
 
@@ -276,7 +280,7 @@ const {
                         3x Natural rooibos tea
                       </h2>
 
-                      <div class="text-gray">
+                      <div class="text-dark">
                         Variant: 100gm
                       </div>
                     </div>
@@ -286,7 +290,7 @@ const {
                 <div>
                   <a href="#">
                     <div class="px-[30px] py-1.5 font-bold leading-[150%] text-lightgray bg-primary rounded-full">
-                      {orders.Button_buy_again_text}
+                      {Button_buy_again_text}
                     </div>
                   </a>
                 </div>
@@ -303,14 +307,14 @@ const {
           <div class="flex flex-col gap-5">
             <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1">
               <div class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-dark2">
-                {orders.Label_order} #132131
+                {Label_order} #132131
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="8" height="16" viewBox="0 0 8 16.7">
                   <path d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z" style="fill:#2b4b50"/>
                 </svg>
               </div>
-              <div class="text-gray">
-                {orders.text_estimated_delivery} 18-Feb-2023
+              <div class="text-dark">
+                {text_estimated_delivery} 18-Feb-2023
               </div>
             </div>
 
@@ -333,18 +337,18 @@ const {
                         1x Chamomile tea
                       </h2>
 
-                      <div class="text-gray">
+                      <div class="text-dark">
                         Variant: 100gm
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {orders.Button_track_package &&(
+                {Button_track_package &&(
                   <div>
                     <a href="#">
                       <div class="px-[30px] py-1.5 font-bold leading-[150%] text-lightgray bg-primary rounded-full">
-                        {orders.Button_track_package_text}
+                        {Button_track_package_text}
                       </div>
                     </a>
                   </div>
@@ -356,25 +360,28 @@ const {
           <div class="flex flex-col gap-5 pt-2.5 border-t border-lightgray">
             <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1">
               <div class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-dark2">
-                {orders.Label_order} #35995
+                {Label_order} #35995
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="8" height="16" viewBox="0 0 8 16.7">
                   <path d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z" style="fill:#2b4b50"/>
                 </svg>
               </div>
-              <div class="text-gray">
-                {orders.text_estimated_shipment} 18-Feb-2023
+              <div class="text-dark">
+                {text_estimated_shipment} 18-Feb-2023
               </div>
             </div>
 
             <div 
               class:list={[
-                "flex items-center gap-2.5 w-full p-[15px] sm:py-2.5 select-none", 
-                "text-sm sm:text-base font-medium text-dark2 bg-[#FFFCE1] rounded-[5px]"
+                "flex items-center justify-center gap-2.5 w-full p-[15px] sm:py-2.5 select-none", 
+                "text-sm sm:text-base font-medium text-dark2 bg-[#FDF6B9] rounded-[5px]"
               ]}
             >
               <img 
-                class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+                class:list={[
+                  "inline-flex p-0.5 w-[26px] text-white bg-[#febf21]",
+                  "rounded-full select-none drop-shadow-lg"
+                ]}
                 {...warning_notification}
               />
               {recurData.Item_stock_text} 23 Jun 2023 
@@ -399,7 +406,7 @@ const {
                         2x Ceylon cinnamon spice tea
                       </h2>
 
-                      <div class="text-gray">
+                      <div class="text-dark">
                         Variant: 100gm
                       </div>
                     </div>
@@ -421,7 +428,7 @@ const {
                         1x Green tea
                       </h2>
 
-                      <div class="text-gray">
+                      <div class="text-dark">
                         Variant: 100gm
                       </div>
                     </div>
@@ -443,18 +450,18 @@ const {
                         3x Rose with french vanilla tea
                       </h2>
 
-                      <div class="text-gray">
+                      <div class="text-dark">
                         Variant: 100gm
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {orders.Button_track_package &&(
+                {Button_track_package &&(
                   <div>
                     <a href="#">
                       <div class="px-[30px] py-1.5 font-bold leading-[150%] text-lightgray bg-primary rounded-full">
-                        {orders.Button_track_package_text}
+                        {Button_track_package_text}
                       </div>
                     </a>
                   </div>
@@ -465,7 +472,7 @@ const {
                     href="#"
                     class="font-bold leading-[150%] text-primary"
                   >
-                    10 {orders.text_more_products_in_this_order}
+                    10 {text_more_products_in_this_order}
 
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="8" viewBox="0 0 16.7 8" class="inline-flex ml-2.5">
                       <path d="M.4.3A1.4,1.4,0,0,1,2.1.3L8.4,5.4,14.6.3a1.4,1.4,0,0,1,.9-.3,1.6,1.6,0,0,1,.9.3.8.8,0,0,1,.3.8.9.9,0,0,1-.3.7L9.3,7.7a1.5,1.5,0,0,1-1.8,0L.4,1.8A.8.8,0,0,1,0,1.1,1.2,1.2,0,0,1,.4.3Z" style="fill:#2b4b50"/>
@@ -479,14 +486,14 @@ const {
           <div class="flex flex-col gap-5 pt-2.5 border-t border-lightgray">
             <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1">
               <div class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-dark2">
-                {orders.Label_order} #35995
+                {Label_order} #35995
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="8" height="17" viewBox="0 0 8 16.7">
                   <path d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z" style="fill:#2b4b50"/>
                 </svg>
               </div>
-              <div class="text-gray">
-                {orders.text_delivered} 18-Feb-2023
+              <div class="text-dark">
+                {text_delivered} 18-Feb-2023
               </div>
             </div>
 
@@ -509,7 +516,7 @@ const {
                         3x Natural rooibos tea
                       </h2>
 
-                      <div class="text-gray">
+                      <div class="text-dark">
                         Variant: 100gm
                       </div>
                     </div>
@@ -522,7 +529,7 @@ const {
                     class="cursor-not-allowed"
                   >
                     <div class="px-[30px] py-1.5 font-bold leading-[150%] text-white bg-gray rounded-full">
-                      {orders.Button_sold_out_text}
+                      {Button_sold_out_text}
                     </div>
                   </a>
                 </div>
@@ -530,8 +537,7 @@ const {
             </div>
           </div>
         </div>
-      </section>
-    )}
+    </section>
   </div>
 
   <div 

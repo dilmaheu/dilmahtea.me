@@ -4,13 +4,13 @@ const userAccountOrderQuery = `
       data {
         attributes {
           locale
+          Title
           Breadcrumb{
             Steps{
               Name
               Link
             }
           }
-          Button_change_text
           Meta {
             HTML_Title
             Meta_description
@@ -23,13 +23,13 @@ const userAccountOrderQuery = `
             data {
               attributes {
                 locale
+                Title
                 Breadcrumb{
                   Steps{
                     Name
                     Link
                   }
                 }
-                Button_change_text
                 Meta {
                   HTML_Title
                   Meta_description
