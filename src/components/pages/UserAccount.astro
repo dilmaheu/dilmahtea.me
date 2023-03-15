@@ -7,10 +7,11 @@ import Markdown from "@astrojs/markdown-component";
 const { green_cup } = RecurringImages;
 
 const { page } = Astro.props,
-  { locale,
+  {
+    locale,
     Form: form,
     Social_media: social_media,
-    Block_text: block_text
+    Block_text: block_text,
   } = page,
   { ASSETS_URL } = import.meta.env;
 
@@ -19,23 +20,21 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
 const {
   Facebook_icon: fb_icon,
   Google_icon: g_icon,
-  Twitter_icon: twitter_icon
+  Twitter_icon: twitter_icon,
 } = userAccountRecurData;
 
 const emailOrPhone = page?.Form?.Email_or_phone === true;
 
-function fromEntries(array){
-  const formInputItems = 
-    Object.fromEntries(
-      Object.entries(array).slice(0, 4)
-    ),
-  formIputs = 
-    Object.values(formInputItems)
-      .filter(val => val === true).length;
+function fromEntries(array) {
+  const formInputItems = Object.fromEntries(Object.entries(array).slice(0, 4)),
+    formIputs = Object.values(formInputItems).filter(
+      (val) => val === true
+    ).length;
 
   return formIputs;
 }
 ---
+
 <style lang="scss">
   @use "src/styles/colors";
 
@@ -60,7 +59,7 @@ function fromEntries(array){
         width: 350px;
       }
 
-      input{
+      input {
         border: 1px solid colors.$primary;
 
         @apply block w-full mt-2.5 px-4 py-3 text-lg font-normal leading-[115%] text-dark2 rounded-[20px] bg-transparent;
@@ -74,13 +73,13 @@ function fromEntries(array){
       }
     }
 
-    .form-item{
+    .form-item {
       @apply w-full md:w-[330px] lg:w-[350px] mx-auto;
     }
   }
 
-  .hero-text-markdown{
-    a{
+  .hero-text-markdown {
+    a {
       color: colors.$primary;
       font-weight: 700;
     }
@@ -89,15 +88,17 @@ function fromEntries(array){
 
 <div class="wrapper py-[50px]">
   <div role="banner">
-    {page.Intro_blob?.data &&(
-      <div class="w-full h-full md:max-w-[740px] p-2.5 mb-[35px] mx-auto">
-        <img
-          class="w-full max-h-[330px] object-contain"
-          src={await localizeCMSImage(page.Intro_blob?.data?.attributes?.url)}
-          alt={page.Intro_blob?.data?.attributes?.alternativeText}
-        />
-      </div>
-    )}
+    {
+      page.Intro_blob?.data && (
+        <div class="w-full h-full md:max-w-[740px] p-2.5 mb-[35px] mx-auto">
+          <img
+            class="w-full max-h-[330px] object-contain"
+            src={await localizeCMSImage(page.Intro_blob?.data?.attributes?.url)}
+            alt={page.Intro_blob?.data?.attributes?.alternativeText}
+          />
+        </div>
+      )
+    }
 
     <h1 class="hero-title alice text-primary text-center">
       {page.Title}
@@ -109,11 +110,11 @@ function fromEntries(array){
   </div>
 
   {
-    page.Intro_text &&(
-      <div 
+    page.Intro_text && (
+      <div
         class:list={[
           "hero-text hero-text-markdown w-full md:max-w-[740px]",
-          "pt-2.5 prose text-dark text-center mx-auto"
+          "pt-2.5 prose text-dark text-center mx-auto",
         ]}
       >
         <Markdown>{page.Intro_text}</Markdown>
@@ -121,40 +122,42 @@ function fromEntries(array){
     )
   }
 
-
   <section class="w-full md:max-w-[740px] mx-auto">
-    <div 
+    <div
       class:list={[
         form?.Blob?.data
           ? "grid md:grid-cols-2 gap-[35px]"
-          : "flex flex-wrap justify-center"
+          : "flex flex-wrap justify-center",
       ]}
     >
       <div>
-        {form &&(
-          <form>
-            <div 
-              class:list={[
-                "flex flex-wrap form-grid mt-[35px]",
-                (form &&(fromEntries(form)) === 1 ) 
-                  ? "justify-center" : "justify-between"
-              ]}
-            >
-              {emailOrPhone
-                ?(
+        {
+          form && (
+            <form>
+              <div
+                class:list={[
+                  "flex flex-wrap form-grid mt-[35px]",
+                  form && fromEntries(form) === 1
+                    ? "justify-center"
+                    : "justify-between",
+                ]}
+              >
+                {emailOrPhone ? (
                   <label class="mx-auto">
-                    {userAccountRecurData.Input_label_email + ` / `
-                      + userAccountRecurData.Input_label_phone}
+                    {userAccountRecurData.Input_label_email +
+                      ` / ` +
+                      userAccountRecurData.Input_label_phone}
 
                     <input
                       type="text"
                       name="first_name"
-                      placeholder={userAccountRecurData.Input_placeholder_email_or_phone}
+                      placeholder={
+                        userAccountRecurData.Input_placeholder_email_or_phone
+                      }
                       required
                     />
                   </label>
-                ) 
-                :(
+                ) : (
                   <>
                     {form.First_name && (
                       <label>
@@ -163,7 +166,9 @@ function fromEntries(array){
                         <input
                           type="text"
                           name="first_name"
-                          placeholder={userAccountRecurData.Input_placeholder_first_name}
+                          placeholder={
+                            userAccountRecurData.Input_placeholder_first_name
+                          }
                           required
                         />
                       </label>
@@ -175,7 +180,9 @@ function fromEntries(array){
                         <input
                           type="text"
                           name="last_name"
-                          placeholder={userAccountRecurData.Input_placeholder_last_name}
+                          placeholder={
+                            userAccountRecurData.Input_placeholder_last_name
+                          }
                           required
                         />
                       </label>
@@ -187,7 +194,9 @@ function fromEntries(array){
                         <input
                           type="email"
                           name="email"
-                          placeholder={userAccountRecurData.Input_placeholder_email}
+                          placeholder={
+                            userAccountRecurData.Input_placeholder_email
+                          }
                           required
                         />
                       </label>
@@ -199,129 +208,141 @@ function fromEntries(array){
                         <input
                           type="text"
                           name="phone_number"
-                          placeholder={userAccountRecurData.Input_placeholder_phone}
+                          placeholder={
+                            userAccountRecurData.Input_placeholder_phone
+                          }
                           required
                         />
                       </label>
                     )}
                   </>
-                )
-              }
+                )}
 
-              <div class="w-full">
-                <button
-                  class:list={[
-                    "flex justify-center py-3 px-20 mt-2.5 mx-auto",
-                    "w-full md:w-auto md:min-w-[330px] lg:min-w-[350px]",
-                    "font-bold text-lightgray bg-primary rounded-full"
-                  ]}
-                >
-                  {form?.Submit_button_text}
-                </button>
-              </div>
-            </div>
-          </form>
-        )}
-          
-        <div class="flex flex-wrap mx-auto justify-between form-grid">
-          <div class="w-full">
-            {social_media &&(
-              <div class="form-item mt-[35px] text-dark">
-                <div class="flex items-center">
-                  <hr class="w-full"/>
-                  <span class="text-gray px-3">
-                  {userAccountRecurData.Social_media_divider_or_text}
-                  </span>
-                  <hr class="w-full"/>
+                <div class="w-full">
+                  <button
+                    class:list={[
+                      "flex justify-center py-3 px-20 mt-2.5 mx-auto",
+                      "w-full md:w-auto md:min-w-[330px] lg:min-w-[350px]",
+                      "font-bold text-lightgray bg-primary rounded-full",
+                    ]}
+                  >
+                    {form?.Submit_button_text}
+                  </button>
                 </div>
               </div>
-            )}
+            </form>
+          )
+        }
 
-            {block_text &&(
-              <div 
-                class:list={[
-                  "hero-text-markdown prose mt-[35px] text-center text-dark",
-                  (emailOrPhone || form &&(fromEntries(form) === 1)) && "form-item"
-                ]}
-              >
-                <Markdown>{block_text}</Markdown>
-              </div>
-            )}
+        <div class="flex flex-wrap mx-auto justify-between form-grid">
+          <div class="w-full">
+            {
+              social_media && (
+                <div class="form-item mt-[35px] text-dark">
+                  <div class="flex items-center">
+                    <hr class="w-full" />
+                    <span class="text-gray px-3">
+                      {userAccountRecurData.Social_media_divider_or_text}
+                    </span>
+                    <hr class="w-full" />
+                  </div>
+                </div>
+              )
+            }
 
-            {social_media &&(
-              <div 
-                class:list={[
-                  "flex flex-wrap gap-[25px] justify-center mt-[25px] text-center text-dark",
-                  (emailOrPhone || form &&(fromEntries(form) === 1)) && "form-item"
-                ]}
-              >
-                {
-                  social_media.Facebook && (
+            {
+              block_text && (
+                <div
+                  class:list={[
+                    "hero-text-markdown prose mt-[35px] text-center text-dark",
+                    (emailOrPhone || (form && fromEntries(form) === 1)) &&
+                      "form-item",
+                  ]}
+                >
+                  <Markdown>{block_text}</Markdown>
+                </div>
+              )
+            }
+
+            {
+              social_media && (
+                <div
+                  class:list={[
+                    "flex flex-wrap gap-[25px] justify-center mt-[25px] text-center text-dark",
+                    (emailOrPhone || (form && fromEntries(form) === 1)) &&
+                      "form-item",
+                  ]}
+                >
+                  {social_media.Facebook && (
                     <div class="w-[70px] h-[70px] p-3 bg-lightgray2 rounded-full">
                       <img
-                        class="w-full h-full" 
-                        src={await localizeCMSImage(fb_icon?.data?.attributes.url)} 
+                        class="w-full h-full"
+                        src={await localizeCMSImage(
+                          fb_icon?.data?.attributes.url
+                        )}
                         alt={fb_icon?.data?.attributes.alternativeText}
                       />
                     </div>
-                  )
-                }
-                {
-                  social_media.Google && (
+                  )}
+                  {social_media.Google && (
                     <div class="w-[70px] h-[70px] p-3 bg-lightgray2 rounded-full">
                       <img
-                        class="w-full h-full" 
-                        src={await localizeCMSImage(g_icon?.data?.attributes.url)} 
+                        class="w-full h-full"
+                        src={await localizeCMSImage(
+                          g_icon?.data?.attributes.url
+                        )}
                         alt={g_icon?.data?.attributes.alternativeText}
                       />
                     </div>
-                  )
-                }
-                {
-                  social_media.Twitter && (
+                  )}
+                  {social_media.Twitter && (
                     <div class="w-[70px] h-[70px] p-3 bg-lightgray2 rounded-full">
                       <img
-                        class="w-full h-full" 
-                        src={await localizeCMSImage(twitter_icon?.data?.attributes.url)} 
+                        class="w-full h-full"
+                        src={await localizeCMSImage(
+                          twitter_icon?.data?.attributes.url
+                        )}
                         alt={twitter_icon?.data?.attributes.alternativeText}
                       />
                     </div>
-                  )
-                }
-              </div>
-            )}
+                  )}
+                </div>
+              )
+            }
 
-            {page?.Button_text &&(
-              <div class="flex flex-wrap justify-center text-center items-center gap-[25px] mt-[35px]">
-                {page?.Button_pretext &&(
-                  <div class="text-dark">
-                    {page?.Button_pretext}
-                  </div>
-                )}
-                  
-                <div 
-                  class:list={[
-                    "flex justify-center py-3 px-20 cursor-pointer",
-                    "font-bold text-lightgray bg-primary rounded-full"
+            {
+              page?.Button_text && (
+                <div class="flex flex-wrap justify-center text-center items-center gap-[25px] mt-[35px]">
+                  {page?.Button_pretext && (
+                    <div class="text-dark">{page?.Button_pretext}</div>
+                  )}
+
+                  <div
+                    class:list={[
+                      "flex justify-center py-3 px-20 cursor-pointer",
+                      "font-bold text-lightgray bg-primary rounded-full",
                     ]}
                   >
-                  {page?.Button_text}
+                    {page?.Button_text}
+                  </div>
                 </div>
-              </div>
-            )}
+              )
+            }
           </div>
         </div>
       </div>
 
-      {form?.Blob?.data &&(
-        <div class="flex items-center w-full h-full p-2.5 mt-[35px] mx-auto">
-          <img
-            class="w-full max-h-[320px] object-contain"
-            src={await localizeCMSImage(form.Blob?.data?.attributes?.url)}
-            alt={form.Blob?.data?.attributes?.alternativeText}
-          />
-        </div>
-      )}
+      {
+        form?.Blob?.data && (
+          <div class="flex items-center w-full h-full p-2.5 mt-[35px] mx-auto">
+            <img
+              class="w-full max-h-[320px] object-contain"
+              src={await localizeCMSImage(form.Blob?.data?.attributes?.url)}
+              alt={form.Blob?.data?.attributes?.alternativeText}
+            />
+          </div>
+        )
+      }
     </div>
   </section>
 </div>
