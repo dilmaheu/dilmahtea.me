@@ -75,6 +75,7 @@ const recurringElementQuery = `
           recipe_cooking_instructions
           recipe_tips
           recipe_discover
+          Recipes_related_products_title_text
           estate_location
           text_content
           product_made_love_from
@@ -160,6 +161,7 @@ const recurringElementQuery = `
                 recipe_cooking_instructions
                 recipe_tips
                 recipe_discover
+                Recipes_related_products_title_text
                 estate_location
                 text_content
                 product_made_love_from
