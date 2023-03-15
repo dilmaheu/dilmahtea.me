@@ -23,6 +23,31 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   { ASSETS_URL } = import.meta.env;
 
 const {
+  recipe_day,
+  recipe_days,
+  recipe_hour,
+  recipe_hours,
+  recipe_minute,
+  recipe_minutes,
+  recipe_recipe,
+  recipe_prep,
+  recipe_cook,
+  recipe_total,
+  recipe_jump_to_recipe,
+  recipe_similar,
+  recipe_nutrition_information,
+  recipe_yield,
+  recipe_amount_per_serving,
+  recipe_ingredients,
+  recipe_serving_size,
+  recipe_cooking_instructions,
+  Recipes_related_products_title_text,
+  recipe_tips
+} = recurData;
+
+const {
+  Time_cooking,
+  Time_preparation,
   Related_products: products,
 } = page;
 
@@ -39,22 +64,22 @@ function calcTime(timeArray) {
     day > 0
       ? day +
         (day === 1
-          ? ` ${recurData.recipe_day}\xa0\xa0`
-          : ` ${recurData.recipe_day}\xa0\xa0`)
+          ? ` ${recipe_day}\xa0\xa0`
+          : ` ${recipe_days}\xa0\xa0`)
       : "";
   const calcHour =
     hour > 0
       ? hour +
         (hour === 1
-          ? ` ${recurData.recipe_hour}\xa0\xa0`
-          : ` ${recurData.recipe_hours}\xa0\xa0`)
+          ? ` ${recipe_hour}\xa0\xa0`
+          : ` ${recipe_hours}\xa0\xa0`)
       : "";
   const calcMinute =
     minute > 0
       ? minute +
         (minute === 1
-          ? ` ${recurData.recipe_minute}`
-          : ` ${recurData.recipe_minutes}`)
+          ? ` ${recipe_minute}`
+          : ` ${recipe_minutes}`)
       : "";
 
   return calcDay + calcHour + calcMinute;
@@ -64,11 +89,11 @@ function calcTimeSm(timeArray) {
   const [day, hour, minute] = timeArray;
 
   const calcDay =
-    day > 0 ? day + `${recurData.recipe_day.substring(0, 1)}\xa0` : "";
+    day > 0 ? day + `${recipe_day.substring(0, 1)}\xa0` : "";
   const calcHour =
-    hour > 0 ? hour + `${recurData.recipe_hour.substring(0, 1)}\xa0` : "";
+    hour > 0 ? hour + `${recipe_hour.substring(0, 1)}\xa0` : "";
   const calcMinute =
-    minute > 0 ? minute + `${recurData.recipe_minute.substring(0, 1)}\xa0` : "";
+    minute > 0 ? minute + `${recipe_minute.substring(0, 1)}\xa0` : "";
 
   return calcDay + calcHour + calcMinute;
 }
@@ -143,7 +168,7 @@ page.Nutrition.forEach((item) => {
   <Fragment slot="recipe-header">
     <div
       role="complementary"
-      aria-label={recurData.recipe_recipe +
+      aria-label={recipe_recipe +
         ariaLabelRecurData.Recipe_timing_text}
       class="flex flex-wrap items-center recipe-Time-Container"
     >
@@ -153,14 +178,14 @@ page.Nutrition.forEach((item) => {
         </div>
 
         <div class="w-auto">
-          <div class="recipe-Time-Tag">{recurData.recipe_prep} :</div>
+          <div class="recipe-Time-Tag">{recipe_prep} :</div>
 
           <div class="hidden sm:block font-bold recipe-cooktime">
-            {time(page.Time_preparation)}
+            {time(Time_preparation)}
           </div>
 
           <div class="block sm:hidden font-bold recipe-cooktime">
-            {timeSm(page.Time_preparation)}
+            {timeSm(Time_preparation)}
           </div>
         </div>
       </div>
@@ -171,14 +196,14 @@ page.Nutrition.forEach((item) => {
         </div>
 
         <div class="w-auto">
-          <div class="recipe-Time-Tag">{recurData.recipe_cook} :</div>
+          <div class="recipe-Time-Tag">{recipe_cook} :</div>
 
           <div class="hidden sm:block font-bold recipe-cooktime">
-            {time(page.Time_cooking)}
+            {time(Time_cooking)}
           </div>
 
           <div class="block sm:hidden font-bold recipe-cooktime">
-            {timeSm(page.Time_cooking)}
+            {timeSm(Time_cooking)}
           </div>
         </div>
       </div>
@@ -189,14 +214,14 @@ page.Nutrition.forEach((item) => {
         </div>
 
         <div class="w-auto">
-          <div class="recipe-Time-Tag">{recurData.recipe_total} :</div>
+          <div class="recipe-Time-Tag">{recipe_total} :</div>
 
           <div class="hidden sm:block font-bold recipe-cooktime">
-            {totalTime(page.Time_preparation, page.Time_cooking)}
+            {totalTime(Time_preparation, Time_cooking)}
           </div>
 
           <div class="block sm:hidden font-bold recipe-cooktime">
-            {totalTimeSm(page.Time_preparation, page.Time_cooking)}
+            {totalTimeSm(Time_preparation, Time_cooking)}
           </div>
         </div>
       </div>
@@ -210,7 +235,7 @@ page.Nutrition.forEach((item) => {
             "text-base font-bold leading-[19px] text-primary text-center",
           ]}
         >
-          {recurData.recipe_jump_to_recipe}
+          {recipe_jump_to_recipe}
           <span class="icon relative top-0">
             <span class="relative ml-5 h-5">
               <img class="w-full h-full" {...green_down_arrow} />
@@ -229,7 +254,7 @@ page.Nutrition.forEach((item) => {
       "mt-6 ml-4 py-[13px] px-[23px] text-sm font-bold leading-[19px] text-lightgray text-center",
     ]}
   >
-    {recurData.recipe_jump_to_recipe}
+    {recipe_jump_to_recipe}
 
     <span class="icon">
       <img class="h-5" {...white_down_arrow} />
@@ -244,7 +269,7 @@ page.Nutrition.forEach((item) => {
       "hidden md:block text-base font-bold leading-[19px] text-lightgray text-center",
     ]}
   >
-    {recurData.recipe_jump_to_recipe}
+    {recipe_jump_to_recipe}
 
     <span class="icon">
       <img class="h-5" {...white_down_arrow} />
@@ -261,7 +286,7 @@ page.Nutrition.forEach((item) => {
             id="similar-recipe"
             class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title"
           >
-            {recurData.recipe_similar}
+            {recipe_similar}
             {page.Title}
           </h2>
 
@@ -283,7 +308,7 @@ page.Nutrition.forEach((item) => {
       class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title"
     >
       {page.Title}
-      {recurData.recipe_recipe}
+      {recipe_recipe}
     </h2>
 
     <div
@@ -295,7 +320,7 @@ page.Nutrition.forEach((item) => {
 
       <div
         role="complementary"
-        aria-label={recurData.recipe_recipe +
+        aria-label={recipe_recipe +
           ariaLabelRecurData.Recipe_timing_text}
         class="flex flex-wrap mt-5 gap-y-5 recipe-sec-time-container"
       >
@@ -306,15 +331,15 @@ page.Nutrition.forEach((item) => {
 
           <div class="w-auto text-dark">
             <div class="text-[10px] md:text-xs leading-[150%]">
-              {recurData.recipe_prep} :
+              {recipe_prep} :
             </div>
 
             <div class="hidden sm:block text-base font-medium leading-[150%]">
-              {time(page.Time_preparation)}
+              {time(Time_preparation)}
             </div>
 
             <div class="block sm:hidden text-base font-medium leading-[150%]">
-              {timeSm(page.Time_preparation)}
+              {timeSm(Time_preparation)}
             </div>
           </div>
         </div>
@@ -325,13 +350,13 @@ page.Nutrition.forEach((item) => {
           </div>
           <div class="w-auto text-dark">
             <div class="text-[10px] md:text-xs leading-[150%]">
-              {recurData.recipe_cook} :
+              {recipe_cook} :
             </div>
             <div class="hidden sm:block text-base font-medium leading-[150%]">
-              {time(page.Time_cooking)}
+              {time(Time_cooking)}
             </div>
             <div class="block sm:hidden text-base font-medium leading-[150%]">
-              {timeSm(page.Time_cooking)}
+              {timeSm(Time_cooking)}
             </div>
           </div>
         </div>
@@ -342,13 +367,13 @@ page.Nutrition.forEach((item) => {
           </div>
           <div class="w-auto text-dark">
             <div class="text-[10px] md:text-xs leading-[150%]">
-              {recurData.recipe_total} :
+              {recipe_total} :
             </div>
             <div class="hidden sm:block text-base font-medium leading-[150%]">
-              {totalTime(page.Time_preparation, page.Time_cooking)}
+              {totalTime(Time_preparation, Time_cooking)}
             </div>
             <div class="block sm:hidden text-base font-medium leading-[150%]">
-              {totalTimeSm(page.Time_preparation, page.Time_cooking)}
+              {totalTimeSm(Time_preparation, Time_cooking)}
             </div>
           </div>
         </div>
@@ -359,7 +384,7 @@ page.Nutrition.forEach((item) => {
       page.Nutrition.length > 0 && (
         <div
           role="complementary"
-          aria-label={recurData.recipe_nutrition_information}
+          aria-label={recipe_nutrition_information}
           class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
         >
           <div class="flex">
@@ -367,12 +392,12 @@ page.Nutrition.forEach((item) => {
 
             <div class="grid w-full items-center gap-[15px]">
               <h3 class="font-bold sm:font-semibold text-primary sm:text-dark2 recipe-sec-content-title">
-                {recurData.recipe_nutrition_information}
+                {recipe_nutrition_information}
               </h3>
 
               <div class="flex items-center gap-2.5 w-full">
                 <div class="text-xs font-bold leading-[150%] text-dark2">
-                  {recurData.recipe_yield}:
+                  {recipe_yield}:
                 </div>
 
                 <div class="text-lg font-bold leading-[150%] text-primary">
@@ -381,12 +406,12 @@ page.Nutrition.forEach((item) => {
               </div>
 
               <div class="text-base md:text-lg font-bold leading-[150%] text-dark2">
-                {recurData.recipe_amount_per_serving}:
+                {recipe_amount_per_serving}:
               </div>
 
               <div
                 role="list"
-                aria-label={recurData.recipe_amount_per_serving}
+                aria-label={recipe_amount_per_serving}
                 class="grid grid-flow-row gap-[5px] recipe-sec-nutritions-container"
               >
                 {page.Nutrition.map((item, idx) => (
@@ -414,21 +439,21 @@ page.Nutrition.forEach((item) => {
     }
 
     <div
-      aria-label={recurData.recipe_ingredients}
+      aria-label={recipe_ingredients}
       class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
     >
       <div class="flex flex-wrap justify-between">
         <h3
           class="font-bold sm:font-semibold text-primary sm:text-dark2 recipe-sec-content-title"
         >
-          {recurData.recipe_ingredients}
+          {recipe_ingredients}
         </h3>
 
         <label
           class="inline-grid grid-flow-col items-center relative recipe-sec-servingsize-input-container"
         >
           <span class="text-xs leading-[150%] font-bold text-dark2">
-            {recurData.recipe_serving_size}:
+            {recipe_serving_size}:
           </span>
 
           <select
@@ -513,11 +538,11 @@ page.Nutrition.forEach((item) => {
     </script>
 
     <h2
-      aria-label={recurData.recipe_cooking_instructions}
+      aria-label={recipe_cooking_instructions}
       id="cooking-instructions"
       class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title"
     >
-      {recurData.recipe_cooking_instructions}
+      {recipe_cooking_instructions}
     </h2>
 
     {
@@ -591,7 +616,7 @@ page.Nutrition.forEach((item) => {
                   </div>
 
                   <h3 class="font-bold leading-[150%] text-primary recipe-sec-tips-title">
-                    {recurData.recipe_tips}
+                    {recipe_tips}
                   </h3>
                 </div>
 
@@ -639,7 +664,7 @@ page.Nutrition.forEach((item) => {
           <div class="bg-primary">
             <div class="wrapper py-2.5 md:py-[100px]">
               <div class="text-[clamp(2rem,3vw+0.4rem,3rem)] alice leading-[110%] md:leading-[115%] text-center">
-                <h2>{recurData.Recipes_related_products_title_text}</h2>
+                <h2>{Recipes_related_products_title_text}</h2>
               </div>
 
               <div
@@ -650,17 +675,17 @@ page.Nutrition.forEach((item) => {
                   "justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
                 ]}
               >
-                {related_products.map((post) => (
+                {related_products.map(({ Title, Intro_text, Intro_blob: { data:{ attributes: intro_blob }}, Meta:{ URL_slug }}) => (
                   <div
                     role="listitem"
-                    aria-label={ariaLabelRecurData.Kindness_Items_text}
+                    aria-label={ariaLabelRecurData.Product_tea_item_text}
                     class="link-section bg-lightgray"
                     style="clip-path: url(#card-curve)"
                   >
                     <Picture
                       layout="fullWidth"
-                      alt={post.Intro_blob.data.attributes.alternativeText}
-                      src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                      alt={intro_blob.alternativeText}
+                      src={ASSETS_URL + intro_blob.url}
                       attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
                       sizes="(min-width: 768px) min(580px, calc(40vw - 25px)), min(80vw, 420px)"
                     />
@@ -670,13 +695,13 @@ page.Nutrition.forEach((item) => {
                       <div class="recent-post-card-title alice mt-[15px]">
                         <a
                           class="main-link"
-                          set:text={post.Title}
-                          href={`/` + post.Meta.URL_slug}
+                          set:text={Title}
+                          href={`/` + URL_slug}
                         />
                       </div>
 
                       <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
-                        <Markdown>{post.Intro_text}</Markdown>
+                        <Markdown>{Intro_text}</Markdown>
                       </div>
                     </div>
                   </div>
@@ -808,3 +833,4 @@ page.Nutrition.forEach((item) => {
     ),
   }}
 />
+
