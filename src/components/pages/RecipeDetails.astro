@@ -42,14 +42,10 @@ const {
   recipe_serving_size,
   recipe_cooking_instructions,
   Recipes_related_products_title_text,
-  recipe_tips
+  recipe_tips,
 } = recurData;
 
-const {
-  Time_cooking,
-  Time_preparation,
-  Related_products: products,
-} = page;
+const { Time_cooking, Time_preparation, Related_products: products } = page;
 
 const related_products = products.data?.map(({ attributes }) => attributes);
 
@@ -62,24 +58,16 @@ function calcTime(timeArray) {
 
   const calcDay =
     day > 0
-      ? day +
-        (day === 1
-          ? ` ${recipe_day}\xa0\xa0`
-          : ` ${recipe_days}\xa0\xa0`)
+      ? day + (day === 1 ? ` ${recipe_day}\xa0\xa0` : ` ${recipe_days}\xa0\xa0`)
       : "";
   const calcHour =
     hour > 0
       ? hour +
-        (hour === 1
-          ? ` ${recipe_hour}\xa0\xa0`
-          : ` ${recipe_hours}\xa0\xa0`)
+        (hour === 1 ? ` ${recipe_hour}\xa0\xa0` : ` ${recipe_hours}\xa0\xa0`)
       : "";
   const calcMinute =
     minute > 0
-      ? minute +
-        (minute === 1
-          ? ` ${recipe_minute}`
-          : ` ${recipe_minutes}`)
+      ? minute + (minute === 1 ? ` ${recipe_minute}` : ` ${recipe_minutes}`)
       : "";
 
   return calcDay + calcHour + calcMinute;
@@ -88,10 +76,8 @@ function calcTime(timeArray) {
 function calcTimeSm(timeArray) {
   const [day, hour, minute] = timeArray;
 
-  const calcDay =
-    day > 0 ? day + `${recipe_day.substring(0, 1)}\xa0` : "";
-  const calcHour =
-    hour > 0 ? hour + `${recipe_hour.substring(0, 1)}\xa0` : "";
+  const calcDay = day > 0 ? day + `${recipe_day.substring(0, 1)}\xa0` : "";
+  const calcHour = hour > 0 ? hour + `${recipe_hour.substring(0, 1)}\xa0` : "";
   const calcMinute =
     minute > 0 ? minute + `${recipe_minute.substring(0, 1)}\xa0` : "";
 
@@ -168,8 +154,7 @@ page.Nutrition.forEach((item) => {
   <Fragment slot="recipe-header">
     <div
       role="complementary"
-      aria-label={recipe_recipe +
-        ariaLabelRecurData.Recipe_timing_text}
+      aria-label={recipe_recipe + ariaLabelRecurData.Recipe_timing_text}
       class="flex flex-wrap items-center recipe-Time-Container"
     >
       <div class="inline-flex items-center gap-2 md:gap-2.5">
@@ -320,8 +305,7 @@ page.Nutrition.forEach((item) => {
 
       <div
         role="complementary"
-        aria-label={recipe_recipe +
-          ariaLabelRecurData.Recipe_timing_text}
+        aria-label={recipe_recipe + ariaLabelRecurData.Recipe_timing_text}
         class="flex flex-wrap mt-5 gap-y-5 recipe-sec-time-container"
       >
         <div class="inline-flex items-center gap-2.5">
@@ -675,37 +659,45 @@ page.Nutrition.forEach((item) => {
                   "justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
                 ]}
               >
-                {related_products.map(({ Title, Intro_text, Intro_blob: { data:{ attributes: intro_blob }}, Meta:{ URL_slug }}) => (
-                  <div
-                    role="listitem"
-                    aria-label={ariaLabelRecurData.Product_tea_item_text}
-                    class="link-section bg-lightgray"
-                    style="clip-path: url(#card-curve)"
-                  >
-                    <Picture
-                      layout="fullWidth"
-                      alt={intro_blob.alternativeText}
-                      src={ASSETS_URL + intro_blob.url}
-                      attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                      sizes="(min-width: 768px) min(580px, calc(40vw - 25px)), min(80vw, 420px)"
-                    />
+                {related_products.map(
+                  ({
+                    Title,
+                    Intro_text,
+                    Intro_blob: {
+                      data: { attributes: intro_blob },
+                    },
+                    Meta: { URL_slug },
+                  }) => (
+                    <div
+                      role="listitem"
+                      aria-label={ariaLabelRecurData.Product_tea_item_text}
+                      class="link-section bg-lightgray"
+                      style="clip-path: url(#card-curve)"
+                    >
+                      <Picture
+                        layout="fullWidth"
+                        alt={intro_blob.alternativeText}
+                        src={ASSETS_URL + intro_blob.url}
+                        attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
+                        sizes="(min-width: 768px) min(580px, calc(40vw - 25px)), min(80vw, 420px)"
+                      />
 
-                    <div class="recent-post-card-content-container text-primary">
+                      <div class="recent-post-card-content-container text-primary">
+                        <div class="recent-post-card-title alice mt-[15px]">
+                          <a
+                            class="main-link"
+                            set:text={Title}
+                            href={`/` + URL_slug}
+                          />
+                        </div>
 
-                      <div class="recent-post-card-title alice mt-[15px]">
-                        <a
-                          class="main-link"
-                          set:text={Title}
-                          href={`/` + URL_slug}
-                        />
-                      </div>
-
-                      <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
-                        <Markdown>{Intro_text}</Markdown>
+                        <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
+                          <Markdown>{Intro_text}</Markdown>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             </div>
           </div>
@@ -833,4 +825,3 @@ page.Nutrition.forEach((item) => {
     ),
   }}
 />
-
