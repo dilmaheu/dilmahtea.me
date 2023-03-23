@@ -123,12 +123,22 @@ const { page } = Astro.props,
   </section>
 
   <div
-    class="mx-auto flex flex-col sm:flex-row-reverse items-center justify-center sm:justify-start gap-9 sm:gap-12"
+    class:list={[
+      "flex flex-col-reverse sm:flex-row items-center",
+      "justify-center sm:justify-start gap-9 sm:gap-12 mx-auto",
+    ]}
   >
+    <a href="/checkout/information" class="text-primary font-bold">
+      {checkoutRecurData.text_return_to_information}
+    </a>
+
     <button
       disabled
       id="continue-to-payment-btn"
-      class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
+      class:list={[
+        "w-full sm:w-auto py-4 px-20 sm:px-24",
+        "text-lightgray font-bold rounded-full bg-primary",
+      ]}
     >
       {checkoutRecurData.text_continue_to_payment}
     </button>
@@ -148,10 +158,6 @@ const { page } = Astro.props,
         );
       }
     </script>
-
-    <a href="/checkout/information" class="text-primary font-bold">
-      {checkoutRecurData.text_return_to_information}
-    </a>
   </div>
 </div>
 
