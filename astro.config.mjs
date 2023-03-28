@@ -10,9 +10,8 @@ export default defineConfig({
   site: "https://dilmahtea.me",
 
   vite: {
-    ssr: {
-      external: ["svgo"],
-    },
+    ssr: { external: ["svgo"] },
+    optimizeDeps: { exclude: ["astro-imagetools"] },
     plugins: [
       {
         name: "permissions-policy",
