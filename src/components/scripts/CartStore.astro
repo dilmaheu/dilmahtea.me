@@ -1,4 +1,36 @@
-<script is:inline>
+---
+import productsStore from "@store/products";
+import localizeCMSImage from "@utils/localizeCMSImage";
+
+const products = Object.fromEntries(
+  await Promise.all(
+    productsStore.get("all").data.map(async ({ attributes }) => {
+      const { SKU: sku, Price } = attributes;
+
+      const tax = Math.round(Price * 9) / 100,
+        price = Math.round((Price + tax) * 100) / 100,
+        image = await localizeCMSImage(
+          attributes.Intro_blob.data.attributes.formats.thumbnail.url
+        );
+
+      const names = JSON.stringify(
+        Object.fromEntries(
+          [{ attributes }, ...attributes.localizations.data].map(
+            ({ attributes: { locale, Title } }) => [
+              locale.substring(0, 2),
+              Title,
+            ]
+          )
+        )
+      );
+
+      return [sku, { tax, price, image, names }];
+    })
+  )
+);
+---
+
+<script is:inline define:vars={{ products }}>
   window.replacePlaceholders = (content, data) => {
     const placeholderRegex =
       /<placeholder\s+name=(?:"|&#34;)(\w+)(?:"|&#34;)[^>]*><\/placeholder>/g;
@@ -20,6 +52,25 @@
   }
 
   const storedCart = JSON.parse(localStorage.getItem("cart") || "{}");
+
+  Object.keys(storedCart).forEach((SKU) => {
+    const inCartProductData = storedCart[SKU],
+      productData = products[SKU];
+
+    if (!productData) {
+      delete storedCart[SKU];
+    } else if (
+      inCartProductData.tax !== productData.tax ||
+      inCartProductData.price !== productData.price ||
+      inCartProductData.image !== productData.image ||
+      inCartProductData.names !== productData.names
+    ) {
+      storedCart[SKU] = {
+        ...inCartProductData,
+        ...productData,
+      };
+    }
+  });
 
   let subTotal, tax, shippingCost, total;
 
@@ -153,45 +204,5 @@
 
       return true;
     },
-  });
-</script>
-
-<script>
-  const SKUs = Object.keys(window.cart);
-
-  const productsData = await fetch("/db/products.json").then((response) =>
-    response.json()
-  );
-
-  const isCheckoutCartPage = !!document.getElementById(
-    "checkout-cart-container"
-  );
-
-  SKUs.forEach((SKU) => {
-    const existingProductData = window.cart[SKU],
-      productData = productsData[SKU];
-
-    const removeProductButton = document
-      .getElementById(SKU)
-      .querySelector(".remove-item-btn") as HTMLButtonElement;
-
-    if (!productData) {
-      removeProductButton.click();
-    } else if (
-      existingProductData.tax !== productData.tax ||
-      existingProductData.price !== productData.price ||
-      existingProductData.size !== productData.size ||
-      existingProductData.image !== productData.image ||
-      existingProductData.names !== productData.names
-    ) {
-      isCheckoutCartPage || removeProductButton.click();
-
-      try {
-        window.cart[SKU] = {
-          ...existingProductData,
-          ...productData,
-        };
-      } catch (error) {}
-    }
   });
 </script>
