@@ -56,8 +56,8 @@ export default function FilteredProducts({
         .filter(
           (attributes) =>
             (!category && !subCategory) ||
-            category === attributes.category ||
-            subCategory === attributes.subCategory
+            (category && category === attributes.category) ||
+            (subCategory && subCategory === attributes.subCategory)
         )
     );
   });
