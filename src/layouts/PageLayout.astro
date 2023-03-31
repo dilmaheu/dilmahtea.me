@@ -55,24 +55,18 @@ const footerText = recurData.Footer_text.replaceAll(
 </BaseLayout>
 
 <script>
-  const linkSections = [...document.querySelectorAll(".link-section")],
-    sectionChildrenLinks = [...document.querySelectorAll(".link-section a")];
+  // do the above but when instead of handling click for all elements handle just click on document
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
 
-  linkSections.forEach((section) => {
-    const sectionHeadingLink = section.querySelector(
-      "a.main-link"
-    ) as HTMLAnchorElement;
-
-    section.addEventListener("click", () => {
-      if (window.getSelection().type !== "Range") {
-        sectionHeadingLink.click();
-      }
-    });
-  });
-
-  sectionChildrenLinks.forEach((link) => {
-    link.addEventListener("click", (event) => {
+    if (target.closest(".link-section a")) {
       event.stopPropagation();
-    });
+    } else if (target.closest(".link-section")) {
+      const sectionHeadingLink = target
+        .closest(".link-section")
+        ?.querySelector("a.main-link") as HTMLAnchorElement;
+
+      sectionHeadingLink.click();
+    }
   });
 </script>

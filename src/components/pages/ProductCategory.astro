@@ -1,0 +1,201 @@
+---
+import Icon from "astro-icon";
+import Markdown from "@astrojs/markdown-component";
+
+import FilteredProducts from "@solid/FilteredProducts";
+import ProductFiltersForm from "@solid/ProductFiltersForm";
+
+import Chapterize from "@components/Chapterize.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import OptimizeContentImages from "@components/OptimizeContentImages.astro";
+
+import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+
+import CMS from "@store/CMS";
+import RecurringImages from "@store/RecurringImages";
+
+const { white_right_arrow } = RecurringImages;
+
+const { page, recurData, ariaLabelRecurData } = Astro.props,
+  headingName = recurData.text_content,
+  { locale } = page;
+
+const productSizes = CMS.get("productSizes"),
+  productVariants = CMS.get("productVariants");
+
+const subCategories = page.Sub_categories.data.filter(
+  ({ attributes: { products } }) => products.data.length > 0
+);
+
+page.Heading_button_link = "#content";
+---
+
+<style lang="scss">
+  @use "src/styles/typography";
+
+  .heading-title {
+    @apply leading-[110%] sm:leading-[115%] text-dark2;
+
+    font-family: typography.$alice;
+    font-size: clamp(2.625rem, 3vw + 0.3rem, 3rem);
+  }
+
+  .block-text {
+    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
+    line-height: 150%;
+  }
+
+  .category-container {
+    @apply grid sm:grid-cols-[repeat(auto-fill,minmax(300px,2fr))] 
+      md:grid-cols-2 gap-y-[30px] gap-x-[30px] mt-[30px] overflow-hidden;
+  }
+
+  .post-card {
+    @apply w-full max-w-[380px] sm:max-w-none;
+  }
+
+  .product-card-title-icon {
+    height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
+  }
+
+  .product-card-title {
+    font-size: clamp(1.75rem, 2vw + 0.3rem, 2rem);
+  }
+
+  .product-card-inline-icon {
+    height: clamp(27px, 3.5vw + 6px, 42px);
+  }
+
+  .product-card-info {
+    height: clamp(27px, 3.5vw + 6px, 42px);
+  }
+
+  .product-impact-container {
+    width: 100%;
+    height: 100%;
+    max-height: 500px;
+    aspect-ratio: 1 / 1;
+    clip-path: url(#product-impact-bg-curve-sm);
+
+    @media (min-width: 768px) {
+      aspect-ratio: 2 / 1;
+      clip-path: url(#product-impact-bg-curve);
+    }
+  }
+
+  .product-impact-text {
+    font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
+  }
+
+  .product-impact-btn {
+    font-size: clamp(1rem, 2.2vw + 0.13rem, 2rem);
+    margin-top: clamp(25px, 3.5vw + 6px, 50px);
+    padding: clamp(10px, 1.3vw + 1px, 19px) clamp(16px, 2.2vw + 1px, 31px);
+  }
+
+  .prose-text {
+    p,
+    ol,
+    ul,
+    p s,
+    blockquote p {
+      a {
+        @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat transition-all;
+
+        background-size: 100% 45%;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23b3cccc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
+
+        &:hover {
+          filter: brightness(0.95);
+        }
+      }
+    }
+  }
+</style>
+
+<PostDetailsLayout
+  {page}
+  {recurData}
+  {ariaLabelRecurData}
+  {headingName}
+  type="normal"
+>
+  <div slot="product-page-sections" class="mt-[50px]">
+    <ClipPathSVG
+      id="product-card-curve"
+      path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
+    />
+
+    <div class="wrapper mb-[30px]">
+      <ProductFiltersForm
+        client:load
+        {locale}
+        {productSizes}
+        {productVariants}
+        {recurData}
+      />
+    </div>
+
+    {/* Products Section */}
+    <section class="grid gap-y-[50px]" role="main">
+      <FilteredProducts
+        client:load
+        {page}
+        {recurData}
+        {white_right_arrow}
+        category={page.Title}
+      >
+        <Icon
+          slot="alertCircleIcon"
+          name="mdi:alert-circle"
+          class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+        />
+      </FilteredProducts>
+
+      {
+        subCategories.map(({ attributes: { Title, Intro_text } }) => (
+          <div class="hidden [&:has(.product-card)]:block">
+            <div class="wrapper grid gap-5 mb-[30px]">
+              <h2
+                id={Title.toLowerCase().replaceAll(" ", "-")}
+                class="heading-title"
+              >
+                {Title}
+              </h2>
+
+              <div class="prose max-w-none block-text text-dark2 prose-text">
+                <Markdown>{Intro_text}</Markdown>
+              </div>
+            </div>
+
+            <FilteredProducts
+              client:load
+              {page}
+              {recurData}
+              {white_right_arrow}
+              subCategory={Title}
+            >
+              <Icon
+                slot="alertCircleIcon"
+                name="mdi:alert-circle"
+                class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+              />
+            </FilteredProducts>
+          </div>
+        ))
+      }
+    </section>
+  </div>
+
+  {
+    page.Block_text && (
+      <div slot="post-details" id="content" class="prose content-text">
+        <Chapterize>
+          <OptimizeContentImages>
+            <Markdown>{page.Block_text}</Markdown>
+          </OptimizeContentImages>
+        </Chapterize>
+      </div>
+    )
+  }
+</PostDetailsLayout>

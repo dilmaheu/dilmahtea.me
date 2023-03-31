@@ -87,6 +87,8 @@ const recurringElementQuery = `
           product_impact_title
           Item_stock_text
           Product_sold_out_text
+          text_all_tea_variants
+          text_all_tea_sizes
           localizations {
             data {
               attributes {
@@ -173,6 +175,8 @@ const recurringElementQuery = `
                 product_impact_title
                 Item_stock_text
                 Product_sold_out_text
+                text_all_tea_variants
+                text_all_tea_sizes
               }
             }
           }

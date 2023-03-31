@@ -62,15 +62,36 @@ const CMS = {
       return data;
     }
 
-    const content = locale
-      ? (locale === "en"
-          ? data[contentType].data
-          : data[contentType].data.attributes.localizations.data.find(
+    const content = data[contentType];
+
+    // if locale is specified, the returned data won't be wrapped with the "data" key
+    if (locale) {
+      if (Array.isArray(content.data)) {
+        if (locale === "en") return content.data;
+
+        return content.data
+          .map((item) => {
+            const localizations = item.attributes.localizations.data;
+
+            const localizedItem = localizations.find(
               ({ attributes }) =>
                 attributes.locale.substring(0, 2) === locale.substring(0, 2)
-            )
-        ).attributes
-      : data[contentType];
+            );
+
+            return localizedItem;
+          })
+          .filter(Boolean);
+      }
+
+      // if the content is not an array, the localized data won't be wrapped with the "attributes" key
+
+      if (locale === "en") return content.data.attributes;
+
+      return data[contentType].data.attributes.localizations.data.find(
+        ({ attributes }) =>
+          attributes.locale.substring(0, 2) === locale.substring(0, 2)
+      ).attributes;
+    }
 
     return content;
   },

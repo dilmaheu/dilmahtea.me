@@ -3,73 +3,72 @@ import Icon from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
-import Hero from "@components/Hero.astro";
+import FilteredProducts from "@solid/FilteredProducts";
+import ProductFiltersForm from "@solid/ProductFiltersForm";
+
+import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
+import OptimizeContentImages from "@components/OptimizeContentImages.astro";
+
+import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
-const { white_cup, white_right_arrow } = RecurringImages;
+const { white_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
-  { posts: products, locale } = page,
-  [firstProduct] = products,
+  headingName = recurData.text_chapter,
+  { locale } = page,
   { ASSETS_URL } = import.meta.env;
 
-const blogs = page.blogs.data.map(({ attributes }) => attributes);
+const categories = CMS.get("productCategories", locale);
+
+const productSizes = CMS.get("productSizes"),
+  productVariants = CMS.get("productVariants");
 ---
 
 <style lang="scss">
-  @use "src/styles/colors";
+  @use "src/styles/typography";
 
-  .recent-posts-title {
-    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
+  .heading-title {
+    @apply leading-[110%] sm:leading-[115%] text-dark2;
+
+    font-family: typography.$alice;
+    font-size: clamp(2.625rem, 3vw + 0.3rem, 3rem);
   }
 
-  .recent-post-card {
-    @apply w-full max-w-[380px] sm:max-w-none;
-  }
-
-  .recent-post-card-content-container {
-    padding: clamp(20px, 6.4vw, 40px) clamp(24px, 3.8vw + 11.75px, 36px);
-
-    @media (min-width: 640px) {
-      padding: clamp(30px, 7.8125vw - 20px, 60px)
-        clamp(28px, 4.6875vw - 2px, 46px);
-    }
-
-    @media (min-width: 1024px) {
-      padding: clamp(30px, 8vw - 51.75px, 60px) clamp(28px, 4.8vw - 21px, 46px);
-    }
-  }
-
-  .recent-post-card-author {
-    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem);
+  .block-text {
+    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
     line-height: 150%;
   }
 
-  .recent-post-card-title {
-    @apply leading-[130%] sm:leading-[120%];
+  .category-container {
+    @apply grid sm:grid-cols-[repeat(auto-fill,minmax(300px,2fr))] 
+      md:grid-cols-2 gap-y-[30px] gap-x-[30px] mt-[30px] overflow-hidden;
 
-    font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
-  }
+    .category-content-container {
+      @apply relative flex flex-nowrap cursor-pointer
+        w-full h-[clamp(110px,12vw+8px,170px)];
 
-  .recent-post-card-title-icon,
-  .product-card-title-icon {
-    height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
-  }
+      @media (max-width: 320px) {
+        @apply h-full;
+      }
+    }
 
-  .product-card-title {
-    font-size: clamp(1.75rem, 3vw + 0.3rem, 2.625rem);
-  }
+    .category-txt-container {
+      @apply flex grow justify-center items-center px-[25px] py-[15px];
 
-  .product-card-inline-icon {
-    height: clamp(27px, 3.5vw + 6px, 42px);
-  }
+      @media (max-width: 320px) {
+        @apply w-3/5;
+      }
+    }
 
-  .product-card-info {
-    height: clamp(27px, 3.5vw + 6px, 42px);
+    .category-img-container {
+      @media (max-width: 320px) {
+        @apply w-2/5;
+      }
+    }
   }
 
   .product-impact-container {
@@ -94,298 +93,193 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     margin-top: clamp(25px, 3.5vw + 6px, 50px);
     padding: clamp(10px, 1.3vw + 1px, 19px) clamp(16px, 2.2vw + 1px, 31px);
   }
+
+  .prose-text {
+    p,
+    ol,
+    ul,
+    p s,
+    blockquote p {
+      a {
+        @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat transition-all;
+
+        background-size: 100% 45%;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23b3cccc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
+
+        &:hover {
+          filter: brightness(0.95);
+        }
+      }
+    }
+  }
+
+  select {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 </style>
 
-<!-- Hero Section -->
-<Hero>
-  {/* Text Content */}
-  <div
-    role="banner"
-    aria-label={ariaLabelRecurData.Intro_text}
-    class="wrapper hero-text-container h-full relative z-30"
-  >
-    <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
-      <div class="my-[30px]">
-        <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
-          {page.Title}
-
-          <span class="icon heading-inline-icon">
-            <img class="w-full h-full" alt="" {...white_cup} />
-          </span>
-        </h1>
-
-        <div class="hero-text pt-2.5 block prose text-lightgray max-w-none">
-          <Markdown>{page.Intro_text}</Markdown>
-        </div>
-
-        {
-          page.Heading_button_text && (
-            <a
-              href={page.Heading_button_link}
-              class:list={[
-                "flex w-fit text-primary font-bold leading-[120%]",
-                "py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9 bg-white rounded-full",
-              ]}
-            >
-              {page.Heading_button_text}
-            </a>
-          )
-        }
-      </div>
-    </div>
-  </div>
-
-  {/* Blob Image - Desktop View */}
-  <div class="hero-img-curve-container h-full hidden sm:block absolute z-30">
-    <ClippedPicture
-      preload="avif"
-      id="hero-img-curve"
-      breakpoints={{ minWidth: 640 }}
-      sizes="clamp(330px, 26.4vw + 150px, 560px)"
-      alt={page.Intro_blob.data.attributes.alternativeText}
-      src={ASSETS_URL + page.Intro_blob.data.attributes.url}
-      path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
-      attributes={{ link: { media: "(min-width: 640px)" } }}
+<PostDetailsLayout
+  {page}
+  {recurData}
+  {ariaLabelRecurData}
+  {headingName}
+  type="normal"
+>
+  <div slot="product-page-sections" class="mt-[50px]">
+    <ClipPathSVG
+      id="product-card-curve"
+      path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
     />
-  </div>
-</Hero>
 
-{/* Blob Image - Mobile View */}
-<div class="hero-img-sm-container block sm:hidden w-full relative z-20 -mt-20">
-  <ClippedPicture
-    preload="avif"
-    id="hero-img-curve-sm"
-    breakpoints={{ maxWidth: 640 }}
-    alt={page.Intro_blob.data.attributes.alternativeText}
-    src={ASSETS_URL + page.Intro_blob.data.attributes.url}
-    path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
-    attributes={{ link: { media: "(max-width: 639.98px)" } }}
-  />
-</div>
+    <div class="grid gap-y-[50px]">
+      {/* Categories Section */}
+      <section class="wrapper overflow-hidden">
+        <ClipPathSVG
+          id="product-category-card-curve"
+          path="M0.547,0.01 c0.072,0.003,0.13,0,0.167,0 c0.315,0,0.282,0.03,0.282,0.467 s0.052,0.518,-0.264,0.518 c-0.105,0,-0.154,0,-0.174,-0.001 l-0.011,0.001 h-0.001 c-0.199,0.01,-0.401,0.008,-0.47,-0.037 C-0.013,0.898,0.003,0.642,0.003,0.487 c0,-0.216,-0.034,-0.411,0.14,-0.459 C0.305,-0.018,0.435,0.005,0.547,0.01"
+        />
 
-<div class="py-[50px]">
-  <ClipPathSVG
-    id="product-card-curve"
-    path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
-  />
-
-  <div class="grid gap-y-[50px]">
-    {/* Products Section */}
-    <div
-      id="products"
-      role="list"
-      aria-label={page.Aria_label_all_teas_text}
-      class="wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))] justify-center gap-[50px]"
-    >
-      {
-        products.map((post, index) => (
-          <div
-            role="listitem"
-            aria-label={page.Aria_label_tea_item_text + (index + 1)}
-            style="clip-path: url(#product-card-curve)"
-            class="link-section flex flex-wrap bg-primary"
-          >
-            <div class="relative block w-full">
-              <Picture
-                layout="fullWidth"
-                alt={post.Intro_blob.data.attributes.alternativeText}
-                src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-                attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                sizes="(min-width: 768px) min(580px, calc(45vw - 25px)), min(90vw, 420px)"
-              />
-              {post.Stock_amount < 1 && (
-                <>
-                  <div
-                    class:list={[
-                      "absolute top-[12%] right-[12%] flex items-center px-5 sm:px-[37px]",
-                      "py-[5px] sm:py-[7px] sm:text-xl font-semibold text-dark2",
-                      "border-2 border-[#fabf21] bg-[#fabf21]/80 rounded-full",
-                    ]}
-                  >
-                    {recurData.Product_sold_out_text}
-                  </div>
-
-                  <div
-                    class:list={[
-                      "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none",
-                      "w-full text-sm sm:text-base font-medium text-dark2 bg-[#faf8e5]/80",
-                    ]}
-                  >
-                    <Icon
-                      name="mdi:alert-circle"
-                      class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
-                    />
-                    {recurData.Item_stock_text}
-                    {new Date(post.In_stock_date).toLocaleString("en-GB", {
-                      year: "2-digit",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </div>
-                </>
-              )}
-            </div>
-            <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
-              <div class="product-card-title alice leading-[120%] md:leading-[110%]">
-                <a
-                  aria-label={
-                    (post.Stock_amount < 1
-                      ? `${recurData.Product_sold_out_text}, `
-                      : "") + post.Title
-                  }
-                  class="main-link"
-                  set:text={post.Title}
-                  href={`/` + post.Meta.URL_slug}
-                />
-
-                <span class="icon product-card-title-icon">
-                  <img class="w-full h-full" {...white_right_arrow} />
-                </span>
-              </div>
-
-              <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
-                <Markdown>{post.Intro_text}</Markdown>
-              </div>
-            </div>
-          </div>
-        ))
-      }
-    </div>
-
-    {/* Products impact Section */}
-    <section role="complementary">
-      <ClipPathSVG
-        id="product-impact-bg-curve"
-        path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.23,-0.017 c0.074,0,0.2,0.037,0.315,0.009 S1,0.894,1,0.894 V0.055"
-      />
-
-      <ClipPathSVG
-        id="product-impact-bg-curve-sm"
-        path="M0.718,0 C0.853,0,0.938,0.021,1,0.064 V0.97 c-0.045,0.046,-0.195,0.006,-0.324,0 c-0.149,-0.007,-0.301,0.03,-0.45,0.03 C0.094,1,0,0.954,0,0.954 V0.064 c0.059,-0.061,0.237,0,0.32,0 S0.583,0,0.718,0"
-      />
-
-      <div class="relative w-full h-full product-impact-container">
-        <div class="absolute inset-0 w-full h-full bg-primary">
-          <Picture
-            alt=""
-            layout="fill"
-            src={ASSETS_URL + page.Block2_blob.data.attributes.url}
-          />
-        </div>
-
-        <div
-          class="absolute inset-0 w-full h-full bg-gradient-to-b from-[#000] to-[#2f2f2f] opacity-[0.4]"
+        <h2
+          id={page.Category_title.toLowerCase().replaceAll(" ", "-")}
+          class="heading-title"
         >
-        </div>
+          {page.Category_title}
+        </h2>
 
-        <div class="relative z-50 h-full flex flex-wrap items-center">
-          <div
-            class="wrapper flex flex-wrap justify-center text-center py-[20px]"
-          >
-            <h2
-              class="product-impact-text alice leading-[110%] md:leading-[115%] w-full"
-            >
-              {page.Block2_title}
-            </h2>
-
-            <a
-              href={page.Block2_button_link}
-              class:list={[
-                "flex product-impact-btn bg-lightgray rounded-full",
-                "text-primary font-bold md:font-semibold leading-[150%]",
-              ]}
-            >
-              {page.Block2_button_text}
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    {
-      blogs.length > 0 && (
-        <section class="wrapper" role="complementary">
-          <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
-            {recurData.text_explore_the_world_of_kindness}
-          </h2>
-
-          <div
-            role="list"
-            aria-label={ariaLabelRecurData.Kindness_Items_text}
-            class:list={[
-              "w-full mx-auto mb-[50px] grid sm:grid-cols-2 lg:grid-cols-3",
-              "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
-            ]}
-          >
-            {blogs.slice(0, 3).map((post, index) => (
+        <div class="category-container overflow-hidden">
+          {
+            categories.map(({ attributes: { Title, Intro_blob, Meta } }) => (
               <div
-                role="listitem"
-                aria-label={ariaLabelRecurData.Kindness_Item_text + (index + 1)}
-                style="clip-path: url(#product-card-curve)"
-                class="link-section bg-primary recent-post-card"
+                style="clip-path: url(#product-category-card-curve)"
+                class="bg-primary text-center"
               >
-                <Picture
-                  alt=""
-                  layout="fullWidth"
-                  alt={post.Intro_blob.data.attributes.alternativeText}
-                  src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-                  attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                  sizes={[
-                    "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
-                    "(min-width: 640px) calc(45vw - 16px)",
-                    "min(90vw, 380px)",
-                  ].join(", ")}
-                />
-
-                <div class="recent-post-card-content-container">
-                  {post.authors && (
-                    <div>
-                      <div
-                        role="presentation"
-                        aria-label={post.authors.data.map(
-                          ({ attributes }, i) =>
-                            ariaLabelRecurData.Wrote_by_text +
-                            (i > 0 ? ", " : " ") +
-                            attributes.givenName
-                        )}
-                        class="recent-post-card-author flex flex-wrap font-bold"
-                      >
-                        {post.authors.data.map(({ attributes }, index) => (
-                          <div>
-                            {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                          </div>
-                        ))}
-                      </div>
-
-                      <div class="post-publish-date">
-                        {new Date(post.createdAt).toLocaleString("en-US", {
-                          day: "numeric",
-                          month: "long",
-                        })}
+                <a href={Meta.URL_slug}>
+                  <div class="category-content-container">
+                    <div class="category-img-container overflow-hidden">
+                      <div class="category-img w-auto h-full aspect-[6/5] block">
+                        <Picture
+                          layout="fullWidth"
+                          sizes="calc(clamp(110px, 12vw + 8px, 170px) * 6/5)"
+                          alt={Intro_blob.data.attributes.alternativeText}
+                          attributes={{
+                            img: { style: "aspect-ratio: 6 / 5;" },
+                          }}
+                          src={ASSETS_URL + Intro_blob.data.attributes.url}
+                        />
                       </div>
                     </div>
-                  )}
 
-                  <div class="recent-post-card-title alice mt-[15px]">
-                    <a
-                      class="main-link"
-                      set:text={post.Title}
-                      href={`/` + post.Meta.URL_slug}
-                    />
-
-                    <span class="icon recent-post-card-title-icon">
-                      <img
-                        class="recent-post-card-title-icon"
-                        {...white_right_arrow}
-                      />
-                    </span>
+                    <div class="category-txt-container">
+                      <h3 class="alice text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[120%]">
+                        {Title}
+                      </h3>
+                    </div>
                   </div>
-                </div>
+                </a>
               </div>
-            ))}
+            ))
+          }
+        </div>
+      </section>
+
+      <section role="main">
+        <div class="wrapper grid gap-5 mb-[30px]">
+          <div class="flex flex-wrap items-center gap-6">
+            <div class="flex flex-wrap items-center gap-6">
+              <h2
+                id={page.Block_title.toLowerCase().replaceAll(" ", "-")}
+                class="heading-title"
+              >
+                {page.Block_title}
+              </h2>
+
+              <ProductFiltersForm
+                client:load
+                {locale}
+                {productSizes}
+                {productVariants}
+                {recurData}
+              />
+            </div>
           </div>
-        </section>
-      )
-    }
+
+          <div class="prose max-w-none block-text text-dark2 prose-text">
+            <Markdown>{page.Block_text}</Markdown>
+          </div>
+        </div>
+
+        <FilteredProducts client:load {page} {recurData} {white_right_arrow}>
+          <Icon
+            slot="alertCircleIcon"
+            name="mdi:alert-circle"
+            class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+          />
+        </FilteredProducts>
+      </section>
+
+      {/* Products impact Section */}
+      <section role="complementary">
+        <ClipPathSVG
+          id="product-impact-bg-curve"
+          path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.23,-0.017 c0.074,0,0.2,0.037,0.315,0.009 S1,0.894,1,0.894 V0.055"
+        />
+
+        <ClipPathSVG
+          id="product-impact-bg-curve-sm"
+          path="M0.718,0 C0.853,0,0.938,0.021,1,0.064 V0.97 c-0.045,0.046,-0.195,0.006,-0.324,0 c-0.149,-0.007,-0.301,0.03,-0.45,0.03 C0.094,1,0,0.954,0,0.954 V0.064 c0.059,-0.061,0.237,0,0.32,0 S0.583,0,0.718,0"
+        />
+
+        <div class="relative w-full h-full product-impact-container">
+          <div class="absolute inset-0 w-full h-full bg-primary">
+            <Picture
+              alt=""
+              layout="fill"
+              src={ASSETS_URL + page.Block2_blob.data.attributes.url}
+            />
+          </div>
+
+          <div
+            class="absolute inset-0 w-full h-full bg-gradient-to-b from-[#000] to-[#2f2f2f] opacity-[0.4]"
+          >
+          </div>
+
+          <div class="relative z-50 h-full flex flex-wrap items-center">
+            <div
+              class="wrapper flex flex-wrap justify-center text-center py-[20px]"
+            >
+              <h2
+                class="product-impact-text alice leading-[110%] md:leading-[115%] w-full"
+              >
+                {page.Block2_title}
+              </h2>
+
+              <a
+                href={page.Block2_button_link}
+                class:list={[
+                  "flex product-impact-btn bg-lightgray rounded-full",
+                  "text-primary font-bold md:font-semibold leading-[150%]",
+                ]}
+              >
+                {page.Block2_button_text}
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   </div>
-</div>
+
+  {
+    page.Block3_text && (
+      <div slot="post-details" class="prose content-text">
+        <Chapterize>
+          <OptimizeContentImages>
+            <Markdown>{page.Block3_text}</Markdown>
+          </OptimizeContentImages>
+        </Chapterize>
+      </div>
+    )
+  }
+</PostDetailsLayout>

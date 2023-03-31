@@ -4,7 +4,7 @@ import typography from "@tailwindcss/typography";
 /** @type {import('tailwindcss').Config} */
 export default {
   plugins: [lineClamp, typography()],
-  content: [`./**/*.{astro,html}`],
+  content: [`./**/*.{astro,html,jsx,tsx}`],
   theme: {
     extend: {
       colors: {

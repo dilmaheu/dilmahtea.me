@@ -7,7 +7,7 @@ const notificationsQuery = `
           Type
           Content
           Closing_Enabled
-          localizations {
+          localizations(filters: { publishedAt: { ne: null } }) {
             data {
               attributes {
                 locale
