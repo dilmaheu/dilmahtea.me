@@ -20,7 +20,6 @@ const productCategoriesQuery = `
             }
           }
           Heading_button_text
-          Heading_button_link
           Block_text
           Sub_categories {
             data {
@@ -88,7 +87,6 @@ const productCategoriesQuery = `
                   }
                 }
                 Heading_button_text
-                Heading_button_link
                 Block_text
                 Sub_categories {
                   data {
