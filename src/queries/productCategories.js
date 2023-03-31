@@ -20,7 +20,6 @@ const productCategoriesQuery = `
             }
           }
           Heading_button_text
-          Heading_button_link
           Block_text
           Sub_categories {
             data {
@@ -69,7 +68,7 @@ const productCategoriesQuery = `
               id
             }
           }
-          localizations {
+          localizations(filters: { publishedAt: { ne: null } }) {
             data {
               attributes {
                 locale
@@ -88,7 +87,6 @@ const productCategoriesQuery = `
                   }
                 }
                 Heading_button_text
-                Heading_button_link
                 Block_text
                 Sub_categories {
                   data {

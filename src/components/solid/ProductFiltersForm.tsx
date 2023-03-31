@@ -87,8 +87,6 @@ export default function ProductFiltersForm({
           availableCombinations &&
           !availableCombinations.includes(option.value);
 
-        console.log(shouldBeHidden);
-
         option.hidden = shouldBeHidden;
         option.disabled = shouldBeHidden;
       });

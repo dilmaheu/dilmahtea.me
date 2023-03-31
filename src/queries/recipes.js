@@ -91,6 +91,28 @@ const recipesQuery = `
               }
             }
           }
+          Related_products (filters: { publishedAt: { ne: null } }) {
+            data{
+              attributes{
+                Title
+                Intro_text
+                Intro_blob {
+                  data {
+                    attributes {
+                      url
+                      provider_metadata
+                      formats
+                      alternativeText
+                    }
+                  }
+                }
+                publishedAt
+                Meta {
+                  URL_slug
+                }
+              }
+            }
+          }
           createdAt
           updatedAt
           publishedAt
@@ -118,7 +140,7 @@ const recipesQuery = `
             URL_slug
             Canonical_link
           }
-          localizations {
+          localizations(filters: { publishedAt: { ne: null } }) {
             data {
               attributes {
                 locale
@@ -201,6 +223,28 @@ const recipesQuery = `
                         }
                       }
                       createdAt
+                      publishedAt
+                      Meta {
+                        URL_slug
+                      }
+                    }
+                  }
+                }
+                 Related_products (filters: { publishedAt: { ne: null } }) {
+                  data{
+                    attributes{
+                      Title
+                      Intro_text
+                      Intro_blob {
+                        data {
+                          attributes {
+                            url
+                            provider_metadata
+                            formats
+                            alternativeText
+                          }
+                        }
+                      }
                       publishedAt
                       Meta {
                         URL_slug

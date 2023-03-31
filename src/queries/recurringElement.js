@@ -19,6 +19,38 @@ const recurringElementQuery = `
               }
             }
           }
+          Nav_menu {
+            Visibility
+            Title
+            Link
+          }
+          Nav_menu_search_visibility
+          Nav_menu_language_selector_visibility
+          Nav_menu_cart_visibility
+          Nav_menu_cart_icon {
+            data {
+              attributes {
+                url
+                provider_metadata
+                alternativeText
+              }
+            }
+          }
+          Nav_menu_profile_visibility
+          Nav_menu_profile_icon {
+            data {
+              attributes {
+                url
+                provider_metadata
+                alternativeText
+              }
+            }
+          }
+          Footer_menu {
+            Visibility
+            Title
+            Link
+          }
           text_chapter
           text_practices_to_follow
           text_practices
@@ -43,6 +75,7 @@ const recurringElementQuery = `
           recipe_cooking_instructions
           recipe_tips
           recipe_discover
+          Recipes_related_products_title_text
           estate_location
           text_content
           product_made_love_from
@@ -74,6 +107,38 @@ const recurringElementQuery = `
                     }
                   }
                 }
+                Nav_menu {
+                  Visibility
+                  Title
+                  Link
+                }
+                Nav_menu_search_visibility
+                Nav_menu_language_selector_visibility
+                Nav_menu_cart_visibility
+                Nav_menu_cart_icon {
+                  data {
+                    attributes {
+                      url
+                      provider_metadata
+                      alternativeText
+                    }
+                  }
+                }
+                Nav_menu_profile_visibility
+                Nav_menu_profile_icon {
+                  data {
+                    attributes {
+                      url
+                      provider_metadata
+                      alternativeText
+                    }
+                  }
+                }
+                Footer_menu {
+                  Visibility
+                  Title
+                  Link
+                }
                 text_chapter
                 text_practices_to_follow
                 text_practices
@@ -98,6 +163,7 @@ const recurringElementQuery = `
                 recipe_cooking_instructions
                 recipe_tips
                 recipe_discover
+                Recipes_related_products_title_text
                 estate_location
                 text_content
                 product_made_love_from
