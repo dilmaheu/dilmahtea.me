@@ -23,7 +23,7 @@ const crowdfundingPlansQuery = `
           Intro_text
           List
           Button_text
-          localizations {
+          localizations(filters: { publishedAt: { ne: null } }) {
             data {
               attributes {
                 locale

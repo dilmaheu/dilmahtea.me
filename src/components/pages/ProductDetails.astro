@@ -326,9 +326,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             >
               <Icon name="mi:shopping-cart" class="w-[26px] h-[26px]" />
               <span>
-                {checkoutRecurData.text_add_to_cart_for}
+                {checkoutRecurData.text_add_to_cart_for} €
                 <output class="product-amount-price">
-                  {"€" + productPriceIncludingTax.toFixed(2).replace(".", ",")}
+                  {productPriceIncludingTax.toFixed(2).replace(".", ",")}
                 </output>
               </span>
             </button>
@@ -960,8 +960,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
       form.reset();
 
-      productAmountPriceOutput.textContent =
-        "€" + Number(price).toFixed(2).replace(".", ",");
+      productAmountPriceOutput.textContent = Number(price)
+        .toFixed(2)
+        .replace(".", ",");
 
       window.openCart();
     });
@@ -974,9 +975,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       }
     });
 
-    productAmountPriceOutput.textContent =
-      "€" +
-      (Number(input.value) * Number(productPrice)).toFixed(2).replace(".", ",");
+    productAmountPriceOutput.textContent = (
+      Number(input.value) * Number(productPrice)
+    )
+      .toFixed(2)
+      .replace(".", ",");
   }
 
   tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
