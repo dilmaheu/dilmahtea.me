@@ -141,6 +141,47 @@ export default function FilteredProducts({
                   innerHTML={product.Intro_text_HTML}
                   class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
                 />
+
+                <div class="mt-[25px]">
+                  <div class="flex flex-wrap gap-x-2.5">
+                    <div class="relative flex">
+                      <div class="relative rounded-full overflow-hidden">
+                        <div class="w-[26px] h-[26px]">
+                          <img
+                            class="w-[16px] h-[26px] absolute"
+                            style="clip-path: url(#sliced-circle)"
+                            src="https://cms.dilmahtea.me/uploads/thumbnail_7d876e5a_4be6_48f8_a7cb_f44fc5401893_6c8b195943.jpeg"
+                            alt=""
+                          />
+                        </div>
+                      </div>
+                      <div class="relative -ml-[17px] rounded-full overflow-hidden">
+                        <div class="w-[26px] h-[26px]">
+                          <img
+                            class="w-[16px] h-[26px] absolute"
+                            style="clip-path: url(#sliced-circle)"
+                            src="https://cms.dilmahtea.me/uploads/thumbnail_7d876e5a_4be6_48f8_a7cb_f44fc5401893_6c8b195943.jpeg"
+                            alt=""
+                          />
+                        </div>
+                      </div>
+                      <div
+                        class={[
+                          "relative -ml-[17px] flex items-center justify-center",
+                          "w-[26px] h-[26px] rounded-full text-sm text-primary bg-lightgray2",
+                        ].join(" ")}
+                        innerHTML="+2"
+                      />
+                    </div>
+
+                    <div
+                      class="text-lightgray2"
+                      innerHTML={page.Stock_other_formats_text}
+                    >
+                      Don't worry! It's available in other 4 formats
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           );

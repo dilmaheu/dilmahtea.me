@@ -192,12 +192,46 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     clip-path: none;
     aspect-ratio: 1 / 1;
   }
+
+  .variant-container {
+    @apply grid lg:grid-cols-[repeat(auto-fill,minmax(215px,3fr))] 
+      gap-[15px] sm:gap-[30px] mt-4 overflow-hidden;
+
+    .variant-content-container {
+      @apply relative flex flex-nowrap cursor-pointer w-full h-[70px];
+
+      @media (max-width: 320px) {
+        @apply h-full;
+      }
+    }
+
+    .variant-txt-container {
+      @apply flex grow justify-center items-center px-[25px] py-[15px];
+
+      @media (max-width: 320px) {
+        @apply w-3/5;
+      }
+    }
+
+    .variant-img-container {
+      @media (max-width: 320px) {
+        @apply w-2/5;
+      }
+    }
+  }
 </style>
+<ClipPathSVG
+  id="product-category-card-curve"
+  path="M0.547,0.01 c0.072,0.003,0.13,0,0.167,0 c0.315,0,0.282,0.03,0.282,0.467 s0.052,0.518,-0.264,0.518 c-0.105,0,-0.154,0,-0.174,-0.001 l-0.011,0.001 h-0.001 c-0.199,0.01,-0.401,0.008,-0.47,-0.037 C-0.013,0.898,0.003,0.642,0.003,0.487 c0,-0.216,-0.034,-0.411,0.14,-0.459 C0.305,-0.018,0.435,0.005,0.547,0.01"
+/>
 
 <PostDetailsLayout {page} {recurData} {ariaLabelRecurData} {headingName}>
   <form
     slot="tea-details-header"
-    class="cart-adding-form flex flex-wrap items-center w-full xl:w-2/3"
+    class:list={[
+      "cart-adding-form flex flex-wrap items-center w-full",
+      stock_amount > 0 && "w-2/3"
+    ]}
   >
     <input type="hidden" name="sku" value={productSKU} />
     <input type="hidden" name="names" value={productNames} />
@@ -351,22 +385,61 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       </div>
       {
         stock_amount < 1 && (
-          <div
-            class:list={[
-              "flex items-center gap-2.5 w-full",
-              "text-sm sm:text-base font-medium text-white2",
-            ]}
-          >
-            <Icon
-              name="mdi:alert-circle"
-              class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
-            />
-            {recurData.Item_stock_text}
-            {new Date(page.In_stock_date).toLocaleString("en-GB", {
-              year: "2-digit",
-              month: "short",
-              day: "numeric",
-            })}
+          <div class="grid gap-4 w-full">
+            <div
+              class:list={[
+                "flex items-center gap-2.5 w-full",
+                "text-sm sm:text-base font-medium text-white2",
+              ]}
+            >
+              <Icon
+                name="mdi:alert-circle"
+                class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+              />
+              {recurData.Item_stock_text}
+              {new Date(page.In_stock_date).toLocaleString("en-GB", {
+                year: "2-digit",
+                month: "short",
+                day: "numeric",
+              })}
+            </div>
+
+            <div class="w-full md:w-2/3 lg:w-full">
+              <div class="variant-container overflow-hidden">
+                {
+                  availableVariants.map(({ variant, link }) => (
+                    <div
+                      style="clip-path: url(#product-category-card-curve)"
+                      class="bg-primary text-center"
+                    >
+                      <a href={link}>
+                        <div class="variant-content-container">
+                          <div class="variant-img-container overflow-hidden">
+                            <div class="variant-img w-auto h-full aspect-[6/5] block">
+                              <Picture
+                                layout="fullWidth"
+                                sizes="calc(clamp(50px, 12vw + 8px, 70px) * 6/5)"
+                                alt=""
+                                attributes={{
+                                  img: { style: "aspect-ratio: 6 / 5;" },
+                                }}
+                                src="https://cms.dilmahtea.me/uploads/thumbnail_7d876e5a_4be6_48f8_a7cb_f44fc5401893_6c8b195943.jpeg"
+                              />
+                            </div>
+                          </div>
+
+                          <div class="variant-txt-container">
+                            <h2 class="alice text-xl sm:text-left line-clamp-2">
+                              {variant}
+                            </h2>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
           </div>
         )
       }
