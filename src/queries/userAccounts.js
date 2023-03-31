@@ -1,4 +1,4 @@
-const userAccountQuery = `
+const userAccountsQuery = `
   {
     userAccounts {
       data {
@@ -106,4 +106,4 @@ const userAccountQuery = `
   }
 `;
 
-export default userAccountQuery;
+export default userAccountsQuery;
