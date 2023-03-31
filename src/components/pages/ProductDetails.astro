@@ -29,6 +29,12 @@ const {
   Stock_amount: stock_amount,
 } = page;
 
+const stock_date = 
+  new Date(page?.In_stock_date).toLocaleString("en-GB", {
+    year: "2-digit",
+    month: "short",
+    day: "numeric",
+  });
 const infos = page.product_infos.data.map(({ attributes }) => attributes),
   blogs = page.related_blogs?.data?.map(({ attributes }) => attributes),
   recipes = page.related_recipes?.data?.map(({ attributes }) => attributes),
