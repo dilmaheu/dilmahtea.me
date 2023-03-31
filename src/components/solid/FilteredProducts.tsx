@@ -72,6 +72,13 @@ export default function FilteredProducts({
     >
       <For each={filteredProducts()}>
         {(product, iSignal) => {
+        const stock_date = new Date(product?.In_stock_date)
+          .toLocaleString("en-GB", {
+            year: "2-digit",
+            month: "short",
+            day: "numeric",
+          });
+
           return (
             <div
               role="listitem"
@@ -81,8 +88,10 @@ export default function FilteredProducts({
             >
               <div
                 class="relative block w-full"
-                innerHTML={product.Intro_blob_HTML}
+                
               >
+                <div innerHTML={product.Intro_blob_HTML} />
+
                 {product.Stock_amount < 1 && (
                   <>
                     <div
@@ -101,12 +110,7 @@ export default function FilteredProducts({
                       ].join(" ")}
                     >
                       {alertCircleIcon}
-                      {recurData.Item_stock_text}{" "}
-                      {new Date(product.In_stock_date).toLocaleString("en-GB", {
-                        year: "2-digit",
-                        month: "short",
-                        day: "numeric",
-                      })}
+                      {recurData.Item_stock_text.replace("<date>", stock_date)}
                     </div>
                   </>
                 )}
@@ -144,46 +148,48 @@ export default function FilteredProducts({
                   class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
                 />
 
-                <div class="mt-[25px]">
-                  <div class="flex flex-wrap gap-x-2.5">
-                    <div class="relative flex">
-                      <div class="relative rounded-full overflow-hidden">
-                        <div class="w-[26px] h-[26px]">
-                          <img
-                            class="w-[16px] h-[26px] absolute"
-                            style="clip-path: url(#sliced-circle)"
-                            src="https://cms.dilmahtea.me/uploads/thumbnail_7d876e5a_4be6_48f8_a7cb_f44fc5401893_6c8b195943.jpeg"
-                            alt=""
+                {
+                  product.Stock_amount < 1 && (
+                    <div class="mt-[25px]">
+                      <div class="flex flex-wrap gap-x-2.5">
+                        <div class="relative flex">
+                          <div class="relative rounded-full overflow-hidden">
+                            <div class="w-[26px] h-[26px]">
+                              <img
+                                class="w-[16px] h-[26px] absolute"
+                                style="clip-path: url(#sliced-circle)"
+                                src="https://cms.dilmahtea.me/uploads/thumbnail_7d876e5a_4be6_48f8_a7cb_f44fc5401893_6c8b195943.jpeg"
+                                alt=""
+                              />
+                            </div>
+                          </div>
+                          <div class="relative -ml-[17px] rounded-full overflow-hidden">
+                            <div class="w-[26px] h-[26px]">
+                              <img
+                                class="w-[16px] h-[26px] absolute"
+                                style="clip-path: url(#sliced-circle)"
+                                src="https://cms.dilmahtea.me/uploads/thumbnail_7d876e5a_4be6_48f8_a7cb_f44fc5401893_6c8b195943.jpeg"
+                                alt=""
+                              />
+                            </div>
+                          </div>
+                          <div
+                            class={[
+                              "relative -ml-[17px] flex items-center justify-center bg-lightgray2",
+                              "w-[26px] h-[26px] rounded-full text-sm text-primary leading-[150%]",
+                            ].join(" ")}
+                            innerHTML="+2"
                           />
                         </div>
-                      </div>
-                      <div class="relative -ml-[17px] rounded-full overflow-hidden">
-                        <div class="w-[26px] h-[26px]">
-                          <img
-                            class="w-[16px] h-[26px] absolute"
-                            style="clip-path: url(#sliced-circle)"
-                            src="https://cms.dilmahtea.me/uploads/thumbnail_7d876e5a_4be6_48f8_a7cb_f44fc5401893_6c8b195943.jpeg"
-                            alt=""
-                          />
-                        </div>
-                      </div>
-                      <div
-                        class={[
-                          "relative -ml-[17px] flex items-center justify-center",
-                          "w-[26px] h-[26px] rounded-full text-sm text-primary bg-lightgray2",
-                        ].join(" ")}
-                        innerHTML="+2"
-                      />
-                    </div>
 
-                    <div
-                      class="text-lightgray2"
-                      innerHTML={page.Stock_other_formats_text}
-                    >
-                      Don't worry! It's available in other 4 formats
+                        <div
+                          class="text-lightgray2"
+                          innerHTML={recurData.Product_stock_other_formats_text.replace("<number>", "4")}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  )
+                }
               </div>
             </div>
           );
