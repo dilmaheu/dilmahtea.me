@@ -26,6 +26,8 @@ const productSizes = CMS.get("productSizes"),
 const subCategories = page.Sub_categories.data.filter(
   ({ attributes: { products } }) => products.data.length > 0
 );
+
+page.Heading_button_link = "#content";
 ---
 
 <style lang="scss">
@@ -187,7 +189,7 @@ const subCategories = page.Sub_categories.data.filter(
 
   {
     page.Block_text && (
-      <div slot="post-details" class="prose content-text">
+      <div slot="post-details" id="content" class="prose content-text">
         <Chapterize>
           <OptimizeContentImages>
             <Markdown>{page.Block_text}</Markdown>
