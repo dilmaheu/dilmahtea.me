@@ -156,6 +156,8 @@ const { page, recurData } = Astro.props,
           success_url: `${origin}/${preferredLocale}/checkout/success?clear=cart`,
         };
 
+        delete paymentInfo.delivery_address;
+
         return Object.keys(paymentInfo)
           .map(
             (name) =>
@@ -254,7 +256,7 @@ const { page, recurData } = Astro.props,
                   </span>
                   <span class="w-1 h-1 bg-primary rounded-full" />
                   <span class="shipping-cost font-semibold text-dark2 leading-[130%]">
-                    € {(cost.toFixed(2)).toString().replace(".", ",")}
+                    € {cost.toFixed(2).toString().replace(".", ",")}
                   </span>
                 </span>
 
