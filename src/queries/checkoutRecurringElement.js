@@ -11,6 +11,7 @@ const recurringElementQuery = `
           text_add_to_cart
           text_add_to_cart_for
           text_edit_cart
+          text_variant
           text_size
           text_quantity
           text_order_summary
@@ -42,6 +43,7 @@ const recurringElementQuery = `
                 text_add_to_cart
                 text_add_to_cart_for
                 text_edit_cart
+                text_variant
                 text_size
                 text_quantity
                 text_order_summary

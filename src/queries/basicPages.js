@@ -29,7 +29,7 @@ const basicPagesQuery = `
             URL_slug
             Canonical_link
           }
-          localizations {
+          localizations(filters: { publishedAt: { ne: null } }) {
             data {
               attributes {
                 locale
