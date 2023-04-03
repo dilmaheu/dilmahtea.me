@@ -1,22 +1,28 @@
 import fs from "fs";
+import { globby } from "globby";
 import printMessage from "@utils/printMessage";
 
-const queryModules = import.meta.globEager("../queries/*.js");
+const queryPaths = await globby("./src/queries/*.graphql"),
+  queries = await Promise.all(
+    queryPaths.map((path) => fs.promises.readFile(path, "utf8"))
+  );
 
-const queryRegex = /^\s*{(.*)}\s*$/s;
+const queryRegex = /((?<=^\s*){|(?<=\s+)query\s+{)(.*)}\s*$/s;
 
-const fullQuery =
-  "{" +
-  Object.keys(queryModules)
-    .map((key) => {
-      const query = queryModules[key].default;
+const fragments = [],
+  query =
+    "{" +
+    queries
+      .map((query) => {
+        const [match, , queryContent] = queryRegex.exec(query);
 
-      const [, queryContent] = queryRegex.exec(query);
+        fragments.push(query.replace(match, ""));
 
-      return queryContent;
-    })
-    .join("") +
-  "}";
+        return queryContent;
+      })
+      .join("") +
+    "}",
+  fullQuery = fragments.join("\n") + "\n" + query;
 
 const { data } = await fetch(import.meta.env.DB_URL, {
   method: "POST",

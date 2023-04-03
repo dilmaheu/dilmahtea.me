@@ -1,0 +1,25 @@
+fragment CheckoutFlowAttributes on CheckoutFlow {
+  locale
+  updatedAt
+  steps
+  shortened_steps
+}
+
+query {
+  checkoutFlow {
+    data {
+      id
+      attributes {
+        ...CheckoutFlowAttributes
+        localizations {
+          data {
+            id
+            attributes {
+              ...CheckoutFlowAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}

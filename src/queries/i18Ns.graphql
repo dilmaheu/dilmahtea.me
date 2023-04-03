@@ -1,0 +1,24 @@
+fragment I18NAttributes on I18N {
+  code
+  locale
+  language
+}
+
+query {
+  i18Ns {
+    data {
+      id
+      attributes {
+        ...I18NAttributes
+        localizations {
+          data {
+            id
+            attributes {
+              ...I18NAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}
