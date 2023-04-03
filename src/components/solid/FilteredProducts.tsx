@@ -105,7 +105,10 @@ export default function FilteredProducts({
                       ].join(" ")}
                     >
                       {alertCircleIcon}
-                      {recurData.Item_stock_text.replace("<date>", inStockDate)}
+                      {recurData.Item_stock_text.replace(
+                        "<in_stock_date>",
+                        inStockDate
+                      )}
                     </div>
                   </>
                 )}
@@ -147,43 +150,33 @@ export default function FilteredProducts({
                   <div class="mt-[25px]">
                     <div class="flex flex-wrap gap-x-2.5">
                       <div class="relative flex">
-                        <div class="relative rounded-full overflow-hidden">
-                          <div class="w-[26px] h-[26px]">
+                        {product.availableFormatThumbnails.map(
+                          ({ src, alt }) => (
                             <img
-                              class="w-[16px] h-[26px] absolute"
-                              style="clip-path: url(#sliced-circle)"
-                              src="https://cms.dilmahtea.me/uploads/thumbnail_7d876e5a_4be6_48f8_a7cb_f44fc5401893_6c8b195943.jpeg"
-                              alt=""
+                              src={src}
+                              alt={alt}
+                              class="w-[26px] h-[26px] border-2 border-primary rounded-full -ml-[16.5px] first:ml-0"
                             />
-                          </div>
-                        </div>
+                          )
+                        )}
 
-                        <div class="relative -ml-[17px] rounded-full overflow-hidden">
-                          <div class="w-[26px] h-[26px]">
-                            <img
-                              class="w-[16px] h-[26px] absolute"
-                              style="clip-path: url(#sliced-circle)"
-                              src="https://cms.dilmahtea.me/uploads/thumbnail_7d876e5a_4be6_48f8_a7cb_f44fc5401893_6c8b195943.jpeg"
-                              alt=""
-                            />
+                        {product.availableFormatsCount > 2 && (
+                          <div
+                            class={[
+                              "relative -ml-[17px] flex items-center justify-center bg-lightgray2",
+                              "w-[26px] h-[26px] border-2 rounded-full text-sm text-primary leading-[150%]",
+                            ].join(" ")}
+                          >
+                            +{product.availableFormatsCount - 2}
                           </div>
-                        </div>
-
-                        <div
-                          class={[
-                            "relative -ml-[17px] flex items-center justify-center bg-lightgray2",
-                            "w-[26px] h-[26px] rounded-full text-sm text-primary leading-[150%]",
-                          ].join(" ")}
-                        >
-                          +2
-                        </div>
+                        )}
                       </div>
 
                       <div class="text-lightgray2">
                         <em>
                           {recurData.Product_stock_other_formats_text.replace(
-                            "<number>",
-                            "4"
+                            "<count>",
+                            product.availableFormatsCount
                           )}
                         </em>
                       </div>

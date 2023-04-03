@@ -9,7 +9,9 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import CMS from "@store/CMS";
+import { variantsOrder } from "@store/products";
 import RecurringImages from "@store/RecurringImages";
+
 import localizeCMSImage from "@utils/localizeCMSImage";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
@@ -65,6 +67,38 @@ const { SKU: productSKU } = page,
   productNames = JSON.stringify(page.names);
 
 const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+
+let availableFormats;
+
+if (stock_amount === 0) {
+  const Titles = [];
+
+  availableFormats = [...availableVariants, ...availableSizes].filter(
+    ({ Title, stockAmount }) => {
+      if (Titles.includes(Title)) return false;
+
+      Titles.push(Title);
+
+      return stockAmount;
+    }
+  );
+
+  availableFormats.sort(
+    ({ value: a }, { value: b }) =>
+      variantsOrder.indexOf(a) - variantsOrder.indexOf(b)
+  );
+
+  availableFormats = await Promise.all(
+    availableFormats.map(async (data) => ({
+      Title: data.Title,
+      link: data.link,
+      thumbnail: {
+        src: await importRemoteImage(ASSETS_URL + data.thumbnail.src),
+        alt: data.thumbnail.alt,
+      },
+    }))
+  );
+}
 ---
 
 <style lang="scss">
@@ -228,6 +262,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     aspect-ratio: 1 / 1;
   }
 </style>
+
 <ClipPathSVG
   id="product-category-card-curve"
   path="M0.547,0.01 c0.072,0.003,0.13,0,0.167,0 c0.315,0,0.282,0.03,0.282,0.467 s0.052,0.518,-0.264,0.518 c-0.105,0,-0.154,0,-0.174,-0.001 l-0.011,0.001 h-0.001 c-0.199,0.01,-0.401,0.008,-0.47,-0.037 C-0.013,0.898,0.003,0.642,0.003,0.487 c0,-0.216,-0.034,-0.411,0.14,-0.459 C0.305,-0.018,0.435,0.005,0.547,0.01"
@@ -412,17 +447,17 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 name="mdi:alert-circle"
                 class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
               />
-              {recurData.Item_stock_text.replace("<date>", stock_date)}. 
+              {recurData.Item_stock_text.replace("<in_stock_date>", stock_date)}. 
               { 
                 recurData.Product_stock_other_formats_text
-                  .replace("<number>", availableVariants.length)
+                  .replace("<count>", availableFormats.length)
               }
             </div>
 
             <div class="w-full md:w-2/3 lg:w-full">
-              <div class="variant-container overflow-hidden">
+              <div class="variant-container">
                 {
-                  availableVariants.map(({ variant, link }) => (
+                  availableFormats.map(({ Title, link, thumbnail }) => (
                     <div
                       style="clip-path: url(#product-category-card-curve)"
                       class="bg-primary text-center"
@@ -431,21 +466,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                         <div class="variant-content-container">
                           <div class="variant-img-container overflow-hidden">
                             <div class="variant-img w-auto h-full aspect-[6/5] block">
-                              <Picture
-                                layout="fullWidth"
-                                sizes="calc(clamp(50px, 12vw + 8px, 70px) * 6/5)"
-                                alt=""
-                                attributes={{
-                                  img: { style: "aspect-ratio: 6 / 5;" },
-                                }}
-                                src="https://cms.dilmahtea.me/uploads/thumbnail_7d876e5a_4be6_48f8_a7cb_f44fc5401893_6c8b195943.jpeg"
+                              <img
+                                {...thumbnail}                            
+                                style="aspect-ratio: 6 / 5;"                     
                               />
                             </div>
                           </div>
 
                           <div class="variant-txt-container">
                             <h2 class="alice text-xl sm:text-left leading-[110%] line-clamp-2">
-                              {variant}
+                              {Title}
                             </h2>
                           </div>
                         </div>

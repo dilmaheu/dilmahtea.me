@@ -22,7 +22,7 @@ productSizes.data = productSizes.data.filter(filterUnavailableTypes);
 productVariants.data = productVariants.data.filter(filterUnavailableTypes);
 productCategories.data = productCategories.data.filter(filterUnavailableTypes);
 
-const variantsOrder = [
+export const variantsOrder = [
   ...productVariants.data.map(({ attributes }) => attributes.Title),
   ...productSizes.data.map(({ attributes }) => attributes.Title),
   ...productVariants.data
@@ -66,6 +66,13 @@ const allProducts = catalog.Products.map(({ Title, products: variants }) => {
         localizedSize = attributes.size.data.attributes.Title,
         link = "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
 
+      const Title = attributes.Title,
+        stockAmount = attributes.Stock_amount,
+        thumbnail = {
+          src: attributes.Intro_blob.data.attributes.formats.thumbnail.url,
+          alt: attributes.Intro_blob.data.attributes.alternativeText,
+        };
+
       variantsPerProduct[locale].push([variant + " | " + size, attributes]);
       variantsPerProduct[locale + " | " + size].push([variant, attributes]);
       variantsPerProduct[locale + " | " + variant].push([size, attributes]);
@@ -77,16 +84,22 @@ const allProducts = catalog.Products.map(({ Title, products: variants }) => {
 
       if (!availableVariants[locale].find(({ value }) => value === variant))
         availableVariants[locale].push({
+          Title,
           value: variant,
           variant: localizedVariant,
           link,
+          stockAmount,
+          thumbnail,
         });
 
       if (!availableSizes[locale].find(({ value }) => value === size))
         availableSizes[locale].push({
+          Title,
           value: size,
           size: localizedSize,
           link,
+          stockAmount,
+          thumbnail,
         });
     });
   });
