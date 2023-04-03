@@ -179,13 +179,14 @@ export default function FilteredProducts({
                         </div>
                       </div>
 
-                      <div
-                        class="text-lightgray2"
-                        innerHTML={recurData.Product_stock_other_formats_text.replace(
-                          "<number>",
-                          "4"
-                        )}
-                      />
+                      <div class="text-lightgray2">
+                        <em>
+                          {recurData.Product_stock_other_formats_text.replace(
+                            "<number>",
+                            "4"
+                          )}
+                        </em>
+                      </div>
                     </div>
                   </div>
                 )}
