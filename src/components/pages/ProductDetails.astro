@@ -32,7 +32,7 @@ const {
 } = page;
 
 
-const stock_date = new Date(page?.In_stock_date)
+const inStockDate = new Date(page?.In_stock_date)
   .toLocaleString("en-GB", {
     year: "2-digit",
     month: "short",
@@ -446,8 +446,13 @@ if (stock_amount === 0) {
               <Icon
                 name="mdi:alert-circle"
                 class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
-              />
-              {recurData.Item_stock_text.replace("<in_stock_date>", stock_date)}. 
+              />              
+              {
+                // hide label if in-stock date is in the past or undefined
+                // @ts-ignore
+                new Date() > inStockDate &&
+                  recurData.Item_stock_text.replace("<in_stock_date>", inStockDate) + "."
+              }
               { 
                 recurData.Product_stock_other_formats_text
                   .replace("<count>", availableFormats.length)

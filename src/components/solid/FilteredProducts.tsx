@@ -98,18 +98,24 @@ export default function FilteredProducts({
                       {recurData.Product_sold_out_text}
                     </div>
 
-                    <div
-                      class={[
-                        "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none w-full",
-                        "text-sm sm:text-base font-medium text-dark2 bg-[#faf8e5]/80",
-                      ].join(" ")}
-                    >
-                      {alertCircleIcon}
-                      {recurData.Item_stock_text.replace(
-                        "<in_stock_date>",
-                        inStockDate
-                      )}
-                    </div>
+                    {
+                      // hide label if in-stock date is in the past or undefined
+                      // @ts-ignore
+                      new Date() > inStockDate && (
+                        <div
+                          class={[
+                            "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none w-full",
+                            "text-sm sm:text-base font-medium text-dark2 bg-[#faf8e5]/80",
+                          ].join(" ")}
+                        >
+                          {alertCircleIcon}
+                          {recurData.Item_stock_text.replace(
+                            "<in_stock_date>",
+                            inStockDate
+                          )}
+                        </div>
+                      )
+                    }
                   </>
                 )}
               </div>
