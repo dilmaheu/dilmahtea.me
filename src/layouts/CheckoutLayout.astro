@@ -64,7 +64,7 @@ const checkoutStepOrder = page.checkout_step_order,
       }
 
       div {
-        @apply w-full rounded-full bg-lightgray2;
+        @apply w-full rounded-full;
 
         height: poly-fluid-clamp(
           (
@@ -148,12 +148,15 @@ const checkoutStepOrder = page.checkout_step_order,
                     </StepTitleTag>
                   )}
 
-                  <div
-                    class:list={[
-                      i + 1 > checkoutStepOrder && "opacity-30",
-                      i + 1 === checkoutStepOrder && "opacity-60",
-                    ]}
-                  />
+                  {i + 1 === checkoutStepOrder ? (
+                    <div class="grid grid-cols-2 bg-lightgray2/30">
+                      <div class="bg-lightgray2" />
+                    </div>
+                  ) : i + 1 > checkoutStepOrder ? (
+                    <div class="bg-lightgray2/30" />
+                  ) : (
+                    <div class="bg-lightgray2" />
+                  )}
                 </div>
               );
             })
