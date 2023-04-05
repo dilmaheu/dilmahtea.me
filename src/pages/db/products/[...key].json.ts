@@ -34,10 +34,18 @@ async function processProductData(attributes) {
   let availableFormatsCount, availableFormatThumbnails;
 
   if (Stock_amount === 0) {
+    const Titles = [];
+
     const availableFormats = [
       ...attributes.availableVariants,
       ...attributes.availableSizes,
-    ].filter(({ stockAmount }) => stockAmount);
+    ].filter(({ Title, stockAmount }) => {
+      if (Titles.includes(Title)) return false;
+
+      Titles.push(Title);
+
+      return stockAmount;
+    });
 
     availableFormats.sort(
       ({ value: a }, { value: b }) =>
