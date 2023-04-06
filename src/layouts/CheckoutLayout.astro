@@ -53,8 +53,6 @@ const checkoutStepOrder = page.checkout_step_order,
 
       span,
       h1 {
-        @apply font-medium;
-
         font-size: poly-fluid-clamp(
           (
             375px: 10px,
@@ -137,13 +135,23 @@ const checkoutStepOrder = page.checkout_step_order,
               return (
                 <div>
                   <StepTitleTag
-                    class:list={shortenedStep !== step && "hidden sm:inline"}
+                    class:list={[
+                      shortenedStep !== step && "hidden sm:inline",
+                      i + 1 === checkoutStepOrder
+                        ? "font-extrabold"
+                        : "font-medium",
+                    ]}
                   >
                     {step}
                   </StepTitleTag>
 
                   {shortenedStep !== step && (
-                    <StepTitleTag class="inline sm:hidden">
+                    <StepTitleTag
+                      class:list={[
+                        "inline sm:hidden",
+                        i + 1 === checkoutStepOrder && "font-bold",
+                      ]}
+                    >
                       {shortenedStep}
                     </StepTitleTag>
                   )}
