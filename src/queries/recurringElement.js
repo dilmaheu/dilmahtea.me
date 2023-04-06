@@ -87,6 +87,7 @@ const recurringElementQuery = `
           product_impact_title
           Item_stock_text
           Product_stock_other_formats_text
+          Product_stock_other_formats_text_singular
           Product_sold_out_text
           text_all_tea_variants
           text_all_tea_sizes
@@ -176,6 +177,7 @@ const recurringElementQuery = `
                 product_impact_title
                 Item_stock_text
                 Product_stock_other_formats_text
+                Product_stock_other_formats_text_singular
                 Product_sold_out_text
                 text_all_tea_variants
                 text_all_tea_sizes
