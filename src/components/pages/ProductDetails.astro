@@ -63,13 +63,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 let availableFormats;
 
 if (stock_amount === 0) {
-  const Titles = [];
+  const formats = [];
 
   availableFormats = [...availableVariants, ...availableSizes].filter(
-    ({ Title, stockAmount }) => {
-      if (Titles.includes(Title)) return false;
+    ({ format, stockAmount }) => {
+      if (formats.includes(format)) return false;
 
-      Titles.push(Title);
+      formats.push(format);
 
       return stockAmount;
     }
@@ -82,8 +82,8 @@ if (stock_amount === 0) {
 
   availableFormats = await Promise.all(
     availableFormats.map(async (data) => ({
-      Title: data.Title,
       link: data.link,
+      format: data.format,
       thumbnail: {
         src: await importRemoteImage(ASSETS_URL + data.thumbnail.src),
         alt: data.thumbnail.alt,
@@ -462,7 +462,7 @@ if (stock_amount === 0) {
             <div class="w-full md:w-2/3 lg:w-full">
               <div class="variant-container">
                 {
-                  availableFormats.map(({ Title, link, thumbnail }) => (
+                  availableFormats.map(({  link, format, thumbnail }) => (
                     <div
                       style="clip-path: url(#product-category-card-curve)"
                       class="bg-primary text-center"
@@ -480,7 +480,7 @@ if (stock_amount === 0) {
 
                           <div class="variant-txt-container">
                             <h2 class="alice text-xl sm:text-left leading-[110%] line-clamp-2">
-                              {Title}
+                              {format}
                             </h2>
                           </div>
                         </div>

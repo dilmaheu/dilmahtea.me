@@ -66,7 +66,7 @@ const allProducts = catalog.Products.map(({ Title, products: variants }) => {
         localizedSize = attributes.size.data.attributes.Title,
         link = "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
 
-      const Title = attributes.Title,
+      const format = localizedVariant + " " + localizedSize,
         stockAmount = attributes.Stock_amount,
         thumbnail = {
           src: attributes.Intro_blob.data.attributes.formats.thumbnail.url,
@@ -84,20 +84,20 @@ const allProducts = catalog.Products.map(({ Title, products: variants }) => {
 
       if (!availableVariants[locale].find(({ value }) => value === variant))
         availableVariants[locale].push({
-          Title,
           value: variant,
           variant: localizedVariant,
           link,
+          format,
           stockAmount,
           thumbnail,
         });
 
       if (!availableSizes[locale].find(({ value }) => value === size))
         availableSizes[locale].push({
-          Title,
           value: size,
           size: localizedSize,
           link,
+          format,
           stockAmount,
           thumbnail,
         });

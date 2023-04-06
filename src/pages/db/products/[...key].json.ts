@@ -34,15 +34,15 @@ async function processProductData(attributes) {
   let availableFormatsCount, availableFormatThumbnails;
 
   if (Stock_amount === 0) {
-    const Titles = [];
+    const formats = [];
 
     const availableFormats = [
       ...attributes.availableVariants,
       ...attributes.availableSizes,
-    ].filter(({ Title, stockAmount }) => {
-      if (Titles.includes(Title)) return false;
+    ].filter(({ format, stockAmount }) => {
+      if (formats.includes(format)) return false;
 
-      Titles.push(Title);
+      formats.push(format);
 
       return stockAmount;
     });
