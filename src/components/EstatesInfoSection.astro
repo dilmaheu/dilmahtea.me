@@ -3,10 +3,11 @@ import { parseHTML } from "linkedom";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
+import renderMarkdown from "@utils/renderMarkdown";
+
 const { page } = Astro.props;
 
-// @ts-ignore
-const infoBlocksHTML = await Astro.__renderMarkdown(page.Block3);
+const infoBlocksHTML = await renderMarkdown(page.Block3);
 
 const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
   titles = [...infoBlocksDocument.querySelectorAll("h2")];

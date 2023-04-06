@@ -3,6 +3,7 @@ import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
+import renderMarkdown from "@utils/renderMarkdown";
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
@@ -773,13 +774,10 @@ page.Nutrition.forEach((item) => {
     dateCreated: page.createdAt,
     datePublished: page.publishedAt,
     dateModified: page.updatedAt,
-    description: `${(await Astro.__renderMarkdown(page.Intro_text)).replace(
+    description: `${(await renderMarkdown(page.Intro_text)).replace(
       /(<([^>]+)>)/gi,
       ""
-    )} ${(await Astro.__renderMarkdown(page.Block_text)).replace(
-      /(<([^>]+)>)/gi,
-      ""
-    )}`,
+    )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
     prepTime: `PT${timeSm(page.Time_preparation)
       .toUpperCase()
       .replace(/\s/g, "")}`,

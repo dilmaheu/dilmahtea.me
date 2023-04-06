@@ -1,6 +1,8 @@
 ---
 import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
+
+import renderMarkdown from "@utils/renderMarkdown";
 import Chapterize from "@components/Chapterize.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
@@ -47,11 +49,11 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
     copyrightYear: `${new Date().getFullYear()}`,
     copyrightHolder: "Dilmah",
     isFamilyFriendly: "True",
-    description: `${(await Astro.__renderMarkdown(page.Intro_text)).replace(
+    description: `${(await renderMarkdown(page.Intro_text)).replace(
       /(<([^>]+)>)/gi,
       ""
     )}`,
-    articleBody: `${(await Astro.__renderMarkdown(page.Block_text)).replace(
+    articleBody: `${(await renderMarkdown(page.Block_text)).replace(
       /(<([^>]+)>)/gi,
       ""
     )}`,
