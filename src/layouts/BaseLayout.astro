@@ -81,15 +81,12 @@ const { Type: notificationType, localizedNotifications } =
     </div>
 
     <script is:inline>
-      if (
-        window.requestedLocale /* requestedLocale is defined in TranslationNotFoundRedirect.astro */
-      ) {
+      if (window.requestedLocale) {
         const translationNotFoundNotification =
           document.currentScript.previousElementSibling.firstElementChild;
 
         translationNotFoundNotification.style.display = "flex";
 
-        /* removeTopNotification is defined in NotificationAnimations.astro */
         window.removeTopNotification(translationNotFoundNotification);
       }
     </script>

@@ -152,9 +152,7 @@ langSelectorsData.sort(
       localStorage.setItem(`locale`, newLocale);
 
       const localeRegex = new RegExp(
-        // @ts-ignore
-        `^/(${availableLocales.map((locale) => locale).join("|")})/`
-        /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
+        `^/(${window.availableLocales.map((locale) => locale).join("|")})/`
       );
 
       let [, locale] = location.pathname.match(localeRegex) ?? [];

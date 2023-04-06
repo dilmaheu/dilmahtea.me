@@ -211,7 +211,7 @@ const footerText = recurData.Footer_text.replaceAll(
                 .map((id) => {
                   const productData = window.cart[id],
                     names = JSON.parse(productData.names),
-                    name = names[preferredLocale] || names["en"],
+                    name = names[window.preferredLocale] || names["en"],
                     price = Number(productData.price)
                       .toFixed(2)
                       .replace(".", ",");
@@ -344,12 +344,6 @@ const footerText = recurData.Footer_text.replaceAll(
 
 <script>
   import tweakAmount from "@utils/tweakAmount";
-
-  declare global {
-    interface Window {
-      cart: Record<string, Record<string, string | number>>;
-    }
-  }
 
   const cartProductAmountInputs = document.querySelectorAll(
       ".cart-product-amount-input"

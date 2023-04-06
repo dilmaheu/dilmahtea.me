@@ -133,7 +133,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     window.addProductToCart = (id) => {
                       const productData = window.cart[id],
                         names = JSON.parse(productData.names),
-                        name = names[preferredLocale] || names["en"],
+                        name = names[window.preferredLocale] || names["en"],
                         price = Number(productData.price)
                           .toFixed(2)
                           .replace(".", ",");
@@ -291,25 +291,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     </div>
   </div>
 </div>
-
-<script>
-  // disableScrolling & enableScrolling are defined in Navbar.astro
-
-  declare global {
-    interface Window {
-      openCart: () => void;
-      enableScrolling: () => void;
-      disableScrolling: () => void;
-      addProductToCart: (id: string) => void;
-      cart: Record<string, Record<string, string | number>>;
-      handleProductAmountInput: (input: HTMLInputElement) => void;
-      listenToInputEvents: (
-        tweakBtns: NodeListOf<HTMLButtonElement>,
-        input: HTMLInputElement
-      ) => void;
-    }
-  }
-</script>
 
 <script>
   const id: (string) => HTMLElement = document.getElementById.bind(document),

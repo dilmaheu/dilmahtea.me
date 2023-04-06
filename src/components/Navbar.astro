@@ -308,14 +308,6 @@ const {
   </div>
 </header>
 
-<script>
-  declare global {
-    interface Window {
-      cart: Record<string, Record<string, string | number>>;
-    }
-  }
-</script>
-
 <script is:inline>
   {
     const navbarBg = document.getElementById("navbar-bg"),
@@ -347,15 +339,6 @@ const {
 </script>
 
 <script>
-  declare global {
-    interface Window {
-      openCart: () => void;
-      // disableScrolling & enableScrolling are declared globally to use in cart toggling logic
-      enableScrolling: () => void;
-      disableScrolling: () => void;
-    }
-  }
-
   const query = document.querySelector.bind(document),
     rootElement = query(":root"),
     cart = query("#cart"),
@@ -430,7 +413,6 @@ const {
       navbarBg && (navbarBg.style.display = "none");
       cartNavbarBg && (cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)");
     } else if (sidebar.style.display === "block") {
-      // @ts-ignore
       window.disableScrolling();
 
       window.addEventListener("resize", updateSidebarTopPosition);

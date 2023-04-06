@@ -878,7 +878,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     localStorage.getItem("preferredProductsVariants") || "{}"
   );
 
-  preferredProductsVariants[baseProductTitle] = {
+  preferredProductsVariants[window.baseProductTitle] = {
     tea_variant: productVariant,
     tea_size: productSize,
   };
@@ -891,13 +891,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
 <script>
   import tweakAmount from "@utils/tweakAmount";
-
-  declare global {
-    interface Window {
-      baseProductTitle: string;
-      cart: Record<string, Record<string, string | number>>;
-    }
-  }
 
   type ProductData = Record<string, number | string>;
 
