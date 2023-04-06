@@ -31,14 +31,6 @@ const {
   Stock_amount: stock_amount,
 } = page;
 
-
-const inStockDate = new Date(page?.In_stock_date)
-  .toLocaleString("en-GB", {
-    year: "2-digit",
-    month: "short",
-    day: "numeric",
-  });
-
 const infos = page.product_infos.data.map(({ attributes }) => attributes),
   blogs = page.related_blogs?.data?.map(({ attributes }) => attributes),
   recipes = page.related_recipes?.data?.map(({ attributes }) => attributes),
@@ -449,9 +441,15 @@ if (stock_amount === 0) {
               />              
               {
                 // hide label if in-stock date is in the past or undefined
-                // @ts-ignore
-                new Date() > inStockDate &&
-                  recurData.Item_stock_text.replace("<in_stock_date>", inStockDate) + "."
+                new Date(page.In_stock_date).getTime() > new Date().getTime() &&
+                  recurData.Item_stock_text.replace(
+                    "<in_stock_date>",
+                    new Date(page.In_stock_date).toLocaleString("en-GB", {
+                      year: "2-digit",
+                      month: "short",
+                      day: "numeric",
+                    })
+                  ) + "."
               }
               {availableFormats.length === 1
                 ? recurData.Product_stock_other_formats_text_singular
