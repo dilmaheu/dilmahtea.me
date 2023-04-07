@@ -219,9 +219,11 @@ const { page } = Astro.props;
       "checkout-info-form"
     ) as HTMLFormElement;
 
-  if (savedCheckoutInfo) {
-    const parsedContactInfo = JSON.parse(savedCheckoutInfo);
+  const parsedContactInfo = savedCheckoutInfo
+    ? JSON.parse(savedCheckoutInfo)
+    : null;
 
+  if (parsedContactInfo) {
     fillUpForm(Object.entries(parsedContactInfo));
   }
 
@@ -233,6 +235,7 @@ const { page } = Astro.props;
       contactInfo = {
         ...formData,
         delivery_address: [street, city, country].join(", "),
+        kindness_cause: parsedContactInfo?.kindness_cause,
       };
 
     localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
