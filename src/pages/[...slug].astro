@@ -1,5 +1,7 @@
 ---
 import CMS from "@store/CMS";
+import products from "@store/products";
+
 import PageLayout from "@layouts/PageLayout.astro";
 import CheckoutLayout from "@layouts/CheckoutLayout.astro";
 import UserAccountLayout from "@layouts/UserAccountLayout.astro";
@@ -15,6 +17,7 @@ import Crowdfunding from "@pages/Crowdfunding.astro";
 import RecipeDetails from "@pages/RecipeDetails.astro";
 import EstateDetails from "@pages/EstateDetails.astro";
 import ProductDetails from "@pages/ProductDetails.astro";
+import ProductCategory from "@pages/ProductCategory.astro";
 import CrowdfundingForm from "@pages/CrowdfundingForm.astro";
 import CheckoutSuccess from "@pages/CheckoutSuccess.astro";
 import CheckoutKindness from "@pages/CheckoutKindness.astro";
@@ -38,7 +41,6 @@ export async function getStaticPaths() {
     howTos,
     recipes,
     estates,
-    products,
     crowdfundingForm,
     crowdfundingPlans,
     crowdfundingHome,
@@ -48,8 +50,9 @@ export async function getStaticPaths() {
     homeHowTo,
     homeRecipe,
     homeEstate,
-    homeProduct,
     homepage,
+    homeProduct,
+    productCategories,
     cart,
     countries,
     checkoutKindness,
@@ -62,6 +65,8 @@ export async function getStaticPaths() {
     userAccountOrder,
     userAccountAddress,
   } = CMS.get("all");
+
+  const allProducts = products.get("all");
 
   const allLocales = i18NLocales.data.map(({ attributes }) =>
     attributes.code.substring(0, 2)
@@ -167,7 +172,7 @@ export async function getStaticPaths() {
     type: "estateDetails",
   }));
 
-  const productDetailsPages = getPages(products, (page) => ({
+  const productDetailsPages = getPages(allProducts, (page) => ({
     type: "productDetails",
     names: (() => {
       const nameEntries = [page, ...page.attributes.localizations.data].map(
@@ -203,9 +208,12 @@ export async function getStaticPaths() {
     posts: locale && getPosts(estates, locale),
   }));
 
-  const productPages = getPages(homeProduct, (page, { locale }) => ({
+  const productPages = getPages(homeProduct, () => ({
     type: "product",
-    posts: locale && getPosts(products, locale),
+  }));
+
+  const productCategoryPages = getPages(productCategories, () => ({
+    type: "productCategory",
   }));
 
   const homepagePages = getPages(homepage, (page, { locale }) => ({
@@ -288,6 +296,7 @@ export async function getStaticPaths() {
     ...howToDetailsPages,
     ...recipeDetailsPages,
     ...estateDetailsPages,
+    ...productCategoryPages,
     ...productDetailsPages,
     ...blogPages,
     ...howToPages,
@@ -408,7 +417,17 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
           ) : page.type === `estateDetails` ? (
             <EstateDetails page={page} recurData={recurData} {ariaLabelRecurData} />
           ) : page.type === `product` ? (
-            <Product page={page} recurData={recurData} {ariaLabelRecurData} />
+            <Product
+              page={page}
+              recurData={recurData}
+              ariaLabelRecurData={ariaLabelRecurData}
+            />
+          ) : page.type === `productCategory` ? (
+            <ProductCategory
+              page={page}
+              recurData={recurData}
+              ariaLabelRecurData={ariaLabelRecurData}
+            />
           ) : page.type === `productDetails` ? (
             <ProductDetails page={page} recurData={recurData} {ariaLabelRecurData} />
           ) : page.type === `checkoutInformation` ? (
@@ -418,7 +437,11 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
           ) : page.type === `checkoutShipping` ? (
             <CheckoutShipping page={page} recurData={recurData} />
           ) : page.type === `plan` ? (
-            <CrowdfundingForm page={page} locale={locale} {recurData} />
+            <CrowdfundingForm
+              page={page}
+              recurData={recurData}
+              locale={locale}
+            />
           ) : page.type === `account` ? (
             <UserAccount page={page} />
           ) : page.type === `accountDashboard` ? (

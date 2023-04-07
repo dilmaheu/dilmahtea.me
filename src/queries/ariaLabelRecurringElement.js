@@ -18,6 +18,8 @@ const ariaLabelRecurringElementQuery = `
           Recipe_step_text
           Howto_method_text
           Estate_location_map_text
+          Product_all_teas_text
+          Product_tea_item_text
           Product_quantity_minus_button_text
           Product_quantity_plus_button_text
           Product_quantity_text
@@ -47,6 +49,8 @@ const ariaLabelRecurringElementQuery = `
                 Recipe_step_text
                 Howto_method_text
                 Estate_location_map_text
+                Product_all_teas_text
+                Product_tea_item_text
                 Product_quantity_minus_button_text
                 Product_quantity_plus_button_text
                 Product_quantity_text

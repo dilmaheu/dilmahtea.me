@@ -7,11 +7,17 @@ import generateXMLSitemap from "./utils/generateXMLSitemap.js";
 import rewrite404RoutesPaths from "./utils/rewrite404RoutesPaths.js";
 import generateSecurityHeaders from "./utils/generateSecurityHeaders.js";
 import removeAstroIconAttributes from "./utils/removeAstroIconAttributes.js";
+import shouldDisplayExperimentals from "../utils/shouldDisplayExperimentals.js";
 
 const CSPRecord = {
   "default-src": ["'none'"],
   "style-src": ["'self'", "'unsafe-inline'", "https://use.fontawesome.com"],
-  "img-src": ["'self'", "https://dilmahtea.me", "data:"],
+  "img-src": [
+    "'self'",
+    "data:",
+    "https://dilmahtea.me",
+    "https://cms.dilmahtea.me",
+  ],
   "media-src": ["data:"],
   "font-src": ["'self'", "https://use.fontawesome.com"],
   "worker-src": ["blob:"],
@@ -28,6 +34,10 @@ const CSPRecord = {
     "https://static.openreplay.com",
   ],
 };
+
+if (shouldDisplayExperimentals) {
+  CSPRecord["connect-src"].push("https://dev.products.scripts.dilmahtea.me");
+}
 
 const sitemap = [];
 

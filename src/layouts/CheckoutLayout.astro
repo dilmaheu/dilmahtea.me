@@ -53,8 +53,6 @@ const checkoutStepOrder = page.checkout_step_order,
 
       span,
       h1 {
-        @apply font-medium;
-
         font-size: poly-fluid-clamp(
           (
             375px: 10px,
@@ -64,7 +62,7 @@ const checkoutStepOrder = page.checkout_step_order,
       }
 
       div {
-        @apply w-full rounded-full bg-lightgray2;
+        @apply w-full rounded-full;
 
         height: poly-fluid-clamp(
           (
@@ -91,7 +89,7 @@ const checkoutStepOrder = page.checkout_step_order,
   </script>
 
   <div id="checkout" class="bg-lightgray">
-    <header class="checkout-flow-container z-10 fixed md:relative w-screen">
+    <header class="checkout-flow-container z-10 fixed md:relative w-full">
       <ClipPathSVG
         id="checkout-header-curve"
         path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
@@ -137,23 +135,36 @@ const checkoutStepOrder = page.checkout_step_order,
               return (
                 <div>
                   <StepTitleTag
-                    class:list={shortenedStep !== step && "hidden sm:inline"}
+                    class:list={[
+                      shortenedStep !== step && "hidden sm:inline",
+                      i + 1 === checkoutStepOrder
+                        ? "font-extrabold"
+                        : "font-medium",
+                    ]}
                   >
                     {step}
                   </StepTitleTag>
 
                   {shortenedStep !== step && (
-                    <StepTitleTag class="inline sm:hidden">
+                    <StepTitleTag
+                      class:list={[
+                        "inline sm:hidden",
+                        i + 1 === checkoutStepOrder && "font-bold",
+                      ]}
+                    >
                       {shortenedStep}
                     </StepTitleTag>
                   )}
 
-                  <div
-                    class:list={[
-                      i + 1 > checkoutStepOrder && "opacity-30",
-                      i + 1 === checkoutStepOrder && "opacity-60",
-                    ]}
-                  />
+                  {i + 1 === checkoutStepOrder ? (
+                    <div class="grid grid-cols-2 bg-lightgray2/30">
+                      <div class="bg-lightgray2" />
+                    </div>
+                  ) : i + 1 > checkoutStepOrder ? (
+                    <div class="bg-lightgray2/30" />
+                  ) : (
+                    <div class="bg-lightgray2" />
+                  )}
                 </div>
               );
             })
