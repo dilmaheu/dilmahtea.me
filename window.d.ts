@@ -9,6 +9,7 @@ interface CartProduct {
   sku: string;
   tea_size: string;
   tea_variant: string;
+  [key: string]: string | number;
 }
 
 type Cart = {
@@ -17,7 +18,7 @@ type Cart = {
   subTotal: string;
   total: string;
   updateUI: (cart: Cart) => void;
-} & Record<string, CartProduct>;
+} & Record<string, Partial<CartProduct>>;
 
 type CheckoutInfoField =
   | "first_name"
@@ -31,6 +32,8 @@ type CheckoutInfoField =
   | "shipping_method"
   | "shipping_cost"
   | "kindness_cause";
+
+type CheckoutInfo = Partial<Record<CheckoutInfoField | string, string>>;
 
 declare global {
   interface Window {
@@ -46,7 +49,7 @@ declare global {
     baseProductTitle: string; // defined in ProductDetails.astro
 
     cart: Cart; // defined in CartStore.astro
-    checkoutInfo: Record<CheckoutInfoField, string>; // defined in CartStore.astro
+    checkoutInfo: CheckoutInfo; // defined in CartStore.astro
     openCart: () => void; // defined in CartOverlay.astro
     addProductToCart: (id: string) => void; // defined in CartOverlay.astro
     replacePlaceholders: (
