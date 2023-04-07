@@ -19,6 +19,19 @@ type Cart = {
   updateUI: (cart: Cart) => void;
 } & Record<string, CartProduct>;
 
+type CheckoutInfoField =
+  | "first_name"
+  | "last_name"
+  | "email"
+  | "city"
+  | "country"
+  | "postal_code"
+  | "street"
+  | "delivery_address"
+  | "shipping_method"
+  | "shipping_cost"
+  | "kindness_cause";
+
 declare global {
   interface Window {
     companyName: string; // defined in CheckoutShipping.astro
@@ -33,7 +46,7 @@ declare global {
     baseProductTitle: string; // defined in ProductDetails.astro
 
     cart: Cart; // defined in CartStore.astro
-    checkoutInfo: Record<string, string>; // defined in CartStore.astro
+    checkoutInfo: Record<CheckoutInfoField, string>; // defined in CartStore.astro
     openCart: () => void; // defined in CartOverlay.astro
     addProductToCart: (id: string) => void; // defined in CartOverlay.astro
     replacePlaceholders: (
