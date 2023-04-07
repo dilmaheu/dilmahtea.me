@@ -3,7 +3,6 @@ import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
-import { join } from "path";
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   { howTos } = page,
@@ -106,10 +105,10 @@ const url = `${Astro.site.origin}/${page.locale}/${
       page.Method.map((method) => (
         <div class="chapter">
           <h2
-            class="method-title alice text-lightgray2 leading-[110%] mt-[50px] bg-primary rounded-[10px]"
             id={method.Method_title.replaceAll(" ", "-")
               .replace(/\s+/g, "")
               .trim()}
+            class="method-title alice text-lightgray2 leading-[110%] mt-[50px] bg-primary rounded-[10px]"
           >
             {method.Method_title}
           </h2>
@@ -117,10 +116,10 @@ const url = `${Astro.site.origin}/${page.locale}/${
           {method.Steps.map((step, index) => (
             <div class="method-step my-[30px] rounded-[10px]">
               <h3
-                class="font-semibold text-primary text-2xl leading-[130%]"
                 id={step.Step_title.replaceAll(" ", "-")
                   .replace(/\s+/g, "")
                   .trim()}
+                class="font-semibold text-primary text-2xl leading-[130%]"
               >
                 {index + 1 + ". " + step.Step_title}
               </h3>
