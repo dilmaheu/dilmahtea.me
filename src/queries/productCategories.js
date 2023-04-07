@@ -34,6 +34,12 @@ const productCategoriesQuery = `
               }
             }
           }
+          Breadcrumb{
+            Steps{
+              Name
+              Link
+            }
+          }
           Relevant_items_title
           Relevant_recipes(filters: { publishedAt: { ne: null } }) {
             data {
@@ -99,6 +105,12 @@ const productCategoriesQuery = `
                         }
                       }
                     }
+                  }
+                }
+                Breadcrumb{
+                  Steps{
+                    Name
+                    Link
                   }
                 }
                 Relevant_items_title
