@@ -41,9 +41,8 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
       const isEven = index % 2 === 0,
         { textContent: titleText } = title,
         { textContent } = title.nextElementSibling,
-        // @ts-ignore
-        { src: imgSrc, alt: imgAlt = "" } =
-          title.nextElementSibling.lastElementChild;
+        { src: imgSrc, alt: imgAlt = "" } = title.nextElementSibling
+          .lastElementChild as HTMLImageElement;
 
       return (
         <div

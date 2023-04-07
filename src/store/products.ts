@@ -1,6 +1,3 @@
-// @ts-check
-
-// @ts-ignore
 import CMS from "@store/CMS";
 
 const catalog = CMS.get("catalog").data.attributes,
