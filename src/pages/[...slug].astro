@@ -122,8 +122,10 @@ export async function getStaticPaths() {
         (attributes) =>
           attributes.locale.substring(0, 2) === locale.substring(0, 2)
       )
-      // @ts-ignore
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
 
   const plansPages = getPages(crowdfundingPlans, (page, { Title }) => ({
     type: "plan",
@@ -316,8 +318,6 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
 
       return (
         <Layout
-          {
-          /* @ts-ignore */ }
           page={page}
           meta={meta}
           locale={locale}
