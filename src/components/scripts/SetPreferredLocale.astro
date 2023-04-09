@@ -10,7 +10,7 @@ const { locales } = await getLocalesData();
   let preferredLocale = localStorage.getItem("locale");
 
   if (!locales.includes(preferredLocale)) {
-    // set preferredLocale if not set or reset if not available
+    // set preferredLocale if null or reset if not supported
     preferredLocale = locales.includes(browserLocale) ? browserLocale : "en";
 
     localStorage.setItem(`locale`, preferredLocale);

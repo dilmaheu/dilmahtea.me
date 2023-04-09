@@ -245,8 +245,7 @@ const { locale, page, recurData } = Astro.props,
 <script>
   import fillUpForm from "@utils/fillUpForm";
 
-  const searchParams = new URLSearchParams(location.search),
-    crowdfundingFormEntries = Array.from(searchParams.entries());
+  const crowdfundingFormEntries = [...new URLSearchParams(location.search)];
 
   fillUpForm(crowdfundingFormEntries);
 </script>
