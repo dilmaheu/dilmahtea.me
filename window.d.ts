@@ -33,7 +33,8 @@ type CheckoutInfoField =
   | "shipping_cost"
   | "kindness_cause";
 
-type CheckoutInfo = Partial<Record<CheckoutInfoField | string, string>>;
+type CheckoutInfo = Partial<Record<CheckoutInfoField, string>> &
+  Record<string, string>;
 
 declare global {
   interface Window {
