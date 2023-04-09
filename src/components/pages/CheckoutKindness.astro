@@ -89,14 +89,17 @@ const { page } = Astro.props,
         ({
           attributes: { cause, description, featured_blob, localizations },
         }) => (
-          <div role="listitem" tabindex="0" aria-label={cause}>
+          <div
+            tabindex="0"
+            role="listitem"
+            aria-label={cause}
+            class="kindness-cause"
+            data-cause={localizations?.data[0]?.attributes?.cause || cause}
+          >
             <div class="h-full">
               <div
-                {
-                /* @ts-ignore */ }
-                data-cause={localizations?.data[0]?.attributes?.cause || cause}
                 style="clip-path: url(#kindness-cause-card-curve);"
-                class="kindness-cause relative w-full h-full sm:w-80 flex flex-col bg-primary cursor-pointer"
+                class="relative w-full h-full sm:w-80 flex flex-col bg-primary cursor-pointer"
               >
                 <div class="h-48">
                   <Picture
@@ -170,26 +173,25 @@ const { page } = Astro.props,
       "continue-to-payment-btn"
     ) as HTMLButtonElement;
 
+  function selectCard(card: HTMLElement) {
+    const activeCauseCard = kindnessCausesCardsContainer.querySelector(
+        ".active-kindness-cause"
+      ),
+      kindness_cause = card.dataset.cause;
+
+    activeCauseCard?.classList?.remove("active-kindness-cause");
+
+    window.checkoutInfo.kindness_cause = kindness_cause;
+
+    localStorage.setItem("checkout-info", JSON.stringify(window.checkoutInfo));
+
+    card.classList.add("active-kindness-cause");
+
+    continueToPaymentBtn.disabled = false;
+  }
+
   kindnessCausesCards.forEach((card) => {
-    card.addEventListener("click", () => {
-      const activeCauseCard = kindnessCausesCardsContainer.querySelector(
-          ".active-kindness-cause"
-        ),
-        kindness_cause = card.dataset.cause;
-
-      activeCauseCard?.classList?.remove("active-kindness-cause");
-
-      window.checkoutInfo.kindness_cause = kindness_cause;
-
-      localStorage.setItem(
-        "checkout-info",
-        JSON.stringify(window.checkoutInfo)
-      );
-
-      card.parentElement.parentElement.classList.add("active-kindness-cause");
-
-      continueToPaymentBtn.disabled = false;
-    });
+    card.addEventListener("focus", () => selectCard(card));
   });
 
   continueToPaymentBtn?.addEventListener("click", () => {
