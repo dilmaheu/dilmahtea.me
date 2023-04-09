@@ -154,3 +154,53 @@ export default function ProductFiltersForm({
     </form>
   );
 }
+
+ProductFiltersForm.pruneProps = function ({
+  productSizes,
+  productVariants,
+  recurData,
+}) {
+  recurData = {
+    text_all_tea_variants: recurData.text_all_tea_variants,
+    text_all_tea_sizes: recurData.text_all_tea_sizes,
+  };
+
+  [productSizes, productVariants] = [productSizes, productVariants].map(
+    ({ data }, i) => ({
+      data: data.map(({ attributes }) => ({
+        attributes: {
+          Title: attributes.Title,
+          products: {
+            data: attributes.products.data.map(({ attributes }) => ({
+              attributes: {
+                [i === 0 ? "variant" : "size"]: {
+                  data: {
+                    attributes: {
+                      Title:
+                        attributes[i === 0 ? "variant" : "size"].data.attributes
+                          .Title,
+                    },
+                  },
+                },
+              },
+            })),
+          },
+          localizations: {
+            data: attributes.localizations.data.map(({ attributes }) => ({
+              attributes: {
+                locale: attributes.locale,
+                Title: attributes.Title,
+              },
+            })),
+          },
+        },
+      })),
+    })
+  );
+
+  return {
+    productSizes,
+    productVariants,
+    recurData,
+  };
+};

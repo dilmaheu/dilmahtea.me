@@ -197,9 +197,11 @@ const productSizes = CMS.get("productSizes"),
               <ProductFiltersForm
                 client:load
                 {locale}
-                {productSizes}
-                {productVariants}
-                {recurData}
+                {...ProductFiltersForm.pruneProps({
+                  productSizes,
+                  productVariants,
+                  recurData,
+                })}
               />
             </div>
           </div>
@@ -209,7 +211,11 @@ const productSizes = CMS.get("productSizes"),
           </div>
         </div>
 
-        <FilteredProducts client:load {page} {recurData} {white_right_arrow}>
+        <FilteredProducts
+          client:load
+          {white_right_arrow}
+          {...FilteredProducts.pruneProps({ page, recurData })}
+        >
           <Icon
             slot="alertCircleIcon"
             name="mdi:alert-circle"

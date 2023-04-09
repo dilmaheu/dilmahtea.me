@@ -130,9 +130,11 @@ page.Heading_button_link = "#content";
       <ProductFiltersForm
         client:load
         {locale}
-        {productSizes}
-        {productVariants}
-        {recurData}
+        {...ProductFiltersForm.pruneProps({
+          productSizes,
+          productVariants,
+          recurData,
+        })}
       />
     </div>
 
@@ -140,10 +142,9 @@ page.Heading_button_link = "#content";
     <section role="main" class="grid gap-y-[50px]">
       <FilteredProducts
         client:load
-        {page}
-        {recurData}
         {white_right_arrow}
         category={page.Title}
+        {...FilteredProducts.pruneProps({ page, recurData })}
       >
         <Icon
           slot="alertCircleIcon"
@@ -170,10 +171,9 @@ page.Heading_button_link = "#content";
 
             <FilteredProducts
               client:load
-              {page}
-              {recurData}
               {white_right_arrow}
               subCategory={Title}
+              {...FilteredProducts.pruneProps({ page, recurData })}
             >
               <Icon
                 slot="alertCircleIcon"
