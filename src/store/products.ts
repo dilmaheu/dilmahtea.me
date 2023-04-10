@@ -5,9 +5,9 @@ const catalog = CMS.get("catalog").data.attributes,
   productVariants = CMS.get("productVariants"),
   productCategories = CMS.get("productCategories");
 
-const filterUnavailableTypes = ({ attributes }) => {
-  const { products, localizations } = attributes;
-
+const filterUnavailableTypes = ({
+  attributes: { products, localizations },
+}) => {
   localizations.data = localizations.data.filter(
     (localization) => localization.attributes.products.data.length > 0
   );
@@ -22,13 +22,11 @@ productCategories.data = productCategories.data.filter(filterUnavailableTypes);
 const variantsOrder = [
   ...productVariants.data.map(({ attributes }) => attributes.Title),
   ...productSizes.data.map(({ attributes }) => attributes.Title),
-  ...productVariants.data
-    .map(({ attributes: { Title: variant } }) =>
-      productSizes.data.map(
-        ({ attributes: { Title: size } }) => variant + " | " + size
-      )
+  ...productVariants.data.flatMap(({ attributes: { Title: variant } }) =>
+    productSizes.data.map(
+      ({ attributes: { Title: size } }) => variant + " | " + size
     )
-    .flat(),
+  ),
 ];
 
 const ProxyHandler = {
@@ -43,82 +41,84 @@ const ProxyHandler = {
 
 const products = new Proxy({}, ProxyHandler);
 
-const allProducts = catalog.Products.map(({ Title, products: variants }) => {
-  const variantsPerProduct = new Proxy({}, ProxyHandler),
-    availableVariants = new Proxy({}, ProxyHandler),
-    availableSizes = new Proxy({}, ProxyHandler);
+const allProducts = catalog.Products.flatMap(
+  ({ Title, products: variants }) => {
+    const variantsPerProduct = new Proxy({}, ProxyHandler),
+      availableVariants = new Proxy({}, ProxyHandler),
+      availableSizes = new Proxy({}, ProxyHandler);
 
-  variants.data.forEach(({ attributes: product }) => {
-    const { localizations } = product;
+    variants.data.forEach(({ attributes: product }) => {
+      const { localizations } = product;
+      const size = product.size.data.attributes.Title,
+        variant = product.variant.data.attributes.Title;
 
-    const size = product.size.data.attributes.Title,
-      variant = product.variant.data.attributes.Title;
+      [
+        product,
+        ...localizations.data.map(({ attributes }) => attributes),
+      ].forEach((attributes) => {
+        const locale = attributes.locale.substring(0, 2),
+          localizedVariant = attributes.variant.data.attributes.Title,
+          localizedSize = attributes.size.data.attributes.Title,
+          link = "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
 
-    [
-      product,
-      ...localizations.data.map(({ attributes }) => attributes),
-    ].forEach((attributes) => {
-      const locale = attributes.locale.substring(0, 2),
-        localizedVariant = attributes.variant.data.attributes.Title,
-        localizedSize = attributes.size.data.attributes.Title,
-        link = "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
+        variantsPerProduct[locale].push([variant + " | " + size, attributes]);
+        variantsPerProduct[locale + " | " + size].push([variant, attributes]);
+        variantsPerProduct[locale + " | " + variant].push([size, attributes]);
 
-      variantsPerProduct[locale].push([variant + " | " + size, attributes]);
-      variantsPerProduct[locale + " | " + size].push([variant, attributes]);
-      variantsPerProduct[locale + " | " + variant].push([size, attributes]);
+        products[locale + " | " + variant + " | " + size].push(attributes);
 
-      products[locale + " | " + variant + " | " + size].push(attributes);
+        attributes.productVariant = variant;
+        attributes.productSize = size;
 
-      attributes.productVariant = variant;
-      attributes.productSize = size;
+        if (!availableVariants[locale].some(({ value }) => value === variant)) {
+          availableVariants[locale].push({
+            value: variant,
+            variant: localizedVariant,
+            link,
+          });
+        }
 
-      if (!availableVariants[locale].find(({ value }) => value === variant))
-        availableVariants[locale].push({
-          value: variant,
-          variant: localizedVariant,
-          link,
-        });
-
-      if (!availableSizes[locale].find(({ value }) => value === size))
-        availableSizes[locale].push({
-          value: size,
-          size: localizedSize,
-          link,
-        });
-    });
-  });
-
-  Object.keys(variantsPerProduct).forEach((key) => {
-    products[key].push([Title, variantsPerProduct[key]]);
-  });
-
-  const processedProducts = variants.data.map((data) => {
-    const { attributes } = data;
-
-    const flattenedVariants = [
-      attributes,
-      ...attributes.localizations.data.map(({ attributes }) => attributes),
-    ];
-
-    flattenedVariants.forEach((attributes) => {
-      attributes.baseProductTitle = Title;
-      attributes.availableVariants =
-        availableVariants[attributes.locale.substring(0, 2)];
-      attributes.availableSizes =
-        availableSizes[attributes.locale.substring(0, 2)];
+        if (!availableSizes[locale].some(({ value }) => value === size)) {
+          availableSizes[locale].push({
+            value: size,
+            size: localizedSize,
+            link,
+          });
+        }
+      });
     });
 
-    return data;
-  });
+    Object.keys(variantsPerProduct).forEach((key) => {
+      products[key].push([Title, variantsPerProduct[key]]);
+    });
 
-  return processedProducts;
-}).flat();
+    const processedProducts = variants.data.map((data) => {
+      const { attributes } = data;
+
+      const flattenedVariants = [
+        attributes,
+        ...attributes.localizations.data.map(({ attributes }) => attributes),
+      ];
+
+      flattenedVariants.forEach((attributes) => {
+        attributes.baseProductTitle = Title;
+        attributes.availableVariants =
+          availableVariants[attributes.locale.substring(0, 2)];
+        attributes.availableSizes =
+          availableSizes[attributes.locale.substring(0, 2)];
+      });
+
+      return data;
+    });
+
+    return processedProducts;
+  }
+);
 
 // sort products by order of productSizes and productVariants
-Object.keys(products).forEach((key) => {
-  const filteredProducts = products[key];
-
-  filteredProducts.forEach((product) => {
+Object.values(products)
+  .flat()
+  .forEach((product) => {
     if (Array.isArray(product)) {
       const [, variants] = product;
 
@@ -128,7 +128,6 @@ Object.keys(products).forEach((key) => {
       );
     }
   });
-});
 
 export default {
   get: (key) =>
