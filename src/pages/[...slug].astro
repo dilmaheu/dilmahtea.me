@@ -108,7 +108,7 @@ export async function getStaticPaths() {
 
   const getPages = ({ data }, getProps) =>
     Array.isArray(data)
-      ? data.map((page) => getRouteData(page, getProps)).flat()
+      ? data.flatMap((page) => getRouteData(page, getProps))
       : getRouteData(data, getProps);
 
   const getPosts = ({ data }, locale) =>
@@ -323,73 +323,73 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
           availableLocales={availableLocales}
           metaImageSrc={metaImageSrc}
         >
-          {page.type === `homepage` ? (
+          {page.type === "homepage" ? (
             <Posts page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === `crowdfunding` ? (
+          ) : page.type === "crowdfunding" ? (
             <Crowdfunding page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === `basic` ? (
+          ) : page.type === "basic" ? (
             <BasicPage page={page} />
-          ) : page.type === `blog` ? (
+          ) : page.type === "blog" ? (
             <Posts page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === `blogDetails` ? (
+          ) : page.type === "blogDetails" ? (
             <BlogDetails
               page={page}
               recurData={recurData}
               ariaLabelRecurData={ariaLabelRecurData}
             />
-          ) : page.type === `howTo` ? (
+          ) : page.type === "howTo" ? (
             <Posts page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === `howToDetails` ? (
+          ) : page.type === "howToDetails" ? (
             <HowToDetails
               page={page}
               recurData={recurData}
               ariaLabelRecurData={ariaLabelRecurData}
             />
-          ) : page.type === `recipe` ? (
+          ) : page.type === "recipe" ? (
             <Posts page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === `recipeDetails` ? (
+          ) : page.type === "recipeDetails" ? (
             <RecipeDetails
               page={page}
               recurData={recurData}
               ariaLabelRecurData={ariaLabelRecurData}
             />
-          ) : page.type === `estate` ? (
+          ) : page.type === "estate" ? (
             <Estate
               page={page}
               recurData={recurData}
               ariaLabelRecurData={ariaLabelRecurData}
             />
-          ) : page.type === `estateDetails` ? (
+          ) : page.type === "estateDetails" ? (
             <EstateDetails
               page={page}
               recurData={recurData}
               ariaLabelRecurData={ariaLabelRecurData}
             />
-          ) : page.type === `product` ? (
+          ) : page.type === "product" ? (
             <Product
               page={page}
               recurData={recurData}
               ariaLabelRecurData={ariaLabelRecurData}
             />
-          ) : page.type === `productCategory` ? (
+          ) : page.type === "productCategory" ? (
             <ProductCategory
               page={page}
               recurData={recurData}
               ariaLabelRecurData={ariaLabelRecurData}
             />
-          ) : page.type === `productDetails` ? (
+          ) : page.type === "productDetails" ? (
             <ProductDetails
               page={page}
               recurData={recurData}
               ariaLabelRecurData={ariaLabelRecurData}
             />
-          ) : page.type === `checkoutInformation` ? (
+          ) : page.type === "checkoutInformation" ? (
             <CheckoutInformation page={page} recurData={recurData} />
-          ) : page.type === `checkoutKindness` ? (
+          ) : page.type === "checkoutKindness" ? (
             <CheckoutKindness page={page} recurData={recurData} />
-          ) : page.type === `checkoutShipping` ? (
+          ) : page.type === "checkoutShipping" ? (
             <CheckoutShipping page={page} recurData={recurData} />
-          ) : page.type === `plan` ? (
+          ) : page.type === "plan" ? (
             <CrowdfundingForm
               page={page}
               recurData={recurData}
