@@ -309,7 +309,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     { overflowY: prevBodyOverflowYValue } = document.body.style;
 
   window.openCart = () => {
-    cart.classList.toggle("hidden");
+    cart.classList.remove("hidden");
     cartOverlayProductsContainer.focus();
 
     window.disableScrolling();
@@ -320,7 +320,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   };
 
   const closeCart = () => {
-    cart.classList.toggle("hidden");
+    cart.classList.add("hidden");
 
     // move focus back to cart button
     (window.innerWidth < 1280 ? openCartBtnSm : openCartBtn).focus();
@@ -339,7 +339,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       closeCart();
     }
 
-    const hasToRemoveItem = target.closest(".remove-item-btn");
+    const hasToRemoveItem = !!target.closest(".remove-item-btn");
 
     if (hasToRemoveItem) {
       const productToRemove = target.closest(".cart-product"),

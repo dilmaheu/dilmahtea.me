@@ -1,14 +1,10 @@
 ---
 import Icon from "astro-icon";
 
-const { page, ariaLabelRecurData } = Astro.props;
+const { ariaLabelRecurData } = Astro.props;
 ---
 
 <style lang="scss">
-  .cart-product-amount-tweak-btn:disabled {
-    opacity: 30%;
-  }
-
   .cart-product-amount-input {
     -moz-appearance: textfield;
 
@@ -24,7 +20,10 @@ const { page, ariaLabelRecurData } = Astro.props;
   <button
     data-action="decrement"
     aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
-    class="cart-product-amount-tweak-btn w-9 h-8 md:w-11 md:h-12 py-1.5 md:py-3 pl-2.5 md:pl-3.5 pr-1.5"
+    class:list={[
+      "cart-product-amount-tweak-btn disabled:opacity-30",
+      "w-9 h-8 md:w-11 md:h-12 py-1.5 md:py-3 pl-2.5 md:pl-3.5 pr-1.5",
+    ]}
     disabled
   >
     <Icon name="akar-icons:minus" class="w-5 h-5 md:w-6 md:h-6 select-none" />
@@ -45,7 +44,10 @@ const { page, ariaLabelRecurData } = Astro.props;
   <button
     data-action="increment"
     aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
-    class="cart-product-amount-tweak-btn w-9 h-8 md:w-11 md:h-12 py-1.5 md:py-3 pl-1.5 pr-2.5 md:pr-3.5"
+    class:list={[
+      "cart-product-amount-tweak-btn disabled:opacity-30",
+      "w-9 h-8 md:w-11 md:h-12 py-1.5 md:py-3 pl-1.5 pr-2.5 md:pr-3.5",
+    ]}
   >
     <Icon name="akar-icons:plus" class="w-5 h-5 md:w-6 md:h-6 select-none" />
   </button>

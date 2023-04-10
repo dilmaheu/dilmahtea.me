@@ -13,7 +13,7 @@ const { locale } = Astro.props as Props,
   { document: documentBody } = await parseHTML(documentBodyHTML),
   documentLinks = documentBody.querySelectorAll("a");
 
-[...documentLinks].forEach((link) => {
+documentLinks.forEach((link) => {
   const href = link.getAttribute("href");
 
   if (!href.startsWith("#")) {
