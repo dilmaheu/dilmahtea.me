@@ -8,32 +8,35 @@ import ClippedPicture from "@components/ClippedPicture.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
+type Post = {
+  Estate_name: string;
+  authors: any;
+  locale: string | undefined;
+  updatedAt: string;
+  createdAt: string;
+  publishedAt: string;
+  Intro_text: string;
+  Intro_blob: any;
+  Block_text: string;
+  Category: any | undefined;
+  Cooking_part: any;
+  Cuisine: any;
+  Nutrition_yield: any;
+  Recipe_variations: any;
+  Title: String;
+  Time_preparation: any | undefined;
+  Time_text: any | undefined;
+  Time_cooking: any;
+  Relevant_recipes: any;
+  Meta: any;
+  localizations: { data: { attributes: Post }[] };
+} & Record<string, any>;
+
 interface Props {
   page: {
-    posts: {
-      Estate_name: string;
-      authors: any;
-      locale: string | undefined;
-      localizations: { data: { attributes: any[] } };
-      updatedAt: string;
-      createdAt: string;
-      publishedAt: string;
-      Intro_text: string;
-      Intro_blob: any;
-      Block_text: string;
-      Category: any | undefined;
-      Cooking_part: any;
-      Cuisine: any;
-      Nutrition_yield: any;
-      Recipe_variations: any;
-      Title: String;
-      Time_preparation: any | undefined;
-      Time_text: any | undefined;
-      Time_cooking: any;
-      Relevant_recipes: any;
-      Meta: any;
-    }[];
-  };
+    posts: Post[];
+  } & Record<string, any>;
+  ariaLabelRecurData: Record<string, any>;
 }
 
 const {
