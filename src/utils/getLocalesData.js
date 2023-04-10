@@ -2,15 +2,10 @@ import CMS from "@store/CMS";
 
 const { data: i18nData } = await CMS.get("i18Ns");
 
-const allI18NEntries = [];
-
-i18nData.forEach(({ attributes }) => {
-  allI18NEntries.push(attributes);
-
-  attributes.localizations.data.forEach(({ attributes }) => {
-    allI18NEntries.push(attributes);
-  });
-});
+const allI18NEntries = i18nData.flatMap(({ attributes }) => [
+  attributes,
+  ...attributes.localizations.data.map(({ attributes }) => attributes),
+]);
 
 const locales = [],
   languages = [];
