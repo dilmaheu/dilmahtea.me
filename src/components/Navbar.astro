@@ -1,6 +1,5 @@
 ---
 import CMS from "@store/CMS";
-import Icon from "astro-icon";
 import localizeCMSImage from "@utils/localizeCMSImage";
 import { Picture, BackgroundPicture } from "astro-imagetools/components";
 
@@ -210,7 +209,7 @@ const {
 
   <div
     id="sidebar"
-    class="hidden xl:!hidden fixed right-0 z-[40] w-[300px] max-w-full h-screen z-[99]"
+    class="hidden xl:!hidden fixed top-0 right-0 z-[40] w-[300px] max-w-full h-screen z-[99]"
   >
     <BackgroundPicture
       sizes="300px"
@@ -325,11 +324,13 @@ const {
       navigation.style.top = `${translationNotFoundNotificationHeight}px`;
 
       if (!isCartNavbar) {
-        navbarBg.style.display =
+        const shouldShowNavbarBg =
           window.innerWidth < 1280 &&
-          (scrollY > 0 || document.body.style.position === "fixed")
-            ? "inline-block"
-            : "none";
+          (scrollY > 0 ||
+            (document.body.style.position === "fixed" &&
+              +document.body.style.top.slice(1, -2) > 0));
+
+        navbarBg.style.display = shouldShowNavbarBg ? "inline-block" : "none";
       }
     };
 
@@ -345,11 +346,9 @@ const {
     cart = query("#cart"),
     sidebar = query("#sidebar"),
     navbarBg = query("#navbar-bg"),
-    navigation = query("#navigation"),
     cartNavbarBg = query("#cart-navbar-bg"),
     sidebarOpenButton = query("#sidebar-open-btn"),
-    sidebarCloseButton = query("#sidebar-close-btn"),
-    isCartNavbar = !!navigation?.classList.contains("cart-navbar");
+    sidebarCloseButton = query("#sidebar-close-btn");
 
   const openCartBtns = document.querySelectorAll(
     ".open-cart-btn, .open-cart-btn-sm"
@@ -357,13 +356,13 @@ const {
 
   window.disableScrolling = () => {
     const overflowY =
-      visualViewport.height < document.body.offsetHeight ? "scroll" : "auto";
+      window.innerHeight < document.body.scrollHeight ? "scroll" : "auto";
 
     Object.assign(document.body.style, {
       overflowY,
       width: "100%",
       position: "fixed",
-      top: `-${window.scrollY}px`,
+      top: `-${scrollY}px`,
     });
   };
 
@@ -397,31 +396,15 @@ const {
     }
   };
 
-  const updateSidebarTopPosition = () => {
-    if (navigation) {
-      // sidebar.style.top = `${navigation.getBoundingClientRect().bottom}px`;
-      sidebar.style.top = `0px`;
-    }
-  };
-
-  window.addEventListener("resize", updateSidebarTopPosition);
-
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 1279) {
+    if (window.innerWidth < 1280 && sidebar.style.display === "block") {
+      window.disableScrolling();
+    } else {
       // enable scrolling only if cart and checkout is not open
       if (cart?.classList.contains("hidden")) window.enableScrolling();
 
-      window.removeEventListener("resize", updateSidebarTopPosition);
-
       navbarBg && (navbarBg.style.display = "none");
       cartNavbarBg && (cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)");
-    } else if (sidebar.style.display === "block") {
-      window.disableScrolling();
-
-      window.addEventListener("resize", updateSidebarTopPosition);
-
-      // navbarBg && (navbarBg.style.display = "inline-block");
-      // cartNavbarBg && (cartNavbarBg.style.clipPath = "none");
     }
   });
 
@@ -432,23 +415,11 @@ const {
   });
 
   sidebarOpenButton?.addEventListener("click", () => {
-    window.removeEventListener("resize", updateSidebarTopPosition);
-
-    updateSidebarTopPosition();
-
     sidebar.style.display = "block";
     sidebarOpenButton.style.display = "none";
     sidebarCloseButton.style.display = "block";
 
-    if (isCartNavbar) {
-      cartNavbarBg.style.clipPath = "none";
-    } else {
-      navbarBg.style.display = "inline-block";
-    }
-
     window.disableScrolling();
-
-    window.addEventListener("resize", updateSidebarTopPosition);
   });
 
   sidebarCloseButton?.addEventListener("click", () => {
@@ -456,16 +427,11 @@ const {
     sidebarOpenButton.style.display = "block";
     sidebarCloseButton.style.display = "none";
 
-    if (isCartNavbar) {
-      cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)";
-    } else {
-      navbarBg.style.display = "none";
-    }
-
     window.enableScrolling();
   });
 </script>
 
+{/* ExpertRec Search */}
 <script is:inline>
   (function () {
     var id = "888e9a2bb7bb4df2ab6ac60cc9fb16cf";
