@@ -39,7 +39,7 @@ const ProxyHandler = {
   },
 };
 
-const products = new Proxy({}, ProxyHandler);
+const Products = new Proxy({}, ProxyHandler);
 
 const allProducts = catalog.Products.flatMap(
   ({ Title, products: variants }) => {
@@ -65,7 +65,7 @@ const allProducts = catalog.Products.flatMap(
         variantsPerProduct[locale + " | " + size].push([variant, attributes]);
         variantsPerProduct[locale + " | " + variant].push([size, attributes]);
 
-        products[locale + " | " + variant + " | " + size].push(attributes);
+        Products[locale + " | " + variant + " | " + size].push(attributes);
 
         attributes.productVariant = variant;
         attributes.productSize = size;
@@ -89,7 +89,7 @@ const allProducts = catalog.Products.flatMap(
     });
 
     Object.keys(variantsPerProduct).forEach((key) => {
-      products[key].push([Title, variantsPerProduct[key]]);
+      Products[key].push([Title, variantsPerProduct[key]]);
     });
 
     const processedProducts = variants.data.map((data) => {
@@ -116,7 +116,7 @@ const allProducts = catalog.Products.flatMap(
 );
 
 // sort products by order of productSizes and productVariants
-Object.values(products)
+Object.values(Products)
   .flat()
   .forEach((product) => {
     if (Array.isArray(product)) {
@@ -134,6 +134,6 @@ export default {
     key === "all"
       ? { data: allProducts }
       : key === "store"
-      ? products
-      : products[key],
+      ? Products
+      : Products[key],
 };

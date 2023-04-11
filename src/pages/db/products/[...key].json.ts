@@ -1,5 +1,5 @@
 import { marked } from "marked";
-import productsStore from "@store/products";
+import productsStore from "@store/Products";
 import { renderPicture } from "astro-imagetools/api";
 
 async function processProductData(attributes) {
