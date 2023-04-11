@@ -8,7 +8,7 @@ const { page } = Astro.props;
 
 let contentBlocksHTML = he.decode(await renderMarkdown(page.Block_text));
 
-let { document: contentBlocksDocument } = await parseHTML(contentBlocksHTML),
+let { document: contentBlocksDocument } = parseHTML(contentBlocksHTML),
   titles = [...contentBlocksDocument.querySelectorAll("h2")];
 
 titles.forEach((title, i) => {
@@ -21,7 +21,7 @@ titles.forEach((title, i) => {
 titles.length > 0 && (contentBlocksHTML += "</div>");
 
 // refresh linkedom generated dom
-({ document: contentBlocksDocument } = await parseHTML(contentBlocksHTML));
+({ document: contentBlocksDocument } = parseHTML(contentBlocksHTML));
 titles = [...contentBlocksDocument.querySelectorAll("h2")];
 ---
 

@@ -133,7 +133,7 @@ export async function getStaticPaths() {
     slug: `plans/${(Title || page.attributes.Title).toLowerCase()}`,
   }));
 
-  const crowdfundingPages = getPages(crowdfundingHome, (page, { locale }) => ({
+  const crowdfundingPages = getPages(crowdfundingHome, (_, { locale }) => ({
     type: "crowdfunding",
     allPlans: locale && getPosts(crowdfundingPlans, locale),
   }));
@@ -145,12 +145,12 @@ export async function getStaticPaths() {
     () => ({ type: "basic" })
   );
 
-  const blogDetailsPages = getPages(blogs, (page, { locale }) => ({
+  const blogDetailsPages = getPages(blogs, (_, { locale }) => ({
     type: "blogDetails",
     blogs: locale && getPosts(blogs, locale),
   }));
 
-  const howToDetailsPages = getPages(howTos, (page, { locale }) => ({
+  const howToDetailsPages = getPages(howTos, (_, { locale }) => ({
     type: "howToDetails",
     howTos: locale && getPosts(howTos, locale),
   }));
@@ -177,22 +177,22 @@ export async function getStaticPaths() {
     })(),
   }));
 
-  const blogPages = getPages(homeBlog, (page, { locale }) => ({
+  const blogPages = getPages(homeBlog, (_, { locale }) => ({
     type: "blog",
     posts: locale && getPosts(blogs, locale),
   }));
 
-  const howToPages = getPages(homeHowTo, (page, { locale }) => ({
+  const howToPages = getPages(homeHowTo, (_, { locale }) => ({
     type: "howTo",
     posts: locale && getPosts(howTos, locale),
   }));
 
-  const recipePages = getPages(homeRecipe, (page, { locale }) => ({
+  const recipePages = getPages(homeRecipe, (_, { locale }) => ({
     type: "recipe",
     posts: locale && getPosts(recipes, locale),
   }));
 
-  const estatePages = getPages(homeEstate, (page, { locale }) => ({
+  const estatePages = getPages(homeEstate, (_, { locale }) => ({
     type: "estate",
     posts: locale && getPosts(estates, locale),
   }));
@@ -205,7 +205,7 @@ export async function getStaticPaths() {
     type: "productCategory",
   }));
 
-  const homepagePages = getPages(homepage, (page, { locale }) => ({
+  const homepagePages = getPages(homepage, (_, { locale }) => ({
     type: "homepage",
     posts: locale && [
       ...getPosts(blogs, locale),

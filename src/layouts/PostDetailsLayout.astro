@@ -25,7 +25,7 @@ const relatedPosts =
   posts?.filter(({ Meta }) => Meta.URL_slug !== page.Meta.URL_slug);
 
 const contentHTML = await Astro.slots.render("post-details"),
-  { document: contentDocument } = await parseHTML(contentHTML),
+  { document: contentDocument } = parseHTML(contentHTML),
   headings = contentDocument.querySelectorAll("h2");
 ---
 
