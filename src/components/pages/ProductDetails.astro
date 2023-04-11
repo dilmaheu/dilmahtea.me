@@ -130,31 +130,31 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
     li {
       counter-increment: counter;
-    }
 
-    li::before {
-      content: counter(counter);
-      background: colors.$primary;
-      width: 45px;
-      height: 45px;
-      border-radius: 100%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      margin-right: 20px;
+      &::before {
+        content: counter(counter);
+
+        @apply bg-primary inline-flex items-center justify-center w-[45px] h-[45px] mr-5 text-white rounded-full;
+      }
     }
   }
 
-  .transparency-items-grid {
+  .accordion-items-grid {
     grid-template-columns: clamp(2rem, 3vw + 0.3rem, 2.5rem) auto;
   }
 
-  .transparency-item-icon {
+  .accordion-item-icon {
     height: clamp(2rem, 3vw + 0.3rem, 2.5rem);
+
+    img {
+      @apply w-full block mx-auto object-contain;
+
+      clip-path: none;
+      aspect-ratio: 1 / 1;
+    }
   }
 
-  .accordion {
+  .accordion-button {
     font-size: clamp(1.125rem, 1.5vw + 0.15rem, 1.5rem);
     transition: all 150ms ease-out 0ms;
 
@@ -164,15 +164,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   }
 
   .accordion-content {
-    display: none;
-    max-height: 0;
-    opacity: 0;
-    transition: all 200ms ease-out 0ms;
+    @apply hidden max-h-0 opacity-0 transition-all;
 
     &.is-open {
-      display: block;
-      max-height: 100%;
-      opacity: 1;
+      @apply block max-h-full opacity-100;
     }
   }
 
@@ -182,15 +177,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       auto-fit,
       minmax(0, clamp(100px, 18vw + 20px, 280px))
     );
-  }
-</style>
-
-<style lang="scss" is:global>
-  .transparency-item-icon img {
-    @apply w-full block mx-auto object-contain;
-
-    clip-path: none;
-    aspect-ratio: 1 / 1;
   }
 </style>
 
@@ -218,8 +204,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <select
             name="tea_variant"
             class:list={[
-              "inline-block py-[9px] pl-5 lg:text-lg lg:font-normal text-lightgray",
-              "border-r-[20px] border-[#405658] bg-[#405658]",
+              "inline-block py-[9px] pl-5 bg-[#405658] text-lightgray",
+              "lg:text-lg lg:font-normal border-r-[20px] border-[#405658]",
             ]}
           >
             {
@@ -248,8 +234,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <select
             name="tea_size"
             class:list={[
-              "inline-block py-[9px] pl-5 lg:text-lg lg:font-normal text-lightgray",
-              "border-r-[20px] border-[#405658] bg-[#405658]",
+              "inline-block py-[9px] pl-5 bg-[#405658] text-lightgray",
+              "lg:text-lg lg:font-normal border-r-[20px] border-[#405658]",
             ]}
           >
             {
@@ -295,8 +281,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           max={stockAmount}
           value={stockAmount > 0 ? 1 : 0}
           class:list={[
-            "product-amount-input w-12 h-full text-center lg:text-lg bg-transparent outline-none",
             stockAmount < 1 && "cursor-not-allowed",
+            "product-amount-input w-12 h-full text-center lg:text-lg bg-transparent outline-none",
           ]}
           required
           disabled={stockAmount < 1 && "disabled"}
@@ -339,8 +325,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             <button
               tabindex="0"
               class:list={[
-                "w-full gap-4 flex justify-center items-center p-3 mt-auto text-base",
-                "font-bold text-white rounded-full bg-[#8b8b8b] cursor-not-allowed",
+                "w-full flex justify-center items-center gap-4 p-3 mt-auto",
+                "bg-[#8b8b8b] text-white font-bold rounded-full cursor-not-allowed text-base",
               ]}
             >
               <Icon name="tabler:shopping-cart-x" class="w-[26px] h-[26px]" />
@@ -396,8 +382,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <select
             name="tea_variant"
             class:list={[
+              "bg-lightgray2 border-r-[15px] border-lightgray2",
               "inline-block py-[9px] pl-[15px] lg:text-lg lg:font-normal text-primary",
-              "border-r-[15px] border-lightgray2 bg-lightgray2",
             ]}
           >
             {
@@ -426,8 +412,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <select
             name="tea_size"
             class:list={[
-              "inline-block py-[9px] pl-[15px] lg:text-lg lg:font-normal text-primary",
               "border-r-[15px] border-lightgray2 bg-lightgray2",
+              "inline-block py-[9px] pl-[15px] lg:text-lg lg:font-normal text-primary",
             ]}
           >
             {
@@ -449,16 +435,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     <div class="flex flex-wrap gap-4 items-center w-full justify-between">
       <div
         class:list={[
-          "w-fit flex items-center text-lightgray p-1 bg-primary rounded-full",
           stockAmount < 1 && "cursor-not-allowed",
+          "w-fit flex items-center text-lightgray p-1 bg-primary rounded-full",
         ]}
       >
         <button
           data-action="decrement"
           aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
           class:list={[
-            "product-amount-tweak-btn w-10 h-12 py-2.5 pl-3 pr-1",
             stockAmount < 1 && "cursor-not-allowed",
+            "product-amount-tweak-btn w-10 h-12 py-2.5 pl-3 pr-1",
           ]}
           disabled
         >
@@ -473,8 +459,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           max={stockAmount}
           value={stockAmount > 0 ? 1 : 0}
           class:list={[
-            "product-amount-input w-12 h-full text-center lg:text-lg bg-transparent outline-none",
             stockAmount < 1 && "cursor-not-allowed",
+            "product-amount-input w-12 h-full text-center lg:text-lg bg-transparent outline-none",
           ]}
           required
           disabled={stockAmount < 1 && "disabled"}
@@ -484,21 +470,22 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           data-action="increment"
           aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
           class:list={[
-            "product-amount-tweak-btn w-10 h-12 py-2.5 pl-1 pr-3",
             stockAmount < 1 && "cursor-not-allowed",
+            "product-amount-tweak-btn w-10 h-12 py-2.5 pl-1 pr-3",
           ]}
           disabled={stockAmount < 1 && "disabled"}
         >
           <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
         </button>
       </div>
+
       <div class="ml-auto grow">
         {
           stockAmount > 0 && (
             <button
               class:list={[
-                "w-full gap-4 flex justify-center items-center p-3 mt-auto text-base",
-                "font-bold text-lightgray leading-[19px] rounded-full bg-primary",
+                "w-full flex justify-center items-center gap-4 p-3 mt-auto",
+                "bg-primary text-base font-bold text-lightgray leading-[19px] rounded-full",
               ]}
             >
               <Icon name="mi:shopping-cart" class="w-8 h-8" />
@@ -506,13 +493,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             </button>
           )
         }
+
         {
           stockAmount === 0 && (
             <button
               tabindex="0"
               class:list={[
-                "w-full gap-4 flex justify-center items-center p-3 mt-auto font-bold text-base",
-                " text-lightgray leading-[19px] rounded-full bg-[#8b8b8b] cursor-not-allowed",
+                "w-full flex justify-center items-center gap-4 p-3 mt-auto rounded-full",
+                "bg-[#8b8b8b] text-lightgray text-base font-bold leading-[19px] cursor-not-allowed",
               ]}
             >
               <Icon name="mi:shopping-cart" class="w-8 h-8" />
@@ -589,6 +577,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   <div class="alice text-[clamp(1.75rem,2.2vw+0.15rem,2rem)] text-primary">
                     €{item.Spent_amount.toFixed(2)}
                   </div>
+
                   <div class="text-[clamp(0.875rem,1vw+0.25rem,1.125rem)]">
                     {item.Item_name}
                   </div>
@@ -609,8 +598,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <div class="grid gap-5">
             {page.Transparency.map(async (item, index) => (
               <div class="w-full lg:w-10/12">
-                <div class="grid transparency-items-grid gap-x-2.5">
-                  <div class="transparency-item-icon flex items-center">
+                <div class="accordion-items-grid grid gap-x-2.5">
+                  <div class="accordion-item-icon flex items-center">
                     <img
                       alt=""
                       src={await localizeCMSImage(
@@ -623,7 +612,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   <div class="w-full">
                     <button
                       class:list={[
-                        "accordion w-full cursor-pointer text-left leading-[150%]",
+                        "accordion-button w-full cursor-pointer text-left leading-[150%]",
                         index === 0 ? "is-active" : "",
                       ]}
                     >
@@ -656,8 +645,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <div class="grid gap-5">
             {page.Impact.map((item, index) => (
               <div class="w-full lg:w-10/12">
-                <div class="grid transparency-items-grid gap-x-2.5">
-                  <div class="transparency-item-icon flex items-center">
+                <div class="grid accordion-items-grid gap-x-2.5">
+                  <div class="accordion-item-icon flex items-center">
                     <img
                       alt=""
                       src={
@@ -670,7 +659,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   <div class="w-full">
                     <button
                       class:list={[
-                        "accordion w-full cursor-pointer text-left leading-[150%]",
+                        "accordion-button w-full cursor-pointer text-left leading-[150%]",
                         index === 0 ? "is-active" : "",
                       ]}
                     >
@@ -719,7 +708,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 />
               </div>
 
-              <div class="text-[clamp(0.625rem,2vw+0.1rem,1.5em)] font-medium leading-[150%] text-primary text-center">
+              <div
+                class:list={[
+                  "text-[clamp(0.625rem,2vw+0.1rem,1.5em)]",
+                  "font-medium leading-[150%] text-primary text-center",
+                ]}
+              >
                 {info.Product_info_title}
               </div>
             </div>
@@ -769,8 +763,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 role="list"
                 aria-label={ariaLabelRecurData.Kindness_Items_text}
                 class:list={[
-                  "wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]",
-                  "justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
+                  "wrapper justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
+                  "grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]",
                 ]}
               >
                 {relevantItems.map((post) => (
@@ -863,7 +857,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       availability: "https://schema.org/InStock",
       price: page.Price,
       priceCurrency: page.Currency,
-      priceValidUntil: new Date(),
+      priceValidUntil: new Date().toISOString(),
       shippingDetails: {
         "@type": "OfferShippingDetails",
         shippingDestination: {
