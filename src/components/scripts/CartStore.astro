@@ -56,6 +56,11 @@ const products = Object.fromEntries(
   Object.entries(storedCart).forEach(([SKU, inCartProductData]) => {
     const productData = products[SKU];
 
+    productData.tax =
+      Math.round(productData.tax * inCartProductData.quantity * 100) / 100;
+    productData.price =
+      Math.round(productData.price * inCartProductData.quantity * 100) / 100;
+
     if (!productData) {
       delete storedCart[SKU];
     } else if (
