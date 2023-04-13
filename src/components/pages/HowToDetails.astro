@@ -15,12 +15,6 @@ const url = `${Astro.site.origin}/${page.locale}/${
 ---
 
 <style lang="scss">
-  @use "src/styles/colors";
-
-  .howto-header-method {
-    background: colors.$howto-white;
-  }
-
   .howto-header-method-title {
     font-size: clamp(1.5rem, 2.2vw + 0.15rem, 2rem);
   }
@@ -44,7 +38,6 @@ const url = `${Astro.site.origin}/${page.locale}/${
   }
 
   .method-step {
-    background-color: colors.$howto-white;
     padding: clamp(15px, 2.875vw, 36px) 36px;
   }
 </style>
@@ -64,7 +57,7 @@ const url = `${Astro.site.origin}/${page.locale}/${
     <div
       role="complementary"
       aria-label={page.Method.length + recurData.text_practices_to_follow}
-      class="howto-header-method py-7 px-5 rounded-[10px]"
+      class="bg-secondary-light py-7 px-5 rounded-[10px]"
     >
       <h2
         class="alice text-primary text-center sm:text-left leading-[110%] sm:leading-[130%] howto-header-method-title"
@@ -108,13 +101,13 @@ const url = `${Astro.site.origin}/${page.locale}/${
             id={method.Method_title.replaceAll(" ", "-")
               .replace(/\s+/g, "")
               .trim()}
-            class="method-title alice text-lightgray2 leading-[110%] mt-[50px] bg-primary rounded-[10px]"
+            class="method-title alice text-secondary-light leading-[110%] mt-[50px] bg-primary rounded-[10px]"
           >
             {method.Method_title}
           </h2>
 
           {method.Steps.map((step, index) => (
-            <div class="method-step my-[30px] rounded-[10px]">
+            <div class="method-step bg-secondary-light my-[30px] rounded-[10px]">
               <h3
                 id={step.Step_title.replaceAll(" ", "-")
                   .replace(/\s+/g, "")
@@ -124,7 +117,7 @@ const url = `${Astro.site.origin}/${page.locale}/${
                 {index + 1 + ". " + step.Step_title}
               </h3>
 
-              <div class="text-dark leading-[130%] my-[15px] method-text prose max-w-none">
+              <div class="text-black-light leading-[130%] my-[15px] method-text prose max-w-none">
                 <Markdown>{step.Step_text}</Markdown>
               </div>
 

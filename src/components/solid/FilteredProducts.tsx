@@ -88,7 +88,7 @@ export default function FilteredProducts({
                     <div
                       class={[
                         "absolute top-[12%] right-[12%] flex items-center px-5 sm:px-[37px] py-[5px] sm:py-[7px]",
-                        "sm:text-xl font-semibold text-dark2 border-2 border-[#fabf21] bg-[#fabf21]/80 rounded-full",
+                        "sm:text-xl font-semibold text-black border-2 border-warning bg-warning/80 rounded-full",
                       ].join(" ")}
                     >
                       {recurData.Product_sold_out_text}
@@ -97,7 +97,7 @@ export default function FilteredProducts({
                     <div
                       class={[
                         "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none w-full",
-                        "text-sm sm:text-base font-medium text-dark2 bg-[#faf8e5]/80",
+                        "text-sm sm:text-base font-medium text-black bg-warning-light/80",
                       ].join(" ")}
                     >
                       {alertCircleIcon}

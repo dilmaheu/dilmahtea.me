@@ -19,8 +19,6 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 ---
 
 <style lang="scss">
-  @use "src/styles/colors";
-
   .estate-types-selector {
     font-size: clamp(0.75rem, 1.5vw + 0.1rem, 1.25rem);
     border-right: 20px solid transparent;
@@ -32,12 +30,13 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   }
 
   .estate-mode-toggle-dot {
-    border: 1px solid colors.$white2;
+    @apply border border-secondary-light;
   }
 
   input[type="checkbox"].estate-mode-toggle:checked ~ .estate-mode-toggle-dot {
+    @apply bg-primary;
+
     transform: translateX(100%);
-    background-color: colors.$primary;
   }
 
   .estate-block-text {
@@ -173,7 +172,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
           {page.Title}
         </h1>
 
-        <div class="hero-text pt-2.5 block prose text-lightgray max-w-none">
+        <div class="hero-text pt-2.5 block prose text-secondary max-w-none">
           <Markdown>{page.Intro_text}</Markdown>
         </div>
 
@@ -225,7 +224,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       class="flex flex-wrap items-center justify-between gap-x-6 gap-y-[15px]"
     >
       <h2
-        class="alice text-[42px] leading-[3.15rem] tracking-[-0.03rem] text-dark2"
+        class="alice text-[42px] leading-[3.15rem] tracking-[-0.03rem] text-black"
       >
         {page.Heading_block}
       </h2>
@@ -238,7 +237,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
               name="estateType"
               class:list={[
                 "focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring cursor-pointer",
-                "bg-primary text-lightgray2 py-[5px] pl-5 rounded-[34px] estate-types-selector",
+                "bg-primary text-secondary-light py-[5px] pl-5 rounded-[34px] estate-types-selector",
               ]}
             >
               <option value="1">Kindness Project Type 1</option>
@@ -253,7 +252,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     {
       /* (
         <div class="inline-flex">
-          <div class="text-dark2 estates-toggle-label">
+          <div class="text-black estates-toggle-label">
             View Carbon Neutral estates
           </div>
 
@@ -268,8 +267,8 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                   type="checkbox"
                   class="sr-only estate-mode-toggle"
                 />
-                <div class="bg-white2 rounded-full shadow-inner w-11 sm:w-[49px] lg:w-[54px] h-5 sm:h-[22px] lg:h-6" />
-                <div class="absolute z-10 bg-white2 w-[30px] h-[30px] rounded-full shadow top-[-3px] -left-1 transition estate-mode-toggle-dot" />
+                <div class="bg-secondary-light rounded-full shadow-inner w-11 sm:w-[49px] lg:w-[54px] h-5 sm:h-[22px] lg:h-6" />
+                <div class="absolute z-10 bg-secondary-light w-[30px] h-[30px] rounded-full shadow top-[-3px] -left-1 transition estate-mode-toggle-dot" />
               </div>
             </label>
           </div>
@@ -277,7 +276,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       ) */
     }
 
-    <div class="prose max-w-none w-full text-dark estate-block-text">
+    <div class="prose max-w-none w-full text-black-light estate-block-text">
       <Markdown>{page.Block_text}</Markdown>
     </div>
   </div>
@@ -340,7 +339,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                       <li class="text-black estate-category-item">
                         <a
                           href=""
-                          class="bg-white1 text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
+                          class="bg-pale-rose text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
                         >
                           Green Tea
                         </a>
@@ -349,7 +348,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                       <li class="text-black estate-category-item">
                         <a
                           href=""
-                          class="bg-white1 text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
+                          class="bg-pale-rose text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
                         >
                           Sustainable
                         </a>
@@ -364,7 +363,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                     />
                   </h2>
 
-                  <div class="post-intro text-dark pt-[15px] prose max-w-none">
+                  <div class="post-intro text-black-light pt-[15px] prose max-w-none">
                     <Markdown>{estate.Intro_text}</Markdown>
                   </div>
                 </div>
@@ -414,7 +413,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
             <img class="w-full h-full" {...left_quote} />
           </div>
 
-          <div class="prose max-w-none font-bold text-lightgray estate-quote">
+          <div class="prose max-w-none font-bold text-secondary estate-quote">
             {page.Block2_text}
           </div>
 
@@ -428,9 +427,11 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
   <EstatesInfoSection page={page} />
 
-  <section class="bg-lightgray2 lg:mb-[25px] estate-impact-container">
+  <section class="bg-secondary-light lg:mb-[25px] estate-impact-container">
     <div class="flex flex-wrap items-center relative z-20 gap-y-[25px]">
-      <h3 class="w-full font-medium text-dark text-center estate-impact-title">
+      <h3
+        class="w-full font-medium text-black-light text-center estate-impact-title"
+      >
         {page.Block4_heading}
       </h3>
 
@@ -461,7 +462,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                 {item.Block4_Value}
               </div>
 
-              <div class="text-dark text-center leading-[150%] estate-impacts-text">
+              <div class="text-black-light text-center leading-[150%] estate-impacts-text">
                 {item.Block4_description}
               </div>
             </div>
@@ -475,7 +476,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 {
   blogs.length > 0 && (
     <section role="complementary" class="wrapper">
-      <h2 class="related-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
+      <h2 class="related-posts-title alice leading-[110%] text-black-light pb-[25px] sm:pb-[30px]">
         {recurData.text_explore_the_world_of_kindness}
       </h2>
 

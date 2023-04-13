@@ -58,8 +58,6 @@ const [firstPost] = posts;
 ---
 
 <style lang="scss">
-  @use "src/styles/colors";
-
   .hero-title,
   .post-title {
     @apply decoration-[2.5px] underline-offset-[5px];
@@ -134,7 +132,7 @@ const [firstPost] = posts;
                     (i > 0 ? ", " : " ") +
                     attributes.givenName
                 )}
-                class="post-author flex flex-wrap font-bold text-lightgray"
+                class="post-author flex flex-wrap font-bold text-secondary"
               >
                 {firstPost.authors.data.map(({ attributes }, i) => (
                   <div>{`${i > 0 ? ", " : " "}` + attributes.givenName}</div>
@@ -164,7 +162,7 @@ const [firstPost] = posts;
             </span>
           </h1>
 
-          <div class="hero-text pt-2.5 prose text-lightgray max-w-none">
+          <div class="hero-text pt-2.5 prose text-secondary max-w-none">
             <Markdown>{firstPost.Intro_text}</Markdown>
           </div>
         </section>
@@ -301,7 +299,7 @@ const [firstPost] = posts;
                       ))}
                     </div>
 
-                    <div class="post-publish-date text-dark">
+                    <div class="post-publish-date text-black-light">
                       {new Date(post.createdAt).toLocaleString("en-US", {
                         day: "numeric",
                         month: "long",

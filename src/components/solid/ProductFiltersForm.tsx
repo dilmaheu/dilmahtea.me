@@ -113,7 +113,7 @@ export default function ProductFiltersForm({
         name="tea_variant"
         class={[
           "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
-          "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
+          "text-lg leading-[150%] text-secondary-light py-[9px] pl-5 border-r-[20px]",
           "border-primary bg-primary rounded-full cursor-pointer",
         ].join(" ")}
       >
@@ -135,7 +135,7 @@ export default function ProductFiltersForm({
         name="tea_size"
         class={[
           "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
-          "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
+          "text-lg leading-[150%] text-secondary-light py-[9px] pl-5 border-r-[20px]",
           "border-primary bg-primary rounded-full cursor-pointer",
         ].join(" ")}
       >
