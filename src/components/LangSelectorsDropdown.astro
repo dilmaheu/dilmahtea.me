@@ -72,18 +72,18 @@ langSelectorsData.sort(
   aria-label={ariaLabelRecurData.Navbar_language_selectors_text}
   class:list={[
     "lang-selector-dropdown relative",
-    "font-bold text-primary text-sm lg:text-base select-none",
-    "max-w-[150px] xl:max-w-full scale-[0.775] xl:scale-[1] mx-0",
+    "text-primary text-sm lg:text-base select-none",
   ]}
 >
   <div
     role="button"
     class:list={[
       "lang-selector-button flex items-center justify-between gap-x-1.5 md:gap-x-3",
-      "p-3.5 w-44 max-w-[40vw] font-bold bg-lightgray cursor-pointer focus:outline-none",
+      "w-full sm:max-w-[40vw] bg-lightgray cursor-pointer focus:outline-none",
+      "font-medium leading-[120%] py-2.5 px-[15px] border-2 border-primary",
     ]}
   >
-    <div class="font-bold">{docLang}</div>
+    <div class="text-[15px]">{docLang}</div>
 
     <svg class="w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7">
       <path
@@ -95,22 +95,26 @@ langSelectorsData.sort(
   <ul
     class:list={[
       "lang-selector-dropdown-menu absolute hidden overflow-hidden",
-      "w-full font-bold rounded border-t border-solid border-primary",
+      "w-full rounded border-2 border-t-0 border-primary drop-shadow-lg",
     ]}
   >
     {
       langSelectorsData.map(
         ({ lang, localizedLanguage, localLanguageName }) => (
-          <li class="block">
+          <li class="block bg-lightgray">
             <button
               lang={lang}
               class:list={[
                 lang,
-                "lang-selector text-primary bg-lightgray w-full",
-                "flex flex-wrap items-center gap-x-1.5 md:gap-x-3 p-4 hover:bg-gray-300 cursor-pointer",
+                "lang-selector flex flex-wrap items-center gap-x-1.5 md:gap-x-3",
+                "text-primary w-full p-4 hover:bg-lightgray2/60 cursor-pointer",
               ]}
             >
-              {localizedLanguage} / {localLanguageName}
+              <span class="flex gap-[5px] items-center leading-[120%]">
+                <span class="text-[15px] font-medium">{localizedLanguage}</span>
+                <span class="w-1 h-1 rounded-full bg-primary" />
+                <span class="text-xs">{localLanguageName}</span>
+              </span>
             </button>
           </li>
         )
