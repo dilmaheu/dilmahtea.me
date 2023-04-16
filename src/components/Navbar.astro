@@ -65,7 +65,7 @@ const {
     height: clamp(35px, 5vw, 50px);
   }
 
-  .nav-icons {
+  .nav-icon {
     width: poly-fluid-clamp(
       (
         768px: 35px,
@@ -78,9 +78,6 @@ const {
         1024px: 50px,
       )
     );
-  }
-
-  .nav-icons {
     padding: poly-fluid-clamp(
       (
         768px: 10px,
@@ -104,12 +101,8 @@ const {
     );
   }
 
-  #sidebar {
-    nav {
-      a {
-        @apply text-[32px] font-bold leading-[150%];
-      }
-    }
+  #sidebar nav a {
+    @apply text-[32px] font-bold leading-[150%];
   }
 </style>
 
@@ -182,11 +175,9 @@ const {
         {
           localization && (
             <div class="hidden sm:block relative">
-              <div
-                class:list={[
-                  "nav-icons-container nav-icons flex justify-center items-center",
-                  "bg-lightgray rounded-full cursor-pointer peer",
-                ]}
+              <button
+                id="localization-menu-open-btn"
+                class="nav-icon peer w-fit flex justify-center items-center bg-lightgray rounded-full cursor-pointer"
               >
                 <img
                   src={await localizeCMSImage(
@@ -194,21 +185,14 @@ const {
                   )}
                   alt={localization_icon?.data?.attributes.alternativeText}
                 />
-              </div>
+              </button>
 
-              <form
-                class:list={[
-                  "peer-hover-[:nth-of-type(1)&]:block hover:peer-[:nth-of-type(1)&]:block",
-                  "localization-form hidden absolute w-[280px] -translate-x-1/2 left-1/2 pt-10 -mt-7 drop-shadow-lg",
-                ]}
-              >
-                <div class="absolute -translate-x-1/2 left-1/2 -top-2">
-                  <div class="pt-10">
-                    <div class="w-5 h-5 bg-lightgray rotate-45 rounded" />
-                  </div>
+              <form class="localization-form hidden absolute w-[280px] -translate-x-1/2 left-1/2 drop-shadow-lg">
+                <div class="relative flex justify-center pt-1">
+                  <div class="w-5 h-5 bg-lightgray rotate-45 rounded" />
                 </div>
 
-                <div class="grid gap-[15px] content-between bg-lightgray rounded-[12px] p-[25px]">
+                <div class="grid gap-[15px] content-between bg-lightgray rounded-[12px] p-[25px] -translate-y-3">
                   <div class="grid gap-[6px] text-dark">
                     <div class="text-[15px] font-medium">{text_language}</div>
 
@@ -235,11 +219,11 @@ const {
         {
           localization && (
             <div class="block sm:hidden relative">
-              <div
+              <button
                 id="localization-menu-sm-open-btn"
                 class:list={[
-                  "nav-icons-container nav-icons flex justify-center items-center",
-                  "bg-lightgray rounded-full cursor-pointer peer",
+                  "nav-icon flex justify-center items-center",
+                  "peer bg-lightgray rounded-full cursor-pointer",
                 ]}
               >
                 <img
@@ -248,7 +232,7 @@ const {
                   )}
                   alt={localization_icon?.data?.attributes.alternativeText}
                 />
-              </div>
+              </button>
             </div>
           )
         }
@@ -257,14 +241,11 @@ const {
           cart && !isCartNavbar && (
             <button
               aria-label={ariaLabelRecurData.Navbar_open_cart_text}
-              class:list={[
-                "open-cart-btn inline-block relative",
-                "nav-icons-container",
-              ]}
+              class="open-cart-btn inline-block relative"
             >
               <span
                 style="clip-path: url(#cart-btn-curve);"
-                class="nav-icons block bg-lightgray rounded-full"
+                class="nav-icon block bg-lightgray rounded-full"
               >
                 <img
                   src={await localizeCMSImage(cart_icon?.data?.attributes.url)}
@@ -299,7 +280,7 @@ const {
           profile && (
             <div
               class:list={[
-                "nav-icons-container nav-icons flex justify-center items-center",
+                "nav-icon flex justify-center items-center",
                 "bg-lightgray rounded-full cursor-pointer",
               ]}
             >
@@ -511,6 +492,7 @@ const {
     sidebarOpenButton = query("#sidebar-open-btn"),
     sidebarCloseButton = query("#sidebar-close-btn"),
     localizationMenuSm = query("#localization-menu-sm"),
+    localizationMenuOpenButton = query("#localization-menu-open-btn"),
     localizationMenuSmOpenButton = query("#localization-menu-sm-open-btn"),
     localizationMenuSmCloseButton = query("#localization-menu-sm-close-btn"),
     isCartNavbar = !!navigation?.classList.contains("cart-navbar");
@@ -628,6 +610,47 @@ const {
     }
 
     window.enableScrolling();
+  });
+
+  localizationMenuOpenButton.addEventListener("mouseenter", () => {
+    localizationMenuOpenButton.nextElementSibling.classList.remove("hidden");
+  });
+
+  const hideLocalizationMenu = () => {
+    localizationMenuOpenButton.nextElementSibling.classList.add("hidden");
+  };
+
+  localizationMenuOpenButton.addEventListener(
+    "mouseleave",
+    hideLocalizationMenu
+  );
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+
+    if (localizationMenuOpenButton.contains(target)) {
+      const { classList: localizationMenuClassList } =
+        localizationMenuOpenButton.nextElementSibling;
+
+      localizationMenuClassList.toggle("hidden");
+
+      localizationMenuOpenButton[
+        !localizationMenuClassList.contains("hidden")
+          ? "removeEventListener"
+          : "addEventListener"
+      ]("mouseleave", hideLocalizationMenu);
+    }
+
+    console.log(localizationMenuOpenButton.contains(target));
+
+    if (!localizationMenuOpenButton.parentElement.contains(target)) {
+      hideLocalizationMenu();
+
+      localizationMenuOpenButton.addEventListener(
+        "mouseleave",
+        hideLocalizationMenu
+      );
+    }
   });
 
   localizationMenuSmOpenButton?.addEventListener("click", () => {
