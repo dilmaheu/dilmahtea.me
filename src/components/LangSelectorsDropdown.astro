@@ -55,9 +55,8 @@ langSelectorsData.unshift(langSelectorsData.splice(currentLangIndex, 1)[0]);
   .lang-selector-dropdown {
     li {
       &:first-child {
-        @apply border-y-2;
+        @apply font-medium border-y-2 rounded-full;
 
-        border-radius: 25px;
 
         > span {
           @apply py-2.5 px-[15px];
@@ -72,7 +71,7 @@ langSelectorsData.unshift(langSelectorsData.splice(currentLangIndex, 1)[0]);
         display: none;
 
         > span {
-          @apply hover:bg-lightgray2/60;
+          @apply hover:font-semibold hover:bg-lightgreen;
 
           border-radius: inherit;
 
@@ -82,10 +81,12 @@ langSelectorsData.unshift(langSelectorsData.splice(currentLangIndex, 1)[0]);
         }
       }
 
-      &:last-child {
-        @apply border-b-2;
+      &:nth-child(2) {
+        @apply border-t-2 rounded-t-[25px];
+      }
 
-        border-radius: 0 0 21px 21px;
+      &:last-child {
+        @apply border-b-2 rounded-b-[25px];
       }
     }
 
@@ -94,9 +95,7 @@ langSelectorsData.unshift(langSelectorsData.splice(currentLangIndex, 1)[0]);
         display: block;
 
         &:first-child {
-          @apply border-b-2;
-
-          border-radius: 21px 21px 0 0;
+          @apply mb-[5px];
         }
       }
     }
@@ -123,11 +122,11 @@ langSelectorsData.unshift(langSelectorsData.splice(currentLangIndex, 1)[0]);
           tabindex="0"
           aria-selected={i === 0 && true}
           data-value={lang}
-          class="lang-selector block bg-lightgray text-primary border-2 border-y-0 border-primary cursor-pointer"
+          class="lang-selector block bg-lightgray text-dark border-2 border-y-0 border-primary cursor-pointer"
         >
           <span class="w-full p-4 flex items-center justify-between">
             <span class="flex gap-[5px] items-center leading-[120%]">
-              <span class="text-[15px] font-medium">{localizedLanguage}</span>
+              <span class="text-[15px] ">{localizedLanguage}</span>
               <span class="w-1 h-1 rounded-full bg-primary" />
               <span class="text-xs">{localLanguageName}</span>
             </span>
