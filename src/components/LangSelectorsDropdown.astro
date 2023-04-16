@@ -11,7 +11,7 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", docLocale);
 
 // get available alternate locales
 locales.forEach((locale, index) => {
-  if (locale !== docLocale && [...availableLocales].includes(locale)) {
+  if (availableLocales.includes(locale)) {
     availableLanguages.push(languages[index]);
   }
 });
@@ -42,89 +42,118 @@ langSelectorsData.sort(
     { localizedLanguage: currentLanguage }
   ) => nextLanguage.localeCompare(currentLanguage, "en-US")
 );
+
+// move current locale to the top of the list
+const currentLangIndex = langSelectorsData.findIndex(
+  ({ lang }) => lang === docLocale
+);
+
+langSelectorsData.unshift(langSelectorsData.splice(currentLangIndex, 1)[0]);
 ---
 
 <style lang="scss">
   .lang-selector-dropdown {
-    .lang-selector-button {
-      border-radius: 25px;
-    }
+    li {
+      &:first-child {
+        @apply border-y-2;
 
-    .lang-selector-dropdown-menu {
-      border-radius: 0 0 25px 25px;
+        border-radius: 25px;
+
+        > span {
+          @apply py-2.5 px-[15px];
+
+          span span:not(:first-child) {
+            display: none;
+          }
+        }
+      }
+
+      &:not(:first-child) {
+        display: none;
+
+        > span {
+          @apply hover:bg-lightgray2/60;
+
+          border-radius: inherit;
+
+          svg {
+            display: none;
+          }
+        }
+      }
+
+      &:last-child {
+        @apply border-b-2;
+
+        border-radius: 0 0 21px 21px;
+      }
     }
 
     &.dropdown-open {
-      .lang-selector-button {
-        border-radius: 25px 25px 0 0;
-      }
-
-      .lang-selector-dropdown-menu {
+      li {
         display: block;
+
+        &:first-child {
+          @apply border-b-2;
+
+          border-radius: 21px 21px 0 0;
+        }
       }
     }
   }
 </style>
 
-<div
-  role="menu"
+<ul
   tabindex="0"
+  role="listbox"
+  data-name="lang"
   aria-label={ariaLabelRecurData.Navbar_language_selectors_text}
   class:list={[
-    "lang-selector-dropdown relative",
-    "text-primary text-sm lg:text-base select-none",
+    // set a fixed height to make the dropdown overflow when opened
+    // ensure that fixed height is greater than the offset height of the first child in both mobile and desktop view
+    "lang-selector-dropdown relative h-11",
+    "text-primary text-sm lg:text-base select-none drop-shadow-lg",
   ]}
 >
-  <div
-    role="button"
-    class:list={[
-      "lang-selector-button flex items-center justify-between gap-x-1.5 md:gap-x-3",
-      "w-full sm:max-w-[40vw] bg-lightgray cursor-pointer focus:outline-none",
-      "font-medium leading-[120%] py-2.5 px-[15px] border-2 border-primary",
-    ]}
-  >
-    <div class="text-[15px]">{docLang}</div>
+  {
+    langSelectorsData.map(
+      ({ lang, localizedLanguage, localLanguageName }, i) => (
+        <li
+          role="option"
+          tabindex="0"
+          aria-selected={i === 0 && true}
+          data-value={lang}
+          class="lang-selector block bg-lightgray text-primary border-2 border-y-0 border-primary cursor-pointer"
+        >
+          <span class="w-full p-4 flex items-center justify-between">
+            <span class="flex gap-[5px] items-center leading-[120%]">
+              <span class="text-[15px] font-medium">{localizedLanguage}</span>
+              <span class="w-1 h-1 rounded-full bg-primary" />
+              <span class="text-xs">{localLanguageName}</span>
+            </span>
 
-    <svg class="w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7">
-      <path
-        d="M.3.3A.6.6,0,0,1,.9,0a.9.9,0,0,1,.6.3L5.8,4.6,10.2.3a.6.6,0,0,1,.6-.3l.6.3a.8.8,0,0,1,.2.6.7.7,0,0,1-.2.6l-5,4.9a.6.6,0,0,1-.6.3.9.9,0,0,1-.6-.3L.3,1.5A.9.9,0,0,1,0,.9.6.6,0,0,1,.3.3Z"
-        fill="#2B4B50"></path>
-    </svg>
-  </div>
-
-  <ul
-    class:list={[
-      "lang-selector-dropdown-menu absolute hidden overflow-hidden",
-      "w-full rounded border-2 border-t-0 border-primary drop-shadow-lg",
-    ]}
-  >
-    {
-      langSelectorsData.map(
-        ({ lang, localizedLanguage, localLanguageName }) => (
-          <li class="block bg-lightgray">
-            <button
-              lang={lang}
-              class:list={[
-                lang,
-                "lang-selector flex flex-wrap items-center gap-x-1.5 md:gap-x-3",
-                "text-primary w-full p-4 hover:bg-lightgray2/60 cursor-pointer",
-              ]}
+            <svg
+              class="w-3"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 11.6 6.7"
             >
-              <span class="flex gap-[5px] items-center leading-[120%]">
-                <span class="text-[15px] font-medium">{localizedLanguage}</span>
-                <span class="w-1 h-1 rounded-full bg-primary" />
-                <span class="text-xs">{localLanguageName}</span>
-              </span>
-            </button>
-          </li>
-        )
+              <path
+                d="M.3.3A.6.6,0,0,1,.9,0a.9.9,0,0,1,.6.3L5.8,4.6,10.2.3a.6.6,0,0,1,.6-.3l.6.3a.8.8,0,0,1,.2.6.7.7,0,0,1-.2.6l-5,4.9a.6.6,0,0,1-.6.3.9.9,0,0,1-.6-.3L.3,1.5A.9.9,0,0,1,0,.9.6.6,0,0,1,.3.3Z"
+                fill="#2B4B50"
+              />
+            </svg>
+          </span>
+        </li>
       )
-    }
-  </ul>
-</div>
+    )
+  }
+</ul>
 
 <script>
-  const dropdowns = document.querySelectorAll(".lang-selector-dropdown");
+  const dropdowns = [...document.querySelectorAll(".lang-selector-dropdown")],
+    langSelectors = Array.from(
+      document.querySelectorAll<HTMLUListElement>(".lang-selector")
+    );
 
   // toggle language selectors dropdown
   document.addEventListener("click", (event) => {
@@ -141,30 +170,63 @@ langSelectorsData.sort(
     dropdown.addEventListener("keyup", (event) => {
       const { key } = event as KeyboardEvent;
 
+      // alias enter keypress to click event
       if (key === "Enter") {
-        dropdown.classList.toggle("dropdown-open");
+        (event.target as HTMLElement).click();
       }
     });
   });
 
-  document.querySelectorAll(".lang-selector").forEach((langSelector) => {
-    // change & redirect to preferred locale
+  langSelectors.forEach((langSelector) => {
     langSelector.addEventListener("click", () => {
-      // @ts-ignore
-      const { lang: newLocale } = langSelector;
+      if (langSelector.parentElement.firstElementChild === langSelector) return;
 
-      localStorage.setItem(`locale`, newLocale);
+      const { value: newLocale } = langSelector.dataset;
 
-      const localeRegex = new RegExp(
-        // @ts-ignore
-        `^/(${availableLocales.map((locale) => locale).join("|")})/`
-        /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
+      const currentLangSelectors = Array.from(
+        langSelector.parentElement
+          .children as HTMLCollectionOf<HTMLUListElement>
       );
 
-      let [, locale] = location.pathname.match(localeRegex) ?? [];
+      currentLangSelectors.forEach((langSelector) => {
+        langSelector.ariaSelected = String(
+          langSelector.dataset.value === newLocale
+        );
+      });
 
-      location.href =
-        `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
+      // sort lang selectors alphabetically
+      currentLangSelectors.sort((nextOption, currentOption) => {
+        const nextLanguage = nextOption.querySelector<HTMLSpanElement>(
+            "span span:first-child"
+          ).innerText,
+          currentLanguage = currentOption.querySelector<HTMLSpanElement>(
+            "span span:first-child"
+          ).innerText;
+
+        return nextLanguage.localeCompare(currentLanguage, "en-US");
+      });
+
+      // move selected lang selector to the top
+      const selectedLangSelectorIndex = currentLangSelectors.findIndex(
+        ({ ariaSelected }) => ariaSelected === "true"
+      );
+
+      currentLangSelectors.unshift(
+        currentLangSelectors.splice(selectedLangSelectorIndex, 1)[0]
+      );
+
+      // move lang selector elements to their new position
+      currentLangSelectors.forEach((langSelector, i) => {
+        langSelector.parentElement.insertBefore(
+          langSelector,
+          langSelector.parentElement.children[i]
+        );
+      });
+
+      // find & replace the other lang selectors dropdown
+      dropdowns.find(
+        (dropdown) => dropdown !== langSelector.parentElement
+      ).innerHTML = langSelector.parentElement.innerHTML;
     });
   });
 </script>
