@@ -114,7 +114,7 @@ export default function FilteredProducts({
 
               <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
                 <div
-                  class="product-card-title alice leading-[120%] md:leading-[110%]"
+                  class="product-card-title recoleta font-bold leading-[120%] md:leading-[130%]"
                   style={{ "font-size": "clamp(1.75rem, 2vw + 0.3rem, 2rem)" }}
                 >
                   <a
