@@ -26,6 +26,16 @@ const recurringElementQuery = `
           }
           Nav_menu_search_visibility
           Nav_menu_language_selector_visibility
+          Nav_menu_localization_visibility
+          Nav_menu_localization_icon {
+            data {
+              attributes {
+                url
+                provider_metadata
+                alternativeText
+              }
+            }
+          }
           Nav_menu_cart_visibility
           Nav_menu_cart_icon {
             data {
@@ -46,6 +56,10 @@ const recurringElementQuery = `
               }
             }
           }
+          text_shipping_country
+          text_language
+          text_currency
+          Button_save_text
           Footer_menu {
             Visibility
             Title
@@ -86,6 +100,8 @@ const recurringElementQuery = `
           product_transparency_title
           product_impact_title
           Item_stock_text
+          Product_stock_other_formats_text
+          Product_stock_other_formats_text_singular
           Product_sold_out_text
           text_all_tea_variants
           text_all_tea_sizes
@@ -114,6 +130,16 @@ const recurringElementQuery = `
                 }
                 Nav_menu_search_visibility
                 Nav_menu_language_selector_visibility
+                Nav_menu_localization_visibility
+                Nav_menu_localization_icon {
+                  data {
+                    attributes {
+                      url
+                      provider_metadata
+                      alternativeText
+                    }
+                  }
+                }
                 Nav_menu_cart_visibility
                 Nav_menu_cart_icon {
                   data {
@@ -134,6 +160,10 @@ const recurringElementQuery = `
                     }
                   }
                 }
+                text_shipping_country
+                text_language
+                text_currency
+                Button_save_text
                 Footer_menu {
                   Visibility
                   Title
@@ -174,6 +204,8 @@ const recurringElementQuery = `
                 product_transparency_title
                 product_impact_title
                 Item_stock_text
+                Product_stock_other_formats_text
+                Product_stock_other_formats_text_singular
                 Product_sold_out_text
                 text_all_tea_variants
                 text_all_tea_sizes

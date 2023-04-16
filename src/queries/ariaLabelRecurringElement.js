@@ -31,6 +31,8 @@ const ariaLabelRecurringElementQuery = `
           Navbar_open_cart_text
           Navbar_open_sidebar_menu_text
           Navbar_close_sidebar_menu_text
+          Navbar_open_localization_menu_text
+          Navbar_close_localization_menu_text
           Product_post_of_text
           localizations {
             data {
@@ -62,6 +64,8 @@ const ariaLabelRecurringElementQuery = `
                 Navbar_open_cart_text
                 Navbar_open_sidebar_menu_text
                 Navbar_close_sidebar_menu_text
+                Navbar_open_localization_menu_text
+                Navbar_close_localization_menu_text
                 Product_post_of_text
               }
             }

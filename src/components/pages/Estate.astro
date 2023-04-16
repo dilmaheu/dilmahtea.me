@@ -12,7 +12,7 @@ import RecurringImages from "@store/RecurringImages";
 const { left_quote, love_gift, white_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
-  { posts } = page,
+  { posts, locale } = page,
   { ASSETS_URL } = import.meta.env;
 
 const blogs = page.blogs.data.map(({ attributes }) => attributes);
@@ -155,7 +155,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 </style>
 
 <!-- Hero Section -->
-<Hero>
+<Hero {locale}>
   {/* Text Content */}
   <div
     role="banner"
