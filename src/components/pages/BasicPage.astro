@@ -4,15 +4,15 @@ import ClippedPicture from "@components/ClippedPicture.astro";
 import BasicPageHero from "@components/BasicPageHero.astro";
 import BasicPageInfoSectionTextContent from "@components/BasicPageInfoSectionTextContent.astro";
 
-const { page } = Astro.props;
-
-const { Title: title } = page,
+const { page } = Astro.props,
+  { Title: title, locale } = page,
   [introText] = page.Intro_text.split("\n"),
-  contentDescription = page.Intro_text.replace(introText, ""),
-  { ASSETS_URL } = import.meta.env;
+  contentDescription = page.Intro_text.replace(introText, "");
+
+const { ASSETS_URL } = import.meta.env;
 ---
 
-<BasicPageHero {title} {introText} />
+<BasicPageHero {title} {introText} {locale} />
 
 <div role="main">
   {

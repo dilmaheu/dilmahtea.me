@@ -19,7 +19,7 @@ productSizes.data = productSizes.data.filter(filterUnavailableTypes);
 productVariants.data = productVariants.data.filter(filterUnavailableTypes);
 productCategories.data = productCategories.data.filter(filterUnavailableTypes);
 
-const variantsOrder = [
+export const variantsOrder = [
   ...productVariants.data.map(({ attributes }) => attributes.Title),
   ...productSizes.data.map(({ attributes }) => attributes.Title),
   ...productVariants.data.flatMap(({ attributes: { Title: variant } }) =>
@@ -61,6 +61,13 @@ const allProducts = catalog.Products.flatMap(
           localizedSize = attributes.size.data.attributes.Title,
           link = "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
 
+        const format = localizedVariant + " " + localizedSize,
+          stockAmount = attributes.Stock_amount,
+          thumbnail = {
+            src: attributes.Intro_blob.data.attributes.formats.thumbnail.url,
+            alt: attributes.Intro_blob.data.attributes.alternativeText,
+          };
+
         variantsPerProduct[locale].push([variant + " | " + size, attributes]);
         variantsPerProduct[locale + " | " + size].push([variant, attributes]);
         variantsPerProduct[locale + " | " + variant].push([size, attributes]);
@@ -75,6 +82,9 @@ const allProducts = catalog.Products.flatMap(
             value: variant,
             variant: localizedVariant,
             link,
+            format,
+            stockAmount,
+            thumbnail,
           });
         }
 
@@ -83,6 +93,9 @@ const allProducts = catalog.Products.flatMap(
             value: size,
             size: localizedSize,
             link,
+            format,
+            stockAmount,
+            thumbnail,
           });
         }
       });

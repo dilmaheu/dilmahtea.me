@@ -35,24 +35,73 @@ const {
   Nav_menu: menu,
   Nav_menu_search_visibility: search,
   Nav_menu_language_selector_visibility: language,
+  Nav_menu_localization_visibility: localization,
+  Nav_menu_localization_icon: localization_icon,
   Nav_menu_cart_visibility: cart,
   Nav_menu_cart_icon: cart_icon,
   Nav_menu_profile_visibility: profile,
   Nav_menu_profile_icon: profile_icon,
+  text_language,
+  Button_save_text,
 } = recurData;
 ---
 
 <style lang="scss">
-  .brand-logo {
-    height: clamp(38px, 5vw, 50px);
+  @use "src/styles/poly-fluid" as *;
+
+  .navbar-container {
+    @include poly-fluid-sizing(
+      "height",
+      (
+        640px: 80px,
+        768px: 94px,
+        1024px: 124px,
+      )
+    );
   }
 
-  nav {
-    gap: clamp(10px, 1.5vw, 20px);
+  .brand-logo {
+    height: clamp(35px, 5vw, 50px);
+  }
 
-    a {
-      @apply text-[32px] md:text-[clamp(0.875rem,1.5vw+0.1rem,1.125rem)] font-semibold md:font-bold leading-[150%];
-    }
+  .nav-icon {
+    width: poly-fluid-clamp(
+      (
+        768px: 35px,
+        1024px: 50px,
+      )
+    );
+    height: poly-fluid-clamp(
+      (
+        768px: 35px,
+        1024px: 50px,
+      )
+    );
+    padding: poly-fluid-clamp(
+      (
+        768px: 10px,
+        1024px: 12px,
+      )
+    );
+  }
+
+  .nav-cart-num {
+    width: poly-fluid-clamp(
+      (
+        768px: 15px,
+        1024px: 20px,
+      )
+    );
+    height: poly-fluid-clamp(
+      (
+        768px: 15px,
+        1024px: 20px,
+      )
+    );
+  }
+
+  #sidebar nav a {
+    @apply text-[32px] font-bold leading-[150%];
   }
 </style>
 
@@ -60,252 +109,331 @@ const {
   id="navigation"
   class:list={[
     isCartNavbar && "cart-navbar",
-    "xl:!relative sticky !top-0 z-[999] w-full bg-cover bg-right-bottom",
+    "md:!relative sticky !top-0 z-[999] w-full bg-cover bg-right-bottom",
   ]}
 >
-  {
-    !isCartNavbar && (
-      <ClipPathSVG
-        id="cart-btn-curve"
-        path="M0.5,0 A0.5,0.5,0,0,0,0,0.5 a0.5,0.5,0,0,0,0.5,0.5 a0.5,0.5,0,0,0,0.5,-0.5 a0.5,0.5,0,0,0,-0.021,-0.146 a0.25,0.25,0,0,1,-0.104,0.021 A0.25,0.25,0,0,1,0.625,0.125 a0.25,0.25,0,0,1,0.021,-0.104 a0.5,0.5,0,0,0,-0.146,-0.021"
-      />
-    )
-  }
+  <div class="relative w-full flex items-center navbar-container z-10">
+    <ClipPathSVG
+      id="nav-curve"
+      path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
+    />
 
-  {
-    !isCartNavbar ? (
-      <Picture
-        alt=""
-        layout="fill"
-        loading="eager"
-        src={nav_background.src}
-        attributes={{
-          picture: {
-            id: "navbar-bg",
-            style: "display: none; position: absolute;",
-          },
-        }}
-      />
-    ) : (
-      <Fragment>
+    <Picture
+      alt=""
+      layout="fill"
+      preload="avif"
+      breakpoints={{ maxWidth: 640 }}
+      src={checkout_header_background_sm.src}
+      artDirectives={[
+        {
+          media: "(min-width: 640px)",
+          breakpoints: { minWidth: 640 },
+          src: checkout_header_background.src,
+        },
+      ]}
+      attributes={{
+        picture: {
+          style:
+            "position: absolute; top: 0; left: 0; clip-path: url(#nav-curve);",
+        },
+      }}
+    />
+
+    {
+      !isCartNavbar && (
         <ClipPathSVG
-          id="cart-navbar-curve"
-          path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
+          id="cart-btn-curve"
+          path="M0.5,0 A0.5,0.5,0,0,0,0,0.5 a0.5,0.5,0,0,0,0.5,0.5 a0.5,0.5,0,0,0,0.5,-0.5 a0.5,0.5,0,0,0,-0.021,-0.146 a0.25,0.25,0,0,1,-0.104,0.021 A0.25,0.25,0,0,1,0.625,0.125 a0.25,0.25,0,0,1,0.021,-0.104 a0.5,0.5,0,0,0,-0.146,-0.021"
         />
+      )
+    }
 
-        <Picture
-          alt=""
-          layout="fill"
-          preload="avif"
-          breakpoints={{ maxWidth: 640 }}
-          src={checkout_header_background_sm.src}
-          artDirectives={[
-            {
-              media: "(min-width: 640px)",
-              breakpoints: { minWidth: 640 },
-              src: checkout_header_background.src,
-            },
-          ]}
-          attributes={{
-            picture: {
-              id: "cart-navbar-bg",
-              style: "position: absolute; clip-path: url(#cart-navbar-curve);",
-            },
-          }}
-        />
-      </Fragment>
-    )
-  }
+    <div
+      class:list={[
+        "flex justify-between items-center",
+        "navbar wrapper relative top-0 z-50 mx-auto py-[clamp(20px,3vw,36px)]",
+      ]}
+    >
+      <div class="flex gap-[35px] md:gap-[50px]">
+        <a href="/" class="brand-logo my-auto">
+          <img class="h-full" {...logo} />
+        </a>
 
-  <div
-    class:list={[
-      "flex justify-between items-center",
-      "navbar wrapper relative top-0 z-50 mx-auto py-[clamp(20px,3vw,56px)]",
-    ]}
-  >
-    <a href="/" class="brand-logo my-auto">
-      <img class="h-full" {...logo} />
-    </a>
+        {
+          search && (
+            <div class="my-auto hidden sm:block items-center overflow-hidden w-full">
+              <div class="flex">
+                <ci-search />
+              </div>
+            </div>
+          )
+        }
+      </div>
 
-    <nav class="hidden xl:flex m-auto ml-14 text-white">
-      {
-        menu.map(
-          ({ Visibility, Title, Link }) =>
-            Visibility && <a href={Link}>{Title}</a>
-        )
-      }
-    </nav>
+      <div class="flex justify-end items-center gap-2.5 md:gap-[15px]">
+        {
+          localization && (
+            <div class="hidden sm:block relative">
+              <button
+                id="localization-menu-open-btn"
+                aria-label={
+                  ariaLabelRecurData.Navbar_open_localization_menu_text
+                }
+                class="nav-icon peer w-fit flex justify-center items-center bg-lightgray rounded-full cursor-pointer"
+              >
+                <img
+                  src={await localizeCMSImage(
+                    localization_icon?.data?.attributes.url
+                  )}
+                  alt={localization_icon?.data?.attributes.alternativeText}
+                />
+              </button>
 
-    <div class="flex gap-4 items-center">
-      {
-        search && (
-          <div class="my-auto flex items-center overflow-hidden">
-            <ci-search />
-          </div>
-        )
-      }
-      {
-        language && (
-          <div class="hidden xl:flex items-center">
-            <LangSelectorsDropdown
-              docLocale={docLocale}
-              availableLocales={availableLocales}
-            />
-          </div>
-        )
-      }
+              <form class="localization-form hidden absolute w-[280px] -translate-x-1/2 left-1/2 drop-shadow-lg">
+                <div class="relative flex justify-center pt-1">
+                  <div class="w-5 h-5 bg-lightgray rotate-45 rounded" />
+                </div>
 
-      {
-        cart && !isCartNavbar && (
-          <button
-            aria-label={ariaLabelRecurData.Navbar_open_cart_text}
-            class:list={[
-              "open-cart-btn hidden xl:inline-block relative",
-              "scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]",
-              "mx-[calc(-24px*0.225)] sm:mx-[calc(-24px*0.15)] md:mx-[calc(-24px*0.075)] lg:mx-0",
-            ]}
-          >
-            <span
-              style="clip-path: url(#cart-btn-curve);"
-              class="w-12 h-12 text-primary flex justify-center items-center bg-secondary rounded-full"
+                <div class="grid gap-[15px] content-between bg-lightgray rounded-[12px] p-[25px] -translate-y-3">
+                  <div class="grid gap-[6px] text-dark">
+                    <div class="text-[15px] font-medium">{text_language}</div>
+
+                    {language && (
+                      <LangSelectorsDropdown
+                        docLocale={docLocale}
+                        availableLocales={availableLocales}
+                      />
+                    )}
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="bg-primary leading-[120%] text-lightgray2 rounded-full py-2.5 px-4"
+                  >
+                    {Button_save_text}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )
+        }
+
+        {
+          localization && (
+            <div class="block sm:hidden relative">
+              <button
+                id="localization-menu-sm-open-btn"
+                class:list={[
+                  "nav-icon flex justify-center items-center",
+                  "peer bg-secondary rounded-full cursor-pointer",
+                ]}
+              >
+                <img
+                  src={await localizeCMSImage(
+                    localization_icon?.data?.attributes.url
+                  )}
+                  alt={localization_icon?.data?.attributes.alternativeText}
+                />
+              </button>
+            </div>
+          )
+        }
+
+        {
+          cart && !isCartNavbar && (
+            <button
+              aria-label={ariaLabelRecurData.Navbar_open_cart_text}
+              class="open-cart-btn inline-block relative"
             >
-              <img
-                class="w-[30px] h-[30px] mx-auto"
-                src={await localizeCMSImage(cart_icon?.data?.attributes.url)}
-                alt={cart_icon?.data?.attributes.alternativeText}
-              />
-            </span>
+              <span
+                style="clip-path: url(#cart-btn-curve);"
+                class="nav-icon block bg-lightgray rounded-full"
+              >
+                <img
+                  src={await localizeCMSImage(cart_icon?.data?.attributes.url)}
+                  alt={cart_icon?.data?.attributes.alternativeText}
+                />
+              </span>
 
-            <span
-              class:list={[
-                "w-6 h-6 absolute -top-1.5 -right-1.5",
-                "flex justify-center items-center rounded-full",
-              ]}
-            >
-              <span class="w-5 h-5 text-white flex justify-center items-center rounded-full bg-red-600">
-                <span id="cart-size">
-                  <DynamicHTML htmlFn={() => Object.keys(window.cart).length} />
+              <span
+                class:list={[
+                  "absolute -top-[3px] -right-[3px]",
+                  "flex justify-center items-center rounded-full",
+                ]}
+              >
+                <span
+                  class:list={[
+                    "nav-cart-num flex justify-center items-center",
+                    "text-[10px] lg:text-xs text-white rounded-full bg-red-600",
+                  ]}
+                >
+                  <span id="cart-size">
+                    <DynamicHTML
+                      htmlFn={() => Object.keys(window.cart).length}
+                    />
+                  </span>
                 </span>
               </span>
-            </span>
-          </button>
-        )
-      }
+            </button>
+          )
+        }
 
-      <div class="block xl:hidden w-[38px] h-[38px]">
-        <button
-          id="sidebar-open-btn"
-          aria-label={ariaLabelRecurData.Navbar_open_sidebar_menu_text}
-          class="block w-full h-full select-none cursor-pointer"
-        >
-          <svg viewBox="0 0 22.4 19.2" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M0 17.6a1.6 1.6 0 0 0 .5 1.1 1.6 1.6 0 0 0 1.1.5h19.2a1.6 1.6 0 0 0 0-3.2H1.6a1.6 1.6 0 0 0-1.1.5 1.6 1.6 0 0 0-.5 1.1Zm0-8a1.6 1.6 0 0 0 .5 1.1 1.6 1.6 0 0 0 1.1.5h9.6a1.6 1.6 0 0 0 0-3.2H1.6a1.6 1.6 0 0 0-1.1.5A1.6 1.6 0 0 0 0 9.6Zm0-8a1.6 1.6 0 0 0 .5 1.1 1.6 1.6 0 0 0 1.1.5h19.2a1.6 1.6 0 0 0 1.1-.5 1.6 1.6 0 0 0 .5-1.1 1.6 1.6 0 0 0-.5-1.1 1.6 1.6 0 0 0-1.1-.5H1.6A1.6 1.6 0 0 0 .5.5 1.6 1.6 0 0 0 0 1.6Z"
-              style="fill: #e3dfde; fill-rule: evenodd"></path>
-          </svg>
-        </button>
+        {
+          profile && (
+            <div
+              class:list={[
+                "nav-icon flex justify-center items-center",
+                "bg-lightgray rounded-full cursor-pointer",
+              ]}
+            >
+              <img
+                src={await localizeCMSImage(profile_icon?.data?.attributes.url)}
+                alt={profile_icon?.data?.attributes.alternativeText}
+              />
+            </div>
+          )
+        }
+
+        <div class="block md:hidden w-[35px] h-[35px]">
+          <button
+            id="sidebar-open-btn"
+            aria-label={ariaLabelRecurData.Navbar_open_sidebar_menu_text}
+            class="block w-full h-full select-none cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 31">
+              <path
+                d="M0,28.4a2.7,2.7,0,0,0,.7,1.8,2.5,2.5,0,0,0,1.7.8H31.2a2.5,2.5,0,0,0,1.7-.8,2.7,2.7,0,0,0,.7-1.8,2.9,2.9,0,0,0-.7-1.8,2.5,2.5,0,0,0-1.7-.8H2.4a2.5,2.5,0,0,0-1.7.8A2.9,2.9,0,0,0,0,28.4ZM9.9,15.5a2.9,2.9,0,0,0,.7,1.8,2.5,2.5,0,0,0,1.7.8H31.6a2.1,2.1,0,0,0,1.7-.8,2.4,2.4,0,0,0,.7-1.8,2.4,2.4,0,0,0-.7-1.8,2.1,2.1,0,0,0-1.7-.8H12.3a2.5,2.5,0,0,0-1.7.8A2.9,2.9,0,0,0,9.9,15.5ZM0,2.6A2.9,2.9,0,0,0,.7,4.4a2.5,2.5,0,0,0,1.7.8H31.2a2.5,2.5,0,0,0,1.7-.8,2.9,2.9,0,0,0,.7-1.8A2.7,2.7,0,0,0,32.9.8,2.5,2.5,0,0,0,31.2,0H2.4A2.5,2.5,0,0,0,.7.8,2.7,2.7,0,0,0,0,2.6Z"
+                transform="translate(0)"
+                style="fill:#e3dfde;fill-rule:evenodd"></path>
+            </svg>
+          </button>
+        </div>
       </div>
+    </div>
+
+    <div
+      id="sidebar"
+      class="hidden md:!hidden fixed top-0 right-0 z-[40] w-[300px] max-w-full h-screen z-[99]"
+    >
+      <BackgroundPicture
+        sizes="300px"
+        layout="fill"
+        preload="avif"
+        loading="lazy"
+        src={sidebar_background.src}
+        objectPosition="right bottom"
+        breakpoints={{ minWidth: 300 }}
+        attributes={{
+          container: { style: "height: 100%;" },
+          link: { media: "(max-width: 767.98px)" },
+        }}
+      >
+        <div class="grid content-between h-full px-[30px] pt-[26px] pb-9">
+          <div class="z-10 grid gap-9">
+            <div class="flex items-center gap-x-[15px] justify-end">
+              <div class="w-[35px] h-[35px]">
+                <button
+                  id="sidebar-close-btn"
+                  aria-label={ariaLabelRecurData.Navbar_close_sidebar_menu_text}
+                  class="hidden w-full h-full select-none cursor-pointer"
+                >
+                  <svg
+                    viewBox="0 0 19.2 19.2"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+                      style="fill: #e3dfde; fill-rule: evenodd"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <nav class="flex flex-col gap-[35px] text-white">
+              {
+                menu.map(
+                  ({ Visibility, Title, Link }) =>
+                    Visibility && <a href={Link}>{Title}</a>
+                )
+              }
+            </nav>
+          </div>
+
+          <div
+            class="text-xs font-normal leading-[150%] z-10"
+            set:html={footerText}
+          />
+        </div>
+      </BackgroundPicture>
     </div>
   </div>
 
   <div
-    id="sidebar"
-    class="hidden xl:!hidden fixed top-0 right-0 z-[40] w-[300px] max-w-full h-screen z-[99]"
+    class="block sm:hidden bg-primary h-[68px] flex items-end -mt-3 drop-shadow-lg"
   >
-    <BackgroundPicture
-      sizes="300px"
-      layout="fill"
-      preload="avif"
-      loading="lazy"
-      src={sidebar_background.src}
-      objectPosition="right bottom"
-      breakpoints={{ minWidth: 300 }}
-      attributes={{
-        container: { style: "height: 100%;" },
-        link: { media: "(max-width: 767.98px)" },
-      }}
-    >
-      <div class="grid content-between h-full px-[30px] pt-[26px] pb-9">
-        <div class="z-10 grid gap-9">
-          <div class="flex items-center gap-x-[15px] justify-end">
-            <div class="flex items-center h-[38px]">
+    <div class="wrapper pb-2.5 md:pb-[15px]">
+      {
+        search && (
+          <div class="my-auto block md:hidden items-center overflow-hidden w-full">
+            <ci-search />
+          </div>
+        )
+      }
+    </div>
+  </div>
+
+  <form
+    id="localization-menu-sm"
+    class:list={[
+      "localization-form fixed hidden md:!hidden right-0 top-0",
+      "w-screen h-screen p-[25px] bg-lightgray text-dark z-[9999]",
+    ]}
+  >
+    <div class="grid gap-[25px]">
+      <div class="flex justify-end">
+        <button
+          type="button"
+          aria-label={ariaLabelRecurData.Navbar_close_localization_menu_text}
+          id="localization-menu-sm-close-btn"
+          class="select-none cursor-pointer"
+        >
+          <svg
+            viewBox="0 0 19.2 19.2"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-[35px] h-[35px]"
+          >
+            <path
+              d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+              style="fill: #474747; fill-rule: evenodd"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="grid gap-[25px] content-between h-full">
+        <div class="grid gap-2.5">
+          <div class="text-[15px] font-medium">
+            {text_language}
+          </div>
+
+          {
+            language && (
               <LangSelectorsDropdown
                 docLocale={docLocale}
                 availableLocales={availableLocales}
               />
-            </div>
-
-            {
-              cart && !isCartNavbar && (
-                <button
-                  aria-label="Open Cart"
-                  class:list={[
-                    "open-cart-btn-sm relative",
-                    "scale-[0.775] sm:scale-[0.85]",
-                    "mx-[calc(-24px*0.225)] sm:mx-[calc(-24px*0.15)] md:mx-[calc(-24px*0.075)] lg:mx-0",
-                  ]}
-                >
-                  <span
-                    style="clip-path: url(#cart-btn-curve);"
-                    class="w-12 h-12 text-primary flex justify-center items-center bg-secondary rounded-full"
-                  >
-                    <img
-                      class="w-[30px] h-[30px] mx-auto"
-                      src={ASSETS_URL + cart_icon?.data?.attributes.url}
-                      alt={cart_icon?.data?.attributes.alternativeText}
-                    />
-                  </span>
-
-                  <span
-                    class:list={[
-                      "w-6 h-6 absolute -top-1.5 -right-1.5",
-                      "flex justify-center items-center rounded-full",
-                    ]}
-                  >
-                    <span class="w-5 h-5 text-white flex justify-center items-center rounded-full bg-red-600">
-                      <span id="cart-size">
-                        <DynamicHTML
-                          htmlFn={() => Object.keys(window.cart).length}
-                        />
-                      </span>
-                    </span>
-                  </span>
-                </button>
-              )
-            }
-
-            <div class="w-[38px] h-[38px]">
-              <button
-                id="sidebar-close-btn"
-                aria-label="Close Sidebar Menu"
-                class="hidden w-full h-full select-none cursor-pointer"
-              >
-                <svg viewBox="0 0 19.2 19.2" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
-                    style="fill: #e3dfde; fill-rule: evenodd"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <nav class="flex flex-col text-white">
-            {
-              menu.map(
-                ({ Visibility, Title, Link }) =>
-                  Visibility && <a href={Link}>{Title}</a>
-              )
-            }
-          </nav>
+            )
+          }
         </div>
-
-        <div
-          class="text-xs font-normal leading-[150%] z-10"
-          set:html={footerText}
-        />
       </div>
-    </BackgroundPicture>
-  </div>
+
+      <button
+        type="submit"
+        class="bg-primary leading-[120%] text-lightgray2 rounded-full py-2.5 px-4"
+      >
+        {Button_save_text}
+      </button>
+    </div>
+  </form>
 </header>
 
 <script is:inline>
@@ -349,11 +477,17 @@ const {
     navbarBg = query("#navbar-bg"),
     cartNavbarBg = query("#cart-navbar-bg"),
     sidebarOpenButton = query("#sidebar-open-btn"),
-    sidebarCloseButton = query("#sidebar-close-btn");
+    sidebarCloseButton = query("#sidebar-close-btn"),
+    localizationMenuSm = query("#localization-menu-sm"),
+    localizationMenuOpenButton = query("#localization-menu-open-btn"),
+    localizationMenuSmOpenButton = query("#localization-menu-sm-open-btn"),
+    localizationMenuSmCloseButton = query("#localization-menu-sm-close-btn");
 
   const openCartBtns = document.querySelectorAll(
-    ".open-cart-btn, .open-cart-btn-sm"
-  );
+      ".open-cart-btn, .open-cart-btn-sm"
+    ),
+    localizationForms =
+      document.querySelectorAll<HTMLFormElement>(".localization-form");
 
   window.disableScrolling = () => {
     const overflowY =
@@ -429,6 +563,85 @@ const {
     sidebarCloseButton.style.display = "none";
 
     window.enableScrolling();
+  });
+
+  localizationMenuOpenButton.addEventListener("mouseenter", () => {
+    localizationMenuOpenButton.nextElementSibling.classList.remove("hidden");
+  });
+
+  const hideLocalizationMenu = () => {
+    localizationMenuOpenButton.nextElementSibling.classList.add("hidden");
+  };
+
+  localizationMenuOpenButton.addEventListener(
+    "mouseleave",
+    hideLocalizationMenu
+  );
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+
+    if (localizationMenuOpenButton.contains(target)) {
+      const { classList: localizationMenuClassList } =
+        localizationMenuOpenButton.nextElementSibling;
+
+      localizationMenuClassList.toggle("hidden");
+
+      localizationMenuOpenButton[
+        !localizationMenuClassList.contains("hidden")
+          ? "removeEventListener"
+          : "addEventListener"
+      ]("mouseleave", hideLocalizationMenu);
+    }
+
+    if (!localizationMenuOpenButton.parentElement.contains(target)) {
+      hideLocalizationMenu();
+
+      localizationMenuOpenButton.addEventListener(
+        "mouseleave",
+        hideLocalizationMenu
+      );
+    }
+  });
+
+  localizationMenuSmOpenButton?.addEventListener("click", () => {
+    localizationMenuSm.style.display = "block";
+
+    window.disableScrolling();
+  });
+
+  localizationMenuSmCloseButton?.addEventListener("click", () => {
+    localizationMenuSm.style.display = "none";
+
+    window.enableScrolling();
+  });
+
+  localizationForms.forEach((localizationForm) => {
+    localizationForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const { lang: newLocale } = Object.fromEntries(
+        [...localizationForm.querySelectorAll("ul")].map((list) => [
+          list.dataset.name,
+          list.querySelector<HTMLElement>("li[aria-selected=true]").dataset
+            .value,
+        ])
+      );
+
+      // change & redirect to preferred locale
+      localStorage.setItem(`locale`, newLocale);
+
+      const localeRegex = new RegExp(
+        // @ts-ignore
+        `^/(${availableLocales.map((locale) => locale).join("|")})/`
+        /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
+      );
+
+      let [, locale] = location.pathname.match(localeRegex) ?? [];
+
+      location.href =
+        `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
+    });
   });
 </script>
 

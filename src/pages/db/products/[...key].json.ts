@@ -1,6 +1,6 @@
 import { marked } from "marked";
-import productsStore from "@store/Products";
 import { renderPicture } from "astro-imagetools/api";
+import productsStore, { variantsOrder } from "@store/Products";
 
 async function processProductData(attributes) {
   const {
@@ -30,12 +30,46 @@ async function processProductData(attributes) {
 
   const Intro_text_HTML = marked(Intro_text);
 
+  let availableFormatsCount, availableFormatThumbnails;
+
+  if (Stock_amount === 0) {
+    const formats = [];
+
+    const availableFormats = [
+      ...attributes.availableVariants,
+      ...attributes.availableSizes,
+    ].filter(({ format, stockAmount }) => {
+      if (formats.includes(format)) return false;
+
+      formats.push(format);
+
+      return stockAmount;
+    });
+
+    availableFormats.sort(
+      ({ value: a }, { value: b }) =>
+        variantsOrder.indexOf(a) - variantsOrder.indexOf(b)
+    );
+
+    availableFormatsCount = availableFormats.length;
+    availableFormatThumbnails = await Promise.all(
+      availableFormats.slice(0, 2).map(async ({ thumbnail }) => ({
+        src: await importRemoteImage(
+          import.meta.env.ASSETS_URL + thumbnail.src
+        ),
+        alt: thumbnail.alt,
+      }))
+    );
+  }
+
   return {
     Title,
     Intro_blob_HTML,
     Intro_text_HTML,
     Stock_amount,
     In_stock_date,
+    availableFormatsCount,
+    availableFormatThumbnails,
     category: category.data?.attributes.Title,
     subCategory: sub_category.data?.attributes.Title,
     Meta: { URL_slug: "/" + locale.substring(0, 2) + "/" + URL_slug },

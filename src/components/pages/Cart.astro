@@ -63,11 +63,10 @@ const footerText = recurData.Footer_text.replaceAll(
   h1,
   #cart-subtotal,
   .text-total {
-    @apply leading-[115%] md:tracking-[-0.02em];
+    @apply leading-[115%];
   }
 
-  h1,
-  #cart-subtotal {
+  h1 {
     font-size: poly-fluid-clamp(
       (
         375px: 32px,
@@ -121,7 +120,7 @@ const footerText = recurData.Footer_text.replaceAll(
     line-height: 110%;
     font-size: poly-fluid-clamp(
       (
-        375px: 20px,
+        375px: 24px,
         1440px: 32px,
       )
     );
@@ -176,7 +175,7 @@ const footerText = recurData.Footer_text.replaceAll(
     <EmptyCartNotification locale={locale} />
 
     <div id="cart" class="grow flex flex-col text-primary">
-      <h1 class="alice mb-4 md:mb-6">{page.text_cart}</h1>
+      <h1 class="recoleta font-bold leading-[130%] mb-4 md:mb-6">{page.text_cart}</h1>
 
       <ClipPathSVG
         id="cart-product-image"
@@ -240,7 +239,7 @@ const footerText = recurData.Footer_text.replaceAll(
 
               <div class="grow flex flex-col gap-2">
                 <div class="flex justify-between items-center gap-2.5">
-                  <h2 class="cart-product-name alice">
+                  <h2 class="cart-product-name recoleta sm:font-bold">
                     <placeholder name="name"></placeholder>
                   </h2>
 
@@ -260,7 +259,7 @@ const footerText = recurData.Footer_text.replaceAll(
                     <CartProductQuantityInput {ariaLabelRecurData} />
                   </div>
 
-                  <div class="cart-product-price alice block md:hidden">
+                  <div class="cart-product-price recoleta block md:hidden">
                     €<placeholder name="price"></placeholder>
                   </div>
                 </div>
@@ -278,7 +277,7 @@ const footerText = recurData.Footer_text.replaceAll(
               </button>
             </div>
 
-            <div class="cart-product-price alice hidden md:block">
+            <div class="cart-product-price recoleta hidden md:block">
               €<placeholder name="price"></placeholder>
             </div>
           </div>
@@ -290,14 +289,14 @@ const footerText = recurData.Footer_text.replaceAll(
       <div class="flex flex-col mt-auto">
         <div class="mb-3 md:mb-4 flex justify-between items-center">
           <div class="flex flex-col gap-4">
-            <div class="alice text-total">{checkoutRecurData.text_total}</div>
+            <div class="recoleta font-bold text-total">{checkoutRecurData.text_total}</div>
 
             <div class="hidden md:block text-shipping-charge-info">
               {checkoutRecurData.text_shipping_calculated_at_checkout}
             </div>
           </div>
 
-          <div id="cart-subtotal" class="alice">
+          <div id="cart-subtotal" class="recoleta font-bold text-[32px]">
             €<DynamicHTML htmlFn={() => window.cart.subTotal} />
           </div>
         </div>

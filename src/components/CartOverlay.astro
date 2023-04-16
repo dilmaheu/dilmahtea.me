@@ -25,9 +25,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   }
 
   .cart-overlay-heading {
-    line-height: 110%;
-
-    @apply text-[2rem] sm:text-[2.625rem];
+    @apply text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[110%];
   }
 
   .cart-overlay-product-details {
@@ -35,9 +33,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   }
 
   .cart-overlay-product-name {
-    line-height: 130%;
-
-    @apply text-[1.125rem] sm:text-[1.5rem];
+    @apply text-[1.125rem] sm:text-[1.5rem] md:font-bold leading-[120%];
   }
 
   .cart-overlay-product-amount-tweak-btn:disabled {
@@ -58,11 +54,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     @apply text-base sm:text-[1.125rem];
   }
 
-  .cart-overlay-product-price,
-  #cart-subtotal {
-    line-height: 110%;
+  .cart-overlay-product-price {
+    @apply text-[1.75rem] leading-[120%] sm:leading-[110%];
+  }
 
-    @apply text-[1.75rem] sm:text-[2rem];
+  #cart-subtotal {
+    @apply text-[1.75rem] sm:text-[2rem] font-bold leading-[120%] sm:leading-[110%];
   }
 
   .shipping-charge-info {
@@ -94,7 +91,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         <div class="flex flex-col gap-5 h-full">
           <div class="flex flex-col gap-5">
             <div class="flex justify-between items-center">
-              <h2 class="cart-overlay-heading alice">
+              <h2 class="cart-overlay-heading recoleta font-bold">
                 {checkoutRecurData.text_cart}
               </h2>
 
@@ -189,7 +186,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                         class="cart-overlay-product-details flex flex-col gap-1.5"
                       >
                         <div class="flex justify-between items-center gap-1.5">
-                          <h3 class="alice cart-overlay-product-name">
+                          <h3 class="recoleta cart-overlay-product-name">
                             <placeholder name="name"></placeholder>
                           </h3>
 
@@ -248,7 +245,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           </div>
 
                           <span
-                            class="cart-overlay-product-price alice text-black"
+                            class="cart-overlay-product-price recoleta text-black"
                           >
                             €<placeholder name="price"></placeholder>
                           </span>
@@ -267,7 +264,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     {checkoutRecurData.text_subtotal}
                   </span>
 
-                  <span id="cart-subtotal" class="alice">
+                  <span id="cart-subtotal" class="recoleta">
                     €<DynamicHTML htmlFn={() => window.cart.subTotal} />
                   </span>
                 </div>

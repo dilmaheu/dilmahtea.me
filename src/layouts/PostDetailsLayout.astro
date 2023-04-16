@@ -105,7 +105,7 @@ const contentHTML = await Astro.slots.render("post-details"),
   }
 
   .related-post-card-title {
-    @apply leading-[130%] sm:leading-[120%];
+    @apply md:font-bold leading-[130%] md:leading-[120%];
 
     font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
   }
@@ -116,7 +116,7 @@ const contentHTML = await Astro.slots.render("post-details"),
 </style>
 
 {/* Hero Section */}
-<Hero>
+<Hero {recurData} locale={page.locale}>
   {/* Text Content */}
   <div
     role="banner"
@@ -439,7 +439,7 @@ const contentHTML = await Astro.slots.render("post-details"),
 {
   relatedPosts?.length > 0 && (
     <section role="complementary" class="wrapper">
-      <h2 class="related-posts-title alice leading-[110%] text-black-light pb-[25px] sm:pb-[30px]">
+      <h2 class="related-posts-title recoleta font-bold leading-[130%] text-dark pb-[25px] sm:pb-[30px]">
         {page.Relevant_items_title ||
           (page.Relevant_recipes && recurData.recipe_discover) ||
           recurData.text_explore_the_world_of_kindness}
@@ -507,7 +507,7 @@ const contentHTML = await Astro.slots.render("post-details"),
                   </div>
                 )}
 
-                <div class="related-post-card-title alice mt-[15px]">
+                <div class="related-post-card-title recoleta mt-[15px]">
                   <a
                     class="main-link"
                     set:text={post.Title}
