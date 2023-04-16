@@ -26,6 +26,16 @@ const recurringElementQuery = `
           }
           Nav_menu_search_visibility
           Nav_menu_language_selector_visibility
+          Nav_menu_localization_visibility
+          Nav_menu_localization_icon {
+            data {
+              attributes {
+                url
+                provider_metadata
+                alternativeText
+              }
+            }
+          }
           Nav_menu_cart_visibility
           Nav_menu_cart_icon {
             data {
@@ -46,6 +56,10 @@ const recurringElementQuery = `
               }
             }
           }
+          text_shipping_country
+          text_language
+          text_currency
+          Button_save_text
           Footer_menu {
             Visibility
             Title
@@ -116,6 +130,16 @@ const recurringElementQuery = `
                 }
                 Nav_menu_search_visibility
                 Nav_menu_language_selector_visibility
+                Nav_menu_localization_visibility
+                Nav_menu_localization_icon {
+                  data {
+                    attributes {
+                      url
+                      provider_metadata
+                      alternativeText
+                    }
+                  }
+                }
                 Nav_menu_cart_visibility
                 Nav_menu_cart_icon {
                   data {
@@ -136,6 +160,10 @@ const recurringElementQuery = `
                     }
                   }
                 }
+                text_shipping_country
+                text_language
+                text_currency
+                Button_save_text
                 Footer_menu {
                   Visibility
                   Title

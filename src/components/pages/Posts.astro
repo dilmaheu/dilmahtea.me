@@ -45,8 +45,7 @@ const {
 
 const { page, ariaLabelRecurData } = Astro.props,
   { ASSETS_URL } = import.meta.env,
-  { posts } = page;
-
+  { posts, locale } = page;
 
 posts.sort((a, b) => {
   return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
@@ -101,7 +100,7 @@ const [firstPost] = posts;
 </style>
 
 {/* Hero Section */}
-<Hero>
+<Hero {locale}>
   {/* Text Content */}
   <div
     role="banner"
