@@ -34,7 +34,7 @@ page.Heading_button_link = "#content";
   @use "src/styles/typography";
 
   .heading-title {
-    @apply font-bold leading-[130%] sm:leading-[115%] text-dark2;
+    @apply font-bold leading-[130%] sm:leading-[115%] text-black;
 
     font-family: typography.$recoleta;
     font-size: clamp(2.625rem, 3vw + 0.3rem, 3rem);
@@ -118,7 +118,7 @@ page.Heading_button_link = "#content";
   {recurData}
   {ariaLabelRecurData}
   {headingName}
-  type="normal"
+  type="section"
 >
   <div slot="product-page-sections" class="mt-[50px]">
     <ClipPathSVG
@@ -155,25 +155,26 @@ page.Heading_button_link = "#content";
       <ProductFiltersForm
         client:load
         {locale}
-        {productSizes}
-        {productVariants}
-        {recurData}
+        {...ProductFiltersForm.pruneProps({
+          productSizes,
+          productVariants,
+          recurData,
+        })}
       />
     </div>
 
     {/* Products Section */}
-    <section class="grid gap-y-[50px]" role="main">
+    <section role="main" class="grid gap-y-[50px]">
       <FilteredProducts
         client:load
-        {page}
-        {recurData}
         {white_right_arrow}
         category={page.Title}
+        {...FilteredProducts.pruneProps({ page, recurData })}
       >
         <Icon
           slot="alertCircleIcon"
           name="mdi:alert-circle"
-          class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+          class="inline-flex p-0.5 w-[26px] text-white bg-warning rounded-full select-none"
         />
       </FilteredProducts>
 
@@ -188,22 +189,21 @@ page.Heading_button_link = "#content";
                 {Title}
               </h2>
 
-              <div class="prose max-w-none block-text text-dark2 prose-text">
+              <div class="prose max-w-none block-text text-black prose-text">
                 <Markdown>{Intro_text}</Markdown>
               </div>
             </div>
 
             <FilteredProducts
               client:load
-              {page}
-              {recurData}
               {white_right_arrow}
               subCategory={Title}
+              {...FilteredProducts.pruneProps({ page, recurData })}
             >
               <Icon
                 slot="alertCircleIcon"
                 name="mdi:alert-circle"
-                class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+                class="inline-flex w-[26px] p-0.5 bg-warning text-white rounded-full select-none"
               />
             </FilteredProducts>
           </div>

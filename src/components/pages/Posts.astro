@@ -8,32 +8,35 @@ import ClippedPicture from "@components/ClippedPicture.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
+type Post = {
+  Estate_name: string;
+  authors: any;
+  locale: string | undefined;
+  updatedAt: string;
+  createdAt: string;
+  publishedAt: string;
+  Intro_text: string;
+  Intro_blob: any;
+  Block_text: string;
+  Category: any | undefined;
+  Cooking_part: any;
+  Cuisine: any;
+  Nutrition_yield: any;
+  Recipe_variations: any;
+  Title: String;
+  Time_preparation: any | undefined;
+  Time_text: any | undefined;
+  Time_cooking: any;
+  Relevant_recipes: any;
+  Meta: any;
+  localizations: { data: { attributes: Post }[] };
+} & Record<string, any>;
+
 interface Props {
   page: {
-    posts: {
-      Estate_name: string;
-      authors: any;
-      locale: string | undefined;
-      localizations: { data: { attributes: any[] } };
-      updatedAt: string;
-      createdAt: string;
-      publishedAt: string;
-      Intro_text: string;
-      Intro_blob: any;
-      Block_text: string;
-      Category: any | undefined;
-      Cooking_part: any;
-      Cuisine: any;
-      Nutrition_yield: any;
-      Recipe_variations: any;
-      Title: String;
-      Time_preparation: any | undefined;
-      Time_text: any | undefined;
-      Time_cooking: any;
-      Relevant_recipes: any;
-      Meta: any;
-    }[];
-  };
+    posts: Post[];
+  } & Record<string, any>;
+  ariaLabelRecurData: Record<string, any>;
 }
 
 const {
@@ -44,17 +47,22 @@ const {
 } = RecurringImages;
 
 const { page, ariaLabelRecurData } = Astro.props,
-  { ASSETS_URL } = import.meta.env,
-  { posts, locale } = page;
+  { posts, locale } = page,
+  { ASSETS_URL } = import.meta.env;
 
 posts.sort((a, b) => {
   return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 });
+
 const [firstPost] = posts;
 ---
 
 <style lang="scss">
-  @use "src/styles/colors";
+  .hero-title,
+  .post-title {
+    @apply decoration-[2.5px];
+  }
+
   .post-title {
     @apply font-bold leading-[130%];
 
@@ -117,7 +125,7 @@ const [firstPost] = posts;
                     (i > 0 ? ", " : " ") +
                     attributes.givenName
                 )}
-                class="post-author flex flex-wrap font-bold text-lightgray"
+                class="post-author flex flex-wrap font-bold text-secondary"
               >
                 {firstPost.authors.data.map(({ attributes }, i) => (
                   <div>{`${i > 0 ? ", " : " "}` + attributes.givenName}</div>
@@ -147,7 +155,7 @@ const [firstPost] = posts;
             </span>
           </h1>
 
-          <div class="hero-text pt-2.5 prose text-lightgray max-w-none">
+          <div class="hero-text pt-2.5 prose text-secondary max-w-none">
             <Markdown>{firstPost.Intro_text}</Markdown>
           </div>
         </section>
@@ -156,7 +164,7 @@ const [firstPost] = posts;
   </div>
 
   {/* Blob Image - Desktop View */}
-  <div class="h-full hidden sm:block absolute z-30 hero-img-curve-container">
+  <div class="hero-img-curve-container h-full hidden sm:block absolute z-30">
     <ClippedPicture
       preload="avif"
       id="hero-img-curve"
@@ -284,7 +292,7 @@ const [firstPost] = posts;
                       ))}
                     </div>
 
-                    <div class="post-publish-date text-dark">
+                    <div class="post-publish-date text-black-light">
                       {new Date(post.createdAt).toLocaleString("en-US", {
                         day: "numeric",
                         month: "long",

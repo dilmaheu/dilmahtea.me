@@ -12,11 +12,12 @@ const response = await fetch(`${CMS_ENDPOINT}/api/security-text`, {
   headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
 });
 
-const securityMetaData = await response.json();
+const securityMetaData = await response.json(),
+  securityTXT = securityMetaData.data.attributes.Text;
 
-const securityTXT = securityMetaData.data.attributes.Text;
+await fs.mkdir("./dist/.well-known/", { recursive: true });
 
-fs.mkdir("./dist/.well-known/", { recursive: true });
-
-await fs.writeFile("./dist/security.txt", securityTXT);
-await fs.writeFile("./dist/.well-known/security.txt", securityTXT);
+await Promise.all([
+  await fs.writeFile("./dist/security.txt", securityTXT),
+  await fs.writeFile("./dist/.well-known/security.txt", securityTXT),
+]);

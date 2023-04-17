@@ -32,15 +32,15 @@ const productSizes = CMS.get("productSizes"),
   @use "src/styles/typography";
 
   .heading-title {
-    @apply font-bold leading-[130%] text-dark2;
+    @apply font-bold leading-[130%] text-black;
 
     font-family: typography.$recoleta;
     font-size: clamp(2.625rem, 3vw + 0.3rem, 3rem);
   }
 
   .block-text {
-    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
     line-height: 150%;
+    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
   }
 
   .category-container {
@@ -48,8 +48,7 @@ const productSizes = CMS.get("productSizes"),
       md:grid-cols-2 gap-y-[30px] gap-x-[30px] mt-[30px] overflow-hidden;
 
     .category-content-container {
-      @apply relative flex flex-nowrap cursor-pointer
-        w-full h-[clamp(110px,12vw+8px,170px)];
+      @apply relative flex flex-nowrap w-full h-[clamp(110px,12vw+8px,170px)] cursor-pointer;
 
       @media (max-width: 320px) {
         @apply h-full;
@@ -125,7 +124,7 @@ const productSizes = CMS.get("productSizes"),
   {recurData}
   {ariaLabelRecurData}
   {headingName}
-  type="normal"
+  type="section"
 >
   <div slot="product-page-sections" class="mt-[50px]">
     <ClipPathSVG
@@ -157,8 +156,8 @@ const productSizes = CMS.get("productSizes"),
           {
             categories.map(({ attributes: { Title, Intro_blob, Meta } }) => (
               <div
-                style="clip-path: url(#product-category-card-curve)"
                 class="bg-primary text-center"
+                style="clip-path: url(#product-category-card-curve)"
               >
                 <a href={Meta.URL_slug}>
                   <div class="category-content-container">
@@ -166,12 +165,12 @@ const productSizes = CMS.get("productSizes"),
                       <div class="category-img w-auto h-full aspect-[6/5] block">
                         <Picture
                           layout="fullWidth"
-                          sizes="calc(clamp(110px, 12vw + 8px, 170px) * 6/5)"
+                          src={ASSETS_URL + Intro_blob.data.attributes.url}
                           alt={Intro_blob.data.attributes.alternativeText}
+                          sizes="calc(clamp(110px, 12vw + 8px, 170px) * 6/5)"
                           attributes={{
                             img: { style: "aspect-ratio: 6 / 5;" },
                           }}
-                          src={ASSETS_URL + Intro_blob.data.attributes.url}
                         />
                       </div>
                     </div>
@@ -203,23 +202,29 @@ const productSizes = CMS.get("productSizes"),
               <ProductFiltersForm
                 client:load
                 {locale}
-                {productSizes}
-                {productVariants}
-                {recurData}
+                {...ProductFiltersForm.pruneProps({
+                  productSizes,
+                  productVariants,
+                  recurData,
+                })}
               />
             </div>
           </div>
 
-          <div class="prose max-w-none block-text text-dark2 prose-text">
+          <div class="prose max-w-none block-text text-black prose-text">
             <Markdown>{page.Block_text}</Markdown>
           </div>
         </div>
 
-        <FilteredProducts client:load {page} {recurData} {white_right_arrow}>
+        <FilteredProducts
+          client:load
+          {white_right_arrow}
+          {...FilteredProducts.pruneProps({ page, recurData })}
+        >
           <Icon
             slot="alertCircleIcon"
             name="mdi:alert-circle"
-            class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+            class="inline-flex p-0.5 w-[26px] text-white bg-warning rounded-full select-none"
           />
         </FilteredProducts>
       </section>
@@ -246,7 +251,7 @@ const productSizes = CMS.get("productSizes"),
           </div>
 
           <div
-            class="absolute inset-0 w-full h-full bg-gradient-to-b from-[#000] to-[#2f2f2f] opacity-[0.4]"
+            class="absolute inset-0 w-full h-full bg-gradient-to-b from-white to-black opacity-[0.4]"
           >
           </div>
 
@@ -263,7 +268,7 @@ const productSizes = CMS.get("productSizes"),
               <a
                 href={page.Block2_button_link}
                 class:list={[
-                  "flex product-impact-btn bg-lightgray rounded-full",
+                  "flex product-impact-btn bg-secondary rounded-full",
                   "text-primary font-bold md:font-semibold leading-[150%]",
                 ]}
               >

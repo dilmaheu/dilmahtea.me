@@ -1,7 +1,9 @@
-const imagesDir = "./public/_astro/";
+import fs from "node:fs";
 
-if (!fs.existsSync(imagesDir)) {
-  await fs.promises.mkdir(imagesDir, { recursive: true });
+const IMAGES_DIR = "./public/_astro/";
+
+if (!fs.existsSync(IMAGES_DIR)) {
+  await fs.promises.mkdir(IMAGES_DIR, { recursive: true });
 }
 
 export default async function localizeCMSImage(relativeUrl) {

@@ -99,7 +99,7 @@ const footerText = recurData.Footer_text.replaceAll(
     }
 
     hr {
-      @apply border border-lightgreen opacity-50;
+      @apply border border-primary-light opacity-50;
     }
 
     .details-headings {
@@ -175,7 +175,9 @@ const footerText = recurData.Footer_text.replaceAll(
     <EmptyCartNotification locale={locale} />
 
     <div id="cart" class="grow flex flex-col text-primary">
-      <h1 class="recoleta font-bold leading-[130%] mb-4 md:mb-6">{page.text_cart}</h1>
+      <h1 class="recoleta font-bold leading-[130%] mb-4 md:mb-6">
+        {page.text_cart}
+      </h1>
 
       <ClipPathSVG
         id="cart-product-image"
@@ -210,7 +212,7 @@ const footerText = recurData.Footer_text.replaceAll(
                 .map((id) => {
                   const productData = window.cart[id],
                     names = JSON.parse(productData.names),
-                    name = names[preferredLocale] || names["en"],
+                    name = names[window.preferredLocale] || names["en"],
                     price = Number(productData.price)
                       .toFixed(2)
                       .replace(".", ",");
@@ -228,7 +230,7 @@ const footerText = recurData.Footer_text.replaceAll(
         >
           <div
             id={`<placeholder name="id"></placeholder>`}
-            class="cart-product items-center p-[15px] rounded-[19px] bg-lightgray2"
+            class="cart-product items-center bg-secondary-light p-[15px] rounded-[19px]"
           >
             <div class="cart-product-details flex items-center">
               <img
@@ -256,10 +258,7 @@ const footerText = recurData.Footer_text.replaceAll(
 
                 <div class="flex justify-between items-center">
                   <div class="block md:hidden">
-                    <CartProductQuantityInput
-                      page={page}
-                      {ariaLabelRecurData}
-                    />
+                    <CartProductQuantityInput {ariaLabelRecurData} />
                   </div>
 
                   <div class="cart-product-price recoleta block md:hidden">
@@ -270,7 +269,7 @@ const footerText = recurData.Footer_text.replaceAll(
             </div>
 
             <div class="hidden md:flex gap-7">
-              <CartProductQuantityInput page={page} {ariaLabelRecurData} />
+              <CartProductQuantityInput {ariaLabelRecurData} />
 
               <button
                 class="remove-item-btn"
@@ -292,7 +291,9 @@ const footerText = recurData.Footer_text.replaceAll(
       <div class="flex flex-col mt-auto">
         <div class="mb-3 md:mb-4 flex justify-between items-center">
           <div class="flex flex-col gap-4">
-            <div class="recoleta font-bold text-total">{checkoutRecurData.text_total}</div>
+            <div class="recoleta font-bold text-total">
+              {checkoutRecurData.text_total}
+            </div>
 
             <div class="hidden md:block text-shipping-charge-info">
               {checkoutRecurData.text_shipping_calculated_at_checkout}
@@ -310,7 +311,7 @@ const footerText = recurData.Footer_text.replaceAll(
 
         <a
           href="/checkout/information"
-          class="self-end px-32 py-3 bg-primary font-bold text-lightgray rounded-full"
+          class="self-end px-32 py-3 bg-primary font-bold text-secondary rounded-full"
         >
           {page.text_go_to_checkout}
         </a>
@@ -342,13 +343,7 @@ const footerText = recurData.Footer_text.replaceAll(
 </script>
 
 <script>
-  import tweakAmount from "@utils/tweakAmount";
-
-  declare global {
-    interface Window {
-      cart: Record<string, Record<string, string | number>>;
-    }
-  }
+  import tweakAmount from "@utils/client/tweakAmount";
 
   const cartProductAmountInputs = document.querySelectorAll(
       ".cart-product-amount-input"

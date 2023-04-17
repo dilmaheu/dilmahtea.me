@@ -9,18 +9,15 @@ const { title, introText, locale } = Astro.props;
 ---
 
 <style lang="scss">
-  @use "src/styles/colors";
-
   .hero-icon {
-    @apply w-full object-contain;
-
     height: clamp(40px, 6vw + 15px, 100px);
   }
 
   .hero-text {
     &,
     a {
-      color: colors.$light-gray;
+      @apply text-secondary;
+
       font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem) !important;
     }
   }
@@ -32,14 +29,16 @@ const { title, introText, locale } = Astro.props;
     aria-label="Intro"
     class="wrapper hero-text-container relative h-full flex flex-wrap justify-center z-30"
   >
-    <div class="hero-text-content w-full md:w-9/12 lg:w-7/12 text-center mt-[30px]">
+    <div
+      class="hero-text-content w-full md:w-9/12 lg:w-7/12 text-center mt-[30px]"
+    >
       <img
-        class="hero-icon hidden sm:block w-full h-full mx-auto"
+        class="hero-icon hidden sm:block w-full h-full mx-auto object-contain"
         {...white_cup}
       />
 
       <img
-        class="hero-icon block sm:hidden w-full h-full mx-auto"
+        class="hero-icon block sm:hidden w-full h-full mx-auto object-contain"
         {...white_love_ribbon}
       />
 

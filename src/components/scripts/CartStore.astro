@@ -1,5 +1,5 @@
 ---
-import productsStore from "@store/products";
+import productsStore from "@store/Products";
 import localizeCMSImage from "@utils/localizeCMSImage";
 
 const products = Object.fromEntries(
@@ -37,7 +37,7 @@ const products = Object.fromEntries(
 
     return content.replace(
       placeholderRegex,
-      (match, placeholderName) => data[placeholderName]
+      (_, placeholderName) => data[placeholderName]
     );
   };
 
@@ -53,9 +53,13 @@ const products = Object.fromEntries(
 
   const storedCart = JSON.parse(localStorage.getItem("cart") || "{}");
 
-  Object.keys(storedCart).forEach((SKU) => {
-    const inCartProductData = storedCart[SKU],
-      productData = products[SKU];
+  Object.entries(storedCart).forEach(([SKU, inCartProductData]) => {
+    const productData = products[SKU];
+
+    productData.tax =
+      Math.round(productData.tax * inCartProductData.quantity * 100) / 100;
+    productData.price =
+      Math.round(productData.price * inCartProductData.quantity * 100) / 100;
 
     if (!productData) {
       delete storedCart[SKU];

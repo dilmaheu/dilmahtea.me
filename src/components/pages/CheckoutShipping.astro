@@ -46,7 +46,7 @@ const { page, recurData } = Astro.props,
 
     div {
       &:first-of-type {
-        @apply font-bold text-dark;
+        @apply font-bold text-black-light;
 
         font-size: poly-fluid-clamp(
           (
@@ -100,6 +100,7 @@ const { page, recurData } = Astro.props,
       )
     );
   }
+
   .shipping-description {
     font-size: poly-fluid-clamp(
       (
@@ -137,7 +138,7 @@ const { page, recurData } = Astro.props,
           .map((id) => {
             const productData = window.cart[id],
               names = JSON.parse(productData.names),
-              name = names[preferredLocale] || names["en"];
+              name = names[window.preferredLocale] || names["en"];
 
             return `${productData.quantity}x ${name}`;
           })
@@ -151,9 +152,9 @@ const { page, recurData } = Astro.props,
           tax: window.cart.tax.split(",").join("."),
           price: window.cart.total.split(",").join("."),
           payment_type: "ecommerce",
-          locale: preferredLocale,
+          locale: window.preferredLocale,
           origin_url: origin + pathname,
-          success_url: `${origin}/${preferredLocale}/checkout/success?clear=cart`,
+          success_url: `${origin}/${window.preferredLocale}/checkout/success?clear=cart`,
         };
 
         delete paymentInfo.delivery_address;
@@ -170,7 +171,7 @@ const { page, recurData } = Astro.props,
     <div
       role="list"
       aria-label={page.Aria_label_kindness_delivery_address_section_text}
-      class="p-4 gap-6 flex flex-col bg-lightgray2 rounded-2xl"
+      class="p-4 gap-6 flex flex-col bg-secondary-light rounded-2xl"
     >
       <div
         role="listitem"
@@ -195,7 +196,7 @@ const { page, recurData } = Astro.props,
         </div>
       </div>
 
-      <div class="border border-dark opacity-80"></div>
+      <div class="border border-black-light opacity-80"></div>
 
       <div
         role="listitem"
@@ -211,7 +212,7 @@ const { page, recurData } = Astro.props,
 
           <a
             aria-label={page.Aria_label_change_text +
-              ` ` +
+              " " +
               page.Aria_label_delivery_address_text}
             href="/checkout/information?change=street"
           >
@@ -237,32 +238,32 @@ const { page, recurData } = Astro.props,
             >
               <div>
                 <input
-                type="radio"
-                name="shipping_method"
-                value={localizations?.data[0]?.attributes?.method || method}
-                data-cost={cost}
-                class:list={[
-                  "hover:brightness-50 active:brightness-150 block",
-                  "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
-                  "checked:before:block before:hidden before:w-2 before:h-2 before:bg-primary before:rounded-full",
-                ]}
-                checked={i === 0 ? "" : undefined}
-                required
-              />
+                  type="radio"
+                  name="shipping_method"
+                  value={localizations?.data[0]?.attributes?.method || method}
+                  data-cost={cost}
+                  class:list={[
+                    "hover:brightness-50 active:brightness-150 block",
+                    "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
+                    "checked:before:block before:hidden before:w-2 before:h-2 before:bg-primary before:rounded-full",
+                  ]}
+                  checked={i === 0 ? "" : undefined}
+                  required
+                />
               </div>
-              
+
               <div class="grid gap-[5px]">
                 <span class="gap-3 flex items-center">
-                  <span class="shipping-method font-semibold text-dark2 leading-[130%]">
+                  <span class="shipping-method font-semibold text-black leading-[130%]">
                     {method}
                   </span>
                   <span class="w-1 h-1 bg-primary rounded-full" />
-                  <span class="shipping-cost font-semibold text-dark2 leading-[130%]">
+                  <span class="shipping-cost font-semibold text-black leading-[130%]">
                     € {cost.toFixed(2).toString().replace(".", ",")}
                   </span>
                 </span>
 
-                <span class="shipping-description text-dark2 leading-[130%]">
+                <span class="shipping-description text-black leading-[130%]">
                   {description}
                 </span>
               </div>
@@ -281,7 +282,7 @@ const { page, recurData } = Astro.props,
     >
       <button
         type="submit"
-        class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-lightgray font-bold rounded-full"
+        class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-secondary font-bold rounded-full"
       >
         {checkoutRecurData.text_continue_to_payment}
       </button>
@@ -296,18 +297,12 @@ const { page, recurData } = Astro.props,
 <section
   role="complementary"
   aria-label={checkoutRecurData.text_order_summary}
-  class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-lightgreen"
+  class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-primary-light"
 >
   <OrderSummary page={page} />
 </section>
 
 <script>
-  declare global {
-    interface Window {
-      checkoutInfo: Record<string, string>;
-    }
-  }
-
   const shippingDetailsForm = document.getElementById("shipping-details"),
     priceInputElement = document.querySelector(
       "input[name='price']"

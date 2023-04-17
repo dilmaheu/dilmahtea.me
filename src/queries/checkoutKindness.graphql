@@ -1,0 +1,78 @@
+fragment CheckoutKindnessAttributes on CheckoutKindness {
+  locale
+  updatedAt
+  checkout_step_order
+  Title
+  Intro_text
+  Meta {
+    HTML_Title
+    Meta_description
+    noindex
+    nofollow
+    URL_slug
+    Canonical_link
+  }
+}
+
+query {
+  checkoutKindness {
+    data {
+      id
+      attributes {
+        ...CheckoutKindnessAttributes
+        kindness_causes {
+          data {
+            attributes {
+              cause
+              description
+              featured_blob {
+                data {
+                  id
+                  attributes {
+                    url
+                    provider_metadata
+                    formats
+                    alternativeText
+                  }
+                }
+              }
+            }
+          }
+        }
+        localizations {
+          data {
+            attributes {
+              ...CheckoutKindnessAttributes
+              kindness_causes {
+                data {
+                  attributes {
+                    cause
+                    description
+                    featured_blob {
+                      data {
+                        id
+                        attributes {
+                          url
+                          provider_metadata
+                          formats
+                          alternativeText
+                        }
+                      }
+                    }
+                    localizations(filters: { locale: { eq: "en" } }) {
+                      data {
+                        attributes {
+                          cause
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

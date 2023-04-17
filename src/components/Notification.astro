@@ -19,7 +19,7 @@ if (type !== "Default") {
 }
 
 const defaultSlotHTML = await Astro.slots.render("default"),
-  { document: defaultSlotDocument } = await parseHTML(defaultSlotHTML),
+  { document: defaultSlotDocument } = parseHTML(defaultSlotHTML),
   notificationPlaceholder = defaultSlotDocument.querySelector("notification");
 
 const notificationsHTML = Object.keys(notification)
@@ -72,7 +72,7 @@ const notificationContentHTML = defaultSlotDocument.toString();
   ]}
 >
   <div class="mx-auto gap-5 flex items-center">
-    {icon && <img {...icon} width={26} height={26} />}
+    {icon && <img {...icon} class="w-[26px] h-[26px]" />}
 
     <div class="notification-content" set:html={notificationContentHTML} />
   </div>
@@ -104,9 +104,7 @@ const notificationContentHTML = defaultSlotDocument.toString();
 
   notificationCloseButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      // @ts-ignore
       window.slideOutTopNotification(button.parentElement);
-      /* slideOutTopNotification is defined in NotificationAnimations.astro */
     });
   });
 </script>

@@ -9,9 +9,10 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import CMS from "@store/CMS";
-import { variantsOrder } from "@store/products";
 import RecurringImages from "@store/RecurringImages";
+import { variantsOrder } from "@store/Products";
 
+import renderMarkdown from "@utils/renderMarkdown";
 import localizeCMSImage from "@utils/localizeCMSImage";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
@@ -28,29 +29,8 @@ const {
   productSize,
   availableVariants,
   availableSizes,
-  Stock_amount: stock_amount,
+  Stock_amount: stockAmount,
 } = page;
-
-const infos = page.product_infos.data.map(({ attributes }) => attributes),
-  blogs = page.related_blogs?.data?.map(({ attributes }) => attributes),
-  recipes = page.related_recipes?.data?.map(({ attributes }) => attributes),
-  how_tos = page.related_how_tos?.data?.map(({ attributes }) => attributes);
-
-const relevant_items = blogs.concat(recipes, how_tos);
-
-const Spent_amount = page.Price_breakdown.map(
-  ({ Spent_amount }) => Spent_amount
-);
-
-let Total_spent_amount = 0;
-
-for (const value of Spent_amount) {
-  Total_spent_amount += value;
-}
-
-const productThumbnailURL = await importRemoteImage(
-  ASSETS_URL + page.Intro_blob.data.attributes.formats.thumbnail.url
-);
 
 const { SKU: productSKU } = page,
   productPrice = Number(page.Price),
@@ -58,11 +38,31 @@ const { SKU: productSKU } = page,
   productPriceIncludingTax = productPrice + tax,
   productNames = JSON.stringify(page.names);
 
+const productThumbnailURL = await importRemoteImage(
+  ASSETS_URL + page.Intro_blob.data.attributes.formats.thumbnail.url
+);
+
+const infos = page.product_infos.data.map(({ attributes }) => attributes),
+  blogs = page.related_blogs?.data?.map(({ attributes }) => attributes),
+  recipes = page.related_recipes?.data?.map(({ attributes }) => attributes),
+  howTos = page.related_how_tos?.data?.map(({ attributes }) => attributes);
+
+const relevantItems = blogs.concat(recipes, howTos);
+
+const spentAmounts = page.Price_breakdown.map(
+  ({ Spent_amount }) => Spent_amount
+);
+
+const totalSpentAmount = spentAmounts.reduce(
+  (total, currentValue) => total + currentValue,
+  0
+);
+
 const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
 let availableFormats;
 
-if (stock_amount === 0) {
+if (stockAmount === 0) {
   const formats = [];
 
   availableFormats = [...availableVariants, ...availableSizes].filter(
@@ -191,31 +191,31 @@ if (stock_amount === 0) {
 
     li {
       counter-increment: counter;
-    }
 
-    li::before {
-      content: counter(counter);
-      background: colors.$primary;
-      width: 45px;
-      height: 45px;
-      border-radius: 100%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      margin-right: 20px;
+      &::before {
+        content: counter(counter);
+
+        @apply bg-primary inline-flex items-center justify-center w-[45px] h-[45px] mr-5 text-white rounded-full;
+      }
     }
   }
 
-  .transparency-items-grid {
+  .accordion-items-grid {
     grid-template-columns: clamp(2rem, 3vw + 0.3rem, 2.5rem) auto;
   }
 
-  .transparency-item-icon {
+  .accordion-item-icon {
     height: clamp(2rem, 3vw + 0.3rem, 2.5rem);
+
+    img {
+      @apply w-full block mx-auto object-contain;
+
+      clip-path: none;
+      aspect-ratio: 1 / 1;
+    }
   }
 
-  .accordion {
+  .accordion-button {
     font-size: clamp(1.125rem, 1.5vw + 0.15rem, 1.5rem);
     transition: all 150ms ease-out 0ms;
 
@@ -225,15 +225,10 @@ if (stock_amount === 0) {
   }
 
   .accordion-content {
-    display: none;
-    max-height: 0;
-    opacity: 0;
-    transition: all 200ms ease-out 0ms;
+    @apply hidden max-h-0 opacity-0 transition-all;
 
     &.is-open {
-      display: block;
-      max-height: 100%;
-      opacity: 1;
+      @apply block max-h-full opacity-100;
     }
   }
 
@@ -244,14 +239,37 @@ if (stock_amount === 0) {
       minmax(0, clamp(100px, 18vw + 20px, 280px))
     );
   }
-</style>
 
-<style lang="scss" is:global>
-  .transparency-item-icon img {
-    @apply w-full block mx-auto object-contain;
+  .related-post-card {
+    @apply w-full max-w-[380px] sm:max-w-none;
+  }
 
-    clip-path: none;
-    aspect-ratio: 1 / 1;
+  .related-post-card-content-container {
+    padding: clamp(20px, 6.4vw, 40px) clamp(24px, 3.8vw + 11.75px, 36px);
+
+    @media (min-width: 640px) {
+      padding: clamp(30px, 7.8125vw - 20px, 60px)
+        clamp(28px, 4.6875vw - 2px, 46px);
+    }
+
+    @media (min-width: 1024px) {
+      padding: clamp(30px, 8vw - 51.75px, 60px) clamp(28px, 4.8vw - 21px, 46px);
+    }
+  }
+
+  .related-post-card-author {
+    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem);
+    line-height: 150%;
+  }
+
+  .related-post-card-title {
+    @apply leading-[130%] sm:leading-[120%];
+
+    font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
+  }
+
+  .related-post-card-title-icon {
+    height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
   }
 </style>
 
@@ -265,7 +283,7 @@ if (stock_amount === 0) {
     slot="tea-details-header"
     class:list={[
       "cart-adding-form flex flex-wrap items-center w-full",
-      stock_amount > 0 && "xl:w-2/3"
+      stockAmount > 0 && "xl:w-2/3",
     ]}
   >
     <input type="hidden" name="sku" value={productSKU} />
@@ -276,64 +294,56 @@ if (stock_amount === 0) {
     <input type="hidden" name="price" value={productPriceIncludingTax} />
 
     {
-      stock_amount > 0 && (
+      stockAmount > 0 && (
         <div class="flex flex-wrap gap-5 items-center w-full justify-between">
           <fieldset>
-            <legend
-              class="text-sm lg:text-base font-medium leading-[150%] mb-[5px]"
-            >
+            <legend class="mb-[5px] text-sm lg:text-base font-medium leading-[150%]">
               {checkoutRecurData.text_variant}:
             </legend>
 
-            <div class="border-2 border-lightgray overflow-hidden rounded-full">
+            <div class="border-2 border-secondary overflow-hidden rounded-full">
               <select
                 name="tea_variant"
                 class:list={[
-                  "inline-block py-[9px] pl-5 lg:text-lg lg:font-normal text-lightgray",
-                  "border-r-[20px] border-[#405658] bg-[#405658]",
+                  "inline-block py-[9px] pl-5 bg-teal text-secondary",
+                  "lg:text-lg lg:font-normal border-r-[20px] border-teal",
                 ]}
               >
-                {
-                  availableVariants.map(({ value, variant, link }) => (
-                    <option
-                      {value}
-                      data-href={link}
-                      selected={value === productVariant}
-                    >
-                      {variant}
-                    </option>
-                  ))
-                }
+                {availableVariants.map(({ value, variant, link }) => (
+                  <option
+                    value={value}
+                    data-href={link}
+                    selected={value === productVariant}
+                  >
+                    {variant}
+                  </option>
+                ))}
               </select>
             </div>
           </fieldset>
 
           <fieldset>
-            <legend
-              class="text-sm lg:text-base font-medium leading-[150%] mb-[5px]"
-            >
+            <legend class="text-sm lg:text-base font-medium leading-[150%] mb-[5px]">
               {checkoutRecurData.text_size}:
             </legend>
 
-            <div class="border-2 border-lightgray overflow-hidden rounded-full">
+            <div class="border-2 border-secondary overflow-hidden rounded-full">
               <select
                 name="tea_size"
                 class:list={[
-                  "inline-block py-[9px] pl-5 lg:text-lg lg:font-normal text-lightgray",
-                  "border-r-[20px] border-[#405658] bg-[#405658]",
+                  "inline-block py-[9px] pl-5 bg-teal text-secondary",
+                  "lg:text-lg lg:font-normal border-r-[20px] border-teal",
                 ]}
               >
-                {
-                  availableSizes.map(({ value, size, link }) => (
-                    <option
-                      {value}
-                      data-href={link}
-                      selected={value === productSize}
-                    >
-                      {size}
-                    </option>
-                  ))
-                }
+                {availableSizes.map(({ value, size, link }) => (
+                  <option
+                    value={value}
+                    data-href={link}
+                    selected={value === productSize}
+                  >
+                    {size}
+                  </option>
+                ))}
               </select>
             </div>
           </fieldset>
@@ -343,11 +353,11 @@ if (stock_amount === 0) {
 
     <div class="flex flex-wrap gap-5 items-center w-full justify-between">
       {
-        stock_amount > 0 && (
+        stockAmount > 0 && (
           <div
             class:list={[
-              "flex items-center text-primary bg-lightgray rounded-full",
-              stock_amount < 1 && "cursor-not-allowed",
+              "flex items-center text-primary bg-secondary rounded-full",
+              stockAmount < 1 && "cursor-not-allowed",
             ]}
           >
             <button
@@ -355,7 +365,7 @@ if (stock_amount === 0) {
               aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
               class:list={[
                 "product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1 select-none",
-                stock_amount < 1 && "cursor-not-allowed",
+                stockAmount < 1 && "cursor-not-allowed",
               ]}
               disabled
             >
@@ -366,15 +376,15 @@ if (stock_amount === 0) {
               type="number"
               name="quantity"
               aria-label={ariaLabelRecurData.Product_quantity_text}
-              min={stock_amount > 0 ? 1 : 0}
-              max={stock_amount}
-              value={stock_amount > 0 ? 1 : 0}
+              min={stockAmount > 0 ? 1 : 0}
+              max={stockAmount}
+              value={stockAmount > 0 ? 1 : 0}
               class:list={[
+                stockAmount < 1 && "cursor-not-allowed",
                 "product-amount-input w-12 h-full text-center lg:text-lg bg-transparent outline-none",
-                stock_amount < 1 && "cursor-not-allowed",
               ]}
+              disabled={stockAmount < 1 && "disabled"}
               required
-              disabled={stock_amount < 1 && "disabled"}
             />
 
             <button
@@ -382,9 +392,9 @@ if (stock_amount === 0) {
               aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
               class:list={[
                 "product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3",
-                stock_amount < 1 && "cursor-not-allowed",
+                stockAmount < 1 && "cursor-not-allowed",
               ]}
-              disabled={stock_amount < 1 && "disabled"}
+              disabled={stockAmount < 1 && "disabled"}
             >
               <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
             </button>
@@ -394,11 +404,11 @@ if (stock_amount === 0) {
 
       <div class="grow">
         {
-          stock_amount > 0 && (
+          stockAmount > 0 && (
             <button
               class:list={[
-                "w-full gap-4 flex justify-center items-center p-3 mt-auto",
-                "font-bold text-base rounded-full text-primary bg-lightgray",
+                "w-full flex justify-center items-center gap-4 p-3 mt-auto",
+                "bg-secondary text-primary font-bold text-base rounded-full",
               ]}
             >
               <Icon name="mi:shopping-cart" class="w-[26px] h-[26px]" />
@@ -412,12 +422,12 @@ if (stock_amount === 0) {
           )
         }
         {
-          stock_amount === 0 && (
+          stockAmount === 0 && (
             <button
               tabindex="0"
               class:list={[
-                "w-full xl:w-2/3 gap-4 flex justify-center items-center p-3 mt-auto text-base",
-                "font-bold text-white rounded-full bg-[#8b8b8b] cursor-not-allowed",
+                "w-full xl:w-2/3 flex justify-center items-center gap-4 p-3 mt-auto",
+                "bg-slate text-white font-bold text-base rounded-full cursor-not-allowed",
               ]}
             >
               <Icon name="tabler:shopping-cart-x" class="w-[26px] h-[26px]" />
@@ -427,69 +437,23 @@ if (stock_amount === 0) {
         }
       </div>
       {
-        stock_amount < 1 && (
-          <div class="grid gap-4 w-full">
-            <div
-              class:list={[
-                "flex items-center gap-2.5 w-full",
-                "text-sm sm:text-base font-medium text-white2",
-              ]}
-            >
-              <Icon
-                name="mdi:alert-circle"
-                class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
-              />              
-              {
-                // hide label if in-stock date is in the past or undefined
-                new Date(page.In_stock_date).getTime() > new Date().getTime() &&
-                  recurData.Item_stock_text.replace(
-                    "<in_stock_date>",
-                    new Date(page.In_stock_date).toLocaleString("en-GB", {
-                      year: "2-digit",
-                      month: "short",
-                      day: "numeric",
-                    })
-                  ) + "."
-              }
-              {availableFormats.length === 1
-                ? recurData.Product_stock_other_formats_text_singular
-                : recurData.Product_stock_other_formats_text.replace(
-                    "<count>",
-                    availableFormats.length
-                  )}
-            </div>
-
-            <div class="w-full md:w-2/3 lg:w-full">
-              <div class="variant-container">
-                {
-                  availableFormats.map(({  link, format, thumbnail }) => (
-                    <div
-                      style="clip-path: url(#product-category-card-curve)"
-                      class="bg-primary text-center"
-                    >
-                      <a href={link}>
-                        <div class="variant-content-container">
-                          <div class="variant-img-container">
-                            <div class="variant-img w-auto h-full aspect-[6/5] block">
-                              <img
-                                {...thumbnail}                            
-                                style="aspect-ratio: 6 / 5;"                     
-                              />
-                            </div>
-                          </div>
-
-                          <div class="variant-txt-container">
-                            <h2 class="alice text-xl sm:text-left leading-[110%] line-clamp-2">
-                              {format}
-                            </h2>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                  ))
-                }
-              </div>
-            </div>
+        stockAmount < 1 && (
+          <div
+            class:list={[
+              "flex items-center gap-2.5 w-full",
+              "text-sm sm:text-base font-medium text-secondary-light",
+            ]}
+          >
+            <Icon
+              name="mdi:alert-circle"
+              class="inline-flex w-[26px] p-0.5 bg-warning text-white rounded-full select-none"
+            />
+            {recurData.Item_stock_text}
+            {new Date(page.In_stock_date).toLocaleString("en-GB", {
+              year: "2-digit",
+              month: "short",
+              day: "numeric",
+            })}
           </div>
         )
       }
@@ -508,12 +472,10 @@ if (stock_amount === 0) {
     <input type="hidden" name="price" value={productPriceIncludingTax} />
 
     {
-      stock_amount > 0 && (
-        <div class="flex flex-wrap gap-4 items-center w-full justify-between">
+      stockAmount > 0 && (
+        <div class="w-full flex flex-wrap gap-4 items-center justify-between">
           <fieldset>
-            <legend
-              class="text-sm lg:text-base font-medium leading-[150%] mb-[5px] outline-none"
-            >
+            <legend class="text-sm lg:text-base font-medium leading-[150%] mb-[5px] outline-none">
               {checkoutRecurData.text_variant}:
             </legend>
 
@@ -521,29 +483,25 @@ if (stock_amount === 0) {
               <select
                 name="tea_variant"
                 class:list={[
-                  "inline-block py-[9px] pl-[15px] lg:text-lg lg:font-normal text-primary",
-                  "border-r-[15px] border-lightgray2 bg-lightgray2",
+                  "bg-secondary-light border-r-[15px] border-secondary-light",
+                  "inline-block py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
                 ]}
               >
-                {
-                  availableVariants.map(({ value, variant, link }) => (
-                    <option
-                      {value}
-                      data-href={link}
-                      selected={value === productVariant}
-                    >
-                      {variant}
-                    </option>
-                  ))
-                }
+                {availableVariants.map(({ value, variant, link }) => (
+                  <option
+                    value={value}
+                    data-href={link}
+                    selected={value === productVariant}
+                  >
+                    {variant}
+                  </option>
+                ))}
               </select>
             </div>
           </fieldset>
 
           <fieldset>
-            <legend
-              class="text-sm lg:text-base font-medium leading-[150%] mb-[5px] outline-none"
-            >
+            <legend class="mb-[5px] text-sm lg:text-base font-medium leading-[150%] outline-none">
               {checkoutRecurData.text_size}:
             </legend>
 
@@ -551,21 +509,19 @@ if (stock_amount === 0) {
               <select
                 name="tea_size"
                 class:list={[
-                  "inline-block py-[9px] pl-[15px] lg:text-lg lg:font-normal text-primary",
-                  "border-r-[15px] border-lightgray2 bg-lightgray2",
+                  "bg-secondary-light border-r-[15px] border-secondary-light",
+                  "inline-block py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
                 ]}
               >
-                {
-                  availableSizes.map(({ value, size, link }) => (
-                    <option
-                      {value}
-                      data-href={link}
-                      selected={value === productSize}
-                    >
-                      {size}
-                    </option>
-                  ))
-                }
+                {availableSizes.map(({ value, size, link }) => (
+                  <option
+                    value={value}
+                    data-href={link}
+                    selected={value === productSize}
+                  >
+                    {size}
+                  </option>
+                ))}
               </select>
             </div>
           </fieldset>
@@ -573,21 +529,21 @@ if (stock_amount === 0) {
       )
     }
 
-    <div class="flex flex-wrap gap-4 items-center w-full justify-between">
+    <div class="w-full flex flex-wrap justify-between items-center gap-4">
       {
-        stock_amount > 0 && (
+        stockAmount > 0 && (
           <div
             class:list={[
-              "w-fit flex items-center text-lightgray p-1 bg-primary rounded-full",
-              stock_amount < 1 && "cursor-not-allowed",
+              stockAmount < 1 && "cursor-not-allowed",
+              "w-fit flex items-center text-secondary p-1 bg-primary rounded-full",
             ]}
           >
             <button
               data-action="decrement"
               aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
               class:list={[
+                stockAmount < 1 && "cursor-not-allowed",
                 "product-amount-tweak-btn w-10 h-12 py-2.5 pl-3 pr-1",
-                stock_amount < 1 && "cursor-not-allowed",
               ]}
               disabled
             >
@@ -598,25 +554,25 @@ if (stock_amount === 0) {
               type="number"
               name="quantity"
               aria-label={ariaLabelRecurData.Product_quantity_text}
-              min={stock_amount > 0 ? 1 : 0}
-              max={stock_amount}
-              value={stock_amount > 0 ? 1 : 0}
+              min={stockAmount > 0 ? 1 : 0}
+              max={stockAmount}
+              value={stockAmount > 0 ? 1 : 0}
               class:list={[
-                "product-amount-input w-12 h-full text-center lg:text-lg bg-transparent outline-none",
-                stock_amount < 1 && "cursor-not-allowed",
+                stockAmount < 1 && "cursor-not-allowed",
+                "product-amount-input w-12 h-full bg-transparent text-center lg:text-lg outline-none",
               ]}
               required
-              disabled={stock_amount < 1 && "disabled"}
+              disabled={stockAmount < 1 && "disabled"}
             />
 
             <button
               data-action="increment"
               aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
               class:list={[
+                stockAmount < 1 && "cursor-not-allowed",
                 "product-amount-tweak-btn w-10 h-12 py-2.5 pl-1 pr-3",
-                stock_amount < 1 && "cursor-not-allowed",
               ]}
-              disabled={stock_amount < 1 && "disabled"}
+              disabled={stockAmount < 1 && "disabled"}
             >
               <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
             </button>
@@ -626,11 +582,11 @@ if (stock_amount === 0) {
 
       <div class="ml-auto grow">
         {
-          stock_amount > 0 && (
+          stockAmount > 0 && (
             <button
               class:list={[
-                "w-full gap-4 flex justify-center items-center p-3 mt-auto text-base",
-                "font-bold text-lightgray leading-[19px] rounded-full bg-primary",
+                "w-full flex justify-center items-center gap-4 p-3 mt-auto",
+                "bg-primary text-base font-bold text-secondary leading-[19px] rounded-full",
               ]}
             >
               <Icon name="mi:shopping-cart" class="w-8 h-8" />
@@ -638,13 +594,14 @@ if (stock_amount === 0) {
             </button>
           )
         }
+
         {
-          stock_amount === 0 && (
+          stockAmount === 0 && (
             <button
               tabindex="0"
               class:list={[
-                "w-full gap-4 flex justify-center items-center p-3 mt-auto font-bold text-base",
-                " text-lightgray leading-[19px] rounded-full bg-[#8b8b8b] cursor-not-allowed",
+                "w-full flex justify-center items-center gap-4 p-3 mt-auto rounded-full",
+                "bg-slate text-secondary text-base font-bold leading-[19px] cursor-not-allowed",
               ]}
             >
               <Icon name="mi:shopping-cart" class="w-8 h-8" />
@@ -675,18 +632,19 @@ if (stock_amount === 0) {
     {
       page.Price_breakdown.length > 0 && (
         <div class="chapter">
-          <h2 
-            id="price-breakdown" 
+          <h2
+            id="price-breakdown"
             class="recoleta text-[clamp(2rem,3vw+0.55rem,2.625rem)] font-bold leading-[130%]"
           >
             {recurData.product_price_breakdown_title}
           </h2>
+
           <div>
             <Markdown>
               {page.Price_breakdown_text.split("<")[0]}
               <span class="recoleta text-[clamp(2rem,3vw+0.55rem,2.625rem)] text-primary">
                 {page.Price_breakdown_text.match("<total_spent>") &&
-                  `€${Total_spent_amount.toFixed(2)}`}
+                  `€${totalSpentAmount.toFixed(2)}`}
               </span>
               {page.Price_breakdown_text.split(">")[1]}
             </Markdown>
@@ -697,7 +655,7 @@ if (stock_amount === 0) {
               <div
                 class="h-full"
                 style={`background-color: ${item.Item_color_code}; width:${
-                  (item.Spent_amount * 100) / Total_spent_amount
+                  (item.Spent_amount * 100) / totalSpentAmount
                 }%`}
               />
             ))}
@@ -710,17 +668,20 @@ if (stock_amount === 0) {
             {page.Price_breakdown.map((item) => (
               <div role="listitem" class="flex items-center gap-x-2.5">
                 <div
-                  style={`background-color: ${item.Item_color_code};
-                        clip-path: url(#price-breakdown-curve)`}
-                  class="flex justify-center items-center w-[62px] h-[62px] text-sm lg:text-base font-medium lg:font-normal"
+                  style={`background-color: ${item.Item_color_code}; clip-path: url(#price-breakdown-curve)`}
+                  class:list={[
+                    "w-[62px] h-[62px] flex justify-center items-center",
+                    "text-sm lg:text-base font-medium lg:font-normal",
+                  ]}
                 >
-                  {((item.Spent_amount * 100) / Total_spent_amount).toFixed(2)}%
+                  {((item.Spent_amount * 100) / totalSpentAmount).toFixed(2)}%
                 </div>
 
                 <div class="grid">
-                  <div class="recoleta text-[clamp(1.75rem,2.2vw+0.15rem,2rem)] text-primary">
+                  <div class="recoleta text-primary text-[clamp(1.75rem,2.2vw+0.15rem,2rem)]">
                     €{item.Spent_amount.toFixed(2)}
                   </div>
+
                   <div class="text-[clamp(0.875rem,1vw+0.25rem,1.125rem)]">
                     {item.Item_name}
                   </div>
@@ -735,7 +696,7 @@ if (stock_amount === 0) {
     {
       page.Transparency.length > 0 && (
         <div class="chapter">
-          <h2 
+          <h2
             id="transparency"
             class="recoleta text-[clamp(2rem,3vw+0.55rem,2.625rem)] font-bold leading-[130%]"
           >
@@ -746,8 +707,8 @@ if (stock_amount === 0) {
           <div class="grid gap-5">
             {page.Transparency.map(async (item, index) => (
               <div class="w-full lg:w-10/12">
-                <div class="grid transparency-items-grid gap-x-2.5">
-                  <div class="transparency-item-icon flex items-center">
+                <div class="accordion-items-grid grid gap-x-2.5">
+                  <div class="accordion-item-icon flex items-center">
                     <img
                       alt=""
                       src={await localizeCMSImage(
@@ -760,16 +721,17 @@ if (stock_amount === 0) {
                   <div class="w-full">
                     <button
                       class:list={[
-                        "accordion w-full cursor-pointer text-left leading-[150%]",
+                        "accordion-button w-full cursor-pointer text-left leading-[150%]",
                         index === 0 ? "is-active" : "",
                       ]}
                     >
                       {item.Transparency_item_title}
                     </button>
+
                     <div
                       class:list={[
-                        "accordion-content text-lg lg:text-xl leading-[150%] m-0",
                         index === 0 ? "is-open" : "",
+                        "accordion-content text-lg lg:text-xl leading-[150%] m-0",
                       ]}
                     >
                       <Markdown>{item.Transparency_item_text}</Markdown>
@@ -786,7 +748,7 @@ if (stock_amount === 0) {
     {
       page.Impact.length > 0 && (
         <div class="chapter">
-          <h2 
+          <h2
             id="impact"
             class="recoleta text-[clamp(2rem,3vw+0.55rem,2.625rem)] font-bold leading-[130%]"
           >
@@ -797,8 +759,8 @@ if (stock_amount === 0) {
           <div class="grid gap-5">
             {page.Impact.map((item, index) => (
               <div class="w-full lg:w-10/12">
-                <div class="grid transparency-items-grid gap-x-2.5">
-                  <div class="transparency-item-icon flex items-center">
+                <div class="grid accordion-items-grid gap-x-2.5">
+                  <div class="accordion-item-icon flex items-center">
                     <img
                       alt=""
                       src={
@@ -811,16 +773,17 @@ if (stock_amount === 0) {
                   <div class="w-full">
                     <button
                       class:list={[
-                        "accordion w-full cursor-pointer text-left leading-[150%]",
-                        index === 0 ? "is-active" : "",
+                        index === 0 && "is-active",
+                        "accordion-button w-full cursor-pointer text-left leading-[150%]",
                       ]}
                     >
                       {item.Impact_item_title}
                     </button>
+
                     <div
                       class:list={[
+                        index === 0 && "is-open",
                         "accordion-content text-lg lg:text-xl leading-[150%] m-0",
-                        index === 0 ? "is-open" : "",
                       ]}
                     >
                       <Markdown>{item.Impact_item_text}</Markdown>
@@ -842,8 +805,8 @@ if (stock_amount === 0) {
           role="list"
           aria-label={ariaLabelRecurData.Product_related_kindness_info_text}
           class:list={[
-            "grid gap-[14px] lg:gap-[21px] justify-between md:justify-center",
-            "py-[50px] my-[50px] border-y border-solid product-info-container",
+            "grid justify-between md:justify-center gap-[14px] lg:gap-[21px]",
+            "product-info-container py-[50px] my-[50px] border-y border-solid",
           ]}
         >
           {infos.map((info) => (
@@ -859,7 +822,12 @@ if (stock_amount === 0) {
                 />
               </div>
 
-              <div class="text-[clamp(0.625rem,2vw+0.1rem,1.5em)] font-medium leading-[150%] text-primary text-center">
+              <div
+                class:list={[
+                  "text-[clamp(0.625rem,2vw+0.1rem,1.5em)]",
+                  "font-medium leading-[150%] text-primary text-center",
+                ]}
+              >
                 {info.Product_info_title}
               </div>
             </div>
@@ -870,7 +838,7 @@ if (stock_amount === 0) {
   }
 
   {
-    relevant_items.length > 0 && (
+    relevantItems.length > 0 && (
       <section class="mb-[50px]" slot="product-kindness-impact">
         <ClipPathSVG
           id="product-impact-top-curve"
@@ -893,7 +861,7 @@ if (stock_amount === 0) {
         />
 
         <ClipPathSVG
-          id="card-curve"
+          id="related-post-card-curve"
           path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
         />
 
@@ -909,16 +877,16 @@ if (stock_amount === 0) {
                 role="list"
                 aria-label={ariaLabelRecurData.Kindness_Items_text}
                 class:list={[
-                  "wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]",
-                  "justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
+                  "wrapper justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
+                  "grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]",
                 ]}
               >
-                {relevant_items.map((post) => (
+                {relevantItems.map((post) => (
                   <div
                     role="listitem"
                     aria-label={ariaLabelRecurData.Kindness_Items_text}
-                    class="link-section bg-lightgray"
-                    style="clip-path: url(#card-curve)"
+                    class="link-section bg-secondary"
+                    style="clip-path: url(#related-post-card-curve)"
                   >
                     <Picture
                       layout="fullWidth"
@@ -928,10 +896,10 @@ if (stock_amount === 0) {
                       sizes="(min-width: 768px) min(580px, calc(40vw - 25px)), min(80vw, 420px)"
                     />
 
-                    <div class="recent-post-card-content-container text-primary">
+                    <div class="related-post-card-content-container text-primary">
                       {post.authors && (
                         <div>
-                          <div class="recent-post-card-author flex flex-wrap font-bold">
+                          <div class="related-post-card-author flex flex-wrap font-bold">
                             {post.authors.data.map(({ attributes }, index) => (
                               <span>
                                 {`${index > 0 ? ", " : " "}` +
@@ -949,16 +917,16 @@ if (stock_amount === 0) {
                         </div>
                       )}
 
-                      <div class="recent-post-card-title recoleta mt-[15px]">
+                      <div class="related-post-card-title recoleta mt-[15px]">
                         <a
                           class="main-link"
                           set:text={post.Title}
                           href={`/` + post.Meta.URL_slug}
                         />
 
-                        <span class="icon recent-post-card-title-icon">
+                        <span class="icon related-post-card-title-icon">
                           <img
-                            class="recent-post-card-title-icon"
+                            class="related-post-card-title-icon"
                             {...green_right_arrow}
                           />
                         </span>
@@ -969,7 +937,7 @@ if (stock_amount === 0) {
               </div>
             </div>
           </div>
-          <div class="py-8 -mt-1 bg-primary product-kindness-impact-bottom" />
+          <div class="product-kindness-impact-bottom py-8 -mt-1 bg-primary" />
         </div>
       </section>
     )
@@ -984,13 +952,10 @@ if (stock_amount === 0) {
     image: await importRemoteImage(
       ASSETS_URL + page.Intro_blob?.data.attributes.url
     ),
-    description: `${(await Astro.__renderMarkdown(page.Intro_text)).replace(
+    description: `${(await renderMarkdown(page.Intro_text)).replace(
       /(<([^>]+)>)/gi,
       ""
-    )} ${(await Astro.__renderMarkdown(page.Block_text)).replace(
-      /(<([^>]+)>)/gi,
-      ""
-    )}`,
+    )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
     sku: page.SKU,
     gtin: page.GTIN_Barcode,
     brand: {
@@ -1006,7 +971,7 @@ if (stock_amount === 0) {
       availability: "https://schema.org/InStock",
       price: page.Price,
       priceCurrency: page.Currency,
-      priceValidUntil: new Date(),
+      priceValidUntil: new Date().toISOString(),
       shippingDetails: {
         "@type": "OfferShippingDetails",
         shippingDestination: {
@@ -1025,7 +990,7 @@ if (stock_amount === 0) {
     localStorage.getItem("preferredProductsVariants") || "{}"
   );
 
-  preferredProductsVariants[baseProductTitle] = {
+  preferredProductsVariants[window.baseProductTitle] = {
     tea_variant: productVariant,
     tea_size: productSize,
   };
@@ -1037,20 +1002,14 @@ if (stock_amount === 0) {
 </script>
 
 <script>
-  import tweakAmount from "@utils/tweakAmount";
-
-  declare global {
-    interface Window {
-      baseProductTitle: string;
-      cart: Record<string, Record<string, string | number>>;
-    }
-  }
+  import tweakAmount from "@utils/client/tweakAmount";
 
   type ProductData = Record<string, number | string>;
 
   const query = document.querySelector.bind(document),
-    queryAll = document.querySelectorAll.bind(document),
-    accordions = queryAll("button.accordion"),
+    queryAll = document.querySelectorAll.bind(document);
+
+  const accordions = queryAll("button.accordion"),
     cartAddingForms = queryAll(".cart-adding-form, .cart-adding-form-sm"),
     productAmountPriceOutput = query(".product-amount-price"),
     productAmountInputs = queryAll(".product-amount-input"),

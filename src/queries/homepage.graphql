@@ -1,0 +1,31 @@
+fragment HomepageAttributes on Homepage {
+  locale
+  updatedAt
+  Meta {
+    HTML_Title
+    Meta_description
+    noindex
+    nofollow
+    URL_slug
+    Canonical_link
+  }
+}
+
+query {
+  homepage {
+    data {
+      id
+      attributes {
+        ...HomepageAttributes
+        localizations {
+          data {
+            id
+            attributes {
+              ...HomepageAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}

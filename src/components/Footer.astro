@@ -55,7 +55,7 @@ const { footerText, recurData } = Astro.props as Props,
   }
 </style>
 
-<footer class="relative block w-full mt-auto bg-lightgray">
+<footer class="relative block w-full mt-auto bg-secondary">
   <ClipPathSVG
     id="footer-curve"
     path="M0 1V0h.918S.98.021.989.129c.01.12-.003.243-.007.367C.979.593 1.01.827.997 1"
@@ -96,7 +96,10 @@ const { footerText, recurData } = Astro.props as Props,
       </a>
 
       <nav
-        class="grid grid-cols-2 grid-flow-row sm:flex flex-wrap items-center gap-x-9 gap-y-[7px] sm:gap-2.5 md:gap-5 font-medium md:font-bold text-white"
+        class:list={[
+          "grid grid-cols-2 grid-flow-row sm:flex flex-wrap items-center",
+          "gap-x-9 gap-y-[7px] sm:gap-2.5 md:gap-5 font-medium md:font-bold text-white",
+        ]}
       >
         {
           menu.map(
@@ -109,14 +112,14 @@ const { footerText, recurData } = Astro.props as Props,
 
     <div class="w-full flex justify-center mt-auto">
       <p
-        class="copyright text-center leading-[150%] sm:font-medium"
+        class="copyright text-center sm:font-medium leading-[150%]"
         set:html={footerText}
       />
     </div>
   </div>
 
   <div
-    class="footer-leaf absolute z-30 flex md:items-end mt-auto top-0 right-0"
+    class="footer-leaf absolute flex md:items-end mt-auto top-0 right-0 z-30"
   >
     <Picture
       alt=""

@@ -86,7 +86,7 @@ export default function FilteredProducts({
                   <div
                     class={[
                       "absolute top-[12%] right-[12%] flex items-center px-5 sm:px-[37px] py-[5px] sm:py-[7px]",
-                      "sm:text-xl font-semibold text-dark2 border-2 border-[#fabf21] bg-[#fabf21]/80 rounded-full",
+                      "bg-warning/80 text-black sm:text-xl font-semibold border-2 border-warning rounded-full",
                     ].join(" ")}
                   >
                     {recurData.Product_sold_out_text}
@@ -98,8 +98,8 @@ export default function FilteredProducts({
                       new Date().getTime() && (
                       <div
                         class={[
-                          "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none w-full",
-                          "text-sm sm:text-base font-medium text-dark2 bg-[#faf8e5]/80",
+                          "w-full bg-warning-light/80 text-sm sm:text-base font-medium text-black",
+                          "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none",
                         ].join(" ")}
                       >
                         {alertCircleIcon}
@@ -164,7 +164,7 @@ export default function FilteredProducts({
                       {product.availableFormatsCount > 2 && (
                         <div
                           class={[
-                            "relative -ml-[17px] flex items-center justify-center bg-lightgray2",
+                            "relative -ml-[17px] flex items-center justify-center bg-secondary-light",
                             "w-[26px] h-[26px] border-2 rounded-full text-sm text-primary leading-[150%]",
                           ].join(" ")}
                         >
@@ -173,7 +173,7 @@ export default function FilteredProducts({
                       )}
                     </div>
 
-                    <div class="text-lightgray2">
+                    <div class="text-secondary-light">
                       <em>
                         {product.availableFormatsCount === 1
                           ? recurData.Product_stock_other_formats_text_singular
@@ -193,3 +193,22 @@ export default function FilteredProducts({
     </div>
   );
 }
+
+FilteredProducts.pruneProps = function ({ page, recurData }) {
+  page = {
+    Aria_label_all_teas_text: page.Aria_label_all_teas_text,
+    Aria_label_tea_item_text: page.Aria_label_tea_item_text,
+  };
+
+  recurData = {
+    Item_stock_text: recurData.Item_stock_text,
+    Product_sold_out_text: recurData.Product_sold_out_text,
+    Product_stock_other_formats_text:
+      recurData.Product_stock_other_formats_text,
+  };
+
+  return {
+    page,
+    recurData,
+  };
+};

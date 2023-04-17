@@ -112,9 +112,9 @@ export default function ProductFiltersForm({
         id="tea_variant"
         name="tea_variant"
         class={[
+          "bg-primary text-lg leading-[150%] text-secondary-light",
+          "py-[9px] pl-5 border-primary border-r-[20px] rounded-full cursor-pointer",
           "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
-          "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
-          "border-primary bg-primary rounded-full cursor-pointer",
         ].join(" ")}
       >
         <option value="" selected>
@@ -134,9 +134,9 @@ export default function ProductFiltersForm({
         id="tea_size"
         name="tea_size"
         class={[
+          "bg-primary text-lg leading-[150%] text-secondary-light",
+          "py-[9px] pl-5 border-primary border-r-[20px] rounded-full cursor-pointer",
           "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
-          "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
-          "border-primary bg-primary rounded-full cursor-pointer",
         ].join(" ")}
       >
         <option value="" selected>
@@ -154,3 +154,53 @@ export default function ProductFiltersForm({
     </form>
   );
 }
+
+ProductFiltersForm.pruneProps = function ({
+  productSizes,
+  productVariants,
+  recurData,
+}) {
+  recurData = {
+    text_all_tea_variants: recurData.text_all_tea_variants,
+    text_all_tea_sizes: recurData.text_all_tea_sizes,
+  };
+
+  [productSizes, productVariants] = [productSizes, productVariants].map(
+    ({ data }, i) => ({
+      data: data.map(({ attributes }) => ({
+        attributes: {
+          Title: attributes.Title,
+          products: {
+            data: attributes.products.data.map(({ attributes }) => ({
+              attributes: {
+                [i === 0 ? "variant" : "size"]: {
+                  data: {
+                    attributes: {
+                      Title:
+                        attributes[i === 0 ? "variant" : "size"].data.attributes
+                          .Title,
+                    },
+                  },
+                },
+              },
+            })),
+          },
+          localizations: {
+            data: attributes.localizations.data.map(({ attributes }) => ({
+              attributes: {
+                locale: attributes.locale,
+                Title: attributes.Title,
+              },
+            })),
+          },
+        },
+      })),
+    })
+  );
+
+  return {
+    productSizes,
+    productVariants,
+    recurData,
+  };
+};

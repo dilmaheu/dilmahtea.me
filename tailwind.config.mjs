@@ -8,20 +8,26 @@ export default {
   theme: {
     extend: {
       colors: {
-        dark: "#474747",
-        dark2: "#2f2f2f",
-        dark3: "#13110b",
-        primary: "#2b4b50",
-        gray: "#8B8B8B",
-        lightgray: "#e3dfde",
-        lightgray2: "#faf4f2",
-        lightgray3: "#e0e0e0",
-        lightgreen: "#b2cccc",
-        lightgreen2: "#b3cccc",
-        limedspruce: "#405658",
-        white1: "#f0eeee",
-        white2: "#faf4f2",
-        warning: "#E06464",
+        primary: "#2B4B50", // green
+        "primary-light": "#B2CCCC", // green light
+        secondary: "#E3DFDE", // beige
+        "secondary-light": "#FAF4F2", // beige light
+        "black-bg": "#13110B",
+        black: "#2F2F2F",
+        "black-light": "#474747",
+        error: "#E06464",
+        "error-light": "#FFE2E2",
+        success: "#3C994E",
+        "success-light": "#E9F9EF",
+        warning: "#FEBF21",
+        "warning-light": "#FAF8E5",
+        info: "#3087E9",
+        "info-light": "#E7EDF9",
+
+        // exceptions
+        teal: "#405658",
+        slate: "#8B8B8B",
+        "pale-rose": "#F0EEEE",
       },
 
       typography: () => ({

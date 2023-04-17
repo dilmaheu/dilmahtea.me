@@ -1,7 +1,6 @@
 import { marked } from "marked";
 import { renderPicture } from "astro-imagetools/api";
-import localizeCMSImage from "@utils/localizeCMSImage";
-import productsStore, { variantsOrder } from "@store/products";
+import productsStore, { variantsOrder } from "@store/Products";
 
 async function processProductData(attributes) {
   const {
