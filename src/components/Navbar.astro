@@ -438,9 +438,7 @@ const {
 
 <script is:inline>
   {
-    const navbarBg = document.getElementById("navbar-bg"),
-      navigation = document.getElementById("navigation"),
-      isCartNavbar = navigation.classList.contains("cart-navbar"),
+    const navigation = document.getElementById("navigation"),
       translationNotFoundNotification = document.querySelector(
         ".translation-not-found-notification"
       );
@@ -451,16 +449,6 @@ const {
 
       // fix sticky navbar position if top notification is shown
       navigation.style.top = `${translationNotFoundNotificationHeight}px`;
-
-      if (!isCartNavbar) {
-        const shouldShowNavbarBg =
-          window.innerWidth < 1280 &&
-          (scrollY > 0 ||
-            (document.body.style.position === "fixed" &&
-              +document.body.style.top.slice(1, -2) > 0));
-
-        navbarBg.style.display = shouldShowNavbarBg ? "inline-block" : "none";
-      }
     };
 
     window.addEventListener("scroll", updateNavbarStyles);
@@ -474,7 +462,6 @@ const {
   const rootElement = document.querySelector(":root") as HTMLElement,
     cart = id("cart"),
     sidebar = id("sidebar"),
-    navbarBg = id("navbar-bg"),
     cartNavbarBg = id("cart-navbar-bg"),
     openCartBtn = id("open-cart-btn"),
     sidebarOpenButton = id("sidebar-open-btn"),
@@ -536,7 +523,6 @@ const {
       // enable scrolling only if cart and checkout is not open
       if (cart?.classList.contains("hidden")) window.enableScrolling();
 
-      navbarBg && (navbarBg.style.display = "none");
       cartNavbarBg && (cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)");
     }
   });
