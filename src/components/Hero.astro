@@ -1,11 +1,61 @@
 ---
+import CMS from "@store/CMS";
 import { Picture } from "astro-imagetools/components";
 import RecurringImages from "@store/RecurringImages";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 
 const { hero_background, hero_background_sm } = RecurringImages;
+
+const { locale } = Astro.props;
+
+const recurData = CMS.get("recurringElement", locale);
+
+const { Nav_menu: menu } = recurData;
 ---
+
+<style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
+  .hero {
+    @include poly-fluid-sizing(
+      "padding-top",
+      (
+        639.98px: 135px,
+        640px: 70px,
+        768px: 74px,
+        1024px: 104px,
+      )
+    );
+  }
+
+  .nav-menu-caontainer {
+    nav {
+      @include poly-fluid-sizing(
+        "padding-right",
+        (
+          639px: 0px,
+          640px: 260px,
+          768px: 300px,
+          1024px: 380px,
+          1440px: 460px,
+          1536px: 550px,
+        )
+      );
+
+      a {
+        @apply font-bold leading-[150%];
+
+        font-size: poly-fluid-clamp(
+          (
+            768px: 12px,
+            1440px: 18px,
+          )
+        );
+      }
+    }
+  }
+</style>
 
 <ClipPathSVG
   id="hero-background-curve"
@@ -40,5 +90,22 @@ const { hero_background, hero_background_sm } = RecurringImages;
     }}
   />
 
-  <slot />
+  <div class="relative">
+    <div class="hidden md:flex items-end bg-primary md:h-[76px]">
+      <div class="nav-menu-caontainer wrapper pb-2.5 md:pb-[15px]">
+        <nav class="text-white h-full">
+          <span class="flex gap-5 justify-between items-center h-full">
+            {
+              menu.map(
+                ({ Visibility, Title, Link }) =>
+                  Visibility && <a href={Link}>{Title}</a>
+              )
+            }
+          </span>
+        </nav>
+      </div>
+    </div>
+
+    <slot />
+  </div>
 </section>

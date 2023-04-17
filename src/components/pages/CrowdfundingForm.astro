@@ -29,8 +29,7 @@ const { locale, page, recurData } = Astro.props,
 
       input,
       select {
-        border: 1px solid colors.$primary;
-
+        @apply border border-primary;
         @apply block w-full mt-2.5 px-4 py-3.5 text-lg rounded-[20px] bg-transparent;
         @apply focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring;
       }
@@ -54,17 +53,17 @@ const { locale, page, recurData } = Astro.props,
   }
 </style>
 
-<BasicPageHero title={page.Title} introText={page.Intro_text} />
+<BasicPageHero title={page.Title} introText={page.Intro_text} {locale} />
 
 {/* Form Section */}
 
 <form
   role="main"
   method="POST"
+  class="mx-auto pt-[130px] pb-[100px] max-w-[940px]"
   action={shouldDisplayExperimentals
     ? "https://dev.pay.scripts.dilmahtea.me"
     : "https://pay.scripts.dilmahtea.me"}
-  class="mx-auto pt-[130px] pb-[100px] max-w-[940px]"
 >
   <div>
     <div
@@ -209,7 +208,7 @@ const { locale, page, recurData } = Astro.props,
       htmlFn={(content) => {
         const { origin, pathname } = location,
           origin_url = origin + pathname,
-          success_url = `${origin}/${preferredLocale}/crowdfunding-confirmation`;
+          success_url = `${origin}/${window.preferredLocale}/crowdfunding-confirmation`;
 
         return window.replacePlaceholders(content, {
           origin_url,
@@ -243,10 +242,9 @@ const { locale, page, recurData } = Astro.props,
 </form>
 
 <script>
-  import fillUpForm from "@utils/fillUpForm";
+  import fillUpForm from "@utils/client/fillUpForm";
 
-  const searchParams = new URLSearchParams(location.search),
-    crowdfundingFormEntries = Array.from(searchParams.entries());
+  const crowdfundingFormEntries = [...new URLSearchParams(location.search)];
 
   fillUpForm(crowdfundingFormEntries);
 </script>

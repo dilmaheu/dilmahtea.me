@@ -9,18 +9,16 @@ import EstatesInfoSection from "@components/EstatesInfoSection.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
-const { left_quote, love_gift, white_right_arrow } = RecurringImages;
+const { left_quote, white_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
-  { posts } = page,
+  { posts, locale } = page,
   { ASSETS_URL } = import.meta.env;
 
 const blogs = page.blogs.data.map(({ attributes }) => attributes);
 ---
 
 <style lang="scss">
-  @use "src/styles/colors";
-
   .estate-types-selector {
     font-size: clamp(0.75rem, 1.5vw + 0.1rem, 1.25rem);
     border-right: 20px solid transparent;
@@ -32,12 +30,13 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   }
 
   .estate-mode-toggle-dot {
-    border: 1px solid colors.$white2;
+    @apply border border-secondary-light;
   }
 
   input[type="checkbox"].estate-mode-toggle:checked ~ .estate-mode-toggle-dot {
+    @apply bg-primary;
+
     transform: translateX(100%);
-    background-color: colors.$primary;
   }
 
   .estate-block-text {
@@ -59,14 +58,9 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   }
 
   .post-title {
-    @apply underline decoration-[2.5px] underline-offset-[5px];
+    @apply font-bold leading-[130%];
 
     font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
-    list-style: 130%;
-
-    @media (max-width: 767.98px) {
-      letter-spacing: -0.03em;
-    }
   }
 
   .post-intro {
@@ -115,22 +109,22 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   }
 
   .estate-impacts-num {
-    font-size: clamp(3rem, 5vw + 1.3rem, 5.688rem);
+    font-size: clamp(3rem, 3vw + 1.2rem, 4rem);
   }
 
   .estate-impacts-text {
     font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
   }
 
-  .recent-posts-title {
+  .related-posts-title {
     font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
   }
 
-  .recent-post-card {
+  .related-post-card {
     @apply w-full max-w-[380px] sm:max-w-none;
   }
 
-  .recent-post-card-content-container {
+  .related-post-card-content-container {
     padding: clamp(20px, 6.4vw, 40px) clamp(24px, 3.8vw + 11.75px, 36px);
 
     @media (min-width: 640px) {
@@ -143,24 +137,24 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     }
   }
 
-  .recent-post-card-author {
+  .related-post-card-author {
     font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem);
     line-height: 150%;
   }
 
-  .recent-post-card-title {
-    @apply leading-[130%] sm:leading-[120%];
+  .related-post-card-title {
+    @apply md:font-bold leading-[130%] md:leading-[120%];
 
     font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
   }
 
-  .recent-post-card-title-icon {
+  .related-post-card-title-icon {
     height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
   }
 </style>
 
-<!-- Hero Section -->
-<Hero>
+{/* Hero Section */}
+<Hero {locale}>
   {/* Text Content */}
   <div
     role="banner"
@@ -173,7 +167,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
           {page.Title}
         </h1>
 
-        <div class="hero-text pt-2.5 block prose text-lightgray max-w-none">
+        <div class="hero-text pt-2.5 block prose text-secondary max-w-none">
           <Markdown>{page.Intro_text}</Markdown>
         </div>
 
@@ -218,16 +212,13 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   />
 </div>
 
-<!-- Home Estate Details Section -->
-
-<div class="wrapper py-[50px]" role="main">
+{/* Home Estate Details Section */}
+<div role="main" class="wrapper py-[50px]">
   <div class="flex flex-wrap justify-between items-center gap-y-[15px]">
     <div
       class="flex flex-wrap items-center justify-between gap-x-6 gap-y-[15px]"
     >
-      <h2
-        class="alice text-[42px] leading-[3.15rem] tracking-[-0.03rem] text-dark2"
-      >
+      <h2 class="post-title recoleta text-black">
         {page.Heading_block}
       </h2>
 
@@ -239,7 +230,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
               name="estateType"
               class:list={[
                 "focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring cursor-pointer",
-                "bg-primary text-lightgray2 py-[5px] pl-5 rounded-[34px] estate-types-selector",
+                "bg-primary text-secondary-light py-[5px] pl-5 rounded-[34px] estate-types-selector",
               ]}
             >
               <option value="1">Kindness Project Type 1</option>
@@ -254,7 +245,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     {
       /* (
         <div class="inline-flex">
-          <div class="text-dark2 estates-toggle-label">
+          <div class="text-black estates-toggle-label">
             View Carbon Neutral estates
           </div>
 
@@ -269,8 +260,8 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                   type="checkbox"
                   class="sr-only estate-mode-toggle"
                 />
-                <div class="bg-white2 rounded-full shadow-inner w-11 sm:w-[49px] lg:w-[54px] h-5 sm:h-[22px] lg:h-6" />
-                <div class="absolute z-10 bg-white2 w-[30px] h-[30px] rounded-full shadow top-[-3px] -left-1 transition estate-mode-toggle-dot" />
+                <div class="bg-secondary-light rounded-full shadow-inner w-11 sm:w-[49px] lg:w-[54px] h-5 sm:h-[22px] lg:h-6" />
+                <div class="absolute z-10 bg-secondary-light w-[30px] h-[30px] rounded-full shadow top-[-3px] -left-1 transition estate-mode-toggle-dot" />
               </div>
             </label>
           </div>
@@ -278,7 +269,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
       ) */
     }
 
-    <div class="prose max-w-none w-full text-dark estate-block-text">
+    <div class="estate-block-text prose max-w-none w-full text-black-light">
       <Markdown>{page.Block_text}</Markdown>
     </div>
   </div>
@@ -337,26 +328,27 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                 ]}
               >
                 <div>
-                  {/*<ul class="flex flex-wrap items-center gap-y-1 gap-x-2.5 md:gap-x-[15px] md:pb-[5px] lg:pb-2.5">
-                    <li class="text-black estate-category-item">
-                      <a
-                        href=""
-                        class="bg-white1 text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
-                      >
-                        Green Tea
-                      </a>
-                    </li>
-                    <li class="text-black estate-category-item">
-                      <a
-                        href=""
-                        class="bg-white1 text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
-                      >
-                        Sustainable
-                      </a>
-                    </li>
-                  </ul>*/}
+                  {/* <ul class="flex flex-wrap items-center gap-y-1 gap-x-2.5 md:gap-x-[15px] md:pb-[5px] lg:pb-2.5">
+                      <li class="text-black estate-category-item">
+                        <a
+                          href=""
+                          class="bg-pale-rose text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
+                        >
+                          Green Tea
+                        </a>
+                      </li>
+                      
+                      <li class="text-black estate-category-item">
+                        <a
+                          href=""
+                          class="bg-pale-rose text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
+                        >
+                          Sustainable
+                        </a>
+                      </li>
+                    </ul> */}
 
-                  <h2 class="post-title alice text-primary pt-[15px]">
+                  <h2 class="post-title recoleta text-primary pt-[15px]">
                     <a
                       class="main-link"
                       set:text={estate.Estate_name}
@@ -364,7 +356,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                     />
                   </h2>
 
-                  <div class="post-intro texr-dark pt-[15px] prose max-w-none">
+                  <div class="post-intro text-black-light pt-[15px] prose max-w-none">
                     <Markdown>{estate.Intro_text}</Markdown>
                   </div>
                 </div>
@@ -388,10 +380,10 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
   <section
     aria-label={page.Block2_aria_label_text}
-    class="bg-primary w-full h-full estate-quote-container"
+    class="estate-quote-container bg-primary w-full h-full"
   >
     <div class="flex flex-wrap w-full gap-y-6 items-center relative z-20">
-      <!-- Quote Image -->
+      {/* Quote Image */}
       <div class="w-full sm:w-1/2">
         <div class="quote-img-container mx-auto sm:ml-0">
           <ClippedPicture
@@ -407,18 +399,18 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
         </div>
       </div>
 
-      <!-- Text content -->
+      {/* Text content */}
       <div class="w-full sm:w-1/2 h-full">
         <div class="flex flex-wrap px-2.5 sm:px-0 xl:-ml-6">
           <div class="estate-quote-icon">
             <img class="w-full h-full" {...left_quote} />
           </div>
 
-          <div class="prose max-w-none font-bold text-lightgray estate-quote">
+          <div class="estate-quote prose max-w-none font-bold text-secondary">
             {page.Block2_text}
           </div>
 
-          <div class="rotate-180 mr-[25px] ml-auto estate-quote-icon">
+          <div class="estate-quote-icon mr-[25px] ml-auto rotate-180">
             <img class="w-full h-full" {...left_quote} />
           </div>
         </div>
@@ -428,9 +420,11 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
   <EstatesInfoSection page={page} />
 
-  <section class="bg-lightgray2 lg:mb-[25px] estate-impact-container">
+  <section class="estate-impact-container bg-secondary-light lg:mb-[25px]">
     <div class="flex flex-wrap items-center relative z-20 gap-y-[25px]">
-      <h3 class="w-full font-medium text-dark text-center estate-impact-title">
+      <h3
+        class="estate-impact-title w-full font-medium text-black-light text-center"
+      >
         {page.Block4_heading}
       </h3>
 
@@ -438,8 +432,8 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
         role="list"
         aria-label={page.Block4_items_aria_label_text}
         class:list={[
-          "grid grid-cols-[repeat(auto-fit,minmax(0,150px))] md:grid-cols-[repeat(auto-fit,minmax(0,250px))]",
-          "justify-center md:justify-between gap-y-[35px] w-full estate-impacts-container",
+          "estate-impacts-container w-full grid justify-center md:justify-between gap-y-[35px]",
+          "grid-cols-[repeat(auto-fit,minmax(0,150px))] md:grid-cols-[repeat(auto-fit,minmax(0,250px))]",
         ]}
       >
         {
@@ -456,10 +450,11 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                   alt=""
                 />
               </div>
-              <div class="alice font-extrabold leading-[110%] md:leading-[115%] text-primary estate-impacts-num">
+              <div class="estate-impacts-num recoleta font-extrabold leading-[110%] md:leading-[115%] text-primary">
                 {item.Block4_Value}
               </div>
-              <div class="text-dark text-center leading-[150%] estate-impacts-text">
+
+              <div class="estate-impacts-text text-black-light text-center leading-[150%]">
                 {item.Block4_description}
               </div>
             </div>
@@ -473,12 +468,12 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 {
   blogs.length > 0 && (
     <section role="complementary" class="wrapper">
-      <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
+      <h2 class="recent-posts-title recoleta font-bold leading-[130%] text-black-light pb-[25px] sm:pb-[30px]">
         {recurData.text_explore_the_world_of_kindness}
       </h2>
 
       <ClipPathSVG
-        id="recent-post-card-curve"
+        id="related-post-card-curve"
         path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
       />
 
@@ -494,8 +489,8 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
           <div
             role="listitem"
             aria-label={ariaLabelRecurData.Kindness_Item_text + (index + 1)}
-            style="clip-path: url(#recent-post-card-curve);"
-            class="link-section bg-primary recent-post-card"
+            style="clip-path: url(#related-post-card-curve);"
+            class="link-section bg-primary related-post-card"
           >
             <div class="relative">
               <Picture
@@ -510,7 +505,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                 ].join(", ")}
               />
 
-              <div class="recent-post-card-content-container">
+              <div class="related-post-card-content-container">
                 <div>
                   <div
                     role="presentation"
@@ -520,7 +515,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                         (i > 0 ? ", " : " ") +
                         attributes.givenName
                     )}
-                    class="recent-post-card-author flex flex-wrap font-bold"
+                    class="related-post-card-author flex flex-wrap font-bold"
                   >
                     {post.authors.data.map(({ attributes }, index) => (
                       <div>
@@ -537,16 +532,16 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
                   </div>
                 </div>
 
-                <div class="recent-post-card-title alice mt-[15px]">
+                <div class="related-post-card-title recoleta mt-[15px]">
                   <a
                     class="main-link"
                     set:text={post.Title}
                     href={`/` + post.Meta.URL_slug}
                   />
 
-                  <span class="icon recent-post-card-title-icon">
+                  <span class="icon related-post-card-title-icon">
                     <img
-                      class="recent-post-card-title-icon"
+                      class="related-post-card-title-icon"
                       {...white_right_arrow}
                     />
                   </span>

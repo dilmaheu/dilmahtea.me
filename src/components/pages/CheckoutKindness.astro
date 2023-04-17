@@ -15,6 +15,8 @@ const { page } = Astro.props,
 
   .kindness-header {
     h1 {
+      @apply font-bold;
+
       font-size: poly-fluid-clamp(
         (
           375px: 28px,
@@ -40,13 +42,15 @@ const { page } = Astro.props,
       clip-path: url(#kindness-cause-card-curve);
 
       > div {
-        @apply p-1.5 bg-lightgray;
+        @apply p-1.5 bg-secondary;
 
         clip-path: url(#kindness-cause-card-curve);
       }
     }
 
     h2 {
+      @apply sm:font-bold leading-[130%];
+
       font-size: poly-fluid-clamp(
         (
           375px: 24px,
@@ -57,7 +61,7 @@ const { page } = Astro.props,
   }
 
   #continue-to-payment-btn:disabled {
-    @apply bg-gray text-lightgray;
+    @apply bg-slate text-secondary;
   }
 </style>
 
@@ -74,7 +78,7 @@ const { page } = Astro.props,
 
 <div class="wrapper pt-6 pb-12 flex flex-col gap-12">
   <section class="kindness-header text-center text-primary">
-    <h1 class="alice tracking-[-0.02em]">{page.Title}</h1>
+    <h1 class="recoleta tracking-[-0.02em]">{page.Title}</h1>
 
     <div class="intro-text"><Markdown>{page.Intro_text}</Markdown></div>
   </section>
@@ -89,14 +93,17 @@ const { page } = Astro.props,
         ({
           attributes: { cause, description, featured_blob, localizations },
         }) => (
-          <div role="listitem" tabindex="0" aria-label={cause}>
+          <div
+            tabindex="0"
+            role="listitem"
+            aria-label={cause}
+            class="kindness-cause"
+            data-cause={localizations?.data[0]?.attributes?.cause || cause}
+          >
             <div class="h-full">
               <div
-                {
-                /* @ts-ignore */ }
-                data-cause={localizations?.data[0]?.attributes?.cause || cause}
                 style="clip-path: url(#kindness-cause-card-curve);"
-                class="kindness-cause relative w-full h-full sm:w-80 flex flex-col bg-primary cursor-pointer"
+                class="relative w-full h-full sm:w-80 flex flex-col bg-primary cursor-pointer"
               >
                 <div class="h-48">
                   <Picture
@@ -108,9 +115,11 @@ const { page } = Astro.props,
                 </div>
 
                 <div class="grow px-6 pt-5 pb-7 flex flex-col justify-center gap-2">
-                  <h2 class="alice text-lightgray leading-[120%]">{cause}</h2>
+                  <h2 class="recoleta text-secondary leading-[120%]">
+                    {cause}
+                  </h2>
 
-                  <div class="font-medium text-base text-lightgray">
+                  <div class="font-medium text-base text-secondary">
                     <Markdown>{description}</Markdown>
                   </div>
                 </div>
@@ -137,7 +146,7 @@ const { page } = Astro.props,
       id="continue-to-payment-btn"
       class:list={[
         "w-full sm:w-auto py-4 px-20 sm:px-24",
-        "text-lightgray font-bold rounded-full bg-primary",
+        "bg-primary text-secondary font-bold rounded-full",
       ]}
     >
       {checkoutRecurData.text_continue_to_payment}
@@ -162,12 +171,6 @@ const { page } = Astro.props,
 </div>
 
 <script>
-  declare global {
-    interface Window {
-      preferredLocale: string;
-    }
-  }
-
   const kindnessCausesCardsContainer =
       document.querySelector(".kindness-causes"),
     kindnessCausesCards =
@@ -176,26 +179,25 @@ const { page } = Astro.props,
       "continue-to-payment-btn"
     ) as HTMLButtonElement;
 
+  function selectCard(card: HTMLElement) {
+    const activeCauseCard = kindnessCausesCardsContainer.querySelector(
+        ".active-kindness-cause"
+      ),
+      kindness_cause = card.dataset.cause;
+
+    activeCauseCard?.classList?.remove("active-kindness-cause");
+
+    window.checkoutInfo.kindness_cause = kindness_cause;
+
+    localStorage.setItem("checkout-info", JSON.stringify(window.checkoutInfo));
+
+    card.classList.add("active-kindness-cause");
+
+    continueToPaymentBtn.disabled = false;
+  }
+
   kindnessCausesCards.forEach((card) => {
-    card.addEventListener("click", () => {
-      const activeCauseCard = kindnessCausesCardsContainer.querySelector(
-          ".active-kindness-cause"
-        ),
-        kindness_cause = card.dataset.cause;
-
-      activeCauseCard?.classList?.remove("active-kindness-cause");
-
-      window.checkoutInfo.kindness_cause = kindness_cause;
-
-      localStorage.setItem(
-        "checkout-info",
-        JSON.stringify(window.checkoutInfo)
-      );
-
-      card.parentElement.parentElement.classList.add("active-kindness-cause");
-
-      continueToPaymentBtn.disabled = false;
-    });
+    card.addEventListener("focus", () => selectCard(card));
   });
 
   continueToPaymentBtn?.addEventListener("click", () => {

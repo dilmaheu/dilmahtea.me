@@ -1,19 +1,12 @@
 const currentTime = () => {
   const date = new Date();
 
-  let hours = date.getHours(),
-    minutes = date.getMinutes(),
-    seconds = date.getSeconds(),
-    period = hours < 12 ? "AM" : "PM";
+  const hours = String(date.getHours() % 12 || 12).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+  const period = date.getHours() < 12 ? "AM" : "PM";
 
-  hours = hours % 12 || 12;
-  hours = hours < 10 ? "0" + hours : hours;
-  minutes = minutes < 10 ? "0" + minutes : minutes;
-  seconds = seconds < 10 ? "0" + seconds : seconds;
-
-  const currentTime = `${hours}:${minutes}:${seconds} ${period}`;
-
-  return currentTime;
+  return `${hours}:${minutes}:${seconds} ${period}`;
 };
 
 export default function printMessage(type, message) {

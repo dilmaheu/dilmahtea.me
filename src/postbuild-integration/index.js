@@ -58,7 +58,7 @@ const postbuildIntegration = {
       await Promise.all(
         allHtmlFilePaths.map(async (path) => {
           const htmlContent = await fs.readFile(path, "utf8"),
-            { document } = await parseHTML(htmlContent);
+            { document } = parseHTML(htmlContent);
 
           removeAstroIconAttributes(document);
           addScriptsHashes(document, CSPRecord);

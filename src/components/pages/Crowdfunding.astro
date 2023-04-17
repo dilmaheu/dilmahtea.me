@@ -34,8 +34,6 @@ const goal = 100000,
 ---
 
 <style lang="scss">
-  @use "src/styles/colors";
-
   .hero-text {
     padding-top: clamp(14px, 1.5vw, 20px);
     font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
@@ -46,13 +44,13 @@ const goal = 100000,
 
     &,
     a {
-      color: colors.$light-gray;
+      @apply text-secondary;
     }
   }
 </style>
 
 {/* Hero Section */}
-<Hero>
+<Hero locale={page.locale}>
   {/* Text Content */}
   <div
     role="banner"
@@ -69,15 +67,15 @@ const goal = 100000,
           </span>
         </h1>
 
-        <div class="hero-text prose text-lightgray leading-normal max-w-none">
+        <div class="hero-text prose text-secondary leading-normal max-w-none">
           <Markdown>{page.Intro_text}</Markdown>
         </div>
 
         <a
           href={page.Heading_button_link}
           class:list={[
-            "flex items-center justify-center font-bold text-primary text-center bg-lightgray rounded-full",
-            "w-[200px] p-[10px] mt-5",
+            "w-[200px] p-[10px] mt-5 bg-secondary rounded-full",
+            "flex items-center justify-center font-bold text-primary text-center",
           ]}
         >
           <span class="icon h-6">
@@ -91,7 +89,7 @@ const goal = 100000,
   </div>
 
   {/* Blob Image - Desktop View */}
-  <div class="h-full hidden sm:block absolute z-30 hero-img-curve-container">
+  <div class="hero-img-curve-container h-full hidden sm:block absolute z-30">
     <ClipPathSVG
       id="hero-img-curve"
       path="M1 0H.052C-.055.156.033.342.049.606.065.888.178 1 .555 1 .843 1 .918.906 1 .854"
@@ -112,10 +110,7 @@ const goal = 100000,
       />
 
       <div
-        class:list={[
-          "absolute bottom-0 z-10 w-full flex items-center justify-center",
-          "py-[12%]",
-        ]}
+        class="py-[12%] absolute bottom-0 z-10 w-full flex items-center justify-center"
       >
         <div class="w-full h-full absolute top-0 left-0 bg-black opacity-70">
         </div>

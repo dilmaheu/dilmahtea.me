@@ -2,11 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { globby } from "globby";
 
-const CMSImagesDir = "./public/_astro/",
-  CMSImagesDestDir = "./dist/_astro/";
+const CMS_IMAGES_DIR = "./public/_astro/",
+  CMS_IMAGES_DEST_DIR = "./dist/_astro/";
 
 // assetify CMS images
-await fs.promises.cp(CMSImagesDir, CMSImagesDestDir, { recursive: true });
+await fs.promises.cp(CMS_IMAGES_DIR, CMS_IMAGES_DEST_DIR, { recursive: true });
 
 const assetsDir = "./dist/_astro/",
   assetsPaths = await globby("./dist/_astro/*"),

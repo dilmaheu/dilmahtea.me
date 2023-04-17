@@ -1,0 +1,46 @@
+fragment CrowdfundingPaymentConfirmationAttributes on CrowdfundingPaymentConfirmation {
+  locale
+  updatedAt
+  Title
+  Intro_text
+  Heading_block
+  Block_text
+  Block_blob {
+    data {
+      id
+      attributes {
+        url
+        provider_metadata
+        formats
+        alternativeText
+      }
+    }
+  }
+  Meta {
+    HTML_Title
+    Meta_description
+    noindex
+    nofollow
+    URL_slug
+    Canonical_link
+  }
+}
+
+query {
+  crowdfundingPaymentConfirmation {
+    data {
+      id
+      attributes {
+        ...CrowdfundingPaymentConfirmationAttributes
+        localizations {
+          data {
+            id
+            attributes {
+              ...CrowdfundingPaymentConfirmationAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}

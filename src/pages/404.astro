@@ -49,12 +49,11 @@ if (locale !== "en") {
 
   let [, locale] = location.pathname.match(localeRegex) ?? [];
 
-  if (
-    !locale &&
-    /* preferredLocale is defined in SetPreferredLocale.astro */
-    preferredLocale !== "en"
-  ) {
-    location.pathname = location.pathname.replace("/", `/${preferredLocale}/`);
+  if (!locale && window.preferredLocale !== "en") {
+    location.pathname = location.pathname.replace(
+      "/",
+      `/${window.preferredLocale}/`
+    );
   }
 </script>
 

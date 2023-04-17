@@ -5,8 +5,6 @@ const notifications = await CMS.get("notifications"),
     (notif) => (notif.attributes.Title = "language_not_available")
   );
 
-const localizedNotifications = {};
-
 const {
   locale: defaultLocale,
   Type,
@@ -15,7 +13,9 @@ const {
   localizations,
 } = langNotAvailableNotification.attributes;
 
-localizedNotifications[defaultLocale] = defaultNotification;
+const localizedNotifications = {
+  [defaultLocale]: defaultNotification,
+};
 
 localizations.data.forEach(({ attributes }) => {
   const { locale, Content: notification } = attributes;
