@@ -5,9 +5,8 @@ import Markdown from "@astrojs/markdown-component";
 
 import renderMarkdown from "@utils/renderMarkdown";
 
-const { page } = Astro.props;
-
-const infoBlocksHTML = await renderMarkdown(page.Block3);
+const { page } = Astro.props,
+  infoBlocksHTML = await renderMarkdown(page.Block3);
 
 const { document: infoBlocksDocument } = parseHTML(infoBlocksHTML),
   titles = [...infoBlocksDocument.querySelectorAll("h2")];
@@ -89,7 +88,7 @@ const { document: infoBlocksDocument } = parseHTML(infoBlocksHTML),
               isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
             ]}
           >
-            <h2 class="info-block-title recoleta font-bold leading-[130%] text-black">
+            <h2 class="info-block-title recoleta text-black font-bold leading-[130%]">
               {titleText}
             </h2>
 

@@ -11,7 +11,6 @@ import SearchBar from "./SearchBar.astro";
 
 const {
   logo,
-  nav_background,
   sidebar_background,
   checkout_header_background,
   checkout_header_background_sm,
@@ -25,24 +24,23 @@ interface Props {
 }
 
 const { docLocale, footerText, isCartNavbar, availableLocales } =
-    Astro.props as Props,
-  { ASSETS_URL } = import.meta.env;
+  Astro.props as Props;
 
 const recurData = CMS.get("recurringElement", docLocale),
   ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", docLocale);
 
 const {
-  Nav_menu: menu,
-  Nav_menu_search_visibility: search,
-  Nav_menu_language_selector_visibility: language,
-  Nav_menu_localization_visibility: localization,
-  Nav_menu_localization_icon: localization_icon,
-  Nav_menu_cart_visibility: cart,
-  Nav_menu_cart_icon: cart_icon,
-  Nav_menu_profile_visibility: profile,
-  Nav_menu_profile_icon: profile_icon,
   text_language,
   Button_save_text,
+  Nav_menu: menu,
+  Nav_menu_cart_icon: cartIcon,
+  Nav_menu_profile_icon: profileIcon,
+  Nav_menu_localization_icon: localizationIcon,
+  Nav_menu_cart_visibility: cartVisibility,
+  Nav_menu_search_visibility: searchVisibility,
+  Nav_menu_profile_visibility: profileVisibility,
+  Nav_menu_localization_visibility: localizationVisibility,
+  Nav_menu_language_selector_visibility: languageSelectorVisibility,
 } = recurData;
 ---
 
@@ -112,7 +110,7 @@ const {
     "md:!relative sticky !top-0 z-[999] w-full bg-cover bg-right-bottom",
   ]}
 >
-  <div class="relative w-full flex items-center navbar-container z-10">
+  <div class="navbar-container relative w-full flex items-center z-10">
     <ClipPathSVG
       id="nav-curve"
       path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
@@ -160,8 +158,8 @@ const {
         </a>
 
         {
-          search && (
-            <div class="my-auto hidden sm:block items-center overflow-hidden w-full">
+          searchVisibility && (
+            <div class="hidden sm:block w-full my-auto items-center overflow-hidden">
               <div class="flex">
                 <ci-search />
               </div>
@@ -172,33 +170,33 @@ const {
 
       <div class="flex justify-end items-center gap-2.5 md:gap-[15px]">
         {
-          localization && (
+          localizationVisibility && (
             <div class="hidden sm:block relative">
               <button
                 id="localization-menu-open-btn"
                 aria-label={
                   ariaLabelRecurData.Navbar_open_localization_menu_text
                 }
-                class="nav-icon peer w-fit flex justify-center items-center bg-lightgray rounded-full cursor-pointer"
+                class="nav-icon peer w-fit flex justify-center items-center bg-secondary rounded-full cursor-pointer"
               >
                 <img
                   src={await localizeCMSImage(
-                    localization_icon?.data?.attributes.url
+                    localizationIcon?.data?.attributes.url
                   )}
-                  alt={localization_icon?.data?.attributes.alternativeText}
+                  alt={localizationIcon?.data?.attributes.alternativeText}
                 />
               </button>
 
               <form class="localization-form hidden absolute w-[280px] -translate-x-1/2 left-1/2 drop-shadow-lg">
                 <div class="relative flex justify-center pt-1">
-                  <div class="w-5 h-5 bg-lightgray rotate-45 rounded" />
+                  <div class="w-5 h-5 bg-secondary rotate-45 rounded" />
                 </div>
 
-                <div class="grid gap-[15px] content-between bg-lightgray rounded-[12px] p-[25px] -translate-y-3">
-                  <div class="grid gap-[6px] text-dark">
+                <div class="grid gap-[15px] content-between bg-secondary rounded-[12px] p-[25px] -translate-y-3">
+                  <div class="grid gap-[6px] text-black-light">
                     <div class="text-[15px] font-medium">{text_language}</div>
 
-                    {language && (
+                    {languageSelectorVisibility && (
                       <LangSelectorsDropdown
                         docLocale={docLocale}
                         availableLocales={availableLocales}
@@ -208,7 +206,7 @@ const {
 
                   <button
                     type="submit"
-                    class="bg-primary leading-[120%] text-lightgray2 rounded-full py-2.5 px-4"
+                    class="py-2.5 px-4 bg-primary text-secondary-light leading-[120%] rounded-full"
                   >
                     {Button_save_text}
                   </button>
@@ -219,7 +217,7 @@ const {
         }
 
         {
-          localization && (
+          localizationVisibility && (
             <div class="block sm:hidden relative">
               <button
                 id="localization-menu-sm-open-btn"
@@ -230,9 +228,9 @@ const {
               >
                 <img
                   src={await localizeCMSImage(
-                    localization_icon?.data?.attributes.url
+                    localizationIcon?.data?.attributes.url
                   )}
-                  alt={localization_icon?.data?.attributes.alternativeText}
+                  alt={localizationIcon?.data?.attributes.alternativeText}
                 />
               </button>
             </div>
@@ -240,18 +238,19 @@ const {
         }
 
         {
-          cart && !isCartNavbar && (
+          cartVisibility && !isCartNavbar && (
             <button
               aria-label={ariaLabelRecurData.Navbar_open_cart_text}
-              class="open-cart-btn inline-block relative"
+              id="open-cart-btn"
+              class="inline-block relative"
             >
               <span
                 style="clip-path: url(#cart-btn-curve);"
-                class="nav-icon block bg-lightgray rounded-full"
+                class="nav-icon block bg-secondary rounded-full"
               >
                 <img
-                  src={await localizeCMSImage(cart_icon?.data?.attributes.url)}
-                  alt={cart_icon?.data?.attributes.alternativeText}
+                  src={await localizeCMSImage(cartIcon?.data?.attributes.url)}
+                  alt={cartIcon?.data?.attributes.alternativeText}
                 />
               </span>
 
@@ -279,16 +278,16 @@ const {
         }
 
         {
-          profile && (
+          profileVisibility && (
             <div
               class:list={[
                 "nav-icon flex justify-center items-center",
-                "bg-lightgray rounded-full cursor-pointer",
+                "bg-secondary rounded-full cursor-pointer",
               ]}
             >
               <img
-                src={await localizeCMSImage(profile_icon?.data?.attributes.url)}
-                alt={profile_icon?.data?.attributes.alternativeText}
+                src={await localizeCMSImage(profileIcon?.data?.attributes.url)}
+                alt={profileIcon?.data?.attributes.alternativeText}
               />
             </div>
           )
@@ -302,9 +301,10 @@ const {
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 31">
               <path
-                d="M0,28.4a2.7,2.7,0,0,0,.7,1.8,2.5,2.5,0,0,0,1.7.8H31.2a2.5,2.5,0,0,0,1.7-.8,2.7,2.7,0,0,0,.7-1.8,2.9,2.9,0,0,0-.7-1.8,2.5,2.5,0,0,0-1.7-.8H2.4a2.5,2.5,0,0,0-1.7.8A2.9,2.9,0,0,0,0,28.4ZM9.9,15.5a2.9,2.9,0,0,0,.7,1.8,2.5,2.5,0,0,0,1.7.8H31.6a2.1,2.1,0,0,0,1.7-.8,2.4,2.4,0,0,0,.7-1.8,2.4,2.4,0,0,0-.7-1.8,2.1,2.1,0,0,0-1.7-.8H12.3a2.5,2.5,0,0,0-1.7.8A2.9,2.9,0,0,0,9.9,15.5ZM0,2.6A2.9,2.9,0,0,0,.7,4.4a2.5,2.5,0,0,0,1.7.8H31.2a2.5,2.5,0,0,0,1.7-.8,2.9,2.9,0,0,0,.7-1.8A2.7,2.7,0,0,0,32.9.8,2.5,2.5,0,0,0,31.2,0H2.4A2.5,2.5,0,0,0,.7.8,2.7,2.7,0,0,0,0,2.6Z"
                 transform="translate(0)"
-                style="fill:#e3dfde;fill-rule:evenodd"></path>
+                style="fill: #e3dfde; fill-rule: evenodd"
+                d="M0,28.4a2.7,2.7,0,0,0,.7,1.8,2.5,2.5,0,0,0,1.7.8H31.2a2.5,2.5,0,0,0,1.7-.8,2.7,2.7,0,0,0,.7-1.8,2.9,2.9,0,0,0-.7-1.8,2.5,2.5,0,0,0-1.7-.8H2.4a2.5,2.5,0,0,0-1.7.8A2.9,2.9,0,0,0,0,28.4ZM9.9,15.5a2.9,2.9,0,0,0,.7,1.8,2.5,2.5,0,0,0,1.7.8H31.6a2.1,2.1,0,0,0,1.7-.8,2.4,2.4,0,0,0,.7-1.8,2.4,2.4,0,0,0-.7-1.8,2.1,2.1,0,0,0-1.7-.8H12.3a2.5,2.5,0,0,0-1.7.8A2.9,2.9,0,0,0,9.9,15.5ZM0,2.6A2.9,2.9,0,0,0,.7,4.4a2.5,2.5,0,0,0,1.7.8H31.2a2.5,2.5,0,0,0,1.7-.8,2.9,2.9,0,0,0,.7-1.8A2.7,2.7,0,0,0,32.9.8,2.5,2.5,0,0,0,31.2,0H2.4A2.5,2.5,0,0,0,.7.8,2.7,2.7,0,0,0,0,2.6Z"
+              ></path>
             </svg>
           </button>
         </div>
@@ -373,7 +373,7 @@ const {
   >
     <div class="wrapper pb-2.5 md:pb-[15px]">
       {
-        search && (
+        searchVisibility && (
           <div class="my-auto block md:hidden items-center overflow-hidden w-full">
             <ci-search />
           </div>
@@ -386,7 +386,7 @@ const {
     id="localization-menu-sm"
     class:list={[
       "localization-form fixed hidden md:!hidden right-0 top-0",
-      "w-screen h-screen p-[25px] bg-lightgray text-dark z-[9999]",
+      "w-screen h-screen p-[25px] bg-secondary text-black-light z-[9999]",
     ]}
   >
     <div class="grid gap-[25px]">
@@ -416,7 +416,7 @@ const {
           </div>
 
           {
-            language && (
+            languageSelectorVisibility && (
               <LangSelectorsDropdown
                 docLocale={docLocale}
                 availableLocales={availableLocales}
@@ -428,7 +428,7 @@ const {
 
       <button
         type="submit"
-        class="bg-primary leading-[120%] text-lightgray2 rounded-full py-2.5 px-4"
+        class="py-2.5 px-4 bg-primary text-secondary-light leading-[120%] rounded-full"
       >
         {Button_save_text}
       </button>
@@ -469,25 +469,23 @@ const {
 </script>
 
 <script>
-  const query = document.querySelector.bind(document);
+  const id = document.getElementById.bind(document);
 
-  const rootElement = query(":root"),
-    cart = query("#cart"),
-    sidebar = query("#sidebar"),
-    navbarBg = query("#navbar-bg"),
-    cartNavbarBg = query("#cart-navbar-bg"),
-    sidebarOpenButton = query("#sidebar-open-btn"),
-    sidebarCloseButton = query("#sidebar-close-btn"),
-    localizationMenuSm = query("#localization-menu-sm"),
-    localizationMenuOpenButton = query("#localization-menu-open-btn"),
-    localizationMenuSmOpenButton = query("#localization-menu-sm-open-btn"),
-    localizationMenuSmCloseButton = query("#localization-menu-sm-close-btn");
+  const rootElement = document.querySelector(":root") as HTMLElement,
+    cart = id("cart"),
+    sidebar = id("sidebar"),
+    navbarBg = id("navbar-bg"),
+    cartNavbarBg = id("cart-navbar-bg"),
+    openCartBtn = id("open-cart-btn"),
+    sidebarOpenButton = id("sidebar-open-btn"),
+    sidebarCloseButton = id("sidebar-close-btn"),
+    localizationMenuSm = id("localization-menu-sm"),
+    localizationMenuOpenButton = id("localization-menu-open-btn"),
+    localizationMenuSmOpenButton = id("localization-menu-sm-open-btn"),
+    localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
 
-  const openCartBtns = document.querySelectorAll(
-      ".open-cart-btn, .open-cart-btn-sm"
-    ),
-    localizationForms =
-      document.querySelectorAll<HTMLFormElement>(".localization-form");
+  const localizationForms =
+    document.querySelectorAll<HTMLFormElement>(".localization-form");
 
   window.disableScrolling = () => {
     const overflowY =
@@ -543,10 +541,8 @@ const {
     }
   });
 
-  openCartBtns.forEach((openCartBtn) => {
-    openCartBtn.addEventListener("click", () => {
-      window.openCart();
-    });
+  openCartBtn?.addEventListener("click", () => {
+    window.openCart();
   });
 
   sidebarOpenButton?.addEventListener("click", () => {
@@ -565,7 +561,7 @@ const {
     window.enableScrolling();
   });
 
-  localizationMenuOpenButton.addEventListener("mouseenter", () => {
+  localizationMenuOpenButton?.addEventListener("mouseenter", () => {
     localizationMenuOpenButton.nextElementSibling.classList.remove("hidden");
   });
 
@@ -573,7 +569,7 @@ const {
     localizationMenuOpenButton.nextElementSibling.classList.add("hidden");
   };
 
-  localizationMenuOpenButton.addEventListener(
+  localizationMenuOpenButton?.addEventListener(
     "mouseleave",
     hideLocalizationMenu
   );
@@ -581,7 +577,7 @@ const {
   document.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
 
-    if (localizationMenuOpenButton.contains(target)) {
+    if (localizationMenuOpenButton?.contains(target)) {
       const { classList: localizationMenuClassList } =
         localizationMenuOpenButton.nextElementSibling;
 
@@ -594,7 +590,7 @@ const {
       ]("mouseleave", hideLocalizationMenu);
     }
 
-    if (!localizationMenuOpenButton.parentElement.contains(target)) {
+    if (!localizationMenuOpenButton?.parentElement.contains(target)) {
       hideLocalizationMenu();
 
       localizationMenuOpenButton.addEventListener(
