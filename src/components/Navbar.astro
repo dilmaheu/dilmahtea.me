@@ -471,8 +471,10 @@ const {
     localizationMenuSmOpenButton = id("localization-menu-sm-open-btn"),
     localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
 
-  const localizationForms =
-    document.querySelectorAll<HTMLFormElement>(".localization-form");
+  const localization = localizationMenuOpenButton?.parentElement,
+    localizationMenu = localizationMenuOpenButton?.nextElementSibling,
+    localizationForms =
+      document.querySelectorAll<HTMLFormElement>(".localization-form");
 
   window.disableScrolling = () => {
     const overflowY =
@@ -551,42 +553,35 @@ const {
     window.enableScrolling();
   });
 
-  localizationMenuOpenButton?.addEventListener("mouseenter", () => {
-    localizationMenuOpenButton.nextElementSibling.classList.remove("hidden");
+  localization?.addEventListener("mouseenter", () => {
+    localizationMenu.classList.remove("hidden");
   });
 
   const hideLocalizationMenu = () => {
-    localizationMenuOpenButton.nextElementSibling.classList.add("hidden");
+    localizationMenu.classList.add("hidden");
   };
 
-  localizationMenuOpenButton?.addEventListener(
-    "mouseleave",
-    hideLocalizationMenu
-  );
+  localization?.addEventListener("mouseleave", hideLocalizationMenu);
 
   document.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
 
     if (localizationMenuOpenButton?.contains(target)) {
-      const { classList: localizationMenuClassList } =
-        localizationMenuOpenButton.nextElementSibling;
+      const { classList: localizationMenuClassList } = localizationMenu;
 
       localizationMenuClassList.toggle("hidden");
 
-      localizationMenuOpenButton[
+      localization[
         !localizationMenuClassList.contains("hidden")
           ? "removeEventListener"
           : "addEventListener"
       ]("mouseleave", hideLocalizationMenu);
     }
 
-    if (!localizationMenuOpenButton?.parentElement.contains(target)) {
+    if (!localization?.contains(target)) {
       hideLocalizationMenu();
 
-      localizationMenuOpenButton.addEventListener(
-        "mouseleave",
-        hideLocalizationMenu
-      );
+      localization.addEventListener("mouseleave", hideLocalizationMenu);
     }
   });
 
