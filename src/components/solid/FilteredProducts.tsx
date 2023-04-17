@@ -201,8 +201,10 @@ FilteredProducts.pruneProps = function ({ page, recurData }) {
   };
 
   recurData = {
-    Product_sold_out_text: recurData.Product_sold_out_text,
     Item_stock_text: recurData.Item_stock_text,
+    Product_sold_out_text: recurData.Product_sold_out_text,
+    Product_stock_other_formats_text:
+      recurData.Product_stock_other_formats_text,
   };
 
   return {
