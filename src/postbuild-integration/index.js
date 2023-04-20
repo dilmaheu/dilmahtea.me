@@ -1,12 +1,12 @@
 import fs from "fs/promises";
 import { globby } from "globby";
 import { parseHTML } from "linkedom";
-import addSitemapURLs from "./utils/addSitemapURLs.js";
-import addScriptsHashes from "./utils/addScriptsHashes.js";
-import generateXMLSitemap from "./utils/generateXMLSitemap.js";
-import rewrite404RoutesPaths from "./utils/rewrite404RoutesPaths.js";
-import generateSecurityHeaders from "./utils/generateSecurityHeaders.js";
-import removeAstroIconAttributes from "./utils/removeAstroIconAttributes.js";
+import addSitemapURLs from "./tasks/addSitemapURLs.js";
+import addScriptsHashes from "./tasks/addScriptsHashes.js";
+import generateXMLSitemap from "./tasks/generateXMLSitemap.js";
+import rewrite404RoutesPaths from "./tasks/rewrite404RoutesPaths.js";
+import generateSecurityHeaders from "./tasks/generateSecurityHeaders.js";
+import removeAstroIconAttributes from "./tasks/removeAstroIconAttributes.js";
 import shouldDisplayExperimentals from "../utils/shouldDisplayExperimentals.js";
 
 const CSPRecord = {
@@ -65,7 +65,7 @@ const postbuildIntegration = {
           addSitemapURLs(path, document, sitemap, htmlFilePaths);
 
           const { simplifyImageFilenames } = await import(
-            "./utils/simplifyImageFilenames.js"
+            "./tasks/simplifyImageFilenames.js"
           );
 
           const stringifiedDocument = simplifyImageFilenames(document);
@@ -75,8 +75,8 @@ const postbuildIntegration = {
       );
 
       await Promise.all([
-        import("./utils/generateRobotsMeta.js"),
-        import("./utils/generateSecurityMeta.js"),
+        import("./tasks/generateRobotsMeta.js"),
+        import("./tasks/generateSecurityMeta.js"),
         generateXMLSitemap(sitemap),
         generateSecurityHeaders(CSPRecord),
         rewrite404RoutesPaths(_404HtmlFilePaths),
