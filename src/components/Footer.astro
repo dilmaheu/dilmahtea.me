@@ -67,24 +67,28 @@ const { footerText, recurData } = Astro.props as Props,
   />
 
   <div
-    class="footer-background absolute w-full md:w-[calc(100%-72px)] h-full z-10"
+    class="footer-background absolute w-full md:w-[calc(100%-72px)] h-full bg-primary z-10"
   >
-    <Picture
-      alt=""
-      layout="fill"
-      objectPosition="left bottom"
-      breakpoints={{ maxWidth: 768 }}
-      src={footer_background_sm.src}
-      sizes="(min-width: 640px) 100vw - 72px, 100vw"
-      artDirectives={[
-        {
-          src: footer_background.src,
-          media: "(min-width: 640px)",
-          objectPosition: "left top",
-          breakpoints: { minWidth: 768 - 72 },
-        },
-      ]}
-    />
+    {
+      footer_background && (
+        <Picture
+          alt=""
+          layout="fill"
+          objectPosition="left bottom"
+          breakpoints={{ maxWidth: 768 }}
+          src={footer_background_sm.src || footer_background.src}
+          sizes="(min-width: 640px) 100vw - 72px, 100vw"
+          artDirectives={[
+            {
+              src: footer_background.src,
+              media: "(min-width: 640px)",
+              objectPosition: "left top",
+              breakpoints: { minWidth: 768 - 72 },
+            },
+          ]}
+        />
+      )
+    }
   </div>
 
   <div

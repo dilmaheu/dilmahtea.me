@@ -63,32 +63,36 @@ const { Nav_menu: menu } = recurData;
 />
 
 <section
-  class="hero overflow-hidden relative"
+  class="hero overflow-hidden relative bg-primary"
   style="clip-path: url(#hero-background-curve);"
 >
   <UpdateTopMargin />
 
-  <Picture
-    alt=""
-    layout="fill"
-    preload="avif"
-    objectFit="cover"
-    objectPosition="left top"
-    src={hero_background_sm.src}
-    breakpoints={{ maxWidth: 768 }}
-    artDirectives={[
-      {
-        media: "(min-width: 768px)",
-        breakpoints: { minWidth: 768 },
-        src: hero_background.src,
-      },
-    ]}
-    attributes={{
-      picture: {
-        style: "position: absolute;",
-      },
-    }}
-  />
+  {
+    hero_background && (
+      <Picture
+        alt=""
+        layout="fill"
+        preload="avif"
+        objectFit="cover"
+        objectPosition="left top"
+        src={hero_background_sm.src || hero_background.src}
+        breakpoints={{ maxWidth: 768 }}
+        artDirectives={[
+          {
+            media: "(min-width: 768px)",
+            breakpoints: { minWidth: 768 },
+            src: hero_background.src,
+          },
+        ]}
+        attributes={{
+          picture: {
+            style: "position: absolute;",
+          },
+        }}
+      />
+    )
+  }
 
   <div class="relative">
     <div class="hidden md:flex items-end bg-primary-light md:h-[76px]">

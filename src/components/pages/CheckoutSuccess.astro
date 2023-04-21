@@ -42,10 +42,51 @@ const EnvironmentalAdvocacyImage =
   checkoutKindnessData.attributes.kindness_causes.data.find(
     ({ attributes: { cause } }) => cause === "Environmental Advocacy"
   ).attributes.featured_blob.data.attributes;
+
+const { Nav_menu: menu } = recurData;
 ---
 
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
+
+  .hero {
+    @include poly-fluid-sizing(
+      "padding-top",
+      (
+        639.98px: 135px,
+        640px: 70px,
+        768px: 74px,
+        1024px: 104px,
+      )
+    );
+  }
+
+  .nav-menu-container {
+    nav {
+      @include poly-fluid-sizing(
+        "padding-right",
+        (
+          639px: 0px,
+          640px: 260px,
+          768px: 300px,
+          1024px: 380px,
+          1440px: 460px,
+          1536px: 550px,
+        )
+      );
+
+      a {
+        @apply font-bold leading-[150%];
+
+        font-size: poly-fluid-clamp(
+          (
+            768px: 12px,
+            1440px: 18px,
+          )
+        );
+      }
+    }
+  }
 
   :global(#checkout-cart-container) {
     > div {
@@ -140,26 +181,29 @@ const EnvironmentalAdvocacyImage =
     availableLocales={availableLocales}
   />
 
-  <BackgroundPicture
-    layout="fill"
-    src={checkout_pre_post_background_sm.src}
-    artDirectives={[
-      {
-        media: "(min-width: 768px)",
-        breakpoints: { minWidth: 768 },
-        src: checkout_pre_post_background.src,
-      },
-    ]}
-    attributes={{
-      container: {
-        id: "checkout-cart-container",
-        style: "min-height: 100vh; display: flex; flex-direction: column;",
-      },
-    }}
-  >
-    <UpdateTopMargin />
+  <div>
+    <div class="hero overflow-hidden relative">
+      <UpdateTopMargin />
 
-    <div class="relative z-10 wrapper grow flex flex-col">
+      <div class="relative">
+        <div class="hidden md:flex items-end bg-primary-light md:h-[76px]">
+          <div class="nav-menu-container wrapper pb-2.5 md:pb-[15px]">
+            <nav class="text-black font-semibold h-full">
+              <span class="flex gap-5 justify-between items-center h-full">
+                {
+                  menu.map(
+                    ({ Visibility, Title, Link }) =>
+                      Visibility && <a href={Link}>{Title}</a>
+                  )
+                }
+              </span>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative z-10 wrapper grow flex flex-col h-full">
       <ClipPathSVG
         id="post-container-top-curve"
         path="M0.513,0.005 C0.359,0.005,0.102,-0.024,0.043,0.141 C-0.003,0.266,-0.005,0.637,0.005,1 h0.985 c0.005,-0.205,0.027,-0.443,-0.018,-0.74 C0.924,-0.057,0.729,0.004,0.513,0.004"
