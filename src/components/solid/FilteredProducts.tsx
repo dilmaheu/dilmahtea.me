@@ -98,7 +98,7 @@ export default function FilteredProducts({
                       new Date().getTime() && (
                       <div
                         class={[
-                          "w-full bg-warning-light/80 text-sm sm:text-base font-medium text-black",
+                          "w-full bg-warning-light text-sm sm:text-base font-medium text-black",
                           "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none",
                         ].join(" ")}
                       >
@@ -117,7 +117,7 @@ export default function FilteredProducts({
               )}
             </div>
 
-            <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px]">
+            <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px] text-white">
               <div
                 class="product-card-title recoleta font-bold leading-[120%] md:leading-[110%]"
                 style={{ "font-size": "clamp(1.75rem, 2vw + 0.3rem, 2rem)" }}
@@ -173,7 +173,7 @@ export default function FilteredProducts({
                       )}
                     </div>
 
-                    <div class="text-secondary-light">
+                    <div class="text-white">
                       <em>
                         {product.availableFormatsCount === 1
                           ? recurData.Product_stock_other_formats_text_singular

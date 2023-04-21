@@ -123,8 +123,6 @@ const nutrition: Nutrition = {
 </style>
 
 <style lang="scss">
-  @use "src/styles/colors";
-
   .related-products-top {
     clip-path: url(#product-impact-top-curve-sm);
 
@@ -204,7 +202,6 @@ const nutrition: Nutrition = {
   }
 
   .recipe-serving-size-input {
-    background: colors.$serving-size-bg;
     font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
 
     &:focus {
@@ -329,7 +326,7 @@ const nutrition: Nutrition = {
     slot="jump-to-recipe-sm"
     class:list={[
       "max-w-[200px] bg-primary flex items-center justify-center gap-5 rounded-[40px]",
-      "mt-6 ml-4 py-[13px] px-[23px] text-secondary text-center text-sm font-bold leading-[19px]",
+      "mt-6 ml-4 py-[13px] px-[23px] text-white text-center text-sm font-bold leading-[19px]",
     ]}
   >
     {recipe_jump_to_recipe}
@@ -343,7 +340,7 @@ const nutrition: Nutrition = {
     href="#recipe"
     slot="jump-to-recipe"
     class:list={[
-      "bg-primary text-secondary text-center text-base font-bold leading-[19px]",
+      "bg-primary text-white text-center text-base font-bold leading-[19px]",
       "hidden md:block flex items-center justify-center gap-5 py-5 mb-[50px] rounded-[40px]",
     ]}
   >
@@ -450,7 +447,7 @@ const nutrition: Nutrition = {
             <h3
               class:list={[
                 "recipe-content-title leading-[150%]",
-                "text-primary sm:text-black font-bold sm:font-semibold",
+                "text-black sm:text-black font-bold sm:font-semibold",
               ]}
             >
               {recipe_nutrition_information}
@@ -462,7 +459,7 @@ const nutrition: Nutrition = {
               <div class="text-primary text-lg">{page.Nutrition_yield}</div>
             </div>
 
-            <div class="text-black text-base md:text-lg">
+            <div class="text-black text-base md:text-lg font-bold">
               {recipe_amount_per_serving}:
             </div>
 
@@ -474,7 +471,7 @@ const nutrition: Nutrition = {
               {page.Nutrition.map((item) => (
                 <div
                   role="list"
-                  class="flex items-center text-black text-base lg:text-lg leading-[150%]"
+                  class="flex items-center text-black-light text-base lg:text-lg leading-[150%]"
                 >
                   <div>{item.Nutrition_name}</div>
 
@@ -515,7 +512,7 @@ const nutrition: Nutrition = {
           <select
             id="recipe-serving-size"
             class:list={[
-              "recipe-serving-size-input text-secondary-light py-[5px] pl-[11px]",
+              "recipe-serving-size-input text-white py-[5px] pl-[11px] bg-primary",
               "max-w-[65px] md:max-w-[83px] border-r-[11px] border-transparent rounded-[7px]",
             ]}
           >
@@ -544,7 +541,7 @@ const nutrition: Nutrition = {
               </h4>
 
               {item.Cooking_part_ingredients.map((item) => (
-                <label class="inline-flex items-center w-full">
+                <label class="inline-flex items-center w-full text-black-light">
                   <div class="flex">
                     <div
                       class:list={[
@@ -560,13 +557,13 @@ const nutrition: Nutrition = {
                       <span
                         class:list={[
                           "recipe-ingredients-checkbox absolute w-4 h-4 bg-transparent",
-                          "border-2 border-black text-black-light leading-[175%] rounded-[3px]",
+                          "border-2 border-black leading-[175%] rounded-[3px]",
                         ]}
                       />
                     </div>
                   </div>
 
-                  <div class="ml-2.5 text-black text-base md:text-lg leading-[150%]">
+                  <div class="ml-2.5 text-base md:text-lg leading-[150%]">
                     <span
                       class="ingredient-amount"
                       data-amount={item.Cooking_part_ingredient_amount}
@@ -650,7 +647,7 @@ const nutrition: Nutrition = {
                 <div>
                   <div
                     class:list={[
-                      "recipe-step-order bg-primary rounded-full",
+                      "recipe-step-order bg-primary rounded-full text-white",
                       "flex items-center justify-center font-extrabold",
                     ]}
                   >
@@ -658,7 +655,7 @@ const nutrition: Nutrition = {
                   </div>
                 </div>
 
-                <div class="recipe-content prose max-w-none text-black leading-[150%] w-auto">
+                <div class="recipe-content prose max-w-none leading-[150%] w-auto">
                   {step.Cooking_part_steps_text}
                 </div>
               </div>
