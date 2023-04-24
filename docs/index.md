@@ -18,7 +18,7 @@ This is the index file for the documentation of the `dilmahtea.me` repository.
   - [TypeScript](/docs/guides/typescript.md)
   - [Notifications](/docs/guides/notifications.md)
 - Recipies
-  - [How to create a new page](/docs/recipies/how-to-create-a-new-page.md)
+  - [How to create pages for a new content type](/docs/recipies/how-to-create-pages-for-a-new-content-type.md)
   - [How to calculate the value of the `sizes` attribute](/docs/recipies/how-to-calculate-the-value-of-the-sizes-attribute.md)
   - [How to implement dynamic functionalities](/docs/recipies/how-to-implement-dynamic-functionalities.md)
   - [How to work with Solid JS components](/docs/recipies/how-to-work-with-solid-components.md)
