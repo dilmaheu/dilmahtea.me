@@ -53,7 +53,7 @@ const { page } = Astro.props;
 
 ## Clipped Images
 
-If you want to want to optimize an image that has to be clipped, use the `ClippedPicture` component instead of the `Picture` component. The `ClippedPicture` component is a wrapper around the `Picture` component. You'll find it at `src/components/ClippedPicture.astro`. Check out the [`ClippedPicture` component documentation](https://astro-imagetools-docs.vercel.app/components/clipped-picture) for more information on how to use it.
+If you want to want to optimize an image that has to be clipped also, use the `ClippedPicture` component instead of the `Picture` component. The [`ClippedPicture`](/src/components/ClippedPicture.astro) component is a wrapper around the `Picture` component. Check out the [`ClippedPicture` component documentation](/docs/recipies/how-to-clip-images.md#clippedpicture-component) for more information on how to use it.
 
 ## Placeholder Images
 
