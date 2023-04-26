@@ -23,6 +23,7 @@ We try to follow the below file & folder structure to keep the codebase organize
 - **src/pages/db/\*\*.ts**: Static file routes, used to generate client-side accessible data
 - **src/components/\*.astro**: Astro components
 - **src/components/solid/\*.tsx**: Solid JS components
+- **src/components/solid/\*.astro**: Astro wrappers for Solid components, used to prune the props before passing them to the Solid components
 - **src/components/pages/\*.astro**: Astro components for pages
 - **src/components/scripts/\*.astro**: Astro components for generating client-side scripts
 - **src/layouts/\*.astro**: Astro layouts

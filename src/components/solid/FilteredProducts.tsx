@@ -193,22 +193,3 @@ export default function FilteredProducts({
     </div>
   );
 }
-
-FilteredProducts.pruneProps = function ({ page, recurData }) {
-  page = {
-    Aria_label_all_teas_text: page.Aria_label_all_teas_text,
-    Aria_label_tea_item_text: page.Aria_label_tea_item_text,
-  };
-
-  recurData = {
-    Item_stock_text: recurData.Item_stock_text,
-    Product_sold_out_text: recurData.Product_sold_out_text,
-    Product_stock_other_formats_text:
-      recurData.Product_stock_other_formats_text,
-  };
-
-  return {
-    page,
-    recurData,
-  };
-};
