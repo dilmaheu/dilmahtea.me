@@ -14,7 +14,7 @@ We try to follow the below file & folder structure to keep the codebase organize
 - **docs**: Documentation files
 - **docs/basics/\*.md**: Basics
 - **docs/guides/\*.md**: Guides
-- **docs/recipies/\*.md**: Recipies
+- **docs/tutorials/\*.md**: Tutorials
 - **public**: Static files
 - **public/fonts**: Font files
 - **public/scripts/\*\*.js**: Static client-side script files

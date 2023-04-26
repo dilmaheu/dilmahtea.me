@@ -17,10 +17,10 @@ This is the index file for the documentation of the `dilmahtea.me` repository.
   - [Testing](/docs/guides/testing.md)
   - [TypeScript](/docs/guides/typescript.md)
   - [Notifications](/docs/guides/notifications.md)
-- Recipies
-  - [How to create pages for a new content type](/docs/recipies/how-to-create-pages-for-a-new-content-type.md)
-  - [How to calculate the value of the `sizes` attribute](/docs/recipies/how-to-calculate-the-value-of-the-sizes-attribute.md)
-  - [How to implement dynamic functionalities](/docs/recipies/how-to-implement-dynamic-functionalities.md)
-  - [How to work with Solid JS components](/docs/recipies/how-to-work-with-solid-components.md)
-  - [How to clip images](/docs/recipies/how-to-clip-images.md)
-  - [How to work with remote images](/docs/recipies/how-to-work-with-remote-images.md)
+- Tutorials
+  - [How to create pages for a new content type](/docs/tutorials/how-to-create-pages-for-a-new-content-type.md)
+  - [How to calculate the value of the `sizes` attribute](/docs/tutorials/how-to-calculate-the-value-of-the-sizes-attribute.md)
+  - [How to implement dynamic functionalities](/docs/tutorials/how-to-implement-dynamic-functionalities.md)
+  - [How to work with Solid JS components](/docs/tutorials/how-to-work-with-solid-components.md)
+  - [How to clip images](/docs/tutorials/how-to-clip-images.md)
+  - [How to work with remote images](/docs/tutorials/how-to-work-with-remote-images.md)

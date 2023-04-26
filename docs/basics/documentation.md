@@ -10,6 +10,6 @@ All the documentation files are written in _Markdown_ and stored inside the `doc
 
 - **docs/basics\*.md**: Basics
 - **docs/guides/\*.md**: Guides
-- **docs/recipies/\*.md**: Recipies
+- **docs/tutorials/\*.md**: Tutorials
 
 Based on the type of the documentation you want to create or update, follow the above folder structure. Also, make sure the index is updated.

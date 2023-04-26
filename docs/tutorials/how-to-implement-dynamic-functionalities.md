@@ -110,4 +110,4 @@ Check out the `DynamicHTML` components that we have used in the project to get a
 
 We try to avoid using framework components as much as possible since they are not the fastest and smallest way to add dynamic functionalities to the website. But after a certain level of complexity, performance becomes less important than maintainability. So, we use framework components when we need to add dynamic functionalities that are too complex to implement with scripts.
 
-We use [Solid JS](https://www.solidjs.com/) as our framework of choice. To know more about how to work with Solid JS, check out the [How to work with Solid JS components](/docs/recipies/how-to-work-with-solid-components.md) recipe.
+We use [Solid JS](https://www.solidjs.com/) as our framework of choice. To know more about how to work with Solid JS, check out the [How to work with Solid JS components](/docs/tutorials/how-to-work-with-solid-components.md) tutorial.

@@ -53,7 +53,7 @@ const { page } = Astro.props;
 
 ## Clipped Images
 
-If you want to want to optimize an image that has to be clipped also, use the `ClippedPicture` component instead of the `Picture` component. The [`ClippedPicture`](/src/components/ClippedPicture.astro) component is a wrapper around the `Picture` component. Check out the [`ClippedPicture` component documentation](/docs/recipies/how-to-clip-images.md#clippedpicture-component) for more information on how to use it.
+If you want to want to optimize an image that has to be clipped also, use the `ClippedPicture` component instead of the `Picture` component. The [`ClippedPicture`](/src/components/ClippedPicture.astro) component is a wrapper around the `Picture` component. Check out the [`ClippedPicture` component documentation](/docs/tutorials/how-to-clip-images.md#clippedpicture-component) for more information on how to use it.
 
 ## Placeholder Images
 
@@ -69,8 +69,8 @@ To know more about the placeholder functionality of `astro-imagetools` and its u
 
 ## Remote Images
 
-`astro-imagetools` has built-in support for remote images. To know more about how to use remote images, check out the [How to work with remote images](/docs/recipes/how-to-work-with-remote-images) recipe.
+`astro-imagetools` has built-in support for remote images. To know more about how to use remote images, check out the [How to work with remote images](/docs/tutorials/how-to-work-with-remote-images) tutorial.
 
 ## The `sizes` attribute
 
-The `sizes` attribute is an attribute used by browsers to calculate the exact rendered width of an image before downloading and rendering it. It's used to determine the best image to download from the `srcset` attribute. To know more about the `sizes` attribute, check out the [How to calculate the value of the `sizes` attribute](/docs/recipes/how-to-calculate-the-value-of-the-sizes-attribute) recipe.
+The `sizes` attribute is an attribute used by browsers to calculate the exact rendered width of an image before downloading and rendering it. It's used to determine the best image to download from the `srcset` attribute. To know more about the `sizes` attribute, check out the [How to calculate the value of the `sizes` attribute](/docs/tutorials/how-to-calculate-the-value-of-the-sizes-attribute) tutorial.
