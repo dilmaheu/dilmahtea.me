@@ -42,7 +42,25 @@ But in some cases, it's not possible to avoid using media queries. For example, 
 </div>
 ```
 
-**Note:** Since responsive styling in **Tailwind CSS** is based on the `min-width` media query by default and what we are doing, we want to use only and only `min-width` media queries in custom styles.
+**Note:** Since responsive styling in **Tailwind CSS** is based on the `min-width` media query by default and what we are doing, we want to use only and only `min-width` media queries in custom styles. It makes it easier to compare the code to Tailwind styles and keep the design mobile-first.
+
+```scss
+selector {
+  // don't do this
+  grid-template-columns: repeat(auto-fill, minmax(200px, 5fr));
+
+  @media (max-width: 639.98px) {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+
+  // do this
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 5fr));
+  }
+}
+```
 
 ## Fluid Styling
 

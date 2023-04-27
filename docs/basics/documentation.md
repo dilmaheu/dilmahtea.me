@@ -2,7 +2,7 @@
 Title: Documentation
 ---
 
-We must try to write descriptive code that explains itself. If the code itself isn't enough to explain what it does, we should add comments to the code so that it becomes easier to understand.
+All of the code we write must be descriptive enough that a programmer/developer can tell what it does after reading it. However, if the code fails to adequately describe the purpose, proper comments should be added.
 
 However, comments and descriptive code aren't enough to explain the functionalities of a larger concept. In such cases, we should document the concept thoroughly.
 
