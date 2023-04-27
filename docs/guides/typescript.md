@@ -16,6 +16,10 @@ The things we need to do and follow to migrate to a fully typed codebase are:
 - [ ] Write fully typed code inside the stores and utilities.
 - [ ] Achieve 0 (non false positive) errors after running `pnpm check`.
 
+## `window.d.ts`
+
+We have a TypeScript declaration file in our project root that extends the global `Window` interface. Types for all the extended window property are defined in this file. Whenever you define a new property in the `window` object, or update the type of an existing property, update this file to reflect the changes.
+
 ## Import Aliases
 
 We use import aliases to import files from different directories to keep the imports simple. The aliases are defined in the `tsconfig.json` file in the `compilerOptions.paths` property. The preceeding part of every import path must be aliased.
