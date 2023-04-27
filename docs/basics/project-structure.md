@@ -17,7 +17,7 @@ We try to follow the below file & folder structure to keep the codebase organize
 - **docs/tutorials/\*.md**: Tutorials
 - **public**: Static files
 - **public/fonts**: Font files
-- **public/scripts/\*\*.js**: Static client-side script files
+- **public/scripts/\*.js**: Static client-side script files
 - **src**: Source files
 - **src/pages/\*\*.astro**: Astro pages
 - **src/pages/db/\*\*.ts**: Static file routes, used to generate client-side accessible data
