@@ -8,9 +8,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#2B4B50", // green
+        primary: "#547B7D", // green
         "primary-light": "#B2CCCC", // green light
-        secondary: "#E3DFDE", // beige
+        secondary: "#E2DFDE", // beige
         "secondary-light": "#FAF4F2", // beige light
         "black-bg": "#13110B",
         black: "#2F2F2F",
@@ -34,8 +34,8 @@ export default {
         DEFAULT: {
           css: {
             "--tw-prose-body": "#474747",
-            "--tw-prose-headings": "#474747",
-            "--tw-prose-links": "#474747",
+            "--tw-prose-headings": "2F2F2F",
+            "--tw-prose-links": "#547B7D",
             "--tw-prose-bullets": "#474747",
             "--tw-prose-counters": "#474747",
           },
