@@ -2,7 +2,7 @@
 Title: How to work with remote images
 ---
 
-`astro-imagetools` supports remote images. So, you don't need to do anything special for remote images. Just pass the URL of the remote image to the `src` attribute of the component that you want to use.
+`astro-imagetools` supports remote images. So, you don't need to do anything special for them. Just pass the remote image URL to the `src` attribute of the component you want to use.
 
 ```astro
 ---
@@ -19,7 +19,7 @@ const { page } = Astro.props,
 />
 ```
 
-But if you just need to import the remote image, and don't need advanced optimizations, you can use the `importRemoteImage` API provided by `astro-imagetools`. The `importRemoteImage` API is configured to be availble globally in the `astro-imagetools.config.mjs` file. So, you don't need to import it.
+But if you just need to import the remote image, and don't need any advanced optimizations, you can use the `importRemoteImage` API provided by `astro-imagetools`. The `importRemoteImage` API is configured to be available globally in the `astro-imagetools.config.mjs` file. So, you don't need to import it.
 
 ```astro
 ---

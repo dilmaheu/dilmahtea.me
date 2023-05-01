@@ -10,9 +10,9 @@ The query file must contain a query that fetches all the available attributes fo
 
 **Note:** All the queries must fetch the `locale` attribute. And fragments must be defined before the query.
 
-The fetched data can be accessed from the `CMS` store. The store provides a `get` method that takes the name of the content type as the argument and returns the data for that content type. It accepts a locale code as the second argument. If provided, it returns the data for the specified locale. Otherwise, it returns the data for the default locale. The default locale always contains the `localizations` field which contains all the localized versions of an entry.
+The fetched data can be accessed from the `CMS` store. The store provides a `get` method that takes the content type name as the argument and returns the data for that content type. It accepts a locale code as the second argument. If provided, it returns the data for the specified locale. Otherwise, it returns the data for the default locale. The default locale always contains the `localizations` field that contains all the localized versions of an entry.
 
-**Note:** If the `locale` code is provided, then the attributes of single types will be direct children of the returned object, and for collection types, the returned data will be an array of objects, and the attributes will be inside the `attributes` field of each object. And if the `locale` code is not provided, then the returned data will have same shape as the GraphQL query.
+**Note:** If the `locale` code is provided, then the attributes of single types will be direct children of the returned object, and, for collection types, the returned data will be an array of objects, and the attributes will be inside the `attributes` field of each object. And if the `locale` code is not provided, then the returned data will have the same shape as the GraphQL query.
 
 ## Example
 

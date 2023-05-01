@@ -6,7 +6,7 @@ Title: Responsive Styling
 
 ## Media Queries
 
-Media queries are the most common way to write responsive styles. The `min-width` and `max-width` queries are the most commonly used ones. They are used to apply styles to elements based on the width of the viewport.
+Media queries are the most common way to write responsive styles. The `min-width` and `max-width` queries are the most commonly used ones. They are used to apply styles to elements based on the viewport width.
 
 We try to avoid using media queries directly since we are using **Tailwind CSS**. Instead, we want to rely on the [responsive styling features](https://tailwindcss.com/docs/responsive-design) provided by Tailwind CSS.
 
@@ -64,7 +64,7 @@ selector {
 
 ## Fluid Styling
 
-**Fluid Styling** is an interesting way to write responsive styles so that the styles adapt to all the screen sizes automatically without writing multiple conditional media queries. It is achieved through using relative units like `rem`, `vw`, `%`, etc. and CSS functions like `clamp()`, `calc()`, `min()`, etc.
+**Fluid Styling** is an interesting way to write responsive styles so that the styles adapt to all screen sizes automatically without writing multiple conditional media queries. It is achieved through using relative units like `rem`, `vw`, `%`, etc., and CSS functions like `clamp()`, `calc()`, `min()`, etc.
 
 ```css
 .hero-icon {
@@ -74,7 +74,7 @@ selector {
 }
 ```
 
-It's a good example of a fluid that works well across all the devices and screen sizes without writing media queries to adjust it. The height of the `hero-icon` is calculated using a combination of the `vw` & `px` units. And so that the value doesn't produce weird results in small & large screen sizes, we have set a minimum and maximum value.
+It's a good example of a fluid styling that works well across all devices and screen sizes without writing media queries to adjust it. The height of the `hero-icon` is calculated using a combination of the `vw` & `px` units. And so that the value doesn't produce weird results in small & large screen sizes, we have set a minimum and maximum value.
 
 The above style can be simplified using the modern CSS `clamp()` function.
 
@@ -86,7 +86,7 @@ The above style can be simplified using the modern CSS `clamp()` function.
 
 ### `poly-fluid-clamp`
 
-`poly-fluid-clamp` is a SASS mixin to automatically generate a `clamp()` function for a given property given the values for the minimum end & maximum end of the range where the value should change fluidly.
+`poly-fluid-clamp` is a SASS mixin to automatically generate a `clamp()` function for a given property given the values for the minimum & maximum end of the range where the value should change fluidly.
 
 ```scss
 @use "src/styles/poly-fluid" as *;

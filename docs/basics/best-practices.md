@@ -8,17 +8,17 @@ Make sure the generated HTML is W3C validated using the [W3C Markup Validator](h
 
 ## 2. Make sure the website is accessible
 
-Always make sure the website is WCAG compliant. Whenever you add a new feature, test it both manually such as using a screen reader and automatically using tools such as [WAVE](https://wave.webaim.org/).
+Always make sure the website is WCAG-compliant. Whenever you add a new feature, test it both manually such as using a screen reader and automatically using tools such as [WAVE](https://wave.webaim.org/).
 
-The tools are not perfect and they can't detect all the issues. Always remember to add proper labels to any custom interactive elements and make them navigable using keyboard.
+The tools are not perfect and they can't detect all the issues. Always remember to add proper labels to any custom interactive elements and make them navigable using a keyboard.
 
 ## 3. Dynamic Content
 
-All the content of our website must update whenever the content is updated in the CMS. Make sure that there are no hardcoded values in the code and the data updates whether they are handled on the server-side or client-side.
+All the content of our website must update whenever the content is updated in the CMS. Make sure that there are no hardcoded values in the code and the data updates whether they are handled on the server side or client side.
 
 ## 4. I18N
 
-Make sure that the website is fully localized. The website must be fully functional in all the supported languages and work properly even if content isn't available in all the languages.
+Make sure that the website is fully localized. The website must be fully functional in all the supported languages and work properly even if the content isn't available in all the languages.
 
 ## 5. Casing
 
@@ -30,7 +30,7 @@ Using the appropriate _case_ is an important part of naming things. We adhere to
 4. PascalCase: Components, Stores; e.g. `BlogDetails.astro`, `CMS.js`
 5. MACRO_CASE: Environmental variables, Constants; e.g. `ACCESS_TOKEN`, `CMS_IMAGES_DIR`
 
-**Note:** We have used non-conventation cases for most of our CMS fields, such as `Intro_blob`, `Intro_Text`. Now, it'll take a lot of efforts to go through all of the fields and change their names. So, we'll continue to use them as they are. But, for any new fields, we'll use the correct case.
+**Note:** We have used unconventional cases for most of our CMS fields, such as `Intro_blob`, `Intro_Text`. Now, it'll take a lot of effort to go through all of the fields and change their names. So, we'll continue to use them as they are. But, for any new fields, we'll use the correct case.
 
 ## 6. Formatting
 
@@ -72,7 +72,7 @@ function calcTime(timeArray) {
 
 ## 8. Write scoped styles
 
-If a set of styles applies only to one page or component, they must be scoped to that page or component. It guarantees that the styles will be applied.
+If a set of styles applies only to one page or component, they must be scoped to that page or component. It guarantees that the styles will be applied.
 
 ```astro
 ---
@@ -92,9 +92,9 @@ Instead of using plain _divs_ for everything, always try to use semantic tags, s
 
 ## 10. Recurring Elements & Images
 
-We have different content types for _Collections_ (Blog, How-to, Recipes, etc.) and _Singles_ (Blog Details, How-to Details, Recipe Details, etc.). But it's possible that a piece of data or an image will be used across multiple pages of the same type or different types. Create a new field in the `Recurring_elements` content-type for it, or `Recurring Images` for images, and add them via the _Content Manager_.
+We have different content types for _Collections_ (Blog, How-to, Recipes, etc.) and _Singles_ (Blog Details, How-to Details, Recipe Details, etc.). But it's possible that a piece of data or an image will be used across multiple pages of the same type or different types. Create a new field in the `Recurring_elements` content type for it, or `Recurring Images` for images, and add them via the _Content Manager_.
 
-If there are too many recurring elements that have been used only in one type of content, then it's better to create a new single content-type for them. For example, we have the `Aria label recurring element` content-type for the aria labels and related texts and we have the `Checkout Recurring Elements` content-type for the checkout pages.
+If there are too many recurring elements that have been used only in one type of content, then it's better to create a new single content type for them. For example, we have the `Aria label recurring element` content type for the aria labels and related texts and we have the `Checkout Recurring Elements` content type for the checkout pages.
 
 ## 11. Order attributes by importance and specificity
 
@@ -152,7 +152,7 @@ The same rule applies to the classes of an element. They should be ordered by th
 
 ## 13. Use `class:list`
 
-Use the `class:list` template directive instead of the `class` attribute if an element has a long list of classes, or if it contains interpolations or is concatenated, or if there are any conditional classes. It improves the organization of the classes and increases readability.
+Use the `class:list` template directive instead of the `class` attribute if an element has a long list of classes, if it contains interpolations or is concatenated, or if there are any conditional classes. It improves the organization of the classes and increases readability.
 
 ```astro
 {/* don't do this */}
@@ -179,7 +179,7 @@ Use the `class:list` template directive instead of the `class` attribute if an e
 
 ## 14. Use Tailwind classes as much as possible
 
-Always try to use Tailwind classes for simple styles both inside the `class` attribute and custom styles. It helps to keep the code closer to the HTML and the stylesheets more organized. As a result, it's much easier to tweak any styles in this way.
+Always try to use Tailwind classes for simple styles both inside the `class` attribute and custom styles. It helps to keep the code closer to the HTML and the stylesheets more organized. As a result, it's much easier to tweak any style in this way.
 
 Using arbitrary classes is fine but if any classes are complex to read and understand, then it's better to use custom styles.
 
@@ -237,7 +237,7 @@ import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
 
 ## 17. Always use import aliases
 
-Always use import aliases to import components, styles, utilities or any other files. It helps to keep the imports organized and makes them easier to manage.
+Always use import aliases to import components, styles, utilities, or any other files. It helps to keep the imports organized and makes them easier to manage.
 
 ```astro
 ---
@@ -267,7 +267,7 @@ Remember that if the data required to generate/create an element or elements is 
 
 ## 22. Don't conditionally hide elements on the client-side
 
-If an element or elements are shown conditionally and data about both the condition and the elements is available on the server-side, don't hide the elements on the client-side, instead don't generate them.
+If an element or elements are shown conditionally and data about both the condition and the elements is available on the server side, don't hide the elements on the client side, instead don't generate them.
 
 ```astro
 {/* don't do this */}
@@ -317,9 +317,9 @@ HTML comments are exposed to the client. Comments are used to help us, our devel
 }
 ```
 
-## 24. Balance between performance and nice-looking when writing code
+## 24. Maintain a balance between performance and nice-looking when writing code
 
-When building logic, give more importance to performance than making the code looking nice but don't make it gibberish just to make it run just a few milliseconds faster unless it's absolutely necessary.
+When building logic, give more importance to performance than making the code look nice but don't make it gibberish just to make it run just a few milliseconds faster unless it's absolutely necessary.
 
 ```js
 const fruits = ["apple", "banana", "orange", "grape", "watermelon"];
@@ -363,7 +363,7 @@ locales.map((locale, i) => {});
 
 ## 27. Always perform strict equality check
 
-When comparing equality of two values, always use the _strict equality check_ (`===`) rather than the _loose equality check_ (`==`). It helps to prevent unexpected errors.
+When comparing the equality of two values, always use the _strict equality check_ (`===`) rather than the _loose equality check_ (`==`). It helps to prevent unexpected errors.
 
 ```astro
 {/* don't do this */}
@@ -375,7 +375,7 @@ When comparing equality of two values, always use the _strict equality check_ (`
 
 ## 28. Convert values to boolean when checking for truthiness
 
-When checking for truthiness, convert the value to boolean if the expression signature doesn't make sense.
+When checking for truthiness, convert the value to a boolean if the expression signature doesn't make sense.
 
 ```js
 const hasToRemoveItem = !!target.closest(".remove-item-btn");
@@ -409,7 +409,7 @@ const blogPages = getPages(homeBlog, (_, { locale }) => ({
 
 ## 31. Prefix mobile versions with `sm`/`Sm`
 
-If there are two different versions of something for mobile and desktop, always prefix the name/label for the mobile version with `sm` or `Sm` depending on what language you are using. Even if there's no need to name/label the desktop version, the mobile version should must be prefixed with `sm` or `Sm`.
+If there are two different versions of something for mobile and desktop, always prefix the name/label for the mobile version with `sm` or `Sm` depending on what language you are using. Even if there's no need to name/label the desktop version, the mobile version must be prefixed with `sm` or `Sm`.
 
 ```astro
 {/* don't do this */}

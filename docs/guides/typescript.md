@@ -2,9 +2,9 @@
 Title: TypeScript
 ---
 
-Our codebase consists of both TypeScript and JavaScript files. We want to gradually migrate to TypeScript. But, we aren't giving it a high priority right now since it'll cost us a lot of efforts. So, we are trying to write new code in TypeScript as much as possible but keeping the existing code as it is.
+Our codebase consists of both TypeScript and JavaScript files. We want to gradually migrate to TypeScript. But we aren't giving it a high priority right now since it'll cost us a lot of efforts. So, we are trying to write new code in TypeScript as much as possible but keeping the existing code as it is.
 
-Astro supports TypeScript out of the box. So, we don't need to do anything special to use TypeScript in our codebase. It can be configured in the `tsconfig.json` file. Check out the [TypeScript Astro guide](https://docs.astro.build/en/guides/typescript/) for more details.
+Astro supports TypeScript out of the box. So, we needn't to do anything special to use TypeScript in our codebase. It can be configured in the `tsconfig.json` file. Check out the [TypeScript Astro guide](https://docs.astro.build/en/guides/typescript/) for more details.
 
 ## TODOs
 

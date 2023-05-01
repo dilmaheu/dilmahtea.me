@@ -2,11 +2,11 @@
 Title: How to clip images
 ---
 
-We use clipped images and elements too on many parts of the website. We have created dedicated components for this purpose to make clipping elements easier. Below is described how to clip elements using the these components.
+We use clipped images and elements too on many parts of the website. We have created dedicated components for this purpose to make clipping elements easier. Below is described how to clip elements using these components.
 
 ## Define the SVG clip path
 
-First, you need to define SVG clip path. To do this, you have to use the [`ClipPathSVG`](/src/components/ClipPathSVG.astro) component. This component accepts the following props:
+First, you need to define the SVG clip path. To do this, you have to use the [`ClipPathSVG`](/src/components/ClipPathSVG.astro) component. This component accepts the following props:
 
 - `id` - the ID of the clip path. This ID is used to reference the clip path in the `clip-path` CSS property.
 - `path` - the SVG path that defines the clipping area.

@@ -6,15 +6,15 @@ Testing is an important part of our software development process. We test featur
 
 ## Testing Environments
 
-Our website is hosted on Cloudflare Pages. In Cloudflare Pages, there are three environments: _Production_, _Development_, and _Preview_. The _Production_ environment is built from the `main` branch, the _Development_ environment is built from the `dev` branch, and for every other branch, there is a _Preview_ environment for it.
+Our website is hosted on Cloudflare Pages. On Cloudflare Pages, there are three environments: _Production_, _Development_, and _Preview_. The _Production_ environment is built from the `main` branch, the _Development_ environment is built from the `dev` branch, and for every other branch, there is a _Preview_ environment for it.
 
-The _Production_ environment is hosted at [https://dilmahtea.me], the _Development_ environment is hosted at [https://dev.dilmahtea-me.pages.dev], and the _Preview_ environments are hosted at subdomains of [https://dilmahtea-me.pages.dev]. The subdomain is hyphenated version of the branch name. For example, the _Preview_ environment for the `feature/xyz` branch is hosted at [https://feature-xyz.dilmahtea-me.pages.dev].
+The _Production_ environment is hosted at [https://dilmahtea.me], the _Development_ environment is hosted at [https://dev.dilmahtea-me.pages.dev], and the _Preview_ environments are hosted at subdomains of [https://dilmahtea-me.pages.dev]. The subdomain is the hyphenated version of the branch name. For example, the _Preview_ environment for the `feature/xyz` branch is hosted at [https://feature-xyz.dilmahtea-me.pages.dev].
 
 **Note:** The _Development_ environment is not a concept of **Cloudflare Pages**. We treat the _Preview_ environment for the `dev` branch as the _Development_ environment.
 
 ## Workflow
 
-We developers first work on a feature or a bug fix from the dev server. It's our duty to make sure everything is working as expected. Then we push the changes to the remote GitHub repository.
+We, developers, first work on a feature or a bug fix from the dev server. We have to make sure everything is working as expected. Then we push the changes to the remote GitHub repository.
 
 When we are working on something, we must create a new branch from the latest `dev` branch. And we should also prefix the branch name correctly, e.g. `feature/`, `bugfix/`, `update/`, `docs/`, etc.
 
@@ -22,7 +22,7 @@ When a branch on GitHub has been updated, Cloudflare automatically rebuilds the 
 
 Once the changes have been tested on the _Preview_ environment, and if everything is working as expected, the PR can be approved and merged. Cloudflare will automatically update the _Development_ environment on merge.
 
-The changes will stay on the _Development_ environment for a while. We can test the changes on the _Development_ environment before pushing them to the _Production_ environment. If everything is working as expected, we can merge the `dev` branch into the `main` branch by creating a PR. Cloudflare will automatically update the _Production_ environment.
+The changes will stay in the _Development_ environment for a while. We can test the changes on the _Development_ environment before pushing them to the _Production_ environment. If everything works as expected, we can merge the `dev` branch into the `main` branch by creating a PR. Cloudflare will automatically update the _Production_ environment.
 
 ## Experimental Features
 

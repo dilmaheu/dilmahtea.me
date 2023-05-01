@@ -16,7 +16,7 @@ const { page } = Astro.props;
 </div>
 ```
 
-If you have to render the markdown content programmatically, you'll need to use the [`renderMarkdown`](/src/utils/renderMarkdown.ts) utility function.
+If you have to render the markdown content programmatically, use the [`renderMarkdown`](/src/utils/renderMarkdown.ts) utility function.
 
 ```astro
 ---

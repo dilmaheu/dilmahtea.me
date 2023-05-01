@@ -20,7 +20,7 @@ We try to follow the below file & folder structure to keep the codebase organize
 - **public/scripts/\*.js**: Static client-side script files
 - **src**: Source files
 - **src/pages/\*\*.astro**: Astro pages
-- **src/pages/db/\*\*.ts**: Static file routes, used to generate client-side accessible data
+- **src/pages/db/\*\*.ts**: Static file routes; used to generate client-side accessible data
 - **src/components/\*.astro**: Astro components
 - **src/components/solid/\*.tsx**: Solid JS components
 - **src/components/solid/\*.astro**: Astro wrappers for Solid components, used to prune the props before passing them to the Solid components
@@ -29,8 +29,8 @@ We try to follow the below file & folder structure to keep the codebase organize
 - **src/layouts/\*.astro**: Astro layouts
 - **src/queries/\*.graphql**: GraphQL queries for fetching data from the CMS
 - **src/styles/\*.scss**: Global stylesheets & SASS modules
-- **src/stores/\*.(ts|js)**: Server-side stores, used to create easily accessible data sources
-- **src/stores/signals/\*.ts**: Solid JS signals, used for sharing data between components
+- **src/stores/\*.(ts|js)**: Server-side stores; used to create easily accessible data sources
+- **src/stores/signals/\*.ts**: Solid JS signals; used for sharing data between components
 - **src/utils/\*.(ts|js)**: Server-side utilities
 - **src/utils/client/\*.ts**: Client-side utilities
 - **src/postbuild-integration**: Custom Astro integration code for running post-build tasks

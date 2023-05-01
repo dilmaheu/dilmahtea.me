@@ -2,9 +2,9 @@
 Title: How to implement dynamic functionalities
 ---
 
-By dynamic functionalities, we refer to the interactive functionalities of the website that appear and function differently based on various parameters. We aren't going to talk about the dynamic things that we handle on the server side.
+By dynamic functionalities, we refer to the interactive functionalities of the website that appear and function differently based on various parameters. We won't talk about the dynamic things we handle on the server side.
 
-In web, it's obvious that we must use JavaScript to add interactive functionalities to the website. But since we are using Astro, we have multiple options to write code for the client side. Below is the list of the available options in the order of our priority:
+On the web, it's obvious that we must use JavaScript to add interactive functionalities to the website. But since we are using Astro, we have multiple options to write code for the client side. Below is the list of the available options in the order of our priority:
 
 1. Scripts
 2. Framework components
@@ -16,13 +16,13 @@ We primarily use scripts to add dynamic functionalities to the website. Astro pr
 1. Hoisted scripts
 2. Inline scripts
 
-We want to use hoisted scripts as much as possible because they are bundled and have _TypeScript_ support. But, if we need access to server-side variables, or if we want to run the script as soon as the browser sees it, we use inline scripts. Check out the [Astro documentation on Client-side scripts](https://docs.astro.build/en/guides/client-side-scripts/) to know how to use them, what are their advantages and disadvantages, and what are their differences.
+We want to use hoisted scripts as much as possible because they are bundled and have _TypeScript_ support. But, if we need access to server-side variables or want to run the script as soon as the browser sees it, we use inline scripts. Check out the [Astro documentation on Client-side scripts](https://docs.astro.build/en/guides/client-side-scripts/) to know how to use them, what are their advantages and disadvantages, and the differences.
 
 ### `DynamicHTML` component
 
 The `DynamicHTML` component is a custom Astro component that we have created to make it easier to dynamically add content to the HTML during page load.
 
-The `DynamicHTML` components accepts content inside its body. All the Astro template features can be used inside the component body. The content can also have placeholders that can be replaced inside the `htmlFn`
+The `DynamicHTML` component accepts content inside its body. All the Astro template features can be used inside the component body. The content can also have placeholders that can be replaced inside the `htmlFn`
 or `voidFn` function props using the `window.replacePlaceholders` function.
 
 The component accepts one of the two functions as props:
@@ -30,7 +30,7 @@ The component accepts one of the two functions as props:
 - `htmlFn`: The `htmlFn` function is called with a single argument, the rendered HTML component body. The function should return the processed HTML string that will be rendered in the browser.
 - `voidFn`: The `voidFn` function is called with two arguments, the rendered HTML component body and the `document.currentScript` script element. The function should return nothing. It can use the HTML body and process it and append the dynamic content manually to the DOM.
 
-**Note:** If any components are used inside the `DynamicHTML` component body, no placeholders should be used their props. Because are props are server-side and the placeholders will be replaced on the client-side.
+**Note:** If any components are used inside the `DynamicHTML` component body, no placeholders should be used in their props. Because props are server-side and the placeholders will be replaced on the client-side.
 
 #### Code Examples
 
@@ -71,7 +71,7 @@ Below is an example with placeholders:
 </DynamicHTML>
 ```
 
-Below in an example with placeholders and the `voidFn` function:
+Below is an example with placeholders and the `voidFn` function:
 
 ```astro
 <DynamicHTML
@@ -102,9 +102,9 @@ Below in an example with placeholders and the `voidFn` function:
 </DynamicHTML>
 ```
 
-Check out the `DynamicHTML` components that we have used in the project to get a better understanding on the real-world usage of the component.
+Check out the `DynamicHTML` components that we have used in the project to get a better understanding of the real-world usage of the component.
 
-**Note:** The `DynamicHTML` component has been used in some places where it has made the code too complex. When we had created the component, we didn't plan to use framework components. But now since we are using framework components, we want to eventually rewrite those parts with frameworks components to make them easier to maintain.
+**Note:** The `DynamicHTML` component has been used in some places where it has made the code too complex. When we created the component, we didn't plan to use framework components. But now, since we are using framework components, we want to eventually rewrite those parts with framework components to make them easier to maintain.
 
 ## Solid JS components (Framework components)
 
