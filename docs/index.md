@@ -24,3 +24,5 @@ This is the index file for the documentation of the `dilmahtea.me` repository.
   - [How to work with Solid JS components](/docs/tutorials/how-to-work-with-solid-components.md)
   - [How to clip images](/docs/tutorials/how-to-clip-images.md)
   - [How to work with remote images](/docs/tutorials/how-to-work-with-remote-images.md)
+- FAQs
+  - [How to fix the "Unknown word" error](/docs/faqs/how-to-fix-the-unknown-word-error.md)
