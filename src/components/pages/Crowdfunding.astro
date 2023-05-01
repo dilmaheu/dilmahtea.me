@@ -59,7 +59,7 @@ const goal = 100000,
   >
     <div class="flex flex-wrap items-center sm:w-7/12 h-full sm:pb-8 md:pb-0">
       <div class="mt-[30px] sm:mt-4 lg:mt-0">
-        <h1 class="hero-title">
+        <h1 class="hero-title text-white">
           {page.Title}
 
           <span class="icon">
@@ -67,7 +67,7 @@ const goal = 100000,
           </span>
         </h1>
 
-        <div class="hero-text prose text-secondary leading-normal max-w-none">
+        <div class="hero-text prose text-white max-w-none">
           <Markdown>{page.Intro_text}</Markdown>
         </div>
 
@@ -183,26 +183,42 @@ const goal = 100000,
 
 {/* Plans Section */}
 <section role="main" class="wrapper py-6 sm:py-[50px]">
-  <h2 id="plans" class="heading-primary text-primary">
+  <h2 id="plans" class="heading-primary text-primary pb-[25px] font-bold">
     {page.Heading_plans}
   </h2>
 
   <PlanCards allPlans={page.allPlans} {ariaLabelRecurData} />
 </section>
 
+<ClipPathSVG
+  id="crowdfunding-info-bg-curve"
+  path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.231,-0.017 c0.074,0,0.2,0.037,0.315,0.01 s0.106,-0.071,0.106,-0.071 V0.055"
+/>
+
 {/* Info Section */}
 <section
   role="complementary"
-  class="relative h-[400px] sm:h-[clamp(400px,20vw+430px,840px)] overflow-hidden"
+  style="clip-path: url(#crowdfunding-info-bg-curve);"
+  class="relative h-[400px] sm:h-[clamp(400px,20vw+430px,840px)] overflow-hidden bg-primary"
 >
   {/* Background  */}
-  <div class="w-screen h-full absolute z-10 -top-10 sm:top-0 -left-0.5">
-    <ClippedPicture
-      id="crowdfunding-info-bg-curve"
-      src={crowdfunding_info_section_background.src}
-      path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.231,-0.017 c0.074,0,0.2,0.037,0.315,0.01 s0.106,-0.071,0.106,-0.071 V0.055"
-    />
-  </div>
+  {
+    crowdfunding_info_section_background && (
+      <Picture
+        alt=""
+        layout="fill"
+        objectPosition="left bottom"
+        breakpoints={{ maxWidth: 768 }}
+        src={crowdfunding_info_section_background.src}
+        sizes="(min-width: 640px) 100vw, 100vw"
+        attributes={{
+          picture: {
+            style: "position: absolute; width: 100vw; hight: 100%;",
+          },
+        }}
+      />
+    )
+  }
 
   {/* Blob Image - Desktop View */}
   <div
@@ -226,7 +242,7 @@ const goal = 100000,
     <div
       class="relative w-full sm:w-1/2 h-full flex flex-col sm:justify-center py-6 sm:py-0 sm:pl-6 lg:pl-12"
     >
-      <h2 class="heading-primary leading-tight tracking-tight">
+      <h2 class="heading-primary leading-tight tracking-tight font-bold">
         {page.Heading_block}
 
         <span class="icon">

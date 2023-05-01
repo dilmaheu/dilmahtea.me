@@ -5,8 +5,7 @@ import RecurringImages from "@store/RecurringImages";
 import { Picture } from "astro-imagetools/components";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
-const { logo, checkout_header_background, checkout_header_background_sm } =
-  RecurringImages;
+const { logo, nav_background, nav_background_sm } = RecurringImages;
 
 interface Props {
   page: Record<string, any>;
@@ -30,6 +29,15 @@ const checkoutStepOrder = page.checkout_step_order,
   @use "src/styles/poly-fluid" as *;
 
   .checkout-flow-container {
+    @include poly-fluid-sizing(
+      "height",
+      (
+        640px: 80px,
+        768px: 94px,
+        1024px: 124px,
+      )
+    );
+
     padding: poly-fluid-clamp(
       (
         375px: 24px 24px,
@@ -89,32 +97,38 @@ const checkoutStepOrder = page.checkout_step_order,
   </script>
 
   <div id="checkout" class="bg-secondary">
-    <header class="checkout-flow-container z-10 fixed md:relative w-full">
+    <header
+      class="checkout-flow-container z-10 fixed md:relative w-full bg-primary"
+      style="clip-path: url(#checkout-header-curve);"
+    >
       <ClipPathSVG
         id="checkout-header-curve"
         path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
       />
 
-      <Picture
-        alt=""
-        layout="fill"
-        preload="avif"
-        breakpoints={{ maxWidth: 640 }}
-        src={checkout_header_background_sm.src}
-        artDirectives={[
-          {
-            media: "(min-width: 640px)",
-            breakpoints: { minWidth: 640 },
-            src: checkout_header_background.src,
-          },
-        ]}
-        attributes={{
-          picture: {
-            style:
-              "position: absolute; top: 0; left: 0; clip-path: url(#checkout-header-curve);",
-          },
-        }}
-      />
+      {
+        nav_background && (
+          <Picture
+            alt=""
+            layout="fill"
+            preload="avif"
+            breakpoints={{ maxWidth: 640 }}
+            src={nav_background_sm?.src || nav_background.src}
+            artDirectives={[
+              {
+                media: "(min-width: 640px)",
+                breakpoints: { minWidth: 640 },
+                src: nav_background.src,
+              },
+            ]}
+            attributes={{
+              picture: {
+                style: "position: absolute; top: 0; left: 0;",
+              },
+            }}
+          />
+        )
+      }
 
       <div class="relative flex justify-between gap-[5%]">
         <a href="/" class="h-full">
@@ -122,7 +136,7 @@ const checkoutStepOrder = page.checkout_step_order,
         </a>
 
         <div
-          class="flow flex-grow grid gap-[3.25%]"
+          class="flow flex-grow grid gap-[3.25%] text-white"
           style={`grid-template-columns: ${Array.from({ length: steps.length })
             .map(() => "1fr")
             .join(" ")}`}
@@ -157,13 +171,13 @@ const checkoutStepOrder = page.checkout_step_order,
                   )}
 
                   {i + 1 === checkoutStepOrder ? (
-                    <div class="grid grid-cols-2 bg-secondary-light/30">
-                      <div class="bg-secondary-light" />
+                    <div class="grid grid-cols-2 bg-primary-light/30">
+                      <div class="bg-white" />
                     </div>
                   ) : i + 1 > checkoutStepOrder ? (
-                    <div class="bg-secondary-light/30" />
+                    <div class="bg-primary-light/30" />
                   ) : (
-                    <div class="bg-secondary-light" />
+                    <div class="bg-white" />
                   )}
                 </div>
               );

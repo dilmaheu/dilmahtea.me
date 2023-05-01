@@ -63,37 +63,41 @@ const { Nav_menu: menu } = recurData;
 />
 
 <section
-  class="hero overflow-hidden relative"
+  class="hero overflow-hidden relative bg-primary"
   style="clip-path: url(#hero-background-curve);"
 >
   <UpdateTopMargin />
 
-  <Picture
-    alt=""
-    layout="fill"
-    preload="avif"
-    objectFit="cover"
-    objectPosition="left top"
-    src={hero_background_sm.src}
-    breakpoints={{ maxWidth: 768 }}
-    artDirectives={[
-      {
-        media: "(min-width: 768px)",
-        breakpoints: { minWidth: 768 },
-        src: hero_background.src,
-      },
-    ]}
-    attributes={{
-      picture: {
-        style: "position: absolute;",
-      },
-    }}
-  />
+  {
+    hero_background && (
+      <Picture
+        alt=""
+        layout="fill"
+        preload="avif"
+        objectFit="cover"
+        objectPosition="left top"
+        src={hero_background_sm?.src || hero_background.src}
+        breakpoints={{ maxWidth: 768 }}
+        artDirectives={[
+          {
+            media: "(min-width: 768px)",
+            breakpoints: { minWidth: 768 },
+            src: hero_background.src,
+          },
+        ]}
+        attributes={{
+          picture: {
+            style: "position: absolute;",
+          },
+        }}
+      />
+    )
+  }
 
   <div class="relative">
-    <div class="hidden md:flex items-end bg-primary md:h-[76px]">
+    <div class="hidden md:flex items-end bg-primary-light md:h-[76px]">
       <div class="nav-menu-caontainer wrapper pb-2.5 md:pb-[15px]">
-        <nav class="text-white h-full">
+        <nav class="text-black font-semibold h-full">
           <span class="flex gap-5 justify-between items-center h-full">
             {
               menu.map(

@@ -10,12 +10,8 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
 
-const {
-  logo,
-  sidebar_background,
-  checkout_header_background,
-  checkout_header_background_sm,
-} = RecurringImages;
+const { logo, nav_background, nav_background_sm, sidebar_background } =
+  RecurringImages;
 
 interface Props {
   docLocale: string;
@@ -117,26 +113,29 @@ const {
       path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
     />
 
-    <Picture
-      alt=""
-      layout="fill"
-      preload="avif"
-      breakpoints={{ maxWidth: 640 }}
-      src={checkout_header_background_sm.src}
-      artDirectives={[
-        {
-          media: "(min-width: 640px)",
-          breakpoints: { minWidth: 640 },
-          src: checkout_header_background.src,
-        },
-      ]}
-      attributes={{
-        picture: {
-          style:
-            "position: absolute; top: 0; left: 0; clip-path: url(#nav-curve);",
-        },
-      }}
-    />
+    <div
+      class="absolute top-0 left-0 w-full h-full bg-primary"
+      style="clip-path: url(#nav-curve);"
+    >
+      {
+        nav_background && (
+          <Picture
+            alt=""
+            layout="fill"
+            preload="avif"
+            breakpoints={{ maxWidth: 640 }}
+            src={nav_background_sm?.src || nav_background.src}
+            artDirectives={[
+              {
+                media: "(min-width: 640px)",
+                breakpoints: { minWidth: 640 },
+                src: nav_background.src,
+              },
+            ]}
+          />
+        )
+      }
+    </div>
 
     {
       !isCartNavbar && (
@@ -178,7 +177,7 @@ const {
                 aria-label={
                   ariaLabelRecurData.Navbar_open_localization_menu_text
                 }
-                class="nav-icon peer w-fit flex justify-center items-center bg-secondary rounded-full cursor-pointer"
+                class="nav-icon peer w-fit flex justify-center items-center bg-white rounded-full cursor-pointer"
               >
                 <img
                   src={await localizeCMSImage(
@@ -190,12 +189,14 @@ const {
 
               <form class="localization-form hidden absolute w-[280px] -translate-x-1/2 left-1/2 drop-shadow-lg">
                 <div class="relative flex justify-center pt-1">
-                  <div class="w-5 h-5 bg-secondary rotate-45 rounded" />
+                  <div class="w-5 h-5 bg-white rotate-45 rounded" />
                 </div>
 
-                <div class="grid gap-[15px] content-between bg-secondary rounded-[12px] p-[25px] -translate-y-3">
+                <div class="grid gap-[15px] content-between bg-white rounded-[12px] p-[25px] -translate-y-3">
                   <div class="grid gap-[6px] text-black-light">
-                    <div class="text-[15px] font-medium">{text_language}</div>
+                    <div class="text-[15px] font-medium text-black">
+                      {text_language}
+                    </div>
 
                     {languageSelectorVisibility && (
                       <LangSelectorsDropdown
@@ -207,7 +208,7 @@ const {
 
                   <button
                     type="submit"
-                    class="py-2.5 px-4 bg-primary text-secondary-light leading-[120%] rounded-full"
+                    class="py-2.5 px-4 bg-primary text-white leading-[120%] rounded-full"
                   >
                     {Button_save_text}
                   </button>
@@ -224,7 +225,7 @@ const {
                 id="localization-menu-sm-open-btn"
                 class:list={[
                   "nav-icon flex justify-center items-center",
-                  "peer bg-secondary rounded-full cursor-pointer",
+                  "peer bg-white rounded-full cursor-pointer",
                 ]}
               >
                 <img
@@ -247,7 +248,7 @@ const {
             >
               <span
                 style="clip-path: url(#cart-btn-curve);"
-                class="nav-icon block bg-secondary rounded-full"
+                class="nav-icon block bg-white rounded-full"
               >
                 <img
                   src={await localizeCMSImage(cartIcon?.data?.attributes.url)}
@@ -264,7 +265,7 @@ const {
                 <span
                   class:list={[
                     "nav-cart-num flex justify-center items-center",
-                    "text-[10px] lg:text-xs text-white rounded-full bg-red-600",
+                    "text-[10px] lg:text-xs text-white rounded-full bg-error",
                   ]}
                 >
                   <span id="cart-size">
@@ -314,58 +315,63 @@ const {
 
     <div
       id="sidebar"
-      class="hidden md:!hidden fixed top-0 right-0 z-[40] w-[300px] max-w-full h-screen z-[99]"
+      class="hidden md:!hidden fixed top-0 right-0 z-[40] w-[300px] max-w-full h-screen bg-primary z-[99]"
     >
-      <BackgroundPicture
-        sizes="300px"
-        layout="fill"
-        preload="avif"
-        loading="lazy"
-        src={sidebar_background.src}
-        objectPosition="right bottom"
-        breakpoints={{ minWidth: 300 }}
-        attributes={{
-          container: { style: "height: 100%;" },
-          link: { media: "(max-width: 767.98px)" },
-        }}
-      >
-        <div class="grid content-between h-full px-[30px] pt-[26px] pb-9">
-          <div class="z-10 grid gap-9">
-            <div class="flex items-center gap-x-[15px] justify-end">
-              <div class="w-[35px] h-[35px]">
-                <button
-                  id="sidebar-close-btn"
-                  aria-label={ariaLabelRecurData.Navbar_close_sidebar_menu_text}
-                  class="hidden w-full h-full select-none cursor-pointer"
-                >
-                  <svg
-                    viewBox="0 0 19.2 19.2"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
-                      style="fill: #e3dfde; fill-rule: evenodd"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
+      {
+        sidebar_background && (
+          <Picture
+            alt=""
+            sizes="300px"
+            layout="fill"
+            preload="avif"
+            loading="lazy"
+            src={sidebar_background.src}
+            objectPosition="right bottom"
+            breakpoints={{ minWidth: 300 }}
+            attributes={{
+              container: { style: "height: 100%;" },
+              link: { media: "(max-width: 767.98px)" },
+              picture: {
+                style: "position: absolute; bottom: 0; right: 0;",
+              },
+            }}
+          />
+        )
+      }
 
-            <nav class="flex flex-col gap-[35px] text-white">
-              {
-                menu.map(
-                  ({ Visibility, Title, Link }) =>
-                    Visibility && <a href={Link}>{Title}</a>
-                )
-              }
-            </nav>
+      <div class="grid content-between h-full px-[30px] pt-[26px] pb-9 z-10">
+        <div class="z-10 grid gap-9">
+          <div class="flex items-center gap-x-[15px] justify-end">
+            <div class="w-[35px] h-[35px]">
+              <button
+                id="sidebar-close-btn"
+                aria-label={ariaLabelRecurData.Navbar_close_sidebar_menu_text}
+                class="hidden w-full h-full select-none cursor-pointer"
+              >
+                <svg viewBox="0 0 19.2 19.2" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+                    style="fill: #e3dfde; fill-rule: evenodd"></path>
+                </svg>
+              </button>
+            </div>
           </div>
 
-          <div
-            class="text-xs font-normal leading-[150%] z-10"
-            set:html={footerText}
-          />
+          <nav class="flex flex-col gap-[35px] text-white">
+            {
+              menu.map(
+                ({ Visibility, Title, Link }) =>
+                  Visibility && <a href={Link}>{Title}</a>
+              )
+            }
+          </nav>
         </div>
-      </BackgroundPicture>
+
+        <div
+          class="text-xs font-normal leading-[150%] z-10"
+          set:html={footerText}
+        />
+      </div>
     </div>
 
     <div
