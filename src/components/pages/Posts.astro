@@ -3,6 +3,7 @@ import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
 import Hero from "@components/Hero.astro";
+import Pagination from "@components/Pagination.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 
@@ -47,7 +48,7 @@ const {
 } = RecurringImages;
 
 const { page, ariaLabelRecurData } = Astro.props,
-  { posts, locale } = page,
+  { posts, locale, pagination } = page,
   { ASSETS_URL } = import.meta.env;
 
 posts.sort((a, b) => {
@@ -318,4 +319,6 @@ const [firstPost] = posts;
       })
     }
   </div>
+
+  {pagination && <Pagination pagination={pagination} />}
 </section>
