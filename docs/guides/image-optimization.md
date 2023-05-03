@@ -71,6 +71,14 @@ To know more about the placeholder functionality of `astro-imagetools` and its u
 
 `astro-imagetools` has built-in support for remote images. To know more about how to use remote images, check out the [How to work with remote images](/docs/tutorials/how-to-work-with-remote-images) tutorial.
 
+## Caching
+
+`astro-imagetools` has built-in support for caching to reduce build time for subsequent builds. We have set the cache directory to `.cache/astro-imagetools`. Due to a bug (`Segmentation fault` errors), we frequently used to face in **Cloudflare Pages**, we commit the cache directory to Git so that Cloudflare doesn't need to perform any kind of image optimization related tasks during build.
+
+Whenever any new images get optimized, the cache directory gets updated. But don't commit the cache directory whenever it changes. Commit it only after finishing a PR that contains a large number of changes or image optimization related changes.
+
+Before committing the cache directory, first, delete the entire `.cache/astro-imagetools` directory, and then rebuild the cache from scratch by running the build command. Then commit the cache directory. Otherwise, the cache directory will contain unnecessary images, gradually increasing the size of the repository.
+
 ## The `sizes` attribute
 
 The `sizes` attribute is an attribute used by browsers to calculate the exact rendered width of an image before downloading and rendering it. It's used to determine the best image to download from the `srcset` attribute. To know more about the `sizes` attribute, check out the [How to calculate the value of the `sizes` attribute](/docs/tutorials/how-to-calculate-the-value-of-the-sizes-attribute) tutorial.
