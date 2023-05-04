@@ -2,8 +2,8 @@
 import Icon from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
 
-import FilteredProducts from "@solid/FilteredProducts";
-import ProductFiltersForm from "@solid/ProductFiltersForm";
+import FilteredProducts from "@solid/FilteredProducts.astro";
+import ProductFiltersForm from "@solid/ProductFiltersForm.astro";
 
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
@@ -153,23 +153,20 @@ page.Heading_button_link = "#content";
       }
 
       <ProductFiltersForm
-        client:load
         {locale}
-        {...ProductFiltersForm.pruneProps({
-          productSizes,
-          productVariants,
-          recurData,
-        })}
+        {productSizes}
+        {productVariants}
+        {recurData}
       />
     </div>
 
     {/* Products Section */}
     <section role="main" class="grid gap-y-[50px]">
       <FilteredProducts
-        client:load
+        {page}
+        {recurData}
         {white_right_arrow}
         category={page.Title}
-        {...FilteredProducts.pruneProps({ page, recurData })}
       >
         <Icon
           slot="alertCircleIcon"
@@ -195,10 +192,10 @@ page.Heading_button_link = "#content";
             </div>
 
             <FilteredProducts
-              client:load
+              {page}
+              {recurData}
               {white_right_arrow}
               subCategory={Title}
-              {...FilteredProducts.pruneProps({ page, recurData })}
             >
               <Icon
                 slot="alertCircleIcon"
