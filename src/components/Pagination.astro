@@ -1,0 +1,128 @@
+---
+import { Icon } from "astro-icon";
+
+const { pagination } = Astro.props,
+  { basePathname, pagesCount, currentPage } = pagination;
+
+const previousPage = currentPage - 1,
+  nextPage = currentPage + 1,
+  isFirstPage = currentPage === 1,
+  isLastPage = currentPage === pagesCount;
+
+const getPathname = (page) =>
+  page === 1
+    ? basePathname
+    : basePathname + (basePathname === "/" ? "" : "/") + page;
+---
+
+<style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
+  #pagination {
+    :global(svg) {
+      width: poly-fluid-clamp(
+        (
+          375px: 30px,
+          1440px: 35px,
+        )
+      );
+
+      height: poly-fluid-clamp(
+        (
+          375px: 30px,
+          1440px: 35px,
+        )
+      );
+    }
+
+    nav {
+      gap: poly-fluid-clamp(
+        (
+          375px: 18px,
+          1440px: 45px,
+        )
+      );
+
+      font-size: poly-fluid-clamp(
+        (
+          375px: 18px,
+          1440px: 25px,
+        )
+      );
+
+      a.active {
+        @apply text-white bg-primary rounded-full flex justify-center items-center;
+
+        width: poly-fluid-clamp(
+          (
+            375px: 35px,
+            1440px: 45px,
+          )
+        );
+
+        height: poly-fluid-clamp(
+          (
+            375px: 35px,
+            1440px: 45px,
+          )
+        );
+      }
+    }
+  }
+</style>
+
+<div id="pagination" class="flex justify-between items-center pb-[50px]">
+  {
+    previousPage > 0 ? (
+      <a href={getPathname(previousPage)}>
+        <Icon name="ep:arrow-left-bold" class="text-primary" />
+      </a>
+    ) : (
+      <span />
+    )
+  }
+
+  <nav class="flex items-center text-black font-bold leading-[150%]">
+    {previousPage > 1 && <a href={basePathname}>1</a>}
+
+    {previousPage > (isLastPage ? 3 : 2) && <span>…</span>}
+
+    {
+      isLastPage && pagesCount - 2 > 1 && (
+        <a href={getPathname(pagesCount - 2)}>{pagesCount - 2}</a>
+      )
+    }
+
+    {previousPage > 0 && <a href={getPathname(previousPage)}>{previousPage}</a>}
+
+    <a href={getPathname(currentPage)} class="active">
+      {currentPage}
+    </a>
+
+    {
+      nextPage < pagesCount + 1 && (
+        <a href={getPathname(nextPage)}>{nextPage}</a>
+      )
+    }
+
+    {isFirstPage && pagesCount > 3 && <a href={getPathname(3)}>{3}</a>}
+
+    {nextPage < pagesCount - (isFirstPage ? 2 : 1) && <span>…</span>}
+
+    {
+      nextPage < pagesCount && (
+        <a href={getPathname(pagesCount)}>{pagesCount}</a>
+      )
+    }
+  </nav>
+
+  {
+    nextPage < pagesCount + 1 ? (
+      <a href={getPathname(nextPage)}>
+        <Icon name="ep:arrow-right-bold" class="text-primary" />
+      </a>
+    ) : (
+      <span />
+    )
+  }
+</div>
