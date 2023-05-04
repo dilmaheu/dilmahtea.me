@@ -61,6 +61,48 @@ export async function getStaticPaths() {
     attributes.code.substring(0, 2)
   );
 
+  const paginate = (routes) => {
+    const POSTS_PER_PAGE = 10;
+
+    routes.forEach((route) => {
+      const { page } = route.props,
+        { posts } = page;
+
+      if (posts?.length > POSTS_PER_PAGE) {
+        const { URL_slug: basePathname } = page.Meta,
+          pagesCount = Math.ceil(posts.length / POSTS_PER_PAGE);
+
+        // generate routes for additional pages
+        Array.from({ length: pagesCount - 1 }).forEach((_, i) => {
+          const routeClone = structuredClone(route);
+
+          const postsSlice = posts.slice(
+            i + 1 * POSTS_PER_PAGE,
+            (i + 2) * POSTS_PER_PAGE
+          );
+
+          routeClone.params.slug += `/${i + 2}`;
+          routeClone.props.page.posts = postsSlice;
+          routeClone.props.page.pagination = {
+            basePathname,
+            pagesCount,
+            currentPage: i + 2,
+          };
+
+          routes.push(routeClone);
+        });
+
+        // limit posts on the first page
+        page.posts = posts.slice(0, POSTS_PER_PAGE);
+        page.pagination = {
+          basePathname,
+          pagesCount,
+          currentPage: 1,
+        };
+      }
+    });
+  };
+
   const getRouteData = (page, getProps) => {
     const defaultSlug = page.attributes.Meta?.URL_slug,
       availableLocales = [
@@ -106,10 +148,15 @@ export async function getStaticPaths() {
     });
   };
 
-  const getPages = ({ data }, getProps) =>
-    Array.isArray(data)
+  const getRoutes = ({ data }, getProps, enablePagination?) => {
+    const routes = Array.isArray(data)
       ? data.flatMap((page) => getRouteData(page, getProps))
       : getRouteData(data, getProps);
+
+    enablePagination && paginate(routes);
+
+    return routes;
+  };
 
   const getPosts = ({ data }, locale) =>
     data
@@ -127,43 +174,43 @@ export async function getStaticPaths() {
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
 
-  const plansPages = getPages(crowdfundingPlans, (page, { Title }) => ({
+  const plansPages = getRoutes(crowdfundingPlans, (page, { Title }) => ({
     type: "plan",
     Meta: crowdfundingForm.data.attributes.Meta,
     slug: `plans/${(Title || page.attributes.Title).toLowerCase()}`,
   }));
 
-  const crowdfundingPages = getPages(crowdfundingHome, (_, { locale }) => ({
+  const crowdfundingPages = getRoutes(crowdfundingHome, (_, { locale }) => ({
     type: "crowdfunding",
     allPlans: locale && getPosts(crowdfundingPlans, locale),
   }));
 
-  const basicPages = getPages(basicPagesData, () => ({ type: "basic" }));
+  const basicPages = getRoutes(basicPagesData, () => ({ type: "basic" }));
 
-  const crowdfundingPaymentConfirmationPages = getPages(
+  const crowdfundingPaymentConfirmationPages = getRoutes(
     crowdfundingPaymentConfirmation,
     () => ({ type: "basic" })
   );
 
-  const blogDetailsPages = getPages(blogs, (_, { locale }) => ({
+  const blogDetailsPages = getRoutes(blogs, (_, { locale }) => ({
     type: "blogDetails",
     blogs: locale && getPosts(blogs, locale),
   }));
 
-  const howToDetailsPages = getPages(howTos, (_, { locale }) => ({
+  const howToDetailsPages = getRoutes(howTos, (_, { locale }) => ({
     type: "howToDetails",
     howTos: locale && getPosts(howTos, locale),
   }));
 
-  const recipeDetailsPages = getPages(recipes, () => ({
+  const recipeDetailsPages = getRoutes(recipes, () => ({
     type: "recipeDetails",
   }));
 
-  const estateDetailsPages = getPages(estates, () => ({
+  const estateDetailsPages = getRoutes(estates, () => ({
     type: "estateDetails",
   }));
 
-  const productDetailsPages = getPages(allProducts, (page) => ({
+  const productDetailsPages = getRoutes(allProducts, (page) => ({
     type: "productDetails",
     names: (() => {
       const nameEntries = [page, ...page.attributes.localizations.data].map(
@@ -177,60 +224,76 @@ export async function getStaticPaths() {
     })(),
   }));
 
-  const blogPages = getPages(homeBlog, (_, { locale }) => ({
-    type: "blog",
-    posts: locale && getPosts(blogs, locale),
-  }));
+  const blogPages = getRoutes(
+    homeBlog,
+    (_, { locale }) => ({
+      type: "blog",
+      posts: locale && getPosts(blogs, locale),
+    }),
+    true
+  );
 
-  const howToPages = getPages(homeHowTo, (_, { locale }) => ({
-    type: "howTo",
-    posts: locale && getPosts(howTos, locale),
-  }));
+  const howToPages = getRoutes(
+    homeHowTo,
+    (_, { locale }) => ({
+      type: "howTo",
+      posts: locale && getPosts(howTos, locale),
+    }),
+    true
+  );
 
-  const recipePages = getPages(homeRecipe, (_, { locale }) => ({
-    type: "recipe",
-    posts: locale && getPosts(recipes, locale),
-  }));
+  const recipePages = getRoutes(
+    homeRecipe,
+    (_, { locale }) => ({
+      type: "recipe",
+      posts: locale && getPosts(recipes, locale),
+    }),
+    true
+  );
 
-  const estatePages = getPages(homeEstate, (_, { locale }) => ({
+  const estatePages = getRoutes(homeEstate, (_, { locale }) => ({
     type: "estate",
     posts: locale && getPosts(estates, locale),
   }));
 
-  const productPages = getPages(homeProduct, () => ({
+  const productPages = getRoutes(homeProduct, () => ({
     type: "product",
   }));
 
-  const productCategoryPages = getPages(productCategories, () => ({
+  const productCategoryPages = getRoutes(productCategories, () => ({
     type: "productCategory",
   }));
 
-  const homepagePages = getPages(homepage, (_, { locale }) => ({
-    type: "homepage",
-    posts: locale && [
-      ...getPosts(blogs, locale),
-      ...getPosts(howTos, locale),
-      ...getPosts(recipes, locale),
-    ],
-  }));
+  const homepagePages = getRoutes(
+    homepage,
+    (_, { locale }) => ({
+      type: "homepage",
+      posts: locale && [
+        ...getPosts(blogs, locale),
+        ...getPosts(howTos, locale),
+        ...getPosts(recipes, locale),
+      ],
+    }),
+    true
+  );
 
-  const cartPages = getPages(cart, () => ({
+  const cartPages = getRoutes(cart, () => ({
     type: "cart",
   }));
 
-  const checkoutInformationPages = getPages(checkoutInformation, () => ({
+  const checkoutInformationPages = getRoutes(checkoutInformation, () => ({
     type: "checkoutInformation",
   }));
 
-  const checkoutKindnessPages = getPages(checkoutKindness, () => ({
+  const checkoutKindnessPages = getRoutes(checkoutKindness, () => ({
     type: "checkoutKindness",
   }));
 
-  const checkoutShippingPages = getPages(checkoutShipping, () => ({
+  const checkoutShippingPages = getRoutes(checkoutShipping, () => ({
     type: "checkoutShipping",
   }));
 
-  const checkoutSuccessPages = getPages(checkoutSuccess, () => ({
+  const checkoutSuccessPages = getRoutes(checkoutSuccess, () => ({
     type: "checkoutSuccess",
   }));
 
