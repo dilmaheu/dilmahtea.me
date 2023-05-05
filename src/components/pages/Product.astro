@@ -3,8 +3,8 @@ import Icon from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
-import FilteredProducts from "@solid/FilteredProducts";
-import ProductFiltersForm from "@solid/ProductFiltersForm";
+import FilteredProducts from "@solid/FilteredProducts.astro";
+import ProductFiltersForm from "@solid/ProductFiltersForm.astro";
 
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
@@ -205,13 +205,10 @@ const productSizes = CMS.get("productSizes"),
               </h2>
 
               <ProductFiltersForm
-                client:load
                 {locale}
-                {...ProductFiltersForm.pruneProps({
-                  productSizes,
-                  productVariants,
-                  recurData,
-                })}
+                {productSizes}
+                {productVariants}
+                {recurData}
               />
             </div>
           </div>
@@ -221,11 +218,7 @@ const productSizes = CMS.get("productSizes"),
           </div>
         </div>
 
-        <FilteredProducts
-          client:load
-          {white_right_arrow}
-          {...FilteredProducts.pruneProps({ page, recurData })}
-        >
+        <FilteredProducts {page} {recurData} {white_right_arrow}>
           <Icon
             slot="alertCircleIcon"
             name="mdi:alert-circle"

@@ -1,13 +1,14 @@
 ---
-import CMS from "@store/CMS";
-import localizeCMSImage from "@utils/localizeCMSImage";
 import { Picture, BackgroundPicture } from "astro-imagetools/components";
 
+import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+import localizeCMSImage from "@utils/localizeCMSImage";
+
+import SearchBar from "@components/SearchBar.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
-import SearchBar from "./SearchBar.astro";
 
 const { logo, nav_background, nav_background_sm, sidebar_background } =
   RecurringImages;
@@ -372,264 +373,265 @@ const {
         />
       </div>
     </div>
-  </div>
 
-  <div
-    class="block sm:hidden bg-primary h-[68px] flex items-end -mt-3 drop-shadow-lg"
-  >
-    <div class="wrapper pb-2.5 md:pb-[15px]">
-      {
-        searchVisibility && (
-          <div class="my-auto block md:hidden items-center overflow-hidden w-full">
-            <ci-search />
-          </div>
-        )
-      }
+    <div
+      class="block sm:hidden bg-primary h-[68px] flex items-end -mt-3 drop-shadow-lg"
+    >
+      <div class="wrapper pb-2.5 md:pb-[15px]">
+        {
+          searchVisibility && (
+            <div class="my-auto block md:hidden items-center overflow-hidden w-full">
+              <ci-search />
+            </div>
+          )
+        }
+      </div>
     </div>
-  </div>
 
-  <form
-    id="localization-menu-sm"
-    class:list={[
-      "localization-form fixed hidden sm:!hidden right-0 top-0",
-      "w-full h-screen p-[25px] bg-secondary text-black-light z-[9999]",
-    ]}
-  >
-    <div class="grid gap-[25px]">
-      <div class="flex justify-end">
-        <button
-          type="button"
-          aria-label={ariaLabelRecurData.Navbar_close_localization_menu_text}
-          id="localization-menu-sm-close-btn"
-          class="select-none cursor-pointer"
-        >
-          <svg
-            viewBox="0 0 19.2 19.2"
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-[35px] h-[35px]"
+    <form
+      id="localization-menu-sm"
+      class:list={[
+        "localization-form fixed hidden sm:!hidden right-0 top-0",
+        "w-full h-screen p-[25px] bg-secondary text-black-light z-[9999]",
+      ]}
+    >
+      <div class="grid gap-[25px]">
+        <div class="flex justify-end">
+          <button
+            type="button"
+            aria-label={ariaLabelRecurData.Navbar_close_localization_menu_text}
+            id="localization-menu-sm-close-btn"
+            class="select-none cursor-pointer"
           >
-            <path
-              d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
-              style="fill: #474747; fill-rule: evenodd"></path>
-          </svg>
+            <svg
+              viewBox="0 0 19.2 19.2"
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-[35px] h-[35px]"
+            >
+              <path
+                d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+                style="fill: #474747; fill-rule: evenodd"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="grid gap-[25px] content-between h-full">
+          <div class="grid gap-2.5">
+            <div class="text-[15px] font-medium">
+              {text_language}
+            </div>
+
+            {
+              languageSelectorVisibility && (
+                <LangSelectorsDropdown
+                  docLocale={docLocale}
+                  availableLocales={availableLocales}
+                />
+              )
+            }
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="py-2.5 px-4 bg-primary text-secondary-light leading-[120%] rounded-full"
+        >
+          {Button_save_text}
         </button>
       </div>
+    </form>
+  </div>
 
-      <div class="grid gap-[25px] content-between h-full">
-        <div class="grid gap-2.5">
-          <div class="text-[15px] font-medium">
-            {text_language}
-          </div>
+  <script is:inline>
+    {
+      const navigation = document.getElementById("navigation"),
+        translationNotFoundNotification = document.querySelector(
+          ".translation-not-found-notification"
+        );
 
-          {
-            languageSelectorVisibility && (
-              <LangSelectorsDropdown
-                docLocale={docLocale}
-                availableLocales={availableLocales}
-              />
-            )
-          }
-        </div>
-      </div>
+      const updateNavbarStyles = () => {
+        const translationNotFoundNotificationHeight =
+          translationNotFoundNotification.getBoundingClientRect().height;
 
-      <button
-        type="submit"
-        class="py-2.5 px-4 bg-primary text-secondary-light leading-[120%] rounded-full"
-      >
-        {Button_save_text}
-      </button>
-    </div>
-  </form>
-</header>
+        // fix sticky navbar position if top notification is shown
+        navigation.style.top = `${translationNotFoundNotificationHeight}px`;
+      };
 
-<script is:inline>
-  {
-    const navigation = document.getElementById("navigation"),
-      translationNotFoundNotification = document.querySelector(
-        ".translation-not-found-notification"
-      );
+      window.addEventListener("scroll", updateNavbarStyles);
+      window.addEventListener("resize", updateNavbarStyles);
+    }
+  </script>
 
-    const updateNavbarStyles = () => {
-      const translationNotFoundNotificationHeight =
-        translationNotFoundNotification.getBoundingClientRect().height;
+  <script>
+    const id = document.getElementById.bind(document);
 
-      // fix sticky navbar position if top notification is shown
-      navigation.style.top = `${translationNotFoundNotificationHeight}px`;
+    const rootElement = document.querySelector(":root") as HTMLElement,
+      cart = id("cart"),
+      sidebar = id("sidebar"),
+      cartNavbarBg = id("cart-navbar-bg"),
+      openCartBtn = id("open-cart-btn"),
+      sidebarOpenButton = id("sidebar-open-btn"),
+      sidebarCloseButton = id("sidebar-close-btn"),
+      localizationMenuSm = id("localization-menu-sm"),
+      localizationMenuOpenButton = id("localization-menu-open-btn"),
+      localizationMenuSmOpenButton = id("localization-menu-sm-open-btn"),
+      localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
+
+    const localization = localizationMenuOpenButton?.parentElement,
+      localizationMenu = localizationMenuOpenButton?.nextElementSibling,
+      localizationForms =
+        document.querySelectorAll<HTMLFormElement>(".localization-form");
+
+    window.disableScrolling = () => {
+      const overflowY =
+        window.innerHeight < document.body.scrollHeight ? "scroll" : "auto";
+
+      Object.assign(document.body.style, {
+        overflowY,
+        width: "100%",
+        position: "fixed",
+        top: `-${scrollY}px`,
+      });
     };
 
-    window.addEventListener("scroll", updateNavbarStyles);
-    window.addEventListener("resize", updateNavbarStyles);
-  }
-</script>
+    window.enableScrolling = () => {
+      const scrollYPosition =
+        parseInt(document.body.style.top.slice(1, -2)) || window.scrollY;
 
-<script>
-  const id = document.getElementById.bind(document);
-
-  const rootElement = document.querySelector(":root") as HTMLElement,
-    cart = id("cart"),
-    sidebar = id("sidebar"),
-    cartNavbarBg = id("cart-navbar-bg"),
-    openCartBtn = id("open-cart-btn"),
-    sidebarOpenButton = id("sidebar-open-btn"),
-    sidebarCloseButton = id("sidebar-close-btn"),
-    localizationMenuSm = id("localization-menu-sm"),
-    localizationMenuOpenButton = id("localization-menu-open-btn"),
-    localizationMenuSmOpenButton = id("localization-menu-sm-open-btn"),
-    localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
-
-  const localization = localizationMenuOpenButton?.parentElement,
-    localizationMenu = localizationMenuOpenButton?.nextElementSibling,
-    localizationForms =
-      document.querySelectorAll<HTMLFormElement>(".localization-form");
-
-  window.disableScrolling = () => {
-    const overflowY =
-      window.innerHeight < document.body.scrollHeight ? "scroll" : "auto";
-
-    Object.assign(document.body.style, {
-      overflowY,
-      width: "100%",
-      position: "fixed",
-      top: `-${scrollY}px`,
-    });
-  };
-
-  window.enableScrolling = () => {
-    const scrollYPosition =
-      parseInt(document.body.style.top.slice(1, -2)) || window.scrollY;
-
-    Object.assign(document.body.style, {
-      width: "auto",
-      overflowY: "auto",
-      position: "static",
-    });
-
-    try {
-      window.scrollTo({
-        top: scrollYPosition,
-        // @ts-ignore
-        behavior: "instant", // instant is valid but not recognized by typescript
-      });
-    } catch (error) {
-      const currentRootScrollBehavior = rootElement.style.scrollBehavior;
-
-      rootElement.style.scrollBehavior = "auto";
-
-      window.scrollTo({
-        top: scrollYPosition,
-        behavior: "auto",
+      Object.assign(document.body.style, {
+        width: "auto",
+        overflowY: "auto",
+        position: "static",
       });
 
-      rootElement.style.scrollBehavior = currentRootScrollBehavior;
-    }
-  };
+      try {
+        window.scrollTo({
+          top: scrollYPosition,
+          // @ts-ignore
+          behavior: "instant", // instant is valid but not recognized by typescript
+        });
+      } catch (error) {
+        const currentRootScrollBehavior = rootElement.style.scrollBehavior;
 
-  window.addEventListener("resize", () => {
-    if (
-      window.innerWidth < 1280 &&
-      (sidebar.style.display === "block" ||
-        localizationMenuSm.style.display === "block")
-    ) {
+        rootElement.style.scrollBehavior = "auto";
+
+        window.scrollTo({
+          top: scrollYPosition,
+          behavior: "auto",
+        });
+
+        rootElement.style.scrollBehavior = currentRootScrollBehavior;
+      }
+    };
+
+    window.addEventListener("resize", () => {
+      if (
+        window.innerWidth < 1280 &&
+        (sidebar.style.display === "block" ||
+          localizationMenuSm.style.display === "block")
+      ) {
+        window.disableScrolling();
+      } else {
+        // enable scrolling only if cart and checkout is not open
+        if (cart?.classList.contains("hidden")) window.enableScrolling();
+
+        cartNavbarBg &&
+          (cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)");
+      }
+    });
+
+    openCartBtn?.addEventListener("click", () => {
+      window.openCart();
+    });
+
+    sidebarOpenButton?.addEventListener("click", () => {
+      sidebar.style.display = "block";
+      sidebarOpenButton.style.display = "none";
+      sidebarCloseButton.style.display = "block";
+
       window.disableScrolling();
-    } else {
-      // enable scrolling only if cart and checkout is not open
-      if (cart?.classList.contains("hidden")) window.enableScrolling();
-
-      cartNavbarBg && (cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)");
-    }
-  });
-
-  openCartBtn?.addEventListener("click", () => {
-    window.openCart();
-  });
-
-  sidebarOpenButton?.addEventListener("click", () => {
-    sidebar.style.display = "block";
-    sidebarOpenButton.style.display = "none";
-    sidebarCloseButton.style.display = "block";
-
-    window.disableScrolling();
-  });
-
-  sidebarCloseButton?.addEventListener("click", () => {
-    sidebar.style.display = "none";
-    sidebarOpenButton.style.display = "block";
-    sidebarCloseButton.style.display = "none";
-
-    window.enableScrolling();
-  });
-
-  localization?.addEventListener("mouseenter", () => {
-    localizationMenu.classList.remove("hidden");
-  });
-
-  const hideLocalizationMenu = () => {
-    localizationMenu.classList.add("hidden");
-  };
-
-  localization?.addEventListener("mouseleave", hideLocalizationMenu);
-
-  document.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement;
-
-    if (localizationMenuOpenButton?.contains(target)) {
-      const { classList: localizationMenuClassList } = localizationMenu;
-
-      localizationMenuClassList.toggle("hidden");
-
-      localization[
-        !localizationMenuClassList.contains("hidden")
-          ? "removeEventListener"
-          : "addEventListener"
-      ]("mouseleave", hideLocalizationMenu);
-    }
-
-    if (!localization?.contains(target)) {
-      hideLocalizationMenu();
-
-      localization.addEventListener("mouseleave", hideLocalizationMenu);
-    }
-  });
-
-  localizationMenuSmOpenButton?.addEventListener("click", () => {
-    localizationMenuSm.style.display = "block";
-
-    window.disableScrolling();
-  });
-
-  localizationMenuSmCloseButton?.addEventListener("click", () => {
-    localizationMenuSm.style.display = "none";
-
-    window.enableScrolling();
-  });
-
-  localizationForms.forEach((localizationForm) => {
-    localizationForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-
-      const { lang: newLocale } = Object.fromEntries(
-        [...localizationForm.querySelectorAll("ul")].map((list) => [
-          list.dataset.name,
-          list.querySelector<HTMLElement>("li[aria-selected=true]").dataset
-            .value,
-        ])
-      );
-
-      // change & redirect to preferred locale
-      localStorage.setItem(`locale`, newLocale);
-
-      const localeRegex = new RegExp(
-        // @ts-ignore
-        `^/(${availableLocales.map((locale) => locale).join("|")})/`
-        /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
-      );
-
-      let [, locale] = location.pathname.match(localeRegex) ?? [];
-
-      location.href =
-        `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
     });
-  });
-</script>
 
-<SearchBar />
+    sidebarCloseButton?.addEventListener("click", () => {
+      sidebar.style.display = "none";
+      sidebarOpenButton.style.display = "block";
+      sidebarCloseButton.style.display = "none";
+
+      window.enableScrolling();
+    });
+
+    localization?.addEventListener("mouseenter", () => {
+      localizationMenu.classList.remove("hidden");
+    });
+
+    const hideLocalizationMenu = () => {
+      localizationMenu.classList.add("hidden");
+    };
+
+    localization?.addEventListener("mouseleave", hideLocalizationMenu);
+
+    document.addEventListener("click", (event) => {
+      const target = event.target as HTMLElement;
+
+      if (localizationMenuOpenButton?.contains(target)) {
+        const { classList: localizationMenuClassList } = localizationMenu;
+
+        localizationMenuClassList.toggle("hidden");
+
+        localization[
+          !localizationMenuClassList.contains("hidden")
+            ? "removeEventListener"
+            : "addEventListener"
+        ]("mouseleave", hideLocalizationMenu);
+      }
+
+      if (!localization?.contains(target)) {
+        hideLocalizationMenu();
+
+        localization.addEventListener("mouseleave", hideLocalizationMenu);
+      }
+    });
+
+    localizationMenuSmOpenButton?.addEventListener("click", () => {
+      localizationMenuSm.style.display = "block";
+
+      window.disableScrolling();
+    });
+
+    localizationMenuSmCloseButton?.addEventListener("click", () => {
+      localizationMenuSm.style.display = "none";
+
+      window.enableScrolling();
+    });
+
+    localizationForms.forEach((localizationForm) => {
+      localizationForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const { lang: newLocale } = Object.fromEntries(
+          [...localizationForm.querySelectorAll("ul")].map((list) => [
+            list.dataset.name,
+            list.querySelector<HTMLElement>("li[aria-selected=true]").dataset
+              .value,
+          ])
+        );
+
+        // change & redirect to preferred locale
+        localStorage.setItem(`locale`, newLocale);
+
+        const localeRegex = new RegExp(
+          // @ts-ignore
+          `^/(${availableLocales.map((locale) => locale).join("|")})/`
+          /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
+        );
+
+        let [, locale] = location.pathname.match(localeRegex) ?? [];
+
+        location.href =
+          `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
+      });
+    });
+  </script>
+
+  <SearchBar />
+</header>
