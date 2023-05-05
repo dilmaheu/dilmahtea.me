@@ -13,8 +13,15 @@ import RecurringImages from "@store/RecurringImages";
 
 const { white_cup, green_book, white_right_arrow } = RecurringImages;
 
-const { page, posts, recurData, ariaLabelRecurData, headingName, type } =
-    Astro.props,
+const {
+    page,
+    posts,
+    recurData,
+    ariaLabelRecurData,
+    headingName,
+    type,
+    nonBlog,
+  } = Astro.props,
   { ASSETS_URL } = import.meta.env;
 
 // display relevant recipes instead of related posts for RecipeDetails pages
@@ -22,6 +29,7 @@ const relatedPosts =
   page?.related_products?.data?.map(({ attributes }) => attributes) ||
   page?.blogs?.data?.map(({ attributes }) => attributes) ||
   page?.Relevant_recipes?.data?.map(({ attributes }) => attributes) ||
+  page?.Relevant_blogs?.data?.map(({ attributes }) => attributes) ||
   posts?.filter(({ Meta }) => Meta.URL_slug !== page.Meta.URL_slug);
 
 const contentHTML = await Astro.slots.render("post-details"),
@@ -30,6 +38,7 @@ const contentHTML = await Astro.slots.render("post-details"),
 ---
 
 <style lang="scss" is:global>
+  .prose-text,
   #post-details {
     picture {
       clip-path: url(#content-images-curve);
@@ -306,126 +315,136 @@ const contentHTML = await Astro.slots.render("post-details"),
 {/* product page sections */}
 <slot name="product-page-sections" />
 
+{/* elephant-path page sections */}
+<slot name="elephant-path-page-sections" />
+
 {/* Blog Section */}
-<section
-  class="py-[50px]"
-  role={type !== "section" ? "main" : undefined}
-  aria-label={ariaLabelRecurData.Post_details_text}
->
-  <div
-    id="sticky-header"
-    class="self-start invisible md:hidden w-full sticky top-0 z-[998] bg-secondary text-black overflow-hidden"
-  >
-    <div class="wrapper relative select-none">
+{
+  !nonBlog && (
+    <section
+      class="py-[50px]"
+      role={type !== "section" ? "main" : undefined}
+      aria-label={ariaLabelRecurData.Post_details_text}
+    >
       <div
-        id="sticky-dropdown-toggle"
-        class:list={[
-          "py-[15px] font-bold cursor-pointer focus:outline-none",
-          "flex items-center justify-between gap-x-1.5 md:gap-x-3",
-        ]}
+        id="sticky-header"
+        class="self-start invisible md:hidden w-full sticky top-0 z-[998] bg-secondary text-black overflow-hidden"
       >
-        <div class="flex items-center">
-          <div class="w-7 h-full mr-[13px]">
-            <img class="w-full h-full" {...green_book} />
-          </div>
-
-          <div id="sticky-header-heading" class="font-medium">
-            {headingName}
-          </div>
-        </div>
-
-        <svg
-          class="w-3 text-black-light"
-          viewBox="0 0 11.6 6.7"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M.3.3A.6.6 0 0 1 .9 0a.9.9 0 0 1 .6.3l4.3 4.3L10.2.3a.6.6 0 0 1 .6-.3l.6.3a.8.8 0 0 1 .2.6.7.7 0 0 1-.2.6l-5 4.9a.6.6 0 0 1-.6.3.9.9 0 0 1-.6-.3L.3 1.5A.9.9 0 0 1 0 .9.6.6 0 0 1 .3.3Z"
-            fill="#2B4B50"></path>
-        </svg>
-      </div>
-
-      {
-        headings.length > 0 && (
+        <div class="wrapper relative select-none">
           <div
-            id="sticky-headings"
+            id="sticky-dropdown-toggle"
             class:list={[
-              "hidden flex flex-col max-h-[70vh]",
-              "pt-[15px] pb-[25px] border-t border-primary-light overflow-y-auto",
+              "py-[15px] font-bold cursor-pointer focus:outline-none",
+              "flex items-center justify-between gap-x-1.5 md:gap-x-3",
             ]}
           >
-            <div role="list" id="sticky-heading-links" class="overflow-y-auto">
-              <HeadingLinks type="mobile" headings={headings}>
+            <div class="flex items-center">
+              <div class="w-7 h-full mr-[13px]">
+                <img class="w-full h-full" {...green_book} />
+              </div>
+
+              <div id="sticky-header-heading" class="font-medium">
+                {headingName}
+              </div>
+            </div>
+
+            <svg
+              class="w-3 text-black-light"
+              viewBox="0 0 11.6 6.7"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M.3.3A.6.6 0 0 1 .9 0a.9.9 0 0 1 .6.3l4.3 4.3L10.2.3a.6.6 0 0 1 .6-.3l.6.3a.8.8 0 0 1 .2.6.7.7 0 0 1-.2.6l-5 4.9a.6.6 0 0 1-.6.3.9.9 0 0 1-.6-.3L.3 1.5A.9.9 0 0 1 0 .9.6.6 0 0 1 .3.3Z"
+                fill="#2B4B50"
+              />
+            </svg>
+          </div>
+
+          {headings.length > 0 && (
+            <div
+              id="sticky-headings"
+              class:list={[
+                "hidden flex flex-col max-h-[70vh]",
+                "pt-[15px] pb-[25px] border-t border-primary-light overflow-y-auto",
+              ]}
+            >
+              <div
+                role="list"
+                id="sticky-heading-links"
+                class="overflow-y-auto"
+              >
+                <HeadingLinks type="mobile" headings={headings}>
+                  {/* html source to extract heading links from */}
+                  <slot name="post-details" />
+                </HeadingLinks>
+              </div>
+
+              {/* Jump to Recipe Small Button */}
+              <slot name="jump-to-recipe-sm" />
+
+              {/* Cart Adding Form (Sm) */}
+              <slot name="cart-adding-form-sm" />
+            </div>
+          )}
+        </div>
+
+        <div
+          id="reading-progress-bar"
+          class="py-[2.5px] bg-primary duration-150"
+        ></div>
+      </div>
+
+      <div class="wrapper w-full flex flex-col-reverse md:flex-row">
+        <ClipPathSVG
+          id="content-images-curve"
+          path="M.516.008C.36.008.1-.008.04.082S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1.005.624 1.021.395.945.128.897-.045.734.008.516.008"
+        />
+
+        <div id="post-details" class="md:w-2/3">
+          {/* post content */}
+          <slot name="post-details" />
+        </div>
+
+        {headings.length > 0 && (
+          <div
+            role="complementary"
+            aria-label={headingName}
+            id="headings"
+            class:list={[
+              "w-full md:w-1/3 md:h-screen self-start flex flex-col",
+              "md:sticky top-0 pb-6 mb-[75px] text-black overflow-hidden",
+              "pl-[clamp(24px,3.8vw+0.16px,50px)] lg:pl-[clamp(70px,11.3125vw-46px,128px)]",
+            ]}
+          >
+            <h3
+              id="headings-header"
+              class="pb-2.5 lg:pb-5 xl:pb-[30px] font-bold"
+            >
+              {headingName}
+            </h3>
+
+            {/* Jump to Recipe Button */}
+            <slot name="jump-to-recipe" />
+
+            <div
+              role="list"
+              id="heading-links"
+              class="flex flex-col leading-[130%] lg:leading-[150%] overflow-y-auto"
+            >
+              <HeadingLinks headings={headings}>
                 {/* html source to extract heading links from */}
                 <slot name="post-details" />
               </HeadingLinks>
             </div>
 
-            {/* Jump to Recipe Small Button */}
-            <slot name="jump-to-recipe-sm" />
-
             {/* Cart Adding Form (Sm) */}
             <slot name="cart-adding-form-sm" />
           </div>
-        )
-      }
-    </div>
-
-    <div id="reading-progress-bar" class="py-[2.5px] bg-primary duration-150">
-    </div>
-  </div>
-
-  <div class="wrapper w-full flex flex-col-reverse md:flex-row">
-    <ClipPathSVG
-      id="content-images-curve"
-      path="M.516.008C.36.008.1-.008.04.082S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1.005.624 1.021.395.945.128.897-.045.734.008.516.008"
-    />
-
-    <div id="post-details" class="md:w-2/3">
-      {/* post content */}
-      <slot name="post-details" />
-    </div>
-
-    {
-      headings.length > 0 && (
-        <div
-          role="complementary"
-          aria-label={headingName}
-          id="headings"
-          class:list={[
-            "w-full md:w-1/3 md:h-screen self-start flex flex-col",
-            "md:sticky top-0 pb-6 mb-[75px] text-black overflow-hidden",
-            "pl-[clamp(24px,3.8vw+0.16px,50px)] lg:pl-[clamp(70px,11.3125vw-46px,128px)]",
-          ]}
-        >
-          <h3
-            id="headings-header"
-            class="pb-2.5 lg:pb-5 xl:pb-[30px] font-bold"
-          >
-            {headingName}
-          </h3>
-
-          {/* Jump to Recipe Button */}
-          <slot name="jump-to-recipe" />
-
-          <div
-            role="list"
-            id="heading-links"
-            class="flex flex-col leading-[130%] lg:leading-[150%] overflow-y-auto"
-          >
-            <HeadingLinks headings={headings}>
-              {/* html source to extract heading links from */}
-              <slot name="post-details" />
-            </HeadingLinks>
-          </div>
-
-          {/* Cart Adding Form (Sm) */}
-          <slot name="cart-adding-form-sm" />
-        </div>
-      )
-    }
-  </div>
-</section>
+        )}
+      </div>
+    </section>
+  )
+}
 
 {/* product infos */}
 <slot name="product-info" />
@@ -439,16 +458,22 @@ const contentHTML = await Astro.slots.render("post-details"),
 {
   relatedPosts?.length > 0 && (
     <section role="complementary" class="wrapper">
-      <h2 
+      <h2
         class:list={[
           "related-posts-title recoleta font-semibold",
-          "leading-[130%] text-black pb-[25px] sm:pb-[30px]",
+          "leading-[130%] text-black",
         ]}
       >
         {page.Relevant_items_title ||
           (page.Relevant_recipes && recurData.recipe_discover) ||
           recurData.text_explore_the_world_of_kindness}
       </h2>
+
+      {page.Relevant_items_text && (
+        <div class="prose max-w-none prose-text text-lg leading-[150%] mt-[15px] sm:mt-5">
+          <Markdown>{page.Relevant_items_text}</Markdown>
+        </div>
+      )}
 
       <ClipPathSVG
         id="related-post-card-curve"
@@ -459,8 +484,9 @@ const contentHTML = await Astro.slots.render("post-details"),
         role="list"
         aria-label={ariaLabelRecurData.Kindness_Items_text}
         class:list={[
-          "w-full mx-auto mb-[50px] grid sm:grid-cols-2 lg:grid-cols-3",
-          "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
+          "w-full mb-[50px] mx-auto pt-[25px] sm:pt-[30px] grid sm:grid-cols-2",
+          "lg:grid-cols-3 gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)] ",
+          "justify-items-center sm:justify-items-start",
         ]}
       >
         {relatedPosts.slice(0, 3).map((post, index) => (
