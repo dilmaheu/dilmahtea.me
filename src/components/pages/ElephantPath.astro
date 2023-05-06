@@ -91,25 +91,6 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
     @apply text-[clamp(1rem,1.5vw+0.15rem,1.5rem)] leading-[150%] text-white
       md:line-clamp-5 mt-[15px] overflow-hidden;
   }
-
-  .prose-text {
-    p,
-    ol,
-    ul,
-    p s,
-    blockquote p {
-      a {
-        @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat transition-all;
-
-        background-size: 100% 45%;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23b3cccc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
-
-        &:hover {
-          filter: brightness(0.95);
-        }
-      }
-    }
-  }
 </style>
 
 <ClipPathSVG
@@ -129,6 +110,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
       <section role="main">
         <div class="wrapper grid gap-5 pb-[50px]">
           <div
+            id="description"
             role="list"
             aria-label={ariaLabelRecurData.All_posts_text}
             class="flex flex-wrap items-center gap-y-20 sm:gap-y-[150px]"
@@ -205,13 +187,13 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
           <div class="info-content-container wrapper flex flex-wrap items-center">
             {/* Text Content */}
             <div
-              class="w-full sm:w-1/2 flex flex-col sm:order-2 pb-14 sm:pb-0"
+              class="w-full sm:w-1/2 flex flex-col sm:order-2 pb-14 sm:pb-0 z-10"
             >
               <h2 class="heading-primary font-bold text-white">
                 {page.Block2_title}
               </h2>
 
-              <div class="prose max-w-none info-intro">
+              <div class="prose max-w-none hero-text info-intro">
                 <Markdown>{page.Block2_text}</Markdown>
               </div>
 
