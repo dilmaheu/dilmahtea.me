@@ -13,6 +13,7 @@ import BasicPage from "@pages/BasicPage.astro";
 import BlogDetails from "@pages/BlogDetails.astro";
 import HowToDetails from "@pages/HowToDetails.astro";
 import Crowdfunding from "@pages/Crowdfunding.astro";
+import ElephantPath from "@pages/ElephantPath.astro";
 import RecipeDetails from "@pages/RecipeDetails.astro";
 import EstateDetails from "@pages/EstateDetails.astro";
 import ProductDetails from "@pages/ProductDetails.astro";
@@ -47,6 +48,7 @@ export async function getStaticPaths() {
     homeEstate,
     homepage,
     homeProduct,
+    homeElephantPath,
     productCategories,
     cart,
     checkoutKindness,
@@ -297,6 +299,10 @@ export async function getStaticPaths() {
     type: "checkoutSuccess",
   }));
 
+  const elephantPathPages = getRoutes(homeElephantPath, () => ({
+    type: "elephantPath",
+  }));
+
   return [
     ...plansPages,
     ...crowdfundingPages,
@@ -319,6 +325,7 @@ export async function getStaticPaths() {
     ...checkoutInformationPages,
     ...checkoutShippingPages,
     ...checkoutSuccessPages,
+    ...elephantPathPages,
   ];
 }
 
@@ -452,6 +459,12 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
             <CheckoutKindness page={page} recurData={recurData} />
           ) : page.type === "checkoutShipping" ? (
             <CheckoutShipping page={page} recurData={recurData} />
+          ) : page.type === "elephantPath" ? (
+            <ElephantPath 
+              page={page}
+              recurData={recurData}
+              ariaLabelRecurData={ariaLabelRecurData}
+            />
           ) : page.type === "plan" ? (
             <CrowdfundingForm
               page={page}
