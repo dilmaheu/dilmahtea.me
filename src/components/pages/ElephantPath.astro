@@ -16,6 +16,49 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   @use "src/styles/typography";
   @use "src/styles/poly-fluid" as *;
 
+  .description-container {
+    gap: poly-fluid-clamp(
+      (
+        640px: 50px,
+        1440px: 150px,
+      )
+    );
+  }
+
+  .line-container-odd {
+    @apply z-10 absolute -left-[4vw] sm:left-[50%];
+
+    @media (max-width: 639px) {
+      @apply top-[60%];
+    }
+  }
+
+  .line-container-even {
+    @apply absolute -right-[4vw] sm:right-[60%];
+
+    @media (max-width: 639px) {
+      @apply top-[60%];
+    }
+  }
+
+  .line {
+    width: poly-fluid-clamp(
+      (
+        640px: 310px,
+        1920px: 720px,
+      )
+    );
+  }
+
+  .line-sm {
+    width: poly-fluid-clamp(
+      (
+        300px: 170px,
+        639px: 150px,
+      )
+    );
+  }
+
   .post-title {
     @apply font-bold leading-[130%];
 
@@ -34,14 +77,14 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
 
     width: poly-fluid-clamp(
       (
-        375px: 150px,
-        1440px: 260px,
+        375px: 170px,
+        1440px: 280px,
       )
     );
     height: poly-fluid-clamp(
       (
-        375px: 150px,
-        1440px: 260px,
+        375px: 170px,
+        1440px: 280px,
       )
     );
   }
@@ -113,78 +156,168 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
             id="description"
             role="list"
             aria-label={ariaLabelRecurData.All_posts_text}
-            class="flex flex-wrap items-center gap-y-20 sm:gap-y-[150px]"
+            class="description-container flex flex-wrap items-center"
           >
             {
-              page.Description.map(({Title, Intro_text, Blob: {data: blob}, Blog: {data: blog}}, index) => {
-                const isEven = index % 2 === 0;
+              page.Description.map(
+                (
+                  {
+                    Title,
+                    Intro_text,
+                    Blob: { data: blob },
+                    Blog: { data: blog },
+                  },
+                  index
+                ) => {
+                  const isEven = index % 2 === 0,
+                    totalPost = page.Description.length;
 
-                return (
-                  <div
-                    role="listitem"
-                    aria-label={`${ariaLabelRecurData.Kindness_Item + (index + 1)} ${
-                      ariaLabelRecurData.Kindness_items_of_text
-                    } ${page.Description.length}`}
-                    class="link-section flex flex-wrap items-center"
-                  >
+                  return (
                     <div
-                      class:list={[
-                        "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
-                        !isEven && "sm:order-2",
-                      ]}
+                      role="listitem"
+                      aria-label={`${
+                        ariaLabelRecurData.Kindness_Item + (index + 1)
+                      } ${
+                        ariaLabelRecurData.Kindness_items_of_text
+                      } ${totalPost}`}
+                      class="link-section flex flex-wrap items-center"
                     >
-                      <div class="w-full h-full mx-auto">
-                        <img 
-                          class="information-post-icon" 
-                          src={ASSETS_URL + blob?.attributes.url} 
-                          alt={blob?.attributes.alternativeText}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Text content */}
-                    <div
-                      class:list={[
-                        "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
-                        !isEven && "sm:order-1",
-                      ]}
-                    >
-                      <div>
-
-                        <h2 class="post-title recoleta text-primary pt-[15px]">
-                          <a
-                            class="main-link"
-                            href={ blog !== null ? (`/` + blog?.attributes.Meta.URL_slug) : "#"}
-                            set:text={Title || blog?.attributes.Title}
+                      <div
+                        class:list={[
+                          "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
+                          !isEven && "sm:order-2",
+                        ]}
+                      >
+                        <div class="relative z-50 w-full h-full mx-auto">
+                          <img
+                            class="information-post-icon p-2 bg-secondary"
+                            src={ASSETS_URL + blob?.attributes.url}
+                            alt={blob?.attributes.alternativeText}
                           />
-                          <span class="icon heading-inline-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 49" class="w-full h-full">
-                              <circle cx="24.5" cy="24.5" r="24.5" style="fill:#547b7d"/>
-                              <path d="M10.6,24.3a1.5,1.5,0,0,1,.9-.7,2,2,0,0,1,1.1.2c4.4,2.9,8.3,1.3,11.6-.4l7.3-3.9-5.6-1.8-.5-.2-.3-.4a1.4,1.4,0,0,1-.2-.6A.7.7,0,0,1,25,16a.5.5,0,0,1,.3-.5.8.8,0,0,1,.4-.4h1.1l8.8,2.7a2.2,2.2,0,0,1,.9.7,1.4,1.4,0,0,1,0,1.1l-2.7,8.9a2.7,2.7,0,0,1-.7.8H32a1.6,1.6,0,0,1-.8-.6,1.4,1.4,0,0,1-.1-1.1L32.8,22l-7.3,3.8c-3.4,1.8-8.7,4.1-14.4.4a1.3,1.3,0,0,1-.7-.9A1.8,1.8,0,0,1,10.6,24.3Z" style="fill:#fff"/>
-                            </svg>
-                          </span>
-                        </h2>
+                        </div>
 
-                        <div class="post-intro pt-[15px] prose max-w-none">
-                          <Markdown>{Intro_text || blog?.attributes.Intro_text}</Markdown>
+                        {/* Lines between text */}
+                        {index !== totalPost - 1 &&
+                          (isEven ? (
+                            <div class="line-container-odd">
+                              <div class="hidden sm:block line">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 696.1 209.3"
+                                >
+                                  <path
+                                    d="M3.5.6S20,115.1,159,119.7c173.8,5.7,256.4-102.5,404-84S691.8,208.9,691.8,208.9"
+                                    transform="translate(0 -0.1)"
+                                    style="fill:none;stroke:#b3cccc;stroke-width:7px;stroke-dasharray:20,20"
+                                  />
+                                </svg>
+                              </div>
+
+                              <div class="block sm:hidden line-sm">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 137.8 337.4"
+                                >
+                                  <path
+                                    d="M137.3,335.4C-.9,317.4-3.9,315.5,5.2,126.9,1.3,68.4-6.2,29.7,34.2,7.2,66.3-8.6,61.6,20.4,137.3,1.9"
+                                    style="fill:none;stroke:#b3cccc;stroke-width:4px;stroke-dasharray:20,20"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                          ) : (
+                            <div class="line-container-even">
+                              <div class="hidden sm:block line">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 701.2 210.4"
+                                >
+                                  <path
+                                    d="M694.6,1.5s-49,99.1-189.2,103.7c-175.4,5.7-190.1-50-339.1-31.5S0,209.9,0,209.9"
+                                    transform="translate(3.5 0)"
+                                    style="fill:none;stroke:#b3cccc;stroke-width:7px;stroke-dasharray:20,20"
+                                  />
+                                </svg>
+                              </div>
+
+                              <div class="block sm:hidden line-sm">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 137.8 337.4"
+                                >
+                                  <path
+                                    d="M2,335.4c138.2-18,141.2-19.9,132.1-208.5,3.9-58.5,11.4-97.2-29-119.7C73-8.6,77.7,20.4,2,1.9"
+                                    transform="translate(-1.5)"
+                                    style="fill:none;stroke:#b3cccc;stroke-width:4px;stroke-dasharray:20,20"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+
+                      {/* Text content */}
+                      <div
+                        class:list={[
+                          "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
+                          !isEven && "sm:order-1",
+                        ]}
+                      >
+                        <div>
+                          <h2 class="post-title recoleta text-primary pt-[15px]">
+                            <a
+                              class="main-link"
+                              href={
+                                blog !== null
+                                  ? `/` + blog?.attributes.Meta.URL_slug
+                                  : "#"
+                              }
+                              set:text={Title || blog?.attributes.Title}
+                            />
+                            <span class="icon heading-inline-icon">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 49 49"
+                                class="w-full h-full"
+                              >
+                                <circle
+                                  cx="24.5"
+                                  cy="24.5"
+                                  r="24.5"
+                                  style="fill:#547b7d"
+                                />
+                                <path
+                                  d="M10.6,24.3a1.5,1.5,0,0,1,.9-.7,2,2,0,0,1,1.1.2c4.4,2.9,8.3,1.3,11.6-.4l7.3-3.9-5.6-1.8-.5-.2-.3-.4a1.4,1.4,0,0,1-.2-.6A.7.7,0,0,1,25,16a.5.5,0,0,1,.3-.5.8.8,0,0,1,.4-.4h1.1l8.8,2.7a2.2,2.2,0,0,1,.9.7,1.4,1.4,0,0,1,0,1.1l-2.7,8.9a2.7,2.7,0,0,1-.7.8H32a1.6,1.6,0,0,1-.8-.6,1.4,1.4,0,0,1-.1-1.1L32.8,22l-7.3,3.8c-3.4,1.8-8.7,4.1-14.4.4a1.3,1.3,0,0,1-.7-.9A1.8,1.8,0,0,1,10.6,24.3Z"
+                                  style="fill:#fff"
+                                />
+                              </svg>
+                            </span>
+                          </h2>
+
+                          <div class="post-intro pt-[15px] prose max-w-none">
+                            <Markdown>
+                              {Intro_text || blog?.attributes.Intro_text}
+                            </Markdown>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })
+                  );
+                }
+              )
             }
           </div>
         </div>
       </section>
 
       {/* Info Section */}
-      <section
-        role="complementary"
-        class="info-section"
-      >
-        <div class="info-container overflow-x-hidden relative bg-primary w-full">
-          <div class="info-content-container wrapper flex flex-wrap items-center">
+      <section role="complementary" class="info-section">
+        <div
+          class="info-container overflow-x-hidden relative bg-primary w-full"
+        >
+          <div
+            class="info-content-container wrapper flex flex-wrap items-center"
+          >
             {/* Text Content */}
             <div
               class="w-full sm:w-1/2 flex flex-col sm:order-2 pb-14 sm:pb-0 z-10"
@@ -216,7 +349,9 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
 
             <div class="hidden sm:flex sm:w-1/2 aspect-[6/5] flex items-center">
               <div class="absolute left-0 w-full h-full info-image-container">
-                <div class="info-img-curve-container h-full aspect-[6/5] my-auto grid items-center">
+                <div
+                  class="info-img-curve-container h-full aspect-[6/5] my-auto grid items-center"
+                >
                   <div class="info-img-curve">
                     <ClippedPicture
                       preload="avif"
@@ -225,7 +360,10 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
                       alt={page.Block2_blob.data.attributes.alternativeText}
                       src={ASSETS_URL + page.Block2_blob.data.attributes.url}
                       path="M0.931,0.106 C0.795,-0.023,0.586,0.006,0.414,0.006 l-0.046,0 C0.239,0.002,0.124,-0.011,0,0.02 V0.929 c0.179,0.082,0.661,0.107,0.751,0 c0.109,-0.129,0.143,-0.281,0.179,-0.403 c0.022,-0.074,0.068,-0.167,0.069,-0.256 v-0.009 C0.999,0.206,0.981,0.153,0.931,0.106"
-                      attributes={{ link: { media: "(min-width: 640px)" }, img: { style: "aspect-ratio: 6 / 5;" } }}
+                      attributes={{
+                        link: { media: "(min-width: 640px)" },
+                        img: { style: "aspect-ratio: 6 / 5;" },
+                      }}
                       sizes={[
                         "(min-width: 768px) calc(50vw - min(100px, 5vw) - 23px)",
                         "(min-width: 640px) calc(55vw - min(100px, 5vw))",
@@ -239,7 +377,9 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
         </div>
 
         {/* Blob Image - Mobile View */}
-        <div class="hero-img-sm-container block sm:hidden relative -mt-10 z-20 w-full">
+        <div
+          class="hero-img-sm-container block sm:hidden relative -mt-10 z-20 w-full"
+        >
           <ClippedPicture
             preload="avif"
             id="info-img-curve-sm"
@@ -253,7 +393,11 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
       </section>
 
       <div class="wrapper">
-        <KindnessImpact {locale} heading={page.Block3_title} impacts={page.Impacts}>
+        <KindnessImpact
+          {locale}
+          heading={page.Block3_title}
+          impacts={page.Impacts}
+        />
       </div>
     </div>
   </div>
