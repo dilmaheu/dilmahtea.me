@@ -16,7 +16,9 @@ const CSPRecord = {
     "'self'",
     "data:",
     "https://dilmahtea.me",
-    "https://cms.dilmahtea.me",
+    shouldDisplayExperimentals
+      ? "https://dev.cms.dilmahtea.me"
+      : "https://cms.dilmahtea.me",
   ],
   "media-src": ["data:"],
   "font-src": ["'self'", "https://use.fontawesome.com"],
