@@ -35,10 +35,6 @@ const CSPRecord = {
   ],
 };
 
-if (shouldDisplayExperimentals) {
-  CSPRecord["connect-src"].push("https://dev.products.scripts.dilmahtea.me");
-}
-
 const sitemap = [];
 
 /** @type {typeof import('astro').AstroIntegration} */
