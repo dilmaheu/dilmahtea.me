@@ -504,24 +504,7 @@ const {
         position: "static",
       });
 
-      try {
-        window.scrollTo({
-          top: scrollYPosition,
-          // @ts-ignore
-          behavior: "instant", // instant is valid but not recognized by typescript
-        });
-      } catch (error) {
-        const currentRootScrollBehavior = rootElement.style.scrollBehavior;
-
-        rootElement.style.scrollBehavior = "auto";
-
-        window.scrollTo({
-          top: scrollYPosition,
-          behavior: "auto",
-        });
-
-        rootElement.style.scrollBehavior = currentRootScrollBehavior;
-      }
+      window.scrollTo({ top: scrollYPosition });
     };
 
     window.addEventListener("resize", () => {
