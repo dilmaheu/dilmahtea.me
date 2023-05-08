@@ -38,6 +38,11 @@ export default {
             "--tw-prose-links": "#547B7D",
             "--tw-prose-bullets": "#474747",
             "--tw-prose-counters": "#474747",
+
+            h2: {
+              "margin-top": "1em",
+              "padding-top": "1em",
+            },
           },
         },
       }),
