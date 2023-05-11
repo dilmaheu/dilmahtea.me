@@ -1,7 +1,13 @@
-name: Publish to Cloudflare Pages
-run-name: Deploy ${{ github.ref_name }} - ${{ github.event.head_commit.message }}
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      build_id:
+        required: true
+        type: string
 
-on: [push, workflow_dispatch]
+name: Publish to Cloudflare Pages
+run-name: Deploy ${{ github.ref_name }} - ${{ github.event.head_commit.message || inputs.build_id }}
 
 env:
   ASSETS_URL: ${{ github.ref_name == 'main' && secrets.PROD_ASSETS_URL || secrets.DEV_ASSETS_URL }}
