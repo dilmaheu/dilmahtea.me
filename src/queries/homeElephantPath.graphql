@@ -1,0 +1,135 @@
+fragment HomeElephantPathAttributes on HomeElephantPath {
+  locale
+  updatedAt
+  Title
+  Intro_text
+  Intro_blob {
+    data {
+      id
+      attributes {
+        url
+        provider_metadata
+        formats
+        alternativeText
+      }
+    }
+  }
+  Heading_button_text
+  Heading_button_link
+  Description {
+    Title
+    Intro_text
+    Blob {
+      data {
+        id
+        attributes {
+          url
+          provider_metadata
+          formats
+          alternativeText
+        }
+      }
+    }
+    Blog {
+      data {
+        attributes {
+          Title
+          Intro_text
+          Intro_blob {
+            data {
+              attributes {
+                url
+                provider_metadata
+                alternativeText
+              }
+            }
+          }
+          Meta {
+            URL_slug
+          }
+        }
+      }
+    }
+  }
+  Block2_title
+  Block2_text
+  Block2_button_text
+  Block2_button_link
+  Block2_blob {
+    data {
+      id
+      attributes {
+        url
+        provider_metadata
+        formats
+        alternativeText
+      }
+    }
+  }
+  Block3_title
+  Impacts {
+    Value
+    Value_unit
+    Description
+    Icon {
+      data {
+        id
+        attributes {
+          url
+          provider_metadata
+          formats
+          alternativeText
+        }
+      }
+    }
+  }
+  Relevant_items_title
+  Relevant_items_text
+  Relevant_blogs(filters: { publishedAt: { ne: null } }) {
+    data {
+      attributes {
+        Title
+        Intro_text
+        Intro_blob {
+          data {
+            attributes {
+              url
+              provider_metadata
+              alternativeText
+            }
+          }
+        }
+        Meta {
+          URL_slug
+        }
+      }
+    }
+  }
+  Meta {
+    HTML_Title
+    Meta_description
+    noindex
+    nofollow
+    URL_slug
+    Canonical_link
+  }
+}
+
+query {
+  homeElephantPath {
+    data {
+      id
+      attributes {
+        ...HomeElephantPathAttributes
+        localizations {
+          data {
+            id
+            attributes {
+              ...HomeElephantPathAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}

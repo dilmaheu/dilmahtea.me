@@ -1,6 +1,9 @@
 import { marked } from "marked";
 import { renderPicture } from "astro-imagetools/api";
+import tryUntilResolve from "@utils/tryUntilResolve";
 import productsStore, { variantsOrder } from "@store/Products";
+
+const { ASSETS_URL } = import.meta.env;
 
 async function processProductData(attributes) {
   const {
@@ -15,18 +18,29 @@ async function processProductData(attributes) {
     Meta: { URL_slug },
   } = attributes;
 
-  const Intro_blob_HTML = Object.values(
-    await renderPicture({
-      attributes: { img: { style: "aspect-ratio: 6 / 5;" } },
-      alt: Intro_blob.data.attributes.alternativeText,
-      src: import.meta.env.ASSETS_URL + Intro_blob.data.attributes.url,
-      sizes: [
-        "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
-        "(min-width: 640px) calc(45vw - 16px)",
-        "min(90vw, 380px)",
-      ].join(", "),
-    })
-  ).join("");
+  try {
+    var Intro_blob_HTML = Object.values(
+      await tryUntilResolve(
+        () =>
+          renderPicture({
+            attributes: { img: { style: "aspect-ratio: 6 / 5;" } },
+            alt: Intro_blob.data.attributes.alternativeText,
+            src: ASSETS_URL + Intro_blob.data.attributes.url,
+            sizes: [
+              "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
+              "(min-width: 640px) calc(45vw - 16px)",
+              "min(90vw, 380px)",
+            ].join(", "),
+          }),
+        (message) => message + " " + ASSETS_URL + Intro_blob.data.attributes.url
+      )
+    ).join("");
+  } catch (error) {
+    console.log({
+      message: error.message,
+      url: Intro_blob.data.attributes.url,
+    });
+  }
 
   const Intro_text_HTML = marked(Intro_text);
 
@@ -52,14 +66,25 @@ async function processProductData(attributes) {
     );
 
     availableFormatsCount = availableFormats.length;
-    availableFormatThumbnails = await Promise.all(
-      availableFormats.slice(0, 2).map(async ({ thumbnail }) => ({
-        src: await importRemoteImage(
-          import.meta.env.ASSETS_URL + thumbnail.src
-        ),
-        alt: thumbnail.alt,
-      }))
-    );
+
+    try {
+      availableFormatThumbnails = await Promise.all(
+        availableFormats.slice(0, 2).map(async ({ thumbnail }) => ({
+          src: await tryUntilResolve(
+            () => importRemoteImage(ASSETS_URL + thumbnail.src),
+            (message) => message + " " + ASSETS_URL + thumbnail.src
+          ),
+          alt: thumbnail.alt,
+        }))
+      );
+    } catch (error) {
+      console.log({
+        message: error.message,
+        src: Intro_blob.data.attributes.url,
+      });
+
+      throw error;
+    }
   }
 
   return {

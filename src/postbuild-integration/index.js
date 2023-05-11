@@ -16,7 +16,9 @@ const CSPRecord = {
     "'self'",
     "data:",
     "https://dilmahtea.me",
-    "https://cms.dilmahtea.me",
+    shouldDisplayExperimentals
+      ? "https://dev.cms.dilmahtea.me"
+      : "https://cms.dilmahtea.me",
   ],
   "media-src": ["data:"],
   "font-src": ["'self'", "https://use.fontawesome.com"],
@@ -34,10 +36,6 @@ const CSPRecord = {
     "https://static.openreplay.com",
   ],
 };
-
-if (shouldDisplayExperimentals) {
-  CSPRecord["connect-src"].push("https://dev.products.scripts.dilmahtea.me");
-}
 
 const sitemap = [];
 
