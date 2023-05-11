@@ -51,7 +51,10 @@ jobs:
         name: Setup astro-imagetools cache
         with:
           path: node_modules/.cache/astro-imagetools
-          key: astro-imagetools-cache
+          key: astro-imagetools-cache-${{ github.ref_name }}
+          restore-keys: |
+            astro-imagetools-cache-dev
+            astro-imagetools-cache-
 
       - name: Install dependencies
         run: pnpm install
