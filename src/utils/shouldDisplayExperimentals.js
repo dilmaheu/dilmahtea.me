@@ -1,4 +1,4 @@
 const shouldDisplayExperimentals =
-  !import.meta.env.PROD || process.env.CF_PAGES_BRANCH !== "main";
+  !import.meta.env.PROD || github.ref_name !== "main";
 
 export default shouldDisplayExperimentals;
