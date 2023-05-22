@@ -71,8 +71,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     line-height: 150%;
   }
 
-  .estate-quote-container,
-  .estate-impact-container {
+  .estate-quote-container {
     clip-path: url(#quote-bg-curve);
     padding: 35px clamp(23px, 3.875vw, 50px);
 
@@ -100,22 +99,6 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     height: clamp(1.563rem, 2.2vw + 0.15rem, 2.188rem);
   }
 
-  .estate-impact-title {
-    font-size: clamp(1.5rem, 1.7vw + 0.6rem, 1.75rem);
-    line-height: 150%;
-  }
-
-  .estate-impacts-container {
-    column-gap: clamp(1.25rem, 2.2vw + 0.13rem, 2.188rem);
-  }
-
-  .estate-impacts-num {
-    font-size: clamp(3rem, 3vw + 1.2rem, 4rem);
-  }
-
-  .estate-impacts-text {
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
-  }
 
   .related-posts-title {
     font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
@@ -421,49 +404,6 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 
   <EstatesInfoSection page={page} />
 
-  <section class="estate-impact-container bg-secondary-light lg:mb-[25px]">
-    <div class="flex flex-wrap items-center relative z-20 gap-y-[25px]">
-      <h3
-        class="estate-impact-title w-full font-semibold text-black text-center"
-      >
-        {page.Block4_heading}
-      </h3>
-
-      <div
-        role="list"
-        aria-label={page.Block4_items_aria_label_text}
-        class:list={[
-          "estate-impacts-container w-full grid justify-center md:justify-between gap-y-[35px]",
-          "grid-cols-[repeat(auto-fit,minmax(0,150px))] md:grid-cols-[repeat(auto-fit,minmax(0,250px))]",
-        ]}
-      >
-        {
-          page.Block4_items.map((item) => (
-            <div
-              role="listitem"
-              aria-label={item.Block4_Value + item.Block4_description}
-              class="grid justify-items-center"
-            >
-              <div class="h-[43px]">
-                <img
-                  class="w-full h-full"
-                  src={ASSETS_URL + item.Block4_icon.data.attributes.url}
-                  alt=""
-                />
-              </div>
-              <div class="estate-impacts-num recoleta font-semibold leading-[110%] md:leading-[115%] text-primary">
-                {item.Block4_Value}
-              </div>
-
-              <div class="estate-impacts-text text-black-light text-center leading-[150%]">
-                {item.Block4_description}
-              </div>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
   <KindnessImpact
     {locale}
     heading={page.Block4_heading}
