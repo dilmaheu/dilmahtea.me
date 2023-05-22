@@ -1,6 +1,7 @@
 ---
 import Markdown from "@astrojs/markdown-component";
 
+import Banner from "@components/Banner.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import KindnessImpact from "@components/KindnessImpact.astro";
@@ -310,87 +311,14 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
         </div>
       </section>
 
-      {/* Info Section */}
-      <section role="complementary" class="info-section">
-        <div
-          class="info-container overflow-x-hidden relative bg-primary w-full"
-        >
-          <div
-            class="info-content-container wrapper flex flex-wrap items-center"
-          >
-            {/* Text Content */}
-            <div
-              class="w-full sm:w-1/2 flex flex-col sm:order-2 pb-14 sm:pb-0 z-10"
-            >
-              <h2 class="heading-primary font-bold text-white">
-                {page.Block2_title}
-              </h2>
-
-              <div class="prose max-w-none hero-text info-intro">
-                <Markdown>{page.Block2_text}</Markdown>
-              </div>
-
-              {
-                page?.Block2_button_text && (
-                  <a
-                    href={page.Block2_button_link}
-                    class:list={[
-                      "flex w-fit text-primary font-bold leading-[150%]",
-                      "py-[10px] px-[35px] mt-[15px] bg-white rounded-full",
-                    ]}
-                  >
-                    {page.Block2_button_text}
-                  </a>
-                )
-              }
-            </div>
-
-            {/* Blob Image - Desktop View */}
-
-            <div class="hidden sm:flex sm:w-1/2 aspect-[6/5] flex items-center">
-              <div class="absolute left-0 w-full h-full info-image-container">
-                <div
-                  class="info-img-curve-container h-full aspect-[6/5] my-auto grid items-center"
-                >
-                  <div class="info-img-curve">
-                    <ClippedPicture
-                      preload="avif"
-                      id="info-img-curve"
-                      breakpoints={{ minWidth: 640 }}
-                      alt={page.Block2_blob.data.attributes.alternativeText}
-                      src={ASSETS_URL + page.Block2_blob.data.attributes.url}
-                      path="M0.931,0.106 C0.795,-0.023,0.586,0.006,0.414,0.006 l-0.046,0 C0.239,0.002,0.124,-0.011,0,0.02 V0.929 c0.179,0.082,0.661,0.107,0.751,0 c0.109,-0.129,0.143,-0.281,0.179,-0.403 c0.022,-0.074,0.068,-0.167,0.069,-0.256 v-0.009 C0.999,0.206,0.981,0.153,0.931,0.106"
-                      attributes={{
-                        link: { media: "(min-width: 640px)" },
-                        img: { style: "aspect-ratio: 6 / 5;" },
-                      }}
-                      sizes={[
-                        "(min-width: 768px) calc(50vw - min(100px, 5vw) - 23px)",
-                        "(min-width: 640px) calc(55vw - min(100px, 5vw))",
-                      ].join(", ")}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Blob Image - Mobile View */}
-        <div
-          class="hero-img-sm-container block sm:hidden relative -mt-10 z-20 w-full"
-        >
-          <ClippedPicture
-            preload="avif"
-            id="info-img-curve-sm"
-            breakpoints={{ maxWidth: 640 }}
-            alt={page.Block2_blob.data.attributes.alternativeText}
-            src={ASSETS_URL + page.Block2_blob.data.attributes.url}
-            path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
-            attributes={{ link: { media: "(max-width: 639.98px)" } }}
-          />
-        </div>
-      </section>
+      {/* Banner Section */}
+      <Banner
+        title={page.Block2_title}
+        intro={page.Block2_text}
+        button_text={page.Block2_button_text}
+        button_link={page.Block2_button_link}
+        blob={page.Block2_blob}
+      />
 
       <KindnessImpact
         {locale}
