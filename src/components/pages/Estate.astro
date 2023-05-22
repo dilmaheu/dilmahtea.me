@@ -99,7 +99,6 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     height: clamp(1.563rem, 2.2vw + 0.15rem, 2.188rem);
   }
 
-
   .related-posts-title {
     font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
   }
@@ -197,8 +196,8 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
 </div>
 
 {/* Home Estate Details Section */}
-<div role="main" class="wrapper py-[50px]">
-  <div class="flex flex-wrap justify-between items-center gap-y-[15px]">
+<div role="main" class="grid gap-[50px] my-[50px]">
+  <div class="wrapper flex flex-wrap justify-between items-center gap-y-[15px]">
     <div
       class="flex flex-wrap items-center justify-between gap-x-6 gap-y-[15px]"
     >
@@ -259,7 +258,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   </div>
 
   {/* All Estates Section */}
-  <div id="estates">
+  <div id="estates" class="wrapper">
     <ClipPathSVG
       id="estate-img-curve"
       path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
@@ -268,7 +267,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     <div
       role="list"
       aria-label={page.Aria_label_all_estates_text}
-      class="flex flex-wrap items-center gap-y-[50px] py-[50px] lg:py-[75px]"
+      class="flex flex-wrap items-center gap-y-[50px]"
     >
       {
         posts.map((estate, index) => {
@@ -352,50 +351,52 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     </div>
   </div>
 
-  <ClipPathSVG
-    id="quote-bg-curve"
-    path="M0.04,0.087 C0.086,-0.001,0.164,0.007,0.262,0.002 C0.427,-0.005,0.522,0.007,0.687,0.002 c0.115,-0.003,0.179,0,0.242,0.029 c0.048,0.022,0.075,0.301,0.071,0.479 c-0.003,0.162,0.008,0.386,-0.054,0.413 c-0.058,0.025,-0.193,0.034,-0.252,0.049 c-0.111,0.03,-0.23,-0.006,-0.332,0 c-0.092,0.006,-0.206,0.08,-0.309,-0.049 C0,0.856,-0.001,0.685,0,0.511 C0.002,0.345,-0.007,0.177,0.04,0.087"
-  />
+  <section class="wrapper">
+    <div
+      aria-label={page.Block2_aria_label_text}
+      class="estate-quote-container bg-primary w-full h-full"
+    >
+      <ClipPathSVG
+        id="quote-bg-curve"
+        path="M0.04,0.087 C0.086,-0.001,0.164,0.007,0.262,0.002 C0.427,-0.005,0.522,0.007,0.687,0.002 c0.115,-0.003,0.179,0,0.242,0.029 c0.048,0.022,0.075,0.301,0.071,0.479 c-0.003,0.162,0.008,0.386,-0.054,0.413 c-0.058,0.025,-0.193,0.034,-0.252,0.049 c-0.111,0.03,-0.23,-0.006,-0.332,0 c-0.092,0.006,-0.206,0.08,-0.309,-0.049 C0,0.856,-0.001,0.685,0,0.511 C0.002,0.345,-0.007,0.177,0.04,0.087"
+      />
 
-  <ClipPathSVG
-    id="quote-bg-curve-sm"
-    path="M0.913,0.04 c0.088,0.046,0.08,0.124,0.084,0.222 c0.007,0.165,-0.005,0.26,0,0.425 c0.003,0.116,0,0.179,-0.029,0.242 c-0.022,0.048,-0.301,0.075,-0.479,0.071 c-0.162,-0.003,-0.386,0.008,-0.413,-0.054 C0.05,0.888,0.042,0.753,0.026,0.694 C-0.003,0.583,0.033,0.464,0.026,0.363 C0.021,0.271,-0.054,0.156,0.076,0.054 C0.144,0,0.315,-0.001,0.489,0 C0.655,0.002,0.823,-0.007,0.913,0.04"
-  />
+      <ClipPathSVG
+        id="quote-bg-curve-sm"
+        path="M0.913,0.04 c0.088,0.046,0.08,0.124,0.084,0.222 c0.007,0.165,-0.005,0.26,0,0.425 c0.003,0.116,0,0.179,-0.029,0.242 c-0.022,0.048,-0.301,0.075,-0.479,0.071 c-0.162,-0.003,-0.386,0.008,-0.413,-0.054 C0.05,0.888,0.042,0.753,0.026,0.694 C-0.003,0.583,0.033,0.464,0.026,0.363 C0.021,0.271,-0.054,0.156,0.076,0.054 C0.144,0,0.315,-0.001,0.489,0 C0.655,0.002,0.823,-0.007,0.913,0.04"
+      />
 
-  <section
-    aria-label={page.Block2_aria_label_text}
-    class="estate-quote-container bg-primary w-full h-full"
-  >
-    <div class="flex flex-wrap w-full gap-y-6 items-center relative z-20">
-      {/* Quote Image */}
-      <div class="w-full sm:w-1/2">
-        <div class="quote-img-container mx-auto sm:ml-0">
-          <ClippedPicture
-            id="quote-img-curve"
-            alt={page.Block2_blob.data.attributes.alternativeText}
-            src={ASSETS_URL + page.Block2_blob.data.attributes.url}
-            path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 S0.002,0.495,0.017,0.736 S0.182,1,0.528,1 c0.285,0,0.374,-0.064,0.446,-0.283 c0.031,-0.093,0.047,-0.322,-0.029,-0.59 C0.896,-0.045,0.735,0.008,0.516,0.008"
-            sizes={[
-              "(min-width: 640px) min(450px, calc(50vw - min(100px, 5vw) - clamp(23px, 3.875vw, 50px)))",
-              "calc(90vw - clamp(23px, 3.875vw, 50px))",
-            ].join(", ")}
-          />
+      <div class="flex flex-wrap w-full gap-y-6 items-center relative z-20">
+        {/* Quote Image */}
+        <div class="w-full sm:w-1/2">
+          <div class="quote-img-container mx-auto sm:ml-0">
+            <ClippedPicture
+              id="quote-img-curve"
+              alt={page.Block2_blob.data.attributes.alternativeText}
+              src={ASSETS_URL + page.Block2_blob.data.attributes.url}
+              path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 S0.002,0.495,0.017,0.736 S0.182,1,0.528,1 c0.285,0,0.374,-0.064,0.446,-0.283 c0.031,-0.093,0.047,-0.322,-0.029,-0.59 C0.896,-0.045,0.735,0.008,0.516,0.008"
+              sizes={[
+                "(min-width: 640px) min(450px, calc(50vw - min(100px, 5vw) - clamp(23px, 3.875vw, 50px)))",
+                "calc(90vw - clamp(23px, 3.875vw, 50px))",
+              ].join(", ")}
+            />
+          </div>
         </div>
-      </div>
 
-      {/* Text content */}
-      <div class="w-full sm:w-1/2 h-full">
-        <div class="flex flex-wrap px-2.5 sm:px-0 xl:-ml-6">
-          <div class="estate-quote-icon">
-            <img class="w-full h-full" {...left_quote} />
-          </div>
+        {/* Text content */}
+        <div class="w-full sm:w-1/2 h-full">
+          <div class="flex flex-wrap px-2.5 sm:px-0 xl:-ml-6">
+            <div class="estate-quote-icon">
+              <img class="w-full h-full" {...left_quote} />
+            </div>
 
-          <div class="estate-quote prose max-w-none font-bold text-secondary">
-            {page.Block2_text}
-          </div>
+            <div class="estate-quote prose max-w-none font-bold text-secondary">
+              {page.Block2_text}
+            </div>
 
-          <div class="estate-quote-icon mr-[25px] ml-auto rotate-180">
-            <img class="w-full h-full" {...left_quote} />
+            <div class="estate-quote-icon mr-[25px] ml-auto rotate-180">
+              <img class="w-full h-full" {...left_quote} />
+            </div>
           </div>
         </div>
       </div>
