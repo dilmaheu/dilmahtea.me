@@ -19,6 +19,7 @@ const {
     recurData,
     ariaLabelRecurData,
     headingName,
+    plainTitle,
     type,
     nonBlog,
   } = Astro.props,
@@ -242,7 +243,7 @@ const contentHTML = await Astro.slots.render("post-details"),
           {page.Title || page.Estate_name}
 
           {
-            page.Title && (
+            !plainTitle && page.Title && (
               <span class="icon heading-inline-icon">
                 <img class="w-full h-full" alt="" {...white_cup} />
               </span>
@@ -330,6 +331,9 @@ const contentHTML = await Astro.slots.render("post-details"),
 
 {/* howto header section */}
 <slot name="howto-header" />
+
+{/* estate page sections */}
+<slot name="estate-page-sections" />
 
 {/* product page sections */}
 <slot name="product-page-sections" />
