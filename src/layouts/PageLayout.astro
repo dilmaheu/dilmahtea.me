@@ -57,13 +57,13 @@ const footerText = recurData.Footer_text.replaceAll(
 <script>
   document.addEventListener("click", (event) => {
     const target = event.target as HTMLElement,
-      unlink = target.closest(".unlink"),
+      isUnlinked = target.closest(".unlink"),
       linkSection = target.closest(".link-section"),
-      linkSectionLink = target.closest(".link-section a");
+      isNonMainLink = target.closest(".link-section a");
 
-    if (linkSectionLink) {
+    if (isNonMainLink) {
       event.stopPropagation();
-    } else if (linkSection && !unlink) {
+    } else if (linkSection && !isUnlinked) {
       const sectionHeadingLink = linkSection.querySelector(
         "a.main-link"
       ) as HTMLAnchorElement;
