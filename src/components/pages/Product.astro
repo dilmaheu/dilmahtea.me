@@ -1,12 +1,10 @@
 ---
 import Icon from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
-import { Picture } from "astro-imagetools/components";
 
 import FilteredProducts from "@solid/FilteredProducts.astro";
 import ProductFiltersForm from "@solid/ProductFiltersForm.astro";
 
-import Banner from "@components/Banner.astro";
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ProductCategories from "@components/ProductCategories.astro";
@@ -21,10 +19,7 @@ const { white_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
-  { locale } = page,
-  { ASSETS_URL } = import.meta.env;
-
-const categories = CMS.get("productCategories", locale);
+  { locale } = page;
 
 const productSizes = CMS.get("productSizes"),
   productVariants = CMS.get("productVariants");
@@ -45,56 +40,6 @@ const productSizes = CMS.get("productSizes"),
     font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
   }
 
-  .category-container {
-    @apply grid sm:grid-cols-[repeat(auto-fill,minmax(300px,2fr))] 
-      md:grid-cols-2 gap-y-[30px] gap-x-[30px] mt-[30px] overflow-hidden;
-
-    .category-content-container {
-      @apply relative flex flex-nowrap w-full h-[clamp(110px,12vw+8px,170px)] cursor-pointer;
-
-      @media (max-width: 320px) {
-        @apply h-full;
-      }
-    }
-
-    .category-txt-container {
-      @apply flex grow items-center px-[25px] py-[15px];
-
-      @media (max-width: 320px) {
-        @apply w-3/5;
-      }
-    }
-
-    .category-img-container {
-      @media (max-width: 320px) {
-        @apply w-2/5;
-      }
-    }
-  }
-
-  .product-impact-container {
-    width: 100%;
-    height: 100%;
-    max-height: 500px;
-    aspect-ratio: 1 / 1;
-    clip-path: url(#product-impact-bg-curve-sm);
-
-    @media (min-width: 768px) {
-      aspect-ratio: 2 / 1;
-      clip-path: url(#product-impact-bg-curve);
-    }
-  }
-
-  .product-impact-text {
-    font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
-  }
-
-  .product-impact-btn {
-    font-size: clamp(1rem, 2.2vw + 0.13rem, 2rem);
-    margin-top: clamp(25px, 3.5vw + 6px, 50px);
-    padding: clamp(10px, 1.3vw + 1px, 19px) clamp(16px, 2.2vw + 1px, 31px);
-  }
-
   .prose-text {
     p,
     ol,
@@ -112,12 +57,6 @@ const productSizes = CMS.get("productSizes"),
         }
       }
     }
-  }
-
-  select {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 </style>
 
