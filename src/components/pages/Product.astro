@@ -8,6 +8,7 @@ import ProductFiltersForm from "@solid/ProductFiltersForm.astro";
 
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import ProductCategories from "@components/ProductCategories.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
@@ -134,64 +135,7 @@ const productSizes = CMS.get("productSizes"),
 
     <div class="grid gap-y-[50px]">
       {/* Categories Section */}
-      <section class="wrapper overflow-hidden">
-        <ClipPathSVG
-          id="product-category-card-curve"
-          path="M0.547,0.01 c0.072,0.003,0.13,0,0.167,0 c0.315,0,0.282,0.03,0.282,0.467 s0.052,0.518,-0.264,0.518 c-0.105,0,-0.154,0,-0.174,-0.001 l-0.011,0.001 h-0.001 c-0.199,0.01,-0.401,0.008,-0.47,-0.037 C-0.013,0.898,0.003,0.642,0.003,0.487 c0,-0.216,-0.034,-0.411,0.14,-0.459 C0.305,-0.018,0.435,0.005,0.547,0.01"
-        />
-
-        <ClipPathSVG
-          id="sliced-circle"
-          path="M1,0.985 a0.644,0.396,0,0,1,-0.187,0.015 A0.813,0.5,0,0,1,0.813,0 l0.188,0.012 A0.888,0.546,0,0,0,0.5,0.5 A0.869,0.535,0,0,0,1,0.985"
-        />
-
-        <h2
-          id={page.Category_title.toLowerCase().replaceAll(" ", "-")}
-          class="heading-title"
-        >
-          {page.Category_title}
-        </h2>
-
-        <div class="category-container overflow-hidden">
-          {
-            categories.map(({ attributes: { Title, Intro_blob, Meta } }) => (
-              <div
-                class="bg-primary text-center"
-                style="clip-path: url(#product-category-card-curve)"
-              >
-                <a href={Meta.URL_slug}>
-                  <div class="category-content-container">
-                    <div class="category-img-container overflow-hidden">
-                      <div class="category-img w-auto h-full aspect-[6/5] block">
-                        <Picture
-                          layout="fullWidth"
-                          src={ASSETS_URL + Intro_blob.data.attributes.url}
-                          alt={Intro_blob.data.attributes.alternativeText}
-                          sizes="calc(clamp(110px, 12vw + 8px, 170px) * 6/5)"
-                          attributes={{
-                            img: { style: "aspect-ratio: 6 / 5;" },
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    <div class="category-txt-container">
-                      <h3
-                        class:list={[
-                          "recoleta text-[clamp(2rem,3vw+0.55rem,2.625rem)]",
-                          "font-semibold leading-[120%] text-white",
-                        ]}
-                      >
-                        {Title}
-                      </h3>
-                    </div>
-                  </div>
-                </a>
-              </div>
-            ))
-          }
-        </div>
-      </section>
+      <ProductCategories {locale} title={page.Category_title} />
 
       <section role="main">
         <div class="wrapper grid gap-5 mb-[30px]">
