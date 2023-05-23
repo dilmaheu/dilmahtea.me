@@ -74,3 +74,11 @@ jobs:
           projectName: dilmahtea-me
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Confirm Build
+        if: always() && inputs.build_id
+        run: |
+          curl \
+            -H "Content-Type: application/json" \
+            -H "Build-Webhook-Secret: ${{ secrets.BUILD_WEBHOOK_SECRET }}" \
+            https://scripts.dilmahtea.me/confirm-build?ref=${{ github.ref_name }}
