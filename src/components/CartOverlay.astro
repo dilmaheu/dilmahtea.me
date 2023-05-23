@@ -300,10 +300,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       document.querySelector.bind(document),
     id: (id: string) => HTMLElement = document.getElementById.bind(document);
 
-  const openCartBtn = query(".open-cart-btn"),
-    openCartBtnSm = query(".open-cart-btn-sm"),
-    cart = id("cart"),
+  const cart = id("cart"),
     sidebar = id("sidebar"),
+    openCartBtn = id("open-cart-btn"),
     closeCartBtn = id("close-cart-btn"),
     checkoutInfoLink = id("checkout-info-link"),
     cartOverlayContent = id("cart-overlay-content"),
@@ -325,8 +324,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   const closeCart = () => {
     cart.classList.add("hidden");
 
-    // move focus back to cart button
-    (window.innerWidth < 1280 ? openCartBtnSm : openCartBtn).focus();
+    openCartBtn.focus(); // move focus back to cart button
 
     (!sidebar || sidebar.offsetWidth === 0) && window.enableScrolling();
 
