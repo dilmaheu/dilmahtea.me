@@ -76,6 +76,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Confirm Build
+        if: always() && inputs.build_id
         run: |
           curl \
             -H "Content-Type: application/json" \
