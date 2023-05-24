@@ -1,13 +1,14 @@
 ---
 import Icon from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
-import { Picture } from "astro-imagetools/components";
 
 import FilteredProducts from "@solid/FilteredProducts.astro";
 import ProductFiltersForm from "@solid/ProductFiltersForm.astro";
 
+import Banner from "@components/Banner.astro";
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import ProductCategories from "@components/ProductCategories.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
@@ -19,10 +20,7 @@ const { white_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
-  { locale } = page,
-  { ASSETS_URL } = import.meta.env;
-
-const categories = CMS.get("productCategories", locale);
+  { locale } = page;
 
 const productSizes = CMS.get("productSizes"),
   productVariants = CMS.get("productVariants");
@@ -43,56 +41,6 @@ const productSizes = CMS.get("productSizes"),
     font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
   }
 
-  .category-container {
-    @apply grid sm:grid-cols-[repeat(auto-fill,minmax(300px,2fr))] 
-      md:grid-cols-2 gap-y-[30px] gap-x-[30px] mt-[30px] overflow-hidden;
-
-    .category-content-container {
-      @apply relative flex flex-nowrap w-full h-[clamp(110px,12vw+8px,170px)] cursor-pointer;
-
-      @media (max-width: 320px) {
-        @apply h-full;
-      }
-    }
-
-    .category-txt-container {
-      @apply flex grow items-center px-[25px] py-[15px];
-
-      @media (max-width: 320px) {
-        @apply w-3/5;
-      }
-    }
-
-    .category-img-container {
-      @media (max-width: 320px) {
-        @apply w-2/5;
-      }
-    }
-  }
-
-  .product-impact-container {
-    width: 100%;
-    height: 100%;
-    max-height: 500px;
-    aspect-ratio: 1 / 1;
-    clip-path: url(#product-impact-bg-curve-sm);
-
-    @media (min-width: 768px) {
-      aspect-ratio: 2 / 1;
-      clip-path: url(#product-impact-bg-curve);
-    }
-  }
-
-  .product-impact-text {
-    font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
-  }
-
-  .product-impact-btn {
-    font-size: clamp(1rem, 2.2vw + 0.13rem, 2rem);
-    margin-top: clamp(25px, 3.5vw + 6px, 50px);
-    padding: clamp(10px, 1.3vw + 1px, 19px) clamp(16px, 2.2vw + 1px, 31px);
-  }
-
   .prose-text {
     p,
     ol,
@@ -111,12 +59,6 @@ const productSizes = CMS.get("productSizes"),
       }
     }
   }
-
-  select {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 </style>
 
 <PostDetailsLayout
@@ -134,64 +76,7 @@ const productSizes = CMS.get("productSizes"),
 
     <div class="grid gap-y-[50px]">
       {/* Categories Section */}
-      <section class="wrapper overflow-hidden">
-        <ClipPathSVG
-          id="product-category-card-curve"
-          path="M0.547,0.01 c0.072,0.003,0.13,0,0.167,0 c0.315,0,0.282,0.03,0.282,0.467 s0.052,0.518,-0.264,0.518 c-0.105,0,-0.154,0,-0.174,-0.001 l-0.011,0.001 h-0.001 c-0.199,0.01,-0.401,0.008,-0.47,-0.037 C-0.013,0.898,0.003,0.642,0.003,0.487 c0,-0.216,-0.034,-0.411,0.14,-0.459 C0.305,-0.018,0.435,0.005,0.547,0.01"
-        />
-
-        <ClipPathSVG
-          id="sliced-circle"
-          path="M1,0.985 a0.644,0.396,0,0,1,-0.187,0.015 A0.813,0.5,0,0,1,0.813,0 l0.188,0.012 A0.888,0.546,0,0,0,0.5,0.5 A0.869,0.535,0,0,0,1,0.985"
-        />
-
-        <h2
-          id={page.Category_title.toLowerCase().replaceAll(" ", "-")}
-          class="heading-title"
-        >
-          {page.Category_title}
-        </h2>
-
-        <div class="category-container overflow-hidden">
-          {
-            categories.map(({ attributes: { Title, Intro_blob, Meta } }) => (
-              <div
-                class="bg-primary text-center"
-                style="clip-path: url(#product-category-card-curve)"
-              >
-                <a href={Meta.URL_slug}>
-                  <div class="category-content-container">
-                    <div class="category-img-container overflow-hidden">
-                      <div class="category-img w-auto h-full aspect-[6/5] block">
-                        <Picture
-                          layout="fullWidth"
-                          src={ASSETS_URL + Intro_blob.data.attributes.url}
-                          alt={Intro_blob.data.attributes.alternativeText}
-                          sizes="calc(clamp(110px, 12vw + 8px, 170px) * 6/5)"
-                          attributes={{
-                            img: { style: "aspect-ratio: 6 / 5;" },
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    <div class="category-txt-container">
-                      <h3
-                        class:list={[
-                          "recoleta text-[clamp(2rem,3vw+0.55rem,2.625rem)]",
-                          "font-semibold leading-[120%] text-white",
-                        ]}
-                      >
-                        {Title}
-                      </h3>
-                    </div>
-                  </div>
-                </a>
-              </div>
-            ))
-          }
-        </div>
-      </section>
+      <ProductCategories {locale} title={page.Category_title} />
 
       <section role="main">
         <div class="wrapper grid gap-5 mb-[30px]">
@@ -227,55 +112,13 @@ const productSizes = CMS.get("productSizes"),
         </FilteredProducts>
       </section>
 
-      {/* Products impact Section */}
-      <section role="complementary">
-        <ClipPathSVG
-          id="product-impact-bg-curve"
-          path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.23,-0.017 c0.074,0,0.2,0.037,0.315,0.009 S1,0.894,1,0.894 V0.055"
-        />
-
-        <ClipPathSVG
-          id="product-impact-bg-curve-sm"
-          path="M0.718,0 C0.853,0,0.938,0.021,1,0.064 V0.97 c-0.045,0.046,-0.195,0.006,-0.324,0 c-0.149,-0.007,-0.301,0.03,-0.45,0.03 C0.094,1,0,0.954,0,0.954 V0.064 c0.059,-0.061,0.237,0,0.32,0 S0.583,0,0.718,0"
-        />
-
-        <div class="relative w-full h-full product-impact-container">
-          <div class="absolute inset-0 w-full h-full bg-primary">
-            <Picture
-              alt=""
-              layout="fill"
-              src={ASSETS_URL + page.Block2_blob.data.attributes.url}
-            />
-          </div>
-
-          <div
-            class="absolute inset-0 w-full h-full bg-gradient-to-b from-black to-black opacity-[0.4]"
-          >
-          </div>
-
-          <div class="relative z-50 h-full flex flex-wrap items-center">
-            <div
-              class="wrapper flex flex-wrap justify-center text-center py-[20px]"
-            >
-              <h2
-                class="product-impact-text recoleta font-semibold leading-[130%] w-full"
-              >
-                {page.Block2_title}
-              </h2>
-
-              <a
-                href={page.Block2_button_link}
-                class:list={[
-                  "flex product-impact-btn bg-secondary rounded-full",
-                  "text-primary font-bold md:font-semibold leading-[150%]",
-                ]}
-              >
-                {page.Block2_button_text}
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Banner Section */}
+      <Banner
+        title={page.Block2_title}
+        button_text={page.Block2_button_text}
+        button_link={page.Block2_button_link}
+        background_img={page.Block2_blob}
+      />
     </div>
   </div>
 

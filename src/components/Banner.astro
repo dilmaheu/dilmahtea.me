@@ -18,15 +18,15 @@ const { title, intro, button_text, button_link, blob, background_img } =
     height: 100%;
     max-height: 500px;
     aspect-ratio: 1 / 1;
-    clip-path: url(#banner2-bg-curve-sm);
+    clip-path: url(#blob-banner-bg-curve-sm);
 
     @media (min-width: 768px) {
       aspect-ratio: 2 / 1;
-      clip-path: url(#banner2-bg-curve);
+      clip-path: url(#blob-banner-bg-curve);
     }
   }
 
-  .banner2-container {
+  .blob-banner-container {
     clip-path: url(#banner-bg-curve-sm);
 
     @media (min-width: 640px) {
@@ -43,8 +43,8 @@ const { title, intro, button_text, button_link, blob, background_img } =
       line-clamp-5 sm:line-clamp-3 md:line-clamp-5 overflow-hidden;
   }
 
-  .banner2-content-container,
-  .banner2-blob-container {
+  .blob-banner-content-container,
+  .blob-banner-blob-container {
     padding: poly-fluid-clamp(
       (
         640px: 25px,
@@ -58,7 +58,7 @@ const { title, intro, button_text, button_link, blob, background_img } =
 {/* Banner Section */}
 <section
   role="complementary"
-  class={blob ? "banner2-container" : "banner-container"}
+  class={blob ? "blob-banner-container" : "banner-container"}
 >
   <ClipPathSVG
     id="banner-bg-curve"
@@ -71,19 +71,19 @@ const { title, intro, button_text, button_link, blob, background_img } =
   />
 
   <ClipPathSVG
-    id="banner2-bg-curve"
+    id="blob-banner-bg-curve"
     path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.23,-0.017 c0.074,0,0.2,0.037,0.315,0.009 S1,0.894,1,0.894 V0.055"
   />
 
   <ClipPathSVG
-    id="banner2-bg-curve-sm"
+    id="blob-banner-bg-curve-sm"
     path="M0.718,0 C0.853,0,0.938,0.021,1,0.064 V0.97 c-0.045,0.046,-0.195,0.006,-0.324,0 c-0.149,-0.007,-0.301,0.03,-0.45,0.03 C0.094,1,0,0.954,0,0.954 V0.064 c0.059,-0.061,0.237,0,0.32,0 S0.583,0,0.718,0"
   />
 
   <div
     class:list={[
       "relative w-full bg-primary",
-      blob ? "banner2-content-container" : "h-full",
+      blob ? "blob-banner-content-container" : "h-full",
     ]}
   >
     <div class="h-full flex flex-wrap items-center">
@@ -116,7 +116,7 @@ const { title, intro, button_text, button_link, blob, background_img } =
             intro && (
               <div
                 class:list={[
-                  "prose max-w-none hero-text banner-intro",
+                  "banner-intro hero-text prose max-w-none ",
                   blob ? "text-white" : "text-secondary",
                 ]}
               >
@@ -153,10 +153,10 @@ const { title, intro, button_text, button_link, blob, background_img } =
                 />
               </div>
 
-              <div 
+              <div
                 class:list={[
                   "absolute inset-0 w-full h-full",
-                  "bg-gradient-to-b from-black/40 to-black/40" 
+                  "bg-gradient-to-b from-black/40 to-black/40",
                 ]}
               />
             </>
@@ -167,12 +167,12 @@ const { title, intro, button_text, button_link, blob, background_img } =
         {
           blob && (
             <div class="hidden sm:flex sm:w-1/2 aspect-[6/5] flex items-center">
-              <div class="absolute left-0 w-full h-full banner2-blob-container">
+              <div class="blob-banner-blob-container absolute left-0 w-full h-full">
                 <div class="h-full aspect-[6/5] my-auto grid items-center">
                   <div class="sm:max-w-[48vw]">
                     <ClippedPicture
                       preload="avif"
-                      id="banner2-blob-curve"
+                      id="blob-banner-blob-curve"
                       breakpoints={{ minWidth: 640 }}
                       alt={blob.data.attributes.alternativeText}
                       src={ASSETS_URL + blob.data.attributes.url}
@@ -202,7 +202,7 @@ const { title, intro, button_text, button_link, blob, background_img } =
       <div class="hero-img-sm-container block sm:hidden relative -mt-10 z-20 w-full">
         <ClippedPicture
           preload="avif"
-          id="banner2-blob-curve-sm"
+          id="blob-banner-blob-curve-sm"
           breakpoints={{ maxWidth: 640 }}
           alt={blob.data.attributes.alternativeText}
           src={ASSETS_URL + blob.data.attributes.url}
