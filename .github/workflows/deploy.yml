@@ -64,10 +64,10 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - uses: actions/cache@v3
-        name: Setup astro-imagetools cache
+        name: Restore astro-imagetools cache
         with:
           path: node_modules/.cache/astro-imagetools
-          key: astro-imagetools-cache-${{ github.ref_name }}
+          key: astro-imagetools-cache-dev
           restore-keys: |
             astro-imagetools-cache-
 
@@ -76,6 +76,12 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - uses: actions/cache@v3
+        name: Setup astro-imagetools cache
+        with:
+          path: node_modules/.cache/astro-imagetools
+          key: astro-imagetools-cache-${{ github.ref_name}}-${{ hashFiles('node_modules/.cache/astro-imagetools/**') }}
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
