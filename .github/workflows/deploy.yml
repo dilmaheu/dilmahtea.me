@@ -63,11 +63,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - uses: actions/cache@v3
+      - uses: actions/cache/restore@v3
         name: Restore astro-imagetools cache
         with:
           path: node_modules/.cache/astro-imagetools
-          key: astro-imagetools-cache-dev
+          key: astro-imagetools-cache # this key is not used, it's just to make the action work
           restore-keys: |
             astro-imagetools-cache-
 
@@ -77,8 +77,8 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - uses: actions/cache@v3
-        name: Setup astro-imagetools cache
+      - uses: actions/cache/save@v3
+        name: Save astro-imagetools cache
         with:
           path: node_modules/.cache/astro-imagetools
           key: astro-imagetools-cache-${{ github.ref_name}}-${{ hashFiles('node_modules/.cache/astro-imagetools/**') }}
