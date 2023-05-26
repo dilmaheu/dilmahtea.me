@@ -158,7 +158,11 @@ langSelectorsData.unshift(langSelectorsData.splice(currentLangIndex, 1)[0]);
     const target = event.target as HTMLElement;
 
     dropdowns.forEach((dropdown) => {
-      dropdown.classList.toggle("dropdown-open", dropdown.contains(target));
+      if (dropdown.contains(target)) {
+        dropdown.classList.toggle("dropdown-open");
+      } else {
+        dropdown.classList.remove("dropdown-open");
+      }
     });
   });
 
