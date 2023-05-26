@@ -462,159 +462,157 @@ const {
     }
   </script>
 
-  <script>
-    const id = document.getElementById.bind(document);
-
-    const rootElement = document.querySelector(":root") as HTMLElement,
-      cart = id("cart"),
-      sidebar = id("sidebar"),
-      cartNavbarBg = id("cart-navbar-bg"),
-      openCartBtn = id("open-cart-btn"),
-      sidebarOpenButton = id("sidebar-open-btn"),
-      sidebarCloseButton = id("sidebar-close-btn"),
-      localizationMenuSm = id("localization-menu-sm"),
-      localizationMenuOpenButton = id("localization-menu-open-btn"),
-      localizationMenuSmOpenButton = id("localization-menu-sm-open-btn"),
-      localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
-
-    const localization = localizationMenuOpenButton?.parentElement,
-      localizationMenu = localizationMenuOpenButton?.nextElementSibling,
-      localizationForms =
-        document.querySelectorAll<HTMLFormElement>(".localization-form");
-
-    window.disableScrolling = () => {
-      const overflowY =
-        window.innerHeight < document.body.scrollHeight ? "scroll" : "auto";
-
-      Object.assign(document.body.style, {
-        overflowY,
-        width: "100%",
-        position: "fixed",
-        top: `-${scrollY}px`,
-      });
-    };
-
-    window.enableScrolling = () => {
-      const scrollYPosition =
-        parseInt(document.body.style.top.slice(1, -2)) || window.scrollY;
-
-      Object.assign(document.body.style, {
-        width: "auto",
-        overflowY: "auto",
-        position: "static",
-      });
-
-      window.scrollTo({ top: scrollYPosition });
-    };
-
-    window.addEventListener("resize", () => {
-      if (
-        window.innerWidth < 1280 &&
-        (sidebar.style.display === "block" ||
-          localizationMenuSm.style.display === "block")
-      ) {
-        window.disableScrolling();
-      } else {
-        // enable scrolling only if cart and checkout is not open
-        if (cart?.classList.contains("hidden")) window.enableScrolling();
-
-        cartNavbarBg &&
-          (cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)");
-      }
-    });
-
-    openCartBtn?.addEventListener("click", () => {
-      window.openCart();
-    });
-
-    sidebarOpenButton?.addEventListener("click", () => {
-      sidebar.style.display = "block";
-      sidebarOpenButton.style.display = "none";
-      sidebarCloseButton.style.display = "block";
-
-      window.disableScrolling();
-    });
-
-    sidebarCloseButton?.addEventListener("click", () => {
-      sidebar.style.display = "none";
-      sidebarOpenButton.style.display = "block";
-      sidebarCloseButton.style.display = "none";
-
-      window.enableScrolling();
-    });
-
-    localization?.addEventListener("mouseenter", () => {
-      localizationMenu.classList.remove("hidden");
-    });
-
-    const hideLocalizationMenu = () => {
-      localizationMenu.classList.add("hidden");
-    };
-
-    localization?.addEventListener("mouseleave", hideLocalizationMenu);
-
-    document.addEventListener("click", (event) => {
-      const target = event.target as HTMLElement;
-
-      if (localizationMenuOpenButton?.contains(target)) {
-        const { classList: localizationMenuClassList } = localizationMenu;
-
-        localizationMenuClassList.toggle("hidden");
-
-        localization[
-          !localizationMenuClassList.contains("hidden")
-            ? "removeEventListener"
-            : "addEventListener"
-        ]("mouseleave", hideLocalizationMenu);
-      }
-
-      if (!localization?.contains(target)) {
-        hideLocalizationMenu();
-
-        localization.addEventListener("mouseleave", hideLocalizationMenu);
-      }
-    });
-
-    localizationMenuSmOpenButton?.addEventListener("click", () => {
-      localizationMenuSm.style.display = "block";
-
-      window.disableScrolling();
-    });
-
-    localizationMenuSmCloseButton?.addEventListener("click", () => {
-      localizationMenuSm.style.display = "none";
-
-      window.enableScrolling();
-    });
-
-    localizationForms.forEach((localizationForm) => {
-      localizationForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-
-        const { lang: newLocale } = Object.fromEntries(
-          [...localizationForm.querySelectorAll("ul")].map((list) => [
-            list.dataset.name,
-            list.querySelector<HTMLElement>("li[aria-selected=true]").dataset
-              .value,
-          ])
-        );
-
-        // change & redirect to preferred locale
-        localStorage.setItem(`locale`, newLocale);
-
-        const localeRegex = new RegExp(
-          // @ts-ignore
-          `^/(${availableLocales.map((locale) => locale).join("|")})/`
-          /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
-        );
-
-        let [, locale] = location.pathname.match(localeRegex) ?? [];
-
-        location.href =
-          `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
-      });
-    });
-  </script>
-
   <SearchBar />
 </header>
+
+<script>
+  const id = document.getElementById.bind(document);
+
+  const cart = id("cart"),
+    sidebar = id("sidebar"),
+    cartNavbarBg = id("cart-navbar-bg"),
+    openCartBtn = id("open-cart-btn"),
+    sidebarOpenButton = id("sidebar-open-btn"),
+    sidebarCloseButton = id("sidebar-close-btn"),
+    localizationMenuSm = id("localization-menu-sm"),
+    localizationMenuOpenButton = id("localization-menu-open-btn"),
+    localizationMenuSmOpenButton = id("localization-menu-sm-open-btn"),
+    localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
+
+  const localization = localizationMenuOpenButton?.parentElement,
+    localizationMenu = localizationMenuOpenButton?.nextElementSibling,
+    localizationForms =
+      document.querySelectorAll<HTMLFormElement>(".localization-form");
+
+  window.disableScrolling = () => {
+    const overflowY =
+      window.innerHeight < document.body.scrollHeight ? "scroll" : "auto";
+
+    Object.assign(document.body.style, {
+      overflowY,
+      width: "100%",
+      position: "fixed",
+      top: `-${scrollY}px`,
+    });
+  };
+
+  window.enableScrolling = () => {
+    const scrollYPosition =
+      parseInt(document.body.style.top.slice(1, -2)) || window.scrollY;
+
+    Object.assign(document.body.style, {
+      width: "auto",
+      overflowY: "auto",
+      position: "static",
+    });
+
+    window.scrollTo({ top: scrollYPosition });
+  };
+
+  window.addEventListener("resize", () => {
+    if (
+      window.innerWidth < 1280 &&
+      (sidebar.style.display === "block" ||
+        localizationMenuSm.style.display === "block")
+    ) {
+      window.disableScrolling();
+    } else {
+      // enable scrolling only if cart and checkout is not open
+      if (cart?.classList.contains("hidden")) window.enableScrolling();
+
+      cartNavbarBg && (cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)");
+    }
+  });
+
+  openCartBtn?.addEventListener("click", () => {
+    window.openCart();
+  });
+
+  sidebarOpenButton?.addEventListener("click", () => {
+    sidebar.style.display = "block";
+    sidebarOpenButton.style.display = "none";
+    sidebarCloseButton.style.display = "block";
+
+    window.disableScrolling();
+  });
+
+  sidebarCloseButton?.addEventListener("click", () => {
+    sidebar.style.display = "none";
+    sidebarOpenButton.style.display = "block";
+    sidebarCloseButton.style.display = "none";
+
+    window.enableScrolling();
+  });
+
+  localization?.addEventListener("mouseenter", () => {
+    localizationMenu.classList.remove("hidden");
+  });
+
+  const hideLocalizationMenu = () => {
+    localizationMenu.classList.add("hidden");
+  };
+
+  localization?.addEventListener("mouseleave", hideLocalizationMenu);
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+
+    if (localizationMenuOpenButton?.contains(target)) {
+      const { classList: localizationMenuClassList } = localizationMenu;
+
+      localizationMenuClassList.toggle("hidden");
+
+      localization[
+        !localizationMenuClassList.contains("hidden")
+          ? "removeEventListener"
+          : "addEventListener"
+      ]("mouseleave", hideLocalizationMenu);
+    }
+
+    if (!localization?.contains(target)) {
+      hideLocalizationMenu();
+
+      localization.addEventListener("mouseleave", hideLocalizationMenu);
+    }
+  });
+
+  localizationMenuSmOpenButton?.addEventListener("click", () => {
+    localizationMenuSm.style.display = "block";
+
+    window.disableScrolling();
+  });
+
+  localizationMenuSmCloseButton?.addEventListener("click", () => {
+    localizationMenuSm.style.display = "none";
+
+    window.enableScrolling();
+  });
+
+  localizationForms.forEach((localizationForm) => {
+    localizationForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const { lang: newLocale } = Object.fromEntries(
+        [...localizationForm.querySelectorAll("ul")].map((list) => [
+          list.dataset.name,
+          list.querySelector<HTMLElement>("li[aria-selected=true]").dataset
+            .value,
+        ])
+      );
+
+      // change & redirect to preferred locale
+      localStorage.setItem(`locale`, newLocale);
+
+      const localeRegex = new RegExp(
+        // @ts-ignore
+        `^/(${availableLocales.map((locale) => locale).join("|")})/`
+        /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
+      );
+
+      let [, locale] = location.pathname.match(localeRegex) ?? [];
+
+      location.href =
+        `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
+    });
+  });
+</script>
