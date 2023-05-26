@@ -554,13 +554,22 @@ const {
 
   localization?.addEventListener("mouseleave", hideLocalizationMenu);
 
+  let localizationOpenedByClick = false;
+
   document.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
 
     if (localizationMenuOpenButton?.contains(target)) {
       const { classList: localizationMenuClassList } = localizationMenu;
 
-      localizationMenuClassList.toggle("hidden");
+      if (localizationOpenedByClick) {
+        localizationMenuClassList.add("hidden");
+        localizationOpenedByClick = false;
+      } else {
+        localizationMenuClassList.remove("hidden");
+
+        localizationOpenedByClick = true;
+      }
 
       localization[
         !localizationMenuClassList.contains("hidden")
