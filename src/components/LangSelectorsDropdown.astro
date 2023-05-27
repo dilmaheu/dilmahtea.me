@@ -186,16 +186,14 @@ langSelectorsData.unshift(langSelectorsData.splice(currentLangIndex, 1)[0]);
       // change & redirect to preferred locale
       localStorage.setItem(`locale`, newLocale);
 
-      const localeRegex = new RegExp(
-        // @ts-ignore
-        `^/(${availableLocales.map((locale) => locale).join("|")})/`
-        /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
+      const pathnameRegex = new RegExp(
+        `^(/+)(${document.documentElement.lang}(/|$))?`
       );
 
-      let [, locale] = location.pathname.match(localeRegex) ?? [];
-
-      location.href =
-        `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
+      location.pathname = location.pathname.replace(
+        pathnameRegex,
+        (_, p1, p2, p3) => p1 + newLocale + (p2 ? p3 : "/")
+      );
 
       // const currentLangSelectors = Array.from(
       //   langSelector.parentElement
