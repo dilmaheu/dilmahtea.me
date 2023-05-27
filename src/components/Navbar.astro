@@ -187,7 +187,7 @@ const {
                 />
               </button>
 
-              <form class="localization-form hidden absolute w-[280px] -translate-x-1/2 left-1/2 drop-shadow-lg">
+              <div class="hidden absolute w-[280px] -translate-x-1/2 left-1/2 drop-shadow-lg">
                 <div class="relative flex justify-center pt-1">
                   <div class="w-5 h-5 bg-white rotate-45 rounded" />
                 </div>
@@ -206,14 +206,14 @@ const {
                     )}
                   </div>
 
-                  <button
+                  {/* <button
                     type="submit"
                     class="py-2.5 px-4 bg-primary text-white leading-[120%] rounded-full"
                   >
                     {Button_save_text}
-                  </button>
+                  </button> */}
                 </div>
-              </form>
+              </div>
             </div>
           )
         }
@@ -388,10 +388,10 @@ const {
       </div>
     </div>
 
-    <form
+    <div
       id="localization-menu-sm"
       class:list={[
-        "localization-form fixed hidden sm:!hidden right-0 top-0",
+        "fixed hidden sm:!hidden right-0 top-0",
         "w-full h-screen p-[25px] bg-secondary text-black-light z-[9999]",
       ]}
     >
@@ -432,14 +432,16 @@ const {
           </div>
         </div>
 
-        <button
+        {
+          /* <button
           type="submit"
           class="py-2.5 px-4 bg-primary text-secondary-light leading-[120%] rounded-full"
         >
           {Button_save_text}
-        </button>
+        </button> */
+        }
       </div>
-    </form>
+    </div>
   </div>
 
   <script is:inline>
@@ -480,9 +482,7 @@ const {
     localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
 
   const localization = localizationMenuOpenButton?.parentElement,
-    localizationMenu = localizationMenuOpenButton?.nextElementSibling,
-    localizationForms =
-      document.querySelectorAll<HTMLFormElement>(".localization-form");
+    localizationMenu = localizationMenuOpenButton?.nextElementSibling;
 
   window.disableScrolling = () => {
     const overflowY =
@@ -597,31 +597,31 @@ const {
     window.enableScrolling();
   });
 
-  localizationForms.forEach((localizationForm) => {
-    localizationForm.addEventListener("submit", (event) => {
-      event.preventDefault();
+  // localizationForms.forEach((localizationForm) => {
+  //   localizationForm.addEventListener("submit", (event) => {
+  //     event.preventDefault();
 
-      const { lang: newLocale } = Object.fromEntries(
-        [...localizationForm.querySelectorAll("ul")].map((list) => [
-          list.dataset.name,
-          list.querySelector<HTMLElement>("li[aria-selected=true]").dataset
-            .value,
-        ])
-      );
+  //     const { lang: newLocale } = Object.fromEntries(
+  //       [...localizationForm.querySelectorAll("ul")].map((list) => [
+  //         list.dataset.name,
+  //         list.querySelector<HTMLElement>("li[aria-selected=true]").dataset
+  //           .value,
+  //       ])
+  //     );
 
-      // change & redirect to preferred locale
-      localStorage.setItem(`locale`, newLocale);
+  //     // change & redirect to preferred locale
+  //     localStorage.setItem(`locale`, newLocale);
 
-      const localeRegex = new RegExp(
-        // @ts-ignore
-        `^/(${availableLocales.map((locale) => locale).join("|")})/`
-        /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
-      );
+  //     const localeRegex = new RegExp(
+  //       // @ts-ignore
+  //       `^/(${availableLocales.map((locale) => locale).join("|")})/`
+  //       /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
+  //     );
 
-      let [, locale] = location.pathname.match(localeRegex) ?? [];
+  //     let [, locale] = location.pathname.match(localeRegex) ?? [];
 
-      location.href =
-        `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
-    });
-  });
+  //     location.href =
+  //       `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
+  //   });
+  // });
 </script>
