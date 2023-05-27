@@ -298,13 +298,25 @@ const {
               ></path>
             </svg>
           </button>
+
+          <button
+            id="sidebar-close-btn"
+            aria-label={ariaLabelRecurData.Navbar_close_sidebar_menu_text}
+            class="hidden w-full h-full select-none cursor-pointer"
+          >
+            <svg viewBox="0 0 19.2 19.2" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+                style="fill: #fff; fill-rule: evenodd"></path>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
 
     <div
       id="sidebar"
-      class="hidden md:!hidden fixed top-0 right-0 z-[40] w-[300px] max-w-full h-screen bg-primary z-[99]"
+      class="hidden md:!hidden fixed right-0 z-[40] w-[300px] max-w-full h-full bg-primary z-[99]"
     >
       {
         sidebar_background && (
@@ -330,22 +342,6 @@ const {
 
       <div class="grid content-between h-full px-[30px] pt-[26px] pb-9 z-10">
         <div class="z-10 grid gap-9">
-          <div class="flex items-center gap-x-[15px] justify-end">
-            <div class="w-[35px] h-[35px]">
-              <button
-                id="sidebar-close-btn"
-                aria-label={ariaLabelRecurData.Navbar_close_sidebar_menu_text}
-                class="hidden w-full h-full select-none cursor-pointer"
-              >
-                <svg viewBox="0 0 19.2 19.2" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
-                    style="fill: #fff; fill-rule: evenodd"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-
           <nav class="flex flex-col gap-[35px] text-white">
             {
               menu.map(
@@ -456,8 +452,9 @@ const {
     const rootElement = document.querySelector(":root") as HTMLElement,
       cart = id("cart"),
       sidebar = id("sidebar"),
-      cartNavbarBg = id("cart-navbar-bg"),
+      navigation = id("navigation"),
       openCartBtn = id("open-cart-btn"),
+      cartNavbarBg = id("cart-navbar-bg"),
       sidebarOpenButton = id("sidebar-open-btn"),
       sidebarCloseButton = id("sidebar-close-btn"),
       localizationMenuSm = id("localization-menu-sm"),
@@ -495,19 +492,33 @@ const {
       window.scrollTo({ top: scrollYPosition });
     };
 
+    const updateSidebarTopPosition = () => {
+      // reduce top by 10px to hide the transparent gap caused by the curve
+      const sidebarTop = navigation.getBoundingClientRect().bottom - 10;
+
+      sidebar.style.top = `${sidebarTop}px`;
+      sidebar.style.paddingBottom = `${sidebarTop}px`;
+    };
+
+    window.addEventListener("resize", updateSidebarTopPosition);
+
     window.addEventListener("resize", () => {
-      if (
-        window.innerWidth < 768 &&
-        (sidebar.style.display === "block" ||
-          localizationMenuSm.style.display === "block")
-      ) {
-        window.disableScrolling();
-      } else {
+      if (window.innerWidth > 768) {
         // enable scrolling only if cart and checkout is not open
         if (cart?.classList.contains("hidden")) window.enableScrolling();
 
+        // remove event listener to prevent memory leaks
+        window.removeEventListener("resize", updateSidebarTopPosition);
+
         cartNavbarBg &&
           (cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)");
+      } else if (sidebar.style.display === "block") {
+        // readd event listener in case it was removed
+        window.addEventListener("resize", updateSidebarTopPosition);
+
+        if (localizationMenuSm.style.display === "block") {
+          window.disableScrolling();
+        }
       }
     });
 
@@ -516,11 +527,17 @@ const {
     });
 
     sidebarOpenButton?.addEventListener("click", () => {
+      window.removeEventListener("resize", updateSidebarTopPosition);
+
+      updateSidebarTopPosition();
+
       sidebar.style.display = "block";
       sidebarOpenButton.style.display = "none";
       sidebarCloseButton.style.display = "block";
 
       window.disableScrolling();
+
+      window.addEventListener("resize", updateSidebarTopPosition);
     });
 
     sidebarCloseButton?.addEventListener("click", () => {
