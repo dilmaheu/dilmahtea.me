@@ -92,7 +92,6 @@ const {
 <header
   id="navigation"
   class:list={[
-    isCartNavbar && "cart-navbar",
     "md:!relative sticky top-0 z-[999] w-full bg-cover bg-right-bottom",
   ]}
 >
@@ -454,7 +453,6 @@ const {
       sidebar = id("sidebar"),
       navigation = id("navigation"),
       openCartBtn = id("open-cart-btn"),
-      cartNavbarBg = id("cart-navbar-bg"),
       sidebarOpenButton = id("sidebar-open-btn"),
       sidebarCloseButton = id("sidebar-close-btn"),
       localizationMenuSm = id("localization-menu-sm"),
@@ -504,14 +502,11 @@ const {
 
     window.addEventListener("resize", () => {
       if (window.innerWidth > 768) {
-        // enable scrolling only if cart and checkout is not open
+        // enable scrolling if cart is not open
         if (cart?.classList.contains("hidden")) window.enableScrolling();
 
         // remove event listener to prevent memory leaks
         window.removeEventListener("resize", updateSidebarTopPosition);
-
-        cartNavbarBg &&
-          (cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)");
       } else if (sidebar.style.display === "block") {
         // readd event listener in case it was removed
         window.addEventListener("resize", updateSidebarTopPosition);
