@@ -509,12 +509,15 @@ const {
 
       // remove event listener to prevent memory leaks
       window.removeEventListener("resize", updateSidebarTopPosition);
-    } else if (sidebar.style.display === "block") {
-      // readd event listener in case it was removed
-      window.addEventListener("resize", updateSidebarTopPosition);
+    } else if (
+      sidebar.style.display === "block" ||
+      localizationMenuSm.style.display === "block"
+    ) {
+      window.disableScrolling();
 
-      if (localizationMenuSm.style.display === "block") {
-        window.disableScrolling();
+      if (sidebar.style.display === "block") {
+        // readd event listener in case it was removed
+        window.addEventListener("resize", updateSidebarTopPosition);
       }
     }
   });
