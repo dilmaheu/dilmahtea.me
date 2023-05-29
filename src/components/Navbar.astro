@@ -175,7 +175,7 @@ const {
                 />
               </button>
 
-              <form class="localization-form hidden absolute w-[280px] -translate-x-1/2 left-1/2 drop-shadow-lg">
+              <div class="hidden absolute w-[280px] -translate-x-1/2 left-1/2 drop-shadow-lg">
                 <div class="relative flex justify-center pt-1">
                   <div class="w-5 h-5 bg-white rotate-45 rounded" />
                 </div>
@@ -194,14 +194,14 @@ const {
                     )}
                   </div>
 
-                  <button
+                  {/* <button
                     type="submit"
                     class="py-2.5 px-4 bg-primary text-white leading-[120%] rounded-full"
                   >
                     {Button_save_text}
-                  </button>
+                  </button> */}
                 </div>
-              </form>
+              </div>
             </div>
           )
         }
@@ -370,10 +370,10 @@ const {
       </div>
     </div>
 
-    <form
+    <div
       id="localization-menu-sm"
       class:list={[
-        "localization-form fixed hidden sm:!hidden right-0 top-0",
+        "fixed hidden sm:!hidden right-0 top-0",
         "w-full h-screen p-[25px] bg-secondary text-black-light z-[9999]",
       ]}
     >
@@ -414,14 +414,16 @@ const {
           </div>
         </div>
 
-        <button
+        {
+          /* <button
           type="submit"
           class="py-2.5 px-4 bg-primary text-secondary-light leading-[120%] rounded-full"
         >
           {Button_save_text}
-        </button>
+        </button> */
+        }
       </div>
-    </form>
+    </div>
   </div>
 
   <script is:inline>
@@ -445,176 +447,182 @@ const {
     }
   </script>
 
-  <script>
-    const id = document.getElementById.bind(document);
-
-    const rootElement = document.querySelector(":root") as HTMLElement,
-      cart = id("cart"),
-      sidebar = id("sidebar"),
-      navigation = id("navigation"),
-      openCartBtn = id("open-cart-btn"),
-      sidebarOpenButton = id("sidebar-open-btn"),
-      sidebarCloseButton = id("sidebar-close-btn"),
-      localizationMenuSm = id("localization-menu-sm"),
-      localizationMenuOpenButton = id("localization-menu-open-btn"),
-      localizationMenuSmOpenButton = id("localization-menu-sm-open-btn"),
-      localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
-
-    const localization = localizationMenuOpenButton?.parentElement,
-      localizationMenu = localizationMenuOpenButton?.nextElementSibling,
-      localizationForms =
-        document.querySelectorAll<HTMLFormElement>(".localization-form");
-
-    window.disableScrolling = () => {
-      const overflowY =
-        window.innerHeight < document.body.scrollHeight ? "scroll" : "auto";
-
-      Object.assign(document.body.style, {
-        overflowY,
-        width: "100%",
-        position: "fixed",
-        top: `-${scrollY}px`,
-      });
-    };
-
-    window.enableScrolling = () => {
-      const scrollYPosition =
-        parseInt(document.body.style.top.slice(1, -2)) || window.scrollY;
-
-      Object.assign(document.body.style, {
-        width: "auto",
-        overflowY: "auto",
-        position: "static",
-      });
-
-      window.scrollTo({ top: scrollYPosition });
-    };
-
-    const updateSidebarTopPosition = () => {
-      // reduce top by 10px to hide the transparent gap caused by the curve
-      const sidebarTop = navigation.getBoundingClientRect().bottom - 10;
-
-      sidebar.style.top = `${sidebarTop}px`;
-      sidebar.style.paddingBottom = `${sidebarTop}px`;
-    };
-
-    window.addEventListener("resize", updateSidebarTopPosition);
-
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 768) {
-        // enable scrolling if cart is not open
-        if (cart?.classList.contains("hidden")) window.enableScrolling();
-
-        // remove event listener to prevent memory leaks
-        window.removeEventListener("resize", updateSidebarTopPosition);
-      } else if (sidebar.style.display === "block") {
-        // readd event listener in case it was removed
-        window.addEventListener("resize", updateSidebarTopPosition);
-
-        if (localizationMenuSm.style.display === "block") {
-          window.disableScrolling();
-        }
-      }
-    });
-
-    openCartBtn?.addEventListener("click", () => {
-      window.openCart();
-    });
-
-    sidebarOpenButton?.addEventListener("click", () => {
-      window.removeEventListener("resize", updateSidebarTopPosition);
-
-      updateSidebarTopPosition();
-
-      sidebar.style.display = "block";
-      sidebarOpenButton.style.display = "none";
-      sidebarCloseButton.style.display = "block";
-
-      window.disableScrolling();
-
-      window.addEventListener("resize", updateSidebarTopPosition);
-    });
-
-    sidebarCloseButton?.addEventListener("click", () => {
-      sidebar.style.display = "none";
-      sidebarOpenButton.style.display = "block";
-      sidebarCloseButton.style.display = "none";
-
-      window.enableScrolling();
-    });
-
-    localization?.addEventListener("mouseenter", () => {
-      localizationMenu.classList.remove("hidden");
-    });
-
-    const hideLocalizationMenu = () => {
-      localizationMenu.classList.add("hidden");
-    };
-
-    localization?.addEventListener("mouseleave", hideLocalizationMenu);
-
-    document.addEventListener("click", (event) => {
-      const target = event.target as HTMLElement;
-
-      if (localizationMenuOpenButton?.contains(target)) {
-        const { classList: localizationMenuClassList } = localizationMenu;
-
-        localizationMenuClassList.toggle("hidden");
-
-        localization[
-          !localizationMenuClassList.contains("hidden")
-            ? "removeEventListener"
-            : "addEventListener"
-        ]("mouseleave", hideLocalizationMenu);
-      }
-
-      if (!localization?.contains(target)) {
-        hideLocalizationMenu();
-
-        localization.addEventListener("mouseleave", hideLocalizationMenu);
-      }
-    });
-
-    localizationMenuSmOpenButton?.addEventListener("click", () => {
-      localizationMenuSm.style.display = "block";
-
-      window.disableScrolling();
-    });
-
-    localizationMenuSmCloseButton?.addEventListener("click", () => {
-      localizationMenuSm.style.display = "none";
-
-      window.enableScrolling();
-    });
-
-    localizationForms.forEach((localizationForm) => {
-      localizationForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-
-        const { lang: newLocale } = Object.fromEntries(
-          [...localizationForm.querySelectorAll("ul")].map((list) => [
-            list.dataset.name,
-            list.querySelector<HTMLElement>("li[aria-selected=true]").dataset
-              .value,
-          ])
-        );
-
-        // change & redirect to preferred locale
-        localStorage.setItem(`locale`, newLocale);
-
-        const localeRegex = new RegExp(
-          // @ts-ignore
-          `^/(${availableLocales.map((locale) => locale).join("|")})/`
-          /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
-        );
-
-        let [, locale] = location.pathname.match(localeRegex) ?? [];
-
-        location.href =
-          `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
-      });
-    });
-  </script>
-
   <SearchBar />
 </header>
+
+<script>
+  const id = document.getElementById.bind(document);
+
+  const cart = id("cart"),
+    sidebar = id("sidebar"),
+    navigation = id("navigation"),
+    openCartBtn = id("open-cart-btn"),
+    sidebarOpenButton = id("sidebar-open-btn"),
+    sidebarCloseButton = id("sidebar-close-btn"),
+    localizationMenuSm = id("localization-menu-sm"),
+    localizationMenuOpenButton = id("localization-menu-open-btn"),
+    localizationMenuSmOpenButton = id("localization-menu-sm-open-btn"),
+    localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
+
+  const localization = localizationMenuOpenButton?.parentElement,
+    localizationMenu = localizationMenuOpenButton?.nextElementSibling;
+
+  window.disableScrolling = () => {
+    const overflowY =
+      window.innerHeight < document.body.scrollHeight ? "scroll" : "auto";
+
+    Object.assign(document.body.style, {
+      overflowY,
+      width: "100%",
+      position: "fixed",
+      top: `-${scrollY}px`,
+    });
+  };
+
+  window.enableScrolling = () => {
+    const scrollYPosition =
+      parseInt(document.body.style.top.slice(1, -2)) || window.scrollY;
+
+    Object.assign(document.body.style, {
+      width: "auto",
+      overflowY: "auto",
+      position: "static",
+    });
+
+    window.scrollTo({ top: scrollYPosition });
+  };
+
+  const updateSidebarTopPosition = () => {
+    // reduce top by 10px to hide the transparent gap caused by the curve
+    const sidebarTop = navigation.getBoundingClientRect().bottom - 10;
+
+    sidebar.style.top = `${sidebarTop}px`;
+    sidebar.style.paddingBottom = `${sidebarTop}px`;
+  };
+
+  window.addEventListener("resize", updateSidebarTopPosition);
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 768) {
+      // enable scrolling if cart is not open
+      if (cart?.classList.contains("hidden")) window.enableScrolling();
+
+      // remove event listener to prevent memory leaks
+      window.removeEventListener("resize", updateSidebarTopPosition);
+    } else if (sidebar.style.display === "block") {
+      // readd event listener in case it was removed
+      window.addEventListener("resize", updateSidebarTopPosition);
+
+      if (localizationMenuSm.style.display === "block") {
+        window.disableScrolling();
+      }
+    }
+  });
+
+  openCartBtn?.addEventListener("click", () => {
+    window.openCart();
+  });
+
+  sidebarOpenButton?.addEventListener("click", () => {
+    window.removeEventListener("resize", updateSidebarTopPosition);
+
+    updateSidebarTopPosition();
+
+    sidebar.style.display = "block";
+    sidebarOpenButton.style.display = "none";
+    sidebarCloseButton.style.display = "block";
+
+    window.disableScrolling();
+
+    window.addEventListener("resize", updateSidebarTopPosition);
+  });
+
+  sidebarCloseButton?.addEventListener("click", () => {
+    sidebar.style.display = "none";
+    sidebarOpenButton.style.display = "block";
+    sidebarCloseButton.style.display = "none";
+
+    window.enableScrolling();
+  });
+
+  localization?.addEventListener("mouseenter", () => {
+    localizationMenu.classList.remove("hidden");
+  });
+
+  const hideLocalizationMenu = () => {
+    localizationMenu.classList.add("hidden");
+  };
+
+  localization?.addEventListener("mouseleave", hideLocalizationMenu);
+
+  let localizationOpenedByClick = false;
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+
+    if (localizationMenuOpenButton?.contains(target)) {
+      const { classList: localizationMenuClassList } = localizationMenu;
+
+      if (localizationOpenedByClick) {
+        localizationMenuClassList.add("hidden");
+        localizationOpenedByClick = false;
+      } else {
+        localizationMenuClassList.remove("hidden");
+
+        localizationOpenedByClick = true;
+      }
+
+      localization[
+        !localizationMenuClassList.contains("hidden")
+          ? "removeEventListener"
+          : "addEventListener"
+      ]("mouseleave", hideLocalizationMenu);
+    }
+
+    if (!localization?.contains(target)) {
+      hideLocalizationMenu();
+
+      localization.addEventListener("mouseleave", hideLocalizationMenu);
+    }
+  });
+
+  localizationMenuSmOpenButton?.addEventListener("click", () => {
+    localizationMenuSm.style.display = "block";
+
+    window.disableScrolling();
+  });
+
+  localizationMenuSmCloseButton?.addEventListener("click", () => {
+    localizationMenuSm.style.display = "none";
+
+    window.enableScrolling();
+  });
+
+  // localizationForms.forEach((localizationForm) => {
+  //   localizationForm.addEventListener("submit", (event) => {
+  //     event.preventDefault();
+
+  //     const { lang: newLocale } = Object.fromEntries(
+  //       [...localizationForm.querySelectorAll("ul")].map((list) => [
+  //         list.dataset.name,
+  //         list.querySelector<HTMLElement>("li[aria-selected=true]").dataset
+  //           .value,
+  //       ])
+  //     );
+
+  //     // change & redirect to preferred locale
+  //     localStorage.setItem(`locale`, newLocale);
+
+  //     const localeRegex = new RegExp(
+  //       // @ts-ignore
+  //       `^/(${availableLocales.map((locale) => locale).join("|")})/`
+  //       /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
+  //     );
+
+  //     let [, locale] = location.pathname.match(localeRegex) ?? [];
+
+  //     location.href =
+  //       `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
+  //   });
+  // });
+</script>
