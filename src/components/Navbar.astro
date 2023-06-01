@@ -746,3 +746,113 @@ const {
   //   });
   // });
 </script>
+
+<script defer>
+  const sessionSearchData = sessionStorage.getItem("sessionSearchData");
+
+  if (sessionSearchData) {
+    initializeSearch();
+  } else {
+    // Fetch the JSON file and store it in sessionStorage
+    fetch("/SearchData.json")
+      .then((response) => response.json())
+      .then((data) => {
+        sessionStorage.setItem("sessionSearchData", JSON.stringify(data));
+
+        initializeSearch();
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }
+
+  function initializeSearch() {
+    const q = document.querySelector.bind(document),
+      inputs = document.querySelectorAll(".search-input"),
+      noResult = q("#no-result"),
+      searchResults = q("#search-results"),
+      dataContainer = q("#search-data-container");
+
+    // Fetch the JSON file and extract the titles
+    const jsonDataString = sessionStorage.getItem("sessionSearchData");
+    const jsonData = JSON.parse(jsonDataString);
+
+    const locale = localStorage.getItem("locale") || "en"; // Get the locale from localStorage or default to "en"
+    const allData = Object.values(jsonData.data).reduce((acc, page) => {
+      const pageData = page.data;
+      if (Array.isArray(pageData)) {
+        pageData.forEach((item) => {
+          const attributes =
+            locale !== "en" &&
+            item.attributes.localizations &&
+            Array.isArray(item.attributes.localizations.data)
+              ? item.attributes.localizations.data.find(
+                  (localized) =>
+                    localized.attributes.locale.substring(0, 2) === locale
+                )?.attributes
+              : item.attributes;
+
+          if (attributes) {
+            const title = attributes.Title;
+            if (title) {
+              acc[title] = attributes; // Store the data attributes with the title as key
+            }
+          }
+        });
+      }
+      return acc;
+    }, {});
+
+    inputs.forEach((input) => {
+      input.addEventListener("input", () => {
+        const searchTerm = input.value.toLowerCase().trim();
+
+        const matches = Object.keys(allData).filter((title) =>
+          title.toLowerCase().includes(searchTerm)
+        );
+
+        searchResults.innerHTML = "";
+
+        if (searchTerm === "") {
+          noResult.style.display = "none";
+          dataContainer.style.display = "none";
+          return;
+        }
+
+        const maxItems = window.innerWidth < 640 ? 4 : 10;
+
+        for (let i = 0; i < Math.min(maxItems, matches.length); i++) {
+          const match = matches[i];
+          const dataObj = allData[match];
+
+          const el = document.createElement("a");
+          el.setAttribute("href", dataObj.URL_slug);
+          el.innerHTML = `<div class="flex w-auto gap-2.5 h-auto">
+              <div class="flex-none h-full">
+                <div class="w-[50px] h-[50px] rounded overflow-hidden">
+                  <img
+                    class="w-full h-full object-cover"
+                    src=${dataObj.Intro_blob.url}
+                    alt=${dataObj.Intro_blob.alt}
+                  />
+                </div>
+              </div>
+
+              <div class="grow text-black overflow-hidden">
+                <h3 class="sm:text-lg font-medium text-primary line-clamp-2">
+                  ${dataObj.Title}
+                </h3>
+                <div class="text-sm line-clamp-1 w-auto">
+                  ${dataObj.Intro_text}
+                </div>
+              </div>
+            </div>`;
+          searchResults.appendChild(el);
+        }
+
+        noResult.style.display = matches.length === 0 ? "block" : "none";
+        dataContainer.style.display = searchTerm.length > 0 ? "grid" : "none";
+      });
+    });
+  }
+</script>
