@@ -1,6 +1,11 @@
 ---
 import productsStore from "@store/Products";
 import localizeCMSImage from "@utils/localizeCMSImage";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+
+// temporarily enable tracking in all environments for testing purposes
+// const isProduction = !shouldDisplayExperimentals;
+const isProduction = true;
 
 const products = Object.fromEntries(
   await Promise.all(
@@ -30,7 +35,7 @@ const products = Object.fromEntries(
 );
 ---
 
-<script is:inline define:vars={{ products }}>
+<script is:inline define:vars={{ products, isProduction }}>
   window.replacePlaceholders = (content, data) => {
     const placeholderRegex =
       /<placeholder\s+name=(?:"|&#34;)(\w+)(?:"|&#34;)[^>]*><\/placeholder>/g;
@@ -146,7 +151,9 @@ const products = Object.fromEntries(
     },
 
     set(cart, productId, productData) {
-      const productExistsInCart = !!cart[productId];
+      const productExistsInCart = !!cart[productId],
+        quantityIncrement =
+          productData.quantity - (cart[productId]?.quantity || 0);
 
       cart[productId] = productData;
 
@@ -194,6 +201,28 @@ const products = Object.fromEntries(
           cartOverlayContent.classList.remove("hidden");
           emptyCartNotification.classList.add("hidden");
         }
+      }
+
+      if (isProduction && quantityIncrement > 0) {
+        fetch("https://analytics.scripts.dilmahtea.me", {
+          method: "POST",
+          priority: "low",
+          body: JSON.stringify({
+            event: "add_to_cart",
+            originURL: location.origin + location.pathname,
+            props: {
+              Title: JSON.parse(productData.names).en,
+              SKU: productData.SKU,
+              Quantity: quantityIncrement,
+              Price:
+                Math.round(
+                  (productData.price / productData.quantity) *
+                    quantityIncrement *
+                    100
+                ) / 100,
+            },
+          }),
+        });
       }
 
       return true;
