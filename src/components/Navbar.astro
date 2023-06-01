@@ -55,12 +55,14 @@ const {
         1024px: 50px,
       )
     );
+
     height: poly-fluid-clamp(
       (
         768px: 35px,
         1024px: 50px,
       )
     );
+
     padding: poly-fluid-clamp(
       (
         768px: 10px,
@@ -76,6 +78,7 @@ const {
         1024px: 20px,
       )
     );
+    
     height: poly-fluid-clamp(
       (
         768px: 15px,
@@ -87,6 +90,7 @@ const {
   #sidebar nav a {
     @apply text-[32px] font-bold leading-[150%];
   }
+
   .search-input {
     @apply text-black;
 
@@ -110,6 +114,31 @@ const {
       &:hover {
         cursor: pointer;
       }
+    }
+  }
+
+  #search-data-container {
+    @apply w-[90vw] mx-[min(100px,5vw)] p-[15px] sm:p-6 sm:m-1
+      top-[90%] sm:top-[75%] md:top-[70%];
+
+    @media (min-width: 640px) {
+      width: poly-fluid-clamp(
+        (
+          1065px: 575px,
+          1440px: 800px,
+        )
+      );
+
+      @include poly-fluid-sizing(
+        "margin-left",
+        (
+          640px: 35px,
+          1065px: 210px,
+          1440px: 225px,
+          1730px: 235px,
+          2050px: 415px,
+        )
+      );
     }
   }
 </style>
@@ -498,6 +527,18 @@ const {
           {Button_save_text}
         </button> */
         }
+      </div>
+    </div>
+
+    <div
+      id="search-data-container"
+      class="hidden absolute rounded-xl bg-white overflow-hidden"
+    >
+      <div id="search-results" class="grid sm:grid-cols-2 gap-x-2.5 gap-y-5">
+      </div>
+
+      <div id="no-result" class="hidden text-lg font-bold text-red-400">
+        No result found
       </div>
     </div>
   </div>
