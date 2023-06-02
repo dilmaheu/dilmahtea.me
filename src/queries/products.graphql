@@ -1,0 +1,37 @@
+fragment SimpleProductAttributes on Product {
+  locale
+  Title
+  Intro_text
+  Intro_blob {
+    data {
+      id
+      attributes {
+        url
+        formats
+        alternativeText
+      }
+    }
+  }
+  Meta {
+    URL_slug
+  }
+}
+
+query {
+  products {
+    data {
+      id
+      attributes {
+        ...SimpleProductAttributes
+        localizations(filters: { publishedAt: { ne: null } }) {
+          data {
+            id
+            attributes {
+              ...SimpleProductAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}
