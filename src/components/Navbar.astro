@@ -779,30 +779,26 @@ const {
     const jsonData = JSON.parse(jsonDataString);
 
     const locale = localStorage.getItem("locale") || "en"; // Get the locale from localStorage or default to "en"
-    const allData = Object.values(jsonData.data).reduce((acc, page) => {
-      const pageData = page.data;
-      if (Array.isArray(pageData)) {
-        pageData.forEach((item) => {
-          const attributes =
-            locale !== "en" &&
-            item.attributes.localizations &&
-            Array.isArray(item.attributes.localizations.data)
-              ? item.attributes.localizations.data.find(
-                  (localized) =>
-                    localized.attributes.locale.substring(0, 2) === locale
-                )?.attributes
-              : item.attributes;
+    const allData = {};
 
-          if (attributes) {
-            const title = attributes.Title;
-            if (title) {
-              acc[title] = attributes; // Store the data attributes with the title as key
-            }
-          }
-        });
+    jsonData.data.forEach((page) => {
+      const pageData =
+        page.localizations && Array.isArray(page.localizations)
+          ? page.localizations.find(
+              (localization) => localization.locale === locale
+            ) || page.localizations.find(
+              (localization) => localization.locale.substring(0, 2) === "en"
+            ) || page
+          : page;
+
+      if (pageData) {
+        const attributes = pageData;
+        const title = attributes.Title;
+        if (title) {
+          allData[title] = attributes; // Store the data attributes with the title as key
+        }
       }
-      return acc;
-    }, {});
+    });
 
     inputs.forEach((input) => {
       input.addEventListener("input", () => {
