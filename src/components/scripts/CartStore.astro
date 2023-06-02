@@ -151,9 +151,7 @@ const products = Object.fromEntries(
     },
 
     set(cart, productId, productData) {
-      const productExistsInCart = !!cart[productId],
-        quantityIncrement =
-          productData.quantity - (cart[productId]?.quantity || 0);
+      const productExistsInCart = !!cart[productId];
 
       cart[productId] = productData;
 
@@ -203,7 +201,7 @@ const products = Object.fromEntries(
         }
       }
 
-      if (isProduction && quantityIncrement > 0) {
+      if (isProduction && !productExistsInCart) {
         fetch("https://analytics.scripts.dilmahtea.me", {
           method: "POST",
           priority: "low",
@@ -213,13 +211,8 @@ const products = Object.fromEntries(
             props: {
               Title: JSON.parse(productData.names).en,
               SKU: productData.sku,
-              Quantity: quantityIncrement,
-              Price:
-                Math.round(
-                  (productData.price / productData.quantity) *
-                    quantityIncrement *
-                    100
-                ) / 100,
+              Quantity: productData.quantity,
+              Price: productData.price,
             },
           }),
         });
