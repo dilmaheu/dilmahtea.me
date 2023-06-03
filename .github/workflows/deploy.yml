@@ -29,7 +29,11 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/dilmaheu/dilmahtea.me/actions/caches | jq
+            https://api.github.com/repos/dilmaheu/dilmahtea.me/actions/caches \
+            | jq -r '.actions_caches[] | select(.key | startswith("astro-imagetools-cache-${{ github.ref_name }}")) | .key' \
+            | while read -r key; do            
+            echo "Deleting cache with key $key"
+          done
 
       - name: Confirm Build
         if: always() && inputs.build_id
