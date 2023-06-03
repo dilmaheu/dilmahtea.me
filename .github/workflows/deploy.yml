@@ -41,8 +41,8 @@ jobs:
         with:
           node-version: "16"
 
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
         id: pnpm-install
         with:
           version: 7
@@ -54,16 +54,16 @@ jobs:
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - uses: actions/cache/restore@v3
-        name: Restore astro-imagetools cache
+      - name: Restore astro-imagetools cache
+        uses: actions/cache/restore@v3
         with:
           path: node_modules/.cache/astro-imagetools
           key: astro-imagetools-cache # this key is not used, it's just to make the action work
@@ -78,11 +78,12 @@ jobs:
 
       - name: Generate astro-imagetools cache key
         id: astro-imagetools-cache-key
-        run: echo "::set-output name=key::astro-imagetools-cache-${{ github.ref_name }}-${{ hashFiles('node_modules/.cache/astro-imagetools/**') }}"
+        run: |
+          echo "::set-output name=key::astro-imagetools-cache-${{ github.ref_name }}-${{ hashFiles('node_modules/.cache/astro-imagetools/**') }}"
 
-      - uses: actions/cache/save@v3
+      - name: Save astro-imagetools cache
+        uses: actions/cache/save@v3
         id: save-astro-imagetools-cache
-        name: Save astro-imagetools cache
         with:
           path: node_modules/.cache/astro-imagetools
           key: ${{ steps.astro-imagetools-cache-key.outputs.key }}
