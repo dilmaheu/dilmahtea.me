@@ -80,7 +80,7 @@ jobs:
       - name: Generate astro-imagetools cache key
         id: astro-imagetools-cache-key
         run: |
-          echo "::set-output name=key::astro-imagetools-cache-${{ github.ref_name }}-${{ hashFiles('node_modules/.cache/astro-imagetools/**') }}"
+          echo "key=astro-imagetools-cache-${{ github.ref_name }}-${{ hashFiles('node_modules/.cache/astro-imagetools/**') }}" >> $GITHUB_OUTPUT
 
       - name: Save astro-imagetools cache
         uses: actions/cache/save@v3
