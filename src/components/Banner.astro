@@ -1,0 +1,218 @@
+---
+import Markdown from "@astrojs/markdown-component";
+import { Picture } from "astro-imagetools/components";
+
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import ClippedPicture from "@components/ClippedPicture.astro";
+
+const { title, intro, button_text, button_link, blob, background_img } =
+    Astro.props,
+  { ASSETS_URL } = import.meta.env;
+---
+
+<style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
+  .banner-container {
+    width: 100%;
+    height: 100%;
+    max-height: 500px;
+    aspect-ratio: 1 / 1;
+    clip-path: url(#blob-banner-bg-curve-sm);
+
+    @media (min-width: 768px) {
+      aspect-ratio: 2 / 1;
+      clip-path: url(#blob-banner-bg-curve);
+    }
+  }
+
+  .blob-banner-container {
+    clip-path: url(#banner-bg-curve-sm);
+
+    @media (min-width: 640px) {
+      clip-path: url(#banner-bg-curve);
+    }
+  }
+
+  .banner-title {
+    font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
+  }
+
+  .banner-intro {
+    @apply text-[clamp(1rem,1.5vw+0.15rem,1.5rem)] leading-[130%]
+      line-clamp-5 sm:line-clamp-3 md:line-clamp-5 overflow-hidden;
+  }
+
+  .blob-banner-content-container,
+  .blob-banner-blob-container {
+    padding: poly-fluid-clamp(
+      (
+        640px: 25px,
+        1440px: 60px,
+      )
+    );
+    @apply px-0;
+  }
+</style>
+
+{/* Banner Section */}
+<section
+  role="complementary"
+  class={blob ? "blob-banner-container" : "banner-container"}
+>
+  <ClipPathSVG
+    id="banner-bg-curve"
+    path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.231,-0.017 c0.074,0,0.2,0.037,0.315,0.01 s0.106,-0.071,0.106,-0.071 V0.055"
+  />
+
+  <ClipPathSVG
+    id="banner-bg-curve-sm"
+    path="M0.001,0.048 C0.001,0.048,0.271,-0.025,0.569,0.012 C0.868,0.048,1,0.048,1,0.048 V1 H0.001 V0.048"
+  />
+
+  <ClipPathSVG
+    id="blob-banner-bg-curve"
+    path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.23,-0.017 c0.074,0,0.2,0.037,0.315,0.009 S1,0.894,1,0.894 V0.055"
+  />
+
+  <ClipPathSVG
+    id="blob-banner-bg-curve-sm"
+    path="M0.718,0 C0.853,0,0.938,0.021,1,0.064 V0.97 c-0.045,0.046,-0.195,0.006,-0.324,0 c-0.149,-0.007,-0.301,0.03,-0.45,0.03 C0.094,1,0,0.954,0,0.954 V0.064 c0.059,-0.061,0.237,0,0.32,0 S0.583,0,0.718,0"
+  />
+
+  <div
+    class:list={[
+      "relative w-full bg-primary",
+      blob ? "blob-banner-content-container" : "h-full",
+    ]}
+  >
+    <div class="h-full flex flex-wrap items-center">
+      <div
+        class:list={[
+          "wrapper flex flex-wrap items-center",
+          background_img && "justify-center text-center",
+        ]}
+      >
+        {/* Text Content */}
+        <div
+          class:list={[
+            "w-full grid z-20",
+            intro ? "gap-[15px]" : "gap-[25px]",
+            blob ? "sm:w-1/2 sm:order-2 pt-[25px] pb-10 sm:py-0" : "py-[20px]",
+          ]}
+        >
+          <h2
+            class:list={[
+              "recoleta font-semibold leading-[130%] w-full",
+              blob
+                ? "heading-primary text-white"
+                : "banner-title text-secondary",
+            ]}
+          >
+            {title}
+          </h2>
+
+          {
+            intro && (
+              <div
+                class:list={[
+                  "banner-intro hero-text prose max-w-none ",
+                  blob ? "text-white" : "text-secondary",
+                ]}
+              >
+                <Markdown>{intro}</Markdown>
+              </div>
+            )
+          }
+
+          {
+            button_text && (
+              <a
+                href={button_link}
+                class:list={[
+                  "flex w-fit font-bold leading-[150%]",
+                  "text-primary py-[10px] px-[35px] rounded-full",
+                  blob ? "bg-white" : "bg-secondary mx-auto",
+                ]}
+              >
+                {button_text}
+              </a>
+            )
+          }
+        </div>
+
+        {/* Background Image */}
+        {
+          background_img && (
+            <>
+              <div class="absolute inset-0 w-full h-full">
+                <Picture
+                  alt=""
+                  layout="fill"
+                  src={ASSETS_URL + background_img.data.attributes.url}
+                />
+              </div>
+
+              <div
+                class:list={[
+                  "absolute inset-0 w-full h-full",
+                  "bg-gradient-to-b from-black/40 to-black/40",
+                ]}
+              />
+            </>
+          )
+        }
+
+        {/* Blob Image - Desktop View */}
+        {
+          blob && (
+            <div class="hidden sm:flex sm:w-1/2 aspect-[6/5] flex items-center">
+              <div class="blob-banner-blob-container absolute left-0 w-full h-full">
+                <div class="h-full aspect-[6/5] my-auto grid items-center">
+                  <div class="sm:max-w-[48vw]">
+                    <ClippedPicture
+                      preload="avif"
+                      id="blob-banner-blob-curve"
+                      breakpoints={{ minWidth: 640 }}
+                      alt={blob.data.attributes.alternativeText}
+                      src={ASSETS_URL + blob.data.attributes.url}
+                      path="M0.931,0.106 C0.795,-0.023,0.586,0.006,0.414,0.006 l-0.046,0 C0.239,0.002,0.124,-0.011,0,0.02 V0.929 c0.179,0.082,0.661,0.107,0.751,0 c0.109,-0.129,0.143,-0.281,0.179,-0.403 c0.022,-0.074,0.068,-0.167,0.069,-0.256 v-0.009 C0.999,0.206,0.981,0.153,0.931,0.106"
+                      attributes={{
+                        link: { media: "(min-width: 640px)" },
+                        img: { style: "aspect-ratio: 6 / 5;" },
+                      }}
+                      sizes={[
+                        "(min-width: 768px) calc(50vw - min(100px, 5vw) - 23px)",
+                        "(min-width: 640px) calc(55vw - min(100px, 5vw))",
+                      ].join(", ")}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+
+  {/* Blob Image - Mobile View */}
+  {
+    blob && (
+      <div class="hero-img-sm-container block sm:hidden relative -mt-10 z-20 w-full">
+        <ClippedPicture
+          preload="avif"
+          id="blob-banner-blob-curve-sm"
+          breakpoints={{ maxWidth: 640 }}
+          alt={blob.data.attributes.alternativeText}
+          src={ASSETS_URL + blob.data.attributes.url}
+          path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
+          attributes={{
+            link: { media: "(max-width: 639.98px)" },
+            img: { style: "aspect-ratio: 1 / 1;" },
+          }}
+        />
+      </div>
+    )
+  }
+</section>

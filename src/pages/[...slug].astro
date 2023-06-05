@@ -9,6 +9,7 @@ import Cart from "@pages/Cart.astro";
 import Posts from "@pages/Posts.astro";
 import Estate from "@pages/Estate.astro";
 import Product from "@pages/Product.astro";
+import Homepage from "@pages/Homepage.astro";
 import BasicPage from "@pages/BasicPage.astro";
 import BlogDetails from "@pages/BlogDetails.astro";
 import HowToDetails from "@pages/HowToDetails.astro";
@@ -271,9 +272,9 @@ export async function getStaticPaths() {
     (_, { locale }) => ({
       type: "homepage",
       posts: locale && [
-        ...getPosts(blogs, locale),
-        ...getPosts(howTos, locale),
-        ...getPosts(recipes, locale),
+        ...(getPosts(blogs, locale).slice(0, 1) || []),
+        ...(getPosts(howTos, locale).slice(0, 1) || []),
+        ...(getPosts(recipes, locale).slice(0, 1) || []),
       ],
     }),
     true
@@ -394,7 +395,7 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
           metaImageSrc={metaImageSrc}
         >
           {page.type === "homepage" ? (
-            <Posts page={page} ariaLabelRecurData={ariaLabelRecurData} />
+            <Homepage page={page} ariaLabelRecurData={ariaLabelRecurData} />
           ) : page.type === "crowdfunding" ? (
             <Crowdfunding page={page} ariaLabelRecurData={ariaLabelRecurData} />
           ) : page.type === "basic" ? (
@@ -460,7 +461,7 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
           ) : page.type === "checkoutShipping" ? (
             <CheckoutShipping page={page} recurData={recurData} />
           ) : page.type === "elephantPath" ? (
-            <ElephantPath 
+            <ElephantPath
               page={page}
               recurData={recurData}
               ariaLabelRecurData={ariaLabelRecurData}

@@ -44,17 +44,6 @@ const {
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
 
-  .navbar-container {
-    @include poly-fluid-sizing(
-      "height",
-      (
-        640px: 80px,
-        768px: 94px,
-        1024px: 124px,
-      )
-    );
-  }
-
   .brand-logo {
     height: clamp(35px, 5vw, 50px);
   }
@@ -103,8 +92,7 @@ const {
 <header
   id="navigation"
   class:list={[
-    isCartNavbar && "cart-navbar",
-    "md:!relative sticky !top-0 z-[999] w-full bg-cover bg-right-bottom",
+    "md:!relative sticky top-0 z-[999] w-full bg-cover bg-right-bottom",
   ]}
 >
   <div class="navbar-container relative w-full sm:flex items-center z-10">
@@ -187,7 +175,7 @@ const {
                 />
               </button>
 
-              <form class="localization-form hidden absolute w-[280px] -translate-x-1/2 left-1/2 drop-shadow-lg">
+              <div class="hidden absolute w-[280px] -translate-x-1/2 left-1/2 drop-shadow-lg">
                 <div class="relative flex justify-center pt-1">
                   <div class="w-5 h-5 bg-white rotate-45 rounded" />
                 </div>
@@ -206,14 +194,14 @@ const {
                     )}
                   </div>
 
-                  <button
+                  {/* <button
                     type="submit"
                     class="py-2.5 px-4 bg-primary text-white leading-[120%] rounded-full"
                   >
                     {Button_save_text}
-                  </button>
+                  </button> */}
                 </div>
-              </form>
+              </div>
             </div>
           )
         }
@@ -309,13 +297,25 @@ const {
               ></path>
             </svg>
           </button>
+
+          <button
+            id="sidebar-close-btn"
+            aria-label={ariaLabelRecurData.Navbar_close_sidebar_menu_text}
+            class="hidden w-full h-full select-none cursor-pointer"
+          >
+            <svg viewBox="0 0 19.2 19.2" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+                style="fill: #fff; fill-rule: evenodd"></path>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
 
     <div
       id="sidebar"
-      class="hidden md:!hidden fixed top-0 right-0 z-[40] w-[300px] max-w-full h-screen bg-primary z-[99]"
+      class="hidden md:!hidden fixed right-0 z-[40] w-[300px] max-w-full h-full bg-primary z-[99]"
     >
       {
         sidebar_background && (
@@ -341,22 +341,6 @@ const {
 
       <div class="grid content-between h-full px-[30px] pt-[26px] pb-9 z-10">
         <div class="z-10 grid gap-9">
-          <div class="flex items-center gap-x-[15px] justify-end">
-            <div class="w-[35px] h-[35px]">
-              <button
-                id="sidebar-close-btn"
-                aria-label={ariaLabelRecurData.Navbar_close_sidebar_menu_text}
-                class="hidden w-full h-full select-none cursor-pointer"
-              >
-                <svg viewBox="0 0 19.2 19.2" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
-                    style="fill: #fff; fill-rule: evenodd"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-
           <nav class="flex flex-col gap-[35px] text-white">
             {
               menu.map(
@@ -374,10 +358,8 @@ const {
       </div>
     </div>
 
-    <div
-      class="block sm:hidden bg-primary h-[68px] flex items-end -mt-3 drop-shadow-lg"
-    >
-      <div class="wrapper pb-2.5 md:pb-[15px]">
+    <div class="block sm:hidden bg-primary h-14 flex items-end drop-shadow-lg">
+      <div class="wrapper pb-[15px]">
         {
           searchVisibility && (
             <div class="my-auto block md:hidden items-center overflow-hidden w-full">
@@ -388,10 +370,10 @@ const {
       </div>
     </div>
 
-    <form
+    <div
       id="localization-menu-sm"
       class:list={[
-        "localization-form fixed hidden sm:!hidden right-0 top-0",
+        "fixed hidden sm:!hidden right-0 top-0",
         "w-full h-screen p-[25px] bg-secondary text-black-light z-[9999]",
       ]}
     >
@@ -432,14 +414,16 @@ const {
           </div>
         </div>
 
-        <button
+        {
+          /* <button
           type="submit"
           class="py-2.5 px-4 bg-primary text-secondary-light leading-[120%] rounded-full"
         >
           {Button_save_text}
-        </button>
+        </button> */
+        }
       </div>
-    </form>
+    </div>
   </div>
 
   <script is:inline>
@@ -450,11 +434,12 @@ const {
         );
 
       const updateNavbarStyles = () => {
-        const translationNotFoundNotificationHeight =
-          translationNotFoundNotification.getBoundingClientRect().height;
-
-        // fix sticky navbar position if top notification is shown
-        navigation.style.top = `${translationNotFoundNotificationHeight}px`;
+        // fix sticky navbar position on mobile if top notification is shown
+        navigation.style.top = `${
+          window.innerWidth >= 768
+            ? 0
+            : translationNotFoundNotification.getBoundingClientRect().height
+        }px`;
       };
 
       window.addEventListener("scroll", updateNavbarStyles);
@@ -462,159 +447,185 @@ const {
     }
   </script>
 
-  <script>
-    const id = document.getElementById.bind(document);
-
-    const rootElement = document.querySelector(":root") as HTMLElement,
-      cart = id("cart"),
-      sidebar = id("sidebar"),
-      cartNavbarBg = id("cart-navbar-bg"),
-      openCartBtn = id("open-cart-btn"),
-      sidebarOpenButton = id("sidebar-open-btn"),
-      sidebarCloseButton = id("sidebar-close-btn"),
-      localizationMenuSm = id("localization-menu-sm"),
-      localizationMenuOpenButton = id("localization-menu-open-btn"),
-      localizationMenuSmOpenButton = id("localization-menu-sm-open-btn"),
-      localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
-
-    const localization = localizationMenuOpenButton?.parentElement,
-      localizationMenu = localizationMenuOpenButton?.nextElementSibling,
-      localizationForms =
-        document.querySelectorAll<HTMLFormElement>(".localization-form");
-
-    window.disableScrolling = () => {
-      const overflowY =
-        window.innerHeight < document.body.scrollHeight ? "scroll" : "auto";
-
-      Object.assign(document.body.style, {
-        overflowY,
-        width: "100%",
-        position: "fixed",
-        top: `-${scrollY}px`,
-      });
-    };
-
-    window.enableScrolling = () => {
-      const scrollYPosition =
-        parseInt(document.body.style.top.slice(1, -2)) || window.scrollY;
-
-      Object.assign(document.body.style, {
-        width: "auto",
-        overflowY: "auto",
-        position: "static",
-      });
-
-      window.scrollTo({ top: scrollYPosition });
-    };
-
-    window.addEventListener("resize", () => {
-      if (
-        window.innerWidth < 1280 &&
-        (sidebar.style.display === "block" ||
-          localizationMenuSm.style.display === "block")
-      ) {
-        window.disableScrolling();
-      } else {
-        // enable scrolling only if cart and checkout is not open
-        if (cart?.classList.contains("hidden")) window.enableScrolling();
-
-        cartNavbarBg &&
-          (cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)");
-      }
-    });
-
-    openCartBtn?.addEventListener("click", () => {
-      window.openCart();
-    });
-
-    sidebarOpenButton?.addEventListener("click", () => {
-      sidebar.style.display = "block";
-      sidebarOpenButton.style.display = "none";
-      sidebarCloseButton.style.display = "block";
-
-      window.disableScrolling();
-    });
-
-    sidebarCloseButton?.addEventListener("click", () => {
-      sidebar.style.display = "none";
-      sidebarOpenButton.style.display = "block";
-      sidebarCloseButton.style.display = "none";
-
-      window.enableScrolling();
-    });
-
-    localization?.addEventListener("mouseenter", () => {
-      localizationMenu.classList.remove("hidden");
-    });
-
-    const hideLocalizationMenu = () => {
-      localizationMenu.classList.add("hidden");
-    };
-
-    localization?.addEventListener("mouseleave", hideLocalizationMenu);
-
-    document.addEventListener("click", (event) => {
-      const target = event.target as HTMLElement;
-
-      if (localizationMenuOpenButton?.contains(target)) {
-        const { classList: localizationMenuClassList } = localizationMenu;
-
-        localizationMenuClassList.toggle("hidden");
-
-        localization[
-          !localizationMenuClassList.contains("hidden")
-            ? "removeEventListener"
-            : "addEventListener"
-        ]("mouseleave", hideLocalizationMenu);
-      }
-
-      if (!localization?.contains(target)) {
-        hideLocalizationMenu();
-
-        localization.addEventListener("mouseleave", hideLocalizationMenu);
-      }
-    });
-
-    localizationMenuSmOpenButton?.addEventListener("click", () => {
-      localizationMenuSm.style.display = "block";
-
-      window.disableScrolling();
-    });
-
-    localizationMenuSmCloseButton?.addEventListener("click", () => {
-      localizationMenuSm.style.display = "none";
-
-      window.enableScrolling();
-    });
-
-    localizationForms.forEach((localizationForm) => {
-      localizationForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-
-        const { lang: newLocale } = Object.fromEntries(
-          [...localizationForm.querySelectorAll("ul")].map((list) => [
-            list.dataset.name,
-            list.querySelector<HTMLElement>("li[aria-selected=true]").dataset
-              .value,
-          ])
-        );
-
-        // change & redirect to preferred locale
-        localStorage.setItem(`locale`, newLocale);
-
-        const localeRegex = new RegExp(
-          // @ts-ignore
-          `^/(${availableLocales.map((locale) => locale).join("|")})/`
-          /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
-        );
-
-        let [, locale] = location.pathname.match(localeRegex) ?? [];
-
-        location.href =
-          `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
-      });
-    });
-  </script>
-
   <SearchBar />
 </header>
+
+<script>
+  const id = document.getElementById.bind(document);
+
+  const cart = id("cart"),
+    sidebar = id("sidebar"),
+    navigation = id("navigation"),
+    openCartBtn = id("open-cart-btn"),
+    sidebarOpenButton = id("sidebar-open-btn"),
+    sidebarCloseButton = id("sidebar-close-btn"),
+    localizationMenuSm = id("localization-menu-sm"),
+    localizationMenuOpenButton = id("localization-menu-open-btn"),
+    localizationMenuSmOpenButton = id("localization-menu-sm-open-btn"),
+    localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
+
+  const localization = localizationMenuOpenButton?.parentElement,
+    localizationMenu = localizationMenuOpenButton?.nextElementSibling;
+
+  window.disableScrolling = () => {
+    const overflowY =
+      window.innerHeight < document.body.scrollHeight ? "scroll" : "auto";
+
+    Object.assign(document.body.style, {
+      overflowY,
+      width: "100%",
+      position: "fixed",
+      top: `-${scrollY}px`,
+    });
+  };
+
+  window.enableScrolling = () => {
+    const scrollYPosition =
+      parseInt(document.body.style.top.slice(1, -2)) || window.scrollY;
+
+    Object.assign(document.body.style, {
+      width: "auto",
+      overflowY: "auto",
+      position: "static",
+    });
+
+    window.scrollTo({ top: scrollYPosition });
+  };
+
+  const updateSidebarTopPosition = () => {
+    // reduce top by 10px to hide the transparent gap caused by the curve
+    const sidebarTop = navigation.getBoundingClientRect().bottom - 10;
+
+    sidebar.style.top = `${sidebarTop}px`;
+    sidebar.style.paddingBottom = `${sidebarTop}px`;
+  };
+
+  window.addEventListener("resize", updateSidebarTopPosition);
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 768) {
+      // enable scrolling if cart is not open
+      if (cart?.classList.contains("hidden")) window.enableScrolling();
+
+      // remove event listener to prevent memory leaks
+      window.removeEventListener("resize", updateSidebarTopPosition);
+    } else if (
+      sidebar.style.display === "block" ||
+      localizationMenuSm.style.display === "block"
+    ) {
+      window.disableScrolling();
+
+      if (sidebar.style.display === "block") {
+        // readd event listener in case it was removed
+        window.addEventListener("resize", updateSidebarTopPosition);
+      }
+    }
+  });
+
+  openCartBtn?.addEventListener("click", () => {
+    window.openCart();
+  });
+
+  sidebarOpenButton?.addEventListener("click", () => {
+    window.removeEventListener("resize", updateSidebarTopPosition);
+
+    updateSidebarTopPosition();
+
+    sidebar.style.display = "block";
+    sidebarOpenButton.style.display = "none";
+    sidebarCloseButton.style.display = "block";
+
+    window.disableScrolling();
+
+    window.addEventListener("resize", updateSidebarTopPosition);
+  });
+
+  sidebarCloseButton?.addEventListener("click", () => {
+    sidebar.style.display = "none";
+    sidebarOpenButton.style.display = "block";
+    sidebarCloseButton.style.display = "none";
+
+    window.enableScrolling();
+  });
+
+  localization?.addEventListener("mouseenter", () => {
+    localizationMenu.classList.remove("hidden");
+  });
+
+  const hideLocalizationMenu = () => {
+    localizationMenu.classList.add("hidden");
+  };
+
+  localization?.addEventListener("mouseleave", hideLocalizationMenu);
+
+  let localizationOpenedByClick = false;
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+
+    if (localizationMenuOpenButton?.contains(target)) {
+      const { classList: localizationMenuClassList } = localizationMenu;
+
+      if (localizationOpenedByClick) {
+        localizationMenuClassList.add("hidden");
+        localizationOpenedByClick = false;
+      } else {
+        localizationMenuClassList.remove("hidden");
+
+        localizationOpenedByClick = true;
+      }
+
+      localization[
+        !localizationMenuClassList.contains("hidden")
+          ? "removeEventListener"
+          : "addEventListener"
+      ]("mouseleave", hideLocalizationMenu);
+    }
+
+    if (!localization?.contains(target)) {
+      hideLocalizationMenu();
+
+      localization.addEventListener("mouseleave", hideLocalizationMenu);
+    }
+  });
+
+  localizationMenuSmOpenButton?.addEventListener("click", () => {
+    localizationMenuSm.style.display = "block";
+
+    window.disableScrolling();
+  });
+
+  localizationMenuSmCloseButton?.addEventListener("click", () => {
+    localizationMenuSm.style.display = "none";
+
+    window.enableScrolling();
+  });
+
+  // localizationForms.forEach((localizationForm) => {
+  //   localizationForm.addEventListener("submit", (event) => {
+  //     event.preventDefault();
+
+  //     const { lang: newLocale } = Object.fromEntries(
+  //       [...localizationForm.querySelectorAll("ul")].map((list) => [
+  //         list.dataset.name,
+  //         list.querySelector<HTMLElement>("li[aria-selected=true]").dataset
+  //           .value,
+  //       ])
+  //     );
+
+  //     // change & redirect to preferred locale
+  //     localStorage.setItem(`locale`, newLocale);
+
+  //     const localeRegex = new RegExp(
+  //       // @ts-ignore
+  //       `^/(${availableLocales.map((locale) => locale).join("|")})/`
+  //       /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
+  //     );
+
+  //     let [, locale] = location.pathname.match(localeRegex) ?? [];
+
+  //     location.href =
+  //       `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
+  //   });
+  // });
+</script>
