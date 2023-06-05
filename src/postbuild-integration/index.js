@@ -28,6 +28,7 @@ const CSPRecord = {
     "https://log.expertrec.com",
     "https://searchv7.expertrec.com",
     "https://api.openreplay.com",
+    "https://analytics.scripts.dilmahtea.me",
   ],
   "upgrade-insecure-requests": [],
   "script-src": [
