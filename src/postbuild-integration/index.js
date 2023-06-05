@@ -73,6 +73,7 @@ const postbuildIntegration = {
       );
 
       await Promise.all([
+        import("./tasks/generateSearchData.js"),
         import("./tasks/generateRobotsMeta.js"),
         import("./tasks/generateSecurityMeta.js"),
         generateXMLSitemap(sitemap),
