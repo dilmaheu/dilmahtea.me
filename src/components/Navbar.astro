@@ -752,75 +752,78 @@ const {
 </script>
 
 <script defer type="module">
-  await fetch(`/search-index/${window.preferredLocale}.json`)
-    .then((response) => response.json())
-    .then((data) => {
-      sessionStorage.setItem("searchIndexData", JSON.stringify(data));
+  function fetchDataAndInitializeSearch() {
+    async function fetchData() {
+      try {
+        const response = await fetch(`/search-index/${window.preferredLocale}.json`);
+        const data = await response.json();
+        initializeSearch(data);
+      } catch (error) {
+        console.error('Error fetching search index data:', error);
+      }
+    }
 
-      initializeSearch();
-    });
+    function initializeSearch(searchIndexData) {
+      const id = document.getElementById.bind(document);
+      const searchInput = document.querySelectorAll(".search-input");
+      const searchResults = id("search-results");
+      const noSearchResult = id("no-search-results");
+      const searchDataContainer = id("search-data-container");
 
-  function initializeSearch() {
-    const id = document.getElementById.bind(document),
-      searchInput = document.querySelectorAll(".search-input"),
-      searchResults = id("search-results"),
-      noSearchResult = id("no-search-results"),
-      searchDataContainer = id("search-data-container");
+      searchInput.forEach((input) => {
+        input.addEventListener("input", () => {
+          const searchTerm = input.value.toLowerCase().trim();
+          const matches = searchIndexData.filter((item) =>
+            item.Title.toLowerCase().includes(searchTerm)
+          );
 
-    const searchIndexData = JSON.parse(
-      sessionStorage.getItem("searchIndexData")
-    );
+          searchResults.innerHTML = "";
 
-    searchInput.forEach((input) => {
-      input.addEventListener("input", () => {
-        const searchTerm = input.value.toLowerCase().trim();
-        const matches = searchIndexData.filter((item) =>
-          item.Title.toLowerCase().includes(searchTerm)
-        );
+          if (searchTerm === "") {
+            noSearchResult.style.display = "none";
+            searchDataContainer.style.display = "none";
+            return;
+          }
 
-        searchResults.innerHTML = "";
+          const maxItems = window.innerWidth < 640 ? 4 : 10;
+          const numItems = Math.min(maxItems, matches.length);
 
-        if (searchTerm === "") {
-          noSearchResult.style.display = "none";
-          searchDataContainer.style.display = "none";
-          return;
-        }
-
-        const maxItems = window.innerWidth < 640 ? 4 : 10;
-        const numItems = Math.min(maxItems, matches.length);
-
-        for (let i = 0; i < numItems; i++) {
-          const match = matches[i];
-          
-          const el = document.createElement("a");
-          el.setAttribute("href", match.URL_slug);
-          el.innerHTML = `
-            <div class="flex w-auto gap-2.5 h-auto">
-              <div class="flex-none h-full">
-                <div class="w-[50px] h-[50px] rounded overflow-hidden">
-                  <img 
-                    class="w-full h-full object-cover" 
-                    src=${match.Intro_blob.url}
-                    alt=${match.Intro_blob.alt} 
-                  />
+          for (let i = 0; i < numItems; i++) {
+            const match = matches[i];
+            
+            const el = document.createElement("a");
+            el.setAttribute("href", `/${match.URL_slug}`);
+            el.innerHTML = `
+              <div class="flex w-auto gap-2.5 h-auto">
+                <div class="flex-none h-full">
+                  <div class="w-[50px] h-[50px] rounded overflow-hidden">
+                    <img 
+                      class="w-full h-full object-cover" 
+                      src=${match.Intro_blob.url}
+                      alt=${match.Intro_blob.alt} 
+                    />
+                  </div>
                 </div>
-              </div>
-              <div class="grow text-black overflow-hidden">
-                <h3 class="sm:text-lg font-medium text-primary line-clamp-2">
-                  ${match.Title}
-                </h3>
-                <div class="text-sm line-clamp-1 w-auto">
-                  ${match.Intro_text}
+                <div class="grow text-black overflow-hidden">
+                  <h3 class="sm:text-lg font-medium text-primary line-clamp-2">
+                    ${match.Title}
+                  </h3>
+                  <div class="text-sm line-clamp-1 w-auto">
+                    ${match.Intro_text}
+                  </div>
                 </div>
-              </div>
-            </div>`;
-          searchResults.appendChild(el);
-        }
+              </div>`;
+            searchResults.appendChild(el);
+          }
 
-        noSearchResult.style.display = matches.length === 0 ? "block" : "none";
-        searchDataContainer.style.display =
-          searchTerm.length > 0 ? "grid" : "none";
+          noSearchResult.style.display = matches.length === 0 ? "block" : "none";
+          searchDataContainer.style.display = searchTerm.length > 0 ? "grid" : "none";
+        });
       });
-    });
+    }
+
+    fetchData();
   }
+
+  fetchDataAndInitializeSearch();
 </script>
