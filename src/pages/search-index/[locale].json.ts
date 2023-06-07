@@ -1,11 +1,7 @@
-import dotenv from "dotenv";
 import CMS from "@store/CMS.js";
 
-dotenv.config({ path: "./.env" });
-
-const CMS_ENDPOINT = process.env.ASSETS_URL;
-
-const selectedPages = [
+const { ASSETS_URL } = import.meta.env,
+  selectedPages = [
   "blogs",
   "howTos",
   "estates",
@@ -54,7 +50,7 @@ function processData(selectedPages, data) {
               Intro_text: Intro_text?.slice(0, 60).replace(/(<([^>]+)>)/gi, ""),
               Intro_blob: {
                 url:
-                  CMS_ENDPOINT +
+                  ASSETS_URL +
                   (Intro_blob?.data?.attributes?.formats?.thumbnail?.url ||
                     Intro_blob?.data?.attributes?.url),
                 alt: Intro_blob?.data?.attributes?.alternativeText,
@@ -73,7 +69,7 @@ function processData(selectedPages, data) {
           Intro_text: Intro_text?.slice(0, 60).replace(/(<([^>]+)>)/gi, ""),
           Intro_blob: {
             url:
-              CMS_ENDPOINT +
+              ASSETS_URL +
               (Intro_blob?.data?.attributes?.formats?.thumbnail?.url ||
                 Intro_blob?.data?.attributes?.url),
             alt: Intro_blob?.data?.attributes?.alternativeText,
