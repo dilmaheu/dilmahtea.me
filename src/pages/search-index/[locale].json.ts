@@ -4,6 +4,7 @@ const { ASSETS_URL } = import.meta.env,
   selectedPages = [
   "blogs",
   "howTos",
+  "recipes",
   "estates",
   "homepage",
   "products",
