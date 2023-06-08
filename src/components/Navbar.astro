@@ -782,10 +782,13 @@ const {
         resultsCount = Math.min(maxItems, matches.length);
 
       for (let i = 0; i < resultsCount; i++) {
-        const match = matches[i];
+        const match = matches[i],
+          resultLinkBlock = document.createElement("a");
 
-        const resultLinkBlock = document.createElement("a");
-        resultLinkBlock.setAttribute("href", `/${match.URL_slug}`);
+        resultLinkBlock.setAttribute(
+          "href",
+          `/${window.preferredLocale}/${match.URL_slug}`
+        );
 
         resultLinkBlock.innerHTML = `<div
           class="flex w-auto gap-2.5 h-auto"
