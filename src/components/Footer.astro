@@ -20,28 +20,52 @@ const { footerText, recurData } = Astro.props as Props,
 ---
 
 <style lang="scss">
+  @use "src/styles/poly-fluid" as *;
 
-  .footer-background {
-    clip-path: url(#footer-curve);
+  footer {
+    @apply text-white;
 
-    @media (min-width: 768px) {
-      clip-path: url(#footer-curve-md);
+    padding-right: poly-fluid-clamp(
+      (
+        768px: 0px,
+        1440px: 72px,
+      )
+    );
+
+    .footer-background {
+      clip-path: url(#footer-curve);
+
+      @media (min-width: 768px) {
+        clip-path: url(#footer-curve-md);
+      }
     }
-  }
 
-  .brand-logo {
-    height: clamp(40px, 6vw + 6px, 56px);
-  }
+    nav {
+      h2 {
+        @apply text-[clamp(0.875rem,1.5vw+0.1rem,1.125rem)]
+          font-bold leading-[130%] md:leading-[150%];
+      }
+      
+      ul li {
+        @apply text-[clamp(0.75rem,1.4vw+0.1rem,0.875rem)] 
+          font-medium leading-[130%] md:leading-[150%];
+      }
 
-  nav {
-    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.125rem);
-  }
+      .footer-icon-container{
+        width: poly-fluid-clamp(
+          (
+            768px: 13px,
+            1440px: 20px,
+          )
+        );
+      }
+    }
+    .brand-logo {
+      height: clamp(40px, 6vw + 6px, 56px);
+    }
 
-  .copyright {
-    font-size: clamp(0.75rem, 1.5vw + 0.1rem, 1rem);
-  }
-
-
+    .copyright {
+      @apply text-[clamp(0.75rem,1.4vw+0.1rem,0.875rem)];
     }
   }
 </style>
