@@ -21,18 +21,20 @@ const { footerText, recurData } = Astro.props as Props,
   footer {
     @apply text-white;
 
-    padding-right: poly-fluid-clamp(
-      (
-        768px: 0px,
-        1440px: 72px,
-      )
-    );
+    .footer-background-container{
+      padding-right: poly-fluid-clamp(
+        (
+          768px: 0px,
+          1440px: 72px,
+        )
+      );
 
-    .footer-background {
-      clip-path: url(#footer-curve);
+      .footer-background {
+        clip-path: url(#footer-curve);
 
-      @media (min-width: 768px) {
-        clip-path: url(#footer-curve-md);
+        @media (min-width: 768px) {
+          clip-path: url(#footer-curve-md);
+        }
       }
     }
 
@@ -79,27 +81,30 @@ const { footerText, recurData } = Astro.props as Props,
   />
 
   <div class="relative">
-    <div class="footer-background absolute w-full h-full bg-primary z-10">
-      {
-        footer_background && (
-          <Picture
-            alt=""
-            layout="fill"
-            objectPosition="left bottom"
-            breakpoints={{ maxWidth: 768 }}
-            src={footer_background_sm?.src || footer_background.src}
-            sizes="(min-width: 640px) 100vw - 72px, 100vw"
-            artDirectives={[
-              {
-                src: footer_background.src,
-                media: "(min-width: 640px)",
-                objectPosition: "left top",
-                breakpoints: { minWidth: 768 - 72 },
-              },
-            ]}
-          />
-        )
-      }
+
+    <div class="footer-background-container absolute w-full h-full">
+      <div class="footer-background w-full h-full bg-primary z-10">
+        {
+          footer_background && (
+            <Picture
+              alt=""
+              layout="fill"
+              objectPosition="left bottom"
+              breakpoints={{ maxWidth: 768 }}
+              src={footer_background_sm?.src || footer_background.src}
+              sizes="(min-width: 640px) 100vw - 72px, 100vw"
+              artDirectives={[
+                {
+                  src: footer_background.src,
+                  media: "(min-width: 640px)",
+                  objectPosition: "left top",
+                  breakpoints: { minWidth: 768 - 72 },
+                },
+              ]}
+            />
+          )
+        }
+      </div>
     </div>
 
     <div
