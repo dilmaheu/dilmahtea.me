@@ -3,11 +3,7 @@ import RecurringImages from "@store/RecurringImages";
 import { Picture } from "astro-imagetools/components";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
-const {
-  logo,
-  footer_background,
-  footer_background_sm,
-} = RecurringImages;
+const { logo, footer_background, footer_background_sm } = RecurringImages;
 
 declare interface Props {
   footerText: string;
@@ -45,13 +41,13 @@ const { footerText, recurData } = Astro.props as Props,
         @apply text-[clamp(0.875rem,1.5vw+0.1rem,1.125rem)]
           font-bold leading-[130%] md:leading-[150%];
       }
-      
+
       ul li {
         @apply text-[clamp(0.75rem,1.4vw+0.1rem,0.875rem)] 
           font-medium leading-[130%] md:leading-[150%];
       }
 
-      .footer-icon-container{
+      .footer-icon-container {
         width: poly-fluid-clamp(
           (
             768px: 13px,
@@ -60,6 +56,7 @@ const { footerText, recurData } = Astro.props as Props,
         );
       }
     }
+
     .brand-logo {
       height: clamp(40px, 6vw + 6px, 56px);
     }
@@ -81,10 +78,8 @@ const { footerText, recurData } = Astro.props as Props,
     path="M0 1V0h.956C.981.012 1 .081 1 .16S.995.318.981.458C.972.552.975.614.968.71.962.797.925 1 .882 1"
   />
 
-  <div class="relative z-10 block bg-secondary w-full h-full">
-    <div
-      class="footer-background absolute w-full h-full bg-primary z-10"
-    >
+  <div class="relative">
+    <div class="footer-background absolute w-full h-full bg-primary z-10">
       {
         footer_background && (
           <Picture
@@ -106,44 +101,45 @@ const { footerText, recurData } = Astro.props as Props,
         )
       }
     </div>
-  <div
-    class="wrapper relative z-20 w-full h-full py-[clamp(24px,3vw+6.4px,36px)]"
-  >
-    <div class="grid gap-[25px]">
-      <nav class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:lg:grid-cols-5 gap-[25px]">
-        {
-          menu.map(
-            ({ Heading_name, Menu }) =>
-              <div class="flex flex-col gap-2 md:gap-3">
-                <h2>{Heading_name}</h2>
 
-                <ul class="grid gap-[5px] md:gap-2.5">
-                  {
-                    Menu.map(
-                      ({ Visibility, Title, Link, Icon: {data: icon} }) =>
-                        Visibility && (
-                          <li class="flex items-center">
-                            <a href={Link} class="flex gap-[5px] md:gap-2.5">
-                              {
-                                icon && (
-                                  <div class="footer-icon-container h-full">
-                                    <img 
-                                      class="w-full h-full"
-                                      src={ASSETS_URL + icon?.attributes.url} 
-                                      alt=""
-                                    />
-                                  </div>
-                                )
-                              }
-                              <div>{Title}</div>
-                            </a>
-                          </li>
-                        )
+    <div
+      class="wrapper relative z-20 grid gap-[25px] py-[clamp(24px,3vw+6.4px,36px)]"
+    >
+      <nav
+        class:list={[
+          "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+          "xl:lg:grid-cols-5 gap-[25px]"
+        ]}
+      >
+        {
+          menu.map(({ Heading_name, Menu }) => (
+            <div class="flex flex-col gap-2 md:gap-3">
+              <h2>{Heading_name}</h2>
+
+              <ul class="grid gap-[5px] md:gap-2.5">
+                {Menu.map(
+                  ({ Visibility, Title, Link, Icon: { data: icon } }) =>
+                    Visibility && (
+                      <li class="flex items-center">
+                        <a href={Link} class="flex flex-wrap gap-[5px] md:gap-2.5">
+                          {icon && (
+                            <div class="footer-icon-container h-full">
+                              <img
+                                class="w-full h-full"
+                                src={ASSETS_URL + icon?.attributes.url}
+                                alt=""
+                              />
+                            </div>
+                          )}
+
+                          <div>{Title}</div>
+                        </a>
+                      </li>
                     )
-                  }
-                </ul>
-              </div>
-          )
+                )}
+              </ul>
+            </div>
+          ))
         }
       </nav>
 
@@ -157,11 +153,6 @@ const { footerText, recurData } = Astro.props as Props,
           set:html={footerText}
         />
       </div>
-        
     </div>
-      
   </div>
-  </div>
-    
-
 </footer>
