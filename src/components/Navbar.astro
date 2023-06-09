@@ -752,73 +752,76 @@ const {
 </script>
 
 <script>
-  const searchIndex = await fetch(
-    `/search-index/${window.preferredLocale}.json`
-  ).then((response) => response.json());
+  window.addEventListener("load", async () => {
+    const searchIndex = await fetch(
+      `/search-index/${window.preferredLocale}.json`
+    ).then((response) => response.json());
 
-  const id = document.getElementById.bind(document),
-    searchResults = id("search-results"),
-    noSearchResult = id("no-search-results"),
-    searchResultsContainer = id("search-results-container"),
-    searchInputs = document.querySelectorAll<HTMLInputElement>(".search-input");
+    const id = document.getElementById.bind(document),
+      searchResults = id("search-results"),
+      noSearchResult = id("no-search-results"),
+      searchResultsContainer = id("search-results-container"),
+      searchInputs =
+        document.querySelectorAll<HTMLInputElement>(".search-input");
 
-  searchInputs.forEach((input) => {
-    input.addEventListener("input", () => {
-      const searchTerm = input.value.toLowerCase().trim(),
-        matches = searchIndex.filter((item) =>
-          item.Title.toLowerCase().includes(searchTerm)
-        );
+    searchInputs.forEach((input) => {
+      input.addEventListener("input", () => {
+        const searchTerm = input.value.toLowerCase().trim(),
+          matches = searchIndex.filter((item) =>
+            item.Title.toLowerCase().includes(searchTerm)
+          );
 
-      searchResults.innerHTML = "";
+        searchResults.innerHTML = "";
 
-      if (searchTerm === "") {
-        noSearchResult.style.display = "none";
-        searchResultsContainer.style.display = "none";
+        if (searchTerm === "") {
+          noSearchResult.style.display = "none";
+          searchResultsContainer.style.display = "none";
 
-        return;
-      }
+          return;
+        }
 
-      const maxItems = window.innerWidth < 640 ? 4 : 10,
-        resultsCount = Math.min(maxItems, matches.length);
+        const maxItems = window.innerWidth < 640 ? 4 : 10,
+          resultsCount = Math.min(maxItems, matches.length);
 
-      for (let i = 0; i < resultsCount; i++) {
-        const match = matches[i],
-          resultLinkBlock = document.createElement("a");
+        for (let i = 0; i < resultsCount; i++) {
+          const match = matches[i],
+            resultLinkBlock = document.createElement("a");
 
-        resultLinkBlock.setAttribute(
-          "href",
-          `/${window.preferredLocale}/${match.URL_slug}`
-        );
+          resultLinkBlock.setAttribute(
+            "href",
+            `/${window.preferredLocale}/${match.URL_slug}`
+          );
 
-        resultLinkBlock.innerHTML = `<div
-          class="flex w-auto gap-2.5 h-auto"
-        >
-          <div class="flex-none h-full">
-            <div class="w-[50px] h-[50px] rounded overflow-hidden">
-              <img
-                class="w-full h-full object-cover"
-                src=${match.Intro_blob.url}
-                alt=${match.Intro_blob.alt}
-              />
+          resultLinkBlock.innerHTML = `<div
+            class="flex w-auto gap-2.5 h-auto"
+          >
+            <div class="flex-none h-full">
+              <div class="w-[50px] h-[50px] rounded overflow-hidden">
+                <img
+                  class="w-full h-full object-cover"
+                  src=${match.Intro_blob.url}
+                  alt=${match.Intro_blob.alt}
+                />
+              </div>
             </div>
-          </div>
 
-          <div class="grow text-black overflow-hidden">
-            <h3 class="sm:text-lg font-medium text-primary line-clamp-2">
-              ${match.Title}
-            </h3>
+            <div class="grow text-black overflow-hidden">
+              <h3 class="sm:text-lg font-medium text-primary line-clamp-2">
+                ${match.Title}
+              </h3>
 
-            <div class="text-sm line-clamp-1 w-auto">${match.Intro_text}</div>
-          </div>
-        </div>`;
+              <div class="text-sm line-clamp-1 w-auto">${match.Intro_text}</div>
+            </div>
+          </div>`;
 
-        searchResults.appendChild(resultLinkBlock);
-      }
+          searchResults.appendChild(resultLinkBlock);
+        }
 
-      noSearchResult.style.display = matches.length === 0 ? "block" : "none";
+        noSearchResult.style.display = matches.length === 0 ? "block" : "none";
 
-      searchResultsContainer.style.display =
-        searchTerm.length > 0 ? "grid" : "none";
+        searchResultsContainer.style.display =
+          searchTerm.length > 0 ? "grid" : "none";
+      });
     });
   });
 </script>

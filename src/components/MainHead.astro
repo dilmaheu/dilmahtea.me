@@ -120,48 +120,56 @@ const openGraphImage =
 
 {/* OpenReplay Tracking Code for Dilmahtea.me */}
 <script>
-  var initOpts = {
-    projectKey: "IjHJ0NTxwL2YHDk9TDnR",
-    defaultInputMode: 0,
-    obscureTextNumbers: false,
-    obscureTextEmails: true,
-  };
-  var startOpts = { userID: "" };
-  (function (A, s, a, y, e, r) {
-    // @ts-ignore
-    r = window.OpenReplay = [e, r, y, [s - 1, e]];
-    // @ts-ignore
-    s = document.createElement("script");
-    // @ts-ignore
-    s.src = A;
-    // @ts-ignore
-    s.async = !a;
-    // @ts-ignore
-    document.getElementsByTagName("head")[0].appendChild(s);
-    r.start = function (v) {
-      r.push([0]);
+  window.addEventListener("load", () => {
+    var initOpts = {
+      projectKey: "IjHJ0NTxwL2YHDk9TDnR",
+      defaultInputMode: 0,
+      obscureTextNumbers: false,
+      obscureTextEmails: true,
     };
-    r.stop = function (v) {
-      r.push([1]);
-    };
-    r.setUserID = function (id) {
-      r.push([2, id]);
-    };
-    r.setUserAnonymousID = function (id) {
-      r.push([3, id]);
-    };
-    r.setMetadata = function (k, v) {
-      r.push([4, k, v]);
-    };
-    r.event = function (k, p, i) {
-      r.push([5, k, p, i]);
-    };
-    r.issue = function (k, p) {
-      r.push([6, k, p]);
-    };
-    r.isActive = function () {
-      return false;
-    };
-    r.getSessionToken = function () {};
-  })("//static.openreplay.com/latest/openreplay.js", 1, 0, initOpts, startOpts);
+    var startOpts = { userID: "" };
+    (function (A, s, a, y, e, r) {
+      // @ts-ignore
+      r = window.OpenReplay = [e, r, y, [s - 1, e]];
+      // @ts-ignore
+      s = document.createElement("script");
+      // @ts-ignore
+      s.src = A;
+      // @ts-ignore
+      s.async = !a;
+      // @ts-ignore
+      document.getElementsByTagName("head")[0].appendChild(s);
+      r.start = function (v) {
+        r.push([0]);
+      };
+      r.stop = function (v) {
+        r.push([1]);
+      };
+      r.setUserID = function (id) {
+        r.push([2, id]);
+      };
+      r.setUserAnonymousID = function (id) {
+        r.push([3, id]);
+      };
+      r.setMetadata = function (k, v) {
+        r.push([4, k, v]);
+      };
+      r.event = function (k, p, i) {
+        r.push([5, k, p, i]);
+      };
+      r.issue = function (k, p) {
+        r.push([6, k, p]);
+      };
+      r.isActive = function () {
+        return false;
+      };
+      r.getSessionToken = function () {};
+    })(
+      "//static.openreplay.com/latest/openreplay.js",
+      1,
+      0,
+      initOpts,
+      startOpts
+    );
+  });
 </script>
