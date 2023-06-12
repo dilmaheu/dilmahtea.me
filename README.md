@@ -20,4 +20,4 @@ This is the repository for the [`dilmahtea.me`](https://dilmahtea.me) website.
 
 ## Documentation
 
-Check out the documentation at [/docs/index.md](/docs/index.md).
+Check out the documentation at [https://docs.dilmahtea.me/](https://docs.dilmahtea.me/basics/setup/).
