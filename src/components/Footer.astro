@@ -21,7 +21,7 @@ const { footerText, recurData } = Astro.props as Props,
   footer {
     @apply text-white;
 
-    .footer-background-container{
+    .footer-background-container {
       padding-right: poly-fluid-clamp(
         (
           768px: 0px,
@@ -81,7 +81,6 @@ const { footerText, recurData } = Astro.props as Props,
   />
 
   <div class="relative">
-
     <div class="footer-background-container absolute w-full h-full">
       <div class="footer-background w-full h-full bg-primary z-10">
         {
@@ -92,13 +91,14 @@ const { footerText, recurData } = Astro.props as Props,
               objectPosition="left bottom"
               breakpoints={{ maxWidth: 768 }}
               src={footer_background_sm?.src || footer_background.src}
-              sizes="(min-width: 640px) 100vw - 72px, 100vw"
+              sizes="100vw"
               artDirectives={[
                 {
                   src: footer_background.src,
-                  media: "(min-width: 640px)",
+                  media: "(min-width: 768px)",
                   objectPosition: "left top",
-                  breakpoints: { minWidth: 768 - 72 },
+                  breakpoints: { minWidth: 768 },
+                  sizes: "(min-width: 1440px) 100vw - 72px, 100vw",
                 },
               ]}
             />
@@ -113,7 +113,7 @@ const { footerText, recurData } = Astro.props as Props,
       <nav
         class:list={[
           "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
-          "xl:lg:grid-cols-5 gap-[25px]"
+          "xl:lg:grid-cols-5 gap-[25px]",
         ]}
       >
         {
@@ -126,7 +126,10 @@ const { footerText, recurData } = Astro.props as Props,
                   ({ Visibility, Title, Link, Icon: { data: icon } }) =>
                     Visibility && (
                       <li class="flex items-center">
-                        <a href={Link} class="flex flex-wrap gap-[5px] md:gap-2.5">
+                        <a
+                          href={Link}
+                          class="flex flex-wrap gap-[5px] md:gap-2.5"
+                        >
                           {icon && (
                             <div class="footer-icon-container h-full">
                               <img
