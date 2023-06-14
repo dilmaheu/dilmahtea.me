@@ -11,29 +11,69 @@ const categories = CMS.get("productCategories", locale);
 ---
 
 <style lang="scss">
-  .category-container {
-    @apply grid sm:grid-cols-[repeat(auto-fill,minmax(300px,2fr))] 
-      md:grid-cols-2 gap-y-[30px] gap-x-[30px] mt-[30px] overflow-hidden;
+  @use "src/styles/poly-fluid" as *;
+
+  .product-category-container {
+    @apply grid sm:flex sm:flex-wrap;
+
+    gap: poly-fluid-clamp(
+      (
+        768px: 15px,
+        1440px: 50px,
+      )
+    );
+
+    .product-category-card {
+      @apply relative grid sm:pr-3 lg:pr-5 w-full h-[110px] sm:h-full
+        bg-primary sm:bg-transparent text-center;
+
+      clip-path: url(#product-category-card-curve-sm);
+
+      @media (min-width: 640px) {
+        clip-path: none;
+        width: poly-fluid-clamp(
+          (
+            640px: 130px,
+            1440px: 260px,
+          )
+        );
+      }
+    }
 
     .category-content-container {
-      @apply relative flex flex-nowrap w-full h-[clamp(110px,12vw+8px,170px)] cursor-pointer;
+      @apply flex w-full h-full;
 
-      @media (max-width: 320px) {
+      @media (min-width: 350px) {
+        @apply h-[110px];
+      }
+
+      @media (min-width: 640px) {
         @apply h-full;
       }
     }
 
-    .category-txt-container {
-      @apply flex grow items-center px-[25px] py-[15px];
+    .category-img-container {
+      @apply sm:aspect-[1/1] w-1/3 block;
 
-      @media (max-width: 320px) {
-        @apply w-3/5;
+      @media (min-width: 350px) {
+        @apply w-auto;
+      }
+
+      @media (min-width: 640px) {
+        @apply w-full;
+
+        clip-path: url(#product-category-card-curve);
       }
     }
 
-    .category-img-container {
-      @media (max-width: 320px) {
-        @apply w-2/5;
+    .category-txt-container {
+      @apply flex grow items-center sm:absolute sm:bottom-[10%]
+         lg:bottom-[12%] sm:pl-[11%] w-auto sm:w-full overflow-hidden;
+
+      h3 {
+        @apply text-[2rem] sm:text-[clamp(1rem,2vw+0.1rem,2.125rem)]
+          font-semibold leading-[110%] text-white sm:text-center 
+          sm:bg-primary w-full rounded-[9px] p-2.5 md:p-[12px];
       }
     }
   }
