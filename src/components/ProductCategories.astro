@@ -109,24 +109,23 @@ const categories = CMS.get("productCategories", locale);
     {
       categories.map(({ attributes: { Title, Intro_blob, Meta } }) => (
         <div class="product-category-card">
-          <a href={Meta.URL_slug}>
-            <div class="category-content-container">
-              <div class="category-img-container overflow-hidden">
-                <div class="w-auto h-full aspect-[6/5] block">
-                  <Picture
-                    layout="fullWidth"
-                    src={ASSETS_URL + Intro_blob.data.attributes.url}
-                    alt={Intro_blob.data.attributes.alternativeText}
-                    sizes={[
-                      "(min-width: 640px) calc(clamp(130px, calc(16.25vw + 26px), 260px) - 1.25rem)",
-                      "(min-width: 350px) 132px",
-                      "30vw",
-                    ].join(", ")}
-                    attributes={{
-                      img: { style: "aspect-ratio: 6 / 5;" },
-                    }}
-                  />
-                </div>
+          <a href={Meta.URL_slug} class="w-full">
+            <div class="product-category-content-container">
+              <div class="product-category-img-container overflow-hidden">
+                <Picture
+                  layout="fill"
+                  src={ASSETS_URL + Intro_blob.data.attributes.url}
+                  alt={Intro_blob.data.attributes.alternativeText}
+                  sizes={[
+                    "(min-width: 1024px) calc(clamp(160px, calc(15vw + 46px), 260px) - 1.25rem)",
+                    "(min-width: 640px) calc(clamp(160px, calc(15vw + 46px), 260px) - 0.75rem)",
+                    "(min-width: 350px) 132px",
+                    "30vw",
+                  ].join(", ")}
+                  attributes={{
+                    img: { style: "aspect-ratio: 6 / 5;" },
+                  }}
+                />
               </div>
 
               <div class="category-txt-container">
