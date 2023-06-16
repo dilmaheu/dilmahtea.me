@@ -14,29 +14,25 @@ const categories = CMS.get("productCategories", locale);
   @use "src/styles/poly-fluid" as *;
 
   .product-category-container {
-    @apply grid sm:flex sm:flex-wrap;
-
     gap: poly-fluid-clamp(
       (
         768px: 15px,
         1440px: 50px,
       )
     );
+            
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(auto-fit, minmax(160px, min(calc(15vw + 46px), 260px)));
+    }
 
     .product-category-card {
-      @apply relative grid sm:pr-3 lg:pr-5 w-full h-[110px] sm:h-full
+      @apply relative sm:pr-3 lg:pr-5 w-full h-[110px] sm:h-full
         bg-primary sm:bg-transparent text-center;
 
       clip-path: url(#product-category-card-curve-sm);
 
       @media (min-width: 640px) {
         clip-path: none;
-        width: poly-fluid-clamp(
-          (
-            640px: 130px,
-            1440px: 260px,
-          )
-        );
       }
     }
 
@@ -105,7 +101,12 @@ const categories = CMS.get("productCategories", locale);
     )
   }
 
-  <div class="product-category-container overflow-hidden">
+  <div 
+    class:list={[
+      "product-category-container grid overflow-hidden",
+      categories.length > 3 && "sm:justify-between sm:content-stretch",
+    ]}
+  >
     {
       categories.map(({ attributes: { Title, Intro_blob, Meta } }) => (
         <div class="product-category-card">
