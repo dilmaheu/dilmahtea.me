@@ -27,11 +27,8 @@ documentLinks.forEach((link) => {
           `^/(${locales.map((locale) => locale).join("|")})/`
         );
 
-      // check if link is already localized
-      if (localizedLinkRegex.test(href)) {
-        link.href = href;
-      } else {
-        // localize unlocalized link
+      // localize unlocalized link
+      if (!localizedLinkRegex.test(href)) {
         link.href = "/" + locale + href;
       }
     }
