@@ -2,7 +2,6 @@
 import CMS from "@store/CMS";
 import BasicPage from "@pages/BasicPage.astro";
 import PageLayout from "@layouts/PageLayout.astro";
-import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 
 // fetching the error page
 const basicPagesData = CMS.get("basicPages"),
@@ -40,20 +39,17 @@ if (locale !== "en") {
 }
 ---
 
-<SetPreferredLocale />
-
 <script is:inline define:vars={{ availableLocales }}>
+  const preferredLocale = localStorage.getItem("locale");
+
   const localeRegex = new RegExp(
     `^/(${availableLocales.map((locale) => locale).join("|")})/`
   );
 
   let [, locale] = location.pathname.match(localeRegex) ?? [];
 
-  if (!locale && window.preferredLocale !== "en") {
-    location.pathname = location.pathname.replace(
-      "/",
-      `/${window.preferredLocale}/`
-    );
+  if (!locale && preferredLocale !== "en") {
+    location.pathname = location.pathname.replace("/", `/${preferredLocale}/`);
   }
 </script>
 
