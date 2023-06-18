@@ -25,7 +25,6 @@ import CheckoutKindness from "@pages/CheckoutKindness.astro";
 import CheckoutShipping from "@pages/CheckoutShipping.astro";
 import CheckoutInformation from "@pages/CheckoutInformation.astro";
 
-import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 import DefaultRouteRedirect from "@scripts/DefaultRouteRedirect.astro";
 import TranslationNotFoundRedirect from "@scripts/TranslationNotFoundRedirect.astro";
 
@@ -361,10 +360,7 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
     defaultRoute ? (
       <DefaultRouteRedirect />
     ) : (
-      <Fragment>
-        <SetPreferredLocale />
-        <TranslationNotFoundRedirect />
-      </Fragment>
+      <TranslationNotFoundRedirect />
     )
   ) : (
     async () => {
