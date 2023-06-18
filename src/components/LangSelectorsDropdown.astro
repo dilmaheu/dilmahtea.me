@@ -188,17 +188,7 @@ langSelectorsData.unshift(langSelectorsData.splice(currentLangIndex, 1)[0]);
 
       const { value: newLocale } = langSelector.dataset;
 
-      // change & redirect to preferred locale
-      localStorage.setItem(`locale`, newLocale);
-
-      const pathnameRegex = new RegExp(
-        `^(/+)(${document.documentElement.lang}(/|$))?`
-      );
-
-      location.pathname = location.pathname.replace(
-        pathnameRegex,
-        (_, p1, p2, p3) => p1 + newLocale + (p2 ? p3 : "/")
-      );
+      location.pathname = window.alternateURLs[newLocale];
 
       // const currentLangSelectors = Array.from(
       //   langSelector.parentElement

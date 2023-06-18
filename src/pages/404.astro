@@ -2,6 +2,7 @@
 import CMS from "@store/CMS";
 import BasicPage from "@pages/BasicPage.astro";
 import PageLayout from "@layouts/PageLayout.astro";
+import getAvailableLocales from "@utils/getAvailableLocales";
 
 // fetching the error page
 const basicPagesData = CMS.get("basicPages"),
@@ -16,12 +17,17 @@ let recurringElements = CMS.get("recurringElement").data.attributes,
     ({ attributes }) => attributes.Meta.URL_slug === "404"
   );
 
-const availableLocales = [
-  "en",
-  ..._404Page.localizations.data.map(({ attributes }) =>
-    attributes.locale.substring(0, 2)
-  ),
+const flattenedPages = [
+  _404Page,
+  ..._404Page.localizations.data.map(({ attributes }) => attributes),
 ];
+
+const [availableLocales, availableLocaleEntries] =
+  getAvailableLocales(flattenedPages);
+
+const alternateURLs = Object.fromEntries(
+  availableLocaleEntries.filter((entry) => entry[0] !== locale)
+);
 
 if (!(locale && availableLocales.includes(locale))) locale = "en";
 
@@ -56,6 +62,7 @@ if (locale !== "en") {
 <PageLayout
   page={_404Page}
   locale={locale}
+  alternateURLs={alternateURLs}
   availableLocales={availableLocales}
   meta={_404Page.Meta}
   recurData={recurringElements}

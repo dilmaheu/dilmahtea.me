@@ -29,6 +29,8 @@ import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 import DefaultRouteRedirect from "@scripts/DefaultRouteRedirect.astro";
 import TranslationNotFoundRedirect from "@scripts/TranslationNotFoundRedirect.astro";
 
+import getAvailableLocales from "@utils/getAvailableLocales";
+
 export async function getStaticPaths() {
   const {
     i18NLocales,
@@ -108,21 +110,23 @@ export async function getStaticPaths() {
 
   const getRouteData = (page, getProps) => {
     const defaultSlug = page.attributes.Meta?.URL_slug,
-      availableLocales = [
-        "en",
-        ...page.attributes.localizations.data.map(({ attributes }) =>
-          attributes.locale.substring(0, 2)
+      flattenedPages = [
+        page.attributes,
+        ...page.attributes.localizations.data.map(
+          ({ attributes }) => attributes
         ),
       ];
 
+    const [availableLocales, availableLocaleEntries] =
+      getAvailableLocales(flattenedPages);
+
     return [
       { defaultRoute: true },
-      ...allLocales.map((locale) =>
-        locale === "en"
-          ? page.attributes
-          : page.attributes.localizations.data.find(
-              ({ attributes }) => attributes.locale.substring(0, 2) === locale
-            )?.attributes || { locale, translationNotFound: true }
+      ...allLocales.map(
+        (locale) =>
+          flattenedPages.find(
+            (attributes) => attributes.locale.substring(0, 2) === locale
+          ) || { locale, translationNotFound: true }
       ),
     ].map((attributes) => {
       const { locale } = attributes,
@@ -136,12 +140,21 @@ export async function getStaticPaths() {
             ? locale?.substring(0, 2) + "/" + slug
             : slug;
 
+      if (!attributes.defaultRoute && !attributes.translationNotFound) {
+        var alternateURLs = Object.fromEntries(
+          availableLocaleEntries.filter(
+            ([locale]) => locale !== attributes.locale.substring(0, 2)
+          )
+        );
+      }
+
       return {
         params: { slug: fullSlug },
         props: {
           page: {
             ...props,
             ...attributes,
+            alternateURLs,
             availableLocales,
           },
           recurData: recurringElement.data.attributes,
@@ -356,7 +369,7 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
         ? (page.Meta.URL_slug = `plan/` + page.Title.toLowerCase())
         : page.Meta.URL_slug;
 
-      const { Meta: meta, locale, availableLocales } = page,
+      const { Meta: meta, locale, alternateURLs, availableLocales } = page,
         recurData =
           locale === "en"
             ? Astro.props.recurData
@@ -391,6 +404,7 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
           meta={meta}
           locale={locale}
           recurData={recurData}
+          alternateURLs={alternateURLs}
           availableLocales={availableLocales}
           metaImageSrc={metaImageSrc}
         >
