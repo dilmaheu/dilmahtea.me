@@ -2,6 +2,11 @@
 import CMS from "@store/CMS";
 import getLocalesData from "@utils/getLocalesData";
 
+declare interface Props {
+  docLocale: string;
+  availableLocales: string[];
+}
+
 const { docLocale, availableLocales } = Astro.props,
   { locales, languages, localeNamesData } = getLocalesData(),
   docLang = languages[locales.indexOf(docLocale)],
