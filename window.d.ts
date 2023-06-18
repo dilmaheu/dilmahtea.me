@@ -39,6 +39,8 @@ type CheckoutInfo = Partial<Record<CheckoutInfoField, string>> &
 declare global {
   interface Window {
     companyName: string; // defined in CheckoutShipping.astro
+    checkoutSuccessLink: string; // defined in CheckoutShipping.astro
+    checkoutShippingLink: string; // defined in CheckoutKindness.astro
 
     requestedLocale: string; // defined in TranslationNotFoundRedirect.astro
     preferredLocale: string; // defined in SetPreferredLocale.astro

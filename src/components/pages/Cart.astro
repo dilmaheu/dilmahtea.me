@@ -32,7 +32,8 @@ const {
 } = Astro.props;
 
 const checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
-  ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
+  ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale),
+  checkoutInfoLink = CMS.get("checkoutInformation", locale).Meta.URL_slug;
 
 const footerText = recurData.Footer_text.replaceAll(
   "<current_year>",
@@ -318,7 +319,7 @@ const footerText = recurData.Footer_text.replaceAll(
         </div>
 
         <a
-          href="/checkout/information"
+          href={checkoutInfoLink}
           class="self-end px-32 py-3 bg-primary font-bold text-secondary rounded-full"
         >
           {page.text_go_to_checkout}

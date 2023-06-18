@@ -4,9 +4,9 @@ import DynamicHTML from "@components/DynamicHTML.astro";
 
 const { page } = Astro.props,
   { locale } = page,
-  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
-
-const isCheckoutShipping = page.type === "checkoutShipping";
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
+  isCheckoutShipping = page.type === "checkoutShipping",
+  checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug;
 ---
 
 <style lang="scss">
@@ -159,7 +159,7 @@ const isCheckoutShipping = page.type === "checkoutShipping";
       {
         isCheckoutShipping && (
           <a
-            href="/checkout/cart"
+            href={checkoutCartLink}
             class="text-primary font-medium leading-[120%] underline underline-offset-2"
           >
             {checkoutRecurData.text_edit_cart}
