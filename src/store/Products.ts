@@ -59,7 +59,8 @@ const allProducts = catalog.Products.flatMap(
         const locale = attributes.locale.substring(0, 2),
           localizedVariant = attributes.variant.data.attributes.Title,
           localizedSize = attributes.size.data.attributes.Title,
-          link = "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug;
+          link =
+            "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug + "/";
 
         const format = localizedVariant + " " + localizedSize,
           stockAmount = attributes.Stock_amount,
