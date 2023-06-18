@@ -109,7 +109,7 @@ export async function getStaticPaths() {
   };
 
   const getRouteData = (page, getProps) => {
-    const defaultSlug = page.attributes.Meta?.URL_slug,
+    const defaultSlug = page.attributes.Meta.URL_slug,
       flattenedPages = [
         page.attributes,
         ...page.attributes.localizations.data.map(
@@ -130,9 +130,8 @@ export async function getStaticPaths() {
       ),
     ].map((attributes) => {
       const { locale } = attributes,
-        { slug = attributes.Meta?.URL_slug || defaultSlug, ...props } = getProps
-          ? getProps(page, attributes)
-          : {},
+        slug = attributes.Meta?.URL_slug || defaultSlug,
+        props = getProps ? getProps(page, attributes) : {},
         fullSlug =
           slug === "/"
             ? locale?.substring(0, 2)
@@ -190,11 +189,19 @@ export async function getStaticPaths() {
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
 
-  const plansPages = getRoutes(crowdfundingPlans, (page, { Title }) => ({
-    type: "plan",
-    Meta: crowdfundingForm.data.attributes.Meta,
-    slug: `plans/${(Title || page.attributes.Title).toLowerCase()}`,
-  }));
+  [
+    ...crowdfundingPlans.data,
+    ...crowdfundingPlans.data.flatMap(
+      ({ attributes }) => attributes.localizations.data
+    ),
+  ].forEach(({ attributes }) => {
+    attributes.Meta = {
+      ...crowdfundingForm.data.attributes.Meta,
+      URL_slug: `plans/${attributes.Title.toLowerCase()}`,
+    };
+  });
+
+  const plansPages = getRoutes(crowdfundingPlans, () => ({ type: "plan" }));
 
   const crowdfundingPages = getRoutes(crowdfundingHome, (_, { locale }) => ({
     type: "crowdfunding",
@@ -364,10 +371,6 @@ const { defaultRoute, translationNotFound } = Astro.props.page,
       const { page } = Astro.props;
 
       page.locale = page.locale.substring(0, 2);
-
-      page.type === `plan`
-        ? (page.Meta.URL_slug = `plan/` + page.Title.toLowerCase())
-        : page.Meta.URL_slug;
 
       const { Meta: meta, locale, alternateURLs, availableLocales } = page,
         recurData =

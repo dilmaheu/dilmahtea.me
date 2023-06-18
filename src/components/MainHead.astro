@@ -28,7 +28,9 @@ const { origin, hostname } = Astro.site,
   { updatedAt: lastModifiedDate } = page;
 
 const documentHref = origin + Astro.url.pathname + "/",
-  canonicalHref = documentHref.replace(slugURL, canonicalURL);
+  canonicalHref = canonicalURL
+    ? documentHref.replace(slugURL, canonicalURL)
+    : documentHref;
 
 const openGraphImage =
     origin + (await importRemoteImage(metaImageSrc + "?w=1200&h=627")),
