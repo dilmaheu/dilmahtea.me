@@ -9,10 +9,10 @@ declare interface Props {
   meta: Record<string, any>;
   locale: string;
   metaImageSrc: string;
-  availableLocales: string[];
+  alternateURLs: { [locale: string]: string };
 }
 
-const { page, meta, locale, metaImageSrc, availableLocales } =
+const { page, meta, locale, metaImageSrc, alternateURLs } =
   Astro.props as Props;
 
 const {
@@ -25,19 +25,10 @@ const {
 } = meta;
 
 const { origin, hostname } = Astro.site,
-  { updatedAt: lastModifiedDate } = page,
-  alternateLocales = availableLocales.filter((lcl) => lcl !== locale);
+  { updatedAt: lastModifiedDate } = page;
 
-const documentHref = `${origin}/${locale}/${
-    slugURL === "/" ? "" : slugURL + "/"
-  }`,
-  canonicalHref = `${origin}/${locale}/${
-    canonicalURL !== undefined
-      ? canonicalURL === "/"
-        ? ""
-        : canonicalURL + "/"
-      : slugURL + "/"
-  }`;
+const documentHref = origin + Astro.url.pathname + "/",
+  canonicalHref = documentHref.replace(slugURL, canonicalURL);
 
 const openGraphImage =
     origin + (await importRemoteImage(metaImageSrc + "?w=1200&h=627")),
@@ -75,13 +66,11 @@ const openGraphImage =
 {/* SEO */}
 <link rel="canonical" href={canonicalHref} hreflang={locale} />
 {
-  alternateLocales.map((alternateLocale) => (
+  Object.entries(alternateURLs).map(([alternateLocale, alternateURL]) => (
     <link
       rel="alternate"
       hreflang={alternateLocale}
-      href={`${origin}/${alternateLocale}/${
-        slugURL === "/" ? "" : slugURL + "/"
-      }`}
+      href={origin + alternateURL}
     />
   ))
 }

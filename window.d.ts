@@ -43,6 +43,7 @@ declare global {
     requestedLocale: string; // defined in TranslationNotFoundRedirect.astro
     preferredLocale: string; // defined in SetPreferredLocale.astro
     availableLocales: string[]; // defined in SetPreferredLocale.astro
+    alternateURLs: { [locale: string]: string }; // defined in BaseLayout.astro
 
     enableScrolling: () => void; // defined in Navbar.astro
     disableScrolling: () => void; // defined in Navbar.astro

@@ -17,10 +17,10 @@ interface Props {
   meta: Record<string, any>;
   locale: string;
   metaImageSrc: string;
-  availableLocales: string[];
+  alternateURLs: { [locale: string]: string };
 }
 
-const { page, meta, locale, availableLocales, metaImageSrc } =
+const { page, meta, locale, alternateURLs, metaImageSrc } =
   Astro.props as Props;
 
 const { Type: notificationType, localizedNotifications } =
@@ -34,7 +34,7 @@ const { Type: notificationType, localizedNotifications } =
       meta={meta}
       locale={locale}
       metaImageSrc={metaImageSrc}
-      availableLocales={availableLocales}
+      alternateURLs={alternateURLs}
     />
 
     {
@@ -47,6 +47,10 @@ const { Type: notificationType, localizedNotifications } =
     }
 
     <SetPreferredLocale />
+
+    <script define:vars={{ alternateURLs }}>
+      window.alternateURLs = alternateURLs;
+    </script>
 
     <CartStore />
 
