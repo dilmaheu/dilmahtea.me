@@ -1,0 +1,320 @@
+---
+import CMS from "@store/CMS";
+
+import Markdown from "@astrojs/markdown-component";
+import { Picture } from "astro-imagetools/components";
+
+import Hero from "@components/Hero.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import ClippedPicture from "@components/ClippedPicture.astro";
+
+import RecurringImages from "@store/RecurringImages";
+
+const { white_cup, white_right_arrow } = RecurringImages;
+
+const {
+    page,
+    plainTitle,
+    relatedPosts,
+    headerBackground,
+    relatedPostsText,
+    relatedPostsHeading,
+  } = Astro.props,
+  { locale } = page,
+  { ASSETS_URL } = import.meta.env;
+
+const recurData = CMS.get("recurringElement", locale),
+  ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
+
+const headingName =
+  relatedPostsHeading || recurData.text_explore_the_world_of_kindness;
+---
+
+<style lang="scss" is:global>
+  .prose-text,
+  #post-details {
+    picture {
+      clip-path: url(#content-images-curve);
+    }
+
+    p,
+    ol,
+    ul,
+    p s,
+    blockquote p {
+      a {
+        @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat transition-all;
+
+        background-size: 100% 45%;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23b3cccc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
+
+        &:hover {
+          filter: brightness(0.95);
+        }
+      }
+    }
+  }
+
+  .hero-text {
+    p,
+    ol,
+    ul,
+    p s,
+    blockquote p {
+      a {
+        @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat transition-all text-white;
+
+        background-size: 100% 45%;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23474747'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
+
+        &:hover {
+          filter: brightness(0.95);
+        }
+      }
+    }
+  }
+</style>
+
+<style lang="scss">
+  @use "src/styles/colors";
+
+  .related-posts-title {
+    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
+  }
+
+  .related-post-card {
+    @apply w-full max-w-[380px] sm:max-w-none;
+  }
+
+  .related-post-card-content-container {
+    padding: clamp(20px, 6.4vw, 40px) clamp(24px, 3.8vw + 11.75px, 36px);
+
+    @media (min-width: 640px) {
+      padding: clamp(30px, 7.8125vw - 20px, 60px)
+        clamp(28px, 4.6875vw - 2px, 46px);
+    }
+
+    @media (min-width: 1024px) {
+      padding: clamp(30px, 8vw - 51.75px, 60px) clamp(28px, 4.8vw - 21px, 46px);
+    }
+  }
+
+  .related-post-card-author {
+    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem);
+    line-height: 150%;
+  }
+
+  .related-post-card-title {
+    @apply md:font-bold leading-[130%] md:leading-[120%];
+
+    font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
+  }
+
+  .related-post-card-title-icon {
+    height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
+  }
+</style>
+
+{/* Hero Section */}
+<Hero {locale} {page} {headerBackground}>
+  {/* Text Content */}
+  <div
+    role="banner"
+    aria-label={ariaLabelRecurData.Post_intro_text}
+    class:list={[
+      "wrapper relative z-30 h-full",
+      !headerBackground && "hero-text-container",
+    ]}
+  >
+    <div
+      class:list={[
+        "flex flex-wrap items-center h-full text-white",
+        headerBackground ? "md:w-10/12 lg:w-7/12" : "sm:w-7/12",
+      ]}
+    >
+      <div class="my-[30px]">
+        <h1 class="hero-title text-white">
+          {page.Title}
+
+          {
+            !plainTitle && (
+              <span class="icon heading-inline-icon">
+                <img class="w-full h-full" alt="" {...white_cup} />
+              </span>
+            )
+          }
+        </h1>
+
+        {
+          page.Intro_text && (
+            <div class="hero-text prose max-w-none pt-2.5 block text-white">
+              <Markdown>{page.Intro_text}</Markdown>
+            </div>
+          )
+        }
+
+        {
+          page?.Heading_button_text && (
+            <a
+              href={page.Heading_button_link}
+              class:list={[
+                "flex w-fit text-primary font-bold leading-[120%]",
+                "py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9 bg-white rounded-full",
+              ]}
+            >
+              {page.Heading_button_text}
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </div>
+
+  {/* Blob Image - Desktop View */}
+  {
+    !headerBackground && (
+      <div class="hero-img-curve-container h-full hidden sm:block absolute z-30">
+        <ClippedPicture
+          preload="avif"
+          id="hero-img-curve"
+          breakpoints={{ minWidth: 640 }}
+          sizes="clamp(330px, 26.4vw + 150px, 560px)"
+          alt={page.Intro_blob.data.attributes.alternativeText}
+          src={ASSETS_URL + page.Intro_blob.data.attributes.url}
+          path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
+          attributes={{ link: { media: "(min-width: 640px)" } }}
+        />
+      </div>
+    )
+  }
+</Hero>
+
+{/* Blob Image - Mobile View */}
+{
+  !headerBackground && (
+    <div class="hero-img-sm-container block sm:hidden w-full relative z-20 -mt-20">
+      <ClippedPicture
+        preload="avif"
+        id="hero-img-curve-sm"
+        breakpoints={{ maxWidth: 640 }}
+        alt={page.Intro_blob.data.attributes.alternativeText}
+        src={ASSETS_URL + page.Intro_blob.data.attributes.url}
+        path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
+        attributes={{ link: { media: "(max-width: 639.98px)" } }}
+      />
+    </div>
+  )
+}
+
+{/* page sections */}
+<slot />
+
+{
+  relatedPosts?.length > 0 && (
+    <section role="complementary" class="wrapper">
+      <h2
+        class:list={[
+          "related-posts-title recoleta font-semibold",
+          "leading-[130%] text-black",
+        ]}
+      >
+        {headingName}
+      </h2>
+
+      {relatedPostsText && (
+        <div class="prose max-w-none prose-text text-lg leading-[150%] mt-[15px] sm:mt-5">
+          <Markdown>{relatedPostsText}</Markdown>
+        </div>
+      )}
+
+      <ClipPathSVG
+        id="related-post-card-curve"
+        path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
+      />
+
+      <div
+        role="list"
+        aria-label={ariaLabelRecurData.Kindness_Items_text}
+        class:list={[
+          "w-full mb-[50px] mx-auto pt-[25px] sm:pt-[30px] grid sm:grid-cols-2",
+          "lg:grid-cols-3 gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)] ",
+          "justify-items-center sm:justify-items-start",
+        ]}
+      >
+        {relatedPosts.slice(0, 3).map((post, index) => (
+          <div
+            role="listitem"
+            aria-label={ariaLabelRecurData.Kindness_Item_text + (index + 1)}
+            style="clip-path: url(#related-post-card-curve)"
+            class="link-section bg-primary related-post-card"
+          >
+            <Picture
+              layout="fullWidth"
+              alt={post.Intro_blob.data.attributes.alternativeText}
+              src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+              attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
+              sizes={[
+                "(min-width: 1024px) calc((100vw - min(200px, 10vw) - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
+                "(min-width: 640px) calc(45vw - 16px)",
+                "min(90vw, 380px)",
+              ].join(", ")}
+            />
+
+            <div class="related-post-card-content-container grid content-between text-white">
+              <div>
+                {post.authors && (
+                  <div>
+                    <div
+                      role="presentation"
+                      aria-label={post.authors.data.map(
+                        ({ attributes }, i) =>
+                          ariaLabelRecurData.Wrote_by_text +
+                          (i > 0 ? ", " : " ") +
+                          attributes.givenName
+                      )}
+                      class="related-post-card-author flex flex-wrap font-bold"
+                    >
+                      {post.authors.data.map(({ attributes }, index) => (
+                        <span>
+                          {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div class="post-publish-date">
+                      {new Date(post.createdAt).toLocaleString("en-US", {
+                        day: "numeric",
+                        month: "long",
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                <div class="related-post-card-title recoleta mt-[15px]">
+                  <a
+                    class="main-link"
+                    set:text={post.Title}
+                    href={`/` + post.Meta.URL_slug}
+                  />
+
+                  <span class="icon related-post-card-title-icon">
+                    <img
+                      class="related-post-card-title-icon"
+                      {...white_right_arrow}
+                    />
+                  </span>
+
+                  {post.Intro_text && (
+                    <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
+                      <Markdown>{post.Intro_text}</Markdown>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
