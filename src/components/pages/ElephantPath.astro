@@ -4,11 +4,13 @@ import Markdown from "@astrojs/markdown-component";
 import Banner from "@components/Banner.astro";
 import KindnessImpact from "@components/KindnessImpact.astro";
 
-import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+import ExtendedBaseLayout from "@layouts/ExtendedBaseLayout.astro";
 
-const { page, recurData, ariaLabelRecurData } = Astro.props,
-  { locale } = page,
+const { page, ariaLabelRecurData } = Astro.props,
+  { locale, Relevant_items_title, Relevant_items_text, Relevant_blogs } = page,
   { ASSETS_URL } = import.meta.env;
+
+const relatedPosts = Relevant_blogs?.data?.map(({ attributes }) => attributes);
 ---
 
 <style lang="scss">
@@ -88,14 +90,13 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   }
 </style>
 
-<PostDetailsLayout
+<ExtendedBaseLayout
   {page}
-  {recurData}
-  {ariaLabelRecurData}
-  nonBlog="nonBlog"
-  type="section"
+  {relatedPosts}
+  relatedPostsText={Relevant_items_text}
+  relatedPostsHeading={Relevant_items_title}
 >
-  <div slot="elephant-path-page-sections" class="my-[50px]">
+  <div class="my-[50px]">
     <div class="grid gap-y-[50px]">
       <section role="main">
         <div class="wrapper grid gap-5 pb-[50px]">
@@ -274,4 +275,4 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
       />
     </div>
   </div>
-</PostDetailsLayout>
+</ExtendedBaseLayout>
