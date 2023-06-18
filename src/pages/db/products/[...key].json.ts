@@ -97,7 +97,7 @@ async function processProductData(attributes) {
     availableFormatThumbnails,
     category: category.data?.attributes.Title,
     subCategory: sub_category.data?.attributes.Title,
-    Meta: { URL_slug: "/" + locale.substring(0, 2) + "/" + URL_slug },
+    Meta: { URL_slug: "/" + locale.substring(0, 2) + "/" + URL_slug + "/" },
   };
 }
 
