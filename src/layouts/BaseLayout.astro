@@ -6,6 +6,7 @@ import Notification from "@components/Notification.astro";
 import LocalizeLinks from "@components/LocalizeLinks.astro";
 
 import CartStore from "@scripts/CartStore.astro";
+import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 import NotificationsObserver from "@scripts/NotificationsObserver.astro";
 import NotificationAnimations from "@scripts/NotificationAnimations.astro";
 
@@ -21,8 +22,6 @@ interface Props {
 
 const { page, meta, locale, availableLocales, metaImageSrc } =
   Astro.props as Props;
-
-const { URL_slug: slugURL } = meta;
 
 const { Type: notificationType, localizedNotifications } =
   getLangNotAvailableNotification();
@@ -48,17 +47,8 @@ const { Type: notificationType, localizedNotifications } =
     }
 
     {
-      // prettier-ignore
-      slugURL !== "404" && (
-        <script is:inline define:vars={{ availableLocales }}>
-          const preferredLocale = document.documentElement.lang;
-
-          localStorage.setItem("locale", preferredLocale);
-
-          window.preferredLocale = preferredLocale;
-          window.availableLocales = availableLocales;
-        </script>
-      )
+      // run script only if the page is not dev 404 page
+      Astro.params.slug && <SetPreferredLocale />
     }
 
     <CartStore />
