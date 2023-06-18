@@ -22,11 +22,11 @@ const flattenedPages = [
   ..._404Page.localizations.data.map(({ attributes }) => attributes),
 ];
 
-const [availableLocales, availableLocaleEntries] =
+const [availableLocales, availableLocalesRecord] =
   getAvailableLocales(flattenedPages);
 
 const alternateURLs = Object.fromEntries(
-  availableLocaleEntries.filter((entry) => entry[0] !== locale)
+  Object.entries(availableLocalesRecord).filter((entry) => entry[0] !== locale)
 );
 
 if (!(locale && availableLocales.includes(locale))) locale = "en";

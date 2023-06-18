@@ -108,39 +108,50 @@ export async function getStaticPaths() {
   };
 
   const getRouteData = (page, getProps) => {
-    const defaultSlug = page.attributes.Meta.URL_slug,
-      flattenedPages = [
-        page.attributes,
-        ...page.attributes.localizations.data.map(
-          ({ attributes }) => attributes
-        ),
-      ];
+    const flattenedPages = [
+      page.attributes,
+      ...page.attributes.localizations.data.map(({ attributes }) => attributes),
+    ];
 
-    const [availableLocales, availableLocaleEntries] =
+    const [availableLocales, availableLocalesRecord, availableSlugs] =
       getAvailableLocales(flattenedPages);
 
     return [
-      { defaultRoute: true },
-      ...allLocales.map(
-        (locale) =>
-          flattenedPages.find(
-            (attributes) => attributes.locale.substring(0, 2) === locale
-          ) || { locale, translationNotFound: true }
+      ...availableSlugs.map((slug) => ({
+        defaultRoute: true,
+        availableLocalesRecord,
+        slug: slug === "/" ? "/" : slug.slice(1, -1),
+      })),
+      ...allLocales.flatMap((locale) =>
+        availableSlugs.map((slug) =>
+          availableLocalesRecord[locale] === "/" + locale + slug
+            ? flattenedPages.find(
+                (attributes) => attributes.locale.substring(0, 2) === locale
+              )
+            : {
+                locale,
+                fullSlug: locale + slug.slice(0, -1),
+                translationNotFound: true,
+                availableLocalesRecord,
+              }
+        )
       ),
     ].map((attributes) => {
-      const { locale } = attributes,
-        slug = attributes.Meta?.URL_slug || defaultSlug,
-        props = getProps ? getProps(page, attributes) : {},
-        fullSlug =
-          slug === "/"
-            ? locale?.substring(0, 2)
-            : locale
-            ? locale?.substring(0, 2) + "/" + slug
-            : slug;
+      const {
+        locale,
+        slug = attributes.Meta?.URL_slug,
+        fullSlug = slug === "/"
+          ? locale?.substring(0, 2)
+          : locale
+          ? locale?.substring(0, 2) + "/" + slug
+          : slug,
+      } = attributes;
+
+      const props = getProps ? getProps(page, attributes) : {};
 
       if (!attributes.defaultRoute && !attributes.translationNotFound) {
         var alternateURLs = Object.fromEntries(
-          availableLocaleEntries.filter(
+          Object.entries(availableLocalesRecord).filter(
             ([locale]) => locale !== attributes.locale.substring(0, 2)
           )
         );
@@ -351,16 +362,19 @@ export async function getStaticPaths() {
 
 const { ASSETS_URL } = import.meta.env;
 
-const { defaultRoute, translationNotFound } = Astro.props.page,
+const { defaultRoute, translationNotFound, availableLocalesRecord } =
+    Astro.props.page,
   isRedirectionNecessary = defaultRoute || translationNotFound;
 ---
 
 {
   isRedirectionNecessary ? (
     defaultRoute ? (
-      <DefaultRouteRedirect />
+      <DefaultRouteRedirect availableLocalesRecord={availableLocalesRecord} />
     ) : (
-      <TranslationNotFoundRedirect />
+      <TranslationNotFoundRedirect
+        availableLocalesRecord={availableLocalesRecord}
+      />
     )
   ) : (
     async () => {
