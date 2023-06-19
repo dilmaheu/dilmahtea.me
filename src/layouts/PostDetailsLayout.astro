@@ -6,6 +6,7 @@ import { Picture } from "astro-imagetools/components";
 import Hero from "@components/Hero.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import HeadingLinks from "@components/HeadingLinks.astro";
+import RelevantPosts from "@components/RelevantPosts.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 import ChaptersFunctionality from "@components/scripts/ChaptersFunctionality.astro";
 
@@ -33,6 +34,12 @@ const relatedPosts =
   page?.Relevant_blogs?.data?.map(({ attributes }) => attributes) ||
   posts?.filter(({ Meta }) => Meta.URL_slug !== page.Meta.URL_slug);
 
+const relatedPostsHeading =
+  page.Relevant_items_title ||
+  (page.Relevant_recipes && recurData.recipe_discover) ||
+  recurData.text_explore_the_world_of_kindness;
+
+const relatedPostsText = page.Relevant_items_text;
 const contentHTML = await Astro.slots.render("post-details"),
   { document: contentDocument } = parseHTML(contentHTML),
   headings = contentDocument.querySelectorAll("h2");
@@ -470,119 +477,12 @@ const contentHTML = await Astro.slots.render("post-details"),
 {/* product kindness impact  */}
 <slot name="product-kindness-impact" />
 
-{
-  relatedPosts?.length > 0 && (
-    <section role="complementary" class="wrapper">
-      <h2
-        class:list={[
-          "related-posts-title recoleta font-semibold",
-          "leading-[130%] text-black",
-        ]}
-      >
-        {page.Relevant_items_title ||
-          (page.Relevant_recipes && recurData.recipe_discover) ||
-          recurData.text_explore_the_world_of_kindness}
-      </h2>
-
-      {page.Relevant_items_text && (
-        <div class="prose max-w-none prose-text text-lg leading-[150%] mt-[15px] sm:mt-5">
-          <Markdown>{page.Relevant_items_text}</Markdown>
-        </div>
-      )}
-
-      <ClipPathSVG
-        id="related-post-card-curve"
-        path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
-      />
-
-      <div
-        role="list"
-        aria-label={ariaLabelRecurData.Kindness_Items_text}
-        class:list={[
-          "w-full mb-[50px] mx-auto pt-[25px] sm:pt-[30px] grid sm:grid-cols-2",
-          "lg:grid-cols-3 gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)] ",
-          "justify-items-center sm:justify-items-start",
-        ]}
-      >
-        {relatedPosts.slice(0, 3).map((post, index) => (
-          <div
-            role="listitem"
-            aria-label={ariaLabelRecurData.Kindness_Item_text + (index + 1)}
-            style="clip-path: url(#related-post-card-curve)"
-            class="link-section bg-primary related-post-card"
-          >
-            <Picture
-              layout="fullWidth"
-              alt={post.Intro_blob.data.attributes.alternativeText}
-              src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-              attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-              sizes={[
-                "(min-width: 1024px) calc((100vw - min(200px, 10vw) - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
-                "(min-width: 640px) calc(45vw - 16px)",
-                "min(90vw, 380px)",
-              ].join(", ")}
-            />
-
-            <div class="related-post-card-content-container grid content-between text-white">
-              <div>
-                {post.authors && (
-                  <div>
-                    <div
-                      role="presentation"
-                      aria-label={post.authors.data.map(
-                        ({ attributes }, i) =>
-                          ariaLabelRecurData.Wrote_by_text +
-                          (i > 0 ? ", " : " ") +
-                          attributes.givenName
-                      )}
-                      class="related-post-card-author flex flex-wrap font-bold"
-                    >
-                      {post.authors.data.map(({ attributes }, index) => (
-                        <span>
-                          {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div class="post-publish-date">
-                      {new Date(post.createdAt).toLocaleString("en-US", {
-                        day: "numeric",
-                        month: "long",
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                <div class="related-post-card-title recoleta mt-[15px]">
-                  <a
-                    class="main-link"
-                    set:text={post.Title}
-                    href={`/` + post.Meta.URL_slug}
-                  />
-
-                  {!page.related_products && (
-                    <span class="icon related-post-card-title-icon">
-                      <img
-                        class="related-post-card-title-icon"
-                        {...white_right_arrow}
-                      />
-                    </span>
-                  )}
-
-                  {page.related_products && (
-                    <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
-                      <Markdown>{post.Intro_text}</Markdown>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  )
-}
+<RelevantPosts
+  {page}
+  posts={relatedPosts}
+  text={relatedPostsText}
+  heading={relatedPostsHeading}
+/>
 
 {headings.length > 0 && <ChaptersFunctionality />}
 
