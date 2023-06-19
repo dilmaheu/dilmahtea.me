@@ -1,11 +1,10 @@
 ---
-import CMS from "@store/CMS";
-
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
+import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
 const { white_right_arrow } = RecurringImages;
@@ -19,31 +18,6 @@ const recurData = CMS.get("recurringElement", locale),
 
 const headingName = heading || recurData.text_explore_the_world_of_kindness;
 ---
-
-<style lang="scss" is:global>
-  .prose-text {
-    picture {
-      clip-path: url(#content-images-curve);
-    }
-
-    p,
-    ol,
-    ul,
-    p s,
-    blockquote p {
-      a {
-        @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat transition-all;
-
-        background-size: 100% 45%;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23b3cccc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
-
-        &:hover {
-          filter: brightness(0.95);
-        }
-      }
-    }
-  }
-</style>
 
 <style lang="scss">
   @use "src/styles/colors";
@@ -90,8 +64,8 @@ const headingName = heading || recurData.text_explore_the_world_of_kindness;
     <section role="complementary" class="wrapper">
       <h2
         class:list={[
-          "related-posts-title recoleta font-semibold",
-          "leading-[130%] text-black",
+          "related-posts-title recoleta",
+          "font-semibold leading-[130%] text-black",
         ]}
       >
         {headingName}
@@ -113,7 +87,7 @@ const headingName = heading || recurData.text_explore_the_world_of_kindness;
         aria-label={ariaLabelRecurData.Kindness_Items_text}
         class:list={[
           "w-full mb-[50px] mx-auto pt-[25px] sm:pt-[30px] grid sm:grid-cols-2",
-          "lg:grid-cols-3 gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)] ",
+          "lg:grid-cols-3 gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
           "justify-items-center sm:justify-items-start",
         ]}
       >
