@@ -33,6 +33,38 @@ body {
   height: clamp(27px, 3.5vw + 6px, 42px);
 }
 
+.prose-text,
+.hero-text {
+  picture {
+    clip-path: url(#content-images-curve);
+  }
+
+  p,
+  ol,
+  ul,
+  p s,
+  blockquote p {
+    a {
+      @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat transition-all;
+
+      background-size: 100% 45%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='${color('#b3cccc').toHex()}'/%3E%3C/svg%3E");
+
+      &:hover {
+        filter: brightness(0.95);
+      }
+    }
+  }
+}
+
+.hero-text {
+  a {
+    @apply text-white;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='${color('#474747').toHex()}'/%3E%3C/svg%3E");
+  }
+}
+
 .content-text {
   @apply text-black-light leading-[150%] max-w-none;
 
