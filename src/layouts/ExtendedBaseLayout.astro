@@ -2,16 +2,14 @@
 import CMS from "@store/CMS";
 
 import Markdown from "@astrojs/markdown-component";
-import { Picture } from "astro-imagetools/components";
 
 import Hero from "@components/Hero.astro";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
 import RelevantPosts from "@components/RelevantPosts.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
-const { white_cup, white_right_arrow } = RecurringImages;
+const { white_cup } = RecurringImages;
 
 const {
     page,
@@ -24,11 +22,7 @@ const {
   { locale } = page,
   { ASSETS_URL } = import.meta.env;
 
-const recurData = CMS.get("recurringElement", locale),
-  ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
-
-const headingName =
-  relatedPostsHeading || recurData.text_explore_the_world_of_kindness;
+const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 ---
 
 <style lang="scss" is:global>
