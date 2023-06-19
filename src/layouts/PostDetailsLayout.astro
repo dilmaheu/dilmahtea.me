@@ -1,30 +1,27 @@
 ---
 import { parseHTML } from "linkedom";
-import Markdown from "@astrojs/markdown-component";
-import { Picture } from "astro-imagetools/components";
 
-import Hero from "@components/Hero.astro";
+import HeroContent from "@components/HeroContent.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import HeadingLinks from "@components/HeadingLinks.astro";
 import RelevantPosts from "@components/RelevantPosts.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
 import ChaptersFunctionality from "@components/scripts/ChaptersFunctionality.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
-const { white_cup, green_book } = RecurringImages;
+const { green_book } = RecurringImages;
 
 const {
-    page,
-    posts,
-    recurData,
-    ariaLabelRecurData,
-    headingName,
-    plainTitle,
-    type,
-    nonBlog,
-  } = Astro.props,
-  { ASSETS_URL } = import.meta.env;
+  page,
+  posts,
+  recurData,
+  ariaLabelRecurData,
+  headingName,
+  plainTitle,
+  type,
+  nonBlog,
+  headerBackground,
+} = Astro.props;
 
 // display relevant recipes instead of related posts for RecipeDetails pages
 const relatedPosts =
@@ -242,6 +239,7 @@ const contentHTML = await Astro.slots.render("post-details"),
 {/* product kindness impact  */}
 <slot name="product-kindness-impact" />
 
+{/* Relevant Posts Section */}
 <RelevantPosts
   {page}
   posts={relatedPosts}

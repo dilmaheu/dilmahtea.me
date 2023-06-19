@@ -1,29 +1,15 @@
 ---
-import CMS from "@store/CMS";
-
-import Markdown from "@astrojs/markdown-component";
-
-import Hero from "@components/Hero.astro";
 import HeroContent from "@components/HeroContent.astro";
 import RelevantPosts from "@components/RelevantPosts.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
-
-import RecurringImages from "@store/RecurringImages";
-
-const { white_cup } = RecurringImages;
 
 const {
-    page,
-    plainTitle,
-    relatedPosts,
-    headerBackground,
-    relatedPostsText,
-    relatedPostsHeading,
-  } = Astro.props,
-  { locale } = page,
-  { ASSETS_URL } = import.meta.env;
-
-const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
+  page,
+  plainTitle,
+  relatedPosts,
+  headerBackground,
+  relatedPostsText,
+  relatedPostsHeading,
+} = Astro.props;
 ---
 
 {/* Hero Section */}
@@ -32,6 +18,7 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 {/* page sections */}
 <slot />
 
+{/* Relevant Posts Section */}
 <RelevantPosts
   {page}
   posts={relatedPosts}
