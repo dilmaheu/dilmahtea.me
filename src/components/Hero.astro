@@ -103,14 +103,14 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
             ? ASSETS_URL + (headerBackgroundImgSm || headerBackgroundImg)
             : hero_background_sm?.src || hero_background.src
         }
-        breakpoints={{ maxWidth: 768 }}
+        breakpoints={{ maxWidth: headerBackground ? 550 : 768 }}
         artDirectives={[
           {
             media: `(min-width: ${headerBackground ? "550px" : "768px"})`,
-            breakpoints: { minWidth: 768 },
             src: headerBackground
               ? ASSETS_URL + headerBackgroundImg
               : hero_background.src,
+            breakpoints: { minWidth: headerBackground ? 550 : 768 },
           },
         ]}
         attributes={{
@@ -118,6 +118,7 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
             style: "position: absolute;",
           },
         }}
+        sizes="100vw",
       />
     )
   }

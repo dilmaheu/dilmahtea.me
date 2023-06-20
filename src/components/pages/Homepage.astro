@@ -7,7 +7,7 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 import KindnessImpact from "@components/KindnessImpact.astro";
 import ProductCategories from "@components/ProductCategories.astro";
 
-import ExtendedBaseLayout from "@layouts/ExtendedBaseLayout.astro";
+import SecondaryPageLayout from "@layouts/SecondaryPageLayout.astro";
 
 const { page, ariaLabelRecurData } = Astro.props,
   { locale, posts } = page,
@@ -52,11 +52,7 @@ const randPost = posts[(Math.random() * posts.length) | 0],
   }
 </style>
 
-<ExtendedBaseLayout
-  {page}
-  plainTitle="plainTitle"
-  headerBackground="headerBackground"
->
+<SecondaryPageLayout {page} plainTitle={true} headerBackground={true}>
   <div role="main" class="grid gap-[50px] my-[50px]">
     {/* Random Post Section */}
     {
@@ -254,4 +250,4 @@ const randPost = posts[(Math.random() * posts.length) | 0],
       )
     }
   </div>
-</ExtendedBaseLayout>
+</SecondaryPageLayout>

@@ -1,12 +1,11 @@
 ---
-import CMS from "@store/CMS";
-
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
 import Hero from "@components/Hero.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
 
+import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
 const { white_cup } = RecurringImages;
@@ -79,8 +78,7 @@ const recurData = CMS.get("recurringElement", locale),
                 >
                   {page.authors.data.map((author, index) => (
                     <span>
-                      {`${index > 0 ? ", " : " "}` +
-                        author.attributes.givenName}
+                      {(index > 0 ? ", " : " ") + author.attributes.givenName}
                     </span>
                   ))}
                 </div>
@@ -109,11 +107,7 @@ const recurData = CMS.get("recurringElement", locale),
                       class="flex flex-wrap font-bold underline decoration-1 underline-offset-[2px]"
                     >
                       {estate.attributes.Estate_name +
-                        `${
-                          index === (0 || page.estate_name.data.length - 1)
-                            ? ""
-                            : ","
-                        }`}
+                        (index === page.estate_name.data.length - 1 ? "" : ",")}
                     </a>
                   ))}
                 </div>
@@ -156,11 +150,8 @@ const recurData = CMS.get("recurringElement", locale),
           )
         }
 
-        {/* Recipe Header */}
-        <slot name="recipe-header" />
-
-        {/* tea-details header section */}
-        <slot name="tea-details-header" />
+        {/* Recipe Header & tea-details header section */}
+        <slot />
 
         {
           page.Price_breakdown?.length > 0 && (
