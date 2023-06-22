@@ -62,7 +62,7 @@ fragment HowToAttributes on HowTo {
 }
 
 query {
-  howTos {
+  howTos(locale: "all") {
     data {
       id
       attributes {
@@ -70,9 +70,6 @@ query {
         localizations(filters: { publishedAt: { ne: null } }) {
           data {
             id
-            attributes {
-              ...HowToAttributes
-            }
           }
         }
       }

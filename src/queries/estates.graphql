@@ -75,7 +75,7 @@ fragment EstateAttributes on Estate {
 }
 
 query {
-  estates {
+  estates(locale: "all") {
     data {
       id
       attributes {
@@ -83,9 +83,6 @@ query {
         localizations(filters: { publishedAt: { ne: null } }) {
           data {
             id
-            attributes {
-              ...EstateAttributes
-            }
           }
         }
       }

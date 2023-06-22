@@ -41,7 +41,7 @@ fragment ProductVariantAttributes on ProductVariant {
 }
 
 query {
-  productVariants(sort: "rank:asc") {
+  productVariants(locale: "all", sort: "rank:asc") {
     data {
       id
       attributes {
@@ -49,9 +49,6 @@ query {
         localizations(filters: { publishedAt: { ne: null } }) {
           data {
             id
-            attributes {
-              ...ProductVariantAttributes
-            }
           }
         }
       }
