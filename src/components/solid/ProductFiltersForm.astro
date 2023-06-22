@@ -13,11 +13,9 @@ recurData = {
     data: data
       .map(({ attributes }) => {
         const allVersions = [{ attributes }, ...attributes.localizations.data],
-          {
-            attributes: { Title: localizedTitle },
-          } = allVersions.find(
+          localizedTitle = allVersions.find(
             ({ attributes }) => attributes.locale.substring(0, 2) === locale
-          );
+          )?.attributes.Title;
 
         if (localizedTitle) {
           const {
