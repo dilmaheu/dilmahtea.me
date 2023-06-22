@@ -21,7 +21,7 @@ fragment CrowdfundingPlanAttributes on CrowdfundingPlan {
 }
 
 query {
-  crowdfundingPlans(sort: "Price_EUR_excl_VAT") {
+  crowdfundingPlans(locale: "all", sort: "Price_EUR_excl_VAT") {
     data {
       id
       attributes {
@@ -29,9 +29,6 @@ query {
         localizations(filters: { publishedAt: { ne: null } }) {
           data {
             id
-            attributes {
-              ...CrowdfundingPlanAttributes
-            }
           }
         }
       }
