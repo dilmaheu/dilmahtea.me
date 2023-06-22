@@ -23,10 +23,4 @@ localizations.data.forEach(({ attributes }) => {
   localizedNotifications[locale] = notification;
 });
 
-export default function getLangNotAvailableNotification() {
-  return {
-    Type,
-    Closing_Enabled,
-    localizedNotifications,
-  };
-}
+export { Type, Closing_Enabled, localizedNotifications };
