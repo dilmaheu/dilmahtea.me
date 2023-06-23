@@ -7,7 +7,7 @@ export default function getAvailableLocales(
 
   flattenedPages.forEach((attributes) => {
     const locale = (attributes.locale as string).substring(0, 2),
-      slug = attributes.Meta?.URL_slug as string,
+      slug = attributes.Meta.URL_slug as string,
       baseSlug = "/" + (slug === "/" ? "" : slug + "/"),
       fullSlug = "/" + locale + baseSlug;
 
