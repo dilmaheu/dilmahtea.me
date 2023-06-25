@@ -20,7 +20,8 @@ const CSPRecord = {
       ? "https://dev.cms.dilmahtea.me"
       : "https://cms.dilmahtea.me",
   ],
-  "media-src": ["data:"],
+  "media-src": ["'self'", "data:"],
+  "video-src": ["'self'"],
   "font-src": ["'self'", "https://use.fontawesome.com"],
   "worker-src": ["blob:"],
   "connect-src": [
