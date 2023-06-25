@@ -46,7 +46,7 @@ const { footerText, recurData } = Astro.props as Props,
 
       ul li {
         @apply text-[clamp(0.75rem,1.5vw+0.1rem,1rem)] 
-          font-medium leading-[130%] md:leading-[150%];
+          md:font-medium leading-[130%] md:leading-[150%];
       }
 
       .footer-icon-container {
@@ -113,22 +113,23 @@ const { footerText, recurData } = Astro.props as Props,
       <nav
         class:list={[
           "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
-          "xl:lg:grid-cols-5 gap-[25px]",
+          "xl:grid-cols-5 gap-[30px]",
         ]}
       >
         {
           menu.map(({ Heading_name, Menu }) => (
             <div class="flex flex-col gap-2 md:gap-3">
               <h2>{Heading_name}</h2>
+              <span class="block md:hidden w-[85px] h-[1px] bg-secondary/60" />
 
-              <ul class="grid gap-[5px]">
+              <ul class="grid gap-[15px]">
                 {Menu.map(
                   ({ Visibility, Title, Link, Icon: { data: icon } }) =>
                     Visibility && (
                       <li class="flex items-center">
                         <a
                           href={Link}
-                          class="flex flex-wrap gap-[5px] md:gap-2.5"
+                          class="flex flex-wrap items-center gap-[5px] md:gap-2.5"
                         >
                           {icon && (
                             <div class="footer-icon-container h-full">
