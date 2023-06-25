@@ -8,6 +8,7 @@ import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 const { hero_background, hero_background_sm } = RecurringImages;
 
 const { page, locale, headerBackground } = Astro.props,
+  { origin } = Astro.site,
   { ASSETS_URL } = import.meta.env;
 
 const recurData = CMS.get("recurringElement", locale),
@@ -17,6 +18,13 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
   headerBackgroundImgSm = page?.Intro_blob_sm?.data?.attributes.url,
   headerBackgroundVideo = page?.Intro_video?.data?.attributes.url,
   headerBackgroundVideoSm = page?.Intro_video_sm?.data?.attributes.url;
+
+const poster = await importRemoteImage(
+    ASSETS_URL + headerBackgroundImg + "?w=1920"
+  ),
+  posterSm = await importRemoteImage(
+    ASSETS_URL + (headerBackgroundImgSm || headerBackgroundImg) + "?w=550"
+  );
 ---
 
 <style lang="scss">
@@ -114,17 +122,19 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
         <>
           <video
             class="header-background-video object-cover h-full w-full absolute inset-0"
-            src={`${ASSETS_URL}${headerBackgroundVideo}`}
+            src={ASSETS_URL + headerBackgroundVideo}
+            poster={poster}
             autoplay
-            preload="metadata" 
-            muted 
+            preload="metadata"
+            muted
             loop
           />
           <video
             class="header-background-video-sm object-cover h-full w-full absolute inset-0"
-            src={`${ASSETS_URL}${
-              headerBackgroundVideoSm || headerBackgroundVideo
-            }`}
+            src={
+              ASSETS_URL + (headerBackgroundVideoSm || headerBackgroundVideo)
+            }
+            poster={posterSm}
             autoplay
             preload="metadata"
             muted
