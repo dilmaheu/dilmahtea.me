@@ -17,13 +17,6 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
   headerBackgroundImgSm = page?.Intro_blob_sm?.data?.attributes.url,
   headerBackgroundVideo = page?.Intro_video?.data?.attributes.url,
   headerBackgroundVideoSm = page?.Intro_video_sm?.data?.attributes.url;
-
-const poster = await importRemoteImage(
-    ASSETS_URL + headerBackgroundImg + "?w=1920"
-  ),
-  posterSm = await importRemoteImage(
-    ASSETS_URL + (headerBackgroundImgSm || headerBackgroundImg) + "?w=550"
-  );
 ---
 
 <style lang="scss">
@@ -118,28 +111,42 @@ const poster = await importRemoteImage(
   {
     (headerBackground || hero_background) &&
       (headerBackgroundVideo ? (
-        <>
-          <video
-            class="header-background-video object-cover h-full w-full absolute inset-0"
-            src={ASSETS_URL + headerBackgroundVideo}
-            poster={poster}
-            autoplay
-            preload="metadata"
-            muted
-            loop
-          />
-          <video
-            class="header-background-video-sm object-cover h-full w-full absolute inset-0"
-            src={
-              ASSETS_URL + (headerBackgroundVideoSm || headerBackgroundVideo)
-            }
-            poster={posterSm}
-            autoplay
-            preload="metadata"
-            muted
-            loop
-          />
-        </>
+        async () => {
+          const poster = await importRemoteImage(
+              ASSETS_URL + headerBackgroundImg + "?w=1920"
+            ),
+            posterSm = await importRemoteImage(
+              ASSETS_URL +
+                (headerBackgroundImgSm || headerBackgroundImg) +
+                "?w=550"
+            );
+
+          return (
+            <>
+              <video
+                class="header-background-video object-cover h-full w-full absolute inset-0"
+                src={ASSETS_URL + headerBackgroundVideo}
+                poster={poster}
+                autoplay
+                preload="metadata"
+                muted
+                loop
+              />
+              <video
+                class="header-background-video-sm object-cover h-full w-full absolute inset-0"
+                src={
+                  ASSETS_URL +
+                  (headerBackgroundVideoSm || headerBackgroundVideo)
+                }
+                poster={posterSm}
+                autoplay
+                preload="metadata"
+                muted
+                loop
+              />
+            </>
+          );
+        }
       ) : (
         <Picture
           alt=""
