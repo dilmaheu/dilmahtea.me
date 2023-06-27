@@ -2,6 +2,8 @@ import fs from "fs";
 import { globby } from "globby";
 import printMessage from "@utils/printMessage";
 
+import.meta.glob("../queries/*.graphql", { as: "raw" }); // just to trigger hmr for graphql queries
+
 const queryPaths = await globby("./src/queries/*.graphql"),
   queries = await Promise.all(
     queryPaths.map((path) => fs.promises.readFile(path, "utf8"))
@@ -24,37 +26,97 @@ const fragments = [],
     "}",
   fullQuery = fragments.join("\n") + "\n" + query;
 
-const { data } = await fetch(import.meta.env.DB_URL, {
-  method: "POST",
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
-  },
-  body: JSON.stringify({
-    query: fullQuery,
-  }),
-})
+const { data, dataWithFlattenedCollections } = await fetch(
+  import.meta.env.DB_URL,
+  {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
+    },
+    body: JSON.stringify({
+      query: fullQuery,
+    }),
+  }
+)
   .then(async (res) => {
     const cacheDir = "./.cache/",
-      response = await res.text(),
-      data = JSON.parse(response),
-      error = data.error || data.errors;
+      response = await res.json(),
+      error = response.error || response.errors;
 
     if (error) {
       return catchError(error);
     }
 
+    const { data } = response,
+      dataWithFlattenedCollections = structuredClone(data);
+
+    Object.keys(data).forEach((key) => {
+      if (key === "i18NLocales") return;
+
+      let entries = data[key].data;
+
+      if (Array.isArray(entries)) {
+        entries = entries
+          // english entries come first since they have been used as the standard in ecommerce functionalities
+          .sort((a) => (a.attributes.locale === "en" ? -1 : 1))
+          .filter((entry) => {
+            if (!entry) return false;
+
+            const { localizations } = entry.attributes;
+
+            localizations.data = localizations.data.map(
+              ({ id, attributes }) => {
+                if (attributes) {
+                  return {
+                    id,
+                    attributes,
+                  };
+                }
+
+                let localizationIndex;
+
+                const localization = structuredClone(
+                  entries.find((entry, i) => {
+                    if (entry?.id === id) {
+                      localizationIndex = i;
+
+                      return true;
+                    }
+                  })
+                );
+
+                delete entries[localizationIndex];
+
+                return localization;
+              }
+            );
+
+            return true;
+          });
+      }
+
+      data[key].data = entries;
+    });
+
     fs.existsSync(cacheDir) || (await fs.promises.mkdir(cacheDir));
 
-    await fs.promises.writeFile(cacheDir + "CMS.json", response, "utf8");
+    await fs.promises.writeFile(
+      cacheDir + "CMS.json",
+      JSON.stringify(response),
+      "utf8"
+    );
 
     printMessage(
       "info",
       "Successfully fetched data from CMS and saved it to the cache"
     );
 
-    return data;
+    return {
+      data,
+      dataWithFlattenedCollections,
+    };
   })
   .catch(catchError);
 
@@ -73,20 +135,12 @@ const CMS = {
     // if locale is specified, the returned data won't be wrapped with the "data" key
     if (locale) {
       if (Array.isArray(content.data)) {
-        if (locale === "en") return content.data;
+        // get data from flattened collections
+        const content = dataWithFlattenedCollections[contentType];
 
-        return content.data
-          .map((item) => {
-            const localizations = item.attributes.localizations.data;
-
-            const localizedItem = localizations.find(
-              ({ attributes }) =>
-                attributes.locale.substring(0, 2) === locale.substring(0, 2)
-            );
-
-            return localizedItem;
-          })
-          .filter(Boolean);
+        return content.data.filter(
+          ({ attributes }) => attributes.locale.substring(0, 2) === locale
+        );
       }
 
       // if the content is not an array, the localized data won't be wrapped with the "attributes" key

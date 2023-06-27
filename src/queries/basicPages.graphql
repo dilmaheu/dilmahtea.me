@@ -27,7 +27,7 @@ fragment BasicPageAttributes on BasicPage {
 }
 
 query {
-  basicPages {
+  basicPages(locale: "all") {
     data {
       id
       attributes {
@@ -35,9 +35,6 @@ query {
         localizations(filters: { publishedAt: { ne: null } }) {
           data {
             id
-            attributes {
-              ...BasicPageAttributes
-            }
           }
         }
       }

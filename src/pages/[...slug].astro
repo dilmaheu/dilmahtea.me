@@ -33,8 +33,6 @@ import getAvailableLocales from "@utils/getAvailableLocales";
 export async function getStaticPaths() {
   const {
     i18NLocales,
-    ariaLabelRecurringElement,
-    recurringElement,
     blogs,
     howTos,
     recipes,
@@ -166,8 +164,6 @@ export async function getStaticPaths() {
             alternateURLs,
             availableLocales,
           },
-          recurData: recurringElement.data.attributes,
-          ariaLabelRecurData: ariaLabelRecurringElement.data.attributes,
         },
       };
     });
@@ -383,18 +379,8 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
       page.locale = page.locale.substring(0, 2);
 
       const { Meta: meta, locale, alternateURLs, availableLocales } = page,
-        recurData =
-          locale === "en"
-            ? Astro.props.recurData
-            : Astro.props.recurData.localizations.data.find(
-                ({ attributes }) => attributes.locale.substring(0, 2) === locale
-              ).attributes,
-        ariaLabelRecurData =
-          locale === "en"
-            ? Astro.props.ariaLabelRecurData
-            : Astro.props.ariaLabelRecurData.localizations.data.find(
-                ({ attributes }) => attributes.locale.substring(0, 2) === locale
-              ).attributes;
+        recurData = CMS.get("recurringElement", locale),
+        ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 
       const Layout =
         page.type === "cart"

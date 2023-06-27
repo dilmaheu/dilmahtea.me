@@ -138,7 +138,7 @@ fragment RecipeAttributes on Recipe {
 }
 
 query {
-  recipes {
+  recipes(locale: "all") {
     data {
       id
       attributes {
@@ -146,9 +146,6 @@ query {
         localizations(filters: { publishedAt: { ne: null } }) {
           data {
             id
-            attributes {
-              ...RecipeAttributes
-            }
           }
         }
       }

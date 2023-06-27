@@ -41,7 +41,7 @@ fragment ProductSizeAttributes on ProductSize {
 }
 
 query {
-  productSizes(sort: "rank:asc") {
+  productSizes(locale: "all", sort: "rank:asc") {
     data {
       id
       attributes {
@@ -49,9 +49,6 @@ query {
         localizations(filters: { publishedAt: { ne: null } }) {
           data {
             id
-            attributes {
-              ...ProductSizeAttributes
-            }
           }
         }
       }
