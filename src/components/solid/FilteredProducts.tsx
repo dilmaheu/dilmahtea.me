@@ -149,43 +149,46 @@ export default function FilteredProducts({
                 class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
               />
 
-              {product.Stock_amount < 1 && (
-                <div class="mt-[25px]">
-                  <div class="flex flex-wrap gap-x-2.5">
-                    <div class="relative flex">
-                      {product.availableFormatThumbnails.map(({ src, alt }) => (
-                        <img
-                          src={src}
-                          alt={alt}
-                          class="w-[26px] h-[26px] border-2 border-primary rounded-full -ml-[16.5px] first:ml-0"
-                        />
-                      ))}
+              {product.Stock_amount < 1 &&
+                product.availableFormatsCount > 0 && (
+                  <div class="mt-[25px]">
+                    <div class="flex flex-wrap gap-x-2.5">
+                      <div class="relative flex">
+                        {product.availableFormatThumbnails.map(
+                          ({ src, alt }) => (
+                            <img
+                              src={src}
+                              alt={alt}
+                              class="w-[26px] h-[26px] border-2 border-primary rounded-full -ml-[16.5px] first:ml-0"
+                            />
+                          )
+                        )}
 
-                      {product.availableFormatsCount > 2 && (
-                        <div
-                          class={[
-                            "relative -ml-[17px] flex items-center justify-center bg-secondary-light",
-                            "w-[26px] h-[26px] border-2 rounded-full text-sm text-primary leading-[150%]",
-                          ].join(" ")}
-                        >
-                          +{product.availableFormatsCount - 2}
-                        </div>
-                      )}
-                    </div>
+                        {product.availableFormatsCount > 2 && (
+                          <div
+                            class={[
+                              "relative -ml-[17px] flex items-center justify-center bg-secondary-light",
+                              "w-[26px] h-[26px] border-2 rounded-full text-sm text-primary leading-[150%]",
+                            ].join(" ")}
+                          >
+                            +{product.availableFormatsCount - 2}
+                          </div>
+                        )}
+                      </div>
 
-                    <div class="text-white">
-                      <em>
-                        {product.availableFormatsCount === 1
-                          ? recurData.Product_stock_other_formats_text_singular
-                          : recurData.Product_stock_other_formats_text.replace(
-                              "<count>",
-                              product.availableFormatsCount
-                            )}
-                      </em>
+                      <div class="text-white">
+                        <em>
+                          {product.availableFormatsCount === 1
+                            ? recurData.Product_stock_other_formats_text_singular
+                            : recurData.Product_stock_other_formats_text.replace(
+                                "<count>",
+                                product.availableFormatsCount
+                              )}
+                        </em>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           </div>
         )}
