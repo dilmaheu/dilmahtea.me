@@ -41,12 +41,12 @@ const { footerText, recurData } = Astro.props as Props,
     nav {
       h2 {
         @apply text-[clamp(0.875rem,1.5vw+0.1rem,1.125rem)]
-          font-bold leading-[130%] md:leading-[150%];
+          font-bold leading-[130%] sm:leading-[150%];
       }
 
       ul li {
         @apply text-[clamp(0.75rem,1.5vw+0.1rem,1rem)] 
-          font-medium leading-[130%] md:leading-[150%];
+          md:font-medium sm:leading-[150%] py-[15px] sm:py-0;
       }
 
       .footer-icon-container {
@@ -69,7 +69,7 @@ const { footerText, recurData } = Astro.props as Props,
   }
 </style>
 
-<footer class="relative w-full mt-auto">
+<footer class="relative w-full mt-auto bg-secondary">
   <ClipPathSVG
     id="footer-curve"
     path="M0 1V0h.918S.98.021.989.129c.01.12-.003.243-.007.367C.979.593 1.01.827.997 1"
@@ -113,22 +113,23 @@ const { footerText, recurData } = Astro.props as Props,
       <nav
         class:list={[
           "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
-          "xl:lg:grid-cols-5 gap-[25px]",
+          "xl:grid-cols-5 gap-[30px]",
         ]}
       >
         {
           menu.map(({ Heading_name, Menu }) => (
-            <div class="flex flex-col gap-2 md:gap-3">
+            <div class="flex flex-col gap-2 sm:gap-3">
               <h2>{Heading_name}</h2>
+              <span class="block sm:hidden w-[85px] h-[1px] bg-secondary/60" />
 
-              <ul class="grid gap-[5px]">
+              <ul class="grid sm:gap-[15px]">
                 {Menu.map(
                   ({ Visibility, Title, Link, Icon: { data: icon } }) =>
                     Visibility && (
                       <li class="flex items-center">
                         <a
                           href={Link}
-                          class="flex flex-wrap gap-[5px] md:gap-2.5"
+                          class="flex flex-wrap items-center gap-[5px] sm:gap-2.5"
                         >
                           {icon && (
                             <div class="footer-icon-container h-full">

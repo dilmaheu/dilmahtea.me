@@ -18,13 +18,21 @@ interface Props {
   locale: string;
   recurData: Record<string, any>;
   metaImageSrc: string;
+  alternateURLs: { [locale: string]: string };
   availableLocales: string[];
 }
 
 const { green_cup } = RecurringImages;
 
-const { page, meta, locale, recurData, availableLocales, metaImageSrc } =
-  Astro.props;
+const {
+  page,
+  meta,
+  locale,
+  recurData,
+  alternateURLs,
+  availableLocales,
+  metaImageSrc,
+} = Astro.props;
 
 const footerText = recurData.Footer_text.replaceAll(
   "<current_year>",
@@ -40,6 +48,9 @@ const EnvironmentalAdvocacyImage =
   ).attributes.featured_blob.data.attributes;
 
 const { Nav_menu: menu } = recurData;
+
+const bestWayToMakeCompostLink = CMS.get("howTos", locale)[0].attributes.Meta
+  .URL_slug;
 ---
 
 <style lang="scss">
@@ -168,7 +179,7 @@ const { Nav_menu: menu } = recurData;
   page={page}
   meta={meta}
   locale={locale}
-  availableLocales={availableLocales}
+  alternateURLs={alternateURLs}
   metaImageSrc={metaImageSrc}
 >
   <Navbar
@@ -247,7 +258,7 @@ const { Nav_menu: menu } = recurData;
             </div>
 
             <a
-              href="/en/best-way-to-make-compost/"
+              href={bestWayToMakeCompostLink}
               class:list={[
                 "w-fit px-16 py-4 sm:px-18 sm:py-[18px]",
                 "font-bold leading-[115%] text-white bg-primary rounded-full",

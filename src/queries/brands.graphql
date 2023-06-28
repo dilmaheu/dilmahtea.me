@@ -1,18 +1,16 @@
-fragment I18NAttributes on I18N {
-  code
-  locale
-  language
-}
-
-query {
-  i18Ns(locale: "all") {
+{
+  brands(locale: "all") {
     data {
       id
       attributes {
-        ...I18NAttributes
+        locale
+        Brand_name
         localizations {
           data {
             id
+            attributes {
+              locale
+            }
           }
         }
       }

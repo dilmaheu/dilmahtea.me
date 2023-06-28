@@ -11,29 +11,68 @@ const categories = CMS.get("productCategories", locale);
 ---
 
 <style lang="scss">
-  .category-container {
-    @apply grid sm:grid-cols-[repeat(auto-fill,minmax(300px,2fr))] 
-      md:grid-cols-2 gap-y-[30px] gap-x-[30px] mt-[30px] overflow-hidden;
+  @use "src/styles/poly-fluid" as *;
 
-    .category-content-container {
-      @apply relative flex flex-nowrap w-full h-[clamp(110px,12vw+8px,170px)] cursor-pointer;
+  .product-category-container {
+    gap: poly-fluid-clamp(
+      (
+        768px: 15px,
+        1440px: 50px,
+      )
+    );
 
-      @media (max-width: 320px) {
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(
+        auto-fit,
+        minmax(160px, min(calc(15vw + 46px), 260px))
+      );
+    }
+
+    .product-category-card {
+      @apply relative sm:pr-3 lg:pr-5 w-full h-[110px] sm:h-full
+        bg-primary sm:bg-transparent text-center;
+
+      clip-path: url(#product-category-card-curve-sm);
+
+      @media (min-width: 640px) {
+        clip-path: none;
+      }
+    }
+
+    .product-category-content-container {
+      @apply flex w-full h-full;
+
+      @media (min-width: 350px) {
+        @apply h-[110px];
+      }
+
+      @media (min-width: 640px) {
         @apply h-full;
       }
     }
 
-    .category-txt-container {
-      @apply flex grow items-center px-[25px] py-[15px];
+    .product-category-img-container {
+      @apply sm:aspect-[1/1] w-1/3 block;
 
-      @media (max-width: 320px) {
-        @apply w-3/5;
+      @media (min-width: 350px) {
+        @apply w-auto;
+      }
+
+      @media (min-width: 640px) {
+        @apply w-full;
+
+        clip-path: url(#product-category-card-curve);
       }
     }
 
-    .category-img-container {
-      @media (max-width: 320px) {
-        @apply w-2/5;
+    .product-category-txt-container {
+      @apply flex grow items-center sm:absolute sm:bottom-[10%]
+         lg:bottom-[12%] sm:pl-[11%] w-auto sm:w-full overflow-hidden;
+
+      h3 {
+        @apply text-[2rem] sm:text-[clamp(1rem,2vw+0.1rem,2.125rem)]
+          font-semibold leading-[110%] text-white sm:text-center 
+          sm:bg-primary w-full rounded-[9px] p-2.5 md:p-[12px];
       }
     }
   }
@@ -43,48 +82,58 @@ const categories = CMS.get("productCategories", locale);
 <section class="wrapper overflow-hidden">
   <ClipPathSVG
     id="product-category-card-curve"
+    path="M0.45,0.003 C0.756,-0.014,0.9,0.036,0.972,0.287 c0.06,0.212,0.023,0.596,-0.1,0.655 c-0.148,0.071,-0.634,0.084,-0.773,0 C-0.046,0.855,0.001,0.372,0.036,0.225 C0.089,0.003,0.184,0.018,0.45,0.003"
+  />
+
+  <ClipPathSVG
+    id="product-category-card-curve-sm"
     path="M0.547,0.01 c0.072,0.003,0.13,0,0.167,0 c0.315,0,0.282,0.03,0.282,0.467 s0.052,0.518,-0.264,0.518 c-0.105,0,-0.154,0,-0.174,-0.001 l-0.011,0.001 h-0.001 c-0.199,0.01,-0.401,0.008,-0.47,-0.037 C-0.013,0.898,0.003,0.642,0.003,0.487 c0,-0.216,-0.034,-0.411,0.14,-0.459 C0.305,-0.018,0.435,0.005,0.547,0.01"
   />
 
-  <h2
-    id={title.toLowerCase().replaceAll(" ", "-")}
-    class="heading-secondary font-semibold leading-[130%] text-black"
-  >
-    {title}
-  </h2>
+  {
+    title && (
+      <h2
+        id={title.toLowerCase().replaceAll(" ", "-")}
+        class:list={[
+          "heading-secondary font-semibold leading-[130%]",
+          "text-black mb-[25px] sm:mb-[30px]",
+        ]}
+      >
+        {title}
+      </h2>
+    )
+  }
 
-  <div class="category-container overflow-hidden">
+  <div
+    class:list={[
+      "product-category-container grid overflow-hidden",
+      categories.length > 3 && "sm:justify-between",
+    ]}
+  >
     {
       categories.map(({ attributes: { Title, Intro_blob, Meta } }) => (
-        <div
-          class="bg-primary text-center"
-          style="clip-path: url(#product-category-card-curve)"
-        >
-          <a href={Meta.URL_slug}>
-            <div class="category-content-container">
-              <div class="category-img-container overflow-hidden">
-                <div class="category-img w-auto h-full aspect-[6/5] block">
-                  <Picture
-                    layout="fullWidth"
-                    src={ASSETS_URL + Intro_blob.data.attributes.url}
-                    alt={Intro_blob.data.attributes.alternativeText}
-                    sizes="calc(clamp(110px, 12vw + 8px, 170px) * 6/5)"
-                    attributes={{
-                      img: { style: "aspect-ratio: 6 / 5;" },
-                    }}
-                  />
-                </div>
+        <div class="product-category-card">
+          <a href={Meta.URL_slug} class="w-full">
+            <div class="product-category-content-container">
+              <div class="product-category-img-container overflow-hidden">
+                <Picture
+                  layout="fill"
+                  src={ASSETS_URL + Intro_blob.data.attributes.url}
+                  alt={Intro_blob.data.attributes.alternativeText}
+                  sizes={[
+                    "(min-width: 1024px) calc(clamp(160px, calc(15vw + 46px), 260px) - 1.25rem)",
+                    "(min-width: 640px) calc(clamp(160px, calc(15vw + 46px), 260px) - 0.75rem)",
+                    "(min-width: 350px) 132px",
+                    "30vw",
+                  ].join(", ")}
+                  attributes={{
+                    img: { style: "aspect-ratio: 6 / 5;" },
+                  }}
+                />
               </div>
 
-              <div class="category-txt-container">
-                <h3
-                  class:list={[
-                    "recoleta text-[clamp(2rem,3vw+0.55rem,2.625rem)]",
-                    "font-semibold leading-[120%] text-white",
-                  ]}
-                >
-                  {Title}
-                </h3>
+              <div class="product-category-txt-container">
+                <h3 class="recoleta">{Title}</h3>
               </div>
             </div>
           </a>

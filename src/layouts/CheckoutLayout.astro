@@ -13,10 +13,10 @@ interface Props {
   locale: string;
   recurData: Record<string, any>;
   metaImageSrc: string;
-  availableLocales: string[];
+  alternateURLs: { [locale: string]: string };
 }
 
-const { page, meta, locale, availableLocales, metaImageSrc } =
+const { page, meta, locale, alternateURLs, metaImageSrc } =
   Astro.props as Props;
 
 const checkoutStepOrder = page.checkout_step_order,
@@ -87,7 +87,7 @@ const checkoutStepOrder = page.checkout_step_order,
   page={page}
   meta={meta}
   locale={locale}
-  availableLocales={availableLocales}
+  alternateURLs={alternateURLs}
   metaImageSrc={metaImageSrc}
 >
   <script is:inline>

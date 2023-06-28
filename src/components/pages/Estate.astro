@@ -7,16 +7,17 @@ import ClippedPicture from "@components/ClippedPicture.astro";
 import KindnessImpact from "@components/KindnessImpact.astro";
 import EstatesInfoSection from "@components/EstatesInfoSection.astro";
 
-import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+import SecondaryPageLayout from "@layouts/SecondaryPageLayout.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
 const { left_quote } = RecurringImages;
 
-const { page, recurData, ariaLabelRecurData } = Astro.props,
-  headingName = recurData.text_explore_the_world_of_kindnes,
-  { posts, locale } = page,
+const { page } = Astro.props,
+  { posts, locale, blogs } = page,
   { ASSETS_URL } = import.meta.env;
+
+const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
 ---
 
 <style lang="scss">
@@ -100,21 +101,8 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   }
 </style>
 
-<PostDetailsLayout
-  {page}
-  {recurData}
-  {ariaLabelRecurData}
-  {headingName}
-  plainTitle="plainTitle"
-  nonBlog="nonBlog"
-  type="section"
->
-  {/* Home Estate Details Section */}
-  <div
-    slot="product-page-sections"
-    role="main"
-    class="grid gap-[50px] my-[50px]"
-  >
+<SecondaryPageLayout {page} {relatedPosts} plainTitle={true}>
+  <div role="main" class="grid gap-[50px] my-[50px]">
     <div
       class="wrapper flex flex-wrap justify-between items-center gap-y-[15px]"
     >
@@ -335,4 +323,4 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
       impacts={page.Impacts}
     />
   </div>
-</PostDetailsLayout>
+</SecondaryPageLayout>

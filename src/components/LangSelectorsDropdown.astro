@@ -2,6 +2,11 @@
 import CMS from "@store/CMS";
 import getLocalesData from "@utils/getLocalesData";
 
+declare interface Props {
+  docLocale: string;
+  availableLocales: string[];
+}
+
 const { docLocale, availableLocales } = Astro.props,
   { locales, languages, localeNamesData } = getLocalesData(),
   docLang = languages[locales.indexOf(docLocale)],
@@ -84,7 +89,7 @@ langSelectorsData.unshift(langSelectorsData.splice(currentLangIndex, 1)[0]);
         @apply border-t-2 rounded-t-[25px];
       }
 
-      &:last-child {
+      &:last-child:not(:first-child) {
         @apply border-b-2 rounded-b-[25px];
       }
     }
@@ -183,17 +188,7 @@ langSelectorsData.unshift(langSelectorsData.splice(currentLangIndex, 1)[0]);
 
       const { value: newLocale } = langSelector.dataset;
 
-      // change & redirect to preferred locale
-      localStorage.setItem(`locale`, newLocale);
-
-      const pathnameRegex = new RegExp(
-        `^(/+)(${document.documentElement.lang}(/|$))?`
-      );
-
-      location.pathname = location.pathname.replace(
-        pathnameRegex,
-        (_, p1, p2, p3) => p1 + newLocale + (p2 ? p3 : "/")
-      );
+      location.pathname = window.alternateURLs[newLocale];
 
       // const currentLangSelectors = Array.from(
       //   langSelector.parentElement

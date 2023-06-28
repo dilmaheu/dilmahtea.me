@@ -25,7 +25,7 @@ const { ASSETS_URL } = import.meta.env;
   }
 
   {
-    page.Block_text && page.Block_blob.data === null && (
+    page.Block_text && !page.Block_blob.data && (
       // Text content
       <div class="wrapper w-full h-full p-6 sm:px-0 sm:py-12">
         <BasicPageInfoSectionTextContent page={page} />
@@ -34,7 +34,7 @@ const { ASSETS_URL } = import.meta.env;
   }
 
   {
-    page.Block_blob.data !== null && (
+    page.Block_blob.data && (
       <Fragment>
         {/* Information Section */}
         <section class="relative overflow-hidden h-full sm:h-[clamp(550px,22vw+420px,820px)]">

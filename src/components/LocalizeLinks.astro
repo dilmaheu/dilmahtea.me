@@ -22,18 +22,21 @@ documentLinks.forEach((link) => {
 
     // check if link is internal
     if (url.origin === origin) {
-      const href = url.href.replace(origin, ""),
+      const { pathname } = url,
+        href = url.href.replace(origin, ""),
         localizedLinkRegex = new RegExp(
           `^/(${locales.map((locale) => locale).join("|")})/`
         );
 
-      // check if link is already localized
-      if (localizedLinkRegex.test(href)) {
-        link.href = href;
-      } else {
+      const hrefWithTrailingSlash = href.replace(
+        pathname,
+        pathname.endsWith("/") ? pathname : pathname + "/"
+      );
+
+      link.href =
         // localize unlocalized link
-        link.href = "/" + locale + href;
-      }
+        (!localizedLinkRegex.test(pathname) ? "/" + locale : "") +
+        hrefWithTrailingSlash;
     }
   }
 });

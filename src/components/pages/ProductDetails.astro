@@ -437,7 +437,7 @@ if (stockAmount === 0) {
         }
       </div>
       {
-        stockAmount < 1 && (
+        stockAmount < 1 && page.In_stock_date && (
           <div
             class:list={[
               "flex items-center gap-2.5 w-full",
@@ -448,12 +448,14 @@ if (stockAmount === 0) {
               name="mdi:alert-circle"
               class="inline-flex w-[26px] p-0.5 bg-warning text-white rounded-full select-none"
             />
-            {recurData.Item_stock_text}
-            {new Date(page.In_stock_date).toLocaleString("en-GB", {
-              year: "2-digit",
-              month: "short",
-              day: "numeric",
-            })}
+            {recurData.Item_stock_text.replace(
+              "<in_stock_date>",
+              new Date(page.In_stock_date).toLocaleString("en-GB", {
+                year: "2-digit",
+                month: "short",
+                day: "numeric",
+              })
+            )}
           </div>
         )
       }
@@ -972,9 +974,7 @@ if (stockAmount === 0) {
     },
     offers: {
       "@type": "Offer",
-      url: `${Astro.site.origin}/${page.locale}/${
-        page.Meta.URL_slug === "/" ? "" : page.Meta.URL_slug
-      }/`,
+      url: Astro.site.origin + Astro.url.pathname + "/",
       itemCondition: "https://schema.org/NewCondition",
       availability: "https://schema.org/InStock",
       price: page.Price,

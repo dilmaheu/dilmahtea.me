@@ -85,9 +85,7 @@ const cookingTimeString = getTimeString(cookingTime),
   totalTimeString = getTimeString(totalTime),
   totalTimeStringSm = getTimeString(totalTime, true);
 
-const pageURL = `${Astro.site.origin}/${page.locale}/${
-  page.Meta.URL_slug === "/" ? "" : page.Meta.URL_slug
-}/`;
+const pageURL = Astro.site.origin + Astro.url.pathname + "/";
 
 interface Nutrition {
   "@type": "NutritionInformation";
@@ -478,9 +476,7 @@ const nutrition: Nutrition = {
                   <span class="mr-1">:</span>
 
                   <div>
-                    {item.Nutrition_amount !== null
-                      ? item.Nutrition_amount
-                      : "0"}
+                    {item.Nutrition_amount ? item.Nutrition_amount : "0"}
                     {item.Nutrition_measurements_unit}
                   </div>
                 </div>

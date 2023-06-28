@@ -7,6 +7,16 @@ import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 const { page, recurData } = Astro.props,
   { locale } = page,
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+
+const checkoutInfoLink = `/${locale}/${
+    CMS.get("checkoutInformation", locale).Meta.URL_slug
+  }/`,
+  checkoutSuccessLink = `/${locale}/${
+    CMS.get("checkoutSuccess", locale).Meta.URL_slug
+  }/`,
+  checkoutKindnessLink = `/${locale}/${
+    CMS.get("checkoutKindness", locale).Meta.URL_slug
+  }/`;
 ---
 
 <style lang="scss">
@@ -111,14 +121,22 @@ const { page, recurData } = Astro.props,
   }
 </style>
 
-<script define:vars={{ companyName: recurData.Company_name }}>
+<script
+  define:vars={{
+    companyName: recurData.Company_name,
+    checkoutInfoLink,
+    checkoutSuccessLink,
+    checkoutKindnessLink,
+  }}
+>
   if (Object.keys(window.checkoutInfo).length === 0) {
-    location.href = "/" + window.preferredLocale + "/checkout/information";
+    location.href = checkoutInfoLink;
   } else if (!window.checkoutInfo.kindness_cause) {
-    location.href = "/" + window.preferredLocale + "/checkout/kindness";
+    location.href = checkoutKindnessLink;
   }
 
   window.companyName = companyName;
+  window.checkoutSuccessLink = checkoutSuccessLink;
 </script>
 
 <section class="w-full lg:w-[66.67%]">
@@ -154,7 +172,7 @@ const { page, recurData } = Astro.props,
           payment_type: "ecommerce",
           locale: window.preferredLocale,
           origin_url: origin + pathname,
-          success_url: `${origin}/${window.preferredLocale}/checkout/success?clear=cart`,
+          success_url: `${origin}/${window.checkoutSuccessLink}?clear=cart`,
         };
 
         delete paymentInfo.delivery_address;
@@ -186,10 +204,8 @@ const { page, recurData } = Astro.props,
           </p>
 
           <a
-            aria-label={page.Aria_label_change_text +
-              ` ` +
-              page.Aria_label_email_address_text}
-            href="/checkout/information?change=email"
+            aria-label={`${page.Aria_label_change_text} ${page.Aria_label_email_address_text}`}
+            href={checkoutInfoLink + "?change=email"}
           >
             {page.text_change}
           </a>
@@ -211,10 +227,8 @@ const { page, recurData } = Astro.props,
           </p>
 
           <a
-            aria-label={page.Aria_label_change_text +
-              " " +
-              page.Aria_label_delivery_address_text}
-            href="/checkout/information?change=street"
+            aria-label={`${page.Aria_label_change_text} ${page.Aria_label_delivery_address_text}`}
+            href={checkoutInfoLink + "?change=street"}
           >
             {page.text_change}
           </a>
@@ -287,7 +301,7 @@ const { page, recurData } = Astro.props,
         {checkoutRecurData.text_continue_to_payment}
       </button>
 
-      <a href="/checkout/information" class="text-primary font-bold">
+      <a href={checkoutInfoLink} class="text-primary font-bold">
         {checkoutRecurData.text_return_to_information}
       </a>
     </div>

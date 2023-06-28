@@ -8,7 +8,7 @@ body {
   // center horizontally when position is fixed
   left: max(0px, calc((100% - 2050px) / 2));
 
-  @apply bg-secondary text-secondary mx-auto max-w-[2050px] overflow-x-hidden;
+  @apply h-full bg-secondary text-secondary mx-auto max-w-[2050px] overflow-x-hidden;
 }
 
 .icon {
@@ -31,6 +31,34 @@ body {
 
 .heading-inline-icon {
   height: clamp(27px, 3.5vw + 6px, 42px);
+}
+
+.prose-text,
+.hero-text {
+  picture {
+    clip-path: url(#content-images-curve);
+  }
+
+  p,
+  ol,
+  ul,
+  p s,
+  blockquote p {
+    a {
+      @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat hover:brightness-95 transition-all;
+
+      background-size: 100% 45%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='${color('#b3cccc').toHex()}'/%3E%3C/svg%3E");
+    }
+  }
+}
+
+.hero-text {
+  a {
+    @apply text-white;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='${color('#474747').toHex()}'/%3E%3C/svg%3E");
+  }
 }
 
 .content-text {

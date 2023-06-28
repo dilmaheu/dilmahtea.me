@@ -2,64 +2,55 @@
 import CMS from "@store/CMS";
 import BasicPage from "@pages/BasicPage.astro";
 import PageLayout from "@layouts/PageLayout.astro";
-import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
+import getAvailableLocales from "@utils/getAvailableLocales";
 
-// fetching the error page
-const basicPagesData = CMS.get("basicPages"),
-  // saving it's page attributes like meta and other components
-  requestPath = Astro.url.pathname,
-  { ASSETS_URL } = import.meta.env;
+const requestPath = Astro.url.pathname,
+  { ASSETS_URL } = import.meta.env,
+  basicPagesData = CMS.get("basicPages");
+
+const { attributes: _404Page } = basicPagesData.data.find(
+    ({ attributes }) => attributes.Meta.URL_slug === "404"
+  ),
+  flattened404Pages = [
+    _404Page,
+    ..._404Page.localizations.data.map(({ attributes }) => attributes),
+  ];
+
+const [availableLocales, availableLocalesRecord] =
+  getAvailableLocales(flattened404Pages);
 
 let [, locale] = requestPath.match(/^\/([a-z]{2})\//) ?? [];
 
-let recurringElements = CMS.get("recurringElement").data.attributes,
-  { attributes: _404Page } = basicPagesData.data.find(
-    ({ attributes }) => attributes.Meta.URL_slug === "404"
+if (!availableLocales.includes(locale)) locale = "en";
+
+const recurringElements = CMS.get("recurringElement", locale),
+  localized404Page = flattened404Pages.find(
+    (attributes) => attributes.locale.substring(0, 2) === locale
   );
 
-const availableLocales = [
-  "en",
-  ..._404Page.localizations.data.map(({ attributes }) =>
-    attributes.locale.substring(0, 2)
-  ),
-];
-
-if (!(locale && availableLocales.includes(locale))) locale = "en";
-
-if (locale !== "en") {
-  _404Page = _404Page.localizations.data.find(
-    ({ attributes }) => attributes.locale.substring(0, 2) === locale
-  ).attributes;
-
-  recurringElements = {
-    // localize recurring elements
-    ...recurringElements.localizations.data.find(
-      ({ attributes }) => attributes.locale.substring(0, 2) === locale
-    ).attributes,
-  };
-}
+const alternateURLs = Object.fromEntries(
+  Object.entries(availableLocalesRecord).filter((entry) => entry[0] !== locale)
+);
 ---
 
-<SetPreferredLocale />
-
 <script is:inline define:vars={{ availableLocales }}>
+  const preferredLocale = localStorage.getItem("locale");
+
   const localeRegex = new RegExp(
     `^/(${availableLocales.map((locale) => locale).join("|")})/`
   );
 
   let [, locale] = location.pathname.match(localeRegex) ?? [];
 
-  if (!locale && window.preferredLocale !== "en") {
-    location.pathname = location.pathname.replace(
-      "/",
-      `/${window.preferredLocale}/`
-    );
+  if (!locale && preferredLocale !== "en") {
+    location.pathname = location.pathname.replace("/", `/${preferredLocale}/`);
   }
 </script>
 
 <PageLayout
-  page={_404Page}
+  page={localized404Page}
   locale={locale}
+  alternateURLs={alternateURLs}
   availableLocales={availableLocales}
   meta={_404Page.Meta}
   recurData={recurringElements}
@@ -67,5 +58,5 @@ if (locale !== "en") {
     (_404Page.Block_blob?.data?.url ||
       recurringElements.OpenGraph_default.data.attributes.url)}
 >
-  <BasicPage page={_404Page} />
+  <BasicPage page={localized404Page} />
 </PageLayout>

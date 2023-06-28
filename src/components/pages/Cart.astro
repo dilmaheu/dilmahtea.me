@@ -17,14 +17,23 @@ interface Props {
   locale: string;
   recurData: Record<string, any>;
   metaImageSrc: string;
+  alternateURLs: { [locale: string]: string };
   availableLocales: string[];
 }
 
-const { page, meta, locale, recurData, availableLocales, metaImageSrc } =
-  Astro.props;
+const {
+  page,
+  meta,
+  locale,
+  recurData,
+  alternateURLs,
+  availableLocales,
+  metaImageSrc,
+} = Astro.props;
 
 const checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
-  ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
+  ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale),
+  checkoutInfoLink = CMS.get("checkoutInformation", locale).Meta.URL_slug;
 
 const footerText = recurData.Footer_text.replaceAll(
   "<current_year>",
@@ -159,7 +168,7 @@ const footerText = recurData.Footer_text.replaceAll(
   page={page}
   meta={meta}
   locale={locale}
-  availableLocales={availableLocales}
+  alternateURLs={alternateURLs}
   metaImageSrc={metaImageSrc}
 >
   <Navbar
@@ -310,7 +319,7 @@ const footerText = recurData.Footer_text.replaceAll(
         </div>
 
         <a
-          href="/checkout/information"
+          href={checkoutInfoLink}
           class="self-end px-32 py-3 bg-primary font-bold text-secondary rounded-full"
         >
           {page.text_go_to_checkout}

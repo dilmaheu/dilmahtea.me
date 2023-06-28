@@ -72,7 +72,7 @@ fragment ProductCategoryAttributes on ProductCategory {
 }
 
 query {
-  productCategories {
+  productCategories(locale: "all") {
     data {
       id
       attributes {
@@ -80,9 +80,6 @@ query {
         localizations(filters: { publishedAt: { ne: null } }) {
           data {
             id
-            attributes {
-              ...ProductCategoryAttributes
-            }
           }
         }
       }

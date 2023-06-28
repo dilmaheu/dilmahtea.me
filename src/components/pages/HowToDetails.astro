@@ -9,9 +9,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_practices;
 
 const { ASSETS_URL } = import.meta.env,
-  pageURL = `${Astro.site.origin}/${page.locale}/${
-    page.Meta.URL_slug === "/" ? "" : page.Meta.URL_slug
-  }/`;
+  pageURL = Astro.site.origin + Astro.url.pathname + "/";
 ---
 
 <style lang="scss">
@@ -124,7 +122,7 @@ const { ASSETS_URL } = import.meta.env,
                 <Markdown>{step.Step_text}</Markdown>
               </div>
 
-              {step.Step_blob.data !== null && (
+              {step.Step_blob.data && (
                 <Picture
                   layout="fill"
                   alt={step.Step_blob.data.attributes.alternativeText}

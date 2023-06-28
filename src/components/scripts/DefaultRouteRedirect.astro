@@ -1,9 +1,18 @@
 ---
 import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
+
+declare interface Props {
+  availableLocalesRecord: Record<string, string>;
+}
+
+const { availableLocalesRecord } = Astro.props as Props;
 ---
 
 <SetPreferredLocale />
 
-<script is:inline>
-  location.href = location.pathname.replace("/", `/${window.preferredLocale}/`);
+<script define:vars={{ availableLocalesRecord }}>
+  location.pathname = (
+    availableLocalesRecord[window.preferredLocale] ||
+    Object.values(availableLocalesRecord)[0]
+  ).slice(0, location.pathname.endsWith("/") ? undefined : -1);
 </script>
