@@ -1,13 +1,9 @@
 import fs from "fs";
-import { globby } from "globby";
 import printMessage from "@utils/printMessage";
 
-import.meta.glob("../queries/*.graphql", { as: "raw" }); // just to trigger hmr for graphql queries
-
-const queryPaths = await globby("./src/queries/*.graphql"),
-  queries = await Promise.all(
-    queryPaths.map((path) => fs.promises.readFile(path, "utf8"))
-  );
+const queries = Object.values(
+  await import.meta.glob("../queries/*.graphql", { as: "raw", eager: true })
+);
 
 const queryRegex = /((?<=^\s*){|(?<=\s+)query\s+{)(.*)}\s*$/s;
 
