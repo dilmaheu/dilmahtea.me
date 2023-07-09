@@ -71,7 +71,7 @@ export default function FilteredProducts({
     <div
       role="list"
       aria-label={page.Aria_label_all_teas_text}
-      class="wrapper grid sm:grid-cols-2 lg:grid-cols-3 gap-[50px] overflow-hidden"
+      class="wrapper grid grid-cols-2 lg:grid-cols-3 gap-[clamp(15px,calc(5vw-25px),50px)] overflow-hidden"
     >
       <For each={filteredProducts()}>
         {(product, iSignal) => (
@@ -79,7 +79,7 @@ export default function FilteredProducts({
             role="listitem"
             aria-label={page.Aria_label_tea_item_text + (iSignal() + 1)}
             style="clip-path: url(#product-card-curve)"
-            class="product-card link-section flex flex-wrap w-full mx-auto max-w-[380px] sm:max-w-none bg-primary"
+            class="product-card link-section flex flex-wrap w-full mx-auto bg-primary"
           >
             <div class="relative block w-full">
               <div innerHTML={product.Intro_blob_HTML} />
@@ -120,10 +120,12 @@ export default function FilteredProducts({
               )}
             </div>
 
-            <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px] text-white">
+            <div class="pt-2.5 lg:pt-5 pb-[15px] lg:pb-[25px] px-[clamp(15px,calc(4vw-9px),36px)] grid gap-[5px] text-white">
               <div
                 class="product-card-title recoleta font-semibold leading-[120%] md:leading-[110%]"
-                style={{ "font-size": "clamp(1.75rem, 2vw + 0.3rem, 2rem)" }}
+                style={{
+                  "font-size": "clamp(0.875rem, 1.5vw + 0.15rem, 1.5rem)",
+                }}
               >
                 <a
                   aria-label={
@@ -148,47 +150,120 @@ export default function FilteredProducts({
               </div>
 
               <div
-                innerHTML={product.Intro_text_HTML}
-                class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
-              />
+                class="text-white"
+                style={{ "font-size": "clamp(0.75rem, 1.5vw + 0.1rem, 1rem)" }}
+              >
+                {product.Weight_tea + product.Weight_tea_unit}
+                <span class="inline-block w-1 h-1 mx-[5px] mb-0.5 rounded-full bg-secondary" />
+                {product.variant?.data?.attributes.Title}
+              </div>
 
-              {product.Stock_amount < 1 && (
-                <div class="mt-[25px]">
-                  <div class="flex flex-wrap gap-x-2.5">
-                    <div class="relative flex">
-                      {product.availableFormatThumbnails.map(({ src, alt }) => (
-                        <img
-                          src={src}
-                          alt={alt}
-                          class="w-[26px] h-[26px] border-2 border-primary rounded-full -ml-[16.5px] first:ml-0"
-                        />
-                      ))}
+              {product.estate_name?.data.length > 0 && (
+                <div class="flex flex-wrap items-center">
+                  <div class="flex flex-wrap items-center text-base leading-[150%]">
+                    <span>
+                      <img
+                        class="p-[3px] mr-1 icon"
+                        style={{
+                          width: "clamp(1.125rem, 2vw + 0.15rem, 2rem)",
+                          height: "clamp(1.125rem, 2vw + 0.15rem, 2rem)",
+                        }}
+                        {...white_love}
+                      />
 
-                      {product.availableFormatsCount > 2 && (
-                        <div
-                          class={[
-                            "relative -ml-[17px] flex items-center justify-center bg-secondary-light",
-                            "w-[26px] h-[26px] border-2 rounded-full text-sm text-primary leading-[150%]",
-                          ].join(" ")}
-                        >
-                          +{product.availableFormatsCount - 2}
-                        </div>
+                      {recurData.product_made_love_from + `\xa0`}
+                    </span>
+
+                    <div class="flex flex-wrap gap-x-1.5">
+                      {product.estate_name.data.map(
+                        (
+                          {
+                            attributes: {
+                              Estate_name,
+                              Meta: { URL_slug },
+                            },
+                          },
+                          index
+                        ) => (
+                          <a
+                            href={URL_slug}
+                            class="flex flex-wrap font-bold underline decoration-1 underline-offset-[2px]"
+                          >
+                            {Estate_name +
+                              (index === product.estate_name.data.length - 1
+                                ? ""
+                                : ",")}
+                          </a>
+                        )
                       )}
-                    </div>
-
-                    <div class="text-white">
-                      <em>
-                        {product.availableFormatsCount === 1
-                          ? recurData.Product_stock_other_formats_text_singular
-                          : recurData.Product_stock_other_formats_text.replace(
-                              "<count>",
-                              product.availableFormatsCount
-                            )}
-                      </em>
                     </div>
                   </div>
                 </div>
               )}
+
+              {product.Stock_amount > 0 && (
+                <button
+                  class={[
+                    "w-full flex justify-center items-center gap-1 p-1 md:p-2 lg:p-3",
+                    "mt-[clamp(5px,calc(2.23vw-12px),20px)] text-primary font-bold",
+                    "text-xs sm:text-sm md:text-base bg-secondary-light rounded-full",
+                  ].join(" ")}
+                >
+                  {shoppingCartIcon}
+                  {checkoutRecurData.text_add}
+                  <span class="w-1 h-1 bg-primary rounded-full" />
+                  <output class="product-amount-price">
+                    €{" "}
+                    {(
+                      product.Price +
+                      Math.round(Number(product.Price) * 9) / 100
+                    )
+                      .toFixed(2)
+                      .replace(".", ",")}
+                  </output>
+                </button>
+              )}
+
+              {product.Stock_amount < 1 &&
+                product.availableFormatsCount > 0 && (
+                  <div class="mt-[clamp(5px,calc(2.23vw-12px),20px)]">
+                    <div class="flex flex-wrap gap-x-2.5">
+                      <div class="relative flex">
+                        {product.availableFormatThumbnails.map(
+                          ({ src, alt }) => (
+                            <img
+                              src={src}
+                              alt={alt}
+                              class="w-[26px] h-[26px] border-2 border-primary rounded-full -ml-[16.5px] first:ml-0"
+                            />
+                          )
+                        )}
+
+                        {product.availableFormatsCount > 2 && (
+                          <div
+                            class={[
+                              "relative -ml-[17px] flex items-center justify-center bg-secondary-light",
+                              "w-[26px] h-[26px] border-2 rounded-full text-sm text-primary leading-[150%]",
+                            ].join(" ")}
+                          >
+                            +{product.availableFormatsCount - 2}
+                          </div>
+                        )}
+                      </div>
+
+                      <div class="text-white">
+                        <em>
+                          {product.availableFormatsCount === 1
+                            ? recurData.Product_stock_other_formats_text_singular
+                            : recurData.Product_stock_other_formats_text.replace(
+                                "<count>",
+                                product.availableFormatsCount
+                              )}
+                        </em>
+                      </div>
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
         )}
