@@ -16,7 +16,7 @@ import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
-const { white_right_arrow } = RecurringImages;
+const { white_love, white_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
@@ -104,12 +104,22 @@ const productSizes = CMS.get("productSizes"),
           </div>
         </div>
 
-        <FilteredProducts {page} {recurData} {white_right_arrow}>
+        <FilteredProducts
+          {page}
+          {recurData}
           {checkoutRecurData}
+          {white_love}
+          {white_right_arrow}
+        >
           <Icon
             slot="alertCircleIcon"
             name="mdi:alert-circle"
             class="inline-flex p-0.5 w-[26px] text-white bg-warning rounded-full select-none"
+          />
+          <Icon
+            slot="shoppingCartIcon"
+            name="mi:shopping-cart-add"
+            class="hidden sm:inline-flex w-5 h-5"
           />
         </FilteredProducts>
       </section>
