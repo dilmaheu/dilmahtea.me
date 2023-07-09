@@ -23,7 +23,8 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   { locale } = page;
 
 const productSizes = CMS.get("productSizes"),
-  productVariants = CMS.get("productVariants");
+  productVariants = CMS.get("productVariants"),
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style lang="scss">
@@ -104,6 +105,7 @@ const productSizes = CMS.get("productSizes"),
         </div>
 
         <FilteredProducts {page} {recurData} {white_right_arrow}>
+          {checkoutRecurData}
           <Icon
             slot="alertCircleIcon"
             name="mdi:alert-circle"

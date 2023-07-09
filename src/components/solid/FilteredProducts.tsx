@@ -5,6 +5,7 @@ export default function FilteredProducts({
   alertCircleIcon,
   page,
   recurData,
+  checkoutRecurData,
   white_right_arrow,
   category,
   subCategory,
