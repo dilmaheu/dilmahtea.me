@@ -3,9 +3,11 @@ import { createEffect, createSignal, For } from "solid-js";
 
 export default function FilteredProducts({
   alertCircleIcon,
+  shoppingCartIcon,
   page,
   recurData,
   checkoutRecurData,
+  white_love,
   white_right_arrow,
   category,
   subCategory,
