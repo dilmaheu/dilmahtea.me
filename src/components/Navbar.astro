@@ -1,5 +1,5 @@
 ---
-import { Picture, BackgroundPicture } from "astro-imagetools/components";
+import { Picture } from "astro-imagetools/components";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
@@ -269,12 +269,17 @@ const {
                       {text_language}
                     </div>
 
-                    {languageSelectorVisibility && (
-                      <LangSelectorsDropdown
-                        docLocale={docLocale}
-                        availableLocales={availableLocales}
-                      />
-                    )}
+                    {languageSelectorVisibility &&
+                      (availableLocales.length > 1 ? (
+                        <LangSelectorsDropdown
+                          docLocale={docLocale}
+                          availableLocales={availableLocales}
+                        />
+                      ) : (
+                        <p>
+                          <i>{recurData.text_lang_selector_unavailable}</i>
+                        </p>
+                      ))}
                   </div>
 
                   {/* <button
@@ -512,12 +517,17 @@ const {
             </div>
 
             {
-              languageSelectorVisibility && (
-                <LangSelectorsDropdown
-                  docLocale={docLocale}
-                  availableLocales={availableLocales}
-                />
-              )
+              languageSelectorVisibility &&
+                (availableLocales.length > 1 ? (
+                  <LangSelectorsDropdown
+                    docLocale={docLocale}
+                    availableLocales={availableLocales}
+                  />
+                ) : (
+                  <p>
+                    <i>{recurData.text_lang_selector_unavailable}</i>
+                  </p>
+                ))
             }
           </div>
         </div>

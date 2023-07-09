@@ -6,7 +6,7 @@ fragment NotificationAttributes on Notification {
 }
 
 query {
-  notifications {
+  notifications(locale: "all") {
     data {
       id
       attributes {
@@ -14,9 +14,6 @@ query {
         localizations(filters: { publishedAt: { ne: null } }) {
           data {
             id
-            attributes {
-              ...NotificationAttributes
-            }
           }
         }
       }

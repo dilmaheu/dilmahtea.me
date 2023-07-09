@@ -10,41 +10,49 @@ recurData = {
 
 [productSizes, productVariants] = [productSizes, productVariants].map(
   ({ data }, i) => ({
-    data: data.map(({ attributes }) => ({
-      attributes: {
-        Title: attributes.Title,
-        products: {
-          data: attributes.products.data.map(({ attributes }) => ({
-            attributes: {
-              [i === 0 ? "variant" : "size"]: {
-                data: {
-                  attributes: {
-                    Title:
-                      attributes[i === 0 ? "variant" : "size"].data.attributes
-                        .Title,
-                  },
-                },
-              },
-            },
-          })),
-        },
-        localizations: {
-          data: attributes.localizations.data.map(({ attributes }) => ({
-            attributes: {
-              locale: attributes.locale,
-              Title: attributes.Title,
-            },
-          })),
-        },
-      },
-    })),
+    data: data
+      .map(({ attributes }) => {
+        const allVersions = [{ attributes }, ...attributes.localizations.data],
+          localizedTitle = allVersions.find(
+            ({ attributes }) => attributes.locale.substring(0, 2) === locale
+          )?.attributes.Title;
+
+        if (localizedTitle) {
+          const {
+            attributes: { Title, products },
+          } = allVersions.find(({ attributes }) => attributes.locale === "en");
+
+          const availableCombinations = JSON.stringify(
+            Array.from(
+              new Set(
+                products.data.map(
+                  ({ attributes }) =>
+                    attributes[i === 0 ? "variant" : "size"].data.attributes
+                      .Title
+                )
+              )
+            )
+          );
+
+          return {
+            Title,
+            localizedTitle,
+            availableCombinations,
+          };
+        }
+      })
+      .filter(Boolean)
+      .sort((a, b) =>
+        a.localizedTitle.localeCompare(b.localizedTitle, locale, {
+          numeric: true,
+        })
+      ),
   })
 );
 ---
 
 <ProductFiltersForm
   client:load
-  locale={locale}
   productSizes={productSizes}
   productVariants={productVariants}
   recurData={recurData}
