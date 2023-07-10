@@ -8,7 +8,6 @@ export default function FilteredProducts({
   recurData,
   checkoutRecurData,
   white_love,
-  white_right_arrow,
   category,
   subCategory,
 }) {
@@ -138,15 +137,6 @@ export default function FilteredProducts({
                 >
                   {product.Title}
                 </a>
-
-                <span
-                  class="icon product-card-title-icon"
-                  style={{
-                    height: "clamp(0.625rem, 1.5vw + 0.1rem, 1rem)",
-                  }}
-                >
-                  <img class="w-full h-full" {...white_right_arrow} />
-                </span>
               </div>
 
               <div
