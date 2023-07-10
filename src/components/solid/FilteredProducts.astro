@@ -4,8 +4,7 @@ import FilteredProducts from "@solid/FilteredProducts";
 let { page, recurData, checkoutRecurData, white_love, category, subCategory } =
   Astro.props;
 
-const alertCircleIcon = await Astro.slots.render("alertCircleIcon"),
-  shoppingCartIcon = await Astro.slots.render("shoppingCartIcon");
+const alertCircleIcon = await Astro.slots.render("alertCircleIcon");
 
 page = {
   Aria_label_all_teas_text: page.Aria_label_all_teas_text,
@@ -29,7 +28,6 @@ checkoutRecurData = {
 <FilteredProducts
   client:load
   alertCircleIcon={alertCircleIcon}
-  shoppingCartIcon={shoppingCartIcon}
   page={page}
   recurData={recurData}
   checkoutRecurData={checkoutRecurData}
@@ -38,5 +36,4 @@ checkoutRecurData = {
   subCategory={subCategory}
 >
   <slot name="alertCircleIcon" slot="alertCircleIcon" />
-  <slot name="shoppingCartIcon" slot="shoppingCartIcon" />
 </FilteredProducts>
