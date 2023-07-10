@@ -210,14 +210,14 @@ export default function FilteredProducts({
                   </svg>
                   {checkoutRecurData.text_add}
                   <span class="w-1 h-1 bg-primary rounded-full" />
-                  <output class="product-amount-price">
-                    €{" "}
-                    {(
-                      product.Price +
-                      Math.round(Number(product.Price) * 9) / 100
-                    )
-                      .toFixed(2)
-                      .replace(".", ",")}
+                  <output class="product-amount-price recoleta">
+                    {`€` +
+                      (
+                        product.Price +
+                        Math.round(Number(product.Price) * 9) / 100
+                      )
+                        .toFixed(2)
+                        .replace(".", ",")}
                   </output>
                 </button>
               )}
