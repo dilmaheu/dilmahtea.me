@@ -6,13 +6,15 @@ import productsStore, { variantsOrder } from "@store/Products";
 const { ASSETS_URL } = import.meta.env;
 
 async function processProductData(attributes) {
+  if (attributes.In_stock_date) {
+    attributes.In_stock_date = new Date(attributes.In_stock_date);
+  }
+
   const {
     locale,
     Title,
     Intro_text,
     Stock_amount,
-    In_stock_date,
-    Price,
     variant,
     Weight_tea,
     Weight_tea_unit,
@@ -92,6 +94,21 @@ async function processProductData(attributes) {
     }
   }
 
+  // reduce load on client
+  let { In_stock_date, Price } = attributes;
+
+  In_stock_date =
+    In_stock_date &&
+    new Date(In_stock_date).toLocaleString("en-GB", {
+      year: "2-digit",
+      month: "short",
+      day: "numeric",
+    });
+
+  const Tax = Math.round(Number(Price) * 9) / 100;
+
+  Price += Tax;
+
   return {
     Title,
     Intro_blob_HTML,
@@ -99,6 +116,7 @@ async function processProductData(attributes) {
     Stock_amount,
     In_stock_date,
     Price,
+    Tax,
     variant,
     Weight_tea,
     Weight_tea_unit,
