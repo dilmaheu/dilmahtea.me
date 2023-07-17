@@ -40,18 +40,6 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
     @media (min-width: 640px) {
       aspect-ratio: 3 / 1;
     }
-
-    // @media (min-width: 400px) {
-    //   aspect-ratio: 5 / 4;
-    // }
-
-    // @media (min-width: 549px) {
-    //   aspect-ratio: 7 / 3;
-    // }
-
-    // @media (min-width: 700px) {
-    //   aspect-ratio: 3 / 1;
-    // }
   }
 
   .nav-menu-caontainer {
@@ -117,38 +105,19 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
       (headerBackgroundVideo ? (
         async () => {
           const poster = await importRemoteImage(
-              ASSETS_URL + headerBackgroundImg + "?w=1920"
-            ),
-            posterSm = await importRemoteImage(
-              ASSETS_URL +
-                (headerBackgroundImgSm || headerBackgroundImg) +
-                "?w=550"
-            );
+            ASSETS_URL + headerBackgroundImg + "?w=1920"
+          );
 
           return (
-            <>
-              <video
-                class="header-background-video object-cover h-full w-full absolute inset-0"
-                src={ASSETS_URL + headerBackgroundVideo}
-                poster={poster}
-                autoplay
-                preload="metadata"
-                muted
-                loop
-              />
-              {/*<video
-                class="header-background-video-sm object-cover h-full w-full absolute inset-0"
-                src={
-                  ASSETS_URL +
-                  (headerBackgroundVideoSm || headerBackgroundVideo)
-                }
-                poster={posterSm}
-                autoplay
-                preload="metadata"
-                muted
-                loop
-              />*/}
-            </>
+            <video
+              class="header-background-video object-cover h-full w-full absolute inset-0"
+              src={ASSETS_URL + headerBackgroundVideo}
+              poster={poster}
+              autoplay
+              preload="metadata"
+              muted
+              loop
+            />
           );
         }
       ) : (
