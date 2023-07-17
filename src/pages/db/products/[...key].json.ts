@@ -12,7 +12,9 @@ async function processProductData(attributes) {
 
   const {
     locale,
+    SKU,
     Title,
+    names,
     Intro_text,
     Stock_amount,
     variant,
@@ -22,6 +24,10 @@ async function processProductData(attributes) {
     Intro_blob,
     category,
     sub_category,
+    productVariant: tea_variant,
+    productSize: tea_size,
+    availableVariants,
+    availableSizes,
     Meta: { URL_slug },
   } = attributes;
 
@@ -56,16 +62,15 @@ async function processProductData(attributes) {
   if (Stock_amount === 0) {
     const formats = [];
 
-    const availableFormats = [
-      ...attributes.availableVariants,
-      ...attributes.availableSizes,
-    ].filter(({ format, stockAmount }) => {
-      if (formats.includes(format)) return false;
+    const availableFormats = [...availableVariants, ...availableSizes].filter(
+      ({ format, stockAmount }) => {
+        if (formats.includes(format)) return false;
 
-      formats.push(format);
+        formats.push(format);
 
-      return stockAmount;
-    });
+        return stockAmount;
+      }
+    );
 
     availableFormats.sort(
       ({ value: a }, { value: b }) =>
@@ -94,6 +99,10 @@ async function processProductData(attributes) {
     }
   }
 
+  const thumbnail = await importRemoteImage(
+    ASSETS_URL + Intro_blob.data.attributes.formats.thumbnail.url
+  );
+
   // reduce load on client
   let { In_stock_date, Price } = attributes;
 
@@ -110,7 +119,9 @@ async function processProductData(attributes) {
   Price += Tax;
 
   return {
+    SKU,
     Title,
+    names: JSON.stringify(names),
     Intro_blob_HTML,
     Intro_text_HTML,
     Stock_amount,
@@ -121,6 +132,9 @@ async function processProductData(attributes) {
     Weight_tea,
     Weight_tea_unit,
     estate_name,
+    thumbnail,
+    tea_variant,
+    tea_size,
     availableFormatsCount,
     availableFormatThumbnails,
     category: category.data?.attributes.Title,

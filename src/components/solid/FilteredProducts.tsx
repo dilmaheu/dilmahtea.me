@@ -65,6 +65,32 @@ export default function FilteredProducts({
     );
   });
 
+  const addProductToCart = (product) => {
+    const { SKU, names, thumbnail, Price, Tax, tea_variant, tea_size } =
+      product;
+
+    const inCartProduct = window.cart[SKU];
+
+    const quantity = 1 + (inCartProduct?.quantity || 0),
+      price = +(Price * quantity).toFixed(2),
+      tax = +(Tax * quantity).toFixed(2);
+
+    const productData = {
+      sku: SKU,
+      names,
+      image: thumbnail,
+      quantity,
+      price,
+      tax,
+      tea_variant,
+      tea_size,
+    };
+
+    window.cart[SKU] = productData;
+
+    window.openCart();
+  };
+
   return (
     <div
       role="list"
@@ -106,10 +132,7 @@ export default function FilteredProducts({
                         {alertCircleIcon}
                         {recurData.Item_stock_text.replace(
                           "<in_stock_date>",
-                          new Date(product.In_stock_date).toLocaleString(
-                            "en-GB",
-                            { year: "2-digit", month: "short", day: "numeric" }
-                          )
+                          product.In_stock_date
                         )}
                       </div>
                     )
@@ -192,10 +215,11 @@ export default function FilteredProducts({
 
               {product.Stock_amount > 0 && (
                 <button
+                  onClick={() => addProductToCart(product)}
                   class={[
-                    "w-full flex justify-center items-center gap-1 p-1 md:p-2 lg:p-3",
-                    "mt-[clamp(5px,calc(2.23vw-12px),20px)] text-primary font-bold",
-                    "text-xs sm:text-sm md:text-base bg-secondary-light rounded-full",
+                    "unlink w-full flex justify-center items-center gap-1",
+                    "p-1 md:p-2 lg:p-3 mt-[clamp(5px,calc(2.23vw-12px),20px)]",
+                    "text-primary font-bold text-xs sm:text-sm md:text-base bg-secondary-light rounded-full",
                   ].join(" ")}
                 >
                   <svg
@@ -210,15 +234,9 @@ export default function FilteredProducts({
                   </svg>
                   {checkoutRecurData.text_add}
                   <span class="w-1 h-1 bg-primary rounded-full" />
-                  <output class="product-amount-price recoleta">
-                    {`€` +
-                      (
-                        product.Price +
-                        Math.round(Number(product.Price) * 9) / 100
-                      )
-                        .toFixed(2)
-                        .replace(".", ",")}
-                  </output>
+                  <span class="recoleta">
+                    {`€` + product.Price.toFixed(2).replace(".", ",")}
+                  </span>
                 </button>
               )}
 
