@@ -10,7 +10,10 @@ import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 import NotificationsObserver from "@scripts/NotificationsObserver.astro";
 import NotificationAnimations from "@scripts/NotificationAnimations.astro";
 
-import getLangNotAvailableNotification from "@utils/getLangNotAvailableNotification";
+import {
+  Type as notificationType,
+  localizedNotifications,
+} from "@utils/getLangNotAvailableNotification";
 
 interface Props {
   page: Record<string, any>;
@@ -22,9 +25,6 @@ interface Props {
 
 const { page, meta, locale, alternateURLs, metaImageSrc } =
   Astro.props as Props;
-
-const { Type: notificationType, localizedNotifications } =
-  getLangNotAvailableNotification();
 ---
 
 <html lang={locale}>
