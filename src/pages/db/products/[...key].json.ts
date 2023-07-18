@@ -99,8 +99,12 @@ async function processProductData(attributes) {
     }
   }
 
-  const thumbnail = await importRemoteImage(
-    ASSETS_URL + Intro_blob.data.attributes.formats.thumbnail.url
+  const thumbnailUrl =
+    ASSETS_URL + Intro_blob.data.attributes.formats.thumbnail.url;
+
+  const thumbnail = await tryUntilResolve(
+    () => importRemoteImage(thumbnailUrl),
+    (message) => message + " " + thumbnailUrl
   );
 
   // reduce load on client
