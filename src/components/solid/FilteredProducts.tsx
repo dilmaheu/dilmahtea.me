@@ -5,7 +5,8 @@ export default function FilteredProducts({
   alertCircleIcon,
   page,
   recurData,
-  white_right_arrow,
+  checkoutRecurData,
+  white_love,
   category,
   subCategory,
 }) {
@@ -64,11 +65,37 @@ export default function FilteredProducts({
     );
   });
 
+  const addProductToCart = (product) => {
+    const { SKU, names, thumbnail, Price, Tax, tea_variant, tea_size } =
+      product;
+
+    const inCartProduct = window.cart[SKU];
+
+    const quantity = 1 + (inCartProduct?.quantity || 0),
+      price = +(Price * quantity).toFixed(2),
+      tax = +(Tax * quantity).toFixed(2);
+
+    const productData = {
+      sku: SKU,
+      names,
+      image: thumbnail,
+      quantity,
+      price,
+      tax,
+      tea_variant,
+      tea_size,
+    };
+
+    window.cart[SKU] = productData;
+
+    window.openCart();
+  };
+
   return (
     <div
       role="list"
       aria-label={page.Aria_label_all_teas_text}
-      class="wrapper grid sm:grid-cols-2 lg:grid-cols-3 gap-[50px] overflow-hidden"
+      class="wrapper grid grid-cols-2 lg:grid-cols-3 gap-[clamp(15px,calc(5vw-25px),50px)] overflow-hidden"
     >
       <For each={filteredProducts()}>
         {(product, iSignal) => (
@@ -76,7 +103,7 @@ export default function FilteredProducts({
             role="listitem"
             aria-label={page.Aria_label_tea_item_text + (iSignal() + 1)}
             style="clip-path: url(#product-card-curve)"
-            class="product-card link-section flex flex-wrap w-full mx-auto max-w-[380px] sm:max-w-none bg-primary"
+            class="product-card link-section flex flex-wrap w-full mx-auto bg-primary"
           >
             <div class="relative block w-full">
               <div innerHTML={product.Intro_blob_HTML} />
@@ -105,10 +132,7 @@ export default function FilteredProducts({
                         {alertCircleIcon}
                         {recurData.Item_stock_text.replace(
                           "<in_stock_date>",
-                          new Date(product.In_stock_date).toLocaleString(
-                            "en-GB",
-                            { year: "2-digit", month: "short", day: "numeric" }
-                          )
+                          product.In_stock_date
                         )}
                       </div>
                     )
@@ -117,10 +141,12 @@ export default function FilteredProducts({
               )}
             </div>
 
-            <div class="py-[30px] lg:py-[40px] px-[36px] lg:px-[48px] text-white">
+            <div class="pt-2.5 lg:pt-5 pb-[15px] lg:pb-[25px] px-[clamp(15px,calc(4vw-9px),36px)] grid gap-[5px] text-white">
               <div
                 class="product-card-title recoleta font-semibold leading-[120%] md:leading-[110%]"
-                style={{ "font-size": "clamp(1.75rem, 2vw + 0.3rem, 2rem)" }}
+                style={{
+                  "font-size": "clamp(0.875rem, 1.5vw + 0.15rem, 1.5rem)",
+                }}
               >
                 <a
                   aria-label={
@@ -133,25 +159,90 @@ export default function FilteredProducts({
                 >
                   {product.Title}
                 </a>
-
-                <span
-                  class="icon product-card-title-icon"
-                  style={{
-                    height: "clamp(0.625rem, 1.5vw + 0.1rem, 1rem)",
-                  }}
-                >
-                  <img class="w-full h-full" {...white_right_arrow} />
-                </span>
               </div>
 
               <div
-                innerHTML={product.Intro_text_HTML}
-                class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]"
-              />
+                class="text-white"
+                style={{ "font-size": "clamp(0.75rem, 1.5vw + 0.1rem, 1rem)" }}
+              >
+                {product.Weight_tea + product.Weight_tea_unit}
+                <span class="inline-block w-1 h-1 mx-[5px] mb-0.5 rounded-full bg-secondary" />
+                {product.variant?.data?.attributes.Title}
+              </div>
+
+              {product.estate_name?.data.length > 0 && (
+                <div class="flex flex-wrap items-center">
+                  <div class="flex flex-wrap items-center text-base leading-[150%]">
+                    <span>
+                      <img
+                        class="p-[3px] mr-1 icon"
+                        style={{
+                          width: "clamp(1.125rem, 2vw + 0.15rem, 2rem)",
+                          height: "clamp(1.125rem, 2vw + 0.15rem, 2rem)",
+                        }}
+                        {...white_love}
+                      />
+
+                      {recurData.product_made_love_from + `\xa0`}
+                    </span>
+
+                    <div class="flex flex-wrap gap-x-1.5">
+                      {product.estate_name.data.map(
+                        (
+                          {
+                            attributes: {
+                              Estate_name,
+                              Meta: { URL_slug },
+                            },
+                          },
+                          index
+                        ) => (
+                          <a
+                            href={URL_slug}
+                            class="flex flex-wrap font-bold underline decoration-1 underline-offset-[2px]"
+                          >
+                            {Estate_name +
+                              (index === product.estate_name.data.length - 1
+                                ? ""
+                                : ",")}
+                          </a>
+                        )
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {product.Stock_amount > 0 && (
+                <button
+                  onClick={() => addProductToCart(product)}
+                  class={[
+                    "unlink w-full flex justify-center items-center gap-1",
+                    "p-1 md:p-2 lg:p-3 mt-[clamp(5px,calc(2.23vw-12px),20px)]",
+                    "text-primary font-bold text-xs sm:text-sm md:text-base bg-secondary-light rounded-full",
+                  ].join(" ")}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    class="hidden sm:inline-flex w-5 h-5"
+                  >
+                    <path
+                      d="M6.01 16.136L4.141 4H3a1 1 0 0 1 0-2h1.985a.993.993 0 0 1 .66.235a.997.997 0 0 1 .346.627L6.319 5H14v2H6.627l1.23 8h9.399l1.5-5h2.088l-1.886 6.287A1 1 0 0 1 18 17H7.016a.993.993 0 0 1-.675-.248a.998.998 0 0 1-.332-.616zM10 20a2 2 0 1 1-4 0a2 2 0 0 1 4 0zm9 0a2 2 0 1 1-4 0a2 2 0 0 1 4 0zm0-18a1 1 0 0 1 1 1v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0V6h-1a1 1 0 1 1 0-2h1V3a1 1 0 0 1 1-1z"
+                      style="fill:#547b7d"
+                    />
+                  </svg>
+                  {checkoutRecurData.text_add}
+                  <span class="w-1 h-1 bg-primary rounded-full" />
+                  <span class="recoleta">
+                    {`€` + product.Price.toFixed(2).replace(".", ",")}
+                  </span>
+                </button>
+              )}
 
               {product.Stock_amount < 1 &&
                 product.availableFormatsCount > 0 && (
-                  <div class="mt-[25px]">
+                  <div class="mt-[clamp(5px,calc(2.23vw-12px),20px)]">
                     <div class="flex flex-wrap gap-x-2.5">
                       <div class="relative flex">
                         {product.availableFormatThumbnails.map(

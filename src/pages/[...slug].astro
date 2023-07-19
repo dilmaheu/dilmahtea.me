@@ -241,16 +241,6 @@ export async function getStaticPaths() {
 
   const productDetailsPages = getRoutes(allProducts, (page) => ({
     type: "productDetails",
-    names: (() => {
-      const nameEntries = [page, ...page.attributes.localizations.data].map(
-        ({ attributes }) => [
-          attributes.locale.substring(0, 2),
-          attributes.Title,
-        ]
-      );
-
-      return Object.fromEntries(nameEntries);
-    })(),
   }));
 
   const blogPages = getRoutes(

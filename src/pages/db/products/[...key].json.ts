@@ -6,15 +6,28 @@ import productsStore, { variantsOrder } from "@store/Products";
 const { ASSETS_URL } = import.meta.env;
 
 async function processProductData(attributes) {
+  if (attributes.In_stock_date) {
+    attributes.In_stock_date = new Date(attributes.In_stock_date);
+  }
+
   const {
     locale,
+    SKU,
     Title,
+    names,
     Intro_text,
     Stock_amount,
-    In_stock_date,
+    variant,
+    Weight_tea,
+    Weight_tea_unit,
+    estate_name,
     Intro_blob,
     category,
     sub_category,
+    productVariant: tea_variant,
+    productSize: tea_size,
+    availableVariants,
+    availableSizes,
     Meta: { URL_slug },
   } = attributes;
 
@@ -49,16 +62,15 @@ async function processProductData(attributes) {
   if (Stock_amount === 0) {
     const formats = [];
 
-    const availableFormats = [
-      ...attributes.availableVariants,
-      ...attributes.availableSizes,
-    ].filter(({ format, stockAmount }) => {
-      if (formats.includes(format)) return false;
+    const availableFormats = [...availableVariants, ...availableSizes].filter(
+      ({ format, stockAmount }) => {
+        if (formats.includes(format)) return false;
 
-      formats.push(format);
+        formats.push(format);
 
-      return stockAmount;
-    });
+        return stockAmount;
+      }
+    );
 
     availableFormats.sort(
       ({ value: a }, { value: b }) =>
@@ -87,12 +99,46 @@ async function processProductData(attributes) {
     }
   }
 
+  const thumbnailUrl =
+    ASSETS_URL + Intro_blob.data.attributes.formats.thumbnail.url;
+
+  const thumbnail = await tryUntilResolve(
+    () => importRemoteImage(thumbnailUrl),
+    (message) => message + " " + thumbnailUrl
+  );
+
+  // reduce load on client
+  let { In_stock_date, Price } = attributes;
+
+  In_stock_date =
+    In_stock_date &&
+    new Date(In_stock_date).toLocaleString("en-GB", {
+      year: "2-digit",
+      month: "short",
+      day: "numeric",
+    });
+
+  const Tax = Math.round(Number(Price) * 9) / 100;
+
+  Price += Tax;
+
   return {
+    SKU,
     Title,
+    names: JSON.stringify(names),
     Intro_blob_HTML,
     Intro_text_HTML,
     Stock_amount,
     In_stock_date,
+    Price,
+    Tax,
+    variant,
+    Weight_tea,
+    Weight_tea_unit,
+    estate_name,
+    thumbnail,
+    tea_variant,
+    tea_size,
     availableFormatsCount,
     availableFormatThumbnails,
     category: category.data?.attributes.Title,

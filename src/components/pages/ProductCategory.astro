@@ -14,14 +14,15 @@ import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
-const { white_right_arrow } = RecurringImages;
+const { white_love } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_content,
   { locale } = page;
 
 const productSizes = CMS.get("productSizes"),
-  productVariants = CMS.get("productVariants");
+  productVariants = CMS.get("productVariants"),
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
 const subCategories = page.Sub_categories.data.filter(
   ({ attributes: { products } }) => products.data.length > 0
@@ -165,7 +166,8 @@ page.Heading_button_link = "#content";
       <FilteredProducts
         {page}
         {recurData}
-        {white_right_arrow}
+        {checkoutRecurData}
+        {white_love}
         category={page.Title}
       >
         <Icon
@@ -194,7 +196,8 @@ page.Heading_button_link = "#content";
             <FilteredProducts
               {page}
               {recurData}
-              {white_right_arrow}
+              {checkoutRecurData}
+              {white_love}
               subCategory={Title}
             >
               <Icon
