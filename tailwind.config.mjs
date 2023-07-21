@@ -28,6 +28,7 @@ export default {
         teal: "#405658",
         slate: "#8B8B8B",
         "pale-rose": "#F0EEEE",
+        "dark-green": "#2A5A5A",
       },
 
       typography: () => ({

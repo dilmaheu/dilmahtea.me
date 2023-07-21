@@ -48,9 +48,18 @@ const allProducts = catalog.Products.flatMap(
       availableSizes = new Proxy({}, ProxyHandler);
 
     variants.data.forEach(({ attributes: product }) => {
-      const { localizations } = product;
-      const size = product.size.data.attributes.Title,
+      const { localizations } = product,
+        size = product.size.data.attributes.Title,
         variant = product.variant.data.attributes.Title;
+
+      const names = Object.fromEntries(
+        [{ attributes: product }, ...product.localizations.data].map(
+          ({ attributes }) => [
+            attributes.locale.substring(0, 2),
+            attributes.Title,
+          ]
+        )
+      );
 
       [
         product,
@@ -77,6 +86,7 @@ const allProducts = catalog.Products.flatMap(
 
         attributes.productVariant = variant;
         attributes.productSize = size;
+        attributes.names = names;
 
         if (!availableVariants[locale].some(({ value }) => value === variant)) {
           availableVariants[locale].push({
