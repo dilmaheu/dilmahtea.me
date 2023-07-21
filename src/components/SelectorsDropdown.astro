@@ -1,0 +1,94 @@
+---
+const { ariaLabel } = Astro.props;
+---
+
+<style lang="scss" is:global>
+  .selectors-dropdown {
+    li {
+      &:first-child {
+        @apply font-medium border-y-2 rounded-full;
+
+        > span {
+          @apply py-2.5 px-[15px];
+
+          span span:not(:first-child) {
+            display: none;
+          }
+        }
+      }
+
+      &:not(:first-child) {
+        display: none;
+
+        > span {
+          @apply hover:font-semibold hover:bg-primary-light;
+
+          border-radius: inherit;
+
+          svg {
+            display: none;
+          }
+        }
+      }
+
+      &:nth-child(2) {
+        @apply border-t-2 rounded-t-[25px];
+      }
+
+      &:last-child:not(:first-child) {
+        @apply border-b-2 rounded-b-[25px];
+      }
+    }
+
+    &.dropdown-open {
+      li {
+        display: block;
+
+        &:first-child {
+          @apply mb-[5px];
+        }
+      }
+    }
+  }
+</style>
+
+<ul
+  role="listbox"
+  aria-label={ariaLabel}
+  class:list={[
+    // set a fixed height to make the dropdown overflow when opened
+    // ensure the height just slightly exceeds the first child's offset height in both mobile & desktop views
+    "selectors-dropdown relative h-11",
+    "text-primary text-sm lg:text-base select-none drop-shadow-lg",
+  ]}
+>
+  <slot />
+</ul>
+
+<script>
+  const dropdowns = [...document.querySelectorAll(".selectors-dropdown")];
+
+  // toggle language selectors dropdown
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+
+    dropdowns.forEach((dropdown) => {
+      if (dropdown.contains(target)) {
+        dropdown.classList.toggle("dropdown-open");
+      } else {
+        dropdown.classList.remove("dropdown-open");
+      }
+    });
+  });
+
+  dropdowns.forEach((dropdown) => {
+    dropdown.addEventListener("keyup", (event) => {
+      const { key } = event as KeyboardEvent;
+
+      // alias enter keypress to click event
+      if (key === "Enter") {
+        (event.target as HTMLElement).click();
+      }
+    });
+  });
+</script>

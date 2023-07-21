@@ -1,6 +1,8 @@
 ---
 import CMS from "@store/CMS";
 import getLocalesData from "@utils/getLocalesData";
+import SelectorsDropdown from "./SelectorsDropdown.astro";
+import SelectorsDropdownItem from "./SelectorsDropdownItem.astro";
 
 declare interface Props {
   docLocale: string;
@@ -56,130 +58,30 @@ const currentLangIndex = langSelectorsData.findIndex(
 langSelectorsData.unshift(langSelectorsData.splice(currentLangIndex, 1)[0]);
 ---
 
-<style lang="scss">
-  .lang-selector-dropdown {
-    li {
-      &:first-child {
-        @apply font-medium border-y-2 rounded-full;
-
-        > span {
-          @apply py-2.5 px-[15px];
-
-          span span:not(:first-child) {
-            display: none;
-          }
-        }
-      }
-
-      &:not(:first-child) {
-        display: none;
-
-        > span {
-          @apply hover:font-semibold hover:bg-primary-light;
-
-          border-radius: inherit;
-
-          svg {
-            display: none;
-          }
-        }
-      }
-
-      &:nth-child(2) {
-        @apply border-t-2 rounded-t-[25px];
-      }
-
-      &:last-child:not(:first-child) {
-        @apply border-b-2 rounded-b-[25px];
-      }
-    }
-
-    &.dropdown-open {
-      li {
-        display: block;
-
-        &:first-child {
-          @apply mb-[5px];
-        }
-      }
-    }
-  }
-</style>
-
-<ul
-  role="listbox"
-  data-name="lang"
-  aria-label={ariaLabelRecurData.Navbar_language_selectors_text}
-  class:list={[
-    // set a fixed height to make the dropdown overflow when opened
-    // ensure the height just slightly exceeds the first child's offset height in both mobile & desktop views
-    "lang-selector-dropdown relative h-11",
-    "text-primary text-sm lg:text-base select-none drop-shadow-lg",
-  ]}
+<SelectorsDropdown
+  ariaLabel={ariaLabelRecurData.Navbar_language_selectors_text}
 >
   {
     langSelectorsData.map(
       ({ lang, localizedLanguage, localLanguageName }, i) => (
-        <li
-          role="option"
-          tabindex="0"
-          aria-selected={i === 0 && true}
+        <SelectorsDropdownItem
+          className="lang-selector"
           data-value={lang}
-          class="lang-selector block bg-secondary text-black-light border-2 border-y-0 border-primary cursor-pointer"
+          aria-selected={i === 0 && true}
         >
-          <span class="w-full p-4 flex items-center justify-between">
-            <span class="flex gap-[5px] items-center leading-[120%]">
-              <span class="text-[15px] ">{localizedLanguage}</span>
-              <span class="w-1 h-1 rounded-full bg-primary" />
-              <span class="text-xs">{localLanguageName}</span>
-            </span>
-
-            <svg
-              class="w-3"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 11.6 6.7"
-            >
-              <path
-                d="M.3.3A.6.6,0,0,1,.9,0a.9.9,0,0,1,.6.3L5.8,4.6,10.2.3a.6.6,0,0,1,.6-.3l.6.3a.8.8,0,0,1,.2.6.7.7,0,0,1-.2.6l-5,4.9a.6.6,0,0,1-.6.3.9.9,0,0,1-.6-.3L.3,1.5A.9.9,0,0,1,0,.9.6.6,0,0,1,.3.3Z"
-                fill="#2B4B50"
-              />
-            </svg>
-          </span>
-        </li>
+          <span class="text-[15px] ">{localizedLanguage}</span>
+          <span class="w-1 h-1 rounded-full bg-primary" />
+          <span class="text-xs">{localLanguageName}</span>
+        </SelectorsDropdownItem>
       )
     )
   }
-</ul>
+</SelectorsDropdown>
 
 <script>
-  const dropdowns = [...document.querySelectorAll(".lang-selector-dropdown")],
-    langSelectors = Array.from(
-      document.querySelectorAll<HTMLUListElement>(".lang-selector")
-    );
-
-  // toggle language selectors dropdown
-  document.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement;
-
-    dropdowns.forEach((dropdown) => {
-      if (dropdown.contains(target)) {
-        dropdown.classList.toggle("dropdown-open");
-      } else {
-        dropdown.classList.remove("dropdown-open");
-      }
-    });
-  });
-
-  dropdowns.forEach((dropdown) => {
-    dropdown.addEventListener("keyup", (event) => {
-      const { key } = event as KeyboardEvent;
-
-      // alias enter keypress to click event
-      if (key === "Enter") {
-        (event.target as HTMLElement).click();
-      }
-    });
-  });
+  const langSelectors = Array.from(
+    document.querySelectorAll<HTMLUListElement>(".lang-selector")
+  );
 
   langSelectors.forEach((langSelector) => {
     langSelector.addEventListener("click", () => {
