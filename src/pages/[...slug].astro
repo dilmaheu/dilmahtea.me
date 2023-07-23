@@ -247,7 +247,11 @@ export async function getStaticPaths() {
     homeBlog,
     (_, { locale }) => ({
       type: "blog",
-      posts: locale && getPosts(blogs, locale),
+      posts: locale && [
+        ...(getPosts(blogs, locale) || []),
+        ...(getPosts(howTos, locale) || []),
+        ...(getPosts(recipes, locale) || []),
+      ],
     }),
     true
   );
