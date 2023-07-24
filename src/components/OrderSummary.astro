@@ -232,8 +232,8 @@ const { page } = Astro.props,
 
   {
     page.type === "checkoutShipping" && (
-      <div class="flex flex-col">
-        <div class="order-charges pb-3 flex flex flex-col gap-3">
+      <div class="flex flex-col gap-3">
+        <div class="order-charges flex flex-col gap-3">
           <div>
             <span>{checkoutRecurData.text_subtotal}</span>
 
@@ -249,14 +249,6 @@ const { page } = Astro.props,
               €<DynamicHTML htmlFn={() => window.cart.shippingCost} />
             </span>
           </div>
-
-          <div>
-            <span>{checkoutRecurData.text_tax}</span>
-
-            <span class="order-tax recoleta">
-              €<DynamicHTML htmlFn={() => window.cart.tax} />
-            </span>
-          </div>
         </div>
 
         <div class="order-total-container pt-3 border-t border-t-primary-light">
@@ -266,6 +258,14 @@ const { page } = Astro.props,
 
           <span class="order-total recoleta font-semibold leading-[110%]">
             €<DynamicHTML htmlFn={() => window.cart.total} />
+          </span>
+        </div>
+
+        <div class="flex justify-between">
+          <span>{checkoutRecurData.text_tax}</span>
+
+          <span class="order-tax recoleta">
+            €<DynamicHTML htmlFn={() => window.cart.tax} />
           </span>
         </div>
       </div>
