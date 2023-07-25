@@ -335,19 +335,21 @@ const nutrition: Nutrition = {
   </a>
 
   <a
-    href="#recipe"
-    slot="jump-to-recipe"
-    class:list={[
-      "bg-primary text-white text-center text-base font-bold leading-[19px]",
-      "hidden md:block flex items-center justify-center gap-5 py-5 mb-[50px] rounded-[40px]",
-    ]}
-  >
-    {recipe_jump_to_recipe}
-
-    <span class="icon">
-      <img class="h-5" {...white_down_arrow} />
-    </span>
+  href="#recipe"
+  slot="jump-to-recipe"
+  class:list={[
+    "hidden md:block py-5 mb-[50px] rounded-[40px]",
+    "bg-primary text-white text-center text-base font-bold leading-[19px]",
+  ]}
+>
+    <div class="flex justify-center items-center gap-5">
+      {recipe_jump_to_recipe}
+      <span class="icon">
+        <img class="h-5" {...white_down_arrow} />
+      </span>
+    </div>
   </a>
+
 
   <Chapterize slot="post-details">
     <RecipesInfoSection page={page} />
@@ -526,17 +528,17 @@ const nutrition: Nutrition = {
         class="mt-5 md:mt-[25px] flex flex-wrap sm:flex-nowrap gap-2"
       >
         {
-          page.Cooking_part.map((item) => (
+          page.Instructions_part.map((item) => (
             <div
               role="listitem"
-              aria-label={item.Cooking_part_name}
+              aria-label={item.Instructions_part_name}
               class="w-full sm:w-1/2"
             >
               <h4 class="mb-[10px] md:mb-[15px] text-black text-base md:text-lg font-bold leading-[150%]">
-                {item.Cooking_part_name}
+                {item.Instructions_part_name}
               </h4>
 
-              {item.Cooking_part_ingredients.map((item) => (
+              {item.Instructions_part_ingredients.map((item) => (
                 <label class="inline-flex items-center w-full text-black-light">
                   <div class="flex">
                     <div
@@ -562,12 +564,12 @@ const nutrition: Nutrition = {
                   <div class="ml-2.5 text-base md:text-lg leading-[150%]">
                     <span
                       class="ingredient-amount"
-                      data-amount={item.Cooking_part_ingredient_amount}
+                      data-amount={item.Instructions_part_ingredient_amount}
                     >
-                      {item.Cooking_part_ingredient_amount}
+                      {item.Instructions_part_ingredient_amount}
                     </span>
-                    {item.Cooking_part_ingredient_measurements_unit}
-                    {item.Cooking_part_ingredient_name}
+                    {item.Instructions_part_ingredient_measurements_unit}
+                    {item.Instructions_part_ingredient_name}
                   </div>
                 </label>
               ))}
@@ -609,7 +611,7 @@ const nutrition: Nutrition = {
     </h2>
 
     {
-      page.Cooking_part.map((item) => (
+      page.Instructions_part.map((item) => (
         <div role="list">
           <div class="flex bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]">
             <div class="recipe-content-border w-auto border-l-[3px] border-primary rounded-full" />
@@ -617,21 +619,21 @@ const nutrition: Nutrition = {
             <div class="w-full gap-[15px]">
               <h3
                 class="recipe-cooking-title recoleta md:font-semibold text-black leading-[120%]"
-                id={item.Cooking_part_name.replaceAll(" ", "-")
+                id={item.Instructions_part_name.replaceAll(" ", "-")
                   .replace(/\s+/g, "")
                   .trim()}
               >
-                {item.Cooking_part_name}
+                {item.Instructions_part_name}
               </h3>
             </div>
           </div>
 
-          {item.Cooking_part_steps.map((step, index) => (
+          {item.Instructions_part_steps.map((step, index) => (
             <div
               role="listitem"
               aria-label={ariaLabelRecurData.Recipe_step_text + (index + 1)}
               id={
-                item.Cooking_part_name.replaceAll(" ", "-")
+                item.Instructions_part_name.replaceAll(" ", "-")
                   .replace(/\s+/g, "")
                   .trim() +
                 `-step-` +
@@ -652,22 +654,22 @@ const nutrition: Nutrition = {
                 </div>
 
                 <div class="recipe-content prose max-w-none leading-[150%] w-auto">
-                  {step.Cooking_part_steps_text}
+                  {step.Instructions_part_steps_text}
                 </div>
               </div>
 
-              {step.Cooking_part_steps_blob.data && (
+              {step.Instructions_part_steps_blob.data && (
                 <div class="aspect-[2/1] w-full mt-2.5 sm:mt-[15px]">
                   <Picture
                     layout="fill"
                     sizes="(min-width: 768px) calc(90vw * 2/3 - 72px), calc(90vw - 72px)"
                     alt={
-                      step.Cooking_part_steps_blob.data.attributes
+                      step.Instructions_part_steps_blob.data.attributes
                         .alternativeText
                     }
                     src={
                       ASSETS_URL +
-                      step.Cooking_part_steps_blob.data.attributes.url
+                      step.Instructions_part_steps_blob.data.attributes.url
                     }
                   />
                 </div>
@@ -675,7 +677,7 @@ const nutrition: Nutrition = {
             </div>
           ))}
 
-          {item.Cooking_part_step_tip && (
+          {item.Instructions_part_step_tip && (
             <div class="bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]">
               <div class="flex flex-wrap items-center gap-2.5">
                 <div class="w-full flex items-center gap-[15px] sm:gap-5">
@@ -689,7 +691,7 @@ const nutrition: Nutrition = {
                 </div>
 
                 <div class="recipe-content prose max-w-none text-primary font-medium sm:font-bold leading-[150%]">
-                  {item.Cooking_part_step_tip}
+                  {item.Instructions_part_step_tip}
                 </div>
               </div>
             </div>
@@ -870,33 +872,33 @@ const nutrition: Nutrition = {
     recipeCuisine: page.Cuisine,
     recipeCategory: page.Category,
     recipeYield: page.Nutrition_yield,
-    recipeIngredient: page.Cooking_part.flatMap((item) =>
-      item.Cooking_part_ingredients.map(
+    recipeIngredient: page.Instructions_part.flatMap((item) =>
+      item.Instructions_part_ingredients.map(
         (item) =>
-          item.Cooking_part_ingredient_amount +
-          item.Cooking_part_ingredient_measurements_unit +
+          item.Instructions_part_ingredient_amount +
+          item.Instructions_part_ingredient_measurements_unit +
           ` ` +
-          item.Cooking_part_ingredient_name
+          item.Instructions_part_ingredient_name
       )
     ),
     recipeInstructions: await Promise.all(
-      page.Cooking_part.flatMap((item) =>
-        item.Cooking_part_steps.map(async (step, index) => ({
+      page.Instructions_part.flatMap((item) =>
+        item.Instructions_part_steps.map(async (step, index) => ({
           "@type": "HowToStep",
-          name: item.Cooking_part_name,
-          text: step.Cooking_part_steps_text,
+          name: item.Instructions_part_name,
+          text: step.Instructions_part_steps_text,
           url: `${
             pageURL +
             `#` +
-            item.Cooking_part_name.replaceAll(" ", "-")
+            item.Instructions_part_name.replaceAll(" ", "-")
               .replace(/\s+/g, "")
               .trim() +
             `-step-` +
             (index + 1)
           }`,
-          image: step.Cooking_part_steps_blob.data
+          image: step.Instructions_part_steps_blob.data
             ? await importRemoteImage(
-                ASSETS_URL + step.Cooking_part_steps_blob?.data?.attributes.url
+                ASSETS_URL + step.Instructions_part_steps_blob?.data?.attributes.url
               )
             : "",
         }))
