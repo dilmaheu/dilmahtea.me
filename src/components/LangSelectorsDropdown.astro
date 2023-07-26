@@ -59,82 +59,23 @@ langSelectorsData.unshift(langSelectorsData.splice(currentLangIndex, 1)[0]);
 ---
 
 <SelectorsDropdown
+  selectorType="lang"
   ariaLabel={ariaLabelRecurData.Navbar_language_selectors_text}
 >
   {
     langSelectorsData.map(
       ({ lang, localizedLanguage, localLanguageName }, i) => (
         <SelectorsDropdownItem
-          className="lang-selector"
           data-value={lang}
           aria-selected={i === 0 && true}
         >
-          <span class="text-[15px] ">{localizedLanguage}</span>
-          <span class="w-1 h-1 rounded-full bg-primary" />
-          <span class="text-xs">{localLanguageName}</span>
+          <span class="flex gap-[5px] items-center leading-[120%]">
+            <span class="text-[15px] ">{localizedLanguage}</span>
+            <span class="w-1 h-1 rounded-full bg-primary" />
+            <span class="text-xs">{localLanguageName}</span>
+          </span>
         </SelectorsDropdownItem>
       )
     )
   }
 </SelectorsDropdown>
-
-<script>
-  const langSelectors = Array.from(
-    document.querySelectorAll<HTMLUListElement>(".lang-selector")
-  );
-
-  langSelectors.forEach((langSelector) => {
-    langSelector.addEventListener("click", () => {
-      if (langSelector.parentElement.firstElementChild === langSelector) return;
-
-      const { value: newLocale } = langSelector.dataset;
-
-      location.pathname = window.alternateURLs[newLocale];
-
-      // const currentLangSelectors = Array.from(
-      //   langSelector.parentElement
-      //     .children as HTMLCollectionOf<HTMLUListElement>
-      // );
-
-      // currentLangSelectors.forEach((langSelector) => {
-      //   langSelector.ariaSelected = String(
-      //     langSelector.dataset.value === newLocale
-      //   );
-      // });
-
-      // // sort lang selectors alphabetically
-      // currentLangSelectors.sort((nextOption, currentOption) => {
-      //   const nextLanguage = nextOption.querySelector<HTMLSpanElement>(
-      //       "span span:first-child"
-      //     ).innerText,
-      //     currentLanguage = currentOption.querySelector<HTMLSpanElement>(
-      //       "span span:first-child"
-      //     ).innerText;
-
-      //   return nextLanguage.localeCompare(currentLanguage, "en-US");
-      // });
-
-      // // move selected lang selector to the top
-      // const selectedLangSelectorIndex = currentLangSelectors.findIndex(
-      //   ({ ariaSelected }) => ariaSelected === "true"
-      // );
-
-      // currentLangSelectors.unshift(
-      //   currentLangSelectors.splice(selectedLangSelectorIndex, 1)[0]
-      // );
-
-      // // move lang selector elements to their new position
-      // currentLangSelectors.forEach((langSelector, i) => {
-      //   langSelector.parentElement.insertBefore(
-      //     langSelector,
-      //     langSelector.parentElement.children[i]
-      //   );
-      // });
-
-      // // find & replace the other lang selectors dropdown
-      // dropdowns.find(
-      //   (dropdown) => dropdown !== langSelector.parentElement
-      // ).innerHTML = langSelector.parentElement.innerHTML;
-    });
-  });
-</script>
