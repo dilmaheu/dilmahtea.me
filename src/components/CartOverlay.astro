@@ -96,8 +96,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               </h2>
 
               <button
-                id="close-cart-btn"
                 aria-label={checkoutRecurData.Aria_label_cart_close_button_text}
+                class="close-cart-btn"
               >
                 <Icon name="heroicons-solid:x" class="w-14" />
               </button>
@@ -288,11 +288,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 {checkoutRecurData.text_proceed_to_checkout}
               </a>
 
-              <div
-                class="text-primary text-center font-bold"
-                aria-label={checkoutRecurData.Aria_label_cart_close_button_text}
-              >
-                {checkoutRecurData.text_continue_shopping}
+              <div class="flex justify-center items-center">
+                <button
+                  aria-label={checkoutRecurData.Aria_label_cart_close_button_text}
+                  class="close-cart-btn text-primary font-bold"
+                >
+                  {checkoutRecurData.text_continue_shopping}
+                </button>
               </div>
             </div>
           </div>
@@ -305,16 +307,18 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 <script>
   const query: (selector: string) => HTMLElement =
       document.querySelector.bind(document),
+    queryAll: (selector: string) => HTMLElement =
+      document.querySelectorAll.bind(document),
     id: (id: string) => HTMLElement = document.getElementById.bind(document);
 
   const cart = id("cart"),
     sidebar = id("sidebar"),
     openCartBtn = id("open-cart-btn"),
-    closeCartBtn = id("close-cart-btn"),
     checkoutInfoLink = id("checkout-info-link"),
     cartOverlayContent = id("cart-overlay-content"),
     emptyCartNotification = id("empty-cart-notification"),
     cartOverlayProductsContainer = id("cart-overlay-products-container"),
+    closeCartBtnElements = queryAll(".close-cart-btn"),
     { overflowY: prevBodyOverflowYValue } = document.body.style;
 
   window.openCart = () => {
@@ -364,7 +368,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     }
   });
 
-  closeCartBtn?.addEventListener("click", closeCart);
+  closeCartBtnElements.forEach((closeCartBtnElement) => {
+    closeCartBtnElement.addEventListener("click", closeCart);
+  });
 
   checkoutInfoLink?.addEventListener("keydown", (event) => {
     if (event.key === "Tab" && !event.shiftKey) {
