@@ -8,9 +8,10 @@ const { logo, footer_background, footer_background_sm } = RecurringImages;
 declare interface Props {
   footerText: string;
   recurData: Record<string, any>;
+  type: string;
 }
 
-const { footerText, recurData } = Astro.props as Props,
+const { footerText, recurData, type } = Astro.props as Props,
   { Footer_menu: menu } = recurData,
   { ASSETS_URL } = import.meta.env;
 ---
@@ -152,7 +153,12 @@ const { footerText, recurData } = Astro.props as Props,
         }
       </nav>
 
-      <div class="grid gap-2.5 justify-start">
+      <div
+        class:list={[
+          "grid gap-2.5 justify-start",
+          type === "productDetails" && "pb-20 md:pb-0",
+        ]}
+      >
         <a href="/" class="brand-logo mr-auto">
           <img class="w-full h-full" {...logo} />
         </a>
