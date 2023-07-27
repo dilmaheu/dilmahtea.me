@@ -600,24 +600,42 @@ const {
 
   window.disableScrolling = () => {
     const overflowY =
-      window.innerHeight < document.body.scrollHeight ? "scroll" : "auto";
+      window.innerHeight < document.documentElement.scrollHeight
+        ? "scroll"
+        : "auto";
 
     Object.assign(document.body.style, {
       overflowY,
       width: "100%",
       position: "fixed",
-      top: `-${scrollY}px`,
+      top: `-${window.scrollY}px`,
+      left: "0",
+    });
+
+    Object.assign(document.documentElement.style, {
+      overflowY,
+      width: "100%",
+      position: "fixed",
+      top: `-${window.scrollY}px`,
+      left: "0",
     });
   };
 
   window.enableScrolling = () => {
-    const scrollYPosition =
-      parseInt(document.body.style.top.slice(1, -2)) || window.scrollY;
+    const scrollYPosition = parseInt(document.body.style.top) || 0;
 
     Object.assign(document.body.style, {
       width: "auto",
       overflowY: "auto",
       position: "static",
+      top: "0",
+    });
+
+    Object.assign(document.documentElement.style, {
+      width: "auto",
+      overflowY: "auto",
+      position: "static",
+      top: "0",
     });
 
     window.scrollTo({ top: scrollYPosition });
