@@ -881,7 +881,9 @@ const nutrition: Nutrition = {
     )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
     nutrition,
     prepTime: `PT${preparationTimeStringSm.toUpperCase().replace(/\s/g, "")}`,
-    cookTime: `PT${cookingTimeStringSm.toUpperCase().replace(/\s/g, "")}`,
+    cookTime:
+      Time_cooking &&
+      `PT${cookingTimeStringSm.toUpperCase().replace(/\s/g, "")}`,
     totalTime: `PT${totalTimeStringSm.toUpperCase().replace(/\s/g, "")}`,
     recipeCuisine: page.Cuisine,
     recipeCategory: page.Category,
@@ -912,7 +914,8 @@ const nutrition: Nutrition = {
           }`,
           image: step.Instructions_part_steps_blob.data
             ? await importRemoteImage(
-                ASSETS_URL + step.Instructions_part_steps_blob?.data?.attributes.url
+                ASSETS_URL +
+                  step.Instructions_part_steps_blob?.data?.attributes.url
               )
             : "",
         }))
