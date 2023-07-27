@@ -49,7 +49,9 @@ const {
 const { Time_cooking, Time_preparation, Related_products } = page,
   relatedProducts = Related_products.data?.map(({ attributes }) => attributes);
 
-const cookingTime = Time_cooking.split(":").map(Number),
+const cookingTime = Time_cooking
+    ? Time_cooking.split(":").map(Number)
+    : [0, 0, 0],
   preparationTime = Time_preparation.split(":").map(Number),
   totalTime = [...cookingTime].map((t, i) => t + preparationTime[i]);
 
@@ -286,19 +288,25 @@ const nutrition: Nutrition = {
           [recipe_prep, preparationTimeString, preparationTimeStringSm],
           [recipe_cook, cookingTimeString, cookingTimeStringSm],
           [recipe_total, totalTimeString, totalTimeStringSm],
-        ].map(([timeTag, timeString, timeStringSm]) => (
-          <div class="inline-flex items-center gap-2 md:gap-2.5">
-            <img class="time-icon w-full h-full" {...white_clock} />
+        ].map(([timeTag, timeString, timeStringSm]) => {
+          // Check if timeString or timeStringSm is not available (undefined or null)
+          if (!timeString && !timeStringSm) {
+            return null; // Skip this iteration and do not render anything
+          }
 
-            <div class="w-auto">
-              <div class="time-tag">{timeTag} :</div>
+          return (
+            <div class="inline-flex items-center gap-2 md:gap-2.5">
+              <img class="time-icon w-full h-full" {...white_clock} />
 
-              <div class="time hidden sm:block font-bold">{timeString}</div>
+              <div class="w-auto">
+                <div class="time-tag">{timeTag} :</div>
 
-              <div class="time block sm:hidden font-bold">{timeStringSm}</div>
+                <div class="time hidden sm:block font-bold">{timeString}</div>
+                <div class="time block sm:hidden font-bold">{timeStringSm}</div>
+              </div>
             </div>
-          </div>
-        ))
+          );
+        })
       }
     </div>
 
@@ -335,13 +343,13 @@ const nutrition: Nutrition = {
   </a>
 
   <a
-  href="#recipe"
-  slot="jump-to-recipe"
-  class:list={[
-    "hidden md:block py-5 mb-[50px] rounded-[40px]",
-    "bg-primary text-white text-center text-base font-bold leading-[19px]",
-  ]}
->
+    href="#recipe"
+    slot="jump-to-recipe"
+    class:list={[
+      "hidden md:block py-5 mb-[50px] rounded-[40px]",
+      "bg-primary text-white text-center text-base font-bold leading-[19px]",
+    ]}
+  >
     <div class="flex justify-center items-center gap-5">
       {recipe_jump_to_recipe}
       <span class="icon">
@@ -349,7 +357,6 @@ const nutrition: Nutrition = {
       </span>
     </div>
   </a>
-
 
   <Chapterize slot="post-details">
     <RecipesInfoSection page={page} />
@@ -411,25 +418,32 @@ const nutrition: Nutrition = {
             [recipe_prep, preparationTimeString, preparationTimeStringSm],
             [recipe_cook, cookingTimeString, cookingTimeStringSm],
             [recipe_total, totalTimeString, totalTimeStringSm],
-          ].map(([timeTag, timeString, timeStringSm]) => (
-            <div class="inline-flex items-center gap-2.5">
-              <div class="recipe-time-icon">
-                <img class="w-full h-full" {...light_green_clock} />
-              </div>
+          ].map(([timeTag, timeString, timeStringSm]) => {
+            // Check if timeString or timeStringSm is not available (undefined or null)
+            if (!timeString && !timeStringSm) {
+              return null; // Skip this iteration and do not render anything
+            }
 
-              <div class="w-auto text-black-light leading-[150%]">
-                <div class="text-[10px] md:text-xs">{timeTag} :</div>
-
-                <div class="hidden sm:block text-base font-medium">
-                  {timeString}
+            return (
+              <div class="inline-flex items-center gap-2.5">
+                <div class="recipe-time-icon">
+                  <img class="w-full h-full" {...light_green_clock} />
                 </div>
 
-                <div class="block sm:hidden text-base font-medium">
-                  {timeStringSm}
+                <div class="w-auto text-black-light leading-[150%]">
+                  <div class="text-[10px] md:text-xs">{timeTag} :</div>
+
+                  <div class="hidden sm:block text-base font-medium">
+                    {timeString}
+                  </div>
+
+                  <div class="block sm:hidden text-base font-medium">
+                    {timeStringSm}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         }
       </div>
     </div>
