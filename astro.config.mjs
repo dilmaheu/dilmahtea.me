@@ -5,6 +5,10 @@ import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
 import postbuildIntegration from "./src/postbuild-integration/index.js";
 import solid from "@astrojs/solid-js";
 
+const country = await fetch("http://ip-api.com/json/")
+  .then((res) => res.json())
+  .then((data) => data.countryCode);
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://dilmahtea.me",
@@ -17,6 +21,7 @@ export default defineConfig({
         name: "permissions-policy",
         configureServer: (server) => {
           server.middlewares.use((_req, res, next) => {
+            res.setHeader("Set-Cookie", `country=${country};`);
             res.setHeader("Permissions-Policy", PermissionsPolicy);
             next();
           });
