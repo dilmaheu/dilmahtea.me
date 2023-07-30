@@ -587,16 +587,14 @@ const {
   <script is:inline>
     {
       const navigation = document.getElementById("navigation"),
-        translationNotFoundNotification = document.querySelector(
-          ".translation-not-found-notification"
-        );
+        topNotifications = document.querySelector(".top-notifications");
 
       const updateNavbarStyles = () => {
         // fix sticky navbar position on mobile if top notification is shown
         navigation.style.top = `${
           window.innerWidth >= 768
             ? 0
-            : translationNotFoundNotification.getBoundingClientRect().height
+            : topNotifications.getBoundingClientRect().height
         }px`;
       };
 
@@ -777,6 +775,9 @@ const {
 
         case "region":
           localStorage.setItem("region", value);
+
+          window.cookies.country = value;
+
           location.reload();
           break;
       }

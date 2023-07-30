@@ -1,0 +1,95 @@
+---
+import CMS from "@store/CMS";
+import getLocalesData from "@utils/getLocalesData";
+import Notification from "@components/Notification.astro";
+
+const { locales } = getLocalesData();
+
+const { locale } = Astro.props,
+  { data: notifications } = CMS.get("notifications");
+
+const topNotifications = notifications
+  .filter(({ attributes }) => attributes.top)
+  .map(({ attributes }) => [
+    attributes.Title,
+    Object.fromEntries(
+      [
+        attributes,
+        ...attributes.localizations.data.map(({ attributes }) => attributes),
+      ].map(({ locale, ...attributes }) => [locale.substring(0, 2), attributes])
+    ),
+  ]);
+---
+
+<div class="top-notifications sticky top-0 z-[1000]">
+  {
+    topNotifications.map(([title, notification]) => (
+      <Notification {...notification[locale]}>
+        {() => {
+          switch (title) {
+            case "language_not_available":
+              return Object.keys(notification).map((lang) => (
+                <span class={lang}>{notification[lang].Content}</span>
+              ));
+
+            case "region_not_available":
+              return notification[locale].Content;
+          }
+        }}
+      </Notification>
+    ))
+  }
+</div>
+
+<script define:vars={{ locales }}>
+  const topNotifications =
+    document.currentScript.previousElementSibling.children;
+
+  [...topNotifications].forEach((notification) => {
+    const notificationTitle = notification.classList[0];
+
+    switch (notificationTitle) {
+      case "language_not_available":
+        const requestedLocale = new URLSearchParams(location.search).get(
+          "requestedLocale"
+        );
+
+        if (locales.includes(requestedLocale)) {
+          const irrelevantNotifications = notification.querySelectorAll(
+            `.notification .notification-content span:not(.${requestedLocale})`
+          );
+
+          irrelevantNotifications.forEach((notification) => {
+            notification.classList.add("hidden");
+          });
+
+          notification.style.display = "flex";
+        }
+        break;
+
+      case "region_not_available":
+        if (!window.userRegion) {
+          const hasShownRegionNotAvailableNotification =
+            !!sessionStorage.getItem("hasShownRegionNotAvailableNotification");
+
+          if (!hasShownRegionNotAvailableNotification) {
+            notification.style.display = "flex";
+
+            sessionStorage.setItem(
+              "hasShownRegionNotAvailableNotification",
+              true
+            );
+          }
+        }
+        break;
+    }
+
+    const isClosingEnabled = !!notification.querySelector(".close-button");
+
+    if (isClosingEnabled) {
+      setTimeout(() => {
+        window.slideOutTopNotification(notification);
+      }, 7500);
+    }
+  });
+</script>

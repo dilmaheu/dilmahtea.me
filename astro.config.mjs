@@ -1,9 +1,9 @@
+import solid from "@astrojs/solid-js";
 import taiwlind from "@astrojs/tailwind";
 import { defineConfig } from "astro/config";
 import { astroImageTools } from "astro-imagetools";
 import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
 import postbuildIntegration from "./src/postbuild-integration/index.js";
-import solid from "@astrojs/solid-js";
 
 const country = await fetch("http://ip-api.com/json/")
   .then((res) => res.json())
