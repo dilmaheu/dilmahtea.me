@@ -26,6 +26,7 @@ const CSPRecord = {
   "worker-src": ["blob:"],
   "connect-src": [
     "'self'",
+    "https://baserow.scripts.dilmahtea.me",
     "https://log.expertrec.com",
     "https://searchv7.expertrec.com",
     "https://api.openreplay.com",

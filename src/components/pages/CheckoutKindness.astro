@@ -4,17 +4,20 @@ import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
-const { page } = Astro.props,
+const { page, recurData } = Astro.props,
   { locale } = page,
   { ASSETS_URL } = import.meta.env,
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
-const checkoutInfoLink = `/${locale}/${
-    CMS.get("checkoutInformation", locale).Meta.URL_slug
+const checkoutSuccessLink = `/${locale}/${
+    CMS.get("checkoutSuccess", locale).Meta.URL_slug
   }/`,
   checkoutShippingLink = `/${locale}/${
     CMS.get("checkoutShipping", locale).Meta.URL_slug
-  }/`;
+  }/`,
+  shopLink = `/${locale}/${CMS.get("homeProduct", locale).Meta.URL_slug}/`;
+
+console.log(checkoutSuccessLink);
 ---
 
 <style lang="scss">
@@ -67,17 +70,24 @@ const checkoutInfoLink = `/${locale}/${
     }
   }
 
-  #continue-to-payment-btn:disabled {
+  #submit-cause-btn:disabled {
     @apply bg-slate text-secondary;
   }
 </style>
 
-<script define:vars={{ checkoutInfoLink, checkoutShippingLink }}>
-  if (Object.keys(window.checkoutInfo).length === 0) {
-    location.href = checkoutInfoLink;
+<script define:vars={{ checkoutShippingLink, checkoutSuccessLink, shopLink }}>
+  const { paymentID } = Object.fromEntries(
+    new URLSearchParams(location.search)
+  );
+
+  if (!paymentID) {
+    const cartLength = Object.keys(window.cart).length;
+
+    location.href = cartLength === 0 ? shopLink : checkoutShippingLink;
   }
 
-  window.checkoutShippingLink = checkoutShippingLink;
+  window.paymentID = paymentID;
+  window.checkoutSuccessLink = checkoutSuccessLink;
 </script>
 
 <ClipPathSVG
@@ -144,36 +154,20 @@ const checkoutInfoLink = `/${locale}/${
       "justify-center sm:justify-start gap-9 sm:gap-12 mx-auto",
     ]}
   >
-    <a href={checkoutInfoLink} class="text-primary font-bold">
-      {checkoutRecurData.text_return_to_information}
+    <a href={checkoutSuccessLink} class="text-primary font-bold">
+      {recurData.text_skip}
     </a>
 
     <button
       disabled
-      id="continue-to-payment-btn"
+      id="submit-cause-btn"
       class:list={[
         "w-full sm:w-auto py-4 px-20 sm:px-24",
         "bg-primary text-white font-bold rounded-full",
       ]}
     >
-      {checkoutRecurData.text_continue_to_payment}
+      {page.text_submit_kindness_cause}
     </button>
-
-    <script is:inline>
-      const { kindness_cause } = window.checkoutInfo;
-
-      if (kindness_cause) {
-        document.currentScript.previousElementSibling.disabled = false;
-
-        const activeCauseCard = document.querySelector(
-          `.kindness-cause[cause="${kindness_cause}"]`
-        );
-
-        activeCauseCard?.parentElement.parentElement.classList.add(
-          "active-kindness-cause"
-        );
-      }
-    </script>
   </div>
 </div>
 
@@ -182,32 +176,49 @@ const checkoutInfoLink = `/${locale}/${
       document.querySelector(".kindness-causes"),
     kindnessCausesCards =
       document.querySelectorAll<HTMLElement>(".kindness-cause"),
-    continueToPaymentBtn = document.getElementById(
-      "continue-to-payment-btn"
+    submitCauseBtn = document.getElementById(
+      "submit-cause-btn"
     ) as HTMLButtonElement;
 
   function selectCard(card: HTMLElement) {
     const activeCauseCard = kindnessCausesCardsContainer.querySelector(
-        ".active-kindness-cause"
-      ),
-      kindness_cause = card.dataset.cause;
+      ".active-kindness-cause"
+    );
 
     activeCauseCard?.classList?.remove("active-kindness-cause");
 
-    window.checkoutInfo.kindness_cause = kindness_cause;
-
-    localStorage.setItem("checkout-info", JSON.stringify(window.checkoutInfo));
-
     card.classList.add("active-kindness-cause");
 
-    continueToPaymentBtn.disabled = false;
+    submitCauseBtn.disabled = false;
   }
 
   kindnessCausesCards.forEach((card) => {
     card.addEventListener("focus", () => selectCard(card));
   });
 
-  continueToPaymentBtn?.addEventListener("click", () => {
-    location.href = window.checkoutShippingLink;
+  submitCauseBtn?.addEventListener("click", () => {
+    const kindness_cause =
+      kindnessCausesCardsContainer.querySelector<HTMLElement>(
+        ".active-kindness-cause"
+      ).dataset.cause;
+
+    fetch(
+      `https://${
+        window.shouldDisplayExperimentals ? "dev." : ""
+      }baserow.scripts.dilmahtea.me`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          paymentID: window.paymentID,
+          payment_type: "ecommerce",
+          "Cup of Kindness": kindness_cause,
+        }),
+      }
+    );
+
+    location.href = window.checkoutSuccessLink;
   });
 </script>
