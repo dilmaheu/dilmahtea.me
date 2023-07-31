@@ -599,24 +599,14 @@ const {
     localizationMenu = localizationMenuOpenButton?.nextElementSibling;
 
   window.disableScrolling = () => {
-    const overflowY =
-      window.innerHeight < document.documentElement.scrollHeight
-        ? "scroll"
-        : "auto";
+    const scrollYPosition =
+      document.documentElement.scrollTop || window.scrollY;
 
     Object.assign(document.body.style, {
-      overflowY,
+      overflowY: "hidden",
       width: "100%",
       position: "fixed",
-      top: `-${window.scrollY}px`,
-      left: "0",
-    });
-
-    Object.assign(document.documentElement.style, {
-      overflowY,
-      width: "100%",
-      position: "fixed",
-      top: `-${window.scrollY}px`,
+      top: `-${scrollYPosition}px`,
       left: "0",
     });
   };
@@ -631,14 +621,9 @@ const {
       top: "0",
     });
 
-    Object.assign(document.documentElement.style, {
-      width: "auto",
-      overflowY: "auto",
-      position: "static",
-      top: "0",
-    });
-
-    window.scrollTo({ top: scrollYPosition });
+    // Scroll to the previously stored scroll position
+    document.documentElement.scrollTop = -scrollYPosition;
+    window.scrollTo({ top: -scrollYPosition });
   };
 
   const updateSidebarTopPosition = () => {
@@ -649,15 +634,10 @@ const {
     sidebar.style.paddingBottom = `${sidebarTop}px`;
   };
 
-  window.addEventListener("resize", updateSidebarTopPosition);
-
   window.addEventListener("resize", () => {
     if (window.innerWidth > 768) {
       // enable scrolling if cart is not open
       if (cart?.classList.contains("hidden")) window.enableScrolling();
-
-      // remove event listener to prevent memory leaks
-      window.removeEventListener("resize", updateSidebarTopPosition);
     } else if (
       sidebar.style.display === "block" ||
       localizationMenuSm.style.display === "block"
@@ -665,9 +645,22 @@ const {
       window.disableScrolling();
 
       if (sidebar.style.display === "block") {
-        // readd event listener in case it was removed
         window.addEventListener("resize", updateSidebarTopPosition);
       }
+    }
+  });
+
+  // Add event listener for "DOMContentLoaded" to handle initial scroll behavior
+  document.addEventListener("DOMContentLoaded", () => {
+    if (
+      sidebar.style.display === "block" ||
+      localizationMenuSm.style.display === "block"
+    ) {
+      // Disable scrolling if sidebar or localization menu is open on initial load
+      window.disableScrolling();
+    } else {
+      // Enable scrolling otherwise
+      window.enableScrolling();
     }
   });
 
