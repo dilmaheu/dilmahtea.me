@@ -11,9 +11,6 @@ const { page, recurData } = Astro.props,
 const checkoutInfoLink = `/${locale}/${
     CMS.get("checkoutInformation", locale).Meta.URL_slug
   }/`,
-  checkoutSuccessLink = `/${locale}/${
-    CMS.get("checkoutSuccess", locale).Meta.URL_slug
-  }/`,
   checkoutKindnessLink = `/${locale}/${
     CMS.get("checkoutKindness", locale).Meta.URL_slug
   }/`;
@@ -125,18 +122,15 @@ const checkoutInfoLink = `/${locale}/${
   define:vars={{
     companyName: recurData.Company_name,
     checkoutInfoLink,
-    checkoutSuccessLink,
     checkoutKindnessLink,
   }}
 >
   if (Object.keys(window.checkoutInfo).length === 0) {
     location.href = checkoutInfoLink;
-  } else if (!window.checkoutInfo.kindness_cause) {
-    location.href = checkoutKindnessLink;
   }
 
   window.companyName = companyName;
-  window.checkoutSuccessLink = checkoutSuccessLink;
+  window.checkoutKindnessLink = checkoutKindnessLink;
 </script>
 
 <section class="w-full lg:w-[66.67%]">
@@ -172,7 +166,7 @@ const checkoutInfoLink = `/${locale}/${
           payment_type: "ecommerce",
           locale: window.preferredLocale,
           origin_url: origin + pathname,
-          success_url: `${origin}/${window.checkoutSuccessLink}?clear=cart`,
+          success_url: `${origin}${window.checkoutKindnessLink}?clear=cart`,
         };
 
         delete paymentInfo.delivery_address;
