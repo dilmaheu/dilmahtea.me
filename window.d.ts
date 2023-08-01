@@ -1,5 +1,9 @@
 export {};
 
+type Regions = {
+  [regionCode: string]: string;
+};
+
 interface CartProduct {
   image: string;
   names: string;
@@ -19,6 +23,11 @@ type Cart = {
   total: string;
   updateUI: (cart: Cart) => void;
 } & Record<string, Partial<CartProduct>>;
+
+type Cookies = {
+  country: string;
+  [key: string]: string;
+};
 
 type CheckoutInfoField =
   | "first_name"
@@ -43,6 +52,9 @@ declare global {
     checkoutSuccessLink: string; // defined in CheckoutKindness.astro
     checkoutKindnessLink: string; // defined in CheckoutShipping.astro
 
+    regions: Regions; // defined in SetUserRegion.astro
+    userRegion: string; // defined in SetUserRegion.astro (SetUserRegionDev.astro for dev)
+
     requestedLocale: string; // defined in TranslationNotFoundRedirect.astro
     preferredLocale: string; // defined in SetPreferredLocale.astro
     availableLocales: string[]; // defined in SetPreferredLocale.astro
@@ -55,6 +67,7 @@ declare global {
     baseProductTitle: string; // defined in ProductDetails.astro
 
     cart: Cart; // defined in CartStore.astro
+    cookies: Cookies; // defined in Cookies.astro
     checkoutInfo: CheckoutInfo; // defined in CartStore.astro
     openCart: () => void; // defined in CartOverlay.astro
     addProductToCart: (id: string) => void; // defined in CartOverlay.astro

@@ -8,6 +8,7 @@ import localizeCMSImage from "@utils/localizeCMSImage";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
+import RegionSelectorsDropdown from "./RegionSelectorsDropdown.astro";
 
 const { logo, nav_background, nav_background_sm, sidebar_background } =
   RecurringImages;
@@ -26,6 +27,7 @@ const recurData = CMS.get("recurringElement", docLocale),
   ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", docLocale);
 
 const {
+  text_region,
   text_language,
   Button_save_text,
   search_text_no_result_found,
@@ -37,6 +39,7 @@ const {
   Nav_menu_search_visibility: searchVisibility,
   Nav_menu_profile_visibility: profileVisibility,
   Nav_menu_localization_visibility: localizationVisibility,
+  Nav_menu_region_selector_visibility: regionSelectorVisibility,
   Nav_menu_language_selector_visibility: languageSelectorVisibility,
 } = recurData;
 ---
@@ -264,7 +267,7 @@ const {
                 </div>
 
                 <div class="grid gap-[15px] content-between bg-white rounded-[12px] p-[25px] -translate-y-3">
-                  <div class="grid gap-[6px] text-black-light">
+                  <div class="grid gap-1.5 text-black-light">
                     <div class="text-[15px] font-medium text-black">
                       {text_language}
                     </div>
@@ -280,6 +283,16 @@ const {
                           <i>{recurData.text_lang_selector_unavailable}</i>
                         </p>
                       ))}
+                  </div>
+
+                  <div class="grid gap-1.5 text-black-light">
+                    <div class="text-[15px] font-medium text-black">
+                      {text_region}
+                    </div>
+
+                    {regionSelectorVisibility && (
+                      <RegionSelectorsDropdown docLocale={docLocale} />
+                    )}
                   </div>
 
                   {/* <button
@@ -530,6 +543,18 @@ const {
                 ))
             }
           </div>
+
+          <div class="grid gap-2.5">
+            <div class="text-[15px] font-medium">
+              {text_region}
+            </div>
+
+            {
+              regionSelectorVisibility && (
+                <RegionSelectorsDropdown docLocale={docLocale} />
+              )
+            }
+          </div>
         </div>
 
         {
@@ -562,16 +587,14 @@ const {
   <script is:inline>
     {
       const navigation = document.getElementById("navigation"),
-        translationNotFoundNotification = document.querySelector(
-          ".translation-not-found-notification"
-        );
+        topNotifications = document.querySelector(".top-notifications");
 
       const updateNavbarStyles = () => {
         // fix sticky navbar position on mobile if top notification is shown
         navigation.style.top = `${
           window.innerWidth >= 768
             ? 0
-            : translationNotFoundNotification.getBoundingClientRect().height
+            : topNotifications.getBoundingClientRect().height
         }px`;
       };
 
@@ -594,6 +617,10 @@ const {
     localizationMenuOpenButton = id("localization-menu-open-btn"),
     localizationMenuSmOpenButton = id("localization-menu-sm-open-btn"),
     localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
+
+  const SelectorsDropdownItems = document.querySelectorAll<HTMLUListElement>(
+    ".selectors-dropdown > div > .selectors-dropdown-item"
+  );
 
   const localization = localizationMenuOpenButton?.parentElement,
     localizationMenu = localizationMenuOpenButton?.nextElementSibling;
@@ -736,33 +763,28 @@ const {
   });
 
 
-  // localizationForms.forEach((localizationForm) => {
-  //   localizationForm.addEventListener("submit", (event) => {
-  //     event.preventDefault();
+  SelectorsDropdownItems.forEach((li) => {
+    li.addEventListener("click", () => {
+      const selector = li.parentElement.parentElement;
 
-  //     const { lang: newLocale } = Object.fromEntries(
-  //       [...localizationForm.querySelectorAll("ul")].map((list) => [
-  //         list.dataset.name,
-  //         list.querySelector<HTMLElement>("li[aria-selected=true]").dataset
-  //           .value,
-  //       ])
-  //     );
+      const { value } = li.dataset,
+        { selectorType } = selector.dataset;
 
-  //     // change & redirect to preferred locale
-  //     localStorage.setItem(`locale`, newLocale);
+      switch (selectorType) {
+        case "lang":
+          location.pathname = window.alternateURLs[value];
+          break;
 
-  //     const localeRegex = new RegExp(
-  //       // @ts-ignore
-  //       `^/(${availableLocales.map((locale) => locale).join("|")})/`
-  //       /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
-  //     );
+        case "region":
+          localStorage.setItem("region", value);
 
-  //     let [, locale] = location.pathname.match(localeRegex) ?? [];
+          window.cookies.country = value;
 
-  //     location.href =
-  //       `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
-  //   });
-  // });
+          location.reload();
+          break;
+      }
+    });
+  });
 </script>
 
 <script>

@@ -226,6 +226,8 @@ const { page } = Astro.props,
 
   const parsedContactInfo = savedCheckoutInfo
     ? JSON.parse(savedCheckoutInfo)
+    : window.userRegion
+    ? { country: window.regions[window.userRegion] }
     : null;
 
   if (parsedContactInfo) {
