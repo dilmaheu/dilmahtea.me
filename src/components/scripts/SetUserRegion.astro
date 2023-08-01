@@ -1,0 +1,21 @@
+---
+import CMS from "@store/CMS";
+
+const regionsData = CMS.get("regions"),
+  regions = Object.fromEntries(
+    regionsData.data.map(({ attributes: { code, name } }) => [code, name])
+  );
+---
+
+<script define:vars={{ regions }}>
+  window.regions = regions;
+
+  const savedUserRegion = localStorage.getItem("region"),
+    userRegionCode = savedUserRegion || window.cookies.country;
+
+  if (Object.keys(window.regions).includes(userRegionCode)) {
+    window.userRegion = userRegionCode;
+
+    savedUserRegion || localStorage.setItem("region", userRegionCode);
+  }
+</script>

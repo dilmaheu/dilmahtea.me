@@ -4,6 +4,7 @@ fragment CheckoutKindnessAttributes on CheckoutKindness {
   checkout_step_order
   Title
   Intro_text
+  text_submit_kindness_cause
   Meta {
     HTML_Title
     Meta_description
@@ -11,6 +12,22 @@ fragment CheckoutKindnessAttributes on CheckoutKindness {
     nofollow
     URL_slug
     Canonical_link
+  }
+}
+
+fragment KindnessCauseAttributes on KindnessCause {
+  cause
+  description
+  featured_blob {
+    data {
+      id
+      attributes {
+        url
+        provider_metadata
+        formats
+        alternativeText
+      }
+    }
   }
 }
 
@@ -23,19 +40,7 @@ query {
         kindness_causes {
           data {
             attributes {
-              cause
-              description
-              featured_blob {
-                data {
-                  id
-                  attributes {
-                    url
-                    provider_metadata
-                    formats
-                    alternativeText
-                  }
-                }
-              }
+              ...KindnessCauseAttributes
             }
           }
         }
@@ -46,19 +51,7 @@ query {
               kindness_causes {
                 data {
                   attributes {
-                    cause
-                    description
-                    featured_blob {
-                      data {
-                        id
-                        attributes {
-                          url
-                          provider_metadata
-                          formats
-                          alternativeText
-                        }
-                      }
-                    }
+                    ...KindnessCauseAttributes
                     localizations(filters: { locale: { eq: "en" } }) {
                       data {
                         attributes {

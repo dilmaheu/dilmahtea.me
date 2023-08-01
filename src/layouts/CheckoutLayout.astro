@@ -14,9 +14,10 @@ interface Props {
   recurData: Record<string, any>;
   metaImageSrc: string;
   alternateURLs: { [locale: string]: string };
+  isCheckoutKindness: boolean;
 }
 
-const { page, meta, locale, alternateURLs, metaImageSrc } =
+const { page, meta, locale, alternateURLs, metaImageSrc, isCheckoutKindness } =
   Astro.props as Props;
 
 const checkoutStepOrder = page.checkout_step_order,
@@ -90,8 +91,8 @@ const checkoutStepOrder = page.checkout_step_order,
   alternateURLs={alternateURLs}
   metaImageSrc={metaImageSrc}
 >
-  <script is:inline>
-    if (Object.keys(window.cart).length === 0) {
+  <script define:vars={{ isCheckoutKindness }}>
+    if (!isCheckoutKindness && Object.keys(window.cart).length === 0) {
       history.back();
     }
   </script>

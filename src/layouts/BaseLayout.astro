@@ -2,18 +2,20 @@
 import "@styles/styles.scss";
 
 import MainHead from "@components/MainHead.astro";
-import Notification from "@components/Notification.astro";
 import LocalizeLinks from "@components/LocalizeLinks.astro";
+import TopNotifications from "@components/TopNotifications.astro";
 
+import Cookies from "@scripts/Cookies.astro";
 import CartStore from "@scripts/CartStore.astro";
+import SetUserRegion from "@scripts/SetUserRegion.astro";
 import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
-import NotificationsObserver from "@scripts/NotificationsObserver.astro";
 import NotificationAnimations from "@scripts/NotificationAnimations.astro";
 
 import {
   Type as notificationType,
   localizedNotifications,
 } from "@utils/getLangNotAvailableNotification";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 interface Props {
   page: Record<string, any>;
@@ -41,46 +43,29 @@ const { page, meta, locale, alternateURLs, metaImageSrc } =
       import.meta.env.DEV && (
         /* content-security-policy header for the development server */ <meta
           http-equiv="Content-Security-Policy"
-          content="default-src 'none'; style-src 'self' 'unsafe-inline' https://use.fontawesome.com; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cse.expertrec.com https://static.openreplay.com; img-src 'self' data: https://dilmahtea.me https://dev.cms.dilmahtea.me; media-src data: 'self' video-src 'self' https://dev.cms.dilmahtea.me; font-src 'self' https://use.fontawesome.com; worker-src blob:; connect-src 'self' wss: https://log.expertrec.com https://searchv7.expertrec.com https://api.openreplay.com https://dev.products.scripts.dilmahtea.me;"
+          content="default-src 'none'; style-src 'self' 'unsafe-inline' https://use.fontawesome.com; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cse.expertrec.com https://static.openreplay.com; img-src 'self' data: https://dilmahtea.me https://dev.cms.dilmahtea.me; media-src data: 'self' video-src 'self' https://dev.cms.dilmahtea.me; font-src 'self' https://use.fontawesome.com; worker-src blob:; connect-src 'self' wss: https://dev.baserow.scripts.dilmahtea.me https://log.expertrec.com https://searchv7.expertrec.com https://api.openreplay.com https://dev.products.scripts.dilmahtea.me;"
         />
       )
     }
 
+    <Cookies />
+
+    <SetUserRegion />
+
     <SetPreferredLocale />
 
-    <script define:vars={{ alternateURLs }}>
+    <script define:vars={{ alternateURLs, shouldDisplayExperimentals }}>
       window.alternateURLs = alternateURLs;
+      window.shouldDisplayExperimentals = shouldDisplayExperimentals;
     </script>
 
     <CartStore />
-
-    <NotificationsObserver />
 
     <NotificationAnimations />
   </head>
 
   <LocalizeLinks locale={locale}>
-    <div class="translation-not-found-notification sticky top-0 z-[1000]">
-      <Notification
-        type={notificationType}
-        notification={localizedNotifications}
-      >
-        <div class="text-center">
-          <notification></notification>
-        </div>
-      </Notification>
-    </div>
-
-    <script is:inline>
-      if (window.requestedLocale) {
-        const translationNotFoundNotification =
-          document.currentScript.previousElementSibling.firstElementChild;
-
-        translationNotFoundNotification.style.display = "flex";
-
-        window.removeTopNotification(translationNotFoundNotification);
-      }
-    </script>
+    <TopNotifications locale={locale} />
 
     <slot />
   </LocalizeLinks>

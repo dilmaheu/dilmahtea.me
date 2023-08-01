@@ -1,5 +1,9 @@
 export {};
 
+type Regions = {
+  [regionCode: string]: string;
+};
+
 interface CartProduct {
   image: string;
   names: string;
@@ -20,6 +24,11 @@ type Cart = {
   updateUI: (cart: Cart) => void;
 } & Record<string, Partial<CartProduct>>;
 
+type Cookies = {
+  country: string;
+  [key: string]: string;
+};
+
 type CheckoutInfoField =
   | "first_name"
   | "last_name"
@@ -38,14 +47,19 @@ type CheckoutInfo = Partial<Record<CheckoutInfoField, string>> &
 
 declare global {
   interface Window {
+    paymentID: string; // defined in CheckoutKindness.astro
     companyName: string; // defined in CheckoutShipping.astro
-    checkoutSuccessLink: string; // defined in CheckoutShipping.astro
-    checkoutShippingLink: string; // defined in CheckoutKindness.astro
+    checkoutSuccessLink: string; // defined in CheckoutKindness.astro
+    checkoutKindnessLink: string; // defined in CheckoutShipping.astro
+
+    regions: Regions; // defined in SetUserRegion.astro
+    userRegion: string; // defined in SetUserRegion.astro (SetUserRegionDev.astro for dev)
 
     requestedLocale: string; // defined in TranslationNotFoundRedirect.astro
     preferredLocale: string; // defined in SetPreferredLocale.astro
     availableLocales: string[]; // defined in SetPreferredLocale.astro
     alternateURLs: { [locale: string]: string }; // defined in BaseLayout.astro
+    shouldDisplayExperimentals: boolean; // defined in BaseLayout.astro
 
     enableScrolling: () => void; // defined in Navbar.astro
     disableScrolling: () => void; // defined in Navbar.astro
@@ -53,6 +67,7 @@ declare global {
     baseProductTitle: string; // defined in ProductDetails.astro
 
     cart: Cart; // defined in CartStore.astro
+    cookies: Cookies; // defined in Cookies.astro
     checkoutInfo: CheckoutInfo; // defined in CartStore.astro
     openCart: () => void; // defined in CartOverlay.astro
     addProductToCart: (id: string) => void; // defined in CartOverlay.astro

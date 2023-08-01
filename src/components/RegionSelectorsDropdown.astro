@@ -1,0 +1,74 @@
+---
+import Icon from "astro-icon";
+
+import CMS from "@store/CMS";
+import SelectorsDropdown from "./SelectorsDropdown.astro";
+import SelectorsDropdownItem from "./SelectorsDropdownItem.astro";
+
+const { docLocale } = Astro.props;
+
+const recurData = CMS.get("recurringElement", docLocale),
+  ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", docLocale);
+
+const regionsData = CMS.get("regions"),
+  regions = regionsData.data.map(({ attributes }) => ({
+    name: attributes.name,
+    code: attributes.code,
+    localizedName: [
+      attributes,
+      ...attributes.localizations.data.map(({ attributes }) => attributes),
+    ].find(({ locale }) => locale.substring(0, 2) === docLocale).name,
+  }));
+
+// sort regions alphabetically
+regions.sort((next, current) =>
+  next.localizedName.localeCompare(current.localizedName)
+);
+---
+
+<SelectorsDropdown
+  selectorType="region"
+  ariaLabel={ariaLabelRecurData.Navbar_region_selectors_text}
+>
+  <SelectorsDropdownItem className="region-selector">
+    <span class="leading-[120%]">
+      {recurData.text_select_your_region}
+    </span>
+  </SelectorsDropdownItem>
+
+  {
+    regions.map(({ name, code, localizedName }) => (
+      <SelectorsDropdownItem className="region-selector" data-value={code}>
+        <span class="flex gap-2 items-center leading-[120%]">
+          <Icon
+            class="w-6 h-6"
+            name={`emojione:flag-for-${name.toLowerCase()}`}
+          />
+
+          <span>{localizedName}</span>
+        </span>
+      </SelectorsDropdownItem>
+    ))
+  }
+</SelectorsDropdown>
+
+<script is:inline>
+  {
+    const regionSelector = document.currentScript.previousElementSibling,
+      dropdownOpenArea = regionSelector.children[1];
+
+    const regions = dropdownOpenArea.querySelectorAll(
+      ".selectors-dropdown-item"
+    );
+
+    for (const li of regions) {
+      if (window.userRegion === li.dataset.value) {
+        regionSelector.firstElementChild.remove();
+
+        regionSelector.prepend(li);
+
+        break;
+      }
+    }
+  }
+</script>
