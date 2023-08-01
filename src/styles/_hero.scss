@@ -28,9 +28,8 @@
   object-fit: cover;
 }
 
-.hero-text-container {
+@mixin hero-text-properties {
   @apply flex items-center sm:min-h-[clamp(350px,38vw+75px,612px)];
-
   @include poly-fluid-sizing(
     "padding-bottom",
     (
@@ -42,6 +41,16 @@
       1536px: 80px,
     )
   );
+}
+
+.hero-text-container {
+  @include hero-text-properties;
+}
+
+.hero-text-container-sm {
+  @media (min-width: 640px) {
+    @include hero-text-properties;
+  }
 }
 
 .hero-title {

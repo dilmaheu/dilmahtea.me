@@ -199,7 +199,7 @@ const {
     >
       <div class="flex gap-[35px] md:gap-[50px]">
         <a href="/" class="brand-logo my-auto">
-          <img class="w-full h-full" {...logo} />
+          <img class="h-full" {...logo} />
         </a>
 
         {
@@ -443,7 +443,7 @@ const {
       }
 
       <div class="grid content-between h-full px-[30px] pt-[26px] pb-9 z-10">
-        <div class="z-10 grid gap-9">
+        <div class="z-10 grid gap-9 overflow-y-auto">
           <nav class="flex flex-col gap-[35px] text-white">
             {
               menu.map(
@@ -625,29 +625,33 @@ const {
   const localization = localizationMenuOpenButton?.parentElement,
     localizationMenu = localizationMenuOpenButton?.nextElementSibling;
 
-  window.disableScrolling = () => {
-    const overflowY =
-      window.innerHeight < document.body.scrollHeight ? "scroll" : "auto";
+  let scrollingDisabled = false;
+  let scrollYPosition = 0;
 
-    Object.assign(document.body.style, {
-      overflowY,
-      width: "100%",
-      position: "fixed",
-      top: `-${scrollY}px`,
-    });
+  window.disableScrolling = () => {
+    if (scrollingDisabled) return;
+
+    scrollYPosition = window.scrollY;
+    document.body.style.overflowY = "hidden";
+    document.body.style.width = "100%";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollYPosition}px`;
+    document.body.style.left = "0";
+
+    scrollingDisabled = true;
   };
 
   window.enableScrolling = () => {
-    const scrollYPosition =
-      parseInt(document.body.style.top.slice(1, -2)) || window.scrollY;
+    if (!scrollingDisabled) return;
 
-    Object.assign(document.body.style, {
-      width: "auto",
-      overflowY: "auto",
-      position: "static",
-    });
+    document.body.style.overflowY = "auto";
+    document.body.style.width = "auto";
+    document.body.style.position = "static";
+    document.body.style.top = "0";
 
     window.scrollTo({ top: scrollYPosition });
+
+    scrollingDisabled = false;
   };
 
   const updateSidebarTopPosition = () => {
@@ -658,8 +662,6 @@ const {
     sidebar.style.paddingBottom = `${sidebarTop}px`;
   };
 
-  window.addEventListener("resize", updateSidebarTopPosition);
-
   window.addEventListener("resize", () => {
     if (window.innerWidth > 768) {
       // enable scrolling if cart is not open
@@ -667,44 +669,59 @@ const {
 
       // remove event listener to prevent memory leaks
       window.removeEventListener("resize", updateSidebarTopPosition);
-    } else if (
-      sidebar.style.display === "block" ||
-      localizationMenuSm.style.display === "block"
-    ) {
+    } else if (sidebarOpened || localizationMenuVisible) {
       window.disableScrolling();
 
-      if (sidebar.style.display === "block") {
-        // readd event listener in case it was removed
+      if (sidebarOpened) {
+        // re-add event listener in case it was removed
         window.addEventListener("resize", updateSidebarTopPosition);
       }
     }
   });
 
+  let localizationMenuVisible = false;
+  let sidebarOpened = false;
+
+  const toggleLocalizationMenu = () => {
+    localizationMenuVisible = !localizationMenuVisible;
+    localizationMenuSm.style.display = localizationMenuVisible ? "block" : "none";
+
+    if (localizationMenuVisible) {
+      window.disableScrolling();
+    } else {
+      window.enableScrolling();
+    }
+  };
+
+  const toggleSidebar = () => {
+    sidebarOpened = !sidebarOpened;
+    sidebar.style.display = sidebarOpened ? "block" : "none";
+    sidebarOpenButton.style.display = sidebarOpened ? "none" : "block";
+    sidebarCloseButton.style.display = sidebarOpened ? "block" : "none";
+
+    if (sidebarOpened) {
+      window.disableScrolling();
+      updateSidebarTopPosition();
+      window.addEventListener("resize", updateSidebarTopPosition);
+    } else {
+      window.enableScrolling();
+      window.removeEventListener("resize", updateSidebarTopPosition);
+    }
+  };
+
   openCartBtn?.addEventListener("click", () => {
     window.openCart();
   });
 
-  sidebarOpenButton?.addEventListener("click", () => {
-    window.removeEventListener("resize", updateSidebarTopPosition);
+  sidebarOpenButton?.addEventListener("click", toggleSidebar);
 
-    updateSidebarTopPosition();
+  sidebarCloseButton?.addEventListener("click", toggleSidebar);
 
-    sidebar.style.display = "block";
-    sidebarOpenButton.style.display = "none";
-    sidebarCloseButton.style.display = "block";
+  localizationMenuOpenButton?.addEventListener("click", toggleLocalizationMenu);
 
-    window.disableScrolling();
+  localizationMenuSmOpenButton?.addEventListener("click", toggleLocalizationMenu);
 
-    window.addEventListener("resize", updateSidebarTopPosition);
-  });
-
-  sidebarCloseButton?.addEventListener("click", () => {
-    sidebar.style.display = "none";
-    sidebarOpenButton.style.display = "block";
-    sidebarCloseButton.style.display = "none";
-
-    window.enableScrolling();
-  });
+  localizationMenuSmCloseButton?.addEventListener("click", toggleLocalizationMenu);
 
   localization?.addEventListener("mouseenter", () => {
     localizationMenu.classList.remove("hidden");
@@ -729,7 +746,6 @@ const {
         localizationOpenedByClick = false;
       } else {
         localizationMenuClassList.remove("hidden");
-
         localizationOpenedByClick = true;
       }
 
@@ -740,24 +756,12 @@ const {
       ]("mouseleave", hideLocalizationMenu);
     }
 
-    if (!localization?.contains(target)) {
+    if (localization && !localization?.contains(target)) {
       hideLocalizationMenu();
-
       localization.addEventListener("mouseleave", hideLocalizationMenu);
     }
   });
 
-  localizationMenuSmOpenButton?.addEventListener("click", () => {
-    localizationMenuSm.style.display = "block";
-
-    window.disableScrolling();
-  });
-
-  localizationMenuSmCloseButton?.addEventListener("click", () => {
-    localizationMenuSm.style.display = "none";
-
-    window.enableScrolling();
-  });
 
   SelectorsDropdownItems.forEach((li) => {
     li.addEventListener("click", () => {

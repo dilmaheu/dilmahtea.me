@@ -10,7 +10,7 @@ import RecurringImages from "@store/RecurringImages";
 
 const { white_cup } = RecurringImages;
 
-const { page, plainTitle, headerBackground } = Astro.props,
+const { page, plainTitle, headerBackground, headerBackgroundSm } = Astro.props,
   { locale } = page,
   { ASSETS_URL } = import.meta.env;
 
@@ -19,14 +19,15 @@ const recurData = CMS.get("recurringElement", locale),
 ---
 
 {/* Hero Section */}
-<Hero {locale} {page} {headerBackground}>
+<Hero {locale} {page} {headerBackground} {headerBackgroundSm}>
   {/* Text Content */}
   <div
     role="banner"
     aria-label={ariaLabelRecurData.Post_intro_text}
     class:list={[
       "wrapper relative z-30 h-full",
-      !headerBackground && "hero-text-container",
+      !headerBackground &&
+        (headerBackgroundSm ? "hero-text-container-sm" : "hero-text-container"),
     ]}
   >
     <div
@@ -139,7 +140,7 @@ const recurData = CMS.get("recurringElement", locale),
         {
           page?.Heading_button_text && (
             <a
-              href={page.Heading_button_link}
+              href={page.Heading_button_link ?? "#"}
               class:list={[
                 "flex w-fit text-primary font-bold leading-[120%]",
                 "py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9 bg-white rounded-full",
@@ -194,7 +195,7 @@ const recurData = CMS.get("recurringElement", locale),
 
 {/* Blob Image - Mobile View */}
 {
-  !headerBackground && (
+  !headerBackground && !headerBackgroundSm && (
     <div class="hero-img-sm-container block sm:hidden w-full relative z-20 -mt-20">
       <ClippedPicture
         preload="avif"

@@ -47,9 +47,10 @@ type CheckoutInfo = Partial<Record<CheckoutInfoField, string>> &
 
 declare global {
   interface Window {
+    paymentID: string; // defined in CheckoutKindness.astro
     companyName: string; // defined in CheckoutShipping.astro
-    checkoutSuccessLink: string; // defined in CheckoutShipping.astro
-    checkoutShippingLink: string; // defined in CheckoutKindness.astro
+    checkoutSuccessLink: string; // defined in CheckoutKindness.astro
+    checkoutKindnessLink: string; // defined in CheckoutShipping.astro
 
     regions: Regions; // defined in SetUserRegion.astro
     userRegion: string; // defined in SetUserRegion.astro (SetUserRegionDev.astro for dev)
@@ -58,6 +59,7 @@ declare global {
     preferredLocale: string; // defined in SetPreferredLocale.astro
     availableLocales: string[]; // defined in SetPreferredLocale.astro
     alternateURLs: { [locale: string]: string }; // defined in BaseLayout.astro
+    shouldDisplayExperimentals: boolean; // defined in BaseLayout.astro
 
     enableScrolling: () => void; // defined in Navbar.astro
     disableScrolling: () => void; // defined in Navbar.astro

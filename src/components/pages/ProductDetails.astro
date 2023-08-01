@@ -625,6 +625,86 @@ if (stockAmount === 0) {
     </div>
   </form>
 
+  {
+    stockAmount > 0 && (
+      <form
+        slot="cart-adding-form-fixed-sm"
+        class:list={[
+          "cart-adding-form-fixed-sm flex md:hidden items-center",
+          "w-full py-[15px] fixed inset-x-0 bottom-0 z-[99]",
+          "shadow-[0_4px_10px_rgba(0,0,0,0.6)] bg-secondary",
+        ]}
+      >
+        <input type="hidden" name="sku" value={productSKU} />
+        <input type="hidden" name="names" value={productNames} />
+        <input type="hidden" name="image" value={productThumbnailURL} />
+
+        <input type="hidden" name="tax" value={tax} />
+        <input type="hidden" name="price" value={productPriceIncludingTax} />
+
+        <div class="wrapper flex items-center gap-4 justify-between">
+          <div
+            class:list={[
+              stockAmount < 1 && "cursor-not-allowed",
+              "w-fit flex items-center text-white p-1 bg-primary rounded-full",
+            ]}
+          >
+            <button
+              data-action="decrement"
+              aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
+              class:list={[
+                stockAmount < 1 && "cursor-not-allowed",
+                "product-amount-tweak-btn w-10 h-10 py-2.5 pl-3 pr-1",
+              ]}
+              disabled
+            >
+              <Icon name="akar-icons:minus" class="w-6 h-6 select-none" />
+            </button>
+
+            <input
+              type="number"
+              name="quantity"
+              aria-label={ariaLabelRecurData.Product_quantity_text}
+              min={stockAmount > 0 ? 1 : 0}
+              max={stockAmount}
+              value={stockAmount > 0 ? 1 : 0}
+              class:list={[
+                stockAmount < 1 && "cursor-not-allowed",
+                "product-amount-input w-10 h-full bg-transparent text-center outline-none",
+              ]}
+              required
+              disabled={stockAmount < 1 && "disabled"}
+            />
+
+            <button
+              data-action="increment"
+              aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
+              class:list={[
+                stockAmount < 1 && "cursor-not-allowed",
+                "product-amount-tweak-btn w-10 h-10 py-2.5 pl-1 pr-3",
+              ]}
+              disabled={stockAmount < 1 && "disabled"}
+            >
+              <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
+            </button>
+          </div>
+
+          <div class="grow">
+            <button
+              class:list={[
+                "w-full flex justify-center items-center gap-3 p-3",
+                "bg-primary text-white font-bold text-base rounded-full",
+              ]}
+            >
+              <Icon name="mi:shopping-cart" class="w-[26px] h-[26px]" />
+              {checkoutRecurData.text_add_to_cart}
+            </button>
+          </div>
+        </div>
+      </form>
+    )
+  }
+
   <div slot="post-details" class="product-details prose content-text">
     <ClipPathSVG
       id="price-breakdown-curve"
@@ -1018,7 +1098,9 @@ if (stockAmount === 0) {
     queryAll = document.querySelectorAll.bind(document);
 
   const accordions = queryAll("button.accordion"),
-    cartAddingForms = queryAll(".cart-adding-form, .cart-adding-form-sm"),
+    cartAddingForms = queryAll(
+      ".cart-adding-form, .cart-adding-form-sm, .cart-adding-form-fixed-sm"
+    ),
     productAmountPriceOutput = query(".product-amount-price"),
     productAmountInputs = queryAll(".product-amount-input"),
     productAmountTweakBtns = queryAll(".product-amount-tweak-btn"),
