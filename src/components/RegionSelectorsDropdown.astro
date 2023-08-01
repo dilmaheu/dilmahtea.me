@@ -7,7 +7,8 @@ import SelectorsDropdownItem from "./SelectorsDropdownItem.astro";
 
 const { docLocale } = Astro.props;
 
-const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", docLocale);
+const recurData = CMS.get("recurringElement", docLocale),
+  ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", docLocale);
 
 const regionsData = CMS.get("regions"),
   regions = regionsData.data.map(({ attributes }) => ({
@@ -29,6 +30,12 @@ regions.sort((next, current) =>
   selectorType="region"
   ariaLabel={ariaLabelRecurData.Navbar_region_selectors_text}
 >
+  <SelectorsDropdownItem className="region-selector">
+    <span class="leading-[120%]">
+      {recurData.text_select_your_region}
+    </span>
+  </SelectorsDropdownItem>
+
   {
     regions.map(({ name, code, localizedName }) => (
       <SelectorsDropdownItem className="region-selector" data-value={code}>
@@ -48,20 +55,15 @@ regions.sort((next, current) =>
 <script is:inline>
   {
     const regionSelector = document.currentScript.previousElementSibling,
-      regions = regionSelector.querySelectorAll(".selectors-dropdown-item");
+      dropdownOpenArea = regionSelector.children[1];
 
-    const [alphabeticallyFirstRegion, dropdownOpenArea] = regionSelector;
-
-    if (!window.userRegion) {
-      regionSelector.parentElement.remove();
-    }
+    const regions = dropdownOpenArea.querySelectorAll(
+      ".selectors-dropdown-item"
+    );
 
     for (const li of regions) {
-      if (
-        window.userRegion === li.dataset.value &&
-        li !== alphabeticallyFirstRegion
-      ) {
-        dropdownOpenArea.prepend(alphabeticallyFirstRegion);
+      if (window.userRegion === li.dataset.value) {
+        regionSelector.firstElementChild.remove();
 
         regionSelector.prepend(li);
 
