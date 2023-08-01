@@ -6,7 +6,11 @@ declare interface ProductFilters {
 }
 
 const [productFilters, setProductFilters] = createSignal<ProductFilters>(
-  JSON.parse(localStorage.getItem("preferredFilters") || "{}")
+  JSON.parse(
+    (typeof window !== "undefined" &&
+      window.sessionStorage.getItem("preferredFilters")) ||
+      "{}"
+  )
 );
 
 export { productFilters, setProductFilters };
