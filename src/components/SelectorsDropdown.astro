@@ -1,10 +1,25 @@
 ---
+import { parseHTML } from "linkedom";
+
 const { selectorType, ariaLabel } = Astro.props;
+
+const defaultSlotHTML = await Astro.slots.render("default");
+
+const { document } = parseHTML(defaultSlotHTML),
+  listItems = [...document.querySelectorAll("li")];
+
+const firstListItemHTML = listItems[0].outerHTML,
+  dropdownOpenAreaInnerHTML = listItems
+    .slice(1)
+    .map((li) => li.outerHTML)
+    .join("");
+
+const dropdownInnerHTML = `${firstListItemHTML}<div>${dropdownOpenAreaInnerHTML}</div>`;
 ---
 
 <style lang="scss" is:global>
   .selectors-dropdown[data-selector-type="lang"]
-    li:first-child
+    > li
     > span
     > span
     > span:not(:first-child) {
@@ -12,16 +27,19 @@ const { selectorType, ariaLabel } = Astro.props;
   }
 
   .selectors-dropdown {
-    li {
-      &:first-child {
-        @apply font-medium border-y-2 rounded-full;
+    > li {
+      @apply font-medium border-2 border-primary rounded-full;
 
-        > span {
-          @apply py-2.5 px-[15px];
-        }
+      > span {
+        @apply py-2.5 px-[15px];
       }
+    }
 
-      &:not(:first-child) {
+    > div {
+      @apply absolute mt-[5px] w-full overflow-y-auto
+        rounded-t-[25px] rounded-b-[25px];
+
+      > li {
         display: none;
 
         > span {
@@ -34,24 +52,16 @@ const { selectorType, ariaLabel } = Astro.props;
           }
         }
       }
-
-      &:nth-child(2) {
-        @apply border-t-2 rounded-t-[25px];
-      }
-
-      &:last-child:not(:first-child) {
-        @apply border-b-2 rounded-b-[25px];
-      }
     }
 
     &.dropdown-open {
       z-index: 1;
 
-      li {
-        display: block;
+      > div {
+        @apply border-2 border-primary;
 
-        &:first-child {
-          @apply mb-[5px];
+        > li {
+          display: block;
         }
       }
     }
@@ -61,19 +71,28 @@ const { selectorType, ariaLabel } = Astro.props;
 <ul
   role="listbox"
   aria-label={ariaLabel}
+  set:html={dropdownInnerHTML}
   data-selector-type={selectorType}
   class:list={[
-    // set a fixed height to make the dropdown overflow when opened
-    // ensure the height just slightly exceeds the first child's offset height in both mobile & desktop views
-    "selectors-dropdown relative h-11",
+    "selectors-dropdown relative",
     "text-primary text-sm lg:text-base select-none drop-shadow-lg",
   ]}
->
-  <slot />
-</ul>
+/>
 
 <script>
   const dropdowns = [...document.querySelectorAll(".selectors-dropdown")];
+
+  const updateDropdownOpenAreaHeight = () => {
+    dropdowns.forEach((dropdown) => {
+      if (dropdown.classList.contains("dropdown-open")) {
+        const dropdownOpenArea = [...dropdown.children][1] as HTMLDivElement,
+          dropdownOpenAreaMaxHeight =
+            window.innerHeight - dropdownOpenArea.getBoundingClientRect().y - 8;
+
+        dropdownOpenArea.style.maxHeight = dropdownOpenAreaMaxHeight + "px";
+      }
+    });
+  };
 
   // toggle language selectors dropdown
   document.addEventListener("click", (event) => {
@@ -82,6 +101,8 @@ const { selectorType, ariaLabel } = Astro.props;
     dropdowns.forEach((dropdown) => {
       if (dropdown.contains(target)) {
         dropdown.classList.toggle("dropdown-open");
+
+        updateDropdownOpenAreaHeight();
       } else {
         dropdown.classList.remove("dropdown-open");
       }
@@ -98,4 +119,6 @@ const { selectorType, ariaLabel } = Astro.props;
       }
     });
   });
+
+  window.addEventListener("resize", updateDropdownOpenAreaHeight);
 </script>

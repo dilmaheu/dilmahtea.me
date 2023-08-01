@@ -619,7 +619,7 @@ const {
     localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
 
   const SelectorsDropdownItems = document.querySelectorAll<HTMLUListElement>(
-    ".selectors-dropdown-item"
+    ".selectors-dropdown > div > .selectors-dropdown-item"
   );
 
   const localization = localizationMenuOpenButton?.parentElement,
@@ -761,9 +761,7 @@ const {
 
   SelectorsDropdownItems.forEach((li) => {
     li.addEventListener("click", () => {
-      const selector = li.parentElement;
-
-      if (selector.firstElementChild === li) return;
+      const selector = li.parentElement.parentElement;
 
       const { value } = li.dataset,
         { selectorType } = selector.dataset;

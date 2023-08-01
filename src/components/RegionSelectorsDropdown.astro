@@ -47,14 +47,22 @@ regions.sort((next, current) =>
 
 <script is:inline>
   {
-    const regionSelector = document.currentScript.previousElementSibling;
+    const regionSelector = document.currentScript.previousElementSibling,
+      regions = regionSelector.querySelectorAll(".selectors-dropdown-item");
+
+    const [alphabeticallyFirstRegion, dropdownOpenArea] = regionSelector;
 
     if (!window.userRegion) {
       regionSelector.parentElement.remove();
     }
 
-    for (const li of regionSelector.children) {
-      if (window.userRegion === li.dataset.value) {
+    for (const li of regions) {
+      if (
+        window.userRegion === li.dataset.value &&
+        li !== alphabeticallyFirstRegion
+      ) {
+        dropdownOpenArea.prepend(alphabeticallyFirstRegion);
+
         regionSelector.prepend(li);
 
         break;
