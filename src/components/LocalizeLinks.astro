@@ -1,16 +1,14 @@
 ---
-import { parseHTML } from "linkedom";
 import getLocalesData from "@utils/getLocalesData";
 
 const { locales } = getLocalesData();
 
 declare interface Props {
   locale: string;
+  documentBody: Document;
 }
 
-const { locale } = Astro.props as Props,
-  documentBodyHTML = await Astro.slots.render("default"),
-  { document: documentBody } = parseHTML(documentBodyHTML),
+const { locale, documentBody } = Astro.props as Props,
   documentLinks = documentBody.querySelectorAll("a");
 
 documentLinks.forEach((link) => {
