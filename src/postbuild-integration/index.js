@@ -7,19 +7,11 @@ import generateXMLSitemap from "./tasks/generateXMLSitemap.js";
 import rewrite404RoutesPaths from "./tasks/rewrite404RoutesPaths.js";
 import generateSecurityHeaders from "./tasks/generateSecurityHeaders.js";
 import removeAstroIconAttributes from "./tasks/removeAstroIconAttributes.js";
-import shouldDisplayExperimentals from "../utils/shouldDisplayExperimentals.js";
 
 const CSPRecord = {
   "default-src": ["'none'"],
   "style-src": ["'self'", "'unsafe-inline'", "https://use.fontawesome.com"],
-  "img-src": [
-    "'self'",
-    "data:",
-    "https://dilmahtea.me",
-    shouldDisplayExperimentals
-      ? "https://dev.cms.dilmahtea.me"
-      : "https://cms.dilmahtea.me",
-  ],
+  "img-src": ["'self'", "data:", "https://dilmahtea.me"],
   "media-src": ["'self'", "data:"],
   "video-src": ["'self'"],
   "font-src": ["'self'", "https://use.fontawesome.com"],
