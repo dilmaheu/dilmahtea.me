@@ -163,11 +163,18 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
                 });
               }
 
-              const poster = firstFrameFilePath.slice(8);
+              const { default: poster } = await import(
+                firstFrameFilePath.slice(1) + "?format=webp&w=1920&quality=10"
+              );
 
               return (
                 <Fragment>
-                  <link rel="preload" as="image" href={poster} />
+                  <link
+                    as="image"
+                    rel="preload"
+                    href={poster}
+                    fetchpriority="high"
+                  />
 
                   {async () => (
                     <video
