@@ -2,6 +2,8 @@ import CMS from "@store/CMS.js";
 import Products from "@store/Products";
 import tryUntilResolve from "@utils/tryUntilResolve";
 
+import { importRemoteImage } from "astro-imagetools/api";
+
 const { ASSETS_URL } = import.meta.env,
   contentTypes = [
     "blogs",
