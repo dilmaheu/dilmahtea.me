@@ -12,6 +12,8 @@ import localizeCMSImage from "@utils/localizeCMSImage";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 
+import load from "node_modules/astro-imagetools/plugin/hooks/load.js";
+
 const { hero_background, hero_background_sm } = RecurringImages;
 
 const { page, locale, headerBackground, headerBackgroundSm } = Astro.props,
@@ -163,9 +165,14 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
                 });
               }
 
-              const { default: poster } = await import(
-                firstFrameFilePath.slice(1) + "?format=webp&w=1920&quality=10"
-              );
+              const { default: poster } = (
+                await load(
+                  process.cwd() +
+                    firstFrameFilePath.slice(1) +
+                    "?format=webp&w=1920&quality=10",
+                  path.basename(firstFrameFilePath, ".jpg")
+                )
+              ).slice(16, -1);
 
               return (
                 <Fragment>
