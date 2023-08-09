@@ -4,7 +4,7 @@ import DynamicHTML from "@components/DynamicHTML.astro";
 import OrderSummary from "@components/OrderSummary.astro";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
-const { page, recurData } = Astro.props,
+const { page } = Astro.props,
   { locale } = page,
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
@@ -120,7 +120,6 @@ const checkoutInfoLink = `/${locale}/${
 
 <script
   define:vars={{
-    companyName: recurData.Company_name,
     checkoutInfoLink,
     checkoutKindnessLink,
   }}
@@ -129,7 +128,6 @@ const checkoutInfoLink = `/${locale}/${
     location.href = checkoutInfoLink;
   }
 
-  window.companyName = companyName;
   window.checkoutKindnessLink = checkoutKindnessLink;
 </script>
 
@@ -158,7 +156,6 @@ const checkoutInfoLink = `/${locale}/${
 
         const paymentInfo = {
           ...window.checkoutInfo,
-          product_name: window.companyName,
           product_desc,
           cart: JSON.stringify(window.cart),
           tax: window.cart.tax.split(",").join("."),
