@@ -48,7 +48,6 @@ type CheckoutInfo = Partial<Record<CheckoutInfoField, string>> &
 declare global {
   interface Window {
     paymentID: string; // defined in CheckoutKindness.astro
-    companyName: string; // defined in CheckoutShipping.astro
     checkoutSuccessLink: string; // defined in CheckoutKindness.astro
     checkoutKindnessLink: string; // defined in CheckoutShipping.astro
 
