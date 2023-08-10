@@ -8,5 +8,4 @@ export default defineConfig({
   includeSourceFormat: false,
   placeholder: "dominantColor",
   assetFileNames: "_astro/[name]-[width][extname]",
-  globalImportRemoteImage: true,
 });

@@ -70,9 +70,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   item={{
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    image: await importRemoteImage(
-      ASSETS_URL + page.Intro_blob?.data.attributes.url
-    ),
+    image: await importImage(ASSETS_URL + page.Intro_blob?.data.attributes.url),
     name: page.Estate_name,
     description: `${(await renderMarkdown(page.Intro_text)).replace(
       /(<([^>]+)>)/gi,
