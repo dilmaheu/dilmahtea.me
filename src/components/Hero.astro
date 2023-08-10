@@ -165,14 +165,9 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
                 });
               }
 
-              const { default: poster } = (
-                await load(
-                  process.cwd() +
-                    firstFrameFilePath.slice(1) +
-                    "?format=webp&w=1920&quality=10",
-                  path.basename(firstFrameFilePath, ".jpg")
-                )
-              ).slice(16, -1);
+              const poster = await importImage(
+                firstFrameFilePath.slice(1) + "?format=webp&w=1920&quality=10"
+              );
 
               return (
                 <Fragment>

@@ -10,7 +10,7 @@ await fs.promises.cp(CMS_IMAGES_DIR, CMS_IMAGES_DEST_DIR, { recursive: true });
 
 const assetsDir = "./dist/_astro/",
   assetsPaths = await globby("./dist/_astro/*"),
-  jsonFilesPaths = await globby("./dist/db/**/*.json"),
+  jsonFilesPaths = await globby("./dist/**/*.json"),
   imageAssetBaseRegex = /([^]+_)+[0-9a-z]{10}(-\d+w)?/;
 
 const pathsDictionary = assetsPaths
