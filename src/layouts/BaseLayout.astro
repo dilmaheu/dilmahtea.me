@@ -1,6 +1,8 @@
 ---
 import "@styles/styles.scss";
 
+import { parseHTML } from "linkedom";
+
 import MainHead from "@components/MainHead.astro";
 import LocalizeLinks from "@components/LocalizeLinks.astro";
 import TopNotifications from "@components/TopNotifications.astro";
@@ -11,10 +13,6 @@ import SetUserRegion from "@scripts/SetUserRegion.astro";
 import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 import NotificationAnimations from "@scripts/NotificationAnimations.astro";
 
-import {
-  Type as notificationType,
-  localizedNotifications,
-} from "@utils/getLangNotAvailableNotification";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 interface Props {
@@ -27,6 +25,20 @@ interface Props {
 
 const { page, meta, locale, alternateURLs, metaImageSrc } =
   Astro.props as Props;
+
+const documentBodyHTML = await Astro.slots.render("default"),
+  { document: documentBody } = parseHTML(documentBodyHTML),
+  relPreloadLinks = documentBody.querySelectorAll("link[rel='preload']");
+
+const relPreloadLinksHTML = [...relPreloadLinks]
+  .map((link) => {
+    link.remove();
+
+    return link.outerHTML;
+  })
+  .join("\n");
+
+// document is rewritten in LocalizeLinks.astro
 ---
 
 <html lang={locale}>
@@ -37,6 +49,7 @@ const { page, meta, locale, alternateURLs, metaImageSrc } =
       locale={locale}
       metaImageSrc={metaImageSrc}
       alternateURLs={alternateURLs}
+      relPreloadLinksHTML={relPreloadLinksHTML}
     />
 
     {
@@ -64,9 +77,7 @@ const { page, meta, locale, alternateURLs, metaImageSrc } =
     <NotificationAnimations />
   </head>
 
-  <LocalizeLinks locale={locale}>
-    <TopNotifications locale={locale} />
+  <TopNotifications locale={locale} />
 
-    <slot />
-  </LocalizeLinks>
+  <LocalizeLinks locale={locale} documentBody={documentBody} />
 </html>
