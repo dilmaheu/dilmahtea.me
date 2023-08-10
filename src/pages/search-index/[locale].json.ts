@@ -64,7 +64,7 @@ await Promise.all(
     // @ts-ignore
     .map(async ({ Intro_blob }) => {
       Intro_blob.url = await tryUntilResolve(
-        () => importRemoteImage(Intro_blob.url),
+        () => importImage(Intro_blob.url),
         (message) => message + " " + Intro_blob.url
       );
     })

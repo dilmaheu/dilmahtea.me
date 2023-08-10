@@ -18,7 +18,7 @@ export default defineConfig({
     plugins: [
       AutoImport({
         include: [/\.(astro|ts|js)$/],
-        imports: [{ "astro-imagetools/api": ["importRemoteImage"] }],
+        imports: [{ "astro-imagetools/api": ["importImage"] }],
       }),
       {
         name: "permissions-policy",

@@ -83,7 +83,7 @@ async function processProductData(attributes) {
       availableFormatThumbnails = await Promise.all(
         availableFormats.slice(0, 2).map(async ({ thumbnail }) => ({
           src: await tryUntilResolve(
-            () => importRemoteImage(ASSETS_URL + thumbnail.src),
+            () => importImage(ASSETS_URL + thumbnail.src),
             (message) => message + " " + ASSETS_URL + thumbnail.src
           ),
           alt: thumbnail.alt,
@@ -103,7 +103,7 @@ async function processProductData(attributes) {
     ASSETS_URL + Intro_blob.data.attributes.formats.thumbnail.url;
 
   const thumbnail = await tryUntilResolve(
-    () => importRemoteImage(thumbnailUrl),
+    () => importImage(thumbnailUrl),
     (message) => message + " " + thumbnailUrl
   );
 

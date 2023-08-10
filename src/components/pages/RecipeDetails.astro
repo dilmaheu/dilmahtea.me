@@ -865,9 +865,7 @@ const nutrition: Nutrition = {
     "@context": "https://schema.org",
     "@type": "Recipe",
     name: page.Title,
-    image: await importRemoteImage(
-      ASSETS_URL + page.Intro_blob?.data.attributes.url
-    ),
+    image: await importImage(ASSETS_URL + page.Intro_blob?.data.attributes.url),
     author: {
       "@type": "Person",
       name: page.authors.data.map(({ attributes }) => attributes.givenName),
@@ -913,7 +911,7 @@ const nutrition: Nutrition = {
             (index + 1)
           }`,
           image: step.Instructions_part_steps_blob.data
-            ? await importRemoteImage(
+            ? await importImage(
                 ASSETS_URL +
                   step.Instructions_part_steps_blob?.data?.attributes.url
               )

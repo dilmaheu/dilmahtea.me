@@ -38,7 +38,7 @@ const { SKU: productSKU } = page,
   productPriceIncludingTax = productPrice + tax,
   productNames = JSON.stringify(page.names);
 
-const productThumbnailURL = await importRemoteImage(
+const productThumbnailURL = await importImage(
   ASSETS_URL + page.Intro_blob.data.attributes.formats.thumbnail.url
 );
 
@@ -85,7 +85,7 @@ if (stockAmount === 0) {
       link: data.link,
       format: data.format,
       thumbnail: {
-        src: await importRemoteImage(ASSETS_URL + data.thumbnail.src),
+        src: await importImage(ASSETS_URL + data.thumbnail.src),
         alt: data.thumbnail.alt,
       },
     }))
@@ -1039,9 +1039,7 @@ if (stockAmount === 0) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: page.Title,
-    image: await importRemoteImage(
-      ASSETS_URL + page.Intro_blob?.data.attributes.url
-    ),
+    image: await importImage(ASSETS_URL + page.Intro_blob?.data.attributes.url),
     description: `${(await renderMarkdown(page.Intro_text)).replace(
       /(<([^>]+)>)/gi,
       ""

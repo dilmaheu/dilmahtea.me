@@ -151,9 +151,7 @@ const { ASSETS_URL } = import.meta.env,
     name: page.Title,
     image: {
       "@type": "ImageObject",
-      url: await importRemoteImage(
-        ASSETS_URL + page.Intro_blob?.data.attributes.url
-      ),
+      url: await importImage(ASSETS_URL + page.Intro_blob?.data.attributes.url),
     },
     step: await Promise.all(
       page.Method.map(async (method) => ({
@@ -169,7 +167,7 @@ const { ASSETS_URL } = import.meta.env,
               "@type": "ImageObject",
               url: !step.Step_blob?.data
                 ? ""
-                : await importRemoteImage(
+                : await importImage(
                     ASSETS_URL + step.Step_blob?.data?.attributes.url
                   ),
             },
