@@ -308,8 +308,33 @@ const latestProducts = catalog.Products.slice()
     </div>
 
     {
-      page.Block4_visibility && (
-        <ProductCategories {locale} title={page.Block4_title} />
+      page.Block6_visibility && (
+        <section>
+          {page.Block6_visibility && (
+            <h2
+              id={page?.Block6_title.toLowerCase().replaceAll(" ", "-")}
+              class:list={[
+                "heading-secondary mb-[25px] sm:mb-[30px]",
+                "wrapper font-semibold leading-[130%] text-primary",
+              ]}
+            >
+              {page.Block6_title}
+            </h2>
+          )}
+
+          <ProductCard {locale} products={latestProducts} />
+
+          {page.Block6_button_text && (
+            <div class="flex justify-center mt-[25px] sm:mt-[30px]">
+              <a
+                href={page?.Block6_button_link || "#"}
+                class="link-text linked-button"
+              >
+                {page.Block6_button_text}
+              </a>
+            </div>
+          )}
+        </section>
       )
     }
 
