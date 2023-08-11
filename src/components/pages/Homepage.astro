@@ -4,6 +4,7 @@ import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
 import Banner from "@components/Banner.astro";
+import ProductCard from "@components/ProductCard.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import KindnessImpact from "@components/KindnessImpact.astro";
 import ProductCategories from "@components/ProductCategories.astro";
@@ -170,6 +171,37 @@ const latestProducts = catalog.Products.slice()
       )
     }
 
+    {/* latest Products Section */}
+    {
+      page.Block3_visibility && (
+        <section>
+          {page.Block3_visibility && (
+            <h2
+              id={page?.Block3_title.toLowerCase().replaceAll(" ", "-")}
+              class:list={[
+                "heading-secondary mb-[25px] sm:mb-[30px]",
+                "wrapper font-semibold leading-[130%] text-primary",
+              ]}
+            >
+              {page.Block3_title}
+            </h2>
+          )}
+
+          <ProductCard {locale} products={latestProducts} />
+
+          {page.Block3_button_text && (
+            <div class="flex justify-center mt-[25px] sm:mt-[30px]">
+              <a
+                href={page?.Block3_button_link || "#"}
+                class="link-text linked-button"
+              >
+                {page.Block3_button_text}
+              </a>
+            </div>
+          )}
+        </section>
+      )
+    }
     <div class="grid gap-[50px]">
       {
         page.Block2_visibility && (
