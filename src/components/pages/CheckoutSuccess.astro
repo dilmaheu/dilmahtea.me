@@ -176,42 +176,6 @@ const bestWayToMakeCompostLink = CMS.get("howTos", locale)[0].attributes.Meta
   }
 </style>
 
-<BaseLayout
-  page={page}
-  meta={meta}
-  locale={locale}
-  alternateURLs={alternateURLs}
-  metaImageSrc={metaImageSrc}
->
-  <Navbar
-    docLocale={locale}
-    footerText={footerText}
-    availableLocales={availableLocales}
-  />
-
-  <div>
-    <div class="hero overflow-hidden relative">
-      <UpdateTopMargin />
-
-      <div class="relative">
-        <div class="hidden md:flex items-end bg-dark-green md:h-[76px]">
-          <div class="nav-menu-container wrapper pb-2.5 md:pb-[15px]">
-            <nav class="text-white font-semibold h-full">
-              <span class="flex gap-5 justify-between items-center h-full">
-                {
-                  menu.map(
-                    ({ Visibility, Title, Link }) =>
-                      Visibility && <a href={Link}>{Title}</a>
-                  )
-                }
-              </span>
-            </nav>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="relative z-10 wrapper grow flex flex-col h-full">
       <ClipPathSVG
         id="post-container-top-curve"
         path="M0.513,0.005 C0.359,0.005,0.102,-0.024,0.043,0.141 C-0.003,0.266,-0.005,0.637,0.005,1 h0.985 c0.005,-0.205,0.027,-0.443,-0.018,-0.74 C0.924,-0.057,0.729,0.004,0.513,0.004"
@@ -231,6 +195,42 @@ const bestWayToMakeCompostLink = CMS.get("howTos", locale)[0].attributes.Meta
         id="post-container-right-curve"
         path="M0,0 v1 h0.428 c0.676,0,0.565,-0.064,0.565,-0.526 S1,0,0.39,0 C0.31,0,0.155,0.003,0,0"
       />
+<BaseLayout
+  page={page}
+  meta={meta}
+  locale={locale}
+  alternateURLs={alternateURLs}
+  metaImageSrc={metaImageSrc}
+>
+
+  <div class="flex flex-wrap w-full h-full">
+    <div class="block w-full bg-secondary">
+      <Navbar
+        docLocale={locale}
+        footerText={footerText}
+        availableLocales={availableLocales}
+      />
+      <div class="hero overflow-hidden relativ w-full">
+        <UpdateTopMargin />
+
+        <div class="relative">
+          <div class="hidden md:flex items-end bg-primary-light md:h-[76px]">
+          <div class="relative hidden md:flex items-end bg-dark-green md:h-[76px] w-full">
+            <div class="nav-menu-container wrapper pb-2.5 md:pb-[15px]">
+              <nav class="text-white font-semibold h-full">
+                <span class="flex gap-5 justify-between items-center h-full">
+                  {
+                    menu.map(
+                      ({ Visibility, Title, Link }) =>
+                        Visibility && <a href={Link}>{Title}</a>
+                    )
+                  }
+                </span>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="flex flex-col gap-[30px] items-center py-[50px]">
         <div class="flex flex-col gap-5 items-center text-center">
@@ -269,11 +269,13 @@ const bestWayToMakeCompostLink = CMS.get("howTos", locale)[0].attributes.Meta
             </a>
           </div>
         </div>
+        </div>
       </div>
     </div>
-  </div>
+      
 
-  <Footer footerText={footerText} recurData={recurData} />
+    <Footer footerText={footerText} recurData={recurData} />
+  </div>
 
   <CartOverlay page={page} />
 </BaseLayout>
