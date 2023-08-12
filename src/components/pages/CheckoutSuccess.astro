@@ -241,38 +241,46 @@ const bestWayToMakeCompostLink = CMS.get("howTos", locale)[0].attributes.Meta
           <div class="prose"><Markdown>{page.Intro_text}</Markdown></div>
         </div>
 
-        <div class="post-container max-w-4xl flex flex-col sm:flex-row">
-          <div class="w-full sm:w-[37.5%] h-48 sm:h-auto">
-            <Picture
-              layout="fill"
-              sizes="(min-width: 640px) calc(min(896px, 90vw) * 0.375), 90vw"
-              alt={EnvironmentalAdvocacyImage.alternativeText}
-              src={ASSETS_URL + EnvironmentalAdvocacyImage.url}
-            />
+            <div class="prose"><Markdown>{page.Intro_text}</Markdown></div>
           </div>
 
-          <div
-            class="flex flex-col gap-8 sm:gap-9 px-[22px] sm:px-8 pt-6 pb-9 sm:pb-5 bg-white"
-          >
-            <div class="prose linked-post-text font-medium">
-              <Markdown>{page.linked_post_text}</Markdown>
-            </div>
+          {
+            (page.text_here_is_how || page.text_here_is_how) && (
+              <div class="post-container max-w-4xl flex flex-col sm:flex-row">
+                <div class="w-full sm:w-[37.5%] h-48 sm:h-auto">
+                  <Picture
+                    layout="fill"
+                    sizes="(min-width: 640px) calc(min(896px, 90vw) * 0.375), 90vw"
+                    alt={EnvironmentalAdvocacyImage.alternativeText}
+                    src={ASSETS_URL + EnvironmentalAdvocacyImage.url}
+                  />
+                </div>
 
-            <a
-              href={bestWayToMakeCompostLink}
-              class:list={[
-                "w-fit px-16 py-4 sm:px-18 sm:py-[18px]",
-                "font-bold leading-[115%] text-white bg-primary rounded-full",
-              ]}
-            >
-              {page.text_here_is_how}
-            </a>
-          </div>
-        </div>
+                <div class="flex flex-col gap-8 sm:gap-9 px-[22px] sm:px-8 pt-6 pb-9 sm:pb-5 bg-white">
+                  {page.linked_post_text && (
+                    <div class="prose linked-post-text font-medium">
+                      <Markdown>{page.linked_post_text}</Markdown>
+                    </div>
+                  )}
+
+                  {page.text_here_is_how && (
+                    <a
+                      href={bestWayToMakeCompostLink}
+                      class:list={[
+                        "w-fit px-16 py-4 sm:px-18 sm:py-[18px]",
+                        "font-bold leading-[115%] text-white bg-primary rounded-full",
+                      ]}
+                    >
+                      {page.text_here_is_how}
+                    </a>
+                  )}
+                </div>
+              </div>
+            )
+          }
         </div>
       </div>
     </div>
-      
 
     <Footer footerText={footerText} recurData={recurData} />
   </div>
