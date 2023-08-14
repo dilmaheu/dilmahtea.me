@@ -186,19 +186,33 @@ const recurData = CMS.get("recurringElement", locale),
 
               <div class="text-white">
                 <em>
-                  {attributes.availableFormatsCount === 1
-                    ? attributes.Stock_amount === 0
-                      ? recurData.Product_stock_other_formats_text_singular
-                      : recurData.Product_available_other_formats_text_singular
-                    : attributes.Stock_amount === 0
-                    ? recurData.Product_stock_other_formats_text.replace(
-                        "<count>",
-                        attributes.availableFormatsCount
-                      )
-                    : recurData.Product_available_other_formats_text.replace(
-                        "<count>",
-                        attributes.availableFormatsCount
-                      )}
+                  <span class="hidden sm:block">
+                    {
+                      attributes.Stock_amount === 0 
+                        ? recurData.Product_stock_available_text 
+                        : recurData.Product_available_text
+                    }
+                      <span class="font-bold underline underline-offset-2">
+                        {
+                          attributes.availableFormatsCount === 1 
+                            ? recurData.Product_other_formats_singular_text 
+                            : recurData.Product_other_formats_text.replaceAll(
+                                "<count>",
+                                attributes.availableFormatsCount
+                              )
+                        }
+                    </span>
+                  </span>
+                  <span class="block sm:hidden font-bold underline underline-offset-2">
+                    {
+                      attributes.Stock_amount === 0  
+                        ? recurData.Product_other_formats_singular_text_sm 
+                        : recurData.Product_other_formats_text_sm.replaceAll(
+                            "<count>",
+                            attributes.availableFormatsCount
+                          )
+                    }
+                </span>
                 </em>
               </div>
             </div>
