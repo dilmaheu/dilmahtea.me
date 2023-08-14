@@ -213,19 +213,16 @@ export default function FilteredProducts({
                 </div>
               )}
 
-
               {product.availableFormatsCount > 0 && (
                 <div class="inline-flex gap-x-2.5">
                   <span class="flex">
-                    {product.availableFormatThumbnails.map(
-                      ({ src, alt }) => (
-                        <img
-                          src={src}
-                          alt={alt}
-                          class="min-w-[24px] h-6 border-2 border-primary rounded-full -ml-[15px] first:ml-0"
-                        />
-                      )
-                    )}
+                    {product.availableFormatThumbnails.map(({ src, alt }) => (
+                      <img
+                        src={src}
+                        alt={alt}
+                        class="min-w-[24px] h-6 border-2 border-primary rounded-full -ml-[15px] first:ml-0"
+                      />
+                    ))}
 
                     {product.availableFormatsCount > 2 && (
                       <span
@@ -243,31 +240,25 @@ export default function FilteredProducts({
                   <div class="text-white">
                     <em>
                       <span class="hidden sm:block">
-                        {
-                          product.Stock_amount === 0 
-                            ? recurData.Product_stock_available_text 
-                            : recurData.Product_available_text
-                        }
-                          <span class="font-bold underline underline-offset-2">
-                            {
-                              product.availableFormatsCount === 1 
-                                ? recurData.Product_other_formats_singular_text 
-                                : recurData.Product_other_formats_text.replaceAll(
-                                    "<count>",
-                                    product.availableFormatsCount
-                                  )
-                            }
-                          </span>
+                        {product.Stock_amount === 0
+                          ? recurData.Product_stock_available_text
+                          : recurData.Product_available_text}
+                        <span class="font-bold underline underline-offset-2">
+                          {product.availableFormatsCount === 1
+                            ? recurData.Product_other_formats_singular_text
+                            : recurData.Product_other_formats_text.replaceAll(
+                                "<count>",
+                                product.availableFormatsCount
+                              )}
                         </span>
-                        <span class="block sm:hidden font-bold underline underline-offset-2">
-                          {
-                            product.Stock_amount === 0  
-                              ? recurData.Product_other_formats_singular_text_sm 
-                              : recurData.Product_other_formats_text_sm.replaceAll(
-                                  "<count>",
-                                  product.availableFormatsCount
-                                )
-                          }
+                      </span>
+                      <span class="block sm:hidden font-bold underline underline-offset-2">
+                        {product.Stock_amount === 0
+                          ? recurData.Product_other_formats_singular_text_sm
+                          : recurData.Product_other_formats_text_sm.replaceAll(
+                              "<count>",
+                              product.availableFormatsCount
+                            )}
                       </span>
                     </em>
                   </div>
