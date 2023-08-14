@@ -1,5 +1,6 @@
 import CMS from "@store/CMS.js";
 import Products from "@store/Products";
+import tryUntilResolve from "@utils/tryUntilResolve";
 
 const { ASSETS_URL } = import.meta.env,
   contentTypes = [
@@ -55,6 +56,19 @@ pages.forEach(({ attributes }) => {
 for (const locale in searchIndex) {
   searchIndex[locale].sort((a, b) => a.Title.localeCompare(b.Title));
 }
+
+// localize search results intro blobs
+await Promise.all(
+  Object.values(searchIndex)
+    .flat()
+    // @ts-ignore
+    .map(async ({ Intro_blob }) => {
+      Intro_blob.url = await tryUntilResolve(
+        () => importImage(Intro_blob.url),
+        (message) => message + " " + Intro_blob.url
+      );
+    })
+);
 
 export function getStaticPaths() {
   const staticPaths = Object.keys(searchIndex).map((key) => {

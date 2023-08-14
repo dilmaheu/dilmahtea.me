@@ -26,7 +26,7 @@ export default function ProductFiltersForm({
   function updateProductFilters(event) {
     const filters = Object.fromEntries(new FormData(this));
 
-    localStorage.setItem("preferredFilters", JSON.stringify(filters));
+    sessionStorage.setItem("preferredFilters", JSON.stringify(filters));
 
     setProductFilters(filters);
 

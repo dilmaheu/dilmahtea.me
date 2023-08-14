@@ -3,7 +3,7 @@ import fs from "node:fs";
 const IMAGES_DIR = "./public/_astro/";
 
 if (fs.existsSync(IMAGES_DIR)) {
-  await fs.promises.rm(IMAGES_DIR, { recursive: true });
+  await fs.promises.rm(IMAGES_DIR, { recursive: true, force: true });
 }
 
 await fs.promises.mkdir(IMAGES_DIR, { recursive: true });
