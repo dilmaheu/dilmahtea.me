@@ -3,6 +3,7 @@ import { Schema } from "astro-seo-schema";
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
+import renderMarkdown from "@utils/renderMarkdown";
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
@@ -45,92 +46,81 @@ const {
   recipe_tips,
 } = recurData;
 
-const { Time_cooking, Time_preparation, Related_products: products } = page;
+const { Time_cooking, Time_preparation, Related_products } = page,
+  relatedProducts = Related_products.data?.map(({ attributes }) => attributes);
 
-const related_products = products.data?.map(({ attributes }) => attributes);
+const cookingTime = Time_cooking
+    ? Time_cooking.split(":").map(Number)
+    : [0, 0, 0],
+  preparationTime = Time_preparation.split(":").map(Number),
+  totalTime = [...cookingTime].map((t, i) => t + preparationTime[i]);
 
-const url = `${Astro.site.origin}/${page.locale}/${
-  page.Meta.URL_slug === "/" ? "" : page.Meta.URL_slug
-}/`;
+totalTime[2] > 59 && ((totalTime[1] += 1), (totalTime[2] -= 60));
+totalTime[1] > 23 && ((totalTime[0] += 1), (totalTime[1] -= 24));
 
-function calcTime(timeArray) {
+function getTimeString(timeArray: number[], isSmall?: boolean): string {
   const [day, hour, minute] = timeArray;
 
-  const calcDay =
-    day > 0
-      ? day + (day === 1 ? ` ${recipe_day}\xa0\xa0` : ` ${recipe_days}\xa0\xa0`)
-      : "";
-  const calcHour =
-    hour > 0
-      ? hour +
-        (hour === 1 ? ` ${recipe_hour}\xa0\xa0` : ` ${recipe_hours}\xa0\xa0`)
-      : "";
-  const calcMinute =
-    minute > 0
-      ? minute + (minute === 1 ? ` ${recipe_minute}` : ` ${recipe_minutes}`)
-      : "";
+  const dayString = isSmall
+      ? recipe_day[0]
+      : " " + (day === 1 ? recipe_day : recipe_days),
+    hourString = isSmall
+      ? recipe_hour[0]
+      : " " + (hour === 1 ? recipe_hour : recipe_hours),
+    minuteString = isSmall
+      ? recipe_minute[0]
+      : " " + (minute === 1 ? recipe_minute : recipe_minutes);
 
-  return calcDay + calcHour + calcMinute;
+  return [
+    day > 0 && `${day}${dayString}`,
+    hour > 0 && `${hour}${hourString}`,
+    minute > 0 && `${minute}${minuteString}`,
+  ]
+    .filter(Boolean)
+    .join(" ");
 }
 
-function calcTimeSm(timeArray) {
-  const [day, hour, minute] = timeArray;
+const cookingTimeString = getTimeString(cookingTime),
+  cookingTimeStringSm = getTimeString(cookingTime, true),
+  preparationTimeString = getTimeString(preparationTime),
+  preparationTimeStringSm = getTimeString(preparationTime, true),
+  totalTimeString = getTimeString(totalTime),
+  totalTimeStringSm = getTimeString(totalTime, true);
 
-  const calcDay = day > 0 ? day + `${recipe_day.substring(0, 1)}\xa0` : "";
-  const calcHour = hour > 0 ? hour + `${recipe_hour.substring(0, 1)}\xa0` : "";
-  const calcMinute =
-    minute > 0 ? minute + `${recipe_minute.substring(0, 1)}\xa0` : "";
+const pageURL = Astro.site.origin + Astro.url.pathname + "/";
 
-  return calcDay + calcHour + calcMinute;
+interface Nutrition {
+  "@type": "NutritionInformation";
+  [key: string]: string;
 }
 
-function time(x) {
-  const array = x.split(":").map(Number);
-
-  return calcTime(array);
-}
-
-function timeSm(x) {
-  const array = x.split(":").map(Number);
-
-  return calcTimeSm(array);
-}
-
-function calcTotalTime(x, y) {
-  const preparation = x.split(":").map(Number);
-  const cooking = y.split(":").map(Number);
-
-  var sum = [...preparation].map((e, i) => e + cooking[i]);
-
-  var min = sum[0] * 24 * 60 + sum[1] * 60 + sum[2];
-  var d = Math.floor(min / (60 * 24));
-  var h = Math.floor((min % (60 * 24)) / 60);
-  var m = Math.floor(min % 60);
-
-  return [d, h, m];
-}
-
-function totalTime(x, y) {
-  var a = calcTotalTime(x, y);
-
-  return calcTime(a);
-}
-
-function totalTimeSm(x, y) {
-  var a = calcTotalTime(x, y);
-
-  return calcTimeSm(a);
-}
-
-const nutrition = {
+const nutrition: Nutrition = {
   "@type": "NutritionInformation",
+  ...Object.fromEntries(
+    page.Nutrition.map((item) => [
+      item.Nutrition_name,
+      (item.Nutrition_amount || "0") + item.Nutrition_measurements_unit,
+    ])
+  ),
 };
-
-page.Nutrition.forEach((item) => {
-  nutrition[item.Nutrition_name] =
-    (item.Nutrition_amount || "0") + item.Nutrition_measurements_unit;
-});
 ---
+
+<style lang="scss" is:global>
+  .recipe-title {
+    @apply font-bold;
+
+    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
+    padding: 15px clamp(15px, 2.08vw + 0.01rem, 30px);
+  }
+
+  .chapter:nth-child(1) .recipe-title {
+    margin-top: 0;
+  }
+
+  .recipe-content {
+    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
+  }
+</style>
 
 <style lang="scss">
   .related-products-top {
@@ -148,6 +138,142 @@ page.Nutrition.forEach((item) => {
       clip-path: url(#product-impact-bottom-curve);
     }
   }
+
+  .time-container {
+    margin-top: clamp(1.25rem, 2vw + 0.2rem, 2rem);
+    column-gap: clamp(25px, 3vw + 1px, 60px);
+    row-gap: clamp(0.75rem, 1.5vw + 0.1rem, 1.25rem);
+  }
+
+  .time-icon {
+    width: clamp(1rem, 1.5vw + 0.55rem, 1.875rem);
+  }
+
+  .time-tag {
+    @apply leading-[12px] md:leading-[180%];
+
+    font-size: clamp(0.625rem, 1.3vw + 0.01rem, 0.75rem);
+  }
+
+  .time {
+    @apply leading-[16px] md:leading-[150%];
+
+    font-size: clamp(0.875rem, 1.3vw + 0.1rem, 1rem);
+  }
+
+  .similar-recipies {
+    li {
+      font-size: clamp(1rem, 1.5vw + 0.15rem, 1.5rem);
+    }
+
+    a {
+      background-size: 100% 45%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23b3cccc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
+    }
+  }
+
+  .recipe-time-container {
+    column-gap: clamp(40px, 6vw + 10px, 80px);
+  }
+
+  .recipe-time-icon {
+    width: clamp(1.25rem, 1.5vw + 0.55rem, 1.875rem);
+    height: clamp(1.25rem, 1.5vw + 0.55rem, 1.875rem);
+  }
+
+  .recipe-content-border {
+    margin-right: clamp(0.938rem, 1.5vw + 0.3rem, 1.563rem);
+  }
+
+  .recipe-content-title {
+    font-size: clamp(1.125rem, 2.2vw + 0.4rem, 2rem);
+  }
+
+  .recipe-nutritions-container {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 5fr));
+    }
+  }
+
+  .recipe-serving-size-input-container {
+    gap: clamp(0.438rem, 1.1vw + 0.01rem, 0.938rem);
+  }
+
+  .recipe-serving-size-input {
+    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
+
+    &:focus {
+      @apply ring ring-emerald-800 ring-opacity-20 outline-none cursor-pointer;
+    }
+  }
+
+  .recipe-ingredients-checkbox-container {
+    .recipe-ingredients-checkbox {
+      font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
+
+      &::after {
+        content: "✓";
+        top: -0.68rem;
+        left: 1.2px;
+        font-size: 0.85rem;
+        font-weight: 1000;
+
+        @apply absolute opacity-0 rotate-6 text-white;
+      }
+    }
+
+    input:focus {
+      @apply outline-none opacity-100 w-6 h-6 -top-1 -left-1;
+    }
+
+    input:checked ~ .recipe-ingredients-checkbox {
+      @apply opacity-100 rounded-[3px] border-2 border-primary bg-primary;
+
+      &::after {
+        @apply opacity-100 rounded-none bg-transparent;
+      }
+    }
+  }
+
+  .recipe-cooking-title {
+    font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
+  }
+
+  .recipe-step-order {
+    width: clamp(30px, 3vw + 0.4rem, 45px);
+    height: clamp(30px, 3vw + 0.4rem, 45px);
+    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
+  }
+
+  .recipe-tips-icon {
+    width: clamp(1.75rem, 2.5vw + 0.15rem, 2.375rem);
+    height: clamp(1.75rem, 2.5vw + 0.15rem, 2.375rem);
+  }
+
+  .recipe-tips-title {
+    font-size: clamp(1.125rem, 1.5vw + 0.15rem, 1.5rem);
+  }
+
+  .related-post-card-content-container {
+    padding: clamp(20px, 6.4vw, 40px) clamp(24px, 3.8vw + 11.75px, 36px);
+
+    @media (min-width: 640px) {
+      padding: clamp(30px, 7.8125vw - 20px, 60px)
+        clamp(28px, 4.6875vw - 2px, 46px);
+    }
+
+    @media (min-width: 1024px) {
+      padding: clamp(30px, 8vw - 51.75px, 60px) clamp(28px, 4.8vw - 21px, 46px);
+    }
+  }
+
+  .related-post-card-title {
+    @apply md:font-bold leading-[130%] md:leading-[120%];
+
+    font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
+  }
 </style>
 
 <PostDetailsLayout {page} {recurData} {ariaLabelRecurData} {headingName}>
@@ -155,76 +281,46 @@ page.Nutrition.forEach((item) => {
     <div
       role="complementary"
       aria-label={recipe_recipe + ariaLabelRecurData.Recipe_timing_text}
-      class="flex flex-wrap items-center recipe-Time-Container"
+      class="time-container flex flex-wrap items-center"
     >
-      <div class="inline-flex items-center gap-2 md:gap-2.5">
-        <div class="recipe-Time-Icon">
-          <img class="w-full h-full" {...white_clock} />
-        </div>
+      {
+        [
+          [recipe_prep, preparationTimeString, preparationTimeStringSm],
+          [recipe_cook, cookingTimeString, cookingTimeStringSm],
+          [recipe_total, totalTimeString, totalTimeStringSm],
+        ].map(([timeTag, timeString, timeStringSm]) => {
+          // Check if timeString or timeStringSm is not available (undefined or null)
+          if (!timeString && !timeStringSm) {
+            return null; // Skip this iteration and do not render anything
+          }
 
-        <div class="w-auto">
-          <div class="recipe-Time-Tag">{recipe_prep} :</div>
+          return (
+            <div class="inline-flex items-center gap-2 md:gap-2.5">
+              <img class="time-icon w-full h-full" {...white_clock} />
 
-          <div class="hidden sm:block font-bold recipe-cooktime">
-            {time(Time_preparation)}
-          </div>
+              <div class="w-auto">
+                <div class="time-tag">{timeTag} :</div>
 
-          <div class="block sm:hidden font-bold recipe-cooktime">
-            {timeSm(Time_preparation)}
-          </div>
-        </div>
-      </div>
-
-      <div class="inline-flex items-center gap-2 md:gap-2.5">
-        <div class="recipe-Time-Icon">
-          <img class="w-full h-full" {...white_clock} />
-        </div>
-
-        <div class="w-auto">
-          <div class="recipe-Time-Tag">{recipe_cook} :</div>
-
-          <div class="hidden sm:block font-bold recipe-cooktime">
-            {time(Time_cooking)}
-          </div>
-
-          <div class="block sm:hidden font-bold recipe-cooktime">
-            {timeSm(Time_cooking)}
-          </div>
-        </div>
-      </div>
-
-      <div class="inline-flex items-center gap-2 md:gap-2.5">
-        <div class="recipe-Time-Icon">
-          <img class="w-full h-full" {...white_clock} />
-        </div>
-
-        <div class="w-auto">
-          <div class="recipe-Time-Tag">{recipe_total} :</div>
-
-          <div class="hidden sm:block font-bold recipe-cooktime">
-            {totalTime(Time_preparation, Time_cooking)}
-          </div>
-
-          <div class="block sm:hidden font-bold recipe-cooktime">
-            {totalTimeSm(Time_preparation, Time_cooking)}
-          </div>
-        </div>
-      </div>
+                <div class="time hidden sm:block font-bold">{timeString}</div>
+                <div class="time block sm:hidden font-bold">{timeStringSm}</div>
+              </div>
+            </div>
+          );
+        })
+      }
     </div>
 
     <div class="inline-flex sm:hidden gap-2 md:gap-2.5 mt-[30px] w-auto">
       <a href="#recipe">
         <div
           class:list={[
-            "bg-lightgray flex items-center justify-center rounded-[40px] py-[13px] px-[23px]",
-            "text-base font-bold leading-[19px] text-primary text-center",
+            "flex items-center justify-center py-[13px] px-[23px] rounded-[40px]",
+            "bg-secondary text-primary text-center text-base font-bold leading-[19px]",
           ]}
         >
           {recipe_jump_to_recipe}
-          <span class="icon relative top-0">
-            <span class="relative ml-5 h-5">
-              <img class="w-full h-full" {...green_down_arrow} />
-            </span>
+          <span class="icon ml-5 h-5">
+            <img class="w-full h-full" {...green_down_arrow} />
           </span>
         </div>
       </a>
@@ -235,8 +331,8 @@ page.Nutrition.forEach((item) => {
     href="#recipe"
     slot="jump-to-recipe-sm"
     class:list={[
-      "bg-primary flex items-center justify-center gap-5 max-w-[200px] rounded-[40px]",
-      "mt-6 ml-4 py-[13px] px-[23px] text-sm font-bold leading-[19px] text-lightgray text-center",
+      "max-w-[200px] bg-primary flex items-center justify-center gap-5 rounded-[40px]",
+      "mt-6 ml-4 py-[13px] px-[23px] text-white text-center text-sm font-bold leading-[19px]",
     ]}
   >
     {recipe_jump_to_recipe}
@@ -250,15 +346,16 @@ page.Nutrition.forEach((item) => {
     href="#recipe"
     slot="jump-to-recipe"
     class:list={[
-      "bg-primary flex items-center justify-center gap-5 rounded-[40px] py-5 mb-[50px]",
-      "hidden md:block text-base font-bold leading-[19px] text-lightgray text-center",
+      "hidden md:block py-5 mb-[50px] rounded-[40px]",
+      "bg-primary text-white text-center text-base font-bold leading-[19px]",
     ]}
   >
-    {recipe_jump_to_recipe}
-
-    <span class="icon">
-      <img class="h-5" {...white_down_arrow} />
-    </span>
+    <div class="flex justify-center items-center gap-5">
+      {recipe_jump_to_recipe}
+      <span class="icon">
+        <img class="h-5" {...white_down_arrow} />
+      </span>
+    </div>
   </a>
 
   <Chapterize slot="post-details">
@@ -269,17 +366,25 @@ page.Nutrition.forEach((item) => {
         <div>
           <h2
             id="similar-recipe"
-            class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title"
+            class="recipe-title recoleta bg-primary mt-[50px] text-secondary-light leading-[110%] rounded-[10px]"
           >
             {recipe_similar}
             {page.Title}
           </h2>
 
-          <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
-            <ul class="list-disc list-inside similarRecipies">
+          <div class="bg-secondary-light rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+            <ul class="similar-recipies list-disc list-inside">
               {page.Recipe_variations.data.map(({ attributes }) => (
-                <li class="font-bold sm:font-semibold text-primary">
-                  <a href={attributes.Meta.URL_slug}>{attributes.Title}</a>
+                <li class="text-primary font-bold sm:font-semibold leading-[175%] sm:leading-[180%]">
+                  <a
+                    href={attributes.Meta.URL_slug}
+                    class:list={[
+                      "hover:brightness-95 transition-all",
+                      "bg-bottom bg-no-repeat px-1 font-bold sm:font-semibold no-underline",
+                    ]}
+                  >
+                    {attributes.Title}
+                  </a>
                 </li>
               ))}
             </ul>
@@ -290,77 +395,56 @@ page.Nutrition.forEach((item) => {
 
     <h2
       id="recipe"
-      class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title"
+      class="recipe-title recoleta bg-primary text-secondary-light leading-[110%] rounded-[10px] mt-[50px]"
     >
       {page.Title}
       {recipe_recipe}
     </h2>
 
     <div
-      class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+      class="bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]"
     >
-      <div class="prose max-w-none mb-[15px] leading-[150%] recipe-sec-text">
+      <div class="recipe-content prose max-w-none mb-[15px] leading-[150%]">
         <Markdown>{page.Time_text}</Markdown>
       </div>
 
       <div
         role="complementary"
         aria-label={recipe_recipe + ariaLabelRecurData.Recipe_timing_text}
-        class="flex flex-wrap mt-5 gap-y-5 recipe-sec-time-container"
+        class="recipe-time-container flex flex-wrap mt-5 gap-y-5"
       >
-        <div class="inline-flex items-center gap-2.5">
-          <div class="recipe-sec-time-icon">
-            <img class="w-full h-full" {...light_green_clock} />
-          </div>
+        {
+          [
+            [recipe_prep, preparationTimeString, preparationTimeStringSm],
+            [recipe_cook, cookingTimeString, cookingTimeStringSm],
+            [recipe_total, totalTimeString, totalTimeStringSm],
+          ].map(([timeTag, timeString, timeStringSm]) => {
+            // Check if timeString or timeStringSm is not available (undefined or null)
+            if (!timeString && !timeStringSm) {
+              return null; // Skip this iteration and do not render anything
+            }
 
-          <div class="w-auto text-dark">
-            <div class="text-[10px] md:text-xs leading-[150%]">
-              {recipe_prep} :
-            </div>
+            return (
+              <div class="inline-flex items-center gap-2.5">
+                <div class="recipe-time-icon">
+                  <img class="w-full h-full" {...light_green_clock} />
+                </div>
 
-            <div class="hidden sm:block text-base font-medium leading-[150%]">
-              {time(Time_preparation)}
-            </div>
+                <div class="w-auto text-black-light leading-[150%]">
+                  <div class="text-[10px] md:text-xs">{timeTag} :</div>
 
-            <div class="block sm:hidden text-base font-medium leading-[150%]">
-              {timeSm(Time_preparation)}
-            </div>
-          </div>
-        </div>
+                  <div class="hidden sm:block text-base font-medium">
+                    {timeString}
+                  </div>
 
-        <div class="inline-flex items-center gap-2.5">
-          <div class="recipe-sec-time-icon">
-            <img class="w-full h-full" {...light_green_clock} />
-          </div>
-          <div class="w-auto text-dark">
-            <div class="text-[10px] md:text-xs leading-[150%]">
-              {recipe_cook} :
-            </div>
-            <div class="hidden sm:block text-base font-medium leading-[150%]">
-              {time(Time_cooking)}
-            </div>
-            <div class="block sm:hidden text-base font-medium leading-[150%]">
-              {timeSm(Time_cooking)}
-            </div>
-          </div>
-        </div>
-
-        <div class="inline-flex items-center gap-2.5">
-          <div class="recipe-sec-time-icon">
-            <img class="w-full h-full" {...light_green_clock} />
-          </div>
-          <div class="w-auto text-dark">
-            <div class="text-[10px] md:text-xs leading-[150%]">
-              {recipe_total} :
-            </div>
-            <div class="hidden sm:block text-base font-medium leading-[150%]">
-              {totalTime(Time_preparation, Time_cooking)}
-            </div>
-            <div class="block sm:hidden text-base font-medium leading-[150%]">
-              {totalTimeSm(Time_preparation, Time_cooking)}
-            </div>
-          </div>
-        </div>
+                  <div class="block sm:hidden text-base font-medium">
+                    {timeStringSm}
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        }
       </div>
     </div>
 
@@ -369,53 +453,50 @@ page.Nutrition.forEach((item) => {
         <div
           role="complementary"
           aria-label={recipe_nutrition_information}
-          class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+          class="flex bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]"
         >
-          <div class="flex">
-            <div class="w-auto recipe-sec-content-border" />
+          <div class="recipe-content-border w-auto border-l-[3px] border-primary rounded-full" />
 
-            <div class="grid w-full items-center gap-[15px]">
-              <h3 class="font-bold sm:font-semibold text-primary sm:text-dark2 recipe-sec-content-title">
-                {recipe_nutrition_information}
-              </h3>
+          <div class="grid w-full items-center gap-[15px]">
+            <h3
+              class:list={[
+                "recipe-content-title leading-[150%]",
+                "text-black sm:text-black font-bold sm:font-semibold",
+              ]}
+            >
+              {recipe_nutrition_information}
+            </h3>
 
-              <div class="flex items-center gap-2.5 w-full">
-                <div class="text-xs font-bold leading-[150%] text-dark2">
-                  {recipe_yield}:
-                </div>
+            <div class="flex items-center gap-2.5 w-full font-bold leading-[150%]">
+              <div class="text-black text-xs">{recipe_yield}:</div>
 
-                <div class="text-lg font-bold leading-[150%] text-primary">
-                  {page.Nutrition_yield}
-                </div>
-              </div>
+              <div class="text-primary text-lg">{page.Nutrition_yield}</div>
+            </div>
 
-              <div class="text-base md:text-lg font-bold leading-[150%] text-dark2">
-                {recipe_amount_per_serving}:
-              </div>
+            <div class="text-black text-base md:text-lg font-bold">
+              {recipe_amount_per_serving}:
+            </div>
 
-              <div
-                role="list"
-                aria-label={recipe_amount_per_serving}
-                class="grid grid-flow-row gap-[5px] recipe-sec-nutritions-container"
-              >
-                {page.Nutrition.map((item, idx) => (
-                  <div
-                    role="list"
-                    class="flex items-center text-base lg:text-lg leading-[150%] text-dark2"
-                  >
-                    <div>{item.Nutrition_name}</div>
+            <div
+              role="list"
+              aria-label={recipe_amount_per_serving}
+              class="recipe-nutritions-container grid grid-flow-row gap-[5px]"
+            >
+              {page.Nutrition.map((item) => (
+                <div
+                  role="list"
+                  class="flex items-center text-black-light text-base lg:text-lg leading-[150%]"
+                >
+                  <div>{item.Nutrition_name}</div>
 
-                    <span class="mr-1">:</span>
+                  <span class="mr-1">:</span>
 
-                    <div>
-                      {item.Nutrition_amount != null
-                        ? item.Nutrition_amount
-                        : "0"}
-                      {item.Nutrition_measurements_unit}
-                    </div>
+                  <div>
+                    {item.Nutrition_amount ? item.Nutrition_amount : "0"}
+                    {item.Nutrition_measurements_unit}
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -424,27 +505,27 @@ page.Nutrition.forEach((item) => {
 
     <div
       aria-label={recipe_ingredients}
-      class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+      class="bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]"
     >
       <div class="flex flex-wrap justify-between">
         <h3
-          class="font-bold sm:font-semibold text-primary sm:text-dark2 recipe-sec-content-title"
+          class="recipe-content-title font-bold sm:font-semibold text-primary sm:text-black leading-[150%]"
         >
           {recipe_ingredients}
         </h3>
 
         <label
-          class="inline-grid grid-flow-col items-center relative recipe-sec-servingsize-input-container"
+          class="recipe-serving-size-input-container relative inline-grid grid-flow-col items-center"
         >
-          <span class="text-xs leading-[150%] font-bold text-dark2">
+          <span class="text-black text-xs leading-[150%] font-bold">
             {recipe_serving_size}:
           </span>
 
           <select
-            id="recipe-section-serving-size"
+            id="recipe-serving-size"
             class:list={[
-              "focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring cursor-pointer",
-              "max-w-[65px] md:max-w-[83px] text-lightgray2 py-[5px] pl-[11px] rounded-[7px] recipe-sec-servingsize-input",
+              "recipe-serving-size-input text-white py-[5px] pl-[11px] bg-primary",
+              "max-w-[65px] md:max-w-[83px] border-r-[11px] border-transparent rounded-[7px]",
             ]}
           >
             <option value="1">1x</option>
@@ -461,34 +542,48 @@ page.Nutrition.forEach((item) => {
         class="mt-5 md:mt-[25px] flex flex-wrap sm:flex-nowrap gap-2"
       >
         {
-          page.Cooking_part.map((item, idx) => (
+          page.Instructions_part.map((item) => (
             <div
               role="listitem"
-              aria-label={item.Cooking_part_name}
+              aria-label={item.Instructions_part_name}
               class="w-full sm:w-1/2"
             >
-              <h4 class="text-base md:text-lg font-bold leading-[150%] text-dark2 mb-[10px] md:mb-[15px]">
-                {item.Cooking_part_name}
+              <h4 class="mb-[10px] md:mb-[15px] text-black text-base md:text-lg font-bold leading-[150%]">
+                {item.Instructions_part_name}
               </h4>
 
-              {item.Cooking_part_ingredients.map((item, idx) => (
-                <label class="inline-flex items-center w-full">
+              {item.Instructions_part_ingredients.map((item) => (
+                <label class="inline-flex items-center w-full text-black-light">
                   <div class="flex">
-                    <div class="recipe-sec-ingridients-checkbox-container">
-                      <input type="checkbox" tabindex="0" />
-                      <span class="recipe-sec-ingridients-checkbox" />
+                    <div
+                      class:list={[
+                        "recipe-ingredients-checkbox-container",
+                        "relative w-4 h-4 m-auto cursor-pointer clear-both",
+                      ]}
+                    >
+                      <input
+                        type="checkbox"
+                        tabindex="0"
+                        class="absolute opacity-0 cursor-pointer"
+                      />
+                      <span
+                        class:list={[
+                          "recipe-ingredients-checkbox absolute w-4 h-4 bg-transparent",
+                          "border-2 border-black leading-[175%] rounded-[3px]",
+                        ]}
+                      />
                     </div>
                   </div>
 
-                  <div class="text-base md:text-lg leading-[150%] text-dark2 ml-2.5">
+                  <div class="ml-2.5 text-base md:text-lg leading-[150%]">
                     <span
                       class="ingredient-amount"
-                      data-amount={item.Cooking_part_ingredient_amount}
+                      data-amount={item.Instructions_part_ingredient_amount}
                     >
-                      {item.Cooking_part_ingredient_amount}
+                      {item.Instructions_part_ingredient_amount}
                     </span>
-                    {item.Cooking_part_ingredient_measurements_unit}
-                    {item.Cooking_part_ingredient_name}
+                    {item.Instructions_part_ingredient_measurements_unit}
+                    {item.Instructions_part_ingredient_name}
                   </div>
                 </label>
               ))}
@@ -503,7 +598,7 @@ page.Nutrition.forEach((item) => {
         document.querySelectorAll(".ingredient-amount");
 
       const recipeSectionServingSizeInput = document.getElementById(
-        "recipe-section-serving-size"
+        "recipe-serving-size"
       ) as HTMLSelectElement;
 
       recipeSectionServingSizeInput?.addEventListener("change", (e) => {
@@ -524,66 +619,71 @@ page.Nutrition.forEach((item) => {
     <h2
       aria-label={recipe_cooking_instructions}
       id="cooking-instructions"
-      class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title"
+      class="recipe-title recoleta bg-primary mt-[50px] text-secondary-light leading-[110%] rounded-[10px]"
     >
       {recipe_cooking_instructions}
     </h2>
 
     {
-      page.Cooking_part.map((item) => (
+      page.Instructions_part.map((item) => (
         <div role="list">
-          <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
-            <div class="flex">
-              <div class="w-auto recipe-sec-content-border" />
-              <div class="w-full gap-[15px]">
-                <h3
-                  class="alice leading-[130%] sm:leading-[120%] text-dark2 recipe-sec-coockingpart-title"
-                  id={item.Cooking_part_name.replaceAll(" ", "-")
-                    .replace(/\s+/g, "")
-                    .trim()}
-                >
-                  {item.Cooking_part_name}
-                </h3>
-              </div>
+          <div class="flex bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]">
+            <div class="recipe-content-border w-auto border-l-[3px] border-primary rounded-full" />
+
+            <div class="w-full gap-[15px]">
+              <h3
+                class="recipe-cooking-title recoleta md:font-semibold text-black leading-[120%]"
+                id={item.Instructions_part_name.replaceAll(" ", "-")
+                  .replace(/\s+/g, "")
+                  .trim()}
+              >
+                {item.Instructions_part_name}
+              </h3>
             </div>
           </div>
 
-          {item.Cooking_part_steps.map((step, idx) => (
+          {item.Instructions_part_steps.map((step, index) => (
             <div
               role="listitem"
-              aria-label={ariaLabelRecurData.Recipe_step_text + (idx + 1)}
-              class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+              aria-label={ariaLabelRecurData.Recipe_step_text + (index + 1)}
               id={
-                item.Cooking_part_name.replaceAll(" ", "-")
+                item.Instructions_part_name.replaceAll(" ", "-")
                   .replace(/\s+/g, "")
                   .trim() +
                 `-step-` +
-                (idx + 1)
+                (index + 1)
               }
+              class="bg-secondary-light rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
             >
               <div class="flex gap-[15px]">
                 <div>
-                  <div class="bg-primary flex items-center justify-center font-extrabold rounded-full recipe-sec-step-num">
-                    {idx + 1}
+                  <div
+                    class:list={[
+                      "recipe-step-order bg-primary rounded-full text-white",
+                      "flex items-center justify-center font-extrabold",
+                    ]}
+                  >
+                    {index + 1}
                   </div>
                 </div>
-                <div class="prose max-w-none text-dark2 leading-[150%] recipe-sec-text w-auto">
-                  {step.Cooking_part_steps_text}
+
+                <div class="recipe-content prose max-w-none leading-[150%] w-auto">
+                  {step.Instructions_part_steps_text}
                 </div>
               </div>
 
-              {step.Cooking_part_steps_blob.data && (
+              {step.Instructions_part_steps_blob.data && (
                 <div class="aspect-[2/1] w-full mt-2.5 sm:mt-[15px]">
                   <Picture
                     layout="fill"
                     sizes="(min-width: 768px) calc(90vw * 2/3 - 72px), calc(90vw - 72px)"
                     alt={
-                      step.Cooking_part_steps_blob.data.attributes
+                      step.Instructions_part_steps_blob.data.attributes
                         .alternativeText
                     }
                     src={
                       ASSETS_URL +
-                      step.Cooking_part_steps_blob.data.attributes.url
+                      step.Instructions_part_steps_blob.data.attributes.url
                     }
                   />
                 </div>
@@ -591,21 +691,21 @@ page.Nutrition.forEach((item) => {
             </div>
           ))}
 
-          {item.Cooking_part_step_tip && (
-            <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
+          {item.Instructions_part_step_tip && (
+            <div class="bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]">
               <div class="flex flex-wrap items-center gap-2.5">
-                <div class="flex items-center gap-[15px] sm:gap-5 w-full">
-                  <div class="recipe-sec-icon">
+                <div class="w-full flex items-center gap-[15px] sm:gap-5">
+                  <div class="recipe-tips-icon">
                     <img class="w-full h-full object-contain" {...green_bulb} />
                   </div>
 
-                  <h3 class="font-bold leading-[150%] text-primary recipe-sec-tips-title">
+                  <h3 class="recipe-tips-title text-primary font-bold leading-[150%]">
                     {recipe_tips}
                   </h3>
                 </div>
 
-                <div class="prose max-w-none font-medium sm:font-bold text-primary leading-[150%] recipe-sec-text">
-                  {item.Cooking_part_step_tip}
+                <div class="recipe-content prose max-w-none text-primary font-medium sm:font-bold leading-[150%]">
+                  {item.Instructions_part_step_tip}
                 </div>
               </div>
             </div>
@@ -616,7 +716,7 @@ page.Nutrition.forEach((item) => {
   </Chapterize>
 
   {
-    related_products.length > 0 && (
+    relatedProducts.length > 0 && (
       <section class="mb-[50px]" slot="product-kindness-impact">
         <ClipPathSVG
           id="product-impact-top-curve"
@@ -644,10 +744,10 @@ page.Nutrition.forEach((item) => {
         />
 
         <div>
-          <div class="py-8 -mb-1 bg-primary related-products-top" />
+          <div class="related-products-top py-8 -mb-1 bg-primary" />
           <div class="bg-primary">
             <div class="wrapper py-2.5 md:py-[100px]">
-              <div class="text-[clamp(2rem,3vw+0.4rem,3rem)] alice leading-[110%] md:leading-[115%] text-center">
+              <div class="recoleta font-semibold text-center text-[clamp(2rem,3vw+0.4rem,3rem)] leading-[130%]">
                 <h2>{Recipes_related_products_title_text}</h2>
               </div>
 
@@ -655,11 +755,11 @@ page.Nutrition.forEach((item) => {
                 role="list"
                 aria-label={ariaLabelRecurData.Kindness_Items_text}
                 class:list={[
-                  "wrapper grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]",
-                  "justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
+                  "wrapper justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
+                  "grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]",
                 ]}
               >
-                {related_products.map(
+                {relatedProducts.map(
                   ({
                     Title,
                     Intro_text,
@@ -671,7 +771,7 @@ page.Nutrition.forEach((item) => {
                     <div
                       role="listitem"
                       aria-label={ariaLabelRecurData.Product_tea_item_text}
-                      class="link-section bg-lightgray"
+                      class="link-section bg-secondary"
                       style="clip-path: url(#card-curve)"
                     >
                       <Picture
@@ -682,8 +782,8 @@ page.Nutrition.forEach((item) => {
                         sizes="(min-width: 768px) min(580px, calc(40vw - 25px)), min(80vw, 420px)"
                       />
 
-                      <div class="recent-post-card-content-container text-primary">
-                        <div class="recent-post-card-title alice mt-[15px]">
+                      <div class="related-post-card-content-container text-primary">
+                        <div class="related-post-card-title recoleta mt-[15px]">
                           <a
                             class="main-link"
                             set:text={Title}
@@ -691,7 +791,11 @@ page.Nutrition.forEach((item) => {
                           />
                         </div>
 
-                        <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
+                        <div
+                          class:list={[
+                            "text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]",
+                          ]}
+                        >
                           <Markdown>{Intro_text}</Markdown>
                         </div>
                       </div>
@@ -761,67 +865,59 @@ page.Nutrition.forEach((item) => {
     "@context": "https://schema.org",
     "@type": "Recipe",
     name: page.Title,
-    image: await importRemoteImage(
-      ASSETS_URL + page.Intro_blob?.data.attributes.url
-    ),
+    image: await importImage(ASSETS_URL + page.Intro_blob?.data.attributes.url),
     author: {
       "@type": "Person",
-      name: page.authors.data.map(
-        ({ attributes }) => `${attributes.givenName}`
-      ),
+      name: page.authors.data.map(({ attributes }) => attributes.givenName),
     },
     dateCreated: page.createdAt,
     datePublished: page.publishedAt,
     dateModified: page.updatedAt,
-    description: `${(await Astro.__renderMarkdown(page.Intro_text)).replace(
+    description: `${(await renderMarkdown(page.Intro_text)).replace(
       /(<([^>]+)>)/gi,
       ""
-    )} ${(await Astro.__renderMarkdown(page.Block_text)).replace(
-      /(<([^>]+)>)/gi,
-      ""
-    )}`,
-    prepTime: `PT${timeSm(page.Time_preparation)
-      .toUpperCase()
-      .replace(/\s/g, "")}`,
-    cookTime: `PT${timeSm(page.Time_cooking).toUpperCase().replace(/\s/g, "")}`,
-    totalTime: `PT${totalTimeSm(page.Time_preparation, page.Time_cooking)
-      .toUpperCase()
-      .replace(/\s/g, "")}`,
+    )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
+    nutrition,
+    prepTime: `PT${preparationTimeStringSm.toUpperCase().replace(/\s/g, "")}`,
+    cookTime:
+      Time_cooking &&
+      `PT${cookingTimeStringSm.toUpperCase().replace(/\s/g, "")}`,
+    totalTime: `PT${totalTimeStringSm.toUpperCase().replace(/\s/g, "")}`,
     recipeCuisine: page.Cuisine,
     recipeCategory: page.Category,
     recipeYield: page.Nutrition_yield,
-    nutrition,
-    recipeIngredient: page.Cooking_part.map((item) =>
-      item.Cooking_part_ingredients.map(
+    recipeIngredient: page.Instructions_part.flatMap((item) =>
+      item.Instructions_part_ingredients.map(
         (item) =>
-          item.Cooking_part_ingredient_amount +
-          item.Cooking_part_ingredient_measurements_unit +
+          item.Instructions_part_ingredient_amount +
+          item.Instructions_part_ingredient_measurements_unit +
           ` ` +
-          item.Cooking_part_ingredient_name
+          item.Instructions_part_ingredient_name
       )
-    ).flat(),
+    ),
     recipeInstructions: await Promise.all(
-      page.Cooking_part.map((item) =>
-        item.Cooking_part_steps.map(async (step, idx) => ({
+      page.Instructions_part.flatMap((item) =>
+        item.Instructions_part_steps.map(async (step, index) => ({
           "@type": "HowToStep",
-          name: item.Cooking_part_name,
-          text: step.Cooking_part_steps_text,
+          name: item.Instructions_part_name,
+          text: step.Instructions_part_steps_text,
           url: `${
-            url +
+            pageURL +
             `#` +
-            item.Cooking_part_name.replaceAll(" ", "-")
+            item.Instructions_part_name.replaceAll(" ", "-")
               .replace(/\s+/g, "")
               .trim() +
             `-step-` +
-            (idx + 1)
+            (index + 1)
           }`,
-          image: step.Cooking_part_steps_blob.data
-            ? await importRemoteImage(
-                ASSETS_URL + step.Cooking_part_steps_blob?.data?.attributes.url
+          image: step.Instructions_part_steps_blob.data
+            ? await importImage(
+                ASSETS_URL +
+                  step.Instructions_part_steps_blob?.data?.attributes.url
               )
             : "",
         }))
-      ).flat()
+      )
     ),
   }}
 />

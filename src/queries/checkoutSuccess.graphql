@@ -1,0 +1,34 @@
+fragment CheckoutSuccessAttributes on CheckoutSuccess {
+  locale
+  Title
+  Intro_text
+  linked_post_text
+  text_here_is_how
+  Meta {
+    HTML_Title
+    Meta_description
+    noindex
+    nofollow
+    URL_slug
+    Canonical_link
+  }
+}
+
+query {
+  checkoutSuccess {
+    data {
+      id
+      attributes {
+        ...CheckoutSuccessAttributes
+        localizations {
+          data {
+            id
+            attributes {
+              ...CheckoutSuccessAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}

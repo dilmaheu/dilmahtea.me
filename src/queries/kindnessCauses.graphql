@@ -1,0 +1,32 @@
+fragment KindnessCauseAttributes on KindnessCause {
+  locale
+  cause
+  description
+  featured_blob {
+    data {
+      attributes {
+        url
+        provider_metadata
+        alternativeText
+      }
+    }
+  }
+}
+
+query {
+  kindnessCauses {
+    data {
+      id
+      attributes {
+        ...KindnessCauseAttributes
+        localizations(filters: { publishedAt: { ne: null } }) {
+          data {
+            attributes {
+              ...KindnessCauseAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,107 @@
+fragment HomeEstateAttributes on HomeEstate {
+  locale
+  updatedAt
+  Title
+  Intro_text
+  Heading_button_text
+  Heading_button_link
+  Intro_blob {
+    data {
+      attributes {
+        url
+        provider_metadata
+        formats
+        alternativeText
+      }
+    }
+  }
+  Heading_block
+  Block_text
+  Block2_aria_label_text
+  Block2_text
+  Block2_blob {
+    data {
+      attributes {
+        url
+        provider_metadata
+        formats
+        alternativeText
+      }
+    }
+  }
+  Block3_aria_label_text
+  Block3
+  Block4_heading
+  Impacts {
+    Value
+    Value_unit
+    Description
+    Icon {
+      data {
+        id
+        attributes {
+          url
+          provider_metadata
+          formats
+          alternativeText
+        }
+      }
+    }
+  }
+  blogs(filters: { publishedAt: { ne: null } }) {
+    data {
+      attributes {
+        Title
+        Intro_blob {
+          data {
+            attributes {
+              url
+              provider_metadata
+              alternativeText
+            }
+          }
+        }
+        authors {
+          data {
+            attributes {
+              givenName
+            }
+          }
+        }
+        createdAt
+        publishedAt
+        Meta {
+          URL_slug
+        }
+      }
+    }
+  }
+  Aria_label_all_estates_text
+  Meta {
+    HTML_Title
+    Meta_description
+    noindex
+    nofollow
+    URL_slug
+    Canonical_link
+  }
+}
+
+query {
+  homeEstate {
+    data {
+      id
+      attributes {
+        ...HomeEstateAttributes
+        localizations {
+          data {
+            id
+            attributes {
+              ...HomeEstateAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}

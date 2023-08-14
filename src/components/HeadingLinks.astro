@@ -1,5 +1,4 @@
 ---
-import { parseHTML } from "linkedom";
 import RecurringImages from "@store/RecurringImages";
 
 const { green_right_arrow } = RecurringImages;
@@ -16,8 +15,6 @@ const { type = "desktop", headings } = Astro.props as Props;
   @use "src/styles/colors";
 
   a {
-    @apply inline-flex items-center;
-
     color: colors.$sticky-dropdown-item;
 
     .chapter-top-icon {
@@ -44,7 +41,7 @@ const { type = "desktop", headings } = Astro.props as Props;
       <a
         href={"#" + id}
         class:list={[
-          "text-primary",
+          "inline-flex items-center text-black-light",
           i === 0 && "active",
           type !== "mobile"
             ? "chapter-link pt-4 xl:pt-5"

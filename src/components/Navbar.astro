@@ -1,21 +1,17 @@
 ---
-import CMS from "@store/CMS";
-import Icon from "astro-icon";
-import localizeCMSImage from "@utils/localizeCMSImage";
-import { Picture, BackgroundPicture } from "astro-imagetools/components";
+import { Picture } from "astro-imagetools/components";
 
+import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+import localizeCMSImage from "@utils/localizeCMSImage";
+
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
+import RegionSelectorsDropdown from "./RegionSelectorsDropdown.astro";
 
-const {
-  logo,
-  nav_background,
-  sidebar_background,
-  checkout_header_background,
-  checkout_header_background_sm,
-} = RecurringImages;
+const { logo, nav_background, nav_background_sm, sidebar_background } =
+  RecurringImages;
 
 interface Props {
   docLocale: string;
@@ -25,33 +21,127 @@ interface Props {
 }
 
 const { docLocale, footerText, isCartNavbar, availableLocales } =
-    Astro.props as Props,
-  { ASSETS_URL } = import.meta.env;
+  Astro.props as Props;
 
 const recurData = CMS.get("recurringElement", docLocale),
   ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", docLocale);
 
 const {
+  text_region,
+  text_language,
+  Button_save_text,
+  search_text_no_result_found,
   Nav_menu: menu,
-  Nav_menu_search_visibility: search,
-  Nav_menu_language_selector_visibility: language,
-  Nav_menu_cart_visibility: cart,
-  Nav_menu_cart_icon: cart_icon,
-  Nav_menu_profile_visibility: profile,
-  Nav_menu_profile_icon: profile_icon,
+  Nav_menu_cart_icon: cartIcon,
+  Nav_menu_profile_icon: profileIcon,
+  Nav_menu_localization_icon: localizationIcon,
+  Nav_menu_cart_visibility: cartVisibility,
+  Nav_menu_search_visibility: searchVisibility,
+  Nav_menu_profile_visibility: profileVisibility,
+  Nav_menu_localization_visibility: localizationVisibility,
+  Nav_menu_region_selector_visibility: regionSelectorVisibility,
+  Nav_menu_language_selector_visibility: languageSelectorVisibility,
 } = recurData;
 ---
 
 <style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
   .brand-logo {
-    height: clamp(38px, 5vw, 50px);
+    height: clamp(35px, 5vw, 50px);
   }
 
-  nav {
-    gap: clamp(10px, 1.5vw, 20px);
+  .nav-icon {
+    width: poly-fluid-clamp(
+      (
+        768px: 35px,
+        1024px: 50px,
+      )
+    );
 
-    a {
-      @apply text-[32px] md:text-[clamp(0.875rem,1.5vw+0.1rem,1.125rem)] font-semibold md:font-bold leading-[150%];
+    height: poly-fluid-clamp(
+      (
+        768px: 35px,
+        1024px: 50px,
+      )
+    );
+
+    padding: poly-fluid-clamp(
+      (
+        768px: 10px,
+        1024px: 12px,
+      )
+    );
+  }
+
+  .nav-cart-num {
+    width: poly-fluid-clamp(
+      (
+        768px: 15px,
+        1024px: 20px,
+      )
+    );
+
+    height: poly-fluid-clamp(
+      (
+        768px: 15px,
+        1024px: 20px,
+      )
+    );
+  }
+
+  #sidebar nav a {
+    @apply text-[32px] font-bold leading-[150%];
+  }
+
+  .search-input {
+    @apply w-full text-black;
+
+    height: clamp(42px, 5vw, 50px);
+
+    @media (min-width: 640px) {
+      width: poly-fluid-clamp(
+        (
+          640px: 320px,
+          1440px: 800px,
+        )
+      );
+    }
+  }
+
+  input[type="search"] {
+    &::-webkit-search-decoration:hover,
+    &::-webkit-search-cancel-button {
+      font-size: 1.3rem;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  #search-results-container {
+    @apply w-[90vw] mx-[min(100px,5vw)] p-[15px] sm:p-6 sm:m-1
+      top-[90%] sm:top-[75%] md:top-[70%];
+
+    @media (min-width: 640px) {
+      width: poly-fluid-clamp(
+        (
+          1065px: 575px,
+          1440px: 800px,
+        )
+      );
+
+      @include poly-fluid-sizing(
+        "margin-left",
+        (
+          640px: 35px,
+          1065px: 210px,
+          1440px: 225px,
+          1730px: 235px,
+          2050px: 415px,
+        )
+      );
     }
   }
 </style>
@@ -59,237 +149,302 @@ const {
 <header
   id="navigation"
   class:list={[
-    isCartNavbar && "cart-navbar",
-    "xl:!relative sticky !top-0 z-[999] w-full bg-cover bg-right-bottom",
+    "md:!relative sticky top-0 z-[999] w-full bg-cover bg-right-bottom",
   ]}
 >
-  {
-    !isCartNavbar && (
-      <ClipPathSVG
-        id="cart-btn-curve"
-        path="M0.5,0 A0.5,0.5,0,0,0,0,0.5 a0.5,0.5,0,0,0,0.5,0.5 a0.5,0.5,0,0,0,0.5,-0.5 a0.5,0.5,0,0,0,-0.021,-0.146 a0.25,0.25,0,0,1,-0.104,0.021 A0.25,0.25,0,0,1,0.625,0.125 a0.25,0.25,0,0,1,0.021,-0.104 a0.5,0.5,0,0,0,-0.146,-0.021"
-      />
-    )
-  }
+  <div class="navbar-container relative w-full sm:flex items-center z-10">
+    <ClipPathSVG
+      id="nav-curve"
+      path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
+    />
 
-  {
-    !isCartNavbar ? (
-      <Picture
-        alt=""
-        layout="fill"
-        loading="eager"
-        src={nav_background.src}
-        attributes={{
-          picture: {
-            id: "navbar-bg",
-            style: "display: none; position: absolute;",
-          },
-        }}
-      />
-    ) : (
-      <Fragment>
-        <ClipPathSVG
-          id="cart-navbar-curve"
-          path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
-        />
-
-        <Picture
-          alt=""
-          layout="fill"
-          preload="avif"
-          breakpoints={{ maxWidth: 640 }}
-          src={checkout_header_background_sm.src}
-          artDirectives={[
-            {
-              media: "(min-width: 640px)",
-              breakpoints: { minWidth: 640 },
-              src: checkout_header_background.src,
-            },
-          ]}
-          attributes={{
-            picture: {
-              id: "cart-navbar-bg",
-              style: "position: absolute; clip-path: url(#cart-navbar-curve);",
-            },
-          }}
-        />
-      </Fragment>
-    )
-  }
-
-  <div
-    class:list={[
-      "flex justify-between items-center",
-      "navbar wrapper relative top-0 z-50 mx-auto py-[clamp(20px,3vw,56px)]",
-    ]}
-  >
-    <a href="/" class="brand-logo my-auto">
-      <img class="h-full" {...logo} />
-    </a>
-
-    <nav class="hidden xl:flex m-auto ml-14 text-white">
-      {
-        menu.map(
-          ({ Visibility, Title, Link }) =>
-            Visibility && <a href={Link}>{Title}</a>
-        )
-      }
-    </nav>
-
-    <div class="flex gap-4 items-center">
-      {
-        search && (
-          <div class="my-auto flex items-center overflow-hidden">
-            <ci-search />
-          </div>
-        )
-      }
-      {
-        language && (
-          <div class="hidden xl:flex items-center">
-            <LangSelectorsDropdown
-              docLocale={docLocale}
-              availableLocales={availableLocales}
-            />
-          </div>
-        )
-      }
-
-      {
-        cart && !isCartNavbar && (
-          <button
-            aria-label={ariaLabelRecurData.Navbar_open_cart_text}
-            class:list={[
-              "open-cart-btn hidden xl:inline-block relative",
-              "scale-[0.775] sm:scale-[0.85] md:scale-[0.925] lg:scale-[1]",
-              "mx-[calc(-24px*0.225)] sm:mx-[calc(-24px*0.15)] md:mx-[calc(-24px*0.075)] lg:mx-0",
-            ]}
-          >
-            <span
-              style="clip-path: url(#cart-btn-curve);"
-              class="w-12 h-12 text-primary flex justify-center items-center bg-lightgray rounded-full"
-            >
-              <img
-                class="w-[30px] h-[30px] mx-auto"
-                src={await localizeCMSImage(cart_icon?.data?.attributes.url)}
-                alt={cart_icon?.data?.attributes.alternativeText}
-              />
-            </span>
-
-            <span
-              class:list={[
-                "w-6 h-6 absolute -top-1.5 -right-1.5",
-                "flex justify-center items-center rounded-full",
-              ]}
-            >
-              <span class="w-5 h-5 text-white flex justify-center items-center rounded-full bg-red-600">
-                <span id="cart-size">
-                  <DynamicHTML htmlFn={() => Object.keys(window.cart).length} />
-                </span>
-              </span>
-            </span>
-          </button>
-        )
-      }
-
-      <div class="block xl:hidden w-[38px] h-[38px]">
-        <button
-          id="sidebar-open-btn"
-          aria-label={ariaLabelRecurData.Navbar_open_sidebar_menu_text}
-          class="block w-full h-full select-none cursor-pointer"
-        >
-          <svg viewBox="0 0 22.4 19.2" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M0 17.6a1.6 1.6 0 0 0 .5 1.1 1.6 1.6 0 0 0 1.1.5h19.2a1.6 1.6 0 0 0 0-3.2H1.6a1.6 1.6 0 0 0-1.1.5 1.6 1.6 0 0 0-.5 1.1Zm0-8a1.6 1.6 0 0 0 .5 1.1 1.6 1.6 0 0 0 1.1.5h9.6a1.6 1.6 0 0 0 0-3.2H1.6a1.6 1.6 0 0 0-1.1.5A1.6 1.6 0 0 0 0 9.6Zm0-8a1.6 1.6 0 0 0 .5 1.1 1.6 1.6 0 0 0 1.1.5h19.2a1.6 1.6 0 0 0 1.1-.5 1.6 1.6 0 0 0 .5-1.1 1.6 1.6 0 0 0-.5-1.1 1.6 1.6 0 0 0-1.1-.5H1.6A1.6 1.6 0 0 0 .5.5 1.6 1.6 0 0 0 0 1.6Z"
-              style="fill: #e3dfde; fill-rule: evenodd"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div
-    id="sidebar"
-    class="hidden xl:!hidden fixed right-0 z-[40] w-[300px] max-w-full h-screen z-[99]"
-  >
-    <BackgroundPicture
-      sizes="300px"
-      layout="fill"
-      preload="avif"
-      loading="lazy"
-      src={sidebar_background.src}
-      objectPosition="right bottom"
-      breakpoints={{ minWidth: 300 }}
-      attributes={{
-        container: { style: "height: 100%;" },
-        link: { media: "(max-width: 767.98px)" },
-      }}
+    <div
+      class="absolute top-0 left-0 w-full h-full bg-primary"
+      style="clip-path: url(#nav-curve);"
     >
-      <div class="grid content-between h-full px-[30px] pt-[26px] pb-9">
-        <div class="z-10 grid gap-9">
-          <div class="flex items-center gap-x-[15px] justify-end">
-            <div class="flex items-center h-[38px]">
-              <LangSelectorsDropdown
-                docLocale={docLocale}
-                availableLocales={availableLocales}
-              />
-            </div>
+      {
+        nav_background && (
+          <Picture
+            alt=""
+            layout="fill"
+            preload="avif"
+            breakpoints={{ maxWidth: 640 }}
+            src={nav_background_sm?.src || nav_background.src}
+            artDirectives={[
+              {
+                media: "(min-width: 640px)",
+                breakpoints: { minWidth: 640 },
+                src: nav_background.src,
+              },
+            ]}
+          />
+        )
+      }
+    </div>
 
-            {
-              cart && !isCartNavbar && (
-                <button
-                  aria-label="Open Cart"
+    {
+      !isCartNavbar && (
+        <ClipPathSVG
+          id="cart-btn-curve"
+          path="M0.5,0 A0.5,0.5,0,0,0,0,0.5 a0.5,0.5,0,0,0,0.5,0.5 a0.5,0.5,0,0,0,0.5,-0.5 a0.5,0.5,0,0,0,-0.021,-0.146 a0.25,0.25,0,0,1,-0.104,0.021 A0.25,0.25,0,0,1,0.625,0.125 a0.25,0.25,0,0,1,0.021,-0.104 a0.5,0.5,0,0,0,-0.146,-0.021"
+        />
+      )
+    }
+
+    <div
+      class:list={[
+        "flex justify-between items-center",
+        "navbar wrapper relative top-0 z-50 mx-auto py-[clamp(20px,3vw,36px)]",
+      ]}
+    >
+      <div class="flex gap-[35px] md:gap-[50px]">
+        <a href="/" class="brand-logo my-auto">
+          <img class="h-full" {...logo} />
+        </a>
+
+        {
+          searchVisibility && (
+            <div class="hidden sm:block relative">
+              <input
+                type="search"
+                placeholder="Search"
+                class:list={[
+                  "search-input py-1 px-4 pr-12 rounded-full border-2 border-primary",
+                  "focus:ring focus:ring-warning/50 focus:outline-none",
+                ]}
+              />
+
+              <div class="absolute w-fit inset-y-0 right-1.5 flex items-center h-full">
+                <div
                   class:list={[
-                    "open-cart-btn relative",
-                    "scale-[0.775] sm:scale-[0.85]",
-                    "mx-[calc(-24px*0.225)] sm:mx-[calc(-24px*0.15)] md:mx-[calc(-24px*0.075)] lg:mx-0",
+                    "w-[clamp(32px,4vw,40px)] h-[clamp(32px,4vw,40px)]",
+                    "bg-primary rounded-full cursor-pointer",
                   ]}
                 >
-                  <span
-                    style="clip-path: url(#cart-btn-curve);"
-                    class="w-12 h-12 text-primary flex justify-center items-center bg-lightgray rounded-full"
-                  >
-                    <img
-                      class="w-[30px] h-[30px] mx-auto"
-                      src={ASSETS_URL + cart_icon?.data?.attributes.url}
-                      alt={cart_icon?.data?.attributes.alternativeText}
-                    />
+                  <span class="flex items-center justify-center p-2 md:p-2.5">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 21 21"
+                      class="w-full h-full"
+                    >
+                      <path
+                        d="M20.6,20l-4.5-4.5m2.5-6A8.5,8.5,0,0,1,10.1,18a8.6,8.6,0,0,1-6-2.5,8.5,8.5,0,0,1,0-12,8.6,8.6,0,0,1,6-2.5,8.5,8.5,0,0,1,8.5,8.5Z"
+                        transform="translate(-0.6)"
+                        style="fill:none;stroke:#fff;stroke-linecap:round;stroke-width:2px"
+                      />
+                    </svg>
                   </span>
+                </div>
+              </div>
+            </div>
+          )
+        }
+      </div>
 
-                  <span
-                    class:list={[
-                      "w-6 h-6 absolute -top-1.5 -right-1.5",
-                      "flex justify-center items-center rounded-full",
-                    ]}
-                  >
-                    <span class="w-5 h-5 text-white flex justify-center items-center rounded-full bg-red-600">
-                      <span id="cart-size">
-                        <DynamicHTML
-                          htmlFn={() => Object.keys(window.cart).length}
-                        />
-                      </span>
-                    </span>
-                  </span>
-                </button>
-              )
-            }
-
-            <div class="w-[38px] h-[38px]">
+      <div class="flex justify-end items-center gap-2.5 md:gap-[15px]">
+        {
+          localizationVisibility && (
+            <div class="hidden sm:block relative">
               <button
-                id="sidebar-close-btn"
-                aria-label="Close Sidebar Menu"
-                class="hidden w-full h-full select-none cursor-pointer"
+                id="localization-menu-open-btn"
+                aria-label={
+                  ariaLabelRecurData.Navbar_open_localization_menu_text
+                }
+                class="nav-icon peer w-fit flex justify-center items-center bg-white rounded-full cursor-pointer"
               >
-                <svg viewBox="0 0 19.2 19.2" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
-                    style="fill: #e3dfde; fill-rule: evenodd"></path>
-                </svg>
+                <img
+                  class="w-full h-full"
+                  src={await localizeCMSImage(
+                    localizationIcon?.data?.attributes.url
+                  )}
+                  alt={localizationIcon?.data?.attributes.alternativeText}
+                />
+              </button>
+
+              <div class="hidden absolute w-[280px] -translate-x-1/2 left-1/2 drop-shadow-lg">
+                <div class="relative flex justify-center pt-1">
+                  <div class="w-5 h-5 bg-white rotate-45 rounded" />
+                </div>
+
+                <div class="grid gap-[15px] content-between bg-white rounded-[12px] p-[25px] -translate-y-3">
+                  <div class="grid gap-1.5 text-black-light">
+                    <div class="text-[15px] font-medium text-black">
+                      {text_language}
+                    </div>
+
+                    {languageSelectorVisibility &&
+                      (availableLocales.length > 1 ? (
+                        <LangSelectorsDropdown
+                          docLocale={docLocale}
+                          availableLocales={availableLocales}
+                        />
+                      ) : (
+                        <p>
+                          <i>{recurData.text_lang_selector_unavailable}</i>
+                        </p>
+                      ))}
+                  </div>
+
+                  <div class="grid gap-1.5 text-black-light">
+                    <div class="text-[15px] font-medium text-black">
+                      {text_region}
+                    </div>
+
+                    {regionSelectorVisibility && (
+                      <RegionSelectorsDropdown docLocale={docLocale} />
+                    )}
+                  </div>
+
+                  {/* <button
+                    type="submit"
+                    class="py-2.5 px-4 bg-primary text-white leading-[120%] rounded-full"
+                  >
+                    {Button_save_text}
+                  </button> */}
+                </div>
+              </div>
+            </div>
+          )
+        }
+
+        {
+          localizationVisibility && (
+            <div class="block sm:hidden relative">
+              <button
+                id="localization-menu-sm-open-btn"
+                class:list={[
+                  "nav-icon flex justify-center items-center",
+                  "peer bg-white rounded-full cursor-pointer",
+                ]}
+              >
+                <img
+                  src={await localizeCMSImage(
+                    localizationIcon?.data?.attributes.url
+                  )}
+                  alt={localizationIcon?.data?.attributes.alternativeText}
+                />
               </button>
             </div>
-          </div>
+          )
+        }
 
-          <nav class="flex flex-col text-white">
+        {
+          cartVisibility && !isCartNavbar && (
+            <button
+              aria-label={ariaLabelRecurData.Navbar_open_cart_text}
+              id="open-cart-btn"
+              class="inline-block relative"
+            >
+              <span
+                style="clip-path: url(#cart-btn-curve);"
+                class="nav-icon block bg-white rounded-full"
+              >
+                <img
+                  class="w-full h-full"
+                  src={await localizeCMSImage(cartIcon?.data?.attributes.url)}
+                  alt={cartIcon?.data?.attributes.alternativeText}
+                />
+              </span>
+
+              <span
+                class:list={[
+                  "absolute -top-[3px] -right-[3px]",
+                  "flex justify-center items-center rounded-full",
+                ]}
+              >
+                <span
+                  class:list={[
+                    "nav-cart-num flex justify-center items-center",
+                    "text-[10px] lg:text-xs text-white rounded-full bg-error",
+                  ]}
+                >
+                  <span id="cart-size">
+                    <DynamicHTML
+                      htmlFn={() => Object.keys(window.cart).length}
+                    />
+                  </span>
+                </span>
+              </span>
+            </button>
+          )
+        }
+
+        {
+          profileVisibility && (
+            <div
+              class:list={[
+                "nav-icon flex justify-center items-center",
+                "bg-secondary rounded-full cursor-pointer",
+              ]}
+            >
+              <img
+                class="w-full h-full"
+                src={await localizeCMSImage(profileIcon?.data?.attributes.url)}
+                alt={profileIcon?.data?.attributes.alternativeText}
+              />
+            </div>
+          )
+        }
+
+        <div class="block md:hidden w-[35px] h-[35px]">
+          <button
+            id="sidebar-open-btn"
+            aria-label={ariaLabelRecurData.Navbar_open_sidebar_menu_text}
+            class="block w-full h-full select-none cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 31">
+              <path
+                transform="translate(0)"
+                style="fill: #fff; fill-rule: evenodd"
+                d="M0,28.4a2.7,2.7,0,0,0,.7,1.8,2.5,2.5,0,0,0,1.7.8H31.2a2.5,2.5,0,0,0,1.7-.8,2.7,2.7,0,0,0,.7-1.8,2.9,2.9,0,0,0-.7-1.8,2.5,2.5,0,0,0-1.7-.8H2.4a2.5,2.5,0,0,0-1.7.8A2.9,2.9,0,0,0,0,28.4ZM9.9,15.5a2.9,2.9,0,0,0,.7,1.8,2.5,2.5,0,0,0,1.7.8H31.6a2.1,2.1,0,0,0,1.7-.8,2.4,2.4,0,0,0,.7-1.8,2.4,2.4,0,0,0-.7-1.8,2.1,2.1,0,0,0-1.7-.8H12.3a2.5,2.5,0,0,0-1.7.8A2.9,2.9,0,0,0,9.9,15.5ZM0,2.6A2.9,2.9,0,0,0,.7,4.4a2.5,2.5,0,0,0,1.7.8H31.2a2.5,2.5,0,0,0,1.7-.8,2.9,2.9,0,0,0,.7-1.8A2.7,2.7,0,0,0,32.9.8,2.5,2.5,0,0,0,31.2,0H2.4A2.5,2.5,0,0,0,.7.8,2.7,2.7,0,0,0,0,2.6Z"
+              ></path>
+            </svg>
+          </button>
+
+          <button
+            id="sidebar-close-btn"
+            aria-label={ariaLabelRecurData.Navbar_close_sidebar_menu_text}
+            class="hidden w-full h-full select-none cursor-pointer"
+          >
+            <svg viewBox="0 0 19.2 19.2" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+                style="fill: #fff; fill-rule: evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="sidebar"
+      class="hidden md:!hidden fixed right-0 z-[40] w-[300px] max-w-full h-full bg-primary z-[99]"
+    >
+      {
+        sidebar_background && (
+          <Picture
+            alt=""
+            sizes="300px"
+            layout="fill"
+            preload="avif"
+            loading="lazy"
+            src={sidebar_background.src}
+            objectPosition="right bottom"
+            breakpoints={{ minWidth: 300 }}
+            attributes={{
+              container: { style: "height: 100%;" },
+              link: { media: "(max-width: 767.98px)" },
+              picture: {
+                style: "position: absolute; bottom: 0; right: 0;",
+              },
+            }}
+          />
+        )
+      }
+
+      <div class="grid content-between h-full px-[30px] pt-[26px] pb-9 z-10">
+        <div class="z-10 grid gap-9 overflow-y-auto">
+          <nav class="flex flex-col gap-[35px] text-white">
             {
               menu.map(
                 ({ Visibility, Title, Link }) =>
@@ -304,191 +459,412 @@ const {
           set:html={footerText}
         />
       </div>
-    </BackgroundPicture>
+    </div>
+
+    {
+      searchVisibility && (
+        <div class="block sm:hidden bg-primary h-14 wrapper pb-[15px]">
+          <div class="relative">
+            <input
+              type="search"
+              placeholder="Search"
+              class:list={[
+                "search-input py-1 px-4 pr-12 rounded-full border-2 border-primary",
+                "focus:ring focus:ring-warning/50 focus:outline-none",
+              ]}
+            />
+
+            <div class="absolute w-fit inset-y-0 right-1.5 flex items-center h-full">
+              <div class="w-8 h-8 bg-primary rounded-full cursor-pointer">
+                <span class="flex items-center justify-center p-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 21 21"
+                    class="w-full h-full"
+                  >
+                    <path
+                      d="M20.6,20l-4.5-4.5m2.5-6A8.5,8.5,0,0,1,10.1,18a8.6,8.6,0,0,1-6-2.5,8.5,8.5,0,0,1,0-12,8.6,8.6,0,0,1,6-2.5,8.5,8.5,0,0,1,8.5,8.5Z"
+                      transform="translate(-0.6)"
+                      style="fill:none;stroke:#fff;stroke-linecap:round;stroke-width:2px"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    <div
+      id="localization-menu-sm"
+      class:list={[
+        "fixed hidden sm:!hidden right-0 top-0",
+        "w-full h-screen p-[25px] bg-secondary text-black-light z-[9999]",
+      ]}
+    >
+      <div class="grid gap-[25px]">
+        <div class="flex justify-end">
+          <button
+            type="button"
+            aria-label={ariaLabelRecurData.Navbar_close_localization_menu_text}
+            id="localization-menu-sm-close-btn"
+            class="select-none cursor-pointer"
+          >
+            <svg
+              viewBox="0 0 19.2 19.2"
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-[35px] h-[35px]"
+            >
+              <path
+                d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+                style="fill: #474747; fill-rule: evenodd"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="grid gap-[25px] content-between h-full">
+          <div class="grid gap-2.5">
+            <div class="text-[15px] font-medium">
+              {text_language}
+            </div>
+
+            {
+              languageSelectorVisibility &&
+                (availableLocales.length > 1 ? (
+                  <LangSelectorsDropdown
+                    docLocale={docLocale}
+                    availableLocales={availableLocales}
+                  />
+                ) : (
+                  <p>
+                    <i>{recurData.text_lang_selector_unavailable}</i>
+                  </p>
+                ))
+            }
+          </div>
+
+          <div class="grid gap-2.5">
+            <div class="text-[15px] font-medium">
+              {text_region}
+            </div>
+
+            {
+              regionSelectorVisibility && (
+                <RegionSelectorsDropdown docLocale={docLocale} />
+              )
+            }
+          </div>
+        </div>
+
+        {
+          /* <button
+          type="submit"
+          class="py-2.5 px-4 bg-primary text-secondary-light leading-[120%] rounded-full"
+        >
+          {Button_save_text}
+        </button> */
+        }
+      </div>
+    </div>
+
+    <div
+      id="search-results-container"
+      class="hidden absolute rounded-xl bg-white overflow-hidden"
+    >
+      <div id="search-results" class="grid sm:grid-cols-2 gap-x-2.5 gap-y-5">
+      </div>
+
+      <div
+        id="no-search-results"
+        class="hidden text-lg font-semibold text-error"
+      >
+        {search_text_no_result_found}
+      </div>
+    </div>
   </div>
+
+  <script is:inline>
+    {
+      const navigation = document.getElementById("navigation"),
+        topNotifications = document.querySelector(".top-notifications");
+
+      const updateNavbarStyles = () => {
+        // fix sticky navbar position on mobile if top notification is shown
+        navigation.style.top = `${
+          window.innerWidth >= 768
+            ? 0
+            : topNotifications.getBoundingClientRect().height
+        }px`;
+      };
+
+      window.addEventListener("scroll", updateNavbarStyles);
+      window.addEventListener("resize", updateNavbarStyles);
+    }
+  </script>
 </header>
 
 <script>
-  declare global {
-    interface Window {
-      cart: Record<string, Record<string, string | number>>;
-    }
-  }
-</script>
+  const id = document.getElementById.bind(document);
 
-<script is:inline>
-  {
-    const navbarBg = document.getElementById("navbar-bg"),
-      navigation = document.getElementById("navigation"),
-      isCartNavbar = navigation.classList.contains("cart-navbar"),
-      translationNotFoundNotification = document.querySelector(
-        ".translation-not-found-notification"
-      );
+  const cart = id("cart"),
+    sidebar = id("sidebar"),
+    navigation = id("navigation"),
+    openCartBtn = id("open-cart-btn"),
+    sidebarOpenButton = id("sidebar-open-btn"),
+    sidebarCloseButton = id("sidebar-close-btn"),
+    localizationMenuSm = id("localization-menu-sm"),
+    localizationMenuOpenButton = id("localization-menu-open-btn"),
+    localizationMenuSmOpenButton = id("localization-menu-sm-open-btn"),
+    localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
 
-    const updateNavbarStyles = () => {
-      const translationNotFoundNotificationHeight =
-        translationNotFoundNotification.getBoundingClientRect().height;
+  const SelectorsDropdownItems = document.querySelectorAll<HTMLUListElement>(
+    ".selectors-dropdown > div > .selectors-dropdown-item"
+  );
 
-      // fix sticky navbar position if top notification is shown
-      navigation.style.top = `${translationNotFoundNotificationHeight}px`;
+  const localization = localizationMenuOpenButton?.parentElement,
+    localizationMenu = localizationMenuOpenButton?.nextElementSibling;
 
-      if (!isCartNavbar) {
-        navbarBg.style.display =
-          window.innerWidth < 1280 &&
-          (scrollY > 0 || document.body.style.position === "fixed")
-            ? "inline-block"
-            : "none";
-      }
-    };
-
-    window.addEventListener("scroll", updateNavbarStyles);
-    window.addEventListener("resize", updateNavbarStyles);
-  }
-</script>
-
-<script>
-  declare global {
-    interface Window {
-      openCart: () => void;
-      // disableScrolling & enableScrolling are declared globally to use in cart toggling logic
-      enableScrolling: () => void;
-      disableScrolling: () => void;
-    }
-  }
-
-  const query = document.querySelector.bind(document),
-    rootElement = query(":root"),
-    cart = query("#cart"),
-    sidebar = query("#sidebar"),
-    navbarBg = query("#navbar-bg"),
-    navigation = query("#navigation"),
-    cartNavbarBg = query("#cart-navbar-bg"),
-    sidebarOpenButton = query("#sidebar-open-btn"),
-    sidebarCloseButton = query("#sidebar-close-btn"),
-    isCartNavbar = !!navigation?.classList.contains("cart-navbar");
-
-  const openCartBtns = document.querySelectorAll(".open-cart-btn");
+  let scrollingDisabled = false;
+  let scrollYPosition = 0;
 
   window.disableScrolling = () => {
-    const overflowY =
-      visualViewport.height < document.body.offsetHeight ? "scroll" : "auto";
+    if (scrollingDisabled) return;
 
-    Object.assign(document.body.style, {
-      overflowY,
-      width: "100%",
-      position: "fixed",
-      top: `-${window.scrollY}px`,
-    });
+    scrollYPosition = window.scrollY;
+    document.body.style.overflowY = "hidden";
+    document.body.style.width = "100%";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollYPosition}px`;
+    document.body.style.left = "0";
+
+    scrollingDisabled = true;
   };
 
   window.enableScrolling = () => {
-    const scrollYPosition =
-      parseInt(document.body.style.top.slice(1, -2)) || window.scrollY;
+    if (!scrollingDisabled) return;
 
-    Object.assign(document.body.style, {
-      width: "auto",
-      overflowY: "auto",
-      position: "static",
-    });
+    document.body.style.overflowY = "auto";
+    document.body.style.width = "auto";
+    document.body.style.position = "static";
+    document.body.style.top = "0";
 
-    try {
-      window.scrollTo({
-        top: scrollYPosition,
-        // @ts-ignore
-        behavior: "instant",
-      });
-    } catch (error) {
-      const currentRootScrollBehavior = rootElement.style.scrollBehavior;
+    window.scrollTo({ top: scrollYPosition });
 
-      rootElement.style.scrollBehavior = "auto";
-
-      window.scrollTo({
-        top: scrollYPosition,
-        behavior: "auto",
-      });
-
-      rootElement.style.scrollBehavior = currentRootScrollBehavior;
-    }
+    scrollingDisabled = false;
   };
 
   const updateSidebarTopPosition = () => {
-    if (navigation) {
-      // sidebar.style.top = `${navigation.getBoundingClientRect().bottom}px`;
-      sidebar.style.top = `0px`;
+    // reduce top by 10px to hide the transparent gap caused by the curve
+    const sidebarTop = navigation.getBoundingClientRect().bottom - 10;
+
+    sidebar.style.top = `${sidebarTop}px`;
+    sidebar.style.paddingBottom = `${sidebarTop}px`;
+  };
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 768) {
+      // enable scrolling if cart is not open
+      if (cart?.classList.contains("hidden")) window.enableScrolling();
+
+      // remove event listener to prevent memory leaks
+      window.removeEventListener("resize", updateSidebarTopPosition);
+    } else if (sidebarOpened || localizationMenuVisible) {
+      window.disableScrolling();
+
+      if (sidebarOpened) {
+        // re-add event listener in case it was removed
+        window.addEventListener("resize", updateSidebarTopPosition);
+      }
+    }
+  });
+
+  let localizationMenuVisible = false;
+  let sidebarOpened = false;
+
+  const toggleLocalizationMenu = () => {
+    localizationMenuVisible = !localizationMenuVisible;
+    localizationMenuSm.style.display = localizationMenuVisible
+      ? "block"
+      : "none";
+
+    if (localizationMenuVisible) {
+      window.disableScrolling();
+    } else {
+      window.enableScrolling();
     }
   };
 
-  window.addEventListener("resize", updateSidebarTopPosition);
+  const toggleSidebar = () => {
+    sidebarOpened = !sidebarOpened;
+    sidebar.style.display = sidebarOpened ? "block" : "none";
+    sidebarOpenButton.style.display = sidebarOpened ? "none" : "block";
+    sidebarCloseButton.style.display = sidebarOpened ? "block" : "none";
 
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 1279) {
-      // enable scrolling only if cart and checkout is not open
-      if (cart?.classList.contains("hidden")) window.enableScrolling();
-
-      window.removeEventListener("resize", updateSidebarTopPosition);
-
-      navbarBg && (navbarBg.style.display = "none");
-      cartNavbarBg && (cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)");
-    } else if (sidebar.style.display === "block") {
-      // @ts-ignore
+    if (sidebarOpened) {
       window.disableScrolling();
-
+      updateSidebarTopPosition();
       window.addEventListener("resize", updateSidebarTopPosition);
+    } else {
+      window.enableScrolling();
+      window.removeEventListener("resize", updateSidebarTopPosition);
+    }
+  };
 
-      // navbarBg && (navbarBg.style.display = "inline-block");
-      // cartNavbarBg && (cartNavbarBg.style.clipPath = "none");
+  openCartBtn?.addEventListener("click", () => {
+    window.openCart();
+  });
+
+  sidebarOpenButton?.addEventListener("click", toggleSidebar);
+
+  sidebarCloseButton?.addEventListener("click", toggleSidebar);
+
+  localizationMenuOpenButton?.addEventListener("click", toggleLocalizationMenu);
+
+  localizationMenuSmOpenButton?.addEventListener(
+    "click",
+    toggleLocalizationMenu
+  );
+
+  localizationMenuSmCloseButton?.addEventListener(
+    "click",
+    toggleLocalizationMenu
+  );
+
+  localization?.addEventListener("mouseenter", () => {
+    localizationMenu.classList.remove("hidden");
+  });
+
+  const hideLocalizationMenu = () => {
+    localizationMenu.classList.add("hidden");
+  };
+
+  localization?.addEventListener("mouseleave", hideLocalizationMenu);
+
+  let localizationOpenedByClick = false;
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+
+    if (localizationMenuOpenButton?.contains(target)) {
+      const { classList: localizationMenuClassList } = localizationMenu;
+
+      if (localizationOpenedByClick) {
+        localizationMenuClassList.add("hidden");
+        localizationOpenedByClick = false;
+      } else {
+        localizationMenuClassList.remove("hidden");
+        localizationOpenedByClick = true;
+      }
+
+      localization[
+        !localizationMenuClassList.contains("hidden")
+          ? "removeEventListener"
+          : "addEventListener"
+      ]("mouseleave", hideLocalizationMenu);
+    }
+
+    if (localization && !localization?.contains(target)) {
+      hideLocalizationMenu();
+      localization.addEventListener("mouseleave", hideLocalizationMenu);
     }
   });
 
-  openCartBtns.forEach((openCartBtn) => {
-    openCartBtn.addEventListener("click", () => {
-      window.openCart();
+  SelectorsDropdownItems.forEach((li) => {
+    li.addEventListener("click", () => {
+      const selector = li.parentElement.parentElement;
+
+      const { value } = li.dataset,
+        { selectorType } = selector.dataset;
+
+      switch (selectorType) {
+        case "lang":
+          location.pathname = window.alternateURLs[value];
+          break;
+
+        case "region":
+          localStorage.setItem("region", value);
+
+          window.cookies.country = value;
+
+          location.reload();
+          break;
+      }
     });
-  });
-
-  sidebarOpenButton?.addEventListener("click", () => {
-    window.removeEventListener("resize", updateSidebarTopPosition);
-
-    updateSidebarTopPosition();
-
-    sidebar.style.display = "block";
-    sidebarOpenButton.style.display = "none";
-    sidebarCloseButton.style.display = "block";
-
-    if (isCartNavbar) {
-      cartNavbarBg.style.clipPath = "none";
-    } else {
-      navbarBg.style.display = "inline-block";
-    }
-
-    window.disableScrolling();
-
-    window.addEventListener("resize", updateSidebarTopPosition);
-  });
-
-  sidebarCloseButton?.addEventListener("click", () => {
-    sidebar.style.display = "none";
-    sidebarOpenButton.style.display = "block";
-    sidebarCloseButton.style.display = "none";
-
-    if (isCartNavbar) {
-      cartNavbarBg.style.clipPath = "url(#cart-navbar-curve)";
-    } else {
-      navbarBg.style.display = "none";
-    }
-
-    window.enableScrolling();
   });
 </script>
 
-<script is:inline>
-  (function () {
-    var id = "888e9a2bb7bb4df2ab6ac60cc9fb16cf";
-    var ci_search = document.createElement("script");
-    ci_search.type = "text/javascript";
-    ci_search.async = true;
-    ci_search.src = "https://cse.expertrec.com/api/js/ci_common.js?id=" + id;
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(ci_search, s);
-  })();
+<script>
+  window.addEventListener("load", async () => {
+    const searchIndex = await fetch(
+      `/search-index/${window.preferredLocale}.json`
+    ).then((response) => response.json());
+
+    const id = document.getElementById.bind(document),
+      searchResults = id("search-results"),
+      noSearchResult = id("no-search-results"),
+      searchResultsContainer = id("search-results-container"),
+      searchInputs =
+        document.querySelectorAll<HTMLInputElement>(".search-input");
+
+    searchInputs.forEach((input) => {
+      input.addEventListener("input", () => {
+        const searchTerm = input.value.toLowerCase().trim(),
+          matches = searchIndex.filter((item) =>
+            item.Title.toLowerCase().includes(searchTerm)
+          );
+
+        searchResults.innerHTML = "";
+
+        if (searchTerm === "") {
+          noSearchResult.style.display = "none";
+          searchResultsContainer.style.display = "none";
+
+          return;
+        }
+
+        const maxItems = window.innerWidth < 640 ? 4 : 10,
+          resultsCount = Math.min(maxItems, matches.length);
+
+        for (let i = 0; i < resultsCount; i++) {
+          const match = matches[i],
+            resultLinkBlock = document.createElement("a");
+
+          resultLinkBlock.setAttribute(
+            "href",
+            `/${window.preferredLocale}/${match.URL_slug}/`
+          );
+
+          resultLinkBlock.innerHTML = `<div
+            class="flex w-auto gap-2.5 h-auto"
+          >
+            <div class="flex-none h-full">
+              <div class="w-[50px] h-[50px] rounded overflow-hidden">
+                <img
+                  class="w-full h-full object-cover"
+                  src=${match.Intro_blob.url}
+                  alt=${match.Intro_blob.alt}
+                />
+              </div>
+            </div>
+
+            <div class="grow text-black overflow-hidden">
+              <h3 class="sm:text-lg font-medium text-primary line-clamp-2">
+                ${match.Title}
+              </h3>
+
+              <div class="text-sm line-clamp-1 w-auto">${match.Intro_text}</div>
+            </div>
+          </div>`;
+
+          searchResults.appendChild(resultLinkBlock);
+        }
+
+        noSearchResult.style.display = matches.length === 0 ? "block" : "none";
+
+        searchResultsContainer.style.display =
+          searchTerm.length > 0 ? "grid" : "none";
+      });
+    });
+  });
 </script>

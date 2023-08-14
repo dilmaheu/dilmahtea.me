@@ -1,0 +1,22 @@
+fragment RegionAttributes on Region {
+  locale
+  name
+  code
+}
+
+query {
+  regions {
+    data {
+      attributes {
+        ...RegionAttributes
+        localizations {
+          data {
+            attributes {
+              ...RegionAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,16 +1,14 @@
 ---
 import he from "he";
 import { parseHTML } from "linkedom";
+import renderMarkdown from "@utils/renderMarkdown";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 const { page } = Astro.props;
 
-let contentBlocksHTML = he.decode(
-  // @ts-ignore
-  await Astro.__renderMarkdown(page.Block_text)
-);
+let contentBlocksHTML = he.decode(await renderMarkdown(page.Block_text));
 
-let { document: contentBlocksDocument } = await parseHTML(contentBlocksHTML),
+let { document: contentBlocksDocument } = parseHTML(contentBlocksHTML),
   titles = [...contentBlocksDocument.querySelectorAll("h2")];
 
 titles.forEach((title, i) => {
@@ -23,28 +21,9 @@ titles.forEach((title, i) => {
 titles.length > 0 && (contentBlocksHTML += "</div>");
 
 // refresh linkedom generated dom
-({ document: contentBlocksDocument } = await parseHTML(contentBlocksHTML));
+({ document: contentBlocksDocument } = parseHTML(contentBlocksHTML));
 titles = [...contentBlocksDocument.querySelectorAll("h2")];
 ---
-
-<style is:global>
-  .chapter:nth-child(1) .recipe-sec-title {
-    margin-top: 0;
-  }
-</style>
-
-<style lang="scss">
-  .recipe-content-img {
-    margin-top: 20px;
-    max-height: 391px !important;
-  }
-
-  .recipe-info-img-container {
-    aspect-ratio: 2 / 1;
-    width: 100%;
-    height: 100%;
-  }
-</style>
 
 {
   titles.map((title) => {
@@ -55,13 +34,16 @@ titles = [...contentBlocksDocument.querySelectorAll("h2")];
       <div>
         <h2
           id={titleText.replaceAll(" ", "-")}
-          class="bg-primary alice leading-[110%] text-lightgray2 rounded-[10px] mt-[50px] recipe-sec-title"
+          class:list={[
+            "recipe-title bg-primary mt-[50px] rounded-[10px]",
+            "recoleta text-secondary-light font-semibold leading-[110%]",
+          ]}
         >
           {titleText}
         </h2>
 
-        <div class="bg-white2 rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] mt-[25px]">
-          <div class="prose max-w-none mb-[15px] text-dark recipe-sec-text">
+        <div class="bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] mt-[25px] rounded-[10px]">
+          <div class="recipe-content prose max-w-none mb-[15px] text-black-light">
             <OptimizeContentImages>
               <Fragment set:html={innerHTML} />
             </OptimizeContentImages>

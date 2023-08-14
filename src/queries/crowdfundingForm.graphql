@@ -1,0 +1,31 @@
+fragment CrowdfundingFormAttributes on CrowdfundingForm {
+  locale
+  updatedAt
+  Title
+  Intro_text
+  Meta {
+    HTML_Title
+    Meta_description
+    noindex
+    nofollow
+  }
+}
+
+query {
+  crowdfundingForm {
+    data {
+      id
+      attributes {
+        ...CrowdfundingFormAttributes
+        localizations {
+          data {
+            id
+            attributes {
+              ...CrowdfundingFormAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}

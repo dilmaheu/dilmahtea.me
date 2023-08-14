@@ -1,20 +1,14 @@
-@use "colors";
 @use "typography";
 
 html {
-  @apply scroll-smooth bg-white;
-  height: 100%;
+  @apply h-full bg-white;
 }
 
 body {
-  color: colors.$light-gray;
-  background-color: colors.$light-gray;
-  height: 100%;
-
   // center horizontally when position is fixed
   left: max(0px, calc((100% - 2050px) / 2));
 
-  @apply mx-auto max-w-[2050px] overflow-x-hidden scroll-smooth;
+  @apply h-full bg-secondary text-secondary mx-auto max-w-[2050px] overflow-x-hidden;
 }
 
 .icon {
@@ -26,23 +20,65 @@ body {
 }
 
 .heading-primary {
-  font-family: typography.$alice;
+  font-family: typography.$recoleta;
   font-size: clamp(2rem, 3vw + 0.4rem, 3.5rem);
+}
+
+.heading-secondary {
+  font-family: typography.$recoleta;
+  font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
 }
 
 .heading-inline-icon {
   height: clamp(27px, 3.5vw + 6px, 42px);
 }
 
+.prose-text,
+.hero-text {
+  picture {
+    clip-path: url(#content-images-curve);
+  }
+
+  p,
+  ol,
+  ul,
+  p s,
+  blockquote p {
+    a {
+      @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat hover:brightness-95 transition-all;
+
+      background-size: 100% 45%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='${color('#b3cccc').toHex()}'/%3E%3C/svg%3E");
+    }
+  }
+}
+
+.hero-text {
+  a {
+    @apply text-white;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='${color('#474747').toHex()}'/%3E%3C/svg%3E");
+  }
+}
+
 .content-text {
-  @apply text-dark leading-[150%] max-w-none;
+  @apply text-black-light leading-[150%] max-w-none;
 
   font-size: clamp(1.125rem, 1.5vw + 0.3rem, 1.5rem);
 
   & h2 {
-    font-family: typography.$alice;
+    @apply text-black font-semibold leading-[130%];
+
+    font-family: typography.$recoleta;
     font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
-    font-weight: normal;
+  }
+  & h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-black;
+
+    font-family: typography.$recoleta;
   }
 
   & .chapter:nth-child(1) h2:nth-of-type(1) {

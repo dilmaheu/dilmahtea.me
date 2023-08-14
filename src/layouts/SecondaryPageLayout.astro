@@ -1,0 +1,27 @@
+---
+import HeroContent from "@components/HeroContent.astro";
+import RelevantPosts from "@components/RelevantPosts.astro";
+
+const {
+  page,
+  plainTitle,
+  relatedPosts,
+  headerBackground,
+  relatedPostsText,
+  relatedPostsHeading,
+} = Astro.props;
+---
+
+{/* Hero Section */}
+<HeroContent {page} {plainTitle} {headerBackground} />
+
+{/* page sections */}
+<slot />
+
+{/* Relevant Posts Section */}
+<RelevantPosts
+  {page}
+  posts={relatedPosts}
+  text={relatedPostsText}
+  heading={relatedPostsHeading}
+/>

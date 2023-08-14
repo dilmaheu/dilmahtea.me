@@ -1,0 +1,35 @@
+fragment UserAccountOrderAttributes on UserAccountOrder {
+  locale
+  Title
+  Breadcrumb {
+    Steps {
+      Name
+      Link
+    }
+  }
+  Meta {
+    HTML_Title
+    Meta_description
+    noindex
+    nofollow
+    URL_slug
+    Canonical_link
+  }
+}
+
+query {
+  userAccountOrder {
+    data {
+      attributes {
+        ...UserAccountOrderAttributes
+        localizations {
+          data {
+            attributes {
+              ...UserAccountOrderAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}

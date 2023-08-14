@@ -1,6 +1,9 @@
 ---
-import productsStore from "@store/products";
+import productsStore from "@store/Products";
 import localizeCMSImage from "@utils/localizeCMSImage";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+
+const isProduction = !shouldDisplayExperimentals;
 
 const products = Object.fromEntries(
   await Promise.all(
@@ -30,14 +33,14 @@ const products = Object.fromEntries(
 );
 ---
 
-<script is:inline define:vars={{ products }}>
+<script is:inline define:vars={{ products, isProduction }}>
   window.replacePlaceholders = (content, data) => {
     const placeholderRegex =
       /<placeholder\s+name=(?:"|&#34;)(\w+)(?:"|&#34;)[^>]*><\/placeholder>/g;
 
     return content.replace(
       placeholderRegex,
-      (match, placeholderName) => data[placeholderName]
+      (_, placeholderName) => data[placeholderName]
     );
   };
 
@@ -53,9 +56,13 @@ const products = Object.fromEntries(
 
   const storedCart = JSON.parse(localStorage.getItem("cart") || "{}");
 
-  Object.keys(storedCart).forEach((SKU) => {
-    const inCartProductData = storedCart[SKU],
-      productData = products[SKU];
+  Object.entries(storedCart).forEach(([SKU, inCartProductData]) => {
+    const productData = products[SKU];
+
+    productData.tax =
+      Math.round(productData.tax * inCartProductData.quantity * 100) / 100;
+    productData.price =
+      Math.round(productData.price * inCartProductData.quantity * 100) / 100;
 
     if (!productData) {
       delete storedCart[SKU];
@@ -190,6 +197,23 @@ const products = Object.fromEntries(
           cartOverlayContent.classList.remove("hidden");
           emptyCartNotification.classList.add("hidden");
         }
+      }
+
+      if (isProduction && !productExistsInCart) {
+        fetch("https://analytics.scripts.dilmahtea.me", {
+          method: "POST",
+          priority: "low",
+          body: JSON.stringify({
+            event: "add_to_cart",
+            originURL: location.origin + location.pathname,
+            props: {
+              Title: JSON.parse(productData.names).en,
+              SKU: productData.sku,
+              Quantity: productData.quantity,
+              Price: productData.price,
+            },
+          }),
+        });
       }
 
       return true;

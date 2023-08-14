@@ -1,0 +1,19 @@
+<script is:inline>
+  {
+    const cookies = Object.fromEntries(
+      document.cookie
+        .split("; ")
+        .map((cookie) => cookie.split("=").map(decodeURIComponent))
+    );
+
+    window.cookies = new Proxy(cookies, {
+      set: (cookies, key, value) => {
+        document.cookie = `${key}=${encodeURIComponent(value)}`;
+
+        cookies[key] = value;
+
+        return true;
+      },
+    });
+  }
+</script>

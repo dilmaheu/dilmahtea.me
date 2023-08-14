@@ -4,56 +4,19 @@ import {
 } from "@store/signals/productFilters";
 import { onMount } from "solid-js";
 
-function VariantOptions({ type, locale, data, tea_variant, tea_size }) {
-  return data
-    .map(({ attributes: { Title, products, localizations } }) => {
-      const localizedTitle =
-        locale === "en"
-          ? Title
-          : localizations.data.find(
-              ({ attributes }) => attributes.locale.substring(0, 2) === locale
-            )?.attributes.Title; // products of some variants might not be available in all locales
-
-      if (localizedTitle) {
-        const availableCombinations = JSON.stringify(
-          Array.from(
-            new Set(
-              products.data.map(
-                ({ attributes }) =>
-                  attributes[type === "variant" ? "size" : "variant"].data
-                    .attributes.Title
-              )
-            )
-          )
-        );
-
-        return {
-          Title,
-          localizedTitle,
-          availableCombinations,
-        };
-      }
-    })
-    .filter(Boolean)
-    .sort((a, b) =>
-      a.localizedTitle.localeCompare(b.localizedTitle, locale, {
-        numeric: true,
-      })
-    )
-    .map(({ Title, localizedTitle, availableCombinations }) => (
-      <option
-        value={Title}
-        data-key={localizedTitle}
-        data-available-combinations={availableCombinations}
-        selected={(type === "variant" ? tea_variant : tea_size) === Title}
-      >
-        {localizedTitle}
-      </option>
-    ));
-}
+const VariantOptions = ({ type, data, tea_variant, tea_size }) =>
+  data.map(({ Title, localizedTitle, availableCombinations }) => (
+    <option
+      value={Title}
+      data-key={localizedTitle}
+      data-available-combinations={availableCombinations}
+      selected={(type === "variant" ? tea_variant : tea_size) === Title}
+    >
+      {localizedTitle}
+    </option>
+  ));
 
 export default function ProductFiltersForm({
-  locale,
   productSizes,
   productVariants,
   recurData,
@@ -63,7 +26,7 @@ export default function ProductFiltersForm({
   function updateProductFilters(event) {
     const filters = Object.fromEntries(new FormData(this));
 
-    localStorage.setItem("preferredFilters", JSON.stringify(filters));
+    sessionStorage.setItem("preferredFilters", JSON.stringify(filters));
 
     setProductFilters(filters);
 
@@ -112,9 +75,9 @@ export default function ProductFiltersForm({
         id="tea_variant"
         name="tea_variant"
         class={[
+          "bg-primary text-lg leading-[150%] text-secondary-light max-w-[90vw]",
+          "py-[9px] pl-5 border-primary border-r-[20px] rounded-full cursor-pointer",
           "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
-          "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
-          "border-primary bg-primary rounded-full cursor-pointer",
         ].join(" ")}
       >
         <option value="" selected>
@@ -123,7 +86,6 @@ export default function ProductFiltersForm({
 
         <VariantOptions
           type="variant"
-          locale={locale}
           data={productVariants.data}
           tea_variant={tea_variant}
           tea_size={tea_size}
@@ -134,9 +96,9 @@ export default function ProductFiltersForm({
         id="tea_size"
         name="tea_size"
         class={[
+          "bg-primary text-lg leading-[150%] text-secondary-light max-w-[90vw]",
+          "py-[9px] pl-5 border-primary border-r-[20px] rounded-full cursor-pointer",
           "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
-          "text-lg leading-[150%] text-lightgray2 py-[9px] pl-5 border-r-[20px]",
-          "border-primary bg-primary rounded-full cursor-pointer",
         ].join(" ")}
       >
         <option value="" selected>
@@ -145,7 +107,6 @@ export default function ProductFiltersForm({
 
         <VariantOptions
           type="size"
-          locale={locale}
           data={productSizes.data}
           tea_variant={tea_variant}
           tea_size={tea_size}

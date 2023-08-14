@@ -9,10 +9,11 @@ declare interface Props {
   meta: Record<string, any>;
   locale: string;
   metaImageSrc: string;
-  availableLocales: string[];
+  alternateURLs: { [locale: string]: string };
+  relPreloadLinksHTML: string;
 }
 
-const { page, meta, locale, metaImageSrc, availableLocales } =
+const { page, meta, locale, metaImageSrc, alternateURLs, relPreloadLinksHTML } =
   Astro.props as Props;
 
 const {
@@ -25,28 +26,23 @@ const {
 } = meta;
 
 const { origin, hostname } = Astro.site,
-  { updatedAt: lastModifiedDate } = page,
-  alternateLocales = availableLocales.filter((lcl) => lcl !== locale);
+  { updatedAt: lastModifiedDate } = page;
 
-const documentHref = `${origin}/${locale}/${
-    slugURL === "/" ? "" : slugURL + "/"
-  }`,
-  canonicalHref = `${origin}/${locale}/${
-    canonicalURL !== undefined
-      ? canonicalURL === "/"
-        ? ""
-        : canonicalURL + "/"
-      : slugURL + "/"
-  }`;
+const documentHref = origin + Astro.url.pathname,
+  canonicalHref = canonicalURL
+    ? documentHref.replace(slugURL, canonicalURL)
+    : documentHref;
 
 const openGraphImage =
-    origin + (await importRemoteImage(metaImageSrc + "?w=1200&h=627")),
-  twitterImage =
-    origin + (await importRemoteImage(metaImageSrc + "?w=800&h=418"));
+    origin + (await importImage(metaImageSrc + "?w=1200&h=627")),
+  twitterImage = origin + (await importImage(metaImageSrc + "?w=800&h=418"));
 ---
 
 <meta charset="UTF-8" />
 <title>{title}</title>
+
+<Fragment set:html={relPreloadLinksHTML} />
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="keywords" content="" />
 <meta name="description" content={description} />
@@ -75,13 +71,11 @@ const openGraphImage =
 {/* SEO */}
 <link rel="canonical" href={canonicalHref} hreflang={locale} />
 {
-  alternateLocales.map((alternateLocale) => (
+  Object.entries(alternateURLs).map(([alternateLocale, alternateURL]) => (
     <link
       rel="alternate"
       hreflang={alternateLocale}
-      href={`${origin}/${alternateLocale}/${
-        slugURL === "/" ? "" : slugURL + "/"
-      }`}
+      href={origin + alternateURL}
     />
   ))
 }
@@ -118,50 +112,61 @@ const openGraphImage =
   )
 }
 
+{
+  /* currently OpenReplay is disabled due to causing SIGSEGV (Aw Snap!) errors on Linux & Android */
+}
 {/* OpenReplay Tracking Code for Dilmahtea.me */}
-<script>
-  var initOpts = {
-    projectKey: "IjHJ0NTxwL2YHDk9TDnR",
-    defaultInputMode: 0,
-    obscureTextNumbers: false,
-    obscureTextEmails: true,
-  };
-  var startOpts = { userID: "" };
-  (function (A, s, a, y, e, r) {
-    // @ts-ignore
-    r = window.OpenReplay = [e, r, y, [s - 1, e]];
-    // @ts-ignore
-    s = document.createElement("script");
-    // @ts-ignore
-    s.src = A;
-    // @ts-ignore
-    s.async = !a;
-    // @ts-ignore
-    document.getElementsByTagName("head")[0].appendChild(s);
-    r.start = function (v) {
-      r.push([0]);
+<!-- <script>
+  window.addEventListener("load", () => {
+    var initOpts = {
+      projectKey: "IjHJ0NTxwL2YHDk9TDnR",
+      defaultInputMode: 0,
+      obscureTextNumbers: false,
+      obscureTextEmails: true,
     };
-    r.stop = function (v) {
-      r.push([1]);
-    };
-    r.setUserID = function (id) {
-      r.push([2, id]);
-    };
-    r.setUserAnonymousID = function (id) {
-      r.push([3, id]);
-    };
-    r.setMetadata = function (k, v) {
-      r.push([4, k, v]);
-    };
-    r.event = function (k, p, i) {
-      r.push([5, k, p, i]);
-    };
-    r.issue = function (k, p) {
-      r.push([6, k, p]);
-    };
-    r.isActive = function () {
-      return false;
-    };
-    r.getSessionToken = function () {};
-  })("//static.openreplay.com/latest/openreplay.js", 1, 0, initOpts, startOpts);
-</script>
+    var startOpts = { userID: "" };
+    (function (A, s, a, y, e, r) {
+      // @ts-ignore
+      r = window.OpenReplay = [e, r, y, [s - 1, e]];
+      // @ts-ignore
+      s = document.createElement("script");
+      // @ts-ignore
+      s.src = A;
+      // @ts-ignore
+      s.async = !a;
+      // @ts-ignore
+      document.getElementsByTagName("head")[0].appendChild(s);
+      r.start = function (v) {
+        r.push([0]);
+      };
+      r.stop = function (v) {
+        r.push([1]);
+      };
+      r.setUserID = function (id) {
+        r.push([2, id]);
+      };
+      r.setUserAnonymousID = function (id) {
+        r.push([3, id]);
+      };
+      r.setMetadata = function (k, v) {
+        r.push([4, k, v]);
+      };
+      r.event = function (k, p, i) {
+        r.push([5, k, p, i]);
+      };
+      r.issue = function (k, p) {
+        r.push([6, k, p]);
+      };
+      r.isActive = function () {
+        return false;
+      };
+      r.getSessionToken = function () {};
+    })(
+      "//static.openreplay.com/latest/openreplay.js",
+      1,
+      0,
+      initOpts,
+      startOpts
+    );
+  });
+</script> -->

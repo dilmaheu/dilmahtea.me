@@ -1,0 +1,24 @@
+fragment NotificationAttributes on Notification {
+  locale
+  Type
+  Title
+  Content
+  top
+  Closing_Enabled
+}
+
+query {
+  notifications(locale: "all") {
+    data {
+      id
+      attributes {
+        ...NotificationAttributes
+        localizations(filters: { publishedAt: { ne: null } }) {
+          data {
+            id
+          }
+        }
+      }
+    }
+  }
+}

@@ -25,9 +25,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   }
 
   .cart-overlay-heading {
-    line-height: 110%;
-
-    @apply text-[2rem] sm:text-[2.625rem];
+    @apply text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[110%];
   }
 
   .cart-overlay-product-details {
@@ -35,9 +33,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   }
 
   .cart-overlay-product-name {
-    line-height: 130%;
-
-    @apply text-[1.125rem] sm:text-[1.5rem];
+    @apply text-[1.125rem] sm:text-[1.5rem] md:font-bold leading-[120%];
   }
 
   .cart-overlay-product-amount-tweak-btn:disabled {
@@ -58,11 +54,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     @apply text-base sm:text-[1.125rem];
   }
 
-  .cart-overlay-product-price,
-  #cart-subtotal {
-    line-height: 110%;
+  .cart-overlay-product-price {
+    @apply text-[1.75rem] font-bold leading-[120%] sm:leading-[110%];
+  }
 
-    @apply text-[1.75rem] sm:text-[2rem];
+  #cart-subtotal {
+    @apply text-[1.75rem] sm:text-[2rem] font-bold leading-[120%] sm:leading-[110%];
   }
 
   .shipping-charge-info {
@@ -82,7 +79,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       id="cart-overlay-products-container"
       class:list={[
         "focus:outline-1 outline-black -outline-offset-1",
-        "h-full ml-auto overflow-y-auto text-dark2 bg-lightgray",
+        "h-full ml-auto overflow-y-auto text-black bg-secondary",
       ]}
     >
       <ClipPathSVG
@@ -94,19 +91,19 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         <div class="flex flex-col gap-5 h-full">
           <div class="flex flex-col gap-5">
             <div class="flex justify-between items-center">
-              <h2 class="cart-overlay-heading alice">
+              <h2 class="cart-overlay-heading recoleta font-bold">
                 {checkoutRecurData.text_cart}
               </h2>
 
               <button
-                id="close-cart-btn"
                 aria-label={checkoutRecurData.Aria_label_cart_close_button_text}
+                class="close-cart-btn"
               >
                 <Icon name="heroicons-solid:x" class="w-14" />
               </button>
             </div>
 
-            <div class="border border-solid border-lightgreen"></div>
+            <div class="border border-solid border-primary-light"></div>
           </div>
 
           <EmptyCartNotification locale={locale} />
@@ -133,7 +130,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     window.addProductToCart = (id) => {
                       const productData = window.cart[id],
                         names = JSON.parse(productData.names),
-                        name = names[preferredLocale] || names["en"],
+                        name = names[window.preferredLocale] || names["en"],
                         price = Number(productData.price)
                           .toFixed(2)
                           .replace(".", ",");
@@ -177,19 +174,25 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   >
                     <div
                       id={`<placeholder name="id"></placeholder>`}
-                      class="cart-product p-4 gap-3.5 flex justify-between items-center w-full bg-lightgray2 rounded-[10px]"
+                      class:list={[
+                        "cart-product bg-secondary-light p-4",
+                        "flex justify-between items-center gap-3.5 w-full rounded-[10px]",
+                      ]}
                     >
                       <img
                         alt=""
                         src={`<placeholder name="image"></placeholder>`}
-                        style="min-width: 100px; width: 100px; height: 100px; clip-path: url(#cart-overlay-product-image);"
+                        style={[
+                          "clip-path: url(#cart-overlay-product-image);",
+                          "min-width: 100px; width: 100px; height: 100px;",
+                        ].join(" ")}
                       />
 
                       <div
                         class="cart-overlay-product-details flex flex-col gap-1.5"
                       >
                         <div class="flex justify-between items-center gap-1.5">
-                          <h3 class="alice cart-overlay-product-name">
+                          <h3 class="recoleta cart-overlay-product-name">
                             <placeholder name="name"></placeholder>
                           </h3>
 
@@ -206,7 +209,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           class="flex flex-wrap justify-between items-center gap-1.5"
                         >
                           <div
-                            class="flex items-center bg-primary text-lightgray rounded-full"
+                            class="flex items-center bg-primary text-secondary rounded-full"
                           >
                             <button
                               data-action="decrement"
@@ -248,7 +251,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           </div>
 
                           <span
-                            class="cart-overlay-product-price alice text-dark3"
+                            class="cart-overlay-product-price recoleta text-black"
                           >
                             €<placeholder name="price"></placeholder>
                           </span>
@@ -267,7 +270,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     {checkoutRecurData.text_subtotal}
                   </span>
 
-                  <span id="cart-subtotal" class="alice">
+                  <span id="cart-subtotal" class="recoleta">
                     €<DynamicHTML htmlFn={() => window.cart.subTotal} />
                   </span>
                 </div>
@@ -280,10 +283,19 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               <a
                 id="checkout-info-link"
                 href={checkoutInfoPageLink}
-                class="capitalize py-4 font-bold bg-primary text-center text-lightgray rounded-[9999px]"
+                class="capitalize py-4 bg-primary text-white font-bold text-center rounded-[9999px]"
               >
                 {checkoutRecurData.text_proceed_to_checkout}
               </a>
+
+              <div class="flex justify-center items-center">
+                <button
+                  aria-label={checkoutRecurData.Aria_label_cart_close_button_text}
+                  class="close-cart-btn text-primary font-bold"
+                >
+                  {checkoutRecurData.text_continue_shopping}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -293,40 +305,24 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 </div>
 
 <script>
-  // disableScrolling & enableScrolling are defined in Navbar.astro
+  const query: (selector: string) => HTMLElement =
+      document.querySelector.bind(document),
+    queryAll: (selector: string) => HTMLElement =
+      document.querySelectorAll.bind(document),
+    id: (id: string) => HTMLElement = document.getElementById.bind(document);
 
-  declare global {
-    interface Window {
-      openCart: () => void;
-      enableScrolling: () => void;
-      disableScrolling: () => void;
-      addProductToCart: (id: string) => void;
-      cart: Record<string, Record<string, string | number>>;
-      handleProductAmountInput: (input: HTMLInputElement) => void;
-      listenToInputEvents: (
-        tweakBtns: NodeListOf<HTMLButtonElement>,
-        input: HTMLInputElement
-      ) => void;
-    }
-  }
-</script>
-
-<script>
-  const id: (string) => HTMLElement = document.getElementById.bind(document),
-    cart = id("cart"),
+  const cart = id("cart"),
     sidebar = id("sidebar"),
-    closeCartBtn = id("close-cart-btn"),
+    openCartBtn = id("open-cart-btn"),
     checkoutInfoLink = id("checkout-info-link"),
     cartOverlayContent = id("cart-overlay-content"),
     emptyCartNotification = id("empty-cart-notification"),
     cartOverlayProductsContainer = id("cart-overlay-products-container"),
+    closeCartBtnElements = queryAll(".close-cart-btn"),
     { overflowY: prevBodyOverflowYValue } = document.body.style;
 
-  // the open cart buttons are in Navbar.astro
-  const openCartBtns = document.querySelectorAll(".open-cart-btn");
-
   window.openCart = () => {
-    cart.classList.toggle("hidden");
+    cart.classList.remove("hidden");
     cartOverlayProductsContainer.focus();
 
     window.disableScrolling();
@@ -337,8 +333,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   };
 
   const closeCart = () => {
-    cart.classList.toggle("hidden");
-    // openCartBtn.focus();
+    cart.classList.add("hidden");
+
+    openCartBtn.focus(); // move focus back to cart button
 
     (!sidebar || sidebar.offsetWidth === 0) && window.enableScrolling();
 
@@ -354,7 +351,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       closeCart();
     }
 
-    const hasToRemoveItem = target.closest(".remove-item-btn");
+    const hasToRemoveItem = !!target.closest(".remove-item-btn");
 
     if (hasToRemoveItem) {
       const productToRemove = target.closest(".cart-product"),
@@ -371,7 +368,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     }
   });
 
-  closeCartBtn?.addEventListener("click", closeCart);
+  closeCartBtnElements.forEach((closeCartBtnElement) => {
+    closeCartBtnElement.addEventListener("click", closeCart);
+  });
 
   checkoutInfoLink?.addEventListener("keydown", (event) => {
     if (event.key === "Tab" && !event.shiftKey) {
@@ -380,20 +379,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       closeCartBtn.focus();
     }
   });
-
-  window.addEventListener("resize", () => {
-    const cartProducts = document.getElementById("cart-products");
-
-    if (cartProducts?.scrollHeight > cartProducts?.clientHeight) {
-      document.body.style.overflowY = "hidden";
-    } else {
-      document.body.style.overflowY = "scroll";
-    }
-  });
 </script>
 
 <script>
-  import tweakAmount from "@utils/tweakAmount";
+  import tweakAmount from "@utils/client/tweakAmount";
 
   const cartOverlayProductAmountInputs = document.querySelectorAll(
       ".cart-overlay-product-amount-input"
@@ -408,7 +397,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         ".cart-overlay-product-price"
       ),
       productId = parentCartProduct.id,
-      productData = window.cart[productId],
+      productData = { ...window.cart[productId] },
       { price, tax, quantity } = productData,
       productPrice = Number(price) / Number(quantity),
       productTax = Number(tax) / Number(quantity),

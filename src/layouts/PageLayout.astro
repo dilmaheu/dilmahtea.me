@@ -10,11 +10,19 @@ interface Props {
   locale: string;
   recurData: Record<string, any>;
   metaImageSrc: string;
+  alternateURLs: { [locale: string]: string };
   availableLocales: string[];
 }
 
-const { page, meta, locale, recurData, availableLocales, metaImageSrc } =
-  Astro.props as Props;
+const {
+  page,
+  meta,
+  locale,
+  recurData,
+  alternateURLs,
+  availableLocales,
+  metaImageSrc,
+} = Astro.props as Props;
 
 const footerText = recurData.Footer_text.replaceAll(
   "<current_year>",
@@ -32,11 +40,11 @@ const footerText = recurData.Footer_text.replaceAll(
   page={page}
   meta={meta}
   locale={locale}
-  availableLocales={availableLocales}
+  alternateURLs={alternateURLs}
   metaImageSrc={metaImageSrc}
 >
   <div class="flex flex-wrap w-full h-full">
-    <div class="block w-full bg-lightgray">
+    <div class="block w-full bg-secondary">
       <Navbar
         docLocale={locale}
         footerText={footerText}
@@ -48,23 +56,25 @@ const footerText = recurData.Footer_text.replaceAll(
       </main>
     </div>
 
-    <Footer footerText={footerText} {recurData} />
+    <Footer footerText={footerText} recurData={recurData} type={page?.type} />
   </div>
 
   <CartOverlay page={page} />
 </BaseLayout>
 
 <script>
-  // do the above but when instead of handling click for all elements handle just click on document
   document.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement;
+    const target = event.target as HTMLElement,
+      isUnlinked = target.closest(".unlink"),
+      linkSection = target.closest(".link-section"),
+      isNonMainLink = target.closest(".link-section a");
 
-    if (target.closest(".link-section a")) {
+    if (isNonMainLink) {
       event.stopPropagation();
-    } else if (target.closest(".link-section")) {
-      const sectionHeadingLink = target
-        .closest(".link-section")
-        ?.querySelector("a.main-link") as HTMLAnchorElement;
+    } else if (linkSection && !isUnlinked) {
+      const sectionHeadingLink = linkSection.querySelector(
+        "a.main-link"
+      ) as HTMLAnchorElement;
 
       sectionHeadingLink.click();
     }

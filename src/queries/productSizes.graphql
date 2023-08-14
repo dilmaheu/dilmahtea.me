@@ -1,0 +1,57 @@
+fragment ProductSizeAttributes on ProductSize {
+  locale
+  Title
+  products(filters: { publishedAt: { ne: null } }) {
+    data {
+      attributes {
+        locale
+        createdAt
+        Title
+        Intro_text
+        Stock_amount
+        In_stock_date
+        Intro_blob {
+          data {
+            attributes {
+              url
+              alternativeText
+            }
+          }
+        }
+        variant {
+          data {
+            attributes {
+              Title
+            }
+          }
+        }
+        size {
+          data {
+            attributes {
+              Title
+            }
+          }
+        }
+        Meta {
+          URL_slug
+        }
+      }
+    }
+  }
+}
+
+query {
+  productSizes(locale: "all", sort: "rank:asc") {
+    data {
+      id
+      attributes {
+        ...ProductSizeAttributes
+        localizations(filters: { publishedAt: { ne: null } }) {
+          data {
+            id
+          }
+        }
+      }
+    }
+  }
+}

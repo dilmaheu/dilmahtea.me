@@ -4,10 +4,20 @@ import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
-const { page } = Astro.props,
+const { page, recurData } = Astro.props,
   { locale } = page,
   { ASSETS_URL } = import.meta.env,
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+
+const checkoutSuccessLink = `/${locale}/${
+    CMS.get("checkoutSuccess", locale).Meta.URL_slug
+  }/`,
+  checkoutShippingLink = `/${locale}/${
+    CMS.get("checkoutShipping", locale).Meta.URL_slug
+  }/`,
+  shopLink = `/${locale}/${CMS.get("homeProduct", locale).Meta.URL_slug}/`;
+
+console.log(checkoutSuccessLink);
 ---
 
 <style lang="scss">
@@ -15,6 +25,8 @@ const { page } = Astro.props,
 
   .kindness-header {
     h1 {
+      @apply font-bold;
+
       font-size: poly-fluid-clamp(
         (
           375px: 28px,
@@ -40,13 +52,15 @@ const { page } = Astro.props,
       clip-path: url(#kindness-cause-card-curve);
 
       > div {
-        @apply p-1.5 bg-lightgray;
+        @apply p-1.5 bg-secondary;
 
         clip-path: url(#kindness-cause-card-curve);
       }
     }
 
     h2 {
+      @apply sm:font-bold leading-[130%];
+
       font-size: poly-fluid-clamp(
         (
           375px: 24px,
@@ -56,15 +70,24 @@ const { page } = Astro.props,
     }
   }
 
-  #continue-to-payment-btn:disabled {
-    @apply bg-gray text-lightgray;
+  #submit-cause-btn:disabled {
+    @apply bg-slate text-secondary;
   }
 </style>
 
-<script is:inline>
-  if (Object.keys(window.checkoutInfo).length === 0) {
-    location.href = "/" + window.preferredLocale + "/checkout/information";
+<script define:vars={{ checkoutShippingLink, checkoutSuccessLink, shopLink }}>
+  const { paymentID } = Object.fromEntries(
+    new URLSearchParams(location.search)
+  );
+
+  if (!paymentID) {
+    const cartLength = Object.keys(window.cart).length;
+
+    location.href = cartLength === 0 ? shopLink : checkoutShippingLink;
   }
+
+  window.paymentID = paymentID;
+  window.checkoutSuccessLink = checkoutSuccessLink;
 </script>
 
 <ClipPathSVG
@@ -74,7 +97,7 @@ const { page } = Astro.props,
 
 <div class="wrapper pt-6 pb-12 flex flex-col gap-12">
   <section class="kindness-header text-center text-primary">
-    <h1 class="alice tracking-[-0.02em]">{page.Title}</h1>
+    <h1 class="recoleta tracking-[-0.02em]">{page.Title}</h1>
 
     <div class="intro-text"><Markdown>{page.Intro_text}</Markdown></div>
   </section>
@@ -89,28 +112,31 @@ const { page } = Astro.props,
         ({
           attributes: { cause, description, featured_blob, localizations },
         }) => (
-          <div role="listitem" tabindex="0" aria-label={cause}>
+          <div
+            tabindex="0"
+            role="listitem"
+            aria-label={cause}
+            class="kindness-cause"
+            data-cause={localizations?.data[0]?.attributes?.cause || cause}
+          >
             <div class="h-full">
               <div
-                {
-                /* @ts-ignore */ }
-                data-cause={localizations?.data[0]?.attributes?.cause || cause}
                 style="clip-path: url(#kindness-cause-card-curve);"
-                class="kindness-cause relative w-full h-full sm:w-80 flex flex-col bg-primary cursor-pointer"
+                class="relative w-full h-full sm:w-80 flex flex-col bg-primary cursor-pointer"
               >
                 <div class="h-48">
                   <Picture
                     layout="fill"
-                    sizes="(min-width: 640px) 320px, 90vw)"
+                    sizes="(min-width: 640px) 320px, 90vw"
                     alt={featured_blob.data.attributes.alternativeText}
                     src={ASSETS_URL + featured_blob.data.attributes.url}
                   />
                 </div>
 
                 <div class="grow px-6 pt-5 pb-7 flex flex-col justify-center gap-2">
-                  <h2 class="alice text-lightgray leading-[120%]">{cause}</h2>
+                  <h2 class="recoleta text-white leading-[120%]">{cause}</h2>
 
-                  <div class="font-medium text-base text-lightgray">
+                  <div class="font-medium text-base text-white">
                     <Markdown>{description}</Markdown>
                   </div>
                 </div>
@@ -128,77 +154,71 @@ const { page } = Astro.props,
       "justify-center sm:justify-start gap-9 sm:gap-12 mx-auto",
     ]}
   >
-    <a href="/checkout/information" class="text-primary font-bold">
-      {checkoutRecurData.text_return_to_information}
+    <a href={checkoutSuccessLink} class="text-primary font-bold">
+      {recurData.text_skip}
     </a>
 
     <button
       disabled
-      id="continue-to-payment-btn"
+      id="submit-cause-btn"
       class:list={[
         "w-full sm:w-auto py-4 px-20 sm:px-24",
-        "text-lightgray font-bold rounded-full bg-primary",
+        "bg-primary text-white font-bold rounded-full",
       ]}
     >
-      {checkoutRecurData.text_continue_to_payment}
+      {page.text_submit_kindness_cause}
     </button>
-
-    <script is:inline>
-      const { kindness_cause } = window.checkoutInfo;
-
-      if (kindness_cause) {
-        document.currentScript.previousElementSibling.disabled = false;
-
-        const activeCauseCard = document.querySelector(
-          `.kindness-cause[cause="${kindness_cause}"]`
-        );
-
-        activeCauseCard?.parentElement.parentElement.classList.add(
-          "active-kindness-cause"
-        );
-      }
-    </script>
   </div>
 </div>
 
 <script>
-  declare global {
-    interface Window {
-      preferredLocale: string;
-    }
-  }
-
   const kindnessCausesCardsContainer =
       document.querySelector(".kindness-causes"),
     kindnessCausesCards =
       document.querySelectorAll<HTMLElement>(".kindness-cause"),
-    continueToPaymentBtn = document.getElementById(
-      "continue-to-payment-btn"
+    submitCauseBtn = document.getElementById(
+      "submit-cause-btn"
     ) as HTMLButtonElement;
 
+  function selectCard(card: HTMLElement) {
+    const activeCauseCard = kindnessCausesCardsContainer.querySelector(
+      ".active-kindness-cause"
+    );
+
+    activeCauseCard?.classList?.remove("active-kindness-cause");
+
+    card.classList.add("active-kindness-cause");
+
+    submitCauseBtn.disabled = false;
+  }
+
   kindnessCausesCards.forEach((card) => {
-    card.addEventListener("click", () => {
-      const activeCauseCard = kindnessCausesCardsContainer.querySelector(
-          ".active-kindness-cause"
-        ),
-        kindness_cause = card.dataset.cause;
-
-      activeCauseCard?.classList?.remove("active-kindness-cause");
-
-      window.checkoutInfo.kindness_cause = kindness_cause;
-
-      localStorage.setItem(
-        "checkout-info",
-        JSON.stringify(window.checkoutInfo)
-      );
-
-      card.parentElement.parentElement.classList.add("active-kindness-cause");
-
-      continueToPaymentBtn.disabled = false;
-    });
+    card.addEventListener("focus", () => selectCard(card));
   });
 
-  continueToPaymentBtn?.addEventListener("click", () => {
-    location.href = "/" + window.preferredLocale + "/checkout/shipping";
+  submitCauseBtn?.addEventListener("click", () => {
+    const kindness_cause =
+      kindnessCausesCardsContainer.querySelector<HTMLElement>(
+        ".active-kindness-cause"
+      ).dataset.cause;
+
+    fetch(
+      `https://${
+        window.shouldDisplayExperimentals ? "dev." : ""
+      }baserow.scripts.dilmahtea.me`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          paymentID: window.paymentID,
+          payment_type: "ecommerce",
+          "Cup of Kindness": kindness_cause,
+        }),
+      }
+    );
+
+    location.href = window.checkoutSuccessLink;
   });
 </script>

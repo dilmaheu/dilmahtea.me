@@ -2,8 +2,8 @@
 import Icon from "astro-icon";
 import Markdown from "@astrojs/markdown-component";
 
-import FilteredProducts from "@solid/FilteredProducts";
-import ProductFiltersForm from "@solid/ProductFiltersForm";
+import FilteredProducts from "@solid/FilteredProducts.astro";
+import ProductFiltersForm from "@solid/ProductFiltersForm.astro";
 
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
@@ -14,14 +14,15 @@ import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
-const { white_right_arrow } = RecurringImages;
+const { white_love } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_content,
   { locale } = page;
 
 const productSizes = CMS.get("productSizes"),
-  productVariants = CMS.get("productVariants");
+  productVariants = CMS.get("productVariants"),
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
 const subCategories = page.Sub_categories.data.filter(
   ({ attributes: { products } }) => products.data.length > 0
@@ -34,9 +35,9 @@ page.Heading_button_link = "#content";
   @use "src/styles/typography";
 
   .heading-title {
-    @apply leading-[110%] sm:leading-[115%] text-dark2;
+    @apply font-semibold leading-[130%] sm:leading-[115%] text-black;
 
-    font-family: typography.$alice;
+    font-family: typography.$recoleta;
     font-size: clamp(2.625rem, 3vw + 0.3rem, 3rem);
   }
 
@@ -118,7 +119,8 @@ page.Heading_button_link = "#content";
   {recurData}
   {ariaLabelRecurData}
   {headingName}
-  type="normal"
+  type="section"
+  headerBackgroundSm={true}
 >
   <div slot="product-page-sections" class="mt-[50px]">
     <ClipPathSVG
@@ -127,8 +129,32 @@ page.Heading_button_link = "#content";
     />
 
     <div class="wrapper mb-[30px]">
+      {
+        page.Breadcrumb && (
+          <div class="flex flex-wrap gap-2 recoleta text-2xl leading-[110%] text-primary mb-[25px]">
+            {page.Breadcrumb?.Steps.map((step, index) => (
+              <div class="flex items-center gap-2">
+                {index > 0 && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="8"
+                    height="17"
+                    viewBox="0 0 8 16.7"
+                  >
+                    <path
+                      d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
+                      style="fill:#547B7D"
+                    />
+                  </svg>
+                )}
+                <a href={step.Link}>{step.Name}</a>
+              </div>
+            ))}
+          </div>
+        )
+      }
+
       <ProductFiltersForm
-        client:load
         {locale}
         {productSizes}
         {productVariants}
@@ -137,18 +163,18 @@ page.Heading_button_link = "#content";
     </div>
 
     {/* Products Section */}
-    <section class="grid gap-y-[50px]" role="main">
+    <section role="main" class="grid gap-y-[50px]">
       <FilteredProducts
-        client:load
         {page}
         {recurData}
-        {white_right_arrow}
+        {checkoutRecurData}
+        {white_love}
         category={page.Title}
       >
         <Icon
           slot="alertCircleIcon"
           name="mdi:alert-circle"
-          class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+          class="inline-flex p-0.5 w-[26px] text-white bg-warning rounded-full select-none"
         />
       </FilteredProducts>
 
@@ -163,22 +189,22 @@ page.Heading_button_link = "#content";
                 {Title}
               </h2>
 
-              <div class="prose max-w-none block-text text-dark2 prose-text">
+              <div class="prose max-w-none block-text text-black prose-text">
                 <Markdown>{Intro_text}</Markdown>
               </div>
             </div>
 
             <FilteredProducts
-              client:load
               {page}
               {recurData}
-              {white_right_arrow}
+              {checkoutRecurData}
+              {white_love}
               subCategory={Title}
             >
               <Icon
                 slot="alertCircleIcon"
                 name="mdi:alert-circle"
-                class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+                class="inline-flex w-[26px] p-0.5 bg-warning text-white rounded-full select-none"
               />
             </FilteredProducts>
           </div>

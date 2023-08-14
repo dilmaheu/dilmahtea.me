@@ -2,25 +2,25 @@
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
-import Hero from "@components/Hero.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
+import KindnessImpact from "@components/KindnessImpact.astro";
 import EstatesInfoSection from "@components/EstatesInfoSection.astro";
+
+import SecondaryPageLayout from "@layouts/SecondaryPageLayout.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
-const { left_quote, love_gift, white_right_arrow } = RecurringImages;
+const { left_quote } = RecurringImages;
 
-const { page, recurData, ariaLabelRecurData } = Astro.props,
-  { posts } = page,
+const { page } = Astro.props,
+  { posts, locale, blogs } = page,
   { ASSETS_URL } = import.meta.env;
 
-const blogs = page.blogs.data.map(({ attributes }) => attributes);
+const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
 ---
 
 <style lang="scss">
-  @use "src/styles/colors";
-
   .estate-types-selector {
     font-size: clamp(0.75rem, 1.5vw + 0.1rem, 1.25rem);
     border-right: 20px solid transparent;
@@ -32,12 +32,13 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   }
 
   .estate-mode-toggle-dot {
-    border: 1px solid colors.$white2;
+    @apply border border-secondary-light;
   }
 
   input[type="checkbox"].estate-mode-toggle:checked ~ .estate-mode-toggle-dot {
+    @apply bg-primary;
+
     transform: translateX(100%);
-    background-color: colors.$primary;
   }
 
   .estate-block-text {
@@ -59,12 +60,9 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   }
 
   .post-title {
-    font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
-    list-style: 130%;
+    @apply font-semibold leading-[130%];
 
-    @media (max-width: 767.98px) {
-      letter-spacing: -0.03em;
-    }
+    font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
   }
 
   .post-intro {
@@ -74,8 +72,7 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
     line-height: 150%;
   }
 
-  .estate-quote-container,
-  .estate-impact-container {
+  .estate-quote-container {
     clip-path: url(#quote-bg-curve);
     padding: 35px clamp(23px, 3.875vw, 50px);
 
@@ -102,458 +99,228 @@ const blogs = page.blogs.data.map(({ attributes }) => attributes);
   .estate-quote-icon {
     height: clamp(1.563rem, 2.2vw + 0.15rem, 2.188rem);
   }
-
-  .estate-impact-title {
-    font-size: clamp(1.5rem, 1.7vw + 0.6rem, 1.75rem);
-    line-height: 150%;
-  }
-
-  .estate-impacts-container {
-    column-gap: clamp(1.25rem, 2.2vw + 0.13rem, 2.188rem);
-  }
-
-  .estate-impacts-num {
-    font-size: clamp(3rem, 5vw + 1.3rem, 5.688rem);
-  }
-
-  .estate-impacts-text {
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
-  }
-
-  .recent-posts-title {
-    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
-  }
-
-  .recent-post-card {
-    @apply w-full max-w-[380px] sm:max-w-none;
-  }
-
-  .recent-post-card-content-container {
-    padding: clamp(20px, 6.4vw, 40px) clamp(24px, 3.8vw + 11.75px, 36px);
-
-    @media (min-width: 640px) {
-      padding: clamp(30px, 7.8125vw - 20px, 60px)
-        clamp(28px, 4.6875vw - 2px, 46px);
-    }
-
-    @media (min-width: 1024px) {
-      padding: clamp(30px, 8vw - 51.75px, 60px) clamp(28px, 4.8vw - 21px, 46px);
-    }
-  }
-
-  .recent-post-card-author {
-    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem);
-    line-height: 150%;
-  }
-
-  .recent-post-card-title {
-    @apply leading-[130%] sm:leading-[120%];
-
-    font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
-  }
-
-  .recent-post-card-title-icon {
-    height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
-  }
 </style>
 
-<!-- Hero Section -->
-<Hero>
-  {/* Text Content */}
-  <div
-    role="banner"
-    aria-label={ariaLabelRecurData.Intro_text}
-    class="wrapper hero-text-container h-full relative z-30"
-  >
-    <div role="banner" class="flex flex-wrap items-center sm:w-7/12 h-full">
-      <div class="my-[30px]">
-        <h1 class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
-          {page.Title}
-        </h1>
-
-        <div class="hero-text pt-2.5 block prose text-lightgray max-w-none">
-          <Markdown>{page.Intro_text}</Markdown>
-        </div>
-
-        <a
-          href={page.Heading_button_link}
-          class:list={[
-            "flex w-fit text-primary font-bold leading-[120%]",
-            "py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9 bg-white rounded-full",
-          ]}
-        >
-          {page.Heading_button_text}
-        </a>
-      </div>
-    </div>
-  </div>
-
-  {/* Blob Image - Desktop View */}
-  <div class="hero-img-curve-container h-full hidden sm:block absolute z-30">
-    <ClippedPicture
-      preload="avif"
-      id="hero-img-curve"
-      breakpoints={{ minWidth: 640 }}
-      sizes="clamp(330px, 26.4vw + 150px, 560px)"
-      alt={page.Intro_blob.data.attributes.alternativeText}
-      src={ASSETS_URL + page.Intro_blob.data.attributes.url}
-      path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
-      attributes={{ link: { media: "(min-width: 640px)" } }}
-    />
-  </div>
-</Hero>
-
-{/* Blob Image - Mobile View */}
-<div class="hero-img-sm-container block sm:hidden w-full relative z-20 -mt-20">
-  <ClippedPicture
-    preload="avif"
-    id="hero-img-curve-sm"
-    breakpoints={{ maxWidth: 640 }}
-    alt={page.Intro_blob.data.attributes.alternativeText}
-    src={ASSETS_URL + page.Intro_blob.data.attributes.url}
-    path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
-    attributes={{ link: { media: "(max-width: 639.98px)" } }}
-  />
-</div>
-
-<!-- Home Estate Details Section -->
-
-<div class="wrapper py-[50px]" role="main">
-  <div class="flex flex-wrap justify-between items-center gap-y-[15px]">
+<SecondaryPageLayout {page} {relatedPosts} plainTitle={true}>
+  <div role="main" class="grid gap-[50px] my-[50px]">
     <div
-      class="flex flex-wrap items-center justify-between gap-x-6 gap-y-[15px]"
+      class="wrapper flex flex-wrap justify-between items-center gap-y-[15px]"
     >
-      <h2
-        class="alice text-[42px] leading-[3.15rem] tracking-[-0.03rem] text-dark2"
+      <div
+        class="flex flex-wrap items-center justify-between gap-x-6 gap-y-[15px]"
       >
-        {page.Heading_block}
-      </h2>
+        <h2 class="post-title recoleta text-black">
+          {page.Heading_block}
+        </h2>
+
+        {
+          /* (
+            <div>
+              <select
+                id="estateType"
+                name="estateType"
+                class:list={[
+                  "focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring cursor-pointer",
+                  "bg-primary text-secondary-light py-[5px] pl-5 rounded-[34px] estate-types-selector",
+                ]}
+              >
+                <option value="1">Kindness Project Type 1</option>
+
+                <option value="2">Kindness Project Type 2</option>
+              </select>
+            </div>
+          ) */
+        }
+      </div>
 
       {
         /* (
-          <div>
-            <select
-              id="estateType"
-              name="estateType"
-              class:list={[
-                "focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring cursor-pointer",
-                "bg-primary text-lightgray2 py-[5px] pl-5 rounded-[34px] estate-types-selector",
-              ]}
-            >
-              <option value="1">Kindness Project Type 1</option>
+          <div class="inline-flex">
+            <div class="text-black estates-toggle-label">
+              View Carbon Neutral estates
+            </div>
 
-              <option value="2">Kindness Project Type 2</option>
-            </select>
+            <div class="flex items-center justify-center ml-2.5">
+              <label
+                for="estatesToggle"
+                class="relative flex items-center cursor-pointer"
+              >
+                <div class="relative">
+                  <input
+                    id="estatesToggle"
+                    type="checkbox"
+                    class="sr-only estate-mode-toggle"
+                  />
+                  <div class="bg-secondary-light rounded-full shadow-inner w-11 sm:w-[49px] lg:w-[54px] h-5 sm:h-[22px] lg:h-6" />
+                  <div class="absolute z-10 bg-secondary-light w-[30px] h-[30px] rounded-full shadow top-[-3px] -left-1 transition estate-mode-toggle-dot" />
+                </div>
+              </label>
+            </div>
           </div>
         ) */
       }
-    </div>
 
-    {
-      /* (
-        <div class="inline-flex">
-          <div class="text-dark2 estates-toggle-label">
-            View Carbon Neutral estates
-          </div>
-
-          <div class="flex items-center justify-center ml-2.5">
-            <label
-              for="estatesToggle"
-              class="relative flex items-center cursor-pointer"
-            >
-              <div class="relative">
-                <input
-                  id="estatesToggle"
-                  type="checkbox"
-                  class="sr-only estate-mode-toggle"
-                />
-                <div class="bg-white2 rounded-full shadow-inner w-11 sm:w-[49px] lg:w-[54px] h-5 sm:h-[22px] lg:h-6" />
-                <div class="absolute z-10 bg-white2 w-[30px] h-[30px] rounded-full shadow top-[-3px] -left-1 transition estate-mode-toggle-dot" />
-              </div>
-            </label>
-          </div>
-        </div>
-      ) */
-    }
-
-    <div class="prose max-w-none w-full text-dark estate-block-text">
-      <Markdown>{page.Block_text}</Markdown>
-    </div>
-  </div>
-
-  {/* All Estates Section */}
-  <div id="estates">
-    <ClipPathSVG
-      id="estate-img-curve"
-      path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-    />
-
-    <div
-      role="list"
-      aria-label={page.Aria_label_all_estates_text}
-      class="flex flex-wrap items-center gap-y-[50px] py-[50px] lg:py-[75px]"
-    >
-      {
-        posts.map((estate, index) => {
-          const isEven = index % 2 === 0;
-
-          return (
-            <div
-              role="listitem"
-              class="link-section flex flex-wrap items-center"
-            >
-              <div
-                class:list={[
-                  "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
-                  isEven
-                    ? "pr-0 sm:pr-5 md:pr-12"
-                    : "sm:order-2 pl-0 sm:pl-5 md:pl-12",
-                ]}
-              >
-                <div class="post-img-curve-container">
-                  <Picture
-                    layout="fill"
-                    alt={estate.Intro_blob.data.attributes.alternativeText}
-                    src={ASSETS_URL + estate.Intro_blob.data.attributes.url}
-                    attributes={{
-                      picture: { style: "clip-path: url(#estate-img-curve);" },
-                    }}
-                    sizes={[
-                      "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
-                      "(min-width: 640px) min(600px, calc(45vw - 20px))",
-                      "90vw",
-                    ].join(", ")}
-                  />
-                </div>
-              </div>
-
-              {/* Text content */}
-              <div
-                class:list={[
-                  "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
-                  isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
-                ]}
-              >
-                <div>
-                  {/*<ul class="flex flex-wrap items-center gap-y-1 gap-x-2.5 md:gap-x-[15px] md:pb-[5px] lg:pb-2.5">
-                    <li class="text-black estate-category-item">
-                      <a
-                        href=""
-                        class="bg-white1 text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
-                      >
-                        Green Tea
-                      </a>
-                    </li>
-                    <li class="text-black estate-category-item">
-                      <a
-                        href=""
-                        class="bg-white1 text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
-                      >
-                        Sustainable
-                      </a>
-                    </li>
-                  </ul>*/}
-
-                  <h2 class="post-title alice text-primary pt-[15px]">
-                    <a
-                      class="main-link"
-                      set:text={estate.Estate_name}
-                      href={`/` + estate.Meta.URL_slug}
-                    />
-                  </h2>
-
-                  <div class="post-intro texr-dark pt-[15px] prose max-w-none">
-                    <Markdown>{estate.Intro_text}</Markdown>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })
-      }
-    </div>
-  </div>
-
-  <ClipPathSVG
-    id="quote-bg-curve"
-    path="M0.04,0.087 C0.086,-0.001,0.164,0.007,0.262,0.002 C0.427,-0.005,0.522,0.007,0.687,0.002 c0.115,-0.003,0.179,0,0.242,0.029 c0.048,0.022,0.075,0.301,0.071,0.479 c-0.003,0.162,0.008,0.386,-0.054,0.413 c-0.058,0.025,-0.193,0.034,-0.252,0.049 c-0.111,0.03,-0.23,-0.006,-0.332,0 c-0.092,0.006,-0.206,0.08,-0.309,-0.049 C0,0.856,-0.001,0.685,0,0.511 C0.002,0.345,-0.007,0.177,0.04,0.087"
-  />
-
-  <ClipPathSVG
-    id="quote-bg-curve-sm"
-    path="M0.913,0.04 c0.088,0.046,0.08,0.124,0.084,0.222 c0.007,0.165,-0.005,0.26,0,0.425 c0.003,0.116,0,0.179,-0.029,0.242 c-0.022,0.048,-0.301,0.075,-0.479,0.071 c-0.162,-0.003,-0.386,0.008,-0.413,-0.054 C0.05,0.888,0.042,0.753,0.026,0.694 C-0.003,0.583,0.033,0.464,0.026,0.363 C0.021,0.271,-0.054,0.156,0.076,0.054 C0.144,0,0.315,-0.001,0.489,0 C0.655,0.002,0.823,-0.007,0.913,0.04"
-  />
-
-  <section
-    aria-label={page.Block2_aria_label_text}
-    class="bg-primary w-full h-full estate-quote-container"
-  >
-    <div class="flex flex-wrap w-full gap-y-6 items-center relative z-20">
-      <!-- Quote Image -->
-      <div class="w-full sm:w-1/2">
-        <div class="quote-img-container mx-auto sm:ml-0">
-          <ClippedPicture
-            id="quote-img-curve"
-            alt={page.Block2_blob.data.attributes.alternativeText}
-            src={ASSETS_URL + page.Block2_blob.data.attributes.url}
-            path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 S0.002,0.495,0.017,0.736 S0.182,1,0.528,1 c0.285,0,0.374,-0.064,0.446,-0.283 c0.031,-0.093,0.047,-0.322,-0.029,-0.59 C0.896,-0.045,0.735,0.008,0.516,0.008"
-            sizes={[
-              "(min-width: 640px) min(450px, calc(50vw - min(100px, 5vw) - clamp(23px, 3.875vw, 50px)))",
-              "calc(90vw - clamp(23px, 3.875vw, 50px))",
-            ].join(", ")}
-          />
-        </div>
-      </div>
-
-      <!-- Text content -->
-      <div class="w-full sm:w-1/2 h-full">
-        <div class="flex flex-wrap px-2.5 sm:px-0 xl:-ml-6">
-          <div class="estate-quote-icon">
-            <img class="w-full h-full" {...left_quote} />
-          </div>
-
-          <div class="prose max-w-none font-bold text-lightgray estate-quote">
-            {page.Block2_text}
-          </div>
-
-          <div class="rotate-180 mr-[25px] ml-auto estate-quote-icon">
-            <img class="w-full h-full" {...left_quote} />
-          </div>
-        </div>
+      <div class="estate-block-text prose max-w-none w-full text-black-light">
+        <Markdown>{page.Block_text}</Markdown>
       </div>
     </div>
-  </section>
 
-  <EstatesInfoSection page={page} />
-
-  <section class="bg-lightgray2 lg:mb-[25px] estate-impact-container">
-    <div class="flex flex-wrap items-center relative z-20 gap-y-[25px]">
-      <h3 class="w-full font-medium text-dark text-center estate-impact-title">
-        {page.Block4_heading}
-      </h3>
-
-      <div
-        role="list"
-        aria-label={page.Block4_items_aria_label_text}
-        class:list={[
-          "grid grid-cols-[repeat(auto-fit,minmax(0,150px))] md:grid-cols-[repeat(auto-fit,minmax(0,250px))]",
-          "justify-center md:justify-between gap-y-[35px] w-full estate-impacts-container",
-        ]}
-      >
-        {
-          page.Block4_items.map((item) => (
-            <div
-              role="listitem"
-              aria-label={item.Block4_Value + item.Block4_description}
-              class="grid justify-items-center"
-            >
-              <div class="h-[43px]">
-                <img
-                  class="w-full h-full"
-                  src={ASSETS_URL + item.Block4_icon.data.attributes.url}
-                  alt=""
-                />
-              </div>
-              <div class="alice font-extrabold leading-[110%] md:leading-[115%] text-primary estate-impacts-num">
-                {item.Block4_Value}
-              </div>
-              <div class="text-dark text-center leading-[150%] estate-impacts-text">
-                {item.Block4_description}
-              </div>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-</div>
-
-{
-  blogs.length > 0 && (
-    <section role="complementary" class="wrapper">
-      <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
-        {recurData.text_explore_the_world_of_kindness}
-      </h2>
-
+    {/* All Estates Section */}
+    <div id="estates" class="wrapper">
       <ClipPathSVG
-        id="recent-post-card-curve"
-        path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
+        id="estate-img-curve"
+        path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
       />
 
       <div
         role="list"
-        aria-label={ariaLabelRecurData.Kindness_Items_text}
-        class:list={[
-          "w-full mx-auto mb-[50px] grid sm:grid-cols-2 lg:grid-cols-3",
-          "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
-        ]}
+        aria-label={page.Aria_label_all_estates_text}
+        class="flex flex-wrap items-center gap-y-[50px]"
       >
-        {blogs.slice(0, 3).map((post, index) => (
-          <div
-            role="listitem"
-            aria-label={ariaLabelRecurData.Kindness_Item_text + (index + 1)}
-            style="clip-path: url(#recent-post-card-curve);"
-            class="link-section bg-primary recent-post-card"
-          >
-            <div class="relative">
-              <Picture
-                layout="fullWidth"
-                alt={post.Intro_blob.data.attributes.alternativeText}
-                src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-                attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
+        {
+          posts.map((estate, index) => {
+            const isEven = index % 2 === 0;
+
+            return (
+              <div
+                role="listitem"
+                class="link-section flex flex-wrap items-center"
+              >
+                <div
+                  class:list={[
+                    "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
+                    isEven
+                      ? "pr-0 sm:pr-5 md:pr-12"
+                      : "sm:order-2 pl-0 sm:pl-5 md:pl-12",
+                  ]}
+                >
+                  <div class="post-img-curve-container">
+                    <Picture
+                      layout="fill"
+                      alt={estate.Intro_blob.data.attributes.alternativeText}
+                      src={ASSETS_URL + estate.Intro_blob.data.attributes.url}
+                      attributes={{
+                        picture: {
+                          style: "clip-path: url(#estate-img-curve);",
+                        },
+                      }}
+                      sizes={[
+                        "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
+                        "(min-width: 640px) min(600px, calc(45vw - 20px))",
+                        "90vw",
+                      ].join(", ")}
+                    />
+                  </div>
+                </div>
+
+                {/* Text content */}
+                <div
+                  class:list={[
+                    "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
+                    isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
+                  ]}
+                >
+                  <div>
+                    {/* <ul class="flex flex-wrap items-center gap-y-1 gap-x-2.5 md:gap-x-[15px] md:pb-[5px] lg:pb-2.5">
+                        <li class="text-black estate-category-item">
+                          <a
+                            href=""
+                            class="bg-pale-rose text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
+                          >
+                            Green Tea
+                          </a>
+                        </li>
+                        
+                        <li class="text-black estate-category-item">
+                          <a
+                            href=""
+                            class="bg-pale-rose text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
+                          >
+                            Sustainable
+                          </a>
+                        </li>
+                      </ul> */}
+
+                    <h2 class="post-title recoleta text-primary pt-[15px]">
+                      <a
+                        class="main-link"
+                        set:text={estate.Estate_name}
+                        href={`/` + estate.Meta.URL_slug}
+                      />
+                    </h2>
+
+                    <div class="post-intro text-black-light pt-[15px] prose max-w-none">
+                      <Markdown>{estate.Intro_text}</Markdown>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+
+    <section class="wrapper">
+      <div
+        aria-label={page.Block2_aria_label_text}
+        class="estate-quote-container bg-primary w-full h-full"
+      >
+        <ClipPathSVG
+          id="quote-bg-curve"
+          path="M0.04,0.087 C0.086,-0.001,0.164,0.007,0.262,0.002 C0.427,-0.005,0.522,0.007,0.687,0.002 c0.115,-0.003,0.179,0,0.242,0.029 c0.048,0.022,0.075,0.301,0.071,0.479 c-0.003,0.162,0.008,0.386,-0.054,0.413 c-0.058,0.025,-0.193,0.034,-0.252,0.049 c-0.111,0.03,-0.23,-0.006,-0.332,0 c-0.092,0.006,-0.206,0.08,-0.309,-0.049 C0,0.856,-0.001,0.685,0,0.511 C0.002,0.345,-0.007,0.177,0.04,0.087"
+        />
+
+        <ClipPathSVG
+          id="quote-bg-curve-sm"
+          path="M0.913,0.04 c0.088,0.046,0.08,0.124,0.084,0.222 c0.007,0.165,-0.005,0.26,0,0.425 c0.003,0.116,0,0.179,-0.029,0.242 c-0.022,0.048,-0.301,0.075,-0.479,0.071 c-0.162,-0.003,-0.386,0.008,-0.413,-0.054 C0.05,0.888,0.042,0.753,0.026,0.694 C-0.003,0.583,0.033,0.464,0.026,0.363 C0.021,0.271,-0.054,0.156,0.076,0.054 C0.144,0,0.315,-0.001,0.489,0 C0.655,0.002,0.823,-0.007,0.913,0.04"
+        />
+
+        <div class="flex flex-wrap w-full gap-y-6 items-center relative z-20">
+          {/* Quote Image */}
+          <div class="w-full sm:w-1/2">
+            <div class="quote-img-container mx-auto sm:ml-0">
+              <ClippedPicture
+                id="quote-img-curve"
+                alt={page.Block2_blob.data.attributes.alternativeText}
+                src={ASSETS_URL + page.Block2_blob.data.attributes.url}
+                path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 S0.002,0.495,0.017,0.736 S0.182,1,0.528,1 c0.285,0,0.374,-0.064,0.446,-0.283 c0.031,-0.093,0.047,-0.322,-0.029,-0.59 C0.896,-0.045,0.735,0.008,0.516,0.008"
                 sizes={[
-                  "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
-                  "(min-width: 640px) calc(45vw - 16px)",
-                  "min(90vw, 380px)",
+                  "(min-width: 640px) min(450px, calc(50vw - min(100px, 5vw) - clamp(23px, 3.875vw, 50px)))",
+                  "calc(90vw - clamp(23px, 3.875vw, 50px))",
                 ].join(", ")}
               />
+            </div>
+          </div>
 
-              <div class="recent-post-card-content-container">
-                <div>
-                  <div
-                    role="presentation"
-                    aria-label={post.authors.data.map(
-                      ({ attributes }, i) =>
-                        ariaLabelRecurData.Wrote_by_text +
-                        (i > 0 ? ", " : " ") +
-                        attributes.givenName
-                    )}
-                    class="recent-post-card-author flex flex-wrap font-bold"
-                  >
-                    {post.authors.data.map(({ attributes }, index) => (
-                      <div>
-                        {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                      </div>
-                    ))}
-                  </div>
+          {/* Text content */}
+          <div class="w-full sm:w-1/2 h-full">
+            <div class="flex flex-wrap px-2.5 sm:px-0 xl:-ml-6">
+              <div class="estate-quote-icon">
+                <img class="w-full h-full" {...left_quote} />
+              </div>
 
-                  <div class="post-publish-date">
-                    {new Date(post.createdAt).toLocaleString("en-US", {
-                      day: "numeric",
-                      month: "long",
-                    })}
-                  </div>
-                </div>
+              <div
+                class="estate-quote prose max-w-none font-bold text-secondary"
+              >
+                {page.Block2_text}
+              </div>
 
-                <div class="recent-post-card-title alice mt-[15px]">
-                  <a
-                    class="main-link"
-                    set:text={post.Title}
-                    href={`/` + post.Meta.URL_slug}
-                  />
-
-                  <span class="icon recent-post-card-title-icon">
-                    <img
-                      class="recent-post-card-title-icon"
-                      {...white_right_arrow}
-                    />
-                  </span>
-                </div>
+              <div class="estate-quote-icon mr-[25px] ml-auto rotate-180">
+                <img class="w-full h-full" {...left_quote} />
               </div>
             </div>
           </div>
-        ))}
+        </div>
       </div>
     </section>
-  )
-}
+
+    <EstatesInfoSection page={page} />
+
+    <KindnessImpact
+      {locale}
+      heading={page.Block4_heading}
+      impacts={page.Impacts}
+    />
+  </div>
+</SecondaryPageLayout>

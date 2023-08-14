@@ -1,14 +1,14 @@
 ---
 import { parseHTML } from "linkedom";
-import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
+import Markdown from "@astrojs/markdown-component";
 
-const { page } = Astro.props;
+import renderMarkdown from "@utils/renderMarkdown";
 
-// @ts-ignore
-const infoBlocksHTML = await Astro.__renderMarkdown(page.Block3);
+const { page } = Astro.props,
+  infoBlocksHTML = await renderMarkdown(page.Block3);
 
-const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
+const { document: infoBlocksDocument } = parseHTML(infoBlocksHTML),
   titles = [...infoBlocksDocument.querySelectorAll("h2")];
 ---
 
@@ -26,23 +26,19 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
   }
 
   .info-block-text {
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem);
     line-height: 150%;
+    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem);
   }
 </style>
 
-<section
-  role="list"
-  class="flex flex-wrap items-center gap-y-20 py-20 py-[50px] lg:py-[75px]"
->
+<section role="list" class="wrapper grid gap-[50px] items-center">
   {
     titles.map((title, index) => {
       const isEven = index % 2 === 0,
         { textContent: titleText } = title,
         { textContent } = title.nextElementSibling,
-        // @ts-ignore
-        { src: imgSrc, alt: imgAlt = "" } =
-          title.nextElementSibling.lastElementChild;
+        { src: imgSrc, alt: imgAlt = "" } = title.nextElementSibling
+          .lastElementChild as HTMLImageElement;
 
       return (
         <div
@@ -89,11 +85,11 @@ const { document: infoBlocksDocument } = await parseHTML(infoBlocksHTML),
               isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
             ]}
           >
-            <h2 class="info-block-title alice leading-[115% sm:leading-[120%] text-dark2">
+            <h2 class="info-block-title recoleta text-black font-bold leading-[130%]">
               {titleText}
             </h2>
 
-            <div class="info-block-text texr-dark block pt-[15px] prose max-w-none">
+            <div class="info-block-text text-black-light block pt-[15px] prose max-w-none">
               <Markdown>{textContent}</Markdown>
             </div>
           </div>

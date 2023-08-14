@@ -1,0 +1,59 @@
+---
+import ProductFiltersForm from "@solid/ProductFiltersForm";
+
+let { locale, productSizes, productVariants, recurData } = Astro.props;
+
+recurData = {
+  text_all_tea_variants: recurData.text_all_tea_variants,
+  text_all_tea_sizes: recurData.text_all_tea_sizes,
+};
+
+[productSizes, productVariants] = [productSizes, productVariants].map(
+  ({ data }, i) => ({
+    data: data
+      .map(({ attributes }) => {
+        const allVersions = [{ attributes }, ...attributes.localizations.data],
+          localizedTitle = allVersions.find(
+            ({ attributes }) => attributes.locale.substring(0, 2) === locale
+          )?.attributes.Title;
+
+        if (localizedTitle) {
+          const {
+            attributes: { Title, products },
+          } = allVersions.find(({ attributes }) => attributes.locale === "en");
+
+          const availableCombinations = JSON.stringify(
+            Array.from(
+              new Set(
+                products.data.map(
+                  ({ attributes }) =>
+                    attributes[i === 0 ? "variant" : "size"].data.attributes
+                      .Title
+                )
+              )
+            )
+          );
+
+          return {
+            Title,
+            localizedTitle,
+            availableCombinations,
+          };
+        }
+      })
+      .filter(Boolean)
+      .sort((a, b) =>
+        a.localizedTitle.localeCompare(b.localizedTitle, locale, {
+          numeric: true,
+        })
+      ),
+  })
+);
+---
+
+<ProductFiltersForm
+  client:load
+  productSizes={productSizes}
+  productVariants={productVariants}
+  recurData={recurData}
+/>

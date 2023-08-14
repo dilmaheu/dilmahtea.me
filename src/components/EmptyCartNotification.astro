@@ -9,7 +9,8 @@ declare interface Props {
 
 const { locale } = Astro.props as Props;
 
-const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+const checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
+  shopLink = CMS.get("homeProduct", locale).Meta.URL_slug;
 ---
 
 <div
@@ -31,8 +32,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   </div>
 
   <a
-    href="/tea"
-    class="w-full p-3.5 font-bold text-center text-lightgray bg-primary rounded-full"
+    href={shopLink}
+    class="w-full p-3.5 bg-primary text-secondary font-bold text-center rounded-full"
   >
     {checkoutRecurData.text_continue_shopping}
   </a>

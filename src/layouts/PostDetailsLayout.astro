@@ -1,31 +1,44 @@
 ---
 import { parseHTML } from "linkedom";
-import Markdown from "@astrojs/markdown-component";
-import { Picture } from "astro-imagetools/components";
 
-import Hero from "@components/Hero.astro";
+import HeroContent from "@components/HeroContent.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import HeadingLinks from "@components/HeadingLinks.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
+import RelevantPosts from "@components/RelevantPosts.astro";
 import ChaptersFunctionality from "@components/scripts/ChaptersFunctionality.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
-const { white_cup, green_book, white_right_arrow } = RecurringImages;
+const { green_book } = RecurringImages;
 
-const { page, posts, recurData, ariaLabelRecurData, headingName, type } =
-    Astro.props,
-  { ASSETS_URL } = import.meta.env;
+const {
+  page,
+  posts,
+  recurData,
+  ariaLabelRecurData,
+  headingName,
+  plainTitle,
+  type,
+  headerBackground,
+  headerBackgroundSm,
+} = Astro.props;
 
-// display relevant recipes instead of recent posts for RecipeDetails pages
-const recentPosts =
+const relatedPosts =
   page?.related_products?.data?.map(({ attributes }) => attributes) ||
   page?.blogs?.data?.map(({ attributes }) => attributes) ||
   page?.Relevant_recipes?.data?.map(({ attributes }) => attributes) ||
+  page?.Relevant_blogs?.data?.map(({ attributes }) => attributes) ||
   posts?.filter(({ Meta }) => Meta.URL_slug !== page.Meta.URL_slug);
 
+const relatedPostsHeading =
+  page.Relevant_items_title ||
+  (page.Relevant_recipes && recurData.recipe_discover) ||
+  recurData.text_explore_the_world_of_kindness;
+
+const relatedPostsText = page.Relevant_items_text;
+
 const contentHTML = await Astro.slots.render("post-details"),
-  { document: contentDocument } = await parseHTML(contentHTML),
+  { document: contentDocument } = parseHTML(contentHTML),
   headings = contentDocument.querySelectorAll("h2");
 ---
 
@@ -41,14 +54,10 @@ const contentHTML = await Astro.slots.render("post-details"),
     p s,
     blockquote p {
       a {
-        @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat transition-all;
+        @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat hover:brightness-95 transition-all;
 
         background-size: 100% 45%;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23b3cccc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
-
-        &:hover {
-          filter: brightness(0.95);
-        }
       }
     }
   }
@@ -62,7 +71,7 @@ const contentHTML = await Astro.slots.render("post-details"),
   }
 
   #sticky-heading-links {
-    border-color: colors.$sticky-dropdown-border-top;
+    border-color: colors.$primary-light;
   }
 
   #reading-progress-bar {
@@ -77,228 +86,16 @@ const contentHTML = await Astro.slots.render("post-details"),
   #heading-links {
     font-size: clamp(1rem, 1.2vw + 0.2rem, 1.5rem);
   }
-
-  .recent-posts-title {
-    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
-  }
-
-  .recent-post-card {
-    @apply w-full max-w-[380px] sm:max-w-none;
-  }
-
-  .recent-post-card-content-container {
-    padding: clamp(20px, 6.4vw, 40px) clamp(24px, 3.8vw + 11.75px, 36px);
-
-    @media (min-width: 640px) {
-      padding: clamp(30px, 7.8125vw - 20px, 60px)
-        clamp(28px, 4.6875vw - 2px, 46px);
-    }
-
-    @media (min-width: 1024px) {
-      padding: clamp(30px, 8vw - 51.75px, 60px) clamp(28px, 4.8vw - 21px, 46px);
-    }
-  }
-
-  .recent-post-card-author {
-    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem);
-    line-height: 150%;
-  }
-
-  .recent-post-card-title {
-    @apply leading-[130%] sm:leading-[120%];
-
-    font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
-  }
-
-  .recent-post-card-title-icon {
-    height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
-  }
 </style>
 
 {/* Hero Section */}
-<Hero>
-  {/* Text Content */}
-  <div
-    role="banner"
-    aria-label={ariaLabelRecurData.Post_intro_text}
-    class="wrapper hero-text-container h-full relative z-30"
-  >
-    <div class="flex flex-wrap items-center sm:w-7/12 h-full">
-      <div class="my-[30px]">
-        {
-          page.authors && (
-            <div class="flex flex-wrap gap-x-2.5 mb-2.5">
-              {page.authors.data.map(
-                (author, index) =>
-                  author.attributes.Profile_picture.data && (
-                    <div
-                      class:list={[
-                        index > 0 && "relative -ml-5",
-                        "w-12 h-12 rounded-full overflow-hidden",
-                      ]}
-                    >
-                      <Picture
-                        width={48}
-                        height={48}
-                        loading="eager"
-                        alt={
-                          author.attributes.Profile_picture.data.attributes
-                            .alternativeText
-                        }
-                        src={
-                          ASSETS_URL +
-                          author.attributes.Profile_picture.data.attributes.url
-                        }
-                      />
-                    </div>
-                  )
-              )}
+<HeroContent {page} {plainTitle} {headerBackground} {headerBackgroundSm}>
+  {/* Recipe Header */}
+  <slot name="recipe-header" />
 
-              <div class="grid content-between">
-                <div
-                  role="presentation"
-                  aria-label={page.authors.data.map(
-                    ({ attributes }, i) =>
-                      ariaLabelRecurData.Wrote_by_text +
-                      (i > 0 ? ", " : " ") +
-                      attributes.givenName
-                  )}
-                  class="post-author flex flex-wrap font-bold"
-                >
-                  {page.authors.data.map((author, index) => (
-                    <span>
-                      {`${index > 0 ? ", " : " "}` +
-                        author.attributes.givenName}
-                    </span>
-                  ))}
-                </div>
-
-                <div class="post-publish-date">
-                  {new Date(page.createdAt).toLocaleString("en-US", {
-                    day: "numeric",
-                    month: "long",
-                  })}
-                </div>
-              </div>
-            </div>
-          )
-        }
-
-        {
-          page.estate_name?.data.length > 0 && (
-            <div class="flex flex-wrap items-center mb-[5px]">
-              <div class="flex flex-wrap items-center text-lg lg:text-xl leading-[150%]">
-                {recurData.product_made_love_from + `\xa0`}
-
-                <div class="flex flex-wrap gap-x-1.5">
-                  {page.estate_name.data.map((estate, index) => (
-                    <a
-                      href={estate.attributes.Meta.URL_slug}
-                      class="flex flex-wrap underline decoration-1 underline-offset-[2px] font-bold"
-                    >
-                      {estate.attributes.Estate_name +
-                        `${
-                          index === (0 || page.estate_name.data.length - 1)
-                            ? ""
-                            : ","
-                        }`}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )
-        }
-
-        <h1 class="hero-title">
-          {page.Title || page.Estate_name}
-
-          {
-            page.Title && (
-              <span class="icon heading-inline-icon">
-                <img class="w-full h-full" alt="" {...white_cup} />
-              </span>
-            )
-          }
-        </h1>
-
-        {
-          page.estate_name ? (
-            ""
-          ) : (
-            <div class="hero-text pt-2.5 block prose text-lightgray max-w-none">
-              <Markdown>{page.Intro_text}</Markdown>
-            </div>
-          )
-        }
-
-        {
-          page?.Heading_button_text && (
-            <a
-              href={page.Heading_button_link}
-              class:list={[
-                "flex w-fit text-primary font-bold leading-[120%]",
-                "py-[13px] px-[23px] mt-4 md:mt-6 xl:mt-9 bg-white rounded-full",
-              ]}
-            >
-              {page.Heading_button_text}
-            </a>
-          )
-        }
-
-        {/* Recipe Header */}
-        <slot name="recipe-header" />
-
-        {/* tea-details header section */}
-        <slot name="tea-details-header" />
-
-        {
-          page.Price_breakdown?.length > 0 && (
-            <div class="flex items-center mt-[20px] md:mt-[10px]">
-              <div class="text-base lg:text-lg leading-[150%]">
-                {recurData.product_each_penny_you_spend + `\xa0`}
-
-                <a
-                  href="#price-breakdown"
-                  class="underline decoration-1 underline-offset-[2px] font-semibold"
-                >
-                  {recurData.product_check_where_going}
-                </a>
-              </div>
-            </div>
-          )
-        }
-      </div>
-    </div>
-  </div>
-
-  {/* Blob Image - Desktop View */}
-  <div class="hero-img-curve-container h-full hidden sm:block absolute z-30">
-    <ClippedPicture
-      preload="avif"
-      id="hero-img-curve"
-      breakpoints={{ minWidth: 640 }}
-      sizes="clamp(330px, 26.4vw + 150px, 560px)"
-      alt={page.Intro_blob.data.attributes.alternativeText}
-      src={ASSETS_URL + page.Intro_blob.data.attributes.url}
-      path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
-      attributes={{ link: { media: "(min-width: 640px)" } }}
-    />
-  </div>
-</Hero>
-
-{/* Blob Image - Mobile View */}
-<div class="hero-img-sm-container block sm:hidden w-full relative z-20 -mt-20">
-  <ClippedPicture
-    preload="avif"
-    id="hero-img-curve-sm"
-    breakpoints={{ maxWidth: 640 }}
-    alt={page.Intro_blob.data.attributes.alternativeText}
-    src={ASSETS_URL + page.Intro_blob.data.attributes.url}
-    path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
-    attributes={{ link: { media: "(max-width: 639.98px)" } }}
-  />
-</div>
+  {/* tea-details header section */}
+  <slot name="tea-details-header" />
+</HeroContent>
 
 {/* howto header section */}
 <slot name="howto-header" />
@@ -309,12 +106,12 @@ const contentHTML = await Astro.slots.render("post-details"),
 {/* Blog Section */}
 <section
   class="py-[50px]"
-  role={type !== "normal" && "main"}
+  role={type || "main"}
   aria-label={ariaLabelRecurData.Post_details_text}
 >
   <div
     id="sticky-header"
-    class="self-start invisible md:hidden w-full sticky top-0 z-[998] text-primary bg-lightgray overflow-hidden"
+    class="pt-1.5 self-start invisible md:hidden w-full sticky top-0 z-[998] bg-secondary text-black overflow-hidden"
   >
     <div class="wrapper relative select-none">
       <div
@@ -335,7 +132,7 @@ const contentHTML = await Astro.slots.render("post-details"),
         </div>
 
         <svg
-          class="w-3"
+          class="w-3 text-black-light"
           viewBox="0 0 11.6 6.7"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -350,11 +147,15 @@ const contentHTML = await Astro.slots.render("post-details"),
           <div
             id="sticky-headings"
             class:list={[
-              "flex flex-col max-h-[70vh]",
-              "hidden pt-[15px] pb-[25px] border-t border-solid overflow-y-auto",
+              "hidden flex flex-col max-h-[70vh]",
+              "pt-[15px] pb-[25px] border-t border-primary-light overflow-y-auto",
             ]}
           >
-            <div role="list" id="sticky-heading-links" class="overflow-y-auto">
+            <div
+              role="list"
+              id="sticky-heading-links"
+              class="grid overflow-y-auto"
+            >
               <HeadingLinks type="mobile" headings={headings}>
                 {/* html source to extract heading links from */}
                 <slot name="post-details" />
@@ -381,9 +182,11 @@ const contentHTML = await Astro.slots.render("post-details"),
       path="M.516.008C.36.008.1-.008.04.082S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1.005.624 1.021.395.945.128.897-.045.734.008.516.008"
     />
 
-    <div id="post-details" class="md:w-2/3">
-      {/* post content */}
-      <slot name="post-details" />
+    <div id="post-details" class="md:w-2/3 2xl:w-1/2">
+      <div class="xl:w-5/6 2xl:w-full">
+        {/* post content */}
+        <slot name="post-details" />
+      </div>
     </div>
 
     {
@@ -393,34 +196,39 @@ const contentHTML = await Astro.slots.render("post-details"),
           aria-label={headingName}
           id="headings"
           class:list={[
-            "w-full md:w-1/3 md:h-screen self-start flex flex-col",
-            "md:sticky top-0 pb-6 mb-[75px] text-primary overflow-hidden",
+            "w-full md:w-1/3 2xl:w-1/2 md:h-screen flex flex-col",
+            "self-start md:sticky top-0 pb-6 mb-[75px] text-black overflow-hidden",
             "pl-[clamp(24px,3.8vw+0.16px,50px)] lg:pl-[clamp(70px,11.3125vw-46px,128px)]",
           ]}
         >
-          <h3
-            id="headings-header"
-            class="pb-2.5 lg:pb-5 xl:pb-[30px] font-bold"
-          >
-            {headingName}
-          </h3>
+          <div class="flex flex-col md:self-end h-full 2xl:w-3/5">
+            <h3
+              id="headings-header"
+              class="pb-2.5 lg:pb-5 xl:pb-[30px] font-bold"
+            >
+              {headingName}
+            </h3>
 
-          {/* Jump to Recipe Button */}
-          <slot name="jump-to-recipe" />
+            {/* Jump to Recipe Button */}
+            <slot name="jump-to-recipe" />
 
-          <div
-            role="list"
-            id="heading-links"
-            class="flex flex-col leading-[130%] lg:leading-[150%] overflow-y-auto"
-          >
-            <HeadingLinks headings={headings}>
-              {/* html source to extract heading links from */}
-              <slot name="post-details" />
-            </HeadingLinks>
+            <div
+              role="list"
+              id="heading-links"
+              class="flex flex-col leading-[130%] lg:leading-[150%] overflow-y-auto"
+            >
+              <HeadingLinks headings={headings}>
+                {/* html source to extract heading links from */}
+                <slot name="post-details" />
+              </HeadingLinks>
+            </div>
+
+            {/* Cart Adding Form (Sm) */}
+            <slot name="cart-adding-form-sm" />
+
+            {/* Cart Adding Form Fixed (Sm) */}
+            <slot name="cart-adding-form-fixed-sm" />
           </div>
-
-          {/* Cart Adding Form (Sm) */}
-          <slot name="cart-adding-form-sm" />
         </div>
       )
     }
@@ -436,107 +244,13 @@ const contentHTML = await Astro.slots.render("post-details"),
 {/* product kindness impact  */}
 <slot name="product-kindness-impact" />
 
-{
-  recentPosts?.length > 0 && (
-    <section role="complementary" class="wrapper">
-      <h2 class="recent-posts-title alice leading-[110%] text-dark pb-[25px] sm:pb-[30px]">
-        {page.Relevant_items_title ||
-          (page.Relevant_recipes && recurData.recipe_discover) ||
-          recurData.text_explore_the_world_of_kindness}
-      </h2>
-
-      <ClipPathSVG
-        id="recent-post-card-curve"
-        path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
-      />
-
-      <div
-        role="list"
-        aria-label={ariaLabelRecurData.Kindness_Items_text}
-        class:list={[
-          "w-full mx-auto mb-[50px] grid sm:grid-cols-2 lg:grid-cols-3",
-          "justify-items-center sm:justify-items-start gap-8 lg:gap-[clamp(24px,3.125vw-8px,32px)]",
-        ]}
-      >
-        {recentPosts.slice(0, 3).map((post, index) => (
-          <div
-            role="listitem"
-            aria-label={ariaLabelRecurData.Kindness_Item_text + (index + 1)}
-            style="clip-path: url(#recent-post-card-curve)"
-            class="link-section bg-primary recent-post-card"
-          >
-            <Picture
-              layout="fullWidth"
-              alt={post.Intro_blob.data.attributes.alternativeText}
-              src={ASSETS_URL + post.Intro_blob.data.attributes.url}
-              attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-              sizes={[
-                "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
-                "(min-width: 640px) calc(45vw - 16px)",
-                "min(90vw, 380px)",
-              ].join(", ")}
-            />
-
-            <div class="recent-post-card-content-container grid content-between">
-              <div>
-                {post.authors && (
-                  <div>
-                    <div
-                      role="presentation"
-                      aria-label={post.authors.data.map(
-                        ({ attributes }, i) =>
-                          ariaLabelRecurData.Wrote_by_text +
-                          (i > 0 ? ", " : " ") +
-                          attributes.givenName
-                      )}
-                      class="recent-post-card-author flex flex-wrap font-bold"
-                    >
-                      {post.authors.data.map(({ attributes }, index) => (
-                        <span>
-                          {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div class="post-publish-date">
-                      {new Date(post.createdAt).toLocaleString("en-US", {
-                        day: "numeric",
-                        month: "long",
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                <div class="recent-post-card-title alice mt-[15px]">
-                  <a
-                    class="main-link"
-                    set:text={post.Title}
-                    href={`/` + post.Meta.URL_slug}
-                  />
-
-                  {!page.related_products && (
-                    <span class="icon recent-post-card-title-icon">
-                      <img
-                        class="recent-post-card-title-icon"
-                        {...white_right_arrow}
-                      />
-                    </span>
-                  )}
-
-                  {page.related_products && (
-                    <div class="text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]">
-                      <Markdown>{post.Intro_text}</Markdown>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  )
-}
+{/* Relevant Posts Section */}
+<RelevantPosts
+  {page}
+  posts={relatedPosts}
+  text={relatedPostsText}
+  heading={relatedPostsHeading}
+/>
 
 {headings.length > 0 && <ChaptersFunctionality />}
 

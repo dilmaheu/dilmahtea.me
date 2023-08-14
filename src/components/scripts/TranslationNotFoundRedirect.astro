@@ -1,18 +1,29 @@
-<script is:inline>
-  {
-    const { origin, pathname } = location,
-      currentLocale = pathname.slice(1, 3),
-      preferredLocaleUrl = new URL(
-        origin +
-          pathname.replace(
-            currentLocale,
-            // preferredLocale is defined in SetPreferredLocale.astro
-            preferredLocale === currentLocale ? "en" : preferredLocale
-          )
-      );
+---
+import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 
+declare interface Props {
+  availableLocalesRecord: Record<string, string>;
+}
+
+const { availableLocalesRecord } = Astro.props as Props;
+---
+
+<SetPreferredLocale />
+
+<script define:vars={{ availableLocalesRecord }}>
+  const { origin, pathname } = location,
+    currentLocale = pathname.slice(1, 3),
+    preferredLocaleUrl = new URL(
+      origin +
+        (
+          availableLocalesRecord[currentLocale] ||
+          availableLocalesRecord[window.preferredLocale] ||
+          Object.values(availableLocalesRecord)[0]
+        ).slice(0, pathname.endsWith("/") ? undefined : -1)
+    );
+
+  availableLocalesRecord[currentLocale] ||
     preferredLocaleUrl.searchParams.append("requestedLocale", currentLocale);
 
-    location.href = preferredLocaleUrl.toString();
-  }
+  location.href = preferredLocaleUrl.toString();
 </script>

@@ -1,31 +1,28 @@
 import fs from "fs/promises";
 import { globby } from "globby";
 import { parseHTML } from "linkedom";
-import addSitemapURLs from "./utils/addSitemapURLs.js";
-import addScriptsHashes from "./utils/addScriptsHashes.js";
-import generateXMLSitemap from "./utils/generateXMLSitemap.js";
-import rewrite404RoutesPaths from "./utils/rewrite404RoutesPaths.js";
-import generateSecurityHeaders from "./utils/generateSecurityHeaders.js";
-import removeAstroIconAttributes from "./utils/removeAstroIconAttributes.js";
-import shouldDisplayExperimentals from "../utils/shouldDisplayExperimentals.js";
+import addSitemapURLs from "./tasks/addSitemapURLs.js";
+import addScriptsHashes from "./tasks/addScriptsHashes.js";
+import generateXMLSitemap from "./tasks/generateXMLSitemap.js";
+import rewrite404RoutesPaths from "./tasks/rewrite404RoutesPaths.js";
+import generateSecurityHeaders from "./tasks/generateSecurityHeaders.js";
+import removeAstroIconAttributes from "./tasks/removeAstroIconAttributes.js";
 
 const CSPRecord = {
   "default-src": ["'none'"],
   "style-src": ["'self'", "'unsafe-inline'", "https://use.fontawesome.com"],
-  "img-src": [
-    "'self'",
-    "data:",
-    "https://dilmahtea.me",
-    "https://cms.dilmahtea.me",
-  ],
-  "media-src": ["data:"],
+  "img-src": ["'self'", "data:", "https://dilmahtea.me"],
+  "media-src": ["'self'", "data:"],
+  "video-src": ["'self'"],
   "font-src": ["'self'", "https://use.fontawesome.com"],
   "worker-src": ["blob:"],
   "connect-src": [
     "'self'",
+    "https://baserow.scripts.dilmahtea.me",
     "https://log.expertrec.com",
     "https://searchv7.expertrec.com",
     "https://api.openreplay.com",
+    "https://analytics.scripts.dilmahtea.me",
   ],
   "upgrade-insecure-requests": [],
   "script-src": [
@@ -34,10 +31,6 @@ const CSPRecord = {
     "https://static.openreplay.com",
   ],
 };
-
-if (shouldDisplayExperimentals) {
-  CSPRecord["connect-src"].push("https://dev.products.scripts.dilmahtea.me");
-}
 
 const sitemap = [];
 
@@ -58,14 +51,14 @@ const postbuildIntegration = {
       await Promise.all(
         allHtmlFilePaths.map(async (path) => {
           const htmlContent = await fs.readFile(path, "utf8"),
-            { document } = await parseHTML(htmlContent);
+            { document } = parseHTML(htmlContent);
 
           removeAstroIconAttributes(document);
           addScriptsHashes(document, CSPRecord);
           addSitemapURLs(path, document, sitemap, htmlFilePaths);
 
           const { simplifyImageFilenames } = await import(
-            "./utils/simplifyImageFilenames.js"
+            "./tasks/simplifyImageFilenames.js"
           );
 
           const stringifiedDocument = simplifyImageFilenames(document);
@@ -75,8 +68,8 @@ const postbuildIntegration = {
       );
 
       await Promise.all([
-        import("./utils/generateRobotsMeta.js"),
-        import("./utils/generateSecurityMeta.js"),
+        import("./tasks/generateRobotsMeta.js"),
+        import("./tasks/generateSecurityMeta.js"),
         generateXMLSitemap(sitemap),
         generateSecurityHeaders(CSPRecord),
         rewrite404RoutesPaths(_404HtmlFilePaths),

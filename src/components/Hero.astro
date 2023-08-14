@@ -1,11 +1,107 @@
 ---
+import fs from "node:fs";
+import path from "node:path";
+import extractFrames from "ffmpeg-extract-frames";
 import { Picture } from "astro-imagetools/components";
+import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
+
+import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+import localizeCMSImage from "@utils/localizeCMSImage";
+
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 
 const { hero_background, hero_background_sm } = RecurringImages;
+
+const { page, locale, headerBackground, headerBackgroundSm } = Astro.props,
+  { ASSETS_URL } = import.meta.env,
+  headerBackgrounds = headerBackground || headerBackgroundSm;
+
+const recurData = CMS.get("recurringElement", locale),
+  { Nav_menu: menu } = recurData;
+
+const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
+  headerBackgroundImgSm = page?.Intro_blob_sm?.data?.attributes.url,
+  headerBackgroundVideo = page?.Intro_video?.data?.attributes.url;
 ---
+
+<style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
+  .hero {
+    @include poly-fluid-sizing(
+      "padding-top",
+      (
+        639.98px: 130px,
+        640px: 70px,
+        768px: 74px,
+        1024px: 104px,
+      )
+    );
+  }
+
+  .hero-background {
+    aspect-ratio: 16 / 9;
+
+    @media (min-width: 768px) {
+      aspect-ratio: 3 / 1;
+    }
+  }
+
+  .hero-background-sm {
+    @apply relative sm:hidden aspect-[6/5];
+  }
+
+  .nav-menu {
+    height: poly-fluid-clamp(
+      (
+        768px: 56px,
+        1240px: 76px,
+      )
+    );
+  }
+
+  .header-content {
+    @apply absolute inset-0;
+
+    @include poly-fluid-sizing(
+      "padding-top",
+      (
+        767.98px: 0px,
+        768px: 56px,
+        1240px: 76px,
+      )
+    );
+  }
+
+  .nav-menu-caontainer {
+    nav {
+      @include poly-fluid-sizing(
+        "padding-right",
+        (
+          639px: 0px,
+          640px: 260px,
+          768px: 300px,
+          1024px: 380px,
+          1440px: 460px,
+          1536px: 550px,
+        )
+      );
+
+      a {
+        @apply font-bold leading-[150%];
+
+        font-size: poly-fluid-clamp(
+          (
+            768px: 12px,
+            1440px: 18px,
+          )
+        );
+      }
+    }
+  }
+</style>
 
 <ClipPathSVG
   id="hero-background-curve"
@@ -13,32 +109,134 @@ const { hero_background, hero_background_sm } = RecurringImages;
 />
 
 <section
-  class="hero overflow-hidden relative"
+  class:list={[
+    "hero relative overflow-hidden h-full bg-primary",
+    headerBackgrounds ? "pb-0" : "pb-9 sm:pb-0",
+  ]}
   style="clip-path: url(#hero-background-curve);"
 >
   <UpdateTopMargin />
 
-  <Picture
-    alt=""
-    layout="fill"
-    preload="avif"
-    objectFit="cover"
-    objectPosition="left top"
-    src={hero_background_sm.src}
-    breakpoints={{ maxWidth: 768 }}
-    artDirectives={[
-      {
-        media: "(min-width: 768px)",
-        breakpoints: { minWidth: 768 },
-        src: hero_background.src,
-      },
-    ]}
-    attributes={{
-      picture: {
-        style: "position: absolute;",
-      },
-    }}
-  />
+  <div class="relative h-full">
+    <div class="nav-menu hidden md:flex items-end bg-dark-green relative z-10">
+      <div class="nav-menu-caontainer wrapper pb-2.5 md:pb-[15px]">
+        <nav class="text-white font-semibold h-full">
+          <span class="flex gap-5 justify-between items-center h-full">
+            {
+              menu.map(
+                ({ Visibility, Title, Link }) =>
+                  Visibility && <a href={Link}>{Title}</a>
+              )
+            }
+          </span>
+        </nav>
+      </div>
+    </div>
 
-  <slot />
+    {
+      (headerBackgrounds || hero_background) && (
+        <div
+          class:list={[
+            "w-full h-full relative z-20",
+            headerBackgroundSm ? "hero-background-sm" : "hero-background",
+          ]}
+        >
+          {headerBackgroundVideo ? (
+            async () => {
+              const localizedVideoURL = await localizeCMSImage(
+                headerBackgroundVideo
+              );
+
+              const firstFrameFilePath =
+                "./public" +
+                localizedVideoURL.replace(
+                  path.extname(localizedVideoURL),
+                  ".jpg"
+                );
+
+              if (!fs.existsSync(firstFrameFilePath)) {
+                await extractFrames({
+                  input: "./public" + localizedVideoURL,
+                  output: firstFrameFilePath,
+                  offsets: [0],
+                  ffmpegPath,
+                });
+              }
+
+              const poster = await importImage(
+                firstFrameFilePath.slice(1) + "?format=webp&w=1920&quality=10"
+              );
+
+              return (
+                <Fragment>
+                  <link
+                    as="image"
+                    rel="preload"
+                    href={poster}
+                    fetchpriority="high"
+                  />
+
+                  {async () => (
+                    <video
+                      class="header-background-video object-cover h-full w-full absolute inset-0"
+                      src={await localizeCMSImage(headerBackgroundVideo)}
+                      poster={poster}
+                      preload="none"
+                      autoplay
+                      muted
+                      loop
+                      playsinline
+                    />
+                  )}
+                </Fragment>
+              );
+            }
+          ) : (
+            <Picture
+              alt=""
+              layout="fill"
+              preload="avif"
+              objectFit="cover"
+              objectPosition="left top"
+              src={
+                ASSETS_URL +
+                (headerBackgrounds
+                  ? headerBackgroundImgSm || headerBackgroundImg
+                  : hero_background_sm?.src || hero_background.src)
+              }
+              breakpoints={{ maxWidth: 768 }}
+              {...(!headerBackgroundSm && {
+                artDirectives: [
+                  {
+                    media: "(min-width: 768px)",
+                    src: headerBackground
+                      ? ASSETS_URL + headerBackgroundImg
+                      : hero_background.src,
+                    breakpoints: { minWidth: 768 },
+                  },
+                ],
+              })}
+            />
+          )}
+
+          <div
+            class:list={[
+              "absolute inset-0 w-full h-full",
+              "bg-gradient-to-b sm:bg-gradient-to-r from-black/50",
+              "via-black/40 md:via-black/20 to-black/50 sm:to-black/0",
+            ]}
+          />
+        </div>
+      )
+    }
+
+    <div
+      class:list={[
+        (headerBackground || hero_background) && "header-content",
+        headerBackgroundSm && "absolute sm:static inset-0",
+      ]}
+    >
+      <slot />
+    </div>
+  </div>
 </section>

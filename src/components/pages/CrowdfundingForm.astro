@@ -6,10 +6,9 @@ import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { light_green_cup, light_green_flower } = RecurringImages;
 
-const { locale, page, recurData } = Astro.props,
+const { locale, page } = Astro.props,
   { Perk: perk, Price_EUR_excl_VAT: price } = page,
-  product_desc = `${page.Title} Plan`,
-  product_name = recurData.Company_name;
+  product_desc = `${page.Title} Plan`;
 ---
 
 <style lang="scss">
@@ -23,15 +22,12 @@ const { locale, page, recurData } = Astro.props,
     @apply mt-[30px] gap-x-[60px] lg:gap-x-[40px] gap-y-[50px];
 
     label {
-      @apply text-[1.125rem];
-
-      color: colors.$input-label;
+      @apply text-[1.125rem] text-black-light font-bold;
 
       input,
       select {
-        border: 1px solid colors.$primary;
-
-        @apply block w-full mt-2.5 px-4 py-3.5 text-lg rounded-[20px] bg-transparent;
+        @apply border border-primary text-black font-normal;
+        @apply block w-full mt-2.5 px-4 py-3.5 text-lg rounded-[20px] bg-secondary;
         @apply focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring;
       }
 
@@ -54,23 +50,23 @@ const { locale, page, recurData } = Astro.props,
   }
 </style>
 
-<BasicPageHero title={page.Title} introText={page.Intro_text} />
+<BasicPageHero title={page.Title} introText={page.Intro_text} {locale} />
 
 {/* Form Section */}
 
 <form
   role="main"
   method="POST"
+  class="mx-auto pt-[130px] pb-[100px] max-w-[940px]"
   action={shouldDisplayExperimentals
     ? "https://dev.pay.scripts.dilmahtea.me"
     : "https://pay.scripts.dilmahtea.me"}
-  class="mx-auto pt-[130px] pb-[100px] max-w-[940px]"
 >
   <div>
     <div
       class="pb-0.5 inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7"
     >
-      <h2 class="heading-primary text-primary">
+      <h2 class="heading-primary text-primary font-bold">
         {locale === "nl" ? "Basis gegevens" : "Basic info"}
       </h2>
 
@@ -128,7 +124,7 @@ const { locale, page, recurData } = Astro.props,
 
   <div class="py-[50px]">
     <div class="inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7">
-      <h3 class="heading-primary text-primary">
+      <h3 class="heading-primary text-primary font-bold">
         {locale === "nl" ? "Factuurgegevens" : "Billing details"}
       </h3>
 
@@ -196,7 +192,6 @@ const { locale, page, recurData } = Astro.props,
 
     <input type="hidden" name="perk" value={perk} />
 
-    <input type="hidden" name="product_name" value={product_name} />
     <input type="hidden" name="product_desc" value={product_desc} />
 
     <input type="hidden" name="price" value={price} />
@@ -209,7 +204,7 @@ const { locale, page, recurData } = Astro.props,
       htmlFn={(content) => {
         const { origin, pathname } = location,
           origin_url = origin + pathname,
-          success_url = `${origin}/${preferredLocale}/crowdfunding-confirmation`;
+          success_url = `${origin}/${window.preferredLocale}/crowdfunding-confirmation`;
 
         return window.replacePlaceholders(content, {
           origin_url,
@@ -243,10 +238,9 @@ const { locale, page, recurData } = Astro.props,
 </form>
 
 <script>
-  import fillUpForm from "@utils/fillUpForm";
+  import fillUpForm from "@utils/client/fillUpForm";
 
-  const searchParams = new URLSearchParams(location.search),
-    crowdfundingFormEntries = Array.from(searchParams.entries());
+  const crowdfundingFormEntries = [...new URLSearchParams(location.search)];
 
   fillUpForm(crowdfundingFormEntries);
 </script>

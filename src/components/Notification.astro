@@ -1,39 +1,19 @@
 ---
-import { parseHTML } from "linkedom";
 import RecurringImages from "@store/RecurringImages";
 
-declare interface Props {
-  type?: "Error" | "Warning" | "Info" | "Success" | "Default";
-  closingEnabled?: boolean;
-  notification?: Record<string, any>;
+declare interface Notification {
+  Title: string;
+  Type: "Error" | "Warning" | "Info" | "Success" | "Default";
+  top: boolean;
+  Closing_Enabled: boolean;
+  Content: string;
 }
 
-const { type, closingEnabled, notification } = Astro.props as Props;
+const { Title, Type, Closing_Enabled } = Astro.props as Notification;
 
-if (type === "Error" && closingEnabled === true) {
-  throw Error("Error notifications can't have closing functionality enabled");
+if (Type !== "Default") {
+  var icon = RecurringImages[`${Type.toLowerCase()}_notification`];
 }
-
-if (type !== "Default") {
-  var icon = RecurringImages[`${type.toLowerCase()}_notification`];
-}
-
-const defaultSlotHTML = await Astro.slots.render("default"),
-  { document: defaultSlotDocument } = await parseHTML(defaultSlotHTML),
-  notificationPlaceholder = defaultSlotDocument.querySelector("notification");
-
-const notificationsHTML = Object.keys(notification)
-  .map(
-    (lang) =>
-      `<span class="${lang.substring(0, 2)} hidden">${
-        notification[lang]
-      }</span>`
-  )
-  .join("");
-
-notificationPlaceholder.outerHTML = notificationsHTML;
-
-const notificationContentHTML = defaultSlotDocument.toString();
 ---
 
 <style lang="scss">
@@ -67,18 +47,21 @@ const notificationContentHTML = defaultSlotDocument.toString();
 
 <div
   class:list={[
-    `notification notification-${type.toLowerCase()}`,
-    "hidden relative p-5 text-[1rem] leading-height items-center",
+    Title,
+    `notification notification-${Type.toLowerCase()}`,
+    "hidden relative p-5 text-[1rem] leading-[19px] items-center",
   ]}
 >
   <div class="mx-auto gap-5 flex items-center">
-    {icon && <img {...icon} width={26} height={26} />}
+    {icon && <img {...icon} class="w-[26px] h-[26px]" />}
 
-    <div class="notification-content" set:html={notificationContentHTML} />
+    <div class="notification-content">
+      <slot />
+    </div>
   </div>
 
   {
-    closingEnabled && (
+    Closing_Enabled && (
       <button class="close-button">
         <svg
           width="15"
@@ -104,9 +87,7 @@ const notificationContentHTML = defaultSlotDocument.toString();
 
   notificationCloseButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      // @ts-ignore
       window.slideOutTopNotification(button.parentElement);
-      /* slideOutTopNotification is defined in NotificationAnimations.astro */
     });
   });
 </script>

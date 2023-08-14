@@ -10,7 +10,7 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 const { success_notification, green_right_arrow } = RecurringImages;
 
 const { page } = Astro.props,
-  { 
+  {
     Personal_information: {
       Name: block_section1_name,
       Label_username,
@@ -25,9 +25,9 @@ const { page } = Astro.props,
     Block3_title: block3_title,
     Block2: block2,
     Support_visibility,
-    Support
-  }= page,
-  { locale} = page,
+    Support,
+  } = page,
+  { locale } = page,
   { ASSETS_URL } = import.meta.env;
 
 const userAccountRecurData = CMS.get("userAccountRecurringElement", locale),
@@ -37,7 +37,7 @@ const {
   Facebook_icon: fb_icon,
   Google_icon: g_icon,
   Twitter_icon: twitter_icon,
-  Empty_order_blob: { data: empty_blob},
+  Empty_order_blob: { data: empty_blob },
   Empty_order_button_text,
   Empty_order_button_link,
   Empty_order_text,
@@ -62,17 +62,15 @@ const {
 } = userAccountRecurData;
 
 const {
-  Meta: {URL_slug : userAccountAddress_url}
+  Meta: { URL_slug: userAccountAddress_url },
 } = userAccountAddress;
 
-const title = page.Title.replaceAll(
-  "<username>",
-  `Sara Jones`
-);
+const title = page.Title.replaceAll("<username>", `Sara Jones`);
 ---
+
 <style lang="scss">
   .dashboard-sec-title {
-    @apply bg-primary leading-[110%] text-lightgray2 rounded-[10px];
+    @apply bg-primary leading-[110%] text-secondary-light rounded-[10px];
 
     font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
     padding: 10px clamp(15px, 2.08vw + 0.01rem, 30px);
@@ -83,55 +81,56 @@ const title = page.Title.replaceAll(
   }
 
   .dashboard-sec {
-    @apply bg-white2 rounded-[10px] mt-[25px] text-dark2;
+    @apply bg-secondary-light rounded-[10px] mt-[25px] text-black;
 
-    padding: clamp(15px, 2.08vw + 0.01rem, 25px) clamp(15px, 2.2vw + 0.1rem, 35px);
+    padding: clamp(15px, 2.08vw + 0.01rem, 25px)
+      clamp(15px, 2.2vw + 0.1rem, 35px);
 
     @media (max-width: 767.98px) {
       padding: 15px;
     }
 
-    .information-label{
-      @apply text-sm md:text-base font-medium leading-[150%] text-dark;
+    .information-label {
+      @apply text-sm md:text-base font-medium leading-[150%] text-black-light;
     }
 
-    .information-text{
-      @apply leading-[150%] text-dark2 sm:font-medium;
+    .information-text {
+      @apply leading-[150%] text-black sm:font-medium;
 
       font-size: clamp(1.125rem, 1.5vw + 0.3rem, 1.5rem);
     }
 
-    .information-btn{
+    .information-btn {
       @apply leading-[150%] font-semibold text-primary;
 
       font-size: clamp(1rem, 1.4vw + 0.3rem, 1.375rem);
     }
 
-    .cause-from{
+    .cause-from {
       @apply grid gap-[15px] mt-[15px];
 
-      label{
+      label {
         @apply flex gap-5 items-start;
       }
 
-      .cause-from-label{
+      .cause-from-label {
         @apply text-lg font-bold leading-[150%] cursor-pointer;
       }
 
-      .cause-from-text{
+      .cause-from-text {
         @apply text-lg font-medium leading-[150%] mt-[7px];
       }
 
-      input[type='radio']{
+      input[type="radio"] {
         @apply cursor-pointer min-w-[25px] min-h-[25px] accent-primary after:content-[''];
 
         &:after {
           @apply relative inline-block top-0 left-0 min-w-[25px] min-h-[25px] 
-            rounded-full bg-white2 border-2 border-primary;
+            rounded-full bg-secondary-light border-2 border-primary;
         }
         &:checked:after {
           @apply relative inline-block top-[1.5px] left-[1.5px] min-w-[22px] min-h-[22px] 
-            rounded-full bg-primary border-[6px] border-white2;
+            rounded-full bg-primary border-[6px] border-secondary-light;
         }
       }
     }
@@ -146,7 +145,7 @@ const title = page.Title.replaceAll(
       }
 
       > .active-kindness-cause {
-        @apply -m-3 p-1.5 bg-lightgreen flex;
+        @apply -m-3 p-1.5 bg-primary-light flex;
 
         clip-path: url(#kindness-cause-card-curve-sm);
 
@@ -155,7 +154,7 @@ const title = page.Title.replaceAll(
         }
 
         > div {
-          @apply p-1.5 bg-white2;
+          @apply p-1.5 bg-secondary-light;
 
           clip-path: url(#kindness-cause-card-curve-sm);
 
@@ -166,8 +165,8 @@ const title = page.Title.replaceAll(
       }
     }
 
-    .heading-content{
-      a{
+    .heading-content {
+      a {
         @apply text-[clamp(1.125rem,1.5vw+0.3rem,1.5rem)];
       }
     }
@@ -190,29 +189,39 @@ const title = page.Title.replaceAll(
 />
 
 <div class="wrapper">
-  {page.Breadcrumb && (
-    <div 
-      role="banner"
-      class="flex flex-wrap gap-2 alice text-2xl leading-[110%] text-primary mt-[25px]" 
-    >
-      {page.Breadcrumb?.Steps.map((step, index) => (
-        <div class="flex items-center gap-2">
-          {index > 0 && (
-            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="17" viewBox="0 0 8 16.7">
-              <path d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z" style="fill:#2b4b50"/>
-            </svg>
-          )}
-          <a href={step.Link}>{step.Name}</a>
-        </div>
-      ))}
-    </div>
-  )}
+  {
+    page.Breadcrumb && (
+      <div
+        role="banner"
+        class="flex flex-wrap gap-2 alice text-2xl leading-[110%] text-primary mt-[25px]"
+      >
+        {page.Breadcrumb?.Steps.map((step, index) => (
+          <div class="flex items-center gap-2">
+            {index > 0 && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="8"
+                height="17"
+                viewBox="0 0 8 16.7"
+              >
+                <path
+                  d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
+                  style="fill:#2b4b50"
+                />
+              </svg>
+            )}
+            <a href={step.Link}>{step.Name}</a>
+          </div>
+        ))}
+      </div>
+    )
+  }
 </div>
 
 <div class="wrapper py-[50px] w-full flex flex-col-reverse md:flex-row">
   <div class="md:w-2/3">
     <section>
-      <div 
+      <div
         id={title.toLowerCase().replaceAll(" ", "-")}
         class="dashboard-sec-title alice"
       >
@@ -226,9 +235,7 @@ const title = page.Title.replaceAll(
           </div>
 
           <div class="flex flex-wrap items-center gap-2.5 justify-between">
-            <div class="information-text">
-              Sara Jones
-            </div>
+            <div class="information-text">Sara Jones</div>
             <div class="information-btn">
               <a href="account/update-information">
                 {Button_edit_text}
@@ -243,9 +250,7 @@ const title = page.Title.replaceAll(
           </div>
 
           <div class="flex flex-wrap items-center gap-2.5 justify-between">
-            <div class="information-text">
-              91-9978676545
-            </div>
+            <div class="information-text">91-9978676545</div>
             <div class="information-btn">
               <a href="account/update-information">
                 {Button_update_text}
@@ -260,9 +265,7 @@ const title = page.Title.replaceAll(
           </div>
 
           <div class="flex flex-wrap items-center gap-2.5 justify-between">
-            <div class="information-text">
-              marverick.john@gmail.com
-            </div>
+            <div class="information-text">marverick.john@gmail.com</div>
             <div class="information-btn">
               <a href="account/update-information">
                 {Button_update_text}
@@ -278,9 +281,7 @@ const title = page.Title.replaceAll(
             </div>
 
             <div class="flex flex-wrap items-center gap-2.5 justify-between">
-              <div class="information-text">
-                456B, Oakwoods, Germany
-              </div>
+              <div class="information-text">456B, Oakwoods, Germany</div>
               <div class="information-btn cursor-pointer">
                 {Button_edit_text}
               </div>
@@ -293,9 +294,7 @@ const title = page.Title.replaceAll(
             </div>
 
             <div class="flex flex-wrap items-center gap-2.5 justify-between">
-              <div class="information-text">
-                456B, Oakwoods, Germany
-              </div>
+              <div class="information-text">456B, Oakwoods, Germany</div>
               <div class="information-btn cursor-pointer">
                 {Button_edit_text}
               </div>
@@ -325,7 +324,8 @@ const title = page.Title.replaceAll(
                 >
                   <span id="show-more-address" class="flex items-center">
                     {text_more_address.replaceAll(
-                      "<number>", (address_tag.length - 2)
+                      "<number>",
+                      address_tag.length - 2
                     )}
                   </span>
                 </a>
@@ -336,195 +336,197 @@ const title = page.Title.replaceAll(
       </div>
 
       <div class="dashboard-sec">
-        {Social_media &&(
-          <div>
-            <div class="alice text-2xl leading-[110%] text-dark2">
-              {Social_media_title}
-            </div>
+        {
+          Social_media && (
+            <div>
+              <div class="alice text-2xl leading-[110%] text-black">
+                {Social_media_title}
+              </div>
 
-            <div class="grid sm:grid-cols-[repeat(auto-fit,minmax(0,180px))] gap-[25px] mt-[15px]">
-              <div 
-                class:list={[
-                  "grid py-4 px-[18px] justify-items-center justify-center",
-                  " items-center border-2 border-lightgreen2 rounded-[30px]"
-                ]}
-              >
-                <div class="grid gap-1 justify-items-center">
-                  <div class="w-[60px] h-[60px] p-[5px]">
-                    <img 
-                      class="w-full h-full"
-                      src={await localizeCMSImage(fb_icon.data.attributes.url)} 
-                      alt={ fb_icon.data.attributes.alternativeText }
-                    />
-                  </div>
-
-                  <div class="text-lg">
-                    Marverick_John
-                  </div>
-
-                  <div class="flex items-center gap-[5px] text-sm text-[#3C994E] font-bold">
-                    {text_connected}
-                    <span class="w-4 h-4 my-auto">
-                      <img class="w-full h-full" {...success_notification} />
-                    </span>
-                  </div>
-                </div>
-
-                <div 
+              <div class="grid sm:grid-cols-[repeat(auto-fit,minmax(0,180px))] gap-[25px] mt-[15px]">
+                <div
                   class:list={[
-                    "flex py-1 px-5 mt-3 text-primary leading-[150%]",
-                    "border border-primary rounded-[40px] cursor-pointer"
+                    "grid py-4 px-[18px] justify-items-center justify-center",
+                    " items-center border-2 border-lightgreen2 rounded-[30px]",
                   ]}
                 >
-                  {Button_remove_text}
+                  <div class="grid gap-1 justify-items-center">
+                    <div class="w-[60px] h-[60px] p-[5px]">
+                      <img
+                        class="w-full h-full"
+                        src={await localizeCMSImage(
+                          fb_icon.data.attributes.url
+                        )}
+                        alt={fb_icon.data.attributes.alternativeText}
+                      />
+                    </div>
+
+                    <div class="text-lg">Marverick_John</div>
+
+                    <div class="flex items-center gap-[5px] text-sm text-[#3C994E] font-bold">
+                      {text_connected}
+                      <span class="w-4 h-4 my-auto">
+                        <img class="w-full h-full" {...success_notification} />
+                      </span>
+                    </div>
+                  </div>
+
+                  <div
+                    class:list={[
+                      "flex py-1 px-5 mt-3 text-primary leading-[150%]",
+                      "border border-primary rounded-[40px] cursor-pointer",
+                    ]}
+                  >
+                    {Button_remove_text}
+                  </div>
                 </div>
-              </div>
 
-              <div 
-                class:list={[
-                  "grid py-4 px-[18px] justify-items-center justify-center",
-                  " items-center border-2 border-lightgray rounded-[30px] cursor-pointer"
-                ]}
-              >
-                <div class="grid gap-1 justify-items-center">
-                  <div class="w-[60px] h-[60px] p-[5px]">
-                    <img 
-                      class="w-full h-full"
-                      src={await localizeCMSImage(g_icon.data.attributes.url)} 
-                      alt={ g_icon.data.attributes.alternativeText }
-                    />
-                  </div>
+                <div
+                  class:list={[
+                    "grid py-4 px-[18px] justify-items-center justify-center",
+                    " items-center border-2 border-lightgray rounded-[30px] cursor-pointer",
+                  ]}
+                >
+                  <div class="grid gap-1 justify-items-center">
+                    <div class="w-[60px] h-[60px] p-[5px]">
+                      <img
+                        class="w-full h-full"
+                        src={await localizeCMSImage(g_icon.data.attributes.url)}
+                        alt={g_icon.data.attributes.alternativeText}
+                      />
+                    </div>
 
-                  <div class="text-sm">
-                    {text_not_connected}
+                    <div class="text-sm">{text_not_connected}</div>
                   </div>
                 </div>
-              </div>
 
-              <div 
-                class:list={[
-                  "grid py-4 px-[18px] justify-items-center justify-center",
-                  " items-center border-2 border-lightgray rounded-[30px] cursor-pointer"
-                ]}
-              >
-                <div class="grid gap-1 justify-items-center">
-                  <div class="w-[60px] h-[60px] p-[5px]">
-                    <img 
-                      class="w-full h-full"
-                      src={await localizeCMSImage(twitter_icon.data.attributes.url)} 
-                      alt={ twitter_icon.data.attributes.alternativeText }
-                    />
-                  </div>
+                <div
+                  class:list={[
+                    "grid py-4 px-[18px] justify-items-center justify-center",
+                    " items-center border-2 border-lightgray rounded-[30px] cursor-pointer",
+                  ]}
+                >
+                  <div class="grid gap-1 justify-items-center">
+                    <div class="w-[60px] h-[60px] p-[5px]">
+                      <img
+                        class="w-full h-full"
+                        src={await localizeCMSImage(
+                          twitter_icon.data.attributes.url
+                        )}
+                        alt={twitter_icon.data.attributes.alternativeText}
+                      />
+                    </div>
 
-                  <div class="text-sm">
-                    {text_not_connected}
+                    <div class="text-sm">{text_not_connected}</div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )
+        }
       </div>
-          
     </section>
 
-    {(page.Block2_visibility && block2) &&(
-      <section>
-        <div
-          id={block2?.Block2_title.toLowerCase().replaceAll(" ", "-")}
-          class="dashboard-sec-title alice mt-[50px]"
-        >
-          {block2.Block2_title}
-        </div>
-
-        <div class="dashboard-sec">
-          {block2.Block2_text &&(
-            <div class="hero-text text-dark2 block prose max-w-none">
-              <Markdown>{block2.Block2_text}</Markdown>
-            </div>
-          )}
-
-          <form
-            class="cause-from"
+    {
+      page.Block2_visibility && block2 && (
+        <section>
+          <div
+            id={block2?.Block2_title.toLowerCase().replaceAll(" ", "-")}
+            class="dashboard-sec-title alice mt-[50px]"
           >
-            <label>
-              <input
-                type="radio"
-                name="my_cause"
-              />
+            {block2.Block2_title}
+          </div>
 
-              <div>
-                <div class="flex flex-wrap items-center justify-between gap-[7px]">
-                  <h3 class="cause-from-label">
-                    {block2.Label_my_selected_cause}
-                  </h3>
+          <div class="dashboard-sec">
+            {block2.Block2_text && (
+              <div class="hero-text text-black block prose max-w-none">
+                <Markdown>{block2.Block2_text}</Markdown>
+              </div>
+            )}
 
-                  <div class="cause-from-txt text-dark w-full prose max-w-none">
-                    <Markdown>{block2.My_selected_cause_text}</Markdown>
+            <form class="cause-from">
+              <label>
+                <input type="radio" name="my_cause" />
+
+                <div>
+                  <div class="flex flex-wrap items-center justify-between gap-[7px]">
+                    <h3 class="cause-from-label">
+                      {block2.Label_my_selected_cause}
+                    </h3>
+
+                    <div class="cause-from-txt text-black-light w-full prose max-w-none">
+                      <Markdown>{block2.My_selected_cause_text}</Markdown>
+                    </div>
                   </div>
-                </div>
 
-                <div class="kindness-causes flex flex-wrap sm:grid gap-10 mt-[25px] w-full">
-                  {
-                    kindnessCauses.map(({ cause, description, featured_blob }) => (
-                      <div>
-                        <div class="h-full w-full">
-                          <div
-                            {
-                            /* @ts-ignore */ }
-                            cause={cause}
-                            class:list={[
-                              "kindness-cause relative w-full max-w-[380px] sm:max-w-full h-full sm:h-[148px]",
-                              "flex flex-wrap sm:flex-nowrap bg-lightgray cursor-pointer"
-                            ]}
-                          >
-                            <div class="w-full sm:w-auto aspect-[6/5] block">
-                              <Picture
-                                layout="fullWidth"
-                                sizes="(min-width: 640px) 320px, 90vw)"
-                                alt={featured_blob.data.attributes.alternativeText}
-                                attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                                src={ASSETS_URL + featured_blob.data.attributes.url}
-                              />
-                            </div>
+                  <div class="kindness-causes flex flex-wrap sm:grid gap-10 mt-[25px] w-full">
+                    {kindnessCauses.map(
+                      ({ cause, description, featured_blob }) => (
+                        <div>
+                          <div class="h-full w-full">
+                            <div
+                              cause={cause}
+                              class:list={[
+                                "kindness-cause relative w-full max-w-[380px] sm:max-w-full h-full sm:h-[148px]",
+                                "flex flex-wrap sm:flex-nowrap bg-lightgray cursor-pointer",
+                              ]}
+                            >
+                              <div class="w-full sm:w-auto aspect-[6/5] block">
+                                <Picture
+                                  layout="fullWidth"
+                                  sizes="(min-width: 640px) 320px, 90vw)"
+                                  alt={
+                                    featured_blob.data.attributes
+                                      .alternativeText
+                                  }
+                                  attributes={{
+                                    img: { style: "aspect-ratio: 6 / 5;" },
+                                  }}
+                                  src={
+                                    ASSETS_URL +
+                                    featured_blob.data.attributes.url
+                                  }
+                                />
+                              </div>
 
-                            <div class="sm:grow px-[22px] sm:px-[25px] py-[20px] sm:py-[15px] flex flex-col justify-center gap-2">
-                              <h4 class="alice text-2xl text-dark2 leading-[120%]">{cause}</h4>
+                              <div class="sm:grow px-[22px] sm:px-[25px] py-[20px] sm:py-[15px] flex flex-col justify-center gap-2">
+                                <h4 class="alice text-2xl text-black leading-[120%]">
+                                  {cause}
+                                </h4>
 
-                              <div class="prose max-w-none text-base sm:text-lg text-dark sm:line-clamp-2 lg:line-clamp-3">
-                                <Markdown>{description}</Markdown>
+                                <div class="prose max-w-none text-base sm:text-lg text-black-light sm:line-clamp-2 lg:line-clamp-3">
+                                  <Markdown>{description}</Markdown>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))
-                  }
+                      )
+                    )}
+                  </div>
                 </div>
-              </div>
-            </label>
+              </label>
 
-            <label>
-              <input
-                type="radio"
-                name="my_cause"
-              />
+              <label>
+                <input type="radio" name="my_cause" />
 
-              <div>
-                <h3 class="cause-from-label">{block2.Label_let_dilmah_pick_cause}</h3>
-                <div class="cause-from-txt text-dark prose max-w-none">
-                  <Markdown>{block2.Let_dilmah_pick_cause_text}</Markdown>
+                <div>
+                  <h3 class="cause-from-label">
+                    {block2.Label_let_dilmah_pick_cause}
+                  </h3>
+                  <div class="cause-from-txt text-black-light prose max-w-none">
+                    <Markdown>{block2.Let_dilmah_pick_cause_text}</Markdown>
+                  </div>
                 </div>
-              </div>
-            </label>
-          </form>
-        </div>
-      </section>
-    )}
+              </label>
+            </form>
+          </div>
+        </section>
+      )
+    }
 
-    
     <section>
-      <div 
+      <div
         id={block3_title.toLowerCase().replaceAll(" ", "-")}
         class="dashboard-sec-title alice mt-[50px]"
       >
@@ -532,17 +534,27 @@ const title = page.Title.replaceAll(
       </div>
 
       <div class="dashboard-sec grid gap-2.5">
-
         <div class="flex flex-col gap-5">
-          <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1">
-            <div class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-dark2">
+          <div
+            class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1"
+          >
+            <div
+              class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-black"
+            >
               {Label_order} #132131
 
-              <svg xmlns="http://www.w3.org/2000/svg" width="8" height="16" viewBox="0 0 8 16.7">
-                <path d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z" style="fill:#2b4b50"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="8"
+                height="16"
+                viewBox="0 0 8 16.7"
+              >
+                <path
+                  d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
+                  style="fill:#2b4b50"></path>
               </svg>
             </div>
-            <div class="text-dark">
+            <div class="text-black-light">
               {text_estimated_delivery} 18-Feb-2023
             </div>
           </div>
@@ -550,52 +562,66 @@ const title = page.Title.replaceAll(
           <div class="flex justify-between gap-4 w-full">
             <div class="flex flex-wrap gap-4 justify-between w-full">
               <div class="grid gap-4">
-              <div class="flex gap-4 items-center">
+                <div class="flex gap-4 items-center">
                   <div class="min-w-[62px]">
                     <Img
                       layout="fullWidth"
                       width={62}
                       alt=""
-                      attributes={{ img: { style: "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)" } }}
+                      attributes={{
+                        img: {
+                          style:
+                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
+                        },
+                      }}
                       src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
                     />
                   </div>
 
                   <div class="grid gap-[5px] w-auto">
-                    <h2 class="alice text-2xl text-dark2">
-                      1x Chamomile tea
-                    </h2>
+                    <h2 class="alice text-2xl text-black">1x Chamomile tea</h2>
 
-                    <div class="text-dark">
-                      Variant: 100gm
-                    </div>
+                    <div class="text-black-light">Variant: 100gm</div>
                   </div>
                 </div>
               </div>
 
-              {Button_track_package &&(
-                <div>
-                  <a href="#">
-                    <div class="px-[30px] py-1.5 font-bold leading-[150%] text-lightgray bg-primary rounded-full">
-                      {Button_track_package_text}
-                    </div>
-                  </a>
-                </div>
-              )}
+              {
+                Button_track_package && (
+                  <div>
+                    <a href="#">
+                      <div class="px-[30px] py-1.5 font-bold leading-[150%] text-lightgray bg-primary rounded-full">
+                        {Button_track_package_text}
+                      </div>
+                    </a>
+                  </div>
+                )
+              }
             </div>
           </div>
         </div>
 
         <div class="flex flex-col gap-5 pt-2.5 border-t border-lightgray">
-          <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1">
-            <div class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-dark2">
+          <div
+            class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1"
+          >
+            <div
+              class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-black"
+            >
               {Label_order} #35995
 
-              <svg xmlns="http://www.w3.org/2000/svg" width="8" height="16" viewBox="0 0 8 16.7">
-                <path d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z" style="fill:#2b4b50"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="8"
+                height="16"
+                viewBox="0 0 8 16.7"
+              >
+                <path
+                  d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
+                  style="fill:#2b4b50"></path>
               </svg>
             </div>
-            <div class="text-dark">
+            <div class="text-black-light">
               {text_estimated_shipment} 18-Feb-2023
             </div>
           </div>
@@ -609,19 +635,22 @@ const title = page.Title.replaceAll(
                       layout="fullWidth"
                       width={62}
                       alt=""
-                      attributes={{ img: { style: "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)" } }}
+                      attributes={{
+                        img: {
+                          style:
+                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
+                        },
+                      }}
                       src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
                     />
                   </div>
 
                   <div class="grid gap-[5px] w-auto">
-                    <h2 class="alice text-2xl text-dark2">
+                    <h2 class="alice text-2xl text-black">
                       2x Ceylon cinnamon spice tea
                     </h2>
 
-                    <div class="text-dark">
-                      Variant: 100gm
-                    </div>
+                    <div class="text-black-light">Variant: 100gm</div>
                   </div>
                 </div>
 
@@ -631,19 +660,20 @@ const title = page.Title.replaceAll(
                       layout="fullWidth"
                       width={62}
                       alt=""
-                      attributes={{ img: { style: "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)" } }}
+                      attributes={{
+                        img: {
+                          style:
+                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
+                        },
+                      }}
                       src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
                     />
                   </div>
 
                   <div class="grid gap-[5px] w-auto">
-                    <h2 class="alice text-2xl text-dark2">
-                      1x Green tea
-                    </h2>
+                    <h2 class="alice text-2xl text-black">1x Green tea</h2>
 
-                    <div class="text-dark">
-                      Variant: 100gm
-                    </div>
+                    <div class="text-black-light">Variant: 100gm</div>
                   </div>
                 </div>
 
@@ -653,19 +683,22 @@ const title = page.Title.replaceAll(
                       layout="fullWidth"
                       width={62}
                       alt=""
-                      attributes={{ img: { style: "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)" } }}
+                      attributes={{
+                        img: {
+                          style:
+                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
+                        },
+                      }}
                       src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
                     />
                   </div>
 
                   <div class="grid gap-[5px] w-auto">
-                    <h2 class="alice text-2xl text-dark2">
+                    <h2 class="alice text-2xl text-black">
                       3x Rose with french vanilla tea
                     </h2>
 
-                    <div class="text-dark">
-                      Variant: 100gm
-                    </div>
+                    <div class="text-black-light">Variant: 100gm</div>
                   </div>
                 </div>
 
@@ -674,29 +707,42 @@ const title = page.Title.replaceAll(
                 </div>
               </div>
 
-              {Button_track_package &&(
-                <div>
-                  <a href="#">
-                    <div class="px-[30px] py-1.5 font-bold leading-[150%] text-lightgray bg-primary rounded-full">
-                      {Button_track_package_text}
-                    </div>
-                  </a>
-                </div>
-              )}
+              {
+                Button_track_package && (
+                  <div>
+                    <a href="#">
+                      <div class="px-[30px] py-1.5 font-bold leading-[150%] text-lightgray bg-primary rounded-full">
+                        {Button_track_package_text}
+                      </div>
+                    </a>
+                  </div>
+                )
+              }
             </div>
           </div>
         </div>
 
         <div class="flex flex-col gap-5 pt-2.5 border-t border-lightgray">
-          <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1">
-            <div class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-dark2">
+          <div
+            class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1"
+          >
+            <div
+              class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-black"
+            >
               {Label_order} #35995
 
-              <svg xmlns="http://www.w3.org/2000/svg" width="8" height="17" viewBox="0 0 8 16.7">
-                <path d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z" style="fill:#2b4b50"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="8"
+                height="17"
+                viewBox="0 0 8 16.7"
+              >
+                <path
+                  d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
+                  style="fill:#2b4b50"></path>
               </svg>
             </div>
-            <div class="text-dark">
+            <div class="text-black-light">
               {text_delivered} 18-Feb-2023
             </div>
           </div>
@@ -704,32 +750,37 @@ const title = page.Title.replaceAll(
           <div class="flex justify-between gap-4 w-full">
             <div class="flex flex-wrap gap-4 justify-between w-full">
               <div class="grid gap-4">
-              <div class="flex gap-4 items-center">
+                <div class="flex gap-4 items-center">
                   <div class="min-w-[62px]">
                     <Img
                       layout="fullWidth"
                       width={62}
                       alt=""
-                      attributes={{ img: { style: "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)" } }}
+                      attributes={{
+                        img: {
+                          style:
+                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
+                        },
+                      }}
                       src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
                     />
                   </div>
 
                   <div class="grid gap-[5px] w-auto">
-                    <h2 class="alice text-2xl text-dark2">
+                    <h2 class="alice text-2xl text-black">
                       3x Natural rooibos tea
                     </h2>
 
-                    <div class="text-dark">
-                      Variant: 100gm
-                    </div>
+                    <div class="text-black-light">Variant: 100gm</div>
                   </div>
                 </div>
               </div>
 
               <div>
                 <a href="#">
-                  <div class="px-[30px] py-1.5 font-bold leading-[150%] text-lightgray bg-primary rounded-full">
+                  <div
+                    class="px-[30px] py-1.5 font-bold leading-[150%] text-lightgray bg-primary rounded-full"
+                  >
                     {Button_buy_again_text}
                   </div>
                 </a>
@@ -739,7 +790,7 @@ const title = page.Title.replaceAll(
         </div>
 
         <div class="flex justify-center">
-          <a 
+          <a
             href="/account/orders"
             class="font-bold leading-[150%] text-primary"
           >
@@ -758,76 +809,82 @@ const title = page.Title.replaceAll(
         />
       </div>
 
-      <div class="alice prose text-[clamp(1.125rem,1.5vw+0.15rem,1.5rem)] leading-[110%] text-dark2">
+      <div
+        class="alice prose text-[clamp(1.125rem,1.5vw+0.15rem,1.5rem)] leading-[110%] text-black"
+      >
         <Markdown>{Empty_order_text}</Markdown>
       </div>
 
-
-      <a 
-        href={Empty_order_button_link} 
+      <a
+        href={Empty_order_button_link}
         class:list={[
           "px-7 sm:px-[50px] py-1.5  w-full sm:min-w-[230px] font-bold",
-          "leading-[150%] text-lightgray bg-primary rounded-full"
+          "leading-[150%] text-lightgray bg-primary rounded-full",
         ]}
       >
         {Empty_order_button_text}
       </a>
     </div>
-
   </div>
 
-  <div 
-    role="complementary" 
-    aria-label="Chapters" 
-    id="headings" 
+  <div
+    role="complementary"
+    aria-label="Chapters"
+    id="headings"
     class:list={[
       "w-full md:w-1/3 md:h-screen self-start flex flex-col md:sticky",
-      "top-0 md:pb-6 mb-[75px] text-primary overflow-hidden", 
-      "md:pl-[clamp(24px,3.8vw+0.16px,50px)] lg:pl-[clamp(70px,11.3125vw-46px,128px)]"
+      "top-0 md:pb-6 mb-[75px] text-primary overflow-hidden",
+      "md:pl-[clamp(24px,3.8vw+0.16px,50px)] lg:pl-[clamp(70px,11.3125vw-46px,128px)]",
     ]}
   >
-    <h3 
+    <h3
       id="headings-header"
       class="pb-2.5 lg:pb-5 xl:pb-[30px] text-[clamp(1.5rem,2vw+0.2rem,2rem)] font-bold"
     >
       {text_content}
     </h3>
 
-    <div 
-      role="list" 
-      class="heading-content flex flex-col gap-[35px] leading-[130%] lg:leading-[150%] overflow-y-auto" 
+    <div
+      role="list"
+      class="heading-content flex flex-col gap-[35px] leading-[130%] lg:leading-[150%] overflow-y-auto"
     >
-      <a 
+      <a
         role="listitem"
         href={`#` + title.toLowerCase().replaceAll(" ", "-")}
         class="flex text-primary pt-4 xl:pt-5"
       >
-        <div class="w-[clamp(37px,4.6875vw-18.75px,45px)] mr-[clamp(10px,4.6875vw-43.75px,20px);] lnline-flex">
-          <img {...green_right_arrow}/>
+        <div
+          class="w-[clamp(37px,4.6875vw-18.75px,45px)] mr-[clamp(10px,4.6875vw-43.75px,20px);] lnline-flex"
+        >
+          <img {...green_right_arrow} />
         </div>
 
         {block_section1_name}
       </a>
 
-      <a 
+      <a
         role="listitem"
         href={`#` + block2?.Block2_title.toLowerCase().replaceAll(" ", "-")}
         class="flex text-primary pt-4 xl:pt-5"
       >
-        <div class="w-[clamp(37px,4.6875vw-18.75px,45px)] mr-[clamp(10px,4.6875vw-43.75px,20px);] lnline-flex">
-          <img {...green_right_arrow}/>
+        <div
+          class="w-[clamp(37px,4.6875vw-18.75px,45px)] mr-[clamp(10px,4.6875vw-43.75px,20px);] lnline-flex"
+        >
+          <img {...green_right_arrow} />
         </div>
 
         {block2?.Block2_title}
       </a>
 
-      <a 
+      <a
         role="listitem"
-        href={`#` + block3_title.toLowerCase().replaceAll(" ", "-")} 
+        href={`#` + block3_title.toLowerCase().replaceAll(" ", "-")}
         class="flex text-primary pt-4 xl:pt-5"
       >
-        <div class="w-[clamp(37px,4.6875vw-18.75px,45px)] mr-[clamp(10px,4.6875vw-43.75px,20px);] lnline-flex">
-          <img {...green_right_arrow}/>
+        <div
+          class="w-[clamp(37px,4.6875vw-18.75px,45px)] mr-[clamp(10px,4.6875vw-43.75px,20px);] lnline-flex"
+        >
+          <img {...green_right_arrow} />
         </div>
 
         {block3_title}
@@ -836,24 +893,28 @@ const title = page.Title.replaceAll(
   </div>
 </div>
 
-{(Support_visibility && Support) &&(
-  <div class="z-[999] fixed bottom-[clamp(15px,3vw+5px,50px)] right-[clamp(15px,3vw+5px,50px)]">
-    <a href={Support.Button_link}>
-      <div class="flex items-center gap-4 p-5 md:py-5 md:px-[34px] rounded-full bg-[#3C994E]">
-        <div class="w-[45px] h-[45px]">
-          <img
-            class="w-full h-full object-contain"
-            src={await localizeCMSImage(Support.Button_icon.data.attributes.url)}
-            alt={Support.Button_icon?.data?.attributes?.alternativeText}
-          />
+{
+  Support_visibility && Support && (
+    <div class="z-[999] fixed bottom-[clamp(15px,3vw+5px,50px)] right-[clamp(15px,3vw+5px,50px)]">
+      <a href={Support.Button_link}>
+        <div class="flex items-center gap-4 p-5 md:py-5 md:px-[34px] rounded-full bg-[#3C994E]">
+          <div class="w-[45px] h-[45px]">
+            <img
+              class="w-full h-full object-contain"
+              src={await localizeCMSImage(
+                Support.Button_icon.data.attributes.url
+              )}
+              alt={Support.Button_icon?.data?.attributes?.alternativeText}
+            />
+          </div>
+          <div class="hidden md:block text-3xl text-white">
+            {Support.Button_text}
+          </div>
         </div>
-        <div class="hidden md:block text-3xl text-white">
-          {Support.Button_text}
-        </div>
-      </div>
-    </a>
-  </div>
-)}
+      </a>
+    </div>
+  )
+}
 
 <script>
   declare global {

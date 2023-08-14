@@ -1,0 +1,154 @@
+fragment RecipeAttributes on Recipe {
+  locale
+  updatedAt
+  Title
+  Intro_text
+  Intro_blob {
+    data {
+      attributes {
+        url
+        provider_metadata
+        formats
+        alternativeText
+      }
+    }
+  }
+  Block_text
+  Cuisine
+  Category
+  Time_preparation
+  Time_cooking
+  Time_text
+  Nutrition {
+    Nutrition_name
+    Nutrition_amount
+    Nutrition_measurements_unit
+  }
+  Nutrition_yield
+  Instructions_part {
+    Instructions_part_name
+    Instructions_part_step_tip
+    Instructions_part_steps {
+      Instructions_part_steps_text
+      Instructions_part_steps_blob {
+        data {
+          attributes {
+            url
+            provider_metadata
+            formats
+            alternativeText
+          }
+        }
+      }
+    }
+    Instructions_part_ingredients {
+      Instructions_part_ingredient_name
+      Instructions_part_ingredient_amount
+      Instructions_part_ingredient_measurements_unit
+    }
+  }
+  Recipe_variations {
+    data {
+      attributes {
+        Title
+        Meta {
+          URL_slug
+        }
+      }
+    }
+  }
+  Relevant_recipes(filters: { publishedAt: { ne: null } }) {
+    data {
+      attributes {
+        Title
+        Intro_blob {
+          data {
+            attributes {
+              url
+              provider_metadata
+              formats
+              alternativeText
+            }
+          }
+        }
+        authors {
+          data {
+            attributes {
+              givenName
+            }
+          }
+        }
+        createdAt
+        publishedAt
+        Meta {
+          URL_slug
+        }
+      }
+    }
+  }
+  Related_products(filters: { publishedAt: { ne: null } }) {
+    data {
+      attributes {
+        Title
+        Intro_text
+        Intro_blob {
+          data {
+            attributes {
+              url
+              provider_metadata
+              formats
+              alternativeText
+            }
+          }
+        }
+        publishedAt
+        Meta {
+          URL_slug
+        }
+      }
+    }
+  }
+  createdAt
+  updatedAt
+  publishedAt
+  authors {
+    data {
+      attributes {
+        givenName
+        Profile_picture {
+          data {
+            attributes {
+              url
+              provider_metadata
+              alternativeText
+            }
+          }
+        }
+      }
+    }
+  }
+  Meta {
+    HTML_Title
+    Meta_description
+    noindex
+    nofollow
+    URL_slug
+    Canonical_link
+  }
+}
+
+query {
+  recipes(locale: "all") {
+    data {
+      id
+      attributes {
+        ...RecipeAttributes
+        localizations(filters: { publishedAt: { ne: null } }) {
+          data {
+            id
+          }
+        }
+      }
+    }
+  }
+}

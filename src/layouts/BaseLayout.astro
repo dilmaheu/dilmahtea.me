@@ -1,31 +1,44 @@
 ---
 import "@styles/styles.scss";
 
-import MainHead from "@components/MainHead.astro";
-import Notification from "@components/Notification.astro";
-import LocalizeLinks from "@components/LocalizeLinks.astro";
+import { parseHTML } from "linkedom";
 
+import MainHead from "@components/MainHead.astro";
+import LocalizeLinks from "@components/LocalizeLinks.astro";
+import TopNotifications from "@components/TopNotifications.astro";
+
+import Cookies from "@scripts/Cookies.astro";
 import CartStore from "@scripts/CartStore.astro";
-import NotificationsObserver from "@scripts/NotificationsObserver.astro";
+import SetUserRegion from "@scripts/SetUserRegion.astro";
+import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 import NotificationAnimations from "@scripts/NotificationAnimations.astro";
 
-import getLangNotAvailableNotification from "@utils/getLangNotAvailableNotification";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 interface Props {
   page: Record<string, any>;
   meta: Record<string, any>;
   locale: string;
   metaImageSrc: string;
-  availableLocales: string[];
+  alternateURLs: { [locale: string]: string };
 }
 
-const { page, meta, locale, availableLocales, metaImageSrc } =
+const { page, meta, locale, alternateURLs, metaImageSrc } =
   Astro.props as Props;
 
-const { URL_slug: slugURL } = meta;
+const documentBodyHTML = await Astro.slots.render("default"),
+  { document: documentBody } = parseHTML(documentBodyHTML),
+  relPreloadLinks = documentBody.querySelectorAll("link[rel='preload']");
 
-const { Type: notificationType, localizedNotifications } =
-  getLangNotAvailableNotification();
+const relPreloadLinksHTML = [...relPreloadLinks]
+  .map((link) => {
+    link.remove();
+
+    return link.outerHTML;
+  })
+  .join("\n");
+
+// document is rewritten in LocalizeLinks.astro
 ---
 
 <html lang={locale}>
@@ -35,65 +48,36 @@ const { Type: notificationType, localizedNotifications } =
       meta={meta}
       locale={locale}
       metaImageSrc={metaImageSrc}
-      availableLocales={availableLocales}
+      alternateURLs={alternateURLs}
+      relPreloadLinksHTML={relPreloadLinksHTML}
     />
 
     {
       import.meta.env.DEV && (
         /* content-security-policy header for the development server */ <meta
           http-equiv="Content-Security-Policy"
-          content="default-src 'none'; style-src 'self' 'unsafe-inline' https://use.fontawesome.com; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cse.expertrec.com https://static.openreplay.com; img-src 'self' data: https://dilmahtea.me https://cms.dilmahtea.me; media-src data:; font-src 'self' https://use.fontawesome.com; worker-src blob:; connect-src 'self' wss: https://log.expertrec.com https://searchv7.expertrec.com https://api.openreplay.com https://dev.products.scripts.dilmahtea.me;"
+          content="default-src 'none'; style-src 'self' 'unsafe-inline' https://use.fontawesome.com; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cse.expertrec.com https://static.openreplay.com; img-src 'self' data: https://dilmahtea.me; media-src data: 'self' video-src 'self'; font-src 'self' https://use.fontawesome.com; worker-src blob:; connect-src 'self' wss: https://dev.baserow.scripts.dilmahtea.me https://log.expertrec.com https://searchv7.expertrec.com https://api.openreplay.com https://dev.products.scripts.dilmahtea.me;"
         />
       )
     }
 
-    {
-      // prettier-ignore
-      slugURL !== "404" && (
-        <script is:inline define:vars={{ availableLocales }}>
-          const preferredLocale = document.documentElement.lang;
+    <Cookies />
 
-          localStorage.setItem("locale", preferredLocale);
+    <SetUserRegion />
 
-          window.preferredLocale = preferredLocale;
-          window.availableLocales = availableLocales;
-        </script>
-      )
-    }
+    <SetPreferredLocale />
+
+    <script define:vars={{ alternateURLs, shouldDisplayExperimentals }}>
+      window.alternateURLs = alternateURLs;
+      window.shouldDisplayExperimentals = shouldDisplayExperimentals;
+    </script>
 
     <CartStore />
-
-    <NotificationsObserver />
 
     <NotificationAnimations />
   </head>
 
-  <LocalizeLinks locale={locale}>
-    <div class="translation-not-found-notification sticky top-0 z-[1000]">
-      <Notification
-        type={notificationType}
-        notification={localizedNotifications}
-      >
-        <div class="text-center">
-          <notification></notification>
-        </div>
-      </Notification>
-    </div>
+  <TopNotifications locale={locale} />
 
-    <script is:inline>
-      if (
-        window.requestedLocale /* requestedLocale is defined in TranslationNotFoundRedirect.astro */
-      ) {
-        const translationNotFoundNotification =
-          document.currentScript.previousElementSibling.firstElementChild;
-
-        translationNotFoundNotification.style.display = "flex";
-
-        /* removeTopNotification is defined in NotificationAnimations.astro */
-        window.removeTopNotification(translationNotFoundNotification);
-      }
-    </script>
-
-    <slot />
-  </LocalizeLinks>
+  <LocalizeLinks locale={locale} documentBody={documentBody} />
 </html>

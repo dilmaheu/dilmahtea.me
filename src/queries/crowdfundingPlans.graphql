@@ -1,0 +1,37 @@
+fragment CrowdfundingPlanAttributes on CrowdfundingPlan {
+  locale
+  updatedAt
+  Perk
+  Title
+  Title_icon {
+    data {
+      id
+      attributes {
+        name
+        url
+        alternativeText
+        formats
+      }
+    }
+  }
+  Price_EUR_excl_VAT
+  Intro_text
+  List
+  Button_text
+}
+
+query {
+  crowdfundingPlans(locale: "all", sort: "Price_EUR_excl_VAT") {
+    data {
+      id
+      attributes {
+        ...CrowdfundingPlanAttributes
+        localizations(filters: { publishedAt: { ne: null } }) {
+          data {
+            id
+          }
+        }
+      }
+    }
+  }
+}

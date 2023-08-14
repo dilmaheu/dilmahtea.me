@@ -1,6 +1,13 @@
 ---
 import CMS from "@store/CMS";
 import getLocalesData from "@utils/getLocalesData";
+import SelectorsDropdown from "./SelectorsDropdown.astro";
+import SelectorsDropdownItem from "./SelectorsDropdownItem.astro";
+
+declare interface Props {
+  docLocale: string;
+  availableLocales: string[];
+}
 
 const { docLocale, availableLocales } = Astro.props,
   { locales, languages, localeNamesData } = getLocalesData(),
@@ -11,7 +18,7 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", docLocale);
 
 // get available alternate locales
 locales.forEach((locale, index) => {
-  if (locale !== docLocale && [...availableLocales].includes(locale)) {
+  if (availableLocales.includes(locale)) {
     availableLanguages.push(languages[index]);
   }
 });
@@ -42,125 +49,33 @@ langSelectorsData.sort(
     { localizedLanguage: currentLanguage }
   ) => nextLanguage.localeCompare(currentLanguage, "en-US")
 );
+
+// move current locale to the top of the list
+const currentLangIndex = langSelectorsData.findIndex(
+  ({ lang }) => lang === docLocale
+);
+
+langSelectorsData.unshift(langSelectorsData.splice(currentLangIndex, 1)[0]);
 ---
 
-<style lang="scss">
-  .lang-selector-dropdown {
-    .lang-selector-button {
-      border-radius: 25px;
-    }
-
-    .lang-selector-dropdown-menu {
-      border-radius: 0 0 25px 25px;
-    }
-
-    &.dropdown-open {
-      .lang-selector-button {
-        border-radius: 25px 25px 0 0;
-      }
-
-      .lang-selector-dropdown-menu {
-        display: block;
-      }
-    }
-  }
-</style>
-
-<div
-  role="menu"
-  tabindex="0"
-  aria-label={ariaLabelRecurData.Navbar_language_selectors_text}
-  class:list={[
-    "lang-selector-dropdown relative",
-    "font-bold text-primary text-sm lg:text-base select-none",
-    "max-w-[150px] xl:max-w-full scale-[0.775] xl:scale-[1] mx-0",
-  ]}
+<SelectorsDropdown
+  selectorType="lang"
+  ariaLabel={ariaLabelRecurData.Navbar_language_selectors_text}
 >
-  <div
-    role="button"
-    class:list={[
-      "lang-selector-button flex items-center justify-between gap-x-1.5 md:gap-x-3",
-      "p-3.5 w-44 max-w-[40vw] font-bold bg-lightgray cursor-pointer focus:outline-none",
-    ]}
-  >
-    <div class="font-bold">{docLang}</div>
-
-    <svg class="w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.6 6.7">
-      <path
-        d="M.3.3A.6.6,0,0,1,.9,0a.9.9,0,0,1,.6.3L5.8,4.6,10.2.3a.6.6,0,0,1,.6-.3l.6.3a.8.8,0,0,1,.2.6.7.7,0,0,1-.2.6l-5,4.9a.6.6,0,0,1-.6.3.9.9,0,0,1-.6-.3L.3,1.5A.9.9,0,0,1,0,.9.6.6,0,0,1,.3.3Z"
-        fill="#2B4B50"></path>
-    </svg>
-  </div>
-
-  <ul
-    class:list={[
-      "lang-selector-dropdown-menu absolute hidden overflow-hidden",
-      "w-full font-bold rounded border-t border-solid border-primary",
-    ]}
-  >
-    {
-      langSelectorsData.map(
-        ({ lang, localizedLanguage, localLanguageName }) => (
-          <li class="block">
-            <button
-              lang={lang}
-              class:list={[
-                lang,
-                "lang-selector text-primary bg-lightgray w-full",
-                "flex flex-wrap items-center gap-x-1.5 md:gap-x-3 p-4 hover:bg-gray-300 cursor-pointer",
-              ]}
-            >
-              {localizedLanguage} / {localLanguageName}
-            </button>
-          </li>
-        )
+  {
+    langSelectorsData.map(
+      ({ lang, localizedLanguage, localLanguageName }, i) => (
+        <SelectorsDropdownItem
+          data-value={lang}
+          aria-selected={i === 0 && true}
+        >
+          <span class="flex gap-[5px] items-center leading-[120%]">
+            <span class="text-[15px] ">{localizedLanguage}</span>
+            <span class="w-1 h-1 rounded-full bg-primary" />
+            <span class="text-xs">{localLanguageName}</span>
+          </span>
+        </SelectorsDropdownItem>
       )
-    }
-  </ul>
-</div>
-
-<script>
-  const dropdowns = document.querySelectorAll(".lang-selector-dropdown");
-
-  // toggle language selectors dropdown
-  document.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement;
-
-    dropdowns.forEach((dropdown) => {
-      dropdown.classList[dropdown.contains(target) ? "toggle" : "remove"](
-        "dropdown-open"
-      );
-    });
-  });
-
-  dropdowns.forEach((dropdown) => {
-    dropdown.addEventListener("keyup", (event) => {
-      const { key } = event as KeyboardEvent;
-
-      if (key === "Enter") {
-        dropdown.classList.toggle("dropdown-open");
-      }
-    });
-  });
-
-  document.querySelectorAll(".lang-selector").forEach((langSelector) => {
-    // change & redirect to preferred locale
-    langSelector.addEventListener("click", () => {
-      // @ts-ignore
-      const { lang: newLocale } = langSelector;
-
-      localStorage.setItem(`locale`, newLocale);
-
-      const localeRegex = new RegExp(
-        // @ts-ignore
-        `^/(${availableLocales.map((locale) => locale).join("|")})/`
-        /* availableLocales is defined in SetPreferredLocale.astro (Layout.astro for 404) */
-      );
-
-      let [, locale] = location.pathname.match(localeRegex) ?? [];
-
-      location.href =
-        `/${newLocale}/` + location.pathname.slice(locale ? 4 : 0);
-    });
-  });
-</script>
+    )
+  }
+</SelectorsDropdown>
