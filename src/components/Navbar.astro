@@ -90,8 +90,14 @@ const {
     );
   }
 
-  #sidebar nav a {
-    @apply text-[32px] font-bold leading-[150%];
+  #sidebar nav {
+    .menu-title {
+      @apply text-3xl font-semibold leading-[150%];
+    }
+
+    .sub-menu-title {
+      @apply text-2xl font-medium leading-[150%];
+    }
   }
 
   .search-input {
@@ -444,11 +450,30 @@ const {
 
       <div class="grid content-between h-full px-[30px] pt-[26px] pb-9 z-10">
         <div class="z-10 grid gap-9 overflow-y-auto">
-          <nav class="flex flex-col gap-[35px] text-white">
+          <nav class="flex flex-col gap-[25px] text-white">
             {
               menu.map(
-                ({ Visibility, Title, Link }) =>
-                  Visibility && <a href={Link}>{Title}</a>
+                ({ Visibility, Title, Link, Sub_menu }) =>
+                  Visibility && (
+                    <div>
+                      <a href={Link} class="menu-title">
+                        {Title}
+                      </a>
+
+                      {Sub_menu.length > 0 && (
+                        <div class="grid gap-[5px]">
+                          {Sub_menu.map(
+                            ({ Visibility, Title, Link }) =>
+                              Visibility && (
+                                <a href={Link} class="sub-menu-title">
+                                  {Title}
+                                </a>
+                              )
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )
               )
             }
           </nav>
