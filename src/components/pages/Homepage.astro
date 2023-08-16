@@ -48,15 +48,15 @@ const latestProducts = catalog.Products.slice()
   .slice(0, 3)
   .map((product) => {
     const latestProduct = getLatest(product.products.data, "createdAt");
-    const availableFormatThumbnails = product.products.data
+    const availableFormat = product.products.data
       .filter((item) => item !== latestProduct)
-      .map((item) => item.attributes.Intro_blob.data.attributes);
+      .map((item) => item.attributes);
     return {
       ...latestProduct,
       attributes: {
         ...latestProduct.attributes,
-        availableFormatsCount: availableFormatThumbnails.length,
-        availableFormatThumbnails,
+        availableFormatsCount: availableFormat.length,
+        availableFormat,
       },
     };
   });
