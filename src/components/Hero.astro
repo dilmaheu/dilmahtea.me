@@ -1,7 +1,14 @@
 ---
-import CMS from "@store/CMS";
+import fs from "node:fs";
+import path from "node:path";
+import extractFrames from "ffmpeg-extract-frames";
 import { Picture } from "astro-imagetools/components";
+import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
+
+import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+import localizeCMSImage from "@utils/localizeCMSImage";
+
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 
@@ -136,20 +143,52 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
         >
           {headerBackgroundVideo ? (
             async () => {
-              const poster = await importRemoteImage(
-                ASSETS_URL + headerBackgroundImg + "?w=1920"
+              const localizedVideoURL = await localizeCMSImage(
+                headerBackgroundVideo
+              );
+
+              const firstFrameFilePath =
+                "./public" +
+                localizedVideoURL.replace(
+                  path.extname(localizedVideoURL),
+                  ".jpg"
+                );
+
+              if (!fs.existsSync(firstFrameFilePath)) {
+                await extractFrames({
+                  input: "./public" + localizedVideoURL,
+                  output: firstFrameFilePath,
+                  offsets: [0],
+                  ffmpegPath,
+                });
+              }
+
+              const poster = await importImage(
+                firstFrameFilePath.slice(1) + "?format=webp&w=1920&quality=10"
               );
 
               return (
-                <video
-                  class="header-background-video object-cover h-full w-full absolute inset-0"
-                  src={ASSETS_URL + headerBackgroundVideo}
-                  poster={poster}
-                  preload="metadata"
-                  autoplay
-                  muted
-                  loop
-                />
+                <Fragment>
+                  <link
+                    as="image"
+                    rel="preload"
+                    href={poster}
+                    fetchpriority="high"
+                  />
+
+                  {async () => (
+                    <video
+                      class="header-background-video object-cover h-full w-full absolute inset-0"
+                      src={await localizeCMSImage(headerBackgroundVideo)}
+                      poster={poster}
+                      preload="none"
+                      autoplay
+                      muted
+                      loop
+                      playsinline
+                    />
+                  )}
+                </Fragment>
               );
             }
           ) : (

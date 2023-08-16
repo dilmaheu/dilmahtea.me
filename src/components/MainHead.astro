@@ -10,9 +10,10 @@ declare interface Props {
   locale: string;
   metaImageSrc: string;
   alternateURLs: { [locale: string]: string };
+  relPreloadLinksHTML: string;
 }
 
-const { page, meta, locale, metaImageSrc, alternateURLs } =
+const { page, meta, locale, metaImageSrc, alternateURLs, relPreloadLinksHTML } =
   Astro.props as Props;
 
 const {
@@ -33,13 +34,15 @@ const documentHref = origin + Astro.url.pathname,
     : documentHref;
 
 const openGraphImage =
-    origin + (await importRemoteImage(metaImageSrc + "?w=1200&h=627")),
-  twitterImage =
-    origin + (await importRemoteImage(metaImageSrc + "?w=800&h=418"));
+    origin + (await importImage(metaImageSrc + "?w=1200&h=627")),
+  twitterImage = origin + (await importImage(metaImageSrc + "?w=800&h=418"));
 ---
 
 <meta charset="UTF-8" />
 <title>{title}</title>
+
+<Fragment set:html={relPreloadLinksHTML} />
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="keywords" content="" />
 <meta name="description" content={description} />
