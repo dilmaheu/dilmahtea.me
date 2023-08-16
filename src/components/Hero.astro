@@ -1,6 +1,7 @@
 ---
 import fs from "node:fs";
 import path from "node:path";
+import { Icon } from "astro-icon";
 import extractFrames from "ffmpeg-extract-frames";
 import { Picture } from "astro-imagetools/components";
 import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
@@ -140,9 +141,18 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
                 return (
                   Visibility && (
                     <div class="group">
-                      <a href={Link} class="nav-menu-title">
-                        {Title}
-                      </a>
+                      <div
+                        class:list={[
+                          hasSubMenu && "flex items-center gap-[5px]",
+                        ]}
+                      >
+                        <a href={Link} class="nav-menu-title">
+                          {Title}
+                        </a>
+                        {hasSubMenu && (
+                          <Icon name="ep:arrow-down-bold" class="w-3" />
+                        )}
+                      </div>
 
                       {(Link === "/" ? Link : Link.replace(/^\/|\/$/g, "")) ===
                         page?.Meta?.URL_slug && (
