@@ -131,13 +131,47 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
   <div class="relative h-full">
     <div class="nav-menu hidden md:flex items-end bg-dark-green relative z-40">
       <div class="nav-menu-caontainer wrapper pb-2.5 md:pb-[15px]">
-        <nav class="text-white font-semibold h-full">
+        <nav class="text-white h-full">
           <span class="flex gap-5 justify-between items-center h-full">
             {
-              menu.map(
-                ({ Visibility, Title, Link }) =>
-                  Visibility && <a href={Link}>{Title}</a>
-              )
+              menu.map(({ Visibility, Title, Link, Sub_menu }) => {
+                const hasSubMenu = Sub_menu.length > 0;
+
+                return (
+                  Visibility && (
+                    <div class="group">
+                      <a href={Link} class="nav-menu-title">
+                        {Title}
+                      </a>
+
+                      {hasSubMenu && (
+                        <div
+                          class:list={[
+                            "relative hidden group-hover:block",
+                            "drop-shadow-[10px_10px_15px_rgba(0,0,0,0.25)]",
+                          ]}
+                        >
+                          <div
+                            class:list={[
+                              "absolute top-0 grid sm:gap-2.5",
+                              "bg-white rounded-md min-w-[116px] p-[18px]",
+                            ]}
+                          >
+                            {Sub_menu.map(
+                              ({ Visibility, Title, Link }) =>
+                                Visibility && (
+                                  <div class="nav-sub-menu whitespace-nowrap">
+                                    <a href={Link}>{Title}</a>
+                                  </div>
+                                )
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )
+                );
+              })
             }
           </span>
         </nav>
