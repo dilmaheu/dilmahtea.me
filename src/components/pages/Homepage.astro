@@ -40,17 +40,8 @@ const filteredLocaleData = (attributes, locale) =>
 
 const latestProducts = catalog.Products.flatMap(({ products }) => {
   const latestProduct = getLatest(products.data, "createdAt");
-  const availableFormat = products.data
-    .filter((item) => item !== latestProduct)
-    .map(({ attributes }) => attributes);
 
-  return [filteredLocaleData(latestProduct.attributes, locale)]
-    .filter(Boolean)
-    .map((localizedAttributes) => ({
-      ...localizedAttributes,
-      availableFormatsCount: availableFormat.length,
-      availableFormat,
-    }));
+  return [filteredLocaleData(latestProduct.attributes, locale)].filter(Boolean);
 });
 ---
 
