@@ -24,7 +24,7 @@ const recurData = CMS.get("recurringElement", locale),
   class="wrapper grid grid-cols-2 lg:grid-cols-3 gap-[clamp(15px,calc(5vw-25px),50px)] overflow-hidden"
 >
   {
-    products.slice(0, 3).map(({ attributes }, index) => (
+    products.slice(0, 3).map((product) => (
       <div
         role="listitem"
         style="clip-path: url(#product-card-curve)"
@@ -33,8 +33,8 @@ const recurData = CMS.get("recurringElement", locale),
         <div class="relative block w-full">
           <Picture
             layout="fullWidth"
-            alt={attributes.Intro_blob.data.attributes.alternativeText}
-            src={ASSETS_URL + attributes.Intro_blob.data.attributes.url}
+            alt={product.Intro_blob.data.attributes.alternativeText}
+            src={ASSETS_URL + product.Intro_blob.data.attributes.url}
             attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
             sizes={[
               "(min-width: 1024px) calc((100vw - min(200px, 10vw) - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
@@ -43,7 +43,7 @@ const recurData = CMS.get("recurringElement", locale),
             ].join(", ")}
           />
 
-          {attributes.Stock_amount < 1 && (
+          {product.Stock_amount < 1 && (
             <>
               <div
                 class={[
@@ -56,7 +56,7 @@ const recurData = CMS.get("recurringElement", locale),
 
               {
                 // hide label if in-stock date is in the past or undefined
-                new Date(attributes.In_stock_date).getTime() >
+                new Date(product.In_stock_date).getTime() >
                   new Date().getTime() && (
                   <div
                     class={[
@@ -67,7 +67,7 @@ const recurData = CMS.get("recurringElement", locale),
                     {alertCircleIcon}
                     {recurData.Item_stock_text.replace(
                       "<in_stock_date>",
-                      attributes.In_stock_date
+                      product.In_stock_date
                     )}
                   </div>
                 )
@@ -85,14 +85,14 @@ const recurData = CMS.get("recurringElement", locale),
           >
             <a
               aria-label={
-                (attributes.Stock_amount < 1
+                (product.Stock_amount < 1
                   ? `${recurData.Product_sold_out_text}, `
-                  : "") + attributes.Title
+                  : "") + product.Title
               }
               class="main-link"
-              href={attributes.Meta.URL_slug}
+              href={product.Meta.URL_slug}
             >
-              {attributes.Title}
+              {product.Title}
             </a>
           </div>
 
@@ -100,12 +100,12 @@ const recurData = CMS.get("recurringElement", locale),
             class="text-white"
             style={{ "font-size": "clamp(0.75rem, 1.5vw + 0.1rem, 1rem)" }}
           >
-            {attributes.Weight_tea + attributes.Weight_tea_unit}
+            {product.Weight_tea + product.Weight_tea_unit}
             <span class="inline-block w-1 h-1 mx-[5px] mb-0.5 rounded-full bg-secondary" />
-            {attributes.variant?.data?.attributes.Title}
+            {product.variant?.data?.attributes.Title}
           </div>
 
-          {attributes.estate_name?.data.length > 0 && (
+          {product.estate_name?.data.length > 0 && (
             <div class="flex flex-wrap items-center">
               <div class="flex flex-wrap items-center text-base leading-[150%]">
                 <span>
@@ -122,7 +122,7 @@ const recurData = CMS.get("recurringElement", locale),
                 </span>
 
                 <div class="flex flex-wrap gap-x-1.5">
-                  {attributes.estate_name.data.map(
+                  {product.estate_name.data.map(
                     (
                       {
                         attributes: {
@@ -137,7 +137,7 @@ const recurData = CMS.get("recurringElement", locale),
                         class="flex flex-wrap font-bold underline decoration-1 underline-offset-[2px]"
                       >
                         {Estate_name +
-                          (index === attributes.estate_name.data.length - 1
+                          (index === product.estate_name.data.length - 1
                             ? ""
                             : ",")}
                       </a>
@@ -148,10 +148,10 @@ const recurData = CMS.get("recurringElement", locale),
             </div>
           )}
 
-          {attributes.availableFormatsCount > 0 && (
+          {product.availableFormatsCount > 0 && (
             <div class="inline-flex gap-x-2.5">
               <span class="flex">
-                {attributes.availableFormat.slice(0, 2).map((product) => (
+                {product.availableFormat.slice(0, 2).map((product) => (
                   <img
                     src={
                       ASSETS_URL +
@@ -168,7 +168,7 @@ const recurData = CMS.get("recurringElement", locale),
                   />
                 ))}
 
-                {attributes.availableFormatsCount > 2 && (
+                {product.availableFormatsCount > 2 && (
                   <span
                     class={[
                       "flex items-center justify-center min-w-[24px] h-6",
@@ -176,7 +176,7 @@ const recurData = CMS.get("recurringElement", locale),
                       "text-[10px] font-semibold text-primary leading-[150%] -ml-[15px]",
                     ].join(" ")}
                   >
-                    +{attributes.availableFormatsCount - 2}
+                    +{product.availableFormatsCount - 2}
                   </span>
                 )}
               </span>
@@ -184,24 +184,24 @@ const recurData = CMS.get("recurringElement", locale),
               <div class="text-white">
                 <em>
                   <span class="hidden sm:block">
-                    {attributes.Stock_amount === 0
+                    {product.Stock_amount === 0
                       ? recurData.Product_stock_available_text
                       : recurData.Product_available_text}
                     <span class="font-bold underline underline-offset-2">
-                      {attributes.availableFormatsCount === 1
+                      {product.availableFormatsCount === 1
                         ? recurData.Product_other_formats_singular_text
                         : recurData.Product_other_formats_text.replaceAll(
                             "<count>",
-                            attributes.availableFormatsCount
+                            product.availableFormatsCount
                           )}
                     </span>
                   </span>
                   <span class="block sm:hidden font-bold underline underline-offset-2">
-                    {attributes.Stock_amount === 0
+                    {product.Stock_amount === 0
                       ? recurData.Product_other_formats_singular_text_sm
                       : recurData.Product_other_formats_text_sm.replaceAll(
                           "<count>",
-                          attributes.availableFormatsCount
+                          product.availableFormatsCount
                         )}
                   </span>
                 </em>
@@ -209,9 +209,9 @@ const recurData = CMS.get("recurringElement", locale),
             </div>
           )}
 
-          {attributes.Stock_amount > 0 && (
+          {product.Stock_amount > 0 && (
             <button
-              onClick={() => addProductToCart(attributes)}
+              onClick={() => addProductToCart(product)}
               class={[
                 "unlink w-full flex justify-center items-center gap-1",
                 "p-1 md:p-2 lg:p-3 mt-[clamp(5px,calc(2.23vw-12px),20px)]",
@@ -232,7 +232,7 @@ const recurData = CMS.get("recurringElement", locale),
               {checkoutRecurData.text_add}
               <span class="w-1 h-1 bg-primary rounded-full" />
               <span class="recoleta">
-                {`€` + attributes.Price.toFixed(2).replace(".", ",")}
+                {`€` + product.Price.toFixed(2).replace(".", ",")}
               </span>
             </button>
           )}
