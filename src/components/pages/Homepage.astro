@@ -24,25 +24,26 @@ const randPost = posts[(Math.random() * posts.length) | 0],
 
 const catalog = CMS.get("catalog", "en");
 
-const getLatest = (items, key) =>
-  items.reduce((latest, current) =>
-    new Date(current.attributes[key]) > new Date(latest.attributes[key])
-      ? current
-      : latest
+const getLocalizedAttributes = (attributes, targetLocale) => {
+  const matchingLocalization = attributes.localizations?.data.find(
+    ({ attributes }) =>
+      attributes.locale.startsWith(targetLocale.substring(0, 2))
   );
-
-const filteredLocaleData = (attributes, locale) =>
-  attributes.locale.startsWith(locale.substring(0, 2))
+  return attributes.locale.startsWith(targetLocale.substring(0, 2))
     ? attributes
-    : attributes.localizations.data.find(({ attributes }) =>
-        attributes.locale.startsWith(locale.substring(0, 2))
-      )?.attributes;
+    : (matchingLocalization && matchingLocalization.attributes) || null;
+};
 
-const latestProducts = catalog.Products.flatMap(({ products }) => {
-  const latestProduct = getLatest(products.data, "createdAt");
-
-  return [filteredLocaleData(latestProduct.attributes, locale)].filter(Boolean);
-});
+const latestProducts = catalog.Products.flatMap(({ products }) =>
+  products.data.flatMap(({ attributes }) => attributes)
+)
+  .filter((product) => product.createdAt && product.createdAt.length)
+  .sort(
+    (productA, productB) =>
+      new Date(productB.createdAt) - new Date(productA.createdAt)
+  )
+  .map((product) => getLocalizedAttributes(product, locale))
+  .filter(Boolean);
 ---
 
 <style lang="scss">
