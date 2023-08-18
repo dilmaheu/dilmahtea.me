@@ -6,12 +6,12 @@ const { selectorType, ariaLabel } = Astro.props;
 const defaultSlotHTML = await Astro.slots.render("default");
 
 const { document } = parseHTML(defaultSlotHTML),
-  listItems = [...document.querySelectorAll("li")];
+  listItems = [...document.querySelectorAll("a")];
 
 const firstListItemHTML = listItems[0].outerHTML,
   dropdownOpenAreaInnerHTML = listItems
     .slice(1)
-    .map((li) => li.outerHTML)
+    .map((a) => a.outerHTML)
     .join("");
 
 const dropdownInnerHTML = `${firstListItemHTML}<div>${dropdownOpenAreaInnerHTML}</div>`;
@@ -19,7 +19,7 @@ const dropdownInnerHTML = `${firstListItemHTML}<div>${dropdownOpenAreaInnerHTML}
 
 <style lang="scss" is:global>
   .selectors-dropdown[data-selector-type="lang"]
-    > li
+    > a
     > span
     > span
     > span:not(:first-child) {
@@ -27,7 +27,7 @@ const dropdownInnerHTML = `${firstListItemHTML}<div>${dropdownOpenAreaInnerHTML}
   }
 
   .selectors-dropdown {
-    > li {
+    > a {
       @apply font-medium border-2 border-primary rounded-full;
 
       > span {
@@ -39,7 +39,7 @@ const dropdownInnerHTML = `${firstListItemHTML}<div>${dropdownOpenAreaInnerHTML}
       @apply absolute mt-[5px] w-full overflow-y-auto
         rounded-t-[25px] rounded-b-[25px];
 
-      > li {
+      > a {
         display: none;
 
         > span {
@@ -60,7 +60,7 @@ const dropdownInnerHTML = `${firstListItemHTML}<div>${dropdownOpenAreaInnerHTML}
       > div {
         @apply border-2 border-primary;
 
-        > li {
+        > a {
           display: block;
         }
       }
@@ -68,7 +68,7 @@ const dropdownInnerHTML = `${firstListItemHTML}<div>${dropdownOpenAreaInnerHTML}
   }
 </style>
 
-<ul
+<section
   role="listbox"
   aria-label={ariaLabel}
   set:html={dropdownInnerHTML}
