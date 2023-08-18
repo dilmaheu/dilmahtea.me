@@ -44,6 +44,12 @@ const latestProducts = catalog.Products.flatMap(({ products }) =>
   )
   .map((product) => getLocalizedAttributes(product, locale))
   .filter(Boolean);
+
+const block6FilteredProducts = latestProducts.filter((product) =>
+  page.Block6_products.data.some(
+    ({ attributes }) => attributes.Meta.URL_slug === product.Meta.URL_slug
+  )
+);
 ---
 
 <style lang="scss">
@@ -310,7 +316,7 @@ const latestProducts = catalog.Products.flatMap(({ products }) =>
             </h2>
           )}
 
-          <ProductCard {locale} products={latestProducts} />
+          <ProductCard {locale} products={block6FilteredProducts} />
 
           {page.Block6_button_text && (
             <div class="flex justify-center mt-[25px] sm:mt-[30px]">
