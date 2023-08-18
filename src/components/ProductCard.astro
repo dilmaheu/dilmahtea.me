@@ -13,6 +13,14 @@ const recurData = CMS.get("recurringElement", locale),
   ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 ---
 
+<style lang="scss">
+  .product-card-btn {
+    @apply w-full flex justify-center items-center gap-1
+      p-1 md:p-2 lg:p-3 mt-[clamp(5px,calc(2.23vw-12px),20px)]
+      font-bold text-[clamp(12px,0.38vw+10,16px)] rounded-full;
+  }
+</style>
+
 <ClipPathSVG
   id="product-card-curve"
   path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
@@ -167,7 +175,7 @@ const recurData = CMS.get("recurringElement", locale),
                     .slice(0, 2)
                     .map(({ thumbnail: { src, alt } }) => (
                       <img
-                        src={src}
+                        src={ASSETS_URL + src}
                         alt={alt}
                         class:list={[
                           "-ml-[15px] first:ml-0 rounded-full",
@@ -217,25 +225,35 @@ const recurData = CMS.get("recurringElement", locale),
               </div>
             )}
 
-            {Stock_amount > 0 && (
+            {Stock_amount > 0 ? (
               <button
                 onClick={() => addProductToCart(product)}
-                class={[
-                  "unlink w-full flex justify-center items-center gap-1",
-                  "p-1 md:p-2 lg:p-3 mt-[clamp(5px,calc(2.23vw-12px),20px)]",
-                  "text-primary font-bold text-xs sm:text-sm md:text-base bg-secondary-light rounded-full",
-                ].join(" ")}
+                class="unlink product-card-btn text-primary bg-secondary-light"
               >
                 <Icon
                   name="mi:shopping-cart-add"
                   class="hidden sm:inline-flex w-5 h-5"
+                />
 
                 {checkoutRecurData.text_add}
                 <span class="w-1 h-1 bg-primary rounded-full" />
                 <span class="recoleta">
-                  {`€` + Price.toFixed(2).replace(".", ",")}
+                  {`€ ` + Price.toFixed(2).replace(".", ",")}
                 </span>
               </button>
+            ) : (
+              <div class="unlink product-card-btn cursor-not-allowed text-white bg-slate">
+                <Icon
+                  name="mi:shopping-cart-add"
+                  class="hidden sm:inline-flex w-5 h-5"
+                />
+
+                {recurData.Product_sold_out_text}
+                <span class="w-1 h-1 bg-white rounded-full" />
+                <span class="recoleta">
+                  {`€ ` + Price.toFixed(2).replace(".", ",")}
+                </span>
+              </div>
             )}
           </div>
         </div>
