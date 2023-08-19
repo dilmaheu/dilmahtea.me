@@ -9,7 +9,7 @@ const filterUnavailableTypes = ({
   attributes: { products, localizations },
 }) => {
   localizations.data = localizations.data.filter(
-    (localization) => localization.attributes.products.data.length > 0
+    (localization) => localization.attributes.products.data.length > 0,
   );
 
   return products.data.length > 0;
@@ -24,8 +24,8 @@ export const variantsOrder = [
   ...productSizes.data.map(({ attributes }) => attributes.Title),
   ...productVariants.data.flatMap(({ attributes: { Title: variant } }) =>
     productSizes.data.map(
-      ({ attributes: { Title: size } }) => variant + " | " + size
-    )
+      ({ attributes: { Title: size } }) => variant + " | " + size,
+    ),
   ),
 ];
 
@@ -57,8 +57,8 @@ const allProducts = catalog.Products.flatMap(
           ({ attributes }) => [
             attributes.locale.substring(0, 2),
             attributes.Title,
-          ]
-        )
+          ],
+        ),
       );
 
       [
@@ -136,7 +136,7 @@ const allProducts = catalog.Products.flatMap(
     });
 
     return processedProducts;
-  }
+  },
 );
 
 // sort products by order of productSizes and productVariants
@@ -148,7 +148,7 @@ Object.values(Products)
 
       variants.sort(
         ([aKey], [bKey]) =>
-          variantsOrder.indexOf(aKey) - variantsOrder.indexOf(bKey)
+          variantsOrder.indexOf(aKey) - variantsOrder.indexOf(bKey),
       );
     }
   });

@@ -14,6 +14,6 @@ export default function printMessage(type, message) {
     "\x1b[30m" + currentTime() + "\x1b[0m",
     "\x1b[1m" + "\x1b[32m" + "[dilmah]" + "\x1b[0m",
     (type === "error" ? "\x1b[31m" : "\x1b[36m") + type + "\x1b[0m",
-    message
+    message,
   );
 }

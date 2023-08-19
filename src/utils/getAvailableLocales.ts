@@ -1,5 +1,5 @@
 export default function getAvailableLocales(
-  flattenedPages: any[]
+  flattenedPages: any[],
 ): [string[], { [locale: string]: string }, string[]] {
   const availableLocales: string[] = [],
     availableLocaleEntries: [string, string][] = [],

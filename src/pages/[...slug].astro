@@ -60,7 +60,7 @@ export async function getStaticPaths() {
   const allProducts = products.get("all");
 
   const allLocales = i18NLocales.data.map(({ attributes }) =>
-    attributes.code.substring(0, 2)
+    attributes.code.substring(0, 2),
   );
 
   const paginate = (routes) => {
@@ -80,7 +80,7 @@ export async function getStaticPaths() {
 
           const postsSlice = posts.slice(
             i + 1 * POSTS_PER_PAGE,
-            (i + 2) * POSTS_PER_PAGE
+            (i + 2) * POSTS_PER_PAGE,
           );
 
           routeClone.params.slug += `/${i + 2}`;
@@ -124,15 +124,15 @@ export async function getStaticPaths() {
         availableSlugs.map((slug) =>
           availableLocalesRecord[locale] === "/" + locale + slug
             ? flattenedPages.find(
-                (attributes) => attributes.locale.substring(0, 2) === locale
+                (attributes) => attributes.locale.substring(0, 2) === locale,
               )
             : {
                 locale,
                 fullSlug: locale + slug.slice(0, -1),
                 translationNotFound: true,
                 availableLocalesRecord,
-              }
-        )
+              },
+        ),
       ),
     ].map((attributes) => {
       const {
@@ -150,8 +150,8 @@ export async function getStaticPaths() {
       if (!attributes.defaultRoute && !attributes.translationNotFound) {
         var alternateURLs = Object.fromEntries(
           Object.entries(availableLocalesRecord).filter(
-            ([locale]) => locale !== attributes.locale.substring(0, 2)
-          )
+            ([locale]) => locale !== attributes.locale.substring(0, 2),
+          ),
         );
       }
 
@@ -188,17 +188,17 @@ export async function getStaticPaths() {
       .flat(2)
       .filter(
         (attributes) =>
-          attributes.locale.substring(0, 2) === locale.substring(0, 2)
+          attributes.locale.substring(0, 2) === locale.substring(0, 2),
       )
       .sort(
         (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
       );
 
   [
     ...crowdfundingPlans.data,
     ...crowdfundingPlans.data.flatMap(
-      ({ attributes }) => attributes.localizations.data
+      ({ attributes }) => attributes.localizations.data,
     ),
   ].forEach(({ attributes }) => {
     attributes.Meta = {
@@ -218,7 +218,7 @@ export async function getStaticPaths() {
 
   const crowdfundingPaymentConfirmationPages = getRoutes(
     crowdfundingPaymentConfirmation,
-    () => ({ type: "basic" })
+    () => ({ type: "basic" }),
   );
 
   const blogDetailsPages = getRoutes(blogs, (_, { locale }) => ({
@@ -259,10 +259,10 @@ export async function getStaticPaths() {
           ...(getPosts(recipes, locale) || []),
         ].sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         ),
     }),
-    true
+    true,
   );
 
   const howToPages = getRoutes(
@@ -271,7 +271,7 @@ export async function getStaticPaths() {
       type: "howTo",
       posts: locale && getPosts(howTos, locale),
     }),
-    true
+    true,
   );
 
   const recipePages = getRoutes(
@@ -280,7 +280,7 @@ export async function getStaticPaths() {
       type: "recipe",
       posts: locale && getPosts(recipes, locale),
     }),
-    true
+    true,
   );
 
   const estatePages = getRoutes(homeEstate, (_, { locale }) => ({
@@ -302,7 +302,7 @@ export async function getStaticPaths() {
         ...(getPosts(recipes, locale).slice(0, 1) || []),
       ],
     }),
-    true
+    true,
   );
 
   const cartPages = getRoutes(cart, () => ({

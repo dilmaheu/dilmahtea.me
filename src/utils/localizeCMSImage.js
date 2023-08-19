@@ -16,7 +16,7 @@ export default async function localizeCMSImage(relativeUrl) {
     const remoteSrc = import.meta.env.ASSETS_URL + relativeUrl;
 
     const imageBuffer = Buffer.from(
-      await fetch(remoteSrc).then((res) => res.arrayBuffer())
+      await fetch(remoteSrc).then((res) => res.arrayBuffer()),
     );
 
     await fs.promises.writeFile(imagePath, imageBuffer);
