@@ -39,7 +39,7 @@ const { SKU: productSKU } = page,
   productNames = JSON.stringify(page.names);
 
 const productThumbnailURL = await importImage(
-  ASSETS_URL + page.Intro_blob.data.attributes.formats.thumbnail.url
+  ASSETS_URL + page.Intro_blob.data.attributes.formats.thumbnail.url,
 );
 
 const infos = page.product_infos.data.map(({ attributes }) => attributes),
@@ -50,12 +50,12 @@ const infos = page.product_infos.data.map(({ attributes }) => attributes),
 const relevantItems = blogs.concat(recipes, howTos);
 
 const spentAmounts = page.Price_breakdown.map(
-  ({ Spent_amount }) => Spent_amount
+  ({ Spent_amount }) => Spent_amount,
 );
 
 const totalSpentAmount = spentAmounts.reduce(
   (total, currentValue) => total + currentValue,
-  0
+  0,
 );
 
 const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
@@ -72,12 +72,12 @@ if (stockAmount === 0) {
       formats.push(format);
 
       return stockAmount;
-    }
+    },
   );
 
   availableFormats.sort(
     ({ value: a }, { value: b }) =>
-      variantsOrder.indexOf(a) - variantsOrder.indexOf(b)
+      variantsOrder.indexOf(a) - variantsOrder.indexOf(b),
   );
 
   availableFormats = await Promise.all(
@@ -88,7 +88,7 @@ if (stockAmount === 0) {
         src: await importImage(ASSETS_URL + data.thumbnail.src),
         alt: data.thumbnail.alt,
       },
-    }))
+    })),
   );
 }
 ---
@@ -454,7 +454,7 @@ if (stockAmount === 0) {
                 year: "2-digit",
                 month: "short",
                 day: "numeric",
-              })
+              }),
             )}
           </div>
         )
@@ -802,7 +802,7 @@ if (stockAmount === 0) {
                     <img
                       alt=""
                       src={await localizeCMSImage(
-                        item.Transparency_item_icon.data.attributes.url
+                        item.Transparency_item_icon.data.attributes.url,
                       )}
                       class="w-full h-full object-contain p-1"
                     />
@@ -1042,7 +1042,7 @@ if (stockAmount === 0) {
     image: await importImage(ASSETS_URL + page.Intro_blob?.data.attributes.url),
     description: `${(await renderMarkdown(page.Intro_text)).replace(
       /(<([^>]+)>)/gi,
-      ""
+      "",
     )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
     sku: page.SKU,
     gtin: page.GTIN_Barcode,
@@ -1073,7 +1073,7 @@ if (stockAmount === 0) {
   window.baseProductTitle = baseProductTitle;
 
   const preferredProductsVariants = JSON.parse(
-    localStorage.getItem("preferredProductsVariants") || "{}"
+    localStorage.getItem("preferredProductsVariants") || "{}",
   );
 
   preferredProductsVariants[window.baseProductTitle] = {
@@ -1083,7 +1083,7 @@ if (stockAmount === 0) {
 
   localStorage.setItem(
     "preferredProductsVariants",
-    JSON.stringify(preferredProductsVariants)
+    JSON.stringify(preferredProductsVariants),
   );
 </script>
 
@@ -1097,7 +1097,7 @@ if (stockAmount === 0) {
 
   const accordions = queryAll("button.accordion"),
     cartAddingForms = queryAll(
-      ".cart-adding-form, .cart-adding-form-sm, .cart-adding-form-fixed-sm"
+      ".cart-adding-form, .cart-adding-form-sm, .cart-adding-form-fixed-sm",
     ),
     productAmountPriceOutput = query(".product-amount-price"),
     productAmountInputs = queryAll(".product-amount-input"),
@@ -1117,7 +1117,7 @@ if (stockAmount === 0) {
 
       if (["tea_variant", "tea_size"].includes(target.name)) {
         const preferredProductsVariants = JSON.parse(
-          localStorage.getItem("preferredProductsVariants") || "{}"
+          localStorage.getItem("preferredProductsVariants") || "{}",
         );
 
         preferredProductsVariants[window.baseProductTitle] = {
@@ -1127,7 +1127,7 @@ if (stockAmount === 0) {
 
         localStorage.setItem(
           "preferredProductsVariants",
-          JSON.stringify(preferredProductsVariants)
+          JSON.stringify(preferredProductsVariants),
         );
 
         location.href = target.selectedOptions[0].dataset.href;

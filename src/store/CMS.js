@@ -3,7 +3,7 @@ import { parse, print } from "graphql";
 import printMessage from "@utils/printMessage";
 
 const queries = Object.values(
-  await import.meta.glob("../queries/*.graphql", { as: "raw", eager: true })
+  await import.meta.glob("../queries/*.graphql", { as: "raw", eager: true }),
 );
 
 const parsedQueries = [],
@@ -15,7 +15,7 @@ queries.forEach((query) => {
   graphqlDocument.definitions.forEach((definition) => {
     if (definition.kind === "OperationDefinition") {
       parsedQueries.push(
-        print(definition).slice(parsedQueries.length === 0 ? 0 : 1, -1)
+        print(definition).slice(parsedQueries.length === 0 ? 0 : 1, -1),
       );
     } else if (definition.kind === "FragmentDefinition") {
       parsedFragments.push(print(definition));
@@ -40,7 +40,7 @@ const { data, dataWithFlattenedCollections } = await fetch(
     body: JSON.stringify({
       query: fullQuery,
     }),
-  }
+  },
 )
   .then(async (res) => {
     const cacheDir = "./.cache/",
@@ -86,13 +86,13 @@ const { data, dataWithFlattenedCollections } = await fetch(
 
                       return true;
                     }
-                  })
+                  }),
                 );
 
                 delete entries[localizationIndex];
 
                 return localization;
-              }
+              },
             );
 
             return true;
@@ -107,12 +107,12 @@ const { data, dataWithFlattenedCollections } = await fetch(
     await fs.promises.writeFile(
       cacheDir + "CMS.json",
       JSON.stringify(response),
-      "utf8"
+      "utf8",
     );
 
     printMessage(
       "info",
-      "Successfully fetched data from CMS and saved it to the cache"
+      "Successfully fetched data from CMS and saved it to the cache",
     );
 
     return {
@@ -141,7 +141,7 @@ const CMS = {
         const content = dataWithFlattenedCollections[contentType];
 
         return content.data.filter(
-          ({ attributes }) => attributes.locale.substring(0, 2) === locale
+          ({ attributes }) => attributes.locale.substring(0, 2) === locale,
         );
       }
 
@@ -151,7 +151,7 @@ const CMS = {
 
       return data[contentType].data.attributes.localizations.data.find(
         ({ attributes }) =>
-          attributes.locale.substring(0, 2) === locale.substring(0, 2)
+          attributes.locale.substring(0, 2) === locale.substring(0, 2),
       ).attributes;
     }
 
@@ -164,17 +164,17 @@ async function catchError(error) {
 
   if (fs.existsSync("./.cache/CMS.json")) {
     cachedData = JSON.parse(
-      await fs.promises.readFile("./.cache/CMS.json", "utf8")
+      await fs.promises.readFile("./.cache/CMS.json", "utf8"),
     );
 
     printMessage(
       "error",
-      "Failed to fetch data from CMS, serving from the cache"
+      "Failed to fetch data from CMS, serving from the cache",
     );
   } else {
     printMessage(
       "error",
-      "Failed to fetch data from CMS, nothing found in cache!"
+      "Failed to fetch data from CMS, nothing found in cache!",
     );
   }
 

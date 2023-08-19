@@ -14,7 +14,7 @@ recurData = {
       .map(({ attributes }) => {
         const allVersions = [{ attributes }, ...attributes.localizations.data],
           localizedTitle = allVersions.find(
-            ({ attributes }) => attributes.locale.substring(0, 2) === locale
+            ({ attributes }) => attributes.locale.substring(0, 2) === locale,
           )?.attributes.Title;
 
         if (localizedTitle) {
@@ -28,10 +28,10 @@ recurData = {
                 products.data.map(
                   ({ attributes }) =>
                     attributes[i === 0 ? "variant" : "size"].data.attributes
-                      .Title
-                )
-              )
-            )
+                      .Title,
+                ),
+              ),
+            ),
           );
 
           return {
@@ -45,9 +45,9 @@ recurData = {
       .sort((a, b) =>
         a.localizedTitle.localeCompare(b.localizedTitle, locale, {
           numeric: true,
-        })
+        }),
       ),
-  })
+  }),
 );
 ---
 

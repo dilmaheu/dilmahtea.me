@@ -13,7 +13,7 @@ const products = Object.fromEntries(
       const tax = Math.round(Price * 9) / 100,
         price = Math.round((Price + tax) * 100) / 100,
         image = await localizeCMSImage(
-          attributes.Intro_blob.data.attributes.formats.thumbnail.url
+          attributes.Intro_blob.data.attributes.formats.thumbnail.url,
         );
 
       const names = JSON.stringify(
@@ -22,14 +22,14 @@ const products = Object.fromEntries(
             ({ attributes: { locale, Title } }) => [
               locale.substring(0, 2),
               Title,
-            ]
-          )
-        )
+            ],
+          ),
+        ),
       );
 
       return [sku, { tax, price, image, names }];
-    })
-  )
+    }),
+  ),
 );
 ---
 
@@ -40,12 +40,12 @@ const products = Object.fromEntries(
 
     return content.replace(
       placeholderRegex,
-      (_, placeholderName) => data[placeholderName]
+      (_, placeholderName) => data[placeholderName],
     );
   };
 
   window.checkoutInfo = JSON.parse(
-    localStorage.getItem("checkout-info") || "{}"
+    localStorage.getItem("checkout-info") || "{}",
   );
 
   const queryParams = new URLSearchParams(location.search);
@@ -87,7 +87,7 @@ const products = Object.fromEntries(
         priceSum + Number(price),
         taxSum + Number(tax),
       ],
-      [0, 0]
+      [0, 0],
     );
 
     shippingCost = Number(window.checkoutInfo?.shipping_cost) || 0;
@@ -121,7 +121,7 @@ const products = Object.fromEntries(
 
     orderTotal.forEach((span) => (span.textContent = "€" + total));
     orderShippingCost.forEach(
-      (span) => (span.textContent = "€" + shippingCost)
+      (span) => (span.textContent = "€" + shippingCost),
     );
   };
 
@@ -160,10 +160,10 @@ const products = Object.fromEntries(
       if (productExistsInCart) {
         const cartProductElement = id(productId),
           cartProductAmountInputs = cartProductElement.querySelectorAll(
-            ".cart-product-amount-input, .cart-overlay-product-amount-input"
+            ".cart-product-amount-input, .cart-overlay-product-amount-input",
           ),
           cartProductPriceElements = cartProductElement.querySelectorAll(
-            ".cart-product-price, .cart-overlay-product-price"
+            ".cart-product-price, .cart-overlay-product-price",
           );
 
         cartProductAmountInputs.forEach((element) => {
@@ -179,15 +179,15 @@ const products = Object.fromEntries(
 
         const newCartProductElement = id(productId),
           newProductAmountInput = newCartProductElement.querySelectorAll(
-            ".cart-overlay-product-amount-input"
+            ".cart-overlay-product-amount-input",
           ),
           newProductAmountTweakBtns = newCartProductElement.querySelectorAll(
-            ".cart-overlay-product-amount-tweak-btn"
+            ".cart-overlay-product-amount-tweak-btn",
           );
 
         window.listenToInputEvents(
           newProductAmountTweakBtns,
-          newProductAmountInput
+          newProductAmountInput,
         );
 
         if (Object.keys(cart).length === 1) {

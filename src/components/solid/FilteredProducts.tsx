@@ -29,7 +29,7 @@ export default function FilteredProducts({
 
   createEffect(() => {
     const preferredProductsVariants = JSON.parse(
-      localStorage.getItem("preferredProductsVariants") || "{}"
+      localStorage.getItem("preferredProductsVariants") || "{}",
     );
 
     setFilteredProducts(
@@ -43,7 +43,7 @@ export default function FilteredProducts({
             const [, variant] =
               variants.find(
                 ([key]) =>
-                  [preferredTeaVariant, preferredTeaSize].join(" | ") === key
+                  [preferredTeaVariant, preferredTeaSize].join(" | ") === key,
               ) ||
               variants.find(([key]) => key.includes(preferredTeaVariant)) ||
               variants.find(([key]) => key.includes(preferredTeaSize)) ||
@@ -60,8 +60,8 @@ export default function FilteredProducts({
             (category &&
               category === attributes.category &&
               !attributes.subCategory) ||
-            (subCategory && subCategory === attributes.subCategory)
-        )
+            (subCategory && subCategory === attributes.subCategory),
+        ),
     );
   });
 
@@ -132,7 +132,7 @@ export default function FilteredProducts({
                         {alertCircleIcon}
                         {recurData.Item_stock_text.replace(
                           "<in_stock_date>",
-                          product.In_stock_date
+                          product.In_stock_date,
                         )}
                       </div>
                     )
@@ -195,7 +195,7 @@ export default function FilteredProducts({
                               Meta: { URL_slug },
                             },
                           },
-                          index
+                          index,
                         ) => (
                           <a
                             href={URL_slug}
@@ -206,7 +206,7 @@ export default function FilteredProducts({
                                 ? ""
                                 : ",")}
                           </a>
-                        )
+                        ),
                       )}
                     </div>
                   </div>
@@ -252,7 +252,7 @@ export default function FilteredProducts({
                               alt={alt}
                               class="w-[26px] h-[26px] border-2 border-primary rounded-full -ml-[16.5px] first:ml-0"
                             />
-                          )
+                          ),
                         )}
 
                         {product.availableFormatsCount > 2 && (
@@ -273,7 +273,7 @@ export default function FilteredProducts({
                             ? recurData.Product_stock_other_formats_text_singular
                             : recurData.Product_stock_other_formats_text.replace(
                                 "<count>",
-                                product.availableFormatsCount
+                                product.availableFormatsCount,
                               )}
                         </em>
                       </div>
