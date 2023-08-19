@@ -45,8 +45,9 @@ async function processProductData(attributes) {
               "min(90vw, 380px)",
             ].join(", "),
           }),
-        (message) => message + " " + ASSETS_URL + Intro_blob.data.attributes.url
-      )
+        (message) =>
+          message + " " + ASSETS_URL + Intro_blob.data.attributes.url,
+      ),
     ).join("");
   } catch (error) {
     console.log({
@@ -69,12 +70,12 @@ async function processProductData(attributes) {
         formats.push(format);
 
         return stockAmount;
-      }
+      },
     );
 
     availableFormats.sort(
       ({ value: a }, { value: b }) =>
-        variantsOrder.indexOf(a) - variantsOrder.indexOf(b)
+        variantsOrder.indexOf(a) - variantsOrder.indexOf(b),
     );
 
     availableFormatsCount = availableFormats.length;
@@ -84,10 +85,10 @@ async function processProductData(attributes) {
         availableFormats.slice(0, 2).map(async ({ thumbnail }) => ({
           src: await tryUntilResolve(
             () => importImage(ASSETS_URL + thumbnail.src),
-            (message) => message + " " + ASSETS_URL + thumbnail.src
+            (message) => message + " " + ASSETS_URL + thumbnail.src,
           ),
           alt: thumbnail.alt,
-        }))
+        })),
       );
     } catch (error) {
       console.log({
@@ -104,7 +105,7 @@ async function processProductData(attributes) {
 
   const thumbnail = await tryUntilResolve(
     () => importImage(thumbnailUrl),
-    (message) => message + " " + thumbnailUrl
+    (message) => message + " " + thumbnailUrl,
   );
 
   // reduce load on client
@@ -166,17 +167,17 @@ const products = productsStore.get("store"),
                     variants.map(async ([variantKey, variant]) => [
                       variantKey,
                       await processProductData(variant),
-                    ])
+                    ]),
                   ),
                 ];
               }
 
               return await processProductData(product);
-            })
+            }),
           ),
         ];
-      })
-    )
+      }),
+    ),
   );
 
 export function getStaticPaths() {

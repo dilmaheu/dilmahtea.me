@@ -20,7 +20,7 @@ export async function onRequestGet(context) {
         ? existingCountryCookie
           ? cookie.replace(existingCountryCookie, countryCookie)
           : `${cookie}; ${countryCookie}`
-        : countryCookie
+        : countryCookie,
     );
 
     return response;

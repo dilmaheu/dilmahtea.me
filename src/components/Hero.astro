@@ -125,7 +125,7 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
             {
               menu.map(
                 ({ Visibility, Title, Link }) =>
-                  Visibility && <a href={Link}>{Title}</a>
+                  Visibility && <a href={Link}>{Title}</a>,
               )
             }
           </span>
@@ -144,14 +144,14 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
           {headerBackgroundVideo ? (
             async () => {
               const localizedVideoURL = await localizeCMSImage(
-                headerBackgroundVideo
+                headerBackgroundVideo,
               );
 
               const firstFrameFilePath =
                 "./public" +
                 localizedVideoURL.replace(
                   path.extname(localizedVideoURL),
-                  ".jpg"
+                  ".jpg",
                 );
 
               if (!fs.existsSync(firstFrameFilePath)) {
@@ -164,7 +164,7 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
               }
 
               const poster = await importImage(
-                firstFrameFilePath.slice(1) + "?format=webp&w=1920&quality=10"
+                firstFrameFilePath.slice(1) + "?format=webp&w=1920&quality=10",
               );
 
               return (

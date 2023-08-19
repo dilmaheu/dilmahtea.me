@@ -71,7 +71,7 @@ export async function getStaticPaths() {
   const allProducts = products.get("all");
 
   const allLocales = i18NLocales.data.map(({ attributes }) =>
-    attributes.code.substring(0, 2)
+    attributes.code.substring(0, 2),
   );
 
   const paginate = (routes) => {
@@ -91,7 +91,7 @@ export async function getStaticPaths() {
 
           const postsSlice = posts.slice(
             i + 1 * POSTS_PER_PAGE,
-            (i + 2) * POSTS_PER_PAGE
+            (i + 2) * POSTS_PER_PAGE,
           );
 
           routeClone.params.slug += `/${i + 2}`;
@@ -135,15 +135,15 @@ export async function getStaticPaths() {
         availableSlugs.map((slug) =>
           availableLocalesRecord[locale] === "/" + locale + slug
             ? flattenedPages.find(
-                (attributes) => attributes.locale.substring(0, 2) === locale
+                (attributes) => attributes.locale.substring(0, 2) === locale,
               )
             : {
                 locale,
                 fullSlug: locale + slug.slice(0, -1),
                 translationNotFound: true,
                 availableLocalesRecord,
-              }
-        )
+              },
+        ),
       ),
     ].map((attributes) => {
       const {
@@ -161,8 +161,8 @@ export async function getStaticPaths() {
       if (!attributes.defaultRoute && !attributes.translationNotFound) {
         var alternateURLs = Object.fromEntries(
           Object.entries(availableLocalesRecord).filter(
-            ([locale]) => locale !== attributes.locale.substring(0, 2)
-          )
+            ([locale]) => locale !== attributes.locale.substring(0, 2),
+          ),
         );
       }
 
@@ -199,17 +199,17 @@ export async function getStaticPaths() {
       .flat(2)
       .filter(
         (attributes) =>
-          attributes.locale.substring(0, 2) === locale.substring(0, 2)
+          attributes.locale.substring(0, 2) === locale.substring(0, 2),
       )
       .sort(
         (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
       );
 
   [
     ...crowdfundingPlans.data,
     ...crowdfundingPlans.data.flatMap(
-      ({ attributes }) => attributes.localizations.data
+      ({ attributes }) => attributes.localizations.data,
     ),
   ].forEach(({ attributes }) => {
     attributes.Meta = {
@@ -229,7 +229,7 @@ export async function getStaticPaths() {
 
   const crowdfundingPaymentConfirmationPages = getRoutes(
     crowdfundingPaymentConfirmation,
-    () => ({ type: "basic" })
+    () => ({ type: "basic" }),
   );
 
   const blogDetailsPages = getRoutes(blogs, (_, { locale }) => ({
@@ -250,6 +250,10 @@ export async function getStaticPaths() {
     type: "estateDetails",
   }));
 
+  const productCategoryPages = getRoutes(productCategories, () => ({
+    type: "productCategory",
+  }));
+
   const productDetailsPages = getRoutes(allProducts, (page) => ({
     type: "productDetails",
   }));
@@ -266,10 +270,10 @@ export async function getStaticPaths() {
           ...(getPosts(recipes, locale) || []),
         ].sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         ),
     }),
-    true
+    true,
   );
 
   const howToPages = getRoutes(
@@ -278,7 +282,7 @@ export async function getStaticPaths() {
       type: "howTo",
       posts: locale && getPosts(howTos, locale),
     }),
-    true
+    true,
   );
 
   const recipePages = getRoutes(
@@ -287,7 +291,7 @@ export async function getStaticPaths() {
       type: "recipe",
       posts: locale && getPosts(recipes, locale),
     }),
-    true
+    true,
   );
 
   const estatePages = getRoutes(homeEstate, (_, { locale }) => ({
@@ -297,10 +301,6 @@ export async function getStaticPaths() {
 
   const productPages = getRoutes(homeProduct, () => ({
     type: "product",
-  }));
-
-  const productCategoryPages = getRoutes(productCategories, () => ({
-    type: "productCategory",
   }));
 
   const homepagePages = getRoutes(
@@ -313,7 +313,7 @@ export async function getStaticPaths() {
         ...(getPosts(recipes, locale).slice(0, 1) || []),
       ],
     }),
-    true
+    true,
   );
 
   const elephantPathPages = getRoutes(homeElephantPath, () => ({
@@ -324,12 +324,12 @@ export async function getStaticPaths() {
     type: "cart",
   }));
 
-  const checkoutInformationPages = getRoutes(checkoutInformation, () => ({
-    type: "checkoutInformation",
-  }));
-
   const checkoutKindnessPages = getRoutes(checkoutKindness, () => ({
     type: "checkoutKindness",
+  }));
+
+  const checkoutInformationPages = getRoutes(checkoutInformation, () => ({
+    type: "checkoutInformation",
   }));
 
   const checkoutShippingPages = getRoutes(checkoutShipping, () => ({
@@ -349,7 +349,7 @@ export async function getStaticPaths() {
     (_, { locale }) => ({
       type: "accountDashboard",
       kindnessCauses: locale && getPosts(kindnessCauses, locale),
-    })
+    }),
   );
 
   const userAccountAddressPages = getRoutes(
@@ -357,7 +357,7 @@ export async function getStaticPaths() {
     (_, { locale }) => ({
       type: "accountAddress",
       countries: locale && getPosts(countries, locale),
-    })
+    }),
   );
 
   const userAccountOrderPages = getRoutes(userAccountOrder, () => ({
@@ -420,6 +420,14 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
         recurData = CMS.get("recurringElement", locale),
         ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 
+      const metaImageSrc =
+        ASSETS_URL +
+        ((!page.Intro_blob?.data?.attributes.url.includes(".svg") &&
+          page.Intro_blob?.data?.attributes.url) ||
+          (!page.Block_blob?.data?.attributes.url.includes(".svg") &&
+            page.Block_blob?.data?.attributes.url) ||
+          recurData.OpenGraph_default?.data?.attributes.url);
+
       const Layout =
         page.type === "cart"
           ? Cart
@@ -431,13 +439,33 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
           ? UserAccountLayout
           : PageLayout;
 
-      const metaImageSrc =
-        ASSETS_URL +
-        ((!page.Intro_blob?.data?.attributes.url.includes(".svg") &&
-          page.Intro_blob?.data?.attributes.url) ||
-          (!page.Block_blob?.data?.attributes.url.includes(".svg") &&
-            page.Block_blob?.data?.attributes.url) ||
-          recurData.OpenGraph_default?.data?.attributes.url);
+      const Pages = {
+        plan: CrowdfundingForm,
+        crowdfunding: Crowdfunding,
+        basic: BasicPage,
+        blogDetails: BlogDetails,
+        howToDetails: HowToDetails,
+        recipeDetails: RecipeDetails,
+        estateDetails: EstateDetails,
+        productCategory: ProductCategory,
+        productDetails: ProductDetails,
+        blog: Posts,
+        howTo: Posts,
+        recipe: Posts,
+        estate: Estate,
+        product: Product,
+        homepage: Homepage,
+        checkoutInformation: CheckoutInformation,
+        checkoutKindness: CheckoutKindness,
+        checkoutShipping: CheckoutShipping,
+        elephantPath: ElephantPath,
+        account: UserAccount,
+        accountDashboard: UserAccountDashboard,
+        accountOrders: UserAccountOrder,
+        accountAddress: UserAccountAddress,
+      };
+
+      const Page = Pages[page.type];
 
       return (
         <Layout
@@ -450,85 +478,14 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
           metaImageSrc={metaImageSrc}
           isCheckoutKindness={page.type === "checkoutKindness" && true}
         >
-          {page.type === "homepage" ? (
-            <Homepage page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === "crowdfunding" ? (
-            <Crowdfunding page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === "basic" ? (
-            <BasicPage page={page} />
-          ) : page.type === "blog" ? (
-            <Posts page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === "blogDetails" ? (
-            <BlogDetails
+          {Page && (
+            <Page
               page={page}
-              recurData={recurData}
-              ariaLabelRecurData={ariaLabelRecurData}
-            />
-          ) : page.type === "howTo" ? (
-            <Posts page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === "howToDetails" ? (
-            <HowToDetails
-              page={page}
-              recurData={recurData}
-              ariaLabelRecurData={ariaLabelRecurData}
-            />
-          ) : page.type === "recipe" ? (
-            <Posts page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === "recipeDetails" ? (
-            <RecipeDetails
-              page={page}
-              recurData={recurData}
-              ariaLabelRecurData={ariaLabelRecurData}
-            />
-          ) : page.type === "estate" ? (
-            <Estate page={page} />
-          ) : page.type === "estateDetails" ? (
-            <EstateDetails
-              page={page}
-              recurData={recurData}
-              ariaLabelRecurData={ariaLabelRecurData}
-            />
-          ) : page.type === "product" ? (
-            <Product
-              page={page}
-              recurData={recurData}
-              ariaLabelRecurData={ariaLabelRecurData}
-            />
-          ) : page.type === "productCategory" ? (
-            <ProductCategory
-              page={page}
-              recurData={recurData}
-              ariaLabelRecurData={ariaLabelRecurData}
-            />
-          ) : page.type === "productDetails" ? (
-            <ProductDetails
-              page={page}
-              recurData={recurData}
-              ariaLabelRecurData={ariaLabelRecurData}
-            />
-          ) : page.type === "checkoutInformation" ? (
-            <CheckoutInformation page={page} recurData={recurData} />
-          ) : page.type === "checkoutKindness" ? (
-            <CheckoutKindness page={page} recurData={recurData} />
-          ) : page.type === "checkoutShipping" ? (
-            <CheckoutShipping page={page} recurData={recurData} />
-          ) : page.type === "elephantPath" ? (
-            <ElephantPath page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === "plan" ? (
-            <CrowdfundingForm
-              page={page}
-              recurData={recurData}
               locale={locale}
+              recurData={recurData}
+              ariaLabelRecurData={ariaLabelRecurData}
             />
-          ) : page.type === `account` ? (
-            <UserAccount page={page} />
-          ) : page.type === `accountDashboard` ? (
-            <UserAccountDashboard page={page} />
-          ) : page.type === `accountOrders` ? (
-            <UserAccountOrder page={page} recurData={recurData} />
-          ) : page.type === `accountAddress` ? (
-            <UserAccountAddress page={page} />
-          ) : null}
+          )}
         </Layout>
       );
     }
