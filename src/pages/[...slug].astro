@@ -239,6 +239,10 @@ export async function getStaticPaths() {
     type: "estateDetails",
   }));
 
+  const productCategoryPages = getRoutes(productCategories, () => ({
+    type: "productCategory",
+  }));
+
   const productDetailsPages = getRoutes(allProducts, (page) => ({
     type: "productDetails",
   }));
@@ -288,10 +292,6 @@ export async function getStaticPaths() {
     type: "product",
   }));
 
-  const productCategoryPages = getRoutes(productCategories, () => ({
-    type: "productCategory",
-  }));
-
   const homepagePages = getRoutes(
     homepage,
     (_, { locale }) => ({
@@ -309,12 +309,12 @@ export async function getStaticPaths() {
     type: "cart",
   }));
 
-  const checkoutInformationPages = getRoutes(checkoutInformation, () => ({
-    type: "checkoutInformation",
-  }));
-
   const checkoutKindnessPages = getRoutes(checkoutKindness, () => ({
     type: "checkoutKindness",
+  }));
+
+  const checkoutInformationPages = getRoutes(checkoutInformation, () => ({
+    type: "checkoutInformation",
   }));
 
   const checkoutShippingPages = getRoutes(checkoutShipping, () => ({
@@ -381,6 +381,12 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
         recurData = CMS.get("recurringElement", locale),
         ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 
+      const metaImageSrc =
+        ASSETS_URL +
+        (page.Intro_blob?.data?.attributes.url ||
+          page.Block_blob?.data?.attributes.url ||
+          recurData.OpenGraph_default?.data?.attributes.url);
+
       const Layout =
         page.type === "cart"
           ? Cart
@@ -390,11 +396,29 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
           ? CheckoutLayout
           : PageLayout;
 
-      const metaImageSrc =
-        ASSETS_URL +
-        (page.Intro_blob?.data?.attributes.url ||
-          page.Block_blob?.data?.attributes.url ||
-          recurData.OpenGraph_default?.data?.attributes.url);
+      const Pages = {
+        plan: CrowdfundingForm,
+        crowdfunding: Crowdfunding,
+        basic: BasicPage,
+        blogDetails: BlogDetails,
+        howToDetails: HowToDetails,
+        recipeDetails: RecipeDetails,
+        estateDetails: EstateDetails,
+        productCategory: ProductCategory,
+        productDetails: ProductDetails,
+        blog: Posts,
+        howTo: Posts,
+        recipe: Posts,
+        estate: Estate,
+        product: Product,
+        homepage: Homepage,
+        checkoutInformation: CheckoutInformation,
+        checkoutKindness: CheckoutKindness,
+        checkoutShipping: CheckoutShipping,
+        elephantPath: ElephantPath,
+      };
+
+      const Page = Pages[page.type];
 
       return (
         <Layout
@@ -407,77 +431,14 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
           metaImageSrc={metaImageSrc}
           isCheckoutKindness={page.type === "checkoutKindness" && true}
         >
-          {page.type === "homepage" ? (
-            <Homepage page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === "crowdfunding" ? (
-            <Crowdfunding page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === "basic" ? (
-            <BasicPage page={page} />
-          ) : page.type === "blog" ? (
-            <Posts page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === "blogDetails" ? (
-            <BlogDetails
+          {Page && (
+            <Page
               page={page}
-              recurData={recurData}
-              ariaLabelRecurData={ariaLabelRecurData}
-            />
-          ) : page.type === "howTo" ? (
-            <Posts page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === "howToDetails" ? (
-            <HowToDetails
-              page={page}
-              recurData={recurData}
-              ariaLabelRecurData={ariaLabelRecurData}
-            />
-          ) : page.type === "recipe" ? (
-            <Posts page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === "recipeDetails" ? (
-            <RecipeDetails
-              page={page}
-              recurData={recurData}
-              ariaLabelRecurData={ariaLabelRecurData}
-            />
-          ) : page.type === "estate" ? (
-            <Estate page={page} />
-          ) : page.type === "estateDetails" ? (
-            <EstateDetails
-              page={page}
-              recurData={recurData}
-              ariaLabelRecurData={ariaLabelRecurData}
-            />
-          ) : page.type === "product" ? (
-            <Product
-              page={page}
-              recurData={recurData}
-              ariaLabelRecurData={ariaLabelRecurData}
-            />
-          ) : page.type === "productCategory" ? (
-            <ProductCategory
-              page={page}
-              recurData={recurData}
-              ariaLabelRecurData={ariaLabelRecurData}
-            />
-          ) : page.type === "productDetails" ? (
-            <ProductDetails
-              page={page}
-              recurData={recurData}
-              ariaLabelRecurData={ariaLabelRecurData}
-            />
-          ) : page.type === "checkoutInformation" ? (
-            <CheckoutInformation page={page} recurData={recurData} />
-          ) : page.type === "checkoutKindness" ? (
-            <CheckoutKindness page={page} recurData={recurData} />
-          ) : page.type === "checkoutShipping" ? (
-            <CheckoutShipping page={page} recurData={recurData} />
-          ) : page.type === "elephantPath" ? (
-            <ElephantPath page={page} ariaLabelRecurData={ariaLabelRecurData} />
-          ) : page.type === "plan" ? (
-            <CrowdfundingForm
-              page={page}
-              recurData={recurData}
               locale={locale}
+              recurData={recurData}
+              ariaLabelRecurData={ariaLabelRecurData}
             />
-          ) : null}
+          )}
         </Layout>
       );
     }
