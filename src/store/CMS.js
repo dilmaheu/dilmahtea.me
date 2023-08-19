@@ -1,26 +1,32 @@
 import fs from "fs";
+import { parse, print } from "graphql";
 import printMessage from "@utils/printMessage";
 
 const queries = Object.values(
   await import.meta.glob("../queries/*.graphql", { as: "raw", eager: true })
 );
 
-const queryRegex = /((?<=^\s*){|(?<=\s+)query\s+{)(.*)}\s*$/s;
+const parsedQueries = [],
+  parsedFragments = [];
 
-const fragments = [],
-  query =
-    "{" +
-    queries
-      .map((query) => {
-        const [match, , queryContent] = queryRegex.exec(query);
+queries.forEach((query) => {
+  const graphqlDocument = parse(query);
 
-        fragments.push(query.replace(match, ""));
+  graphqlDocument.definitions.forEach((definition) => {
+    if (definition.kind === "OperationDefinition") {
+      parsedQueries.push(
+        print(definition).slice(parsedQueries.length === 0 ? 0 : 1, -1)
+      );
+    } else if (definition.kind === "FragmentDefinition") {
+      parsedFragments.push(print(definition));
+    }
+  });
+});
 
-        return queryContent;
-      })
-      .join("") +
-    "}",
-  fullQuery = fragments.join("\n") + "\n" + query;
+parsedQueries[parsedQueries.length - 1] += "}";
+
+const fullQuery =
+  parsedQueries.join("") + "\n\n" + parsedFragments.join("\n\n");
 
 const { data, dataWithFlattenedCollections } = await fetch(
   import.meta.env.DB_URL,
