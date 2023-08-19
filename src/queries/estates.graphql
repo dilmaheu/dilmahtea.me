@@ -4,39 +4,18 @@ fragment EstateAttributes on Estate {
   Estate_name
   Intro_text
   Intro_blob {
-    data {
-      attributes {
-        url
-        provider_metadata
-        formats
-        alternativeText
-      }
-    }
+    ...Media
   }
   Block_text
   Location {
-    data {
-      id
-      attributes {
-        url
-        provider_metadata
-        formats
-        alternativeText
-      }
-    }
+    ...Media
   }
   blogs(filters: { publishedAt: { ne: null } }) {
     data {
       attributes {
         Title
         Intro_blob {
-          data {
-            attributes {
-              url
-              provider_metadata
-              alternativeText
-            }
-          }
+          ...Media
         }
         authors {
           data {
