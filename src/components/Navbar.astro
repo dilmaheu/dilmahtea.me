@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon";
 import { Picture } from "astro-imagetools/components";
 
 import CMS from "@store/CMS";
@@ -17,10 +18,11 @@ interface Props {
   docLocale: string;
   footerText: string;
   isCartNavbar?: boolean;
+  page: Record<string, any>;
   availableLocales: string[];
 }
 
-const { docLocale, footerText, isCartNavbar, availableLocales } =
+const { page, docLocale, footerText, isCartNavbar, availableLocales } =
   Astro.props as Props;
 
 const recurData = CMS.get("recurringElement", docLocale),
@@ -90,13 +92,35 @@ const {
     );
   }
 
+  .nav-menu-title {
+    @apply leading-[150%];
+
+    font-size: poly-fluid-clamp(
+      (
+        768px: 12px,
+        1440px: 18px,
+      )
+    );
+  }
+
+  .nav-menu-flex {
+    @apply flex items-center;
+
+    gap: poly-fluid-clamp(
+      (
+        768px: 20px,
+        1240px: 80px,
+      )
+    );
+  }
+
   #sidebar nav {
     .menu-title {
-      @apply text-3xl font-semibold leading-[150%];
+      @apply text-[28px] font-semibold leading-[150%];
     }
 
     .sub-menu-title {
-      @apply text-2xl font-medium leading-[150%];
+      @apply text-xl font-normal leading-[150%];
     }
   }
 
@@ -154,9 +178,7 @@ const {
 
 <header
   id="navigation"
-  class:list={[
-    "md:!relative sticky top-0 z-[999] w-full bg-cover bg-right-bottom",
-  ]}
+  class="sticky top-0 z-[999] grid w-full bg-cover md:bg-dark-green"
 >
   <div class="navbar-container relative w-full sm:flex items-center z-10">
     <ClipPathSVG
@@ -609,6 +631,35 @@ const {
     </div>
   </div>
 
+  <div class="hidden md:block w-full relative z-5">
+    <div class="wrapper flex nav-menu-flex">
+      {
+        menu.map(
+          ({ Visibility, Title, Link, Sub_menu }, index) =>
+            Visibility && (
+              <div
+                class:list={[
+                  "relative font-bold flex items-center gap-[5px]",
+                  `nav-menu-${index + 1}`,
+                ]}
+              >
+                <a href={Link} class="nav-menu-title py-2.5 md:py-[15px]">
+                  {Title}
+                </a>
+                {Sub_menu.length > 0 && (
+                  <Icon name="ep:arrow-down-bold" class="w-3" />
+                )}
+
+                {(Link === "/" ? Link : Link.replace(/^\/|\/$/g, "")) ===
+                  page?.Meta?.URL_slug && (
+                  <div class="absolute bottom-4 w-full h-0.5 bg-white rounded" />
+                )}
+              </div>
+            )
+        )
+      }
+    </div>
+  </div>
   <script is:inline>
     {
       const navigation = document.getElementById("navigation"),
