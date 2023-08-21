@@ -4,7 +4,7 @@ export default function fillUpForm(entries) {
   entries.forEach(([name, value]) => {
     if (value) {
       const option: HTMLOptionElement = query(
-        `select[name="${name}"] option[value="${value}"]`
+        `select[name="${name}"] option[value="${value}"]`,
       );
 
       if (option) {
@@ -15,7 +15,7 @@ export default function fillUpForm(entries) {
         if (input) {
           if (input.type === "radio") {
             const selectedOptionInput: HTMLInputElement = query(
-              `input[name="${name}"][value="${value}"]`
+              `input[name="${name}"][value="${value}"]`,
             );
 
             selectedOptionInput.checked = true;

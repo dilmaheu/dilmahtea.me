@@ -100,7 +100,7 @@ const nutrition: Nutrition = {
     page.Nutrition.map((item) => [
       item.Nutrition_name,
       (item.Nutrition_amount || "0") + item.Nutrition_measurements_unit,
-    ])
+    ]),
   ),
 };
 ---
@@ -598,19 +598,19 @@ const nutrition: Nutrition = {
         document.querySelectorAll(".ingredient-amount");
 
       const recipeSectionServingSizeInput = document.getElementById(
-        "recipe-serving-size"
+        "recipe-serving-size",
       ) as HTMLSelectElement;
 
       recipeSectionServingSizeInput?.addEventListener("change", (e) => {
         const recipeSectionServingSize = Number(
-          recipeSectionServingSizeInput.selectedOptions[0].value
+          recipeSectionServingSizeInput.selectedOptions[0].value,
         );
 
         ingredientAmountElements.forEach((element: HTMLElement) => {
           const ingredientAmount = Number(element.dataset.amount);
 
           element.textContent = String(
-            ingredientAmount * recipeSectionServingSize
+            ingredientAmount * recipeSectionServingSize,
           );
         });
       });
@@ -800,7 +800,7 @@ const nutrition: Nutrition = {
                         </div>
                       </div>
                     </div>
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -841,7 +841,7 @@ const nutrition: Nutrition = {
         interactionEvents.forEach((eventType) => {
           document.removeEventListener(
             eventType,
-            firstInteractionEventListener
+            firstInteractionEventListener,
           );
         });
       };
@@ -875,7 +875,7 @@ const nutrition: Nutrition = {
     dateModified: page.updatedAt,
     description: `${(await renderMarkdown(page.Intro_text)).replace(
       /(<([^>]+)>)/gi,
-      ""
+      "",
     )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
     nutrition,
     prepTime: `PT${preparationTimeStringSm.toUpperCase().replace(/\s/g, "")}`,
@@ -892,8 +892,8 @@ const nutrition: Nutrition = {
           item.Instructions_part_ingredient_amount +
           item.Instructions_part_ingredient_measurements_unit +
           ` ` +
-          item.Instructions_part_ingredient_name
-      )
+          item.Instructions_part_ingredient_name,
+      ),
     ),
     recipeInstructions: await Promise.all(
       page.Instructions_part.flatMap((item) =>
@@ -913,11 +913,11 @@ const nutrition: Nutrition = {
           image: step.Instructions_part_steps_blob.data
             ? await importImage(
                 ASSETS_URL +
-                  step.Instructions_part_steps_blob?.data?.attributes.url
+                  step.Instructions_part_steps_blob?.data?.attributes.url,
               )
             : "",
-        }))
-      )
+        })),
+      ),
     ),
   }}
 />

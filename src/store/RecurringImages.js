@@ -16,7 +16,7 @@ await Promise.all(
 
       RecurringImages[key] = { src, alt };
     }
-  })
+  }),
 );
 
 export default RecurringImages;
