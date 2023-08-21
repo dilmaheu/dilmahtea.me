@@ -10,7 +10,6 @@ import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
-import { variantsOrder } from "@store/Products";
 
 import renderMarkdown from "@utils/renderMarkdown";
 import localizeCMSImage from "@utils/localizeCMSImage";
@@ -59,38 +58,6 @@ const totalSpentAmount = spentAmounts.reduce(
 );
 
 const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
-
-let availableFormats;
-
-if (stockAmount === 0) {
-  const formats = [];
-
-  availableFormats = [...availableVariants, ...availableSizes].filter(
-    ({ format, stockAmount }) => {
-      if (formats.includes(format)) return false;
-
-      formats.push(format);
-
-      return stockAmount;
-    },
-  );
-
-  availableFormats.sort(
-    ({ value: a }, { value: b }) =>
-      variantsOrder.indexOf(a) - variantsOrder.indexOf(b),
-  );
-
-  availableFormats = await Promise.all(
-    availableFormats.map(async (data) => ({
-      link: data.link,
-      format: data.format,
-      thumbnail: {
-        src: await importImage(ASSETS_URL + data.thumbnail.src),
-        alt: data.thumbnail.alt,
-      },
-    })),
-  );
-}
 ---
 
 <style lang="scss">

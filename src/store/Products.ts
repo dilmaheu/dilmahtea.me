@@ -125,11 +125,30 @@ const allProducts = catalog.Products.flatMap(
       ];
 
       flattenedVariants.forEach((attributes) => {
+        const locale = attributes.locale.substring(0, 2);
+
         attributes.baseProductTitle = Title;
-        attributes.availableVariants =
-          availableVariants[attributes.locale.substring(0, 2)];
-        attributes.availableSizes =
-          availableSizes[attributes.locale.substring(0, 2)];
+        attributes.availableVariants = availableVariants[locale];
+        attributes.availableSizes = availableSizes[locale];
+
+        const formats = [],
+          availableFormats = [
+            ...attributes.availableVariants,
+            ...attributes.availableSizes,
+          ].filter(({ format, stockAmount }) => {
+            if (formats.includes(format)) return false;
+
+            formats.push(format);
+
+            return stockAmount;
+          });
+
+        availableFormats.sort(
+          ({ value: a }, { value: b }) =>
+            variantsOrder.indexOf(a) - variantsOrder.indexOf(b),
+        );
+
+        attributes.availableFormats = availableFormats;
       });
 
       return data;
