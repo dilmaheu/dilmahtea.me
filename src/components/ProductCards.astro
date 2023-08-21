@@ -36,6 +36,7 @@ const recurData = CMS.get("recurringElement", locale),
   {
     products.slice(0, 3).map((product) => {
       const {
+        SKU,
         Title,
         Intro_blob,
         Price,
@@ -236,7 +237,10 @@ const recurData = CMS.get("recurringElement", locale),
             )}
 
             {Stock_amount > 0 ? (
-              <button class="unlink product-card-btn text-primary bg-secondary-light">
+              <button
+                data-sku={SKU}
+                class="unlink product-card-btn text-primary bg-secondary-light"
+              >
                 <Icon
                   name="mi:shopping-cart-add"
                   class="hidden sm:inline-flex w-5 h-5"

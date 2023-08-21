@@ -8,6 +8,7 @@ import Banner from "@components/Banner.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ProductCards from "@components/ProductCards.astro";
 import KindnessImpact from "@components/KindnessImpact.astro";
+import AddProductToCart from "@components/AddProductToCart.astro";
 import ProductCategories from "@components/ProductCategories.astro";
 
 import SecondaryPageLayout from "@layouts/SecondaryPageLayout.astro";
@@ -39,6 +40,13 @@ const latestProducts = Products.get("all")
 
 const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
   latestProducts.find(({ SKU }) => attributes.SKU === SKU),
+);
+
+const productsToBeAvailableOnClient = [
+  ...latestProducts.slice(0, 3),
+  ...block6FilteredProducts,
+].filter(
+  ({ SKU }, i, self) => i === self.findIndex((product) => product.SKU === SKU),
 );
 ---
 
@@ -347,3 +355,7 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
     }
   </div>
 </SecondaryPageLayout>
+
+<AddProductToCart
+  productsToBeAvailableOnClient={productsToBeAvailableOnClient}
+/>
