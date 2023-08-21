@@ -45,12 +45,12 @@ const recurData = CMS.get("recurringElement", locale),
         variant,
         Stock_amount,
         In_stock_date,
-        availableSizes,
+        availableFormats,
         estate_name,
         Meta: { URL_slug },
       } = product;
 
-      const availableFormatsCount = availableSizes.length;
+      const availableFormatsCount = availableFormats.length;
 
       return (
         <div
@@ -180,11 +180,11 @@ const recurData = CMS.get("recurringElement", locale),
             {availableFormatsCount > 0 && (
               <div class="inline-flex gap-x-2.5">
                 <span class="flex">
-                  {availableSizes
+                  {availableFormats
                     .slice(0, 2)
-                    .map(({ thumbnail: { src, alt } }) => (
+                    .map(async ({ thumbnail: { src, alt } }) => (
                       <img
-                        src={ASSETS_URL + src}
+                        src={await importImage(ASSETS_URL + src)}
                         alt={alt}
                         class:list={[
                           "-ml-[15px] first:ml-0 rounded-full",
