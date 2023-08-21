@@ -1,5 +1,6 @@
 ---
-import CMS from "@store/CMS";
+import Products from "@store/Products";
+
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
@@ -22,33 +23,22 @@ posts.sort((a, b) => {
 const randPost = posts[(Math.random() * posts.length) | 0],
   estates = page.Estates.data.map(({ attributes }) => attributes);
 
-const catalog = CMS.get("catalog", "en");
-
-const getLocalizedAttributes = (attributes, targetLocale) => {
-  const matchingLocalization = attributes.localizations?.data.find(
-    ({ attributes }) =>
-      attributes.locale.startsWith(targetLocale.substring(0, 2)),
-  );
-  return attributes.locale.startsWith(targetLocale.substring(0, 2))
-    ? attributes
-    : (matchingLocalization && matchingLocalization.attributes) || null;
-};
-
-const latestProducts = catalog.Products.flatMap(({ products }) =>
-  products.data.flatMap(({ attributes }) => attributes),
-)
-  .filter((product) => product.createdAt && product.createdAt.length)
+const latestProducts = Products.get("all")
+  .data.map(({ attributes }) =>
+    [
+      attributes,
+      ...attributes.localizations.data.map(({ attributes }) => attributes),
+    ].find((attributes) => locale === attributes.locale.substring(0, 2)),
+  )
+  .filter(Boolean)
   .sort(
     (productA, productB) =>
-      new Date(productB.createdAt) - new Date(productA.createdAt),
-  )
-  .map((product) => getLocalizedAttributes(product, locale))
-  .filter(Boolean);
+      new Date(productB.createdAt).getTime() -
+      new Date(productA.createdAt).getTime(),
+  );
 
-const block6FilteredProducts = latestProducts.filter((product) =>
-  page.Block6_products.data.some(
-    ({ attributes }) => attributes.Meta.URL_slug === product.Meta.URL_slug,
-  ),
+const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
+  latestProducts.find(({ SKU }) => attributes.SKU === SKU),
 );
 ---
 
