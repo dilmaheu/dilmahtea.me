@@ -34,10 +34,12 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
     @include poly-fluid-sizing(
       "padding-top",
       (
-        639.98px: 130px,
+        639.98px: 131px,
         640px: 70px,
-        768px: 74px,
-        1024px: 104px,
+        767px: 77px,
+        768px: 135px,
+        1024px: 162px,
+        1280px: 175px,
       )
     );
   }
@@ -54,63 +56,45 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
     @apply relative sm:hidden aspect-[6/5];
   }
 
-  .nav-menu {
-    height: poly-fluid-clamp(
-      (
-        768px: 56px,
-        1240px: 76px,
-      )
-    );
-  }
-
-  .header-content {
-    @apply absolute inset-0;
-
+  .nav-sub-menu-padding-right {
     @include poly-fluid-sizing(
-      "padding-top",
+      "padding-right",
       (
-        767.98px: 0px,
-        768px: 56px,
-        1240px: 76px,
+        639px: 0px,
+        640px: 260px,
+        768px: 300px,
+        1024px: 380px,
+        1440px: 460px,
+        1536px: 550px,
       )
     );
   }
 
-  .nav-menu-caontainer {
-    nav {
-      @include poly-fluid-sizing(
-        "padding-right",
+  .nav-menu-flex {
+    @apply items-center;
+
+    gap: poly-fluid-clamp(
+      (
+        768px: 20px,
+        1240px: 80px,
+      )
+    );
+  }
+
+  .nav-sub-menu-container {
+    @apply absolute top-0 bg-primary w-full;
+
+    box-shadow: 0px 4px 5px 0px rgba(72, 72, 72, 0.15);
+
+    .nav-sub-menu-title {
+      @apply leading-[150%] py-3;
+
+      font-size: poly-fluid-clamp(
         (
-          639px: 0px,
-          640px: 260px,
-          768px: 300px,
-          1024px: 380px,
-          1440px: 460px,
-          1536px: 550px,
+          768px: 12px,
+          1440px: 16px,
         )
       );
-
-      .nav-menu-title {
-        @apply font-bold leading-[150%];
-
-        font-size: poly-fluid-clamp(
-          (
-            768px: 12px,
-            1440px: 18px,
-          )
-        );
-      }
-
-      .nav-sub-menu {
-        @apply leading-[150%] text-primary;
-
-        font-size: poly-fluid-clamp(
-          (
-            768px: 12px,
-            1440px: 16px,
-          )
-        );
-      }
     }
   }
 </style>
@@ -130,68 +114,46 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
   <UpdateTopMargin />
 
   <div class="relative h-full">
-    <div class="nav-menu hidden md:flex items-end bg-dark-green relative z-40">
-      <div class="nav-menu-caontainer wrapper pb-2.5 md:pb-[15px]">
-        <nav class="text-white h-full">
-          <span class="flex gap-5 justify-between items-center h-full">
-            {
-              menu.map(({ Visibility, Title, Link, Sub_menu }) => {
-                const hasSubMenu = Sub_menu.length > 0;
+    {
+      menu.map(({ Visibility, Title, Link, Sub_menu }, index) => {
+        const subMenuLinks = Sub_menu.map(({ Link }) =>
+            Link.replace(/^\/|\/$/g, "")
+          ),
+          pageUrl = page.Meta.URL_slug.replace(/^\/|\/$/g, ""),
+          isActive =
+            pageUrl === Link.replace(/^\/|\/$/g, "") ||
+            subMenuLinks.includes(pageUrl);
 
-                return (
-                  Visibility && (
-                    <div class="group">
-                      <div
-                        class:list={[
-                          hasSubMenu && "flex items-center gap-[5px]",
-                        ]}
-                      >
-                        <a href={Link} class="nav-menu-title">
-                          {Title}
-                        </a>
-                        {hasSubMenu && (
-                          <Icon name="ep:arrow-down-bold" class="w-3" />
-                        )}
-                      </div>
-
-                      {(Link === "/" ? Link : Link.replace(/^\/|\/$/g, "")) ===
-                        page?.Meta?.URL_slug && (
-                        <div class="h-0.5 bg-white rounded mb-[3px]" />
-                      )}
-
-                      {hasSubMenu && (
-                        <div
-                          class:list={[
-                            "relative hidden group-hover:block",
-                            "drop-shadow-[10px_10px_15px_rgba(0,0,0,0.25)]",
-                          ]}
-                        >
-                          <div
-                            class:list={[
-                              "absolute top-0 grid sm:gap-2.5",
-                              "bg-white rounded-md min-w-[116px] p-[18px]",
-                            ]}
-                          >
-                            {Sub_menu.map(
-                              ({ Visibility, Title, Link }) =>
-                                Visibility && (
-                                  <div class="nav-sub-menu whitespace-nowrap">
-                                    <a href={Link}>{Title}</a>
-                                  </div>
-                                )
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )
-                );
-              })
-            }
-          </span>
-        </nav>
-      </div>
-    </div>
+        return (
+          Visibility &&
+          Sub_menu.length > 0 && (
+            <div
+              class:list={[
+                isActive ? "z-30" : "z-40",
+                "nav-sub-menu-container",
+              ]}
+            >
+              <div
+                id={`sub-menu-${index + 1}`}
+                class:list={[
+                  isActive ? "md:!flex" : "hidden",
+                  "nav-menu-flex wrapper nav-sub-menu-padding-right",
+                ]}
+              >
+                {Sub_menu.map(
+                  ({ Visibility, Title, Link }) =>
+                    Visibility && (
+                      <a href={Link} class="nav-sub-menu-title">
+                        {Title}
+                      </a>
+                    )
+                )}
+              </div>
+            </div>
+          )
+        );
+      })
+    }
 
     {
       (headerBackgrounds || hero_background) && (
@@ -292,7 +254,7 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
 
     <div
       class:list={[
-        (headerBackground || hero_background) && "header-content",
+        (headerBackground || hero_background) && "absolute inset-0",
         headerBackgroundSm && "absolute sm:static inset-0",
       ]}
     >
