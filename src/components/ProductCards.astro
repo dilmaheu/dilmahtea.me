@@ -1,16 +1,19 @@
 ---
 import { Icon } from "astro-icon";
+import { Picture } from "astro-imagetools/components";
 
 import CMS from "@store/CMS";
-import { Picture } from "astro-imagetools/components";
+import RecurringImages from "@store/RecurringImages";
+
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+
+const { white_love } = RecurringImages;
 
 const { products, locale } = Astro.props,
   { ASSETS_URL } = import.meta.env;
 
 const recurData = CMS.get("recurringElement", locale),
-  checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
-  ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style lang="scss">
@@ -33,19 +36,20 @@ const recurData = CMS.get("recurringElement", locale),
   {
     products.slice(0, 3).map((product) => {
       const {
-          Title,
-          Intro_blob,
-          Price,
-          Weight_tea,
-          Weight_tea_unit,
-          variant,
-          Stock_amount,
-          In_stock_date,
-          availableSizes,
-          estate_name,
-          Meta: { URL_slug },
-        } = product,
-        availableFormatsCount = availableSizes.length;
+        Title,
+        Intro_blob,
+        Price,
+        Weight_tea,
+        Weight_tea_unit,
+        variant,
+        Stock_amount,
+        In_stock_date,
+        availableSizes,
+        estate_name,
+        Meta: { URL_slug },
+      } = product;
+
+      const availableFormatsCount = availableSizes.length;
 
       return (
         <div
@@ -86,10 +90,14 @@ const recurData = CMS.get("recurringElement", locale),
                         "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none",
                       ].join(" ")}
                     >
-                      {alertCircleIcon}
+                      <Icon
+                        name="mdi:alert-circle"
+                        class="inline-flex p-0.5 w-[26px] text-white bg-warning rounded-full select-none"
+                      />
+
                       {recurData.Item_stock_text.replace(
                         "<in_stock_date>",
-                        In_stock_date
+                        In_stock_date,
                       )}
                     </div>
                   )
@@ -152,7 +160,7 @@ const recurData = CMS.get("recurringElement", locale),
                             Meta: { URL_slug },
                           },
                         },
-                        index
+                        index,
                       ) => (
                         <a
                           href={URL_slug}
@@ -161,7 +169,7 @@ const recurData = CMS.get("recurringElement", locale),
                           {Estate_name +
                             (index === estate_name.data.length - 1 ? "" : ",")}
                         </a>
-                      )
+                      ),
                     )}
                   </div>
                 </div>
@@ -203,21 +211,23 @@ const recurData = CMS.get("recurringElement", locale),
                       {Stock_amount === 0
                         ? recurData.Product_stock_available_text
                         : recurData.Product_available_text}
+
                       <span class="font-bold underline underline-offset-2">
                         {availableFormatsCount === 1
                           ? recurData.Product_other_formats_singular_text
                           : recurData.Product_other_formats_text.replaceAll(
                               "<count>",
-                              availableFormatsCount
+                              availableFormatsCount,
                             )}
                       </span>
                     </span>
+
                     <span class="block sm:hidden font-bold underline underline-offset-2">
                       {Stock_amount === 0
                         ? recurData.Product_other_formats_singular_text_sm
                         : recurData.Product_other_formats_text_sm.replaceAll(
                             "<count>",
-                            availableFormatsCount
+                            availableFormatsCount,
                           )}
                     </span>
                   </em>
@@ -226,10 +236,7 @@ const recurData = CMS.get("recurringElement", locale),
             )}
 
             {Stock_amount > 0 ? (
-              <button
-                onClick={() => addProductToCart(product)}
-                class="unlink product-card-btn text-primary bg-secondary-light"
-              >
+              <button class="unlink product-card-btn text-primary bg-secondary-light">
                 <Icon
                   name="mi:shopping-cart-add"
                   class="hidden sm:inline-flex w-5 h-5"

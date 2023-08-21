@@ -4,8 +4,8 @@ import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
 import Banner from "@components/Banner.astro";
-import ProductCard from "@components/ProductCard.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import ProductCards from "@components/ProductCards.astro";
 import KindnessImpact from "@components/KindnessImpact.astro";
 import ProductCategories from "@components/ProductCategories.astro";
 
@@ -27,7 +27,7 @@ const catalog = CMS.get("catalog", "en");
 const getLocalizedAttributes = (attributes, targetLocale) => {
   const matchingLocalization = attributes.localizations?.data.find(
     ({ attributes }) =>
-      attributes.locale.startsWith(targetLocale.substring(0, 2))
+      attributes.locale.startsWith(targetLocale.substring(0, 2)),
   );
   return attributes.locale.startsWith(targetLocale.substring(0, 2))
     ? attributes
@@ -35,20 +35,20 @@ const getLocalizedAttributes = (attributes, targetLocale) => {
 };
 
 const latestProducts = catalog.Products.flatMap(({ products }) =>
-  products.data.flatMap(({ attributes }) => attributes)
+  products.data.flatMap(({ attributes }) => attributes),
 )
   .filter((product) => product.createdAt && product.createdAt.length)
   .sort(
     (productA, productB) =>
-      new Date(productB.createdAt) - new Date(productA.createdAt)
+      new Date(productB.createdAt) - new Date(productA.createdAt),
   )
   .map((product) => getLocalizedAttributes(product, locale))
   .filter(Boolean);
 
 const block6FilteredProducts = latestProducts.filter((product) =>
   page.Block6_products.data.some(
-    ({ attributes }) => attributes.Meta.URL_slug === product.Meta.URL_slug
-  )
+    ({ attributes }) => attributes.Meta.URL_slug === product.Meta.URL_slug,
+  ),
 );
 ---
 
@@ -181,7 +181,7 @@ const block6FilteredProducts = latestProducts.filter((product) =>
             </h2>
           )}
 
-          <ProductCard {locale} products={latestProducts} />
+          <ProductCards {locale} products={latestProducts} />
 
           {page.Block3_button_text && (
             <div class="flex justify-center mt-[25px] sm:mt-[30px]">
@@ -316,7 +316,7 @@ const block6FilteredProducts = latestProducts.filter((product) =>
             </h2>
           )}
 
-          <ProductCard {locale} products={block6FilteredProducts} />
+          <ProductCards {locale} products={block6FilteredProducts} />
 
           {page.Block6_button_text && (
             <div class="flex justify-center mt-[25px] sm:mt-[30px]">
