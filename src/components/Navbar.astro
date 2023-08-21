@@ -660,6 +660,36 @@ const {
       }
     </div>
   </div>
+
+  <script is:inline>
+    document.addEventListener("DOMContentLoaded", () => {
+      const contentToShow = {};
+      let currentElement = null;
+      const showContent = (id) => (contentToShow[id].style.display = "flex");
+      const hideContent = (id) => (contentToShow[id].style.display = "none");
+      const handleHover = (id) => (
+        currentElement && hideContent(currentElement), showContent(id)
+      );
+
+      for (let i = 1; i <= 15; i++) {
+        const navMenu = document.querySelector(`.nav-menu-${i}`);
+        const contentId = `sub-menu-${i}`;
+        contentToShow[contentId] = document.getElementById(contentId);
+
+        if (navMenu && contentToShow[contentId]) {
+          [navMenu, contentToShow[contentId]].forEach((element) => {
+            element.addEventListener("mouseenter", () =>
+              handleHover(contentId)
+            );
+            element.addEventListener("mouseleave", () =>
+              hideContent(contentId)
+            );
+          });
+        }
+      }
+    });
+  </script>
+
   <script is:inline>
     {
       const navigation = document.getElementById("navigation"),
