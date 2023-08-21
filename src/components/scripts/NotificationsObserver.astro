@@ -15,11 +15,11 @@ const { locales } = getLocalesData();
 
   if (window.requestedLocale) {
     const notificationsObserver = new MutationObserver(function (
-      mutationRecords
+      mutationRecords,
     ) {
       // check if any notification is added in current records' batch
       const documentHasNewNotifications = mutationRecords.some((record) =>
-        record.target?.classList?.contains("notification-content")
+        record.target?.classList?.contains("notification-content"),
       );
 
       if (documentHasNewNotifications) {
@@ -27,7 +27,7 @@ const { locales } = getLocalesData();
 
         topmostTarget
           .querySelectorAll(
-            `.notification .notification-content .${requestedLocale}`
+            `.notification .notification-content .${requestedLocale}`,
           )
           .forEach((notification) => notification.classList.remove("hidden"));
       }

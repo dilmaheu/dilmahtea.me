@@ -45,7 +45,7 @@ await Promise.all(
     });
 
     await fs.promises.writeFile(path, json);
-  })
+  }),
 );
 
 export function simplifyImageFilenames(document) {

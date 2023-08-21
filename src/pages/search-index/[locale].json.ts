@@ -18,7 +18,7 @@ const { ASSETS_URL } = import.meta.env,
 
 const searchIndex = {},
   pages = contentTypes.flatMap(
-    (type) => (CMS.get(type) || Products.get("all")).data
+    (type) => (CMS.get(type) || Products.get("all")).data,
   );
 
 pages.forEach(({ attributes }) => {
@@ -30,7 +30,7 @@ pages.forEach(({ attributes }) => {
       Title = attributes.Title || attributes.Estate_name,
       Intro_text = attributes.Intro_text.slice(0, 60).replace(
         /(<([^>]+)>)/gi,
-        ""
+        "",
       ),
       Intro_blob = {
         url:
@@ -65,9 +65,9 @@ await Promise.all(
     .map(async ({ Intro_blob }) => {
       Intro_blob.url = await tryUntilResolve(
         () => importImage(Intro_blob.url),
-        (message) => message + " " + Intro_blob.url
+        (message) => message + " " + Intro_blob.url,
       );
-    })
+    }),
 );
 
 export function getStaticPaths() {
