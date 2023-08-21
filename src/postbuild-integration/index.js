@@ -64,7 +64,7 @@ const postbuildIntegration = {
           const stringifiedDocument = simplifyImageFilenames(document);
 
           await fs.writeFile(path, stringifiedDocument);
-        })
+        }),
       );
 
       await Promise.all([

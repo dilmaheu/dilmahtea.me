@@ -72,12 +72,12 @@ declare global {
     addProductToCart: (id: string) => void; // defined in CartOverlay.astro
     replacePlaceholders: (
       content: string,
-      data: Record<string, string | number>
+      data: Record<string, string | number>,
     ) => string; // defined in CartStore.astro
 
     listenToInputEvents: (
       tweakBtns: NodeListOf<HTMLButtonElement>,
-      input: HTMLInputElement
+      input: HTMLInputElement,
     ) => void; // defined in CartOverlay.astro
 
     removeTopNotification: (notification: HTMLElement) => void; // defined in NotificationAnimations.astro

@@ -22,7 +22,7 @@ const { page, ariaLabelRecurData } = Astro.props,
 
 // fetch crowdfunding stats from Cloudflare Worker
 const { supportersCount, totalAmountRaised } = await fetch(
-  "https://crowdfunding-stats.scripts.dilmahtea.me"
+  "https://crowdfunding-stats.scripts.dilmahtea.me",
 ).then((res) => res.json());
 
 // calculate crowdfunding progress percent
@@ -174,7 +174,7 @@ const goal = 100000,
   progressBars.forEach((progressBar) => {
     progressBar.animate(
       { width: [initialProgress, finalProgress] },
-      animationDuration
+      animationDuration,
     ).onfinish = () => {
       progressBar.style.width = finalProgress;
     };
