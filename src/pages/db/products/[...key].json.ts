@@ -1,7 +1,8 @@
 import { marked } from "marked";
 import { renderPicture } from "astro-imagetools/api";
+
+import productsStore from "@store/Products";
 import tryUntilResolve from "@utils/tryUntilResolve";
-import productsStore, { variantsOrder } from "@store/Products";
 
 const { ASSETS_URL } = import.meta.env;
 
@@ -26,8 +27,7 @@ async function processProductData(attributes) {
     sub_category,
     productVariant: tea_variant,
     productSize: tea_size,
-    availableVariants,
-    availableSizes,
+    availableFormats,
     Meta: { URL_slug },
   } = attributes;
 
@@ -61,23 +61,6 @@ async function processProductData(attributes) {
   let availableFormatsCount, availableFormatThumbnails;
 
   if (Stock_amount === 0) {
-    const formats = [];
-
-    const availableFormats = [...availableVariants, ...availableSizes].filter(
-      ({ format, stockAmount }) => {
-        if (formats.includes(format)) return false;
-
-        formats.push(format);
-
-        return stockAmount;
-      },
-    );
-
-    availableFormats.sort(
-      ({ value: a }, { value: b }) =>
-        variantsOrder.indexOf(a) - variantsOrder.indexOf(b),
-    );
-
     availableFormatsCount = availableFormats.length;
 
     try {

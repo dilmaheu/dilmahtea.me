@@ -1,10 +1,14 @@
 ---
+import Products from "@store/Products";
+
 import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
 import Banner from "@components/Banner.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import ProductCards from "@components/ProductCards.astro";
 import KindnessImpact from "@components/KindnessImpact.astro";
+import AddProductToCart from "@components/AddProductToCart.astro";
 import ProductCategories from "@components/ProductCategories.astro";
 
 import SecondaryPageLayout from "@layouts/SecondaryPageLayout.astro";
@@ -19,6 +23,31 @@ posts.sort((a, b) => {
 
 const randPost = posts[(Math.random() * posts.length) | 0],
   estates = page.Estates.data.map(({ attributes }) => attributes);
+
+const latestProducts = Products.get("all")
+  .data.map(({ attributes }) =>
+    [
+      attributes,
+      ...attributes.localizations.data.map(({ attributes }) => attributes),
+    ].find((attributes) => locale === attributes.locale.substring(0, 2)),
+  )
+  .filter(Boolean)
+  .sort(
+    (productA, productB) =>
+      new Date(productB.createdAt).getTime() -
+      new Date(productA.createdAt).getTime(),
+  );
+
+const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
+  latestProducts.find(({ SKU }) => attributes.SKU === SKU),
+);
+
+const productsToBeAvailableOnClient = [
+  ...latestProducts.slice(0, 3),
+  ...block6FilteredProducts,
+].filter(
+  ({ SKU }, i, self) => i === self.findIndex((product) => product.SKU === SKU),
+);
 ---
 
 <style lang="scss">
@@ -50,28 +79,71 @@ const randPost = posts[(Math.random() * posts.length) | 0],
       clip-path: url(#estates-banner-curve);
     }
   }
+
+  .linked-button {
+    @apply text-[clamp(20px,1.5vw+8px,30px)] font-medium text-primary;
+  }
 </style>
 
 <SecondaryPageLayout {page} plainTitle={true} headerBackground={true}>
   <div role="main" class="grid gap-[50px] my-[50px]">
-    {/* Random Post Section */}
+    {/* latest Products Section */}
     {
       page.Block_visibility && (
+        <section>
+          {page.Block_visibility && (
+            <h2
+              id={page?.Block_title.toLowerCase().replaceAll(" ", "-")}
+              class:list={[
+                "heading-secondary mb-[25px] sm:mb-[30px]",
+                "wrapper font-semibold leading-[130%] text-primary",
+              ]}
+            >
+              {page.Block_title}
+            </h2>
+          )}
+
+          <ProductCards {locale} products={latestProducts} />
+
+          {page.Block_button_text && (
+            <div class="flex justify-center mt-[25px] sm:mt-[30px]">
+              <a
+                href={page?.Block_button_link || "#"}
+                class="link-text linked-button"
+              >
+                {page.Block_button_text}
+              </a>
+            </div>
+          )}
+        </section>
+      )
+    }
+
+    {/* Product Category Section */}
+    {
+      page.Block2_visibility && (
+        <ProductCategories {locale} title={page.Block2_title} />
+      )
+    }
+
+    {/* Random Post Section */}
+    {
+      page.Block3_visibility && (
         <section class="wrapper">
           <ClipPathSVG
             id="post-img-curve"
             path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
           />
 
-          {page.Block_title && (
+          {page.Block3_title && (
             <h2
-              id={page.Block_title.toLowerCase().replaceAll(" ", "-")}
+              id={page.Block3_title.toLowerCase().replaceAll(" ", "-")}
               class:list={[
                 "heading-secondary font-semibold leading-[130%]",
-                "text-black text-center mb-[30px]",
+                "text-primary text-center mb-[30px]",
               ]}
             >
-              {page.Block_title}
+              {page.Block3_title}
             </h2>
           )}
 
@@ -124,22 +196,24 @@ const randPost = posts[(Math.random() * posts.length) | 0],
     }
 
     <div class="grid gap-[50px]">
+      {/* Banner Section */}
       {
-        page.Block2_visibility && (
+        page.Block4_visibility && (
           <div class="z-30">
             <Banner
-              title={page.Block2_title}
-              intro={page.Block2_text}
-              button_text={page.Block2_button_text}
-              button_link={page.Block2_button_link}
-              background_img={page.Block2_blob}
+              title={page.Block4_title}
+              intro={page.Block4_text}
+              button_text={page.Block4_button_text}
+              button_link={page.Block4_button_link}
+              background_img={page.Block4_blob}
             />
           </div>
         )
       }
 
+      {/* Estates Section */}
       {
-        page.Block3_visibility && estates.length > 0 && (
+        page.Block5_visibility && estates.length > 0 && (
           <section class="-mt-[110px]">
             <ClipPathSVG
               id="estates-banner-curve"
@@ -154,11 +228,14 @@ const randPost = posts[(Math.random() * posts.length) | 0],
             <div class="bg-primary pt-[60px] relative z-10">
               <div class="wrapper pt-[50px] pb-6 text-white">
                 <div class="heading-secondary font-semibold leading-[130%] text-center">
-                  <h2>{page.Block3_title}</h2>
+                  <h2>{page.Block5_title}</h2>
                 </div>
-                <div class="hero-text prose max-w-none text-white text-center mt-[15px]">
-                  <Markdown>{page.Block3_text}</Markdown>
-                </div>
+
+                {page.Block5_text && (
+                  <div class="hero-text prose max-w-none text-white text-center mt-[15px]">
+                    <Markdown>{page.Block5_text}</Markdown>
+                  </div>
+                )}
 
                 <div
                   role="list"
@@ -223,31 +300,62 @@ const randPost = posts[(Math.random() * posts.length) | 0],
     </div>
 
     {
-      page.Block4_visibility && (
-        <ProductCategories {locale} title={page.Block4_title} />
+      page.Block6_visibility && block6FilteredProducts.length > 0 && (
+        <section>
+          {page.Block6_visibility && (
+            <h2
+              id={page?.Block6_title.toLowerCase().replaceAll(" ", "-")}
+              class:list={[
+                "heading-secondary mb-[25px] sm:mb-[30px]",
+                "wrapper font-semibold leading-[130%] text-primary",
+              ]}
+            >
+              {page.Block6_title}
+            </h2>
+          )}
+
+          <ProductCards {locale} products={block6FilteredProducts} />
+
+          {page.Block6_button_text && (
+            <div class="flex justify-center mt-[25px] sm:mt-[30px]">
+              <a
+                href={page?.Block6_button_link || "#"}
+                class="link-text linked-button"
+              >
+                {page.Block6_button_text}
+              </a>
+            </div>
+          )}
+        </section>
       )
     }
 
+    {/* Banner Section */}
     {
-      page.Block5_visibility && (
+      page.Block7_visibility && (
         <Banner
-          title={page.Block5_title}
-          intro={page.Block5_text}
-          button_text={page.Block5_button_text}
-          button_link={page.Block5_button_link}
-          blob={page.Block5_blob}
+          title={page.Block7_title}
+          intro={page.Block7_text}
+          button_text={page.Block7_button_text}
+          button_link={page.Block7_button_link}
+          blob={page.Block7_blob}
         />
       )
     }
 
+    {/* Kindness Impact Section */}
     {
-      page.Block6_visibility && (
+      page.Block8_visibility && (
         <KindnessImpact
           {locale}
-          heading={page.Block6_title}
+          heading={page.Block8_title}
           impacts={page.Impacts}
         />
       )
     }
   </div>
 </SecondaryPageLayout>
+
+<AddProductToCart
+  productsToBeAvailableOnClient={productsToBeAvailableOnClient}
+/>
