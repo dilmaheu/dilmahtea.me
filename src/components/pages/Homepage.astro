@@ -87,31 +87,63 @@ const productsToBeAvailableOnClient = [
 
 <SecondaryPageLayout {page} plainTitle={true} headerBackground={true}>
   <div role="main" class="grid gap-[50px] my-[50px]">
-    {/* Product Category Section */}
+    {/* latest Products Section */}
     {
       page.Block_visibility && (
-        <ProductCategories {locale} title={page.Block_title} />
+        <section>
+          {page.Block_visibility && (
+            <h2
+              id={page?.Block_title.toLowerCase().replaceAll(" ", "-")}
+              class:list={[
+                "heading-secondary mb-[25px] sm:mb-[30px]",
+                "wrapper font-semibold leading-[130%] text-primary",
+              ]}
+            >
+              {page.Block_title}
+            </h2>
+          )}
+
+          <ProductCards {locale} products={latestProducts} />
+
+          {page.Block_button_text && (
+            <div class="flex justify-center mt-[25px] sm:mt-[30px]">
+              <a
+                href={page?.Block_button_link || "#"}
+                class="link-text linked-button"
+              >
+                {page.Block_button_text}
+              </a>
+            </div>
+          )}
+        </section>
+      )
+    }
+
+    {/* Product Category Section */}
+    {
+      page.Block2_visibility && (
+        <ProductCategories {locale} title={page.Block2_title} />
       )
     }
 
     {/* Random Post Section */}
     {
-      page.Block2_visibility && (
+      page.Block3_visibility && (
         <section class="wrapper">
           <ClipPathSVG
             id="post-img-curve"
             path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
           />
 
-          {page.Block2_title && (
+          {page.Block3_title && (
             <h2
-              id={page.Block2_title.toLowerCase().replaceAll(" ", "-")}
+              id={page.Block3_title.toLowerCase().replaceAll(" ", "-")}
               class:list={[
                 "heading-secondary font-semibold leading-[130%]",
                 "text-primary text-center mb-[30px]",
               ]}
             >
-              {page.Block2_title}
+              {page.Block3_title}
             </h2>
           )}
 
@@ -159,38 +191,6 @@ const productsToBeAvailableOnClient = [
               </div>
             </div>
           </div>
-        </section>
-      )
-    }
-
-    {/* latest Products Section */}
-    {
-      page.Block3_visibility && (
-        <section>
-          {page.Block3_visibility && (
-            <h2
-              id={page?.Block3_title.toLowerCase().replaceAll(" ", "-")}
-              class:list={[
-                "heading-secondary mb-[25px] sm:mb-[30px]",
-                "wrapper font-semibold leading-[130%] text-primary",
-              ]}
-            >
-              {page.Block3_title}
-            </h2>
-          )}
-
-          <ProductCards {locale} products={latestProducts} />
-
-          {page.Block3_button_text && (
-            <div class="flex justify-center mt-[25px] sm:mt-[30px]">
-              <a
-                href={page?.Block3_button_link || "#"}
-                class="link-text linked-button"
-              >
-                {page.Block3_button_text}
-              </a>
-            </div>
-          )}
         </section>
       )
     }
