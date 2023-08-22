@@ -36,6 +36,7 @@ const recurData = CMS.get("recurringElement", locale),
   {
     products.slice(0, 3).map((product) => {
       const {
+        SKU,
         Title,
         Intro_blob,
         Price,
@@ -44,12 +45,12 @@ const recurData = CMS.get("recurringElement", locale),
         variant,
         Stock_amount,
         In_stock_date,
-        availableSizes,
+        availableFormats,
         estate_name,
         Meta: { URL_slug },
       } = product;
 
-      const availableFormatsCount = availableSizes.length;
+      const availableFormatsCount = availableFormats.length;
 
       return (
         <div
@@ -106,7 +107,12 @@ const recurData = CMS.get("recurringElement", locale),
             )}
           </div>
 
-          <div class="pt-2.5 lg:pt-5 pb-[15px] lg:pb-[25px] px-[clamp(15px,calc(4vw-9px),36px)] grid gap-[5px] text-white">
+          <div
+            class:list={[
+              "w-full pt-2.5 lg:pt-5 pb-[15px] lg:pb-[25px]",
+              "px-[clamp(15px,calc(4vw-9px),36px)] grid gap-[5px] text-white",
+            ]}
+          >
             <div
               class="product-card-title recoleta font-semibold leading-[120%] md:leading-[110%]"
               style={{
@@ -179,11 +185,11 @@ const recurData = CMS.get("recurringElement", locale),
             {availableFormatsCount > 0 && (
               <div class="inline-flex gap-x-2.5">
                 <span class="flex">
-                  {availableSizes
+                  {availableFormats
                     .slice(0, 2)
-                    .map(({ thumbnail: { src, alt } }) => (
+                    .map(async ({ thumbnail: { src, alt } }) => (
                       <img
-                        src={ASSETS_URL + src}
+                        src={await importImage(ASSETS_URL + src)}
                         alt={alt}
                         class:list={[
                           "-ml-[15px] first:ml-0 rounded-full",
@@ -236,7 +242,10 @@ const recurData = CMS.get("recurringElement", locale),
             )}
 
             {Stock_amount > 0 ? (
-              <button class="unlink product-card-btn text-primary bg-secondary-light">
+              <button
+                data-sku={SKU}
+                class="unlink product-card-btn text-primary bg-secondary-light"
+              >
                 <Icon
                   name="mi:shopping-cart-add"
                   class="hidden sm:inline-flex w-5 h-5"
@@ -245,7 +254,7 @@ const recurData = CMS.get("recurringElement", locale),
                 {checkoutRecurData.text_add}
                 <span class="w-1 h-1 bg-primary rounded-full" />
                 <span class="recoleta">
-                  {`€ ` + Price.toFixed(2).replace(".", ",")}
+                  {`€` + Price.toFixed(2).replace(".", ",")}
                 </span>
               </button>
             ) : (
