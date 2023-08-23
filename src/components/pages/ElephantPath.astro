@@ -8,7 +8,7 @@ import SecondaryPageLayout from "@layouts/SecondaryPageLayout.astro";
 
 const { page, ariaLabelRecurData } = Astro.props,
   { locale, Relevant_items_title, Relevant_items_text, Relevant_blogs } = page,
-  { ASSETS_URL } = import.meta.env;
+  { STRAPI_URL } = import.meta.env;
 
 const relatedPosts = Relevant_blogs?.data?.map(({ attributes }) => attributes);
 ---
@@ -139,7 +139,7 @@ const relatedPosts = Relevant_blogs?.data?.map(({ attributes }) => attributes);
                         <div class="relative z-50 w-full h-full mx-auto">
                           <img
                             class="information-post-icon p-2 bg-secondary"
-                            src={ASSETS_URL + blob?.attributes.url}
+                            src={STRAPI_URL + blob?.attributes.url}
                             alt={blob?.attributes.alternativeText}
                           />
                         </div>

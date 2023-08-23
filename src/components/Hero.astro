@@ -16,7 +16,7 @@ import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 const { hero_background, hero_background_sm } = RecurringImages;
 
 const { page, locale, headerBackground, headerBackgroundSm } = Astro.props,
-  { ASSETS_URL } = import.meta.env,
+  { STRAPI_URL } = import.meta.env,
   headerBackgrounds = headerBackground || headerBackgroundSm;
 
 const recurData = CMS.get("recurringElement", locale),
@@ -221,7 +221,7 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
               objectFit="cover"
               objectPosition="left top"
               src={
-                ASSETS_URL +
+                STRAPI_URL +
                 (headerBackgrounds
                   ? headerBackgroundImgSm || headerBackgroundImg
                   : hero_background_sm?.src || hero_background.src)
@@ -232,7 +232,7 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
                   {
                     media: "(min-width: 768px)",
                     src: headerBackground
-                      ? ASSETS_URL + headerBackgroundImg
+                      ? STRAPI_URL + headerBackgroundImg
                       : hero_background.src,
                     breakpoints: { minWidth: 768 },
                   },

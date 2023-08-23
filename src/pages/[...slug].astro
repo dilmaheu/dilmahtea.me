@@ -355,7 +355,7 @@ export async function getStaticPaths() {
   ];
 }
 
-const { ASSETS_URL } = import.meta.env;
+const { STRAPI_URL } = import.meta.env;
 
 const { defaultRoute, translationNotFound, availableLocalesRecord } =
     Astro.props.page,
@@ -382,7 +382,7 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
         ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 
       const metaImageSrc =
-        ASSETS_URL +
+        STRAPI_URL +
         (page.Intro_blob?.data?.attributes.url ||
           page.Block_blob?.data?.attributes.url ||
           recurData.OpenGraph_default?.data?.attributes.url);
