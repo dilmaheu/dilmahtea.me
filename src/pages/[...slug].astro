@@ -15,6 +15,7 @@ import BlogDetails from "@pages/BlogDetails.astro";
 import HowToDetails from "@pages/HowToDetails.astro";
 import Crowdfunding from "@pages/Crowdfunding.astro";
 import ElephantPath from "@pages/ElephantPath.astro";
+import SearchResult from "@pages/SearchResult.astro";
 import RecipeDetails from "@pages/RecipeDetails.astro";
 import EstateDetails from "@pages/EstateDetails.astro";
 import ProductDetails from "@pages/ProductDetails.astro";
@@ -55,6 +56,7 @@ export async function getStaticPaths() {
     checkoutInformation,
     checkoutShipping,
     checkoutSuccess,
+    searchResult,
   } = CMS.get("all");
 
   const allProducts = products.get("all");
@@ -329,6 +331,10 @@ export async function getStaticPaths() {
     type: "elephantPath",
   }));
 
+  const searchResultPages = getRoutes(searchResult, () => ({
+    type: "searchResult",
+  }));
+
   return [
     ...plansPages,
     ...crowdfundingPages,
@@ -352,6 +358,7 @@ export async function getStaticPaths() {
     ...checkoutShippingPages,
     ...checkoutSuccessPages,
     ...elephantPathPages,
+    ...searchResultPages,
   ];
 }
 
@@ -416,6 +423,7 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
         checkoutKindness: CheckoutKindness,
         checkoutShipping: CheckoutShipping,
         elephantPath: ElephantPath,
+        searchResult: SearchResult,
       };
 
       const Page = Pages[page.type];
