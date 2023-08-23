@@ -2,7 +2,7 @@ import CMS from "@store/CMS.js";
 import Products from "@store/Products";
 import tryUntilResolve from "@utils/tryUntilResolve";
 
-const { ASSETS_URL } = import.meta.env,
+const { STRAPI_URL } = import.meta.env,
   contentTypes = [
     "blogs",
     "howTos",
@@ -34,7 +34,7 @@ pages.forEach(({ attributes }) => {
       ),
       Intro_blob = {
         url:
-          ASSETS_URL +
+          STRAPI_URL +
           (attributes.Intro_blob.data.attributes.formats?.thumbnail.url ||
             attributes.Intro_blob.data.attributes.url),
         alt: attributes.Intro_blob.data.attributes.alternativeText,

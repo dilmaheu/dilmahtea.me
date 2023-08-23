@@ -10,7 +10,7 @@ import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
   { blogs: posts } = page,
-  { ASSETS_URL } = import.meta.env;
+  { STRAPI_URL } = import.meta.env;
 ---
 
 <PostDetailsLayout
@@ -35,7 +35,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
     "@type": "BlogPosting",
     headline: page.Title,
     alternativeHeadline: `The best things you need to know about ${page.Title}`,
-    image: await importImage(ASSETS_URL + page.Intro_blob?.data.attributes.url),
+    image: await importImage(STRAPI_URL + page.Intro_blob?.data.attributes.url),
     url: Astro.site.origin + Astro.url.pathname + "/",
     publisher: recurData.Company_name,
     dateCreated: page.createdAt,

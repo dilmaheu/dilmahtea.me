@@ -1,5 +1,5 @@
 ---
-const { ASSETS_URL } = import.meta.env;
+const { STRAPI_URL } = import.meta.env;
 
 const { productsToBeAvailableOnClient } = Astro.props;
 
@@ -11,7 +11,7 @@ const productsRecord = Object.fromEntries(
 
       const tax = Math.round(Number(Price) * 9) / 100,
         productThumbnailURL = await importImage(
-          ASSETS_URL + Intro_blob.data.attributes.formats.thumbnail.url,
+          STRAPI_URL + Intro_blob.data.attributes.formats.thumbnail.url,
         );
 
       return [
