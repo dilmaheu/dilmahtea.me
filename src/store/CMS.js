@@ -29,13 +29,13 @@ const fullQuery =
   parsedQueries.join("") + "\n\n" + parsedFragments.join("\n\n");
 
 const { data, dataWithFlattenedCollections } = await fetch(
-  import.meta.env.DB_URL,
+  import.meta.env.STRAPI_GRAPHQL_ENDPOINT,
   {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
+      Authorization: `Bearer ${import.meta.env.STRAPI_ACCESS_TOKEN}`,
     },
     body: JSON.stringify({
       query: fullQuery,

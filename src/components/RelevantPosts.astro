@@ -11,7 +11,7 @@ const { white_right_arrow } = RecurringImages;
 
 const { page, text, posts, heading } = Astro.props,
   { locale } = page,
-  { ASSETS_URL } = import.meta.env;
+  { STRAPI_URL } = import.meta.env;
 
 const recurData = CMS.get("recurringElement", locale),
   ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
@@ -101,7 +101,7 @@ const headingName = heading || recurData.text_explore_the_world_of_kindness;
             <Picture
               layout="fullWidth"
               alt={post.Intro_blob.data.attributes.alternativeText}
-              src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+              src={STRAPI_URL + post.Intro_blob.data.attributes.url}
               attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
               sizes={[
                 "(min-width: 1024px) calc((100vw - min(200px, 10vw) - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",

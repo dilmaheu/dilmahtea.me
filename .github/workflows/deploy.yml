@@ -10,9 +10,9 @@ name: Publish to Cloudflare Pages
 run-name: Deploy ${{ github.ref_name }} - ${{ github.event.head_commit.message || inputs.build_id }}
 
 env:
-  ASSETS_URL: ${{ github.ref_name == 'main' && secrets.PROD_ASSETS_URL || secrets.DEV_ASSETS_URL }}
-  DB_URL: ${{ github.ref_name == 'main' && secrets.PROD_DB_URL || secrets.DEV_DB_URL }}
-  ACCESS_TOKEN: ${{ github.ref_name == 'main' && secrets.PROD_ACCESS_TOKEN || secrets.DEV_ACCESS_TOKEN }}
+  STRAPI_URL: ${{ github.ref_name == 'main' && secrets.PROD_STRAPI_URL || secrets.DEV_STRAPI_URL }}
+  STRAPI_GRAPHQL_ENDPOINT: ${{ github.ref_name == 'main' && secrets.PROD_STRAPI_GRAPHQL_ENDPOINT || secrets.DEV_STRAPI_GRAPHQL_ENDPOINT }}
+  STRAPI_ACCESS_TOKEN: ${{ github.ref_name == 'main' && secrets.PROD_STRAPI_ACCESS_TOKEN || secrets.DEV_STRAPI_ACCESS_TOKEN }}
 
 jobs:
   publish:

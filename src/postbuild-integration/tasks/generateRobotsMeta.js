@@ -4,12 +4,12 @@ import fetch from "node-fetch";
 
 dotenv.config({ path: "./.env" });
 
-const CMS_ENDPOINT = process.env.ASSETS_URL,
-  ACCESS_TOKEN = process.env.ACCESS_TOKEN;
+const CMS_ENDPOINT = process.env.STRAPI_URL,
+  STRAPI_ACCESS_TOKEN = process.env.STRAPI_ACCESS_TOKEN;
 
 const response = await fetch(`${CMS_ENDPOINT}/api/robots-text`, {
   method: "GET",
-  headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
+  headers: { Authorization: `Bearer ${STRAPI_ACCESS_TOKEN}` },
 });
 
 const robotsMetaData = await response.json();
