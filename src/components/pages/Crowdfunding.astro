@@ -18,7 +18,7 @@ const {
 } = RecurringImages;
 
 const { page, ariaLabelRecurData } = Astro.props,
-  { ASSETS_URL } = import.meta.env;
+  { STRAPI_URL } = import.meta.env;
 
 // fetch crowdfunding stats from Cloudflare Worker
 const { supportersCount, totalAmountRaised } = await fetch(
@@ -105,7 +105,7 @@ const goal = 100000,
         breakpoints={{ minWidth: 640 }}
         sizes="clamp(330px, 26.4vw + 150px, 560px)"
         alt={page.Intro_blob.data.attributes.alternativeText}
-        src={ASSETS_URL + page.Intro_blob.data.attributes.url}
+        src={STRAPI_URL + page.Intro_blob.data.attributes.url}
         attributes={{ link: { media: "(min-width: 640px)" } }}
       />
 
@@ -143,7 +143,7 @@ const goal = 100000,
       preload="avif"
       breakpoints={{ maxWidth: 640 }}
       alt={page.Intro_blob.data.attributes.alternativeText}
-      src={ASSETS_URL + page.Intro_blob.data.attributes.url}
+      src={STRAPI_URL + page.Intro_blob.data.attributes.url}
       attributes={{ link: { media: "(max-width: 639.98px)" } }}
     />
 
@@ -228,7 +228,7 @@ const goal = 100000,
       id="crowdfunding-info-img-curve"
       pictureStyle="position: relative; left: -20px;"
       alt={page.Block_blob.data.attributes.alternativeText}
-      src={ASSETS_URL + page.Block_blob.data.attributes.url}
+      src={STRAPI_URL + page.Block_blob.data.attributes.url}
       sizes={[
         "(min-width: 1024px) calc(50vw - min(100px, 5vw) - 96px)",
         "(min-width: 640px) calc(45vw - 24px)",
@@ -267,7 +267,7 @@ const goal = 100000,
   <ClippedPicture
     id="crowdfunding-info-img-curve-sm"
     alt={page.Block_blob.data.attributes.alternativeText}
-    src={ASSETS_URL + page.Block_blob.data.attributes.url}
+    src={STRAPI_URL + page.Block_blob.data.attributes.url}
     path="M.282 0C.147 0 .062.021 0 .064V.97c.045.046.195.006.324 0C.473.963.625 1 .774 1A.561.561 0 0 0 1 .954v-.89c-.059-.061-.237 0-.32 0S.417 0 .282 0"
   />
 </div>

@@ -141,7 +141,7 @@ export default function FilteredProducts({
               )}
             </div>
 
-            <div class="pt-2.5 lg:pt-5 pb-[15px] lg:pb-[25px] px-[clamp(15px,calc(4vw-9px),36px)] grid gap-[5px] text-white">
+            <div class="w-full pt-2.5 lg:pt-5 pb-[15px] lg:pb-[25px] px-[clamp(15px,calc(4vw-9px),36px)] grid gap-[5px] text-white">
               <div
                 class="product-card-title recoleta font-semibold leading-[120%] md:leading-[110%]"
                 style={{
