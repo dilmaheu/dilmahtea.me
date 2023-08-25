@@ -44,6 +44,10 @@ const {
   Nav_menu_region_selector_visibility: regionSelectorVisibility,
   Nav_menu_language_selector_visibility: languageSelectorVisibility,
 } = recurData;
+
+function cleanLink(link) {
+  return link?.replace(/^\/|\/$/g, "");
+}
 ---
 
 <style lang="scss" is:global>
@@ -158,7 +162,7 @@ const {
 
   #sidebar nav {
     .menu-title {
-      @apply text-[28px] font-bold leading-[150%];
+      @apply text-[28px] leading-[150%];
     }
 
     .sub-menu-title {
@@ -519,8 +523,17 @@ const {
         <div class="z-10 grid gap-9 overflow-y-auto">
           <nav class="flex flex-col gap-[25px] text-white">
             {
-              menu.map(
-                ({ Visibility, Title, Link, Sub_menu }, index) =>
+              menu.map(({ Visibility, Title, Link, Sub_menu }, index) => {
+                const hasSubMenu = Sub_menu.length > 0,
+                  subMenuCleanedLinks = Sub_menu.map(({ Link }) =>
+                    cleanLink(Link),
+                  ),
+                  currentPageUrl = cleanLink(page?.Meta?.URL_slug),
+                  isActive =
+                    currentPageUrl === cleanLink(Link) ||
+                    subMenuCleanedLinks.includes(currentPageUrl);
+                    
+                return (
                   Visibility && (
                     <div>
                       {index > 0 && (
@@ -528,11 +541,16 @@ const {
                       )}
 
                       <div class="relative text-white flex items-center justify-between gap-2.5">
-                        <a href={Link} class="menu-title">
+                        <a
+                          href={Link}
+                          class:list={[
+                            "menu-title",
+                            isActive ? "font-bold" : "font-semibold",
+                          ]}
+                        >
                           {Title}
                         </a>
-                        {Sub_menu.length > 0 && (
-                          // <Icon name="ep:arrow-down-bold" class="w-3" />
+                        {hasSubMenu && (
                           <div class="block md:hidden w-[29px] h-[29px] p-1 my-auto">
                             <button
                               aria-label={
@@ -576,7 +594,7 @@ const {
                         )}
                       </div>
 
-                      {Sub_menu.length > 0 && (
+                      {hasSubMenu && (
                         <div class="sub-menu hidden gap-[5px]">
                           {Sub_menu.map(
                             ({ Visibility, Title, Link }) =>
@@ -589,8 +607,9 @@ const {
                         </div>
                       )}
                     </div>
-                  ),
-              )
+                  )
+                );
+              })
             }
           </nav>
         </div>
@@ -730,13 +749,11 @@ const {
       {
         menu.map(({ Visibility, Title, Link, Sub_menu }, index) => {
           const hasSubMenu = Sub_menu.length > 0,
-            subMenuLinks = Sub_menu.map(({ Link }) =>
-              Link.replace(/^\/|\/$/g, ""),
-            ),
-            pageUrl = page?.Meta?.URL_slug?.replace(/^\/|\/$/g, ""),
+            subMenuCleanedLinks = Sub_menu.map(({ Link }) => cleanLink(Link)),
+            currentPageUrl = cleanLink(page?.Meta?.URL_slug),
             isActive =
-              pageUrl === Link.replace(/^\/|\/$/g, "") ||
-              subMenuLinks.includes(pageUrl);
+              currentPageUrl === cleanLink(Link) ||
+              subMenuCleanedLinks.includes(currentPageUrl);
 
           return (
             Visibility && (
@@ -747,8 +764,7 @@ const {
                   </a>
                   {hasSubMenu && <Icon name="ep:arrow-down-bold" class="w-3" />}
 
-                  {(Link === "/" ? Link : Link.replace(/^\/|\/$/g, "")) ===
-                    page?.Meta?.URL_slug && (
+                  {isActive && (
                     <div class="absolute bottom-3.5 w-full h-0.5 bg-white rounded" />
                   )}
                 </div>
