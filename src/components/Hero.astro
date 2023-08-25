@@ -25,6 +25,10 @@ const recurData = CMS.get("recurringElement", locale),
 const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
   headerBackgroundImgSm = page?.Intro_blob_sm?.data?.attributes.url,
   headerBackgroundVideo = page?.Intro_video?.data?.attributes.url;
+
+function cleanLink(link) {
+  return link.replace(/^\/|\/$/g, "");
+}
 ---
 
 <style lang="scss">
@@ -56,43 +60,16 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
     @apply relative sm:hidden aspect-[6/5];
   }
 
-  .nav-sub-menu-padding-right {
-    @include poly-fluid-sizing(
-      "padding-right",
-      (
-        639px: 0px,
-        640px: 260px,
-        768px: 300px,
-        1024px: 380px,
-        1440px: 460px,
-        1536px: 550px,
-      )
-    );
-  }
+  .header-nav-shadow {
+    @apply hidden;
 
-  .nav-menu-flex {
-    @apply items-center;
+    @media (min-width: 768px) {
+      @apply absolute top-0 w-full z-30;
 
-    gap: poly-fluid-clamp(
-      (
-        768px: 20px,
-        1240px: 80px,
-      )
-    );
-  }
-
-  .nav-sub-menu-container {
-    @apply absolute top-0 bg-primary w-full;
-
-    box-shadow: 0px 4px 5px 0px rgba(72, 72, 72, 0.15);
-
-    .nav-sub-menu-title {
-      @apply leading-[150%] text-white py-3;
-
-      font-size: poly-fluid-clamp(
+      height: poly-fluid-clamp(
         (
-          768px: 12px,
-          1440px: 16px,
+          768px: 42px,
+          1440px: 51px,
         )
       );
     }
@@ -115,41 +92,22 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
 
   <div class="relative h-full">
     {
-      menu.map(({ Visibility, Title, Link, Sub_menu }, index) => {
-        const subMenuLinks = Sub_menu.map(({ Link }) =>
-            Link.replace(/^\/|\/$/g, "")
-          ),
-          pageUrl = page?.Meta?.URL_slug?.replace(/^\/|\/$/g, ""),
+      menu.map(({ Visibility, Link, Sub_menu }, index) => {
+        const subMenuCleanedLinks = Sub_menu.map(({ Link }) => cleanLink(Link)),
+          currentPageUrl = cleanLink(page?.Meta?.URL_slug),
           isActive =
-            pageUrl === Link.replace(/^\/|\/$/g, "") ||
-            subMenuLinks.includes(pageUrl);
+            currentPageUrl === cleanLink(Link) ||
+            subMenuCleanedLinks.includes(currentPageUrl);
 
         return (
           Visibility &&
           Sub_menu.length > 0 && (
             <div
               class:list={[
-                isActive ? "z-30" : "z-40",
-                "nav-sub-menu-container",
+                !isActive ? "hidden" : "md:!block",
+                "header-nav-shadow nav-bg",
               ]}
-            >
-              <div
-                id={`sub-menu-${index + 1}`}
-                class:list={[
-                  isActive ? "md:!flex" : "hidden",
-                  "nav-menu-flex wrapper nav-sub-menu-padding-right",
-                ]}
-              >
-                {Sub_menu.map(
-                  ({ Visibility, Title, Link }) =>
-                    Visibility && (
-                      <a href={Link} class="nav-sub-menu-title">
-                        {Title}
-                      </a>
-                    )
-                )}
-              </div>
-            </div>
+            />
           )
         );
       })
@@ -166,14 +124,14 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
           {headerBackgroundVideo ? (
             async () => {
               const localizedVideoURL = await localizeCMSImage(
-                headerBackgroundVideo
+                headerBackgroundVideo,
               );
 
               const firstFrameFilePath =
                 "./public" +
                 localizedVideoURL.replace(
                   path.extname(localizedVideoURL),
-                  ".jpg"
+                  ".jpg",
                 );
 
               if (!fs.existsSync(firstFrameFilePath)) {
@@ -186,7 +144,7 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
               }
 
               const poster = await importImage(
-                firstFrameFilePath.slice(1) + "?format=webp&w=1920&quality=10"
+                firstFrameFilePath.slice(1) + "?format=webp&w=1920&quality=10",
               );
 
               return (
