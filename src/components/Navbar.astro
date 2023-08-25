@@ -158,11 +158,11 @@ const {
 
   #sidebar nav {
     .menu-title {
-      @apply text-[28px] font-semibold leading-[150%];
+      @apply text-[28px] font-bold leading-[150%];
     }
 
     .sub-menu-title {
-      @apply text-xl font-normal leading-[150%];
+      @apply text-2xl font-medium leading-[150%];
     }
   }
 
@@ -220,7 +220,7 @@ const {
 
 <header
   id="navigation"
-  class="sticky top-0 z-[999] grid w-full bg-cover md:bg-dark-green"
+  class="shadow-md sm:shadow-none sticky top-0 z-[99] grid w-full md:bg-dark-green"
 >
   <div class="navbar-container relative w-full sm:flex items-center z-10">
     <ClipPathSVG
@@ -325,7 +325,7 @@ const {
                 <img
                   class="w-full h-full"
                   src={await localizeCMSImage(
-                    localizationIcon?.data?.attributes.url
+                    localizationIcon?.data?.attributes.url,
                   )}
                   alt={localizationIcon?.data?.attributes.alternativeText}
                 />
@@ -389,7 +389,7 @@ const {
               >
                 <img
                   src={await localizeCMSImage(
-                    localizationIcon?.data?.attributes.url
+                    localizationIcon?.data?.attributes.url,
                   )}
                   alt={localizationIcon?.data?.attributes.alternativeText}
                 />
@@ -488,7 +488,10 @@ const {
 
     <div
       id="sidebar"
-      class="hidden md:!hidden fixed right-0 z-[40] w-[300px] max-w-full h-full bg-primary z-[99]"
+      class:list={[
+        "hidden md:!hidden shadow-md fixed right-0",
+        "w-[300px] max-w-full h-full bg-primary z-[99]",
+      ]}
     >
       {
         sidebar_background && (
@@ -517,27 +520,76 @@ const {
           <nav class="flex flex-col gap-[25px] text-white">
             {
               menu.map(
-                ({ Visibility, Title, Link, Sub_menu }) =>
+                ({ Visibility, Title, Link, Sub_menu }, index) =>
                   Visibility && (
                     <div>
-                      <a href={Link} class="menu-title">
-                        {Title}
-                      </a>
+                      {index > 0 && (
+                        <div class="w-full h-0.5 mb-[25px] bg-white rounded" />
+                      )}
+
+                      <div class="relative text-white flex items-center justify-between gap-2.5">
+                        <a href={Link} class="menu-title">
+                          {Title}
+                        </a>
+                        {Sub_menu.length > 0 && (
+                          // <Icon name="ep:arrow-down-bold" class="w-3" />
+                          <div class="block md:hidden w-[29px] h-[29px] p-1 my-auto">
+                            <button
+                              aria-label={
+                                ariaLabelRecurData.Navbar_open_sidebar_sub_menu_text
+                              }
+                              class="sidebar-menu-open-btn block h-full select-none cursor-pointer"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="w-full h-full"
+                                viewBox="0 0 19.9 20"
+                              >
+                                <path
+                                  d="m1.5,10h16.9m-8.5,8.5V1.5"
+                                  style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3px;"
+                                />
+                              </svg>
+                            </button>
+
+                            <button
+                              aria-label={
+                                ariaLabelRecurData.Navbar_close_sidebar_sub_menu_text
+                              }
+                              class="sidebar-menu-close-btn hidden w-full h-full select-none cursor-pointer"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="w-full h-full"
+                                viewBox="0 0 19.9 3"
+                              >
+                                <line
+                                  x1="1.5"
+                                  y1="1.5"
+                                  x2="18.4"
+                                  y2="1.5"
+                                  style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3px;"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        )}
+                      </div>
 
                       {Sub_menu.length > 0 && (
-                        <div class="grid gap-[5px]">
+                        <div class="sub-menu hidden gap-[5px]">
                           {Sub_menu.map(
                             ({ Visibility, Title, Link }) =>
                               Visibility && (
                                 <a href={Link} class="sub-menu-title">
                                   {Title}
                                 </a>
-                              )
+                              ),
                           )}
                         </div>
                       )}
                     </div>
-                  )
+                  ),
               )
             }
           </nav>
@@ -731,6 +783,30 @@ const {
   </div>
 
   <script is:inline>
+    document.addEventListener("DOMContentLoaded", function () {
+      const select = document.querySelectorAll.bind(document),
+        openBtns = select(".sidebar-menu-open-btn"),
+        closeBtns = select(".sidebar-menu-close-btn"),
+        subMenus = select(".sub-menu");
+
+      for (let i = 0; i < openBtns.length; i++) {
+        openBtns[i].addEventListener("click", function () {
+          openBtns[i].classList.add("hidden");
+          closeBtns[i].classList.remove("hidden");
+          subMenus[i].classList.add("grid");
+          subMenus[i].classList.remove("hidden");
+        });
+
+        closeBtns[i].addEventListener("click", function () {
+          closeBtns[i].classList.add("hidden");
+          openBtns[i].classList.remove("hidden");
+          subMenus[i].classList.add("hidden");
+          subMenus[i].classList.remove("grid");
+        });
+      }
+    });
+  </script>
+
   <script is:inline>
     document.addEventListener("DOMContentLoaded", () => {
       const updateNavSubMenuClasses = () => {
@@ -804,7 +880,7 @@ const {
     localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
 
   const SelectorsDropdownItems = document.querySelectorAll<HTMLUListElement>(
-    ".selectors-dropdown > div > .selectors-dropdown-item"
+    ".selectors-dropdown > div > .selectors-dropdown-item",
   );
 
   const localization = localizationMenuOpenButton?.parentElement,
@@ -908,12 +984,12 @@ const {
 
   localizationMenuSmOpenButton?.addEventListener(
     "click",
-    toggleLocalizationMenu
+    toggleLocalizationMenu,
   );
 
   localizationMenuSmCloseButton?.addEventListener(
     "click",
-    toggleLocalizationMenu
+    toggleLocalizationMenu,
   );
 
   localization?.addEventListener("mouseenter", () => {
@@ -982,7 +1058,7 @@ const {
 <script>
   window.addEventListener("load", async () => {
     const searchIndex = await fetch(
-      `/search-index/${window.preferredLocale}.json`
+      `/search-index/${window.preferredLocale}.json`,
     ).then((response) => response.json());
 
     const id = document.getElementById.bind(document),
@@ -996,7 +1072,7 @@ const {
       input.addEventListener("input", () => {
         const searchTerm = input.value.toLowerCase().trim(),
           matches = searchIndex.filter((item) =>
-            item.Title.toLowerCase().includes(searchTerm)
+            item.Title.toLowerCase().includes(searchTerm),
           );
 
         searchResults.innerHTML = "";
@@ -1017,7 +1093,7 @@ const {
 
           resultLinkBlock.setAttribute(
             "href",
-            `/${window.preferredLocale}/${match.URL_slug}/`
+            `/${window.preferredLocale}/${match.URL_slug}/`,
           );
 
           resultLinkBlock.innerHTML = `<div
