@@ -63,6 +63,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
 <style lang="scss">
   @use "src/styles/colors";
+  @use "src/styles/poly-fluid" as *;
 
   .cart-adding-form {
     margin-top: clamp(0.625rem, 1vw + 0.35rem, 1.25em);
@@ -239,10 +240,29 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   .related-post-card-title-icon {
     height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
   }
+
+  .product-variants {
+    > .active-product-variant {
+      @apply -m-3 p-1.5 bg-primary;
+
+      clip-path: url(#product-variant-curve);
+
+      > div {
+        @apply p-1.5 bg-secondary;
+
+        clip-path: url(#product-variant-curve);
+      }
+    }
+  }
 </style>
 
 <ClipPathSVG
   id="product-category-card-curve"
+  path="M0.547,0.01 c0.072,0.003,0.13,0,0.167,0 c0.315,0,0.282,0.03,0.282,0.467 s0.052,0.518,-0.264,0.518 c-0.105,0,-0.154,0,-0.174,-0.001 l-0.011,0.001 h-0.001 c-0.199,0.01,-0.401,0.008,-0.47,-0.037 C-0.013,0.898,0.003,0.642,0.003,0.487 c0,-0.216,-0.034,-0.411,0.14,-0.459 C0.305,-0.018,0.435,0.005,0.547,0.01"
+/>
+
+<ClipPathSVG
+  id="product-variant-curve"
   path="M0.547,0.01 c0.072,0.003,0.13,0,0.167,0 c0.315,0,0.282,0.03,0.282,0.467 s0.052,0.518,-0.264,0.518 c-0.105,0,-0.154,0,-0.174,-0.001 l-0.011,0.001 h-0.001 c-0.199,0.01,-0.401,0.008,-0.47,-0.037 C-0.013,0.898,0.003,0.642,0.003,0.487 c0,-0.216,-0.034,-0.411,0.14,-0.459 C0.305,-0.018,0.435,0.005,0.547,0.01"
 />
 
@@ -264,7 +284,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     {
       stockAmount > 0 && (
         <div class="flex flex-wrap gap-[15px]">
-          <fieldset>
+          {/*<fieldset>
             <legend class="mb-[5px] text-sm lg:text-base font-medium leading-[150%]">
               {checkoutRecurData.text_variant}:
             </legend>
@@ -288,7 +308,46 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 ))}
               </select>
             </div>
-          </fieldset>
+          </fieldset>*/}
+
+          <div
+            role="list"
+            aria-label={checkoutRecurData.text_variant}
+            class="product-variants flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full"
+          >
+            {availableVariants.map(({ value, variant, link }) => (
+              <div
+                tabindex="0"
+                role="listitem"
+                aria-label={variant}
+                data-href={link}
+              >
+                <div class="h-full">
+                  <label
+                    class:list={[
+                      "product-variant radio-button flex flex-col relative",
+                      "w-full h-full sm:min-w-[188px] bg-dark-green cursor-pointer",
+                    ]}
+                    style="clip-path: url(#product-variant-curve);"
+                  >
+                    <input
+                      type="radio"
+                      name="selected_cause"
+                      value={value}
+                      checked={value === productVariant}
+                      class="hidden"
+                    />
+
+                    <div class="p-[18px] flex flex-wrap justify-center items-center">
+                      <div class="text-sm text-secondary leading-[110%]">
+                        {variant}
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            ))}
+          </div>
 
           <div class="flex flex-wrap items-center gap-[5px] sm:gap-2.5">
             <div class="text-base leading-[110%]">
