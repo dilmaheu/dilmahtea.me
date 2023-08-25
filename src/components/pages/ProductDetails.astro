@@ -263,7 +263,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
     {
       stockAmount > 0 && (
-        <div class="flex flex-wrap gap-5 items-center w-full justify-between">
+        <div class="flex flex-wrap gap-[15px]">
           <fieldset>
             <legend class="mb-[5px] text-sm lg:text-base font-medium leading-[150%]">
               {checkoutRecurData.text_variant}:
@@ -290,31 +290,37 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             </div>
           </fieldset>
 
-          <fieldset>
-            <legend class="text-sm lg:text-base font-medium leading-[150%] mb-[5px]">
+          <div class="flex flex-wrap items-center gap-[5px] sm:gap-2.5">
+            <div class="text-base leading-[110%]">
               {checkoutRecurData.text_size}:
-            </legend>
+            </div>
 
-            <div class="border-2 border-secondary overflow-hidden rounded-full">
-              <select
-                name="tea_size"
-                class:list={[
-                  "inline-block py-[9px] pl-5 bg-primary text-white",
-                  "lg:text-lg lg:font-normal border-r-[20px] border-transparent",
-                ]}
-              >
-                {availableSizes.map(({ value, size, link }) => (
-                  <option
+            <div class="flex flex-wrap gap-2">
+              {availableSizes.map(({ value, size, link }) => (
+                <div>
+                  <input
+                    type="radio"
+                    name="option"
+                    id={size}
                     value={value}
                     data-href={link}
-                    selected={value === productSize}
+                    checked={value === productSize}
+                    class="peer hidden"
+                  />
+                  <label
+                    for={size}
+                    class:list={[
+                      "peer-checked:bg-dark-green peer-checked:text-white",
+                      "inline-block py-2 px-[25px] text-dark-green rounded-full",
+                      "select-none cursor-pointer border-2 border-secondary/80 bg-secondary",
+                    ]}
                   >
                     {size}
-                  </option>
-                ))}
-              </select>
+                  </label>
+                </div>
+              ))}
             </div>
-          </fieldset>
+          </div>
         </div>
       )
     }
