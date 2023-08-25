@@ -103,7 +103,7 @@ function cleanLink(link) {
   }
 
   .nav-menu-title {
-    @apply font-bold leading-[150%] py-[15px];
+    @apply leading-[150%] py-[15px];
 
     font-size: poly-fluid-clamp(
       (
@@ -532,7 +532,7 @@ function cleanLink(link) {
                   isActive =
                     currentPageUrl === cleanLink(Link) ||
                     subMenuCleanedLinks.includes(currentPageUrl);
-                    
+
                 return (
                   Visibility && (
                     <div>
@@ -759,7 +759,13 @@ function cleanLink(link) {
             Visibility && (
               <div class="nav-menu-container group">
                 <div class="relative text-white flex items-center gap-[5px] z-40">
-                  <a href={Link} class="nav-menu-title">
+                  <a
+                    href={Link}
+                    class:list={[
+                      "nav-menu-title",
+                      isActive ? "font-bold" : "font-semibold",
+                    ]}
+                  >
                     {Title}
                   </a>
                   {hasSubMenu && <Icon name="ep:arrow-down-bold" class="w-3" />}
@@ -781,7 +787,13 @@ function cleanLink(link) {
                         {Sub_menu.map(
                           ({ Visibility, Title, Link }) =>
                             Visibility && (
-                              <div class="nav-sub-menu-title">
+                              <div
+                                class:list={[
+                                  "nav-sub-menu-title",
+                                  currentPageUrl === cleanLink(Link) &&
+                                    "underline decoration-2 underline-offset-4",
+                                ]}
+                              >
                                 <a href={Link}>{Title}</a>
                               </div>
                             ),
