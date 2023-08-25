@@ -46,6 +46,12 @@ const {
 } = recurData;
 ---
 
+<style lang="scss" is:global>
+  .nav-bg {
+    @apply bg-primary drop-shadow-[0px_4px_5px_rgba(0,0,0,0.15)];
+  }
+</style>
+
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
 
@@ -93,7 +99,7 @@ const {
   }
 
   .nav-menu-title {
-    @apply leading-[150%];
+    @apply font-bold leading-[150%] py-[15px];
 
     font-size: poly-fluid-clamp(
       (
@@ -110,6 +116,42 @@ const {
       (
         768px: 20px,
         1240px: 80px,
+      )
+    );
+  }
+
+  .nav-menu-padding-right {
+    @include poly-fluid-sizing(
+      "padding-right",
+      (
+        639px: 0px,
+        640px: 260px,
+        768px: 300px,
+        1024px: 380px,
+        1440px: 460px,
+        1536px: 550px,
+      )
+    );
+  }
+
+  .nav-menu-flex {
+    @apply flex items-center;
+
+    gap: poly-fluid-clamp(
+      (
+        768px: 20px,
+        1240px: 80px,
+      )
+    );
+  }
+
+  .nav-sub-menu-title {
+    @apply font-normal leading-[150%] text-white py-3;
+
+    font-size: poly-fluid-clamp(
+      (
+        768px: 12px,
+        1440px: 16px,
       )
     );
   }
@@ -631,32 +673,59 @@ const {
     </div>
   </div>
 
-  <div class="hidden md:block w-full relative z-5">
-    <div class="wrapper flex nav-menu-flex">
+  <div class="hidden md:block w-full relative z-10">
+    <div class="wrapper nav-menu-flex nav-menu-padding-right">
       {
-        menu.map(
-          ({ Visibility, Title, Link, Sub_menu }, index) =>
-            Visibility && (
-              <div
-                class:list={[
-                  "relative font-bold text-white flex items-center gap-[5px]",
-                  `nav-menu-${index + 1}`,
-                ]}
-              >
-                <a href={Link} class="nav-menu-title py-2.5 md:py-[15px]">
-                  {Title}
-                </a>
-                {Sub_menu.length > 0 && (
-                  <Icon name="ep:arrow-down-bold" class="w-3" />
-                )}
+        menu.map(({ Visibility, Title, Link, Sub_menu }, index) => {
+          const hasSubMenu = Sub_menu.length > 0,
+            subMenuLinks = Sub_menu.map(({ Link }) =>
+              Link.replace(/^\/|\/$/g, ""),
+            ),
+            pageUrl = page?.Meta?.URL_slug?.replace(/^\/|\/$/g, ""),
+            isActive =
+              pageUrl === Link.replace(/^\/|\/$/g, "") ||
+              subMenuLinks.includes(pageUrl);
 
-                {(Link === "/" ? Link : Link.replace(/^\/|\/$/g, "")) ===
-                  page?.Meta?.URL_slug && (
-                  <div class="absolute bottom-4 w-full h-0.5 bg-white rounded" />
+          return (
+            Visibility && (
+              <div class="nav-menu-container group">
+                <div class="relative text-white flex items-center gap-[5px] z-40">
+                  <a href={Link} class="nav-menu-title">
+                    {Title}
+                  </a>
+                  {hasSubMenu && <Icon name="ep:arrow-down-bold" class="w-3" />}
+
+                  {(Link === "/" ? Link : Link.replace(/^\/|\/$/g, "")) ===
+                    page?.Meta?.URL_slug && (
+                    <div class="absolute bottom-3.5 w-full h-0.5 bg-white rounded" />
+                  )}
+                </div>
+
+                {hasSubMenu && (
+                  <div
+                    class:list={[
+                      "absolute left-0 w-full nav-sub-menu",
+                      isActive ? "block z-30" : "z-40 hidden group-hover:block",
+                    ]}
+                  >
+                    <div class="absolute top-0 left-0 w-full nav-sub-menu-content">
+                      <div class="wrapper nav-menu-flex nav-menu-padding-right">
+                        {Sub_menu.map(
+                          ({ Visibility, Title, Link }) =>
+                            Visibility && (
+                              <div class="nav-sub-menu-title">
+                                <a href={Link}>{Title}</a>
+                              </div>
+                            ),
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
             )
-        )
+          );
+        })
       }
     </div>
   </div>
