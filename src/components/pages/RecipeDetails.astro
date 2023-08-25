@@ -21,7 +21,7 @@ const {
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
-  { ASSETS_URL } = import.meta.env;
+  { STRAPI_URL } = import.meta.env;
 
 const {
   recipe_day,
@@ -682,7 +682,7 @@ const nutrition: Nutrition = {
                         .alternativeText
                     }
                     src={
-                      ASSETS_URL +
+                      STRAPI_URL +
                       step.Instructions_part_steps_blob.data.attributes.url
                     }
                   />
@@ -777,7 +777,7 @@ const nutrition: Nutrition = {
                       <Picture
                         layout="fullWidth"
                         alt={intro_blob.alternativeText}
-                        src={ASSETS_URL + intro_blob.url}
+                        src={STRAPI_URL + intro_blob.url}
                         attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
                         sizes="(min-width: 768px) min(580px, calc(40vw - 25px)), min(80vw, 420px)"
                       />
@@ -865,7 +865,7 @@ const nutrition: Nutrition = {
     "@context": "https://schema.org",
     "@type": "Recipe",
     name: page.Title,
-    image: await importImage(ASSETS_URL + page.Intro_blob?.data.attributes.url),
+    image: await importImage(STRAPI_URL + page.Intro_blob?.data.attributes.url),
     author: {
       "@type": "Person",
       name: page.authors.data.map(({ attributes }) => attributes.givenName),
@@ -912,7 +912,7 @@ const nutrition: Nutrition = {
           }`,
           image: step.Instructions_part_steps_blob.data
             ? await importImage(
-                ASSETS_URL +
+                STRAPI_URL +
                   step.Instructions_part_steps_blob?.data?.attributes.url,
               )
             : "",

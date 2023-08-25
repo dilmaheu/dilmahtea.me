@@ -1,0 +1,279 @@
+---
+import { Icon } from "astro-icon";
+import { Picture } from "astro-imagetools/components";
+
+import CMS from "@store/CMS";
+import RecurringImages from "@store/RecurringImages";
+
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+
+const { white_love } = RecurringImages;
+
+const { products, locale } = Astro.props,
+  { STRAPI_URL } = import.meta.env;
+
+const recurData = CMS.get("recurringElement", locale),
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+---
+
+<style lang="scss">
+  .product-card-btn {
+    @apply w-full flex justify-center items-center gap-1
+      p-1 md:p-2 lg:p-3 mt-[clamp(5px,calc(2.23vw-12px),20px)]
+      font-bold text-[clamp(12px,0.38vw+10,16px)] rounded-full;
+  }
+</style>
+
+<ClipPathSVG
+  id="product-card-curve"
+  path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
+/>
+
+<div
+  role="list"
+  class="wrapper grid grid-cols-2 lg:grid-cols-3 gap-[clamp(15px,calc(5vw-25px),50px)] overflow-hidden"
+>
+  {
+    products.slice(0, 3).map((product) => {
+      const {
+        SKU,
+        Title,
+        Intro_blob,
+        Price,
+        Weight_tea,
+        Weight_tea_unit,
+        variant,
+        Stock_amount,
+        In_stock_date,
+        availableFormats,
+        estate_name,
+        Meta: { URL_slug },
+      } = product;
+
+      const availableFormatsCount = availableFormats.length;
+
+      return (
+        <div
+          role="listitem"
+          style="clip-path: url(#product-card-curve)"
+          class="product-card link-section flex flex-wrap w-full mx-auto bg-primary"
+        >
+          <div class="relative block w-full">
+            <Picture
+              layout="fullWidth"
+              alt={Intro_blob.data.attributes.alternativeText}
+              src={STRAPI_URL + Intro_blob.data.attributes.url}
+              attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
+              sizes={[
+                "(min-width: 1024px) calc((100vw - min(200px, 10vw) - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
+                "(min-width: 640px) calc(45vw - 16px)",
+                "min(90vw, 380px)",
+              ].join(", ")}
+            />
+
+            {Stock_amount < 1 && (
+              <>
+                <div
+                  class={[
+                    "absolute top-[12%] right-[12%] flex items-center px-5 sm:px-[37px] py-[5px] sm:py-[7px]",
+                    "bg-warning/80 text-black sm:text-xl font-semibold border-2 border-warning rounded-full",
+                  ].join(" ")}
+                >
+                  {recurData.Product_sold_out_text}
+                </div>
+
+                {
+                  // hide label if in-stock date is in the past or undefined
+                  new Date(In_stock_date).getTime() > new Date().getTime() && (
+                    <div
+                      class={[
+                        "w-full bg-warning-light text-sm sm:text-base font-medium text-black",
+                        "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none",
+                      ].join(" ")}
+                    >
+                      <Icon
+                        name="mdi:alert-circle"
+                        class="inline-flex p-0.5 w-[26px] text-white bg-warning rounded-full select-none"
+                      />
+
+                      {recurData.Item_stock_text.replace(
+                        "<in_stock_date>",
+                        In_stock_date,
+                      )}
+                    </div>
+                  )
+                }
+              </>
+            )}
+          </div>
+
+          <div
+            class:list={[
+              "w-full pt-2.5 lg:pt-5 pb-[15px] lg:pb-[25px]",
+              "px-[clamp(15px,calc(4vw-9px),36px)] grid gap-[5px] text-white",
+            ]}
+          >
+            <div
+              class="product-card-title recoleta font-semibold leading-[120%] md:leading-[110%]"
+              style={{
+                "font-size": "clamp(0.875rem, 1.5vw + 0.15rem, 1.5rem)",
+              }}
+            >
+              <a
+                aria-label={
+                  (Stock_amount < 1
+                    ? `${recurData.Product_sold_out_text}, `
+                    : "") + Title
+                }
+                class="main-link"
+                href={URL_slug}
+              >
+                {Title}
+              </a>
+            </div>
+
+            <div
+              class="text-white"
+              style={{ "font-size": "clamp(0.75rem, 1.5vw + 0.1rem, 1rem)" }}
+            >
+              {Weight_tea + Weight_tea_unit}
+              <span class="inline-block w-1 h-1 mx-[5px] mb-0.5 rounded-full bg-secondary" />
+              {variant?.data?.attributes.Title}
+            </div>
+
+            {estate_name?.data.length > 0 && (
+              <div class="flex flex-wrap items-center">
+                <div class="flex flex-wrap items-center text-base leading-[150%]">
+                  <span>
+                    <img
+                      class="p-[3px] mr-1 icon"
+                      style={{
+                        width: "clamp(1.125rem, 2vw + 0.15rem, 2rem)",
+                        height: "clamp(1.125rem, 2vw + 0.15rem, 2rem)",
+                      }}
+                      {...white_love}
+                    />
+
+                    {recurData.product_made_love_from + `\xa0`}
+                  </span>
+
+                  <div class="flex flex-wrap gap-x-1.5">
+                    {estate_name.data.map(
+                      (
+                        {
+                          attributes: {
+                            Estate_name,
+                            Meta: { URL_slug },
+                          },
+                        },
+                        index,
+                      ) => (
+                        <a
+                          href={URL_slug}
+                          class="flex flex-wrap font-bold underline decoration-1 underline-offset-[2px]"
+                        >
+                          {Estate_name +
+                            (index === estate_name.data.length - 1 ? "" : ",")}
+                        </a>
+                      ),
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {availableFormatsCount > 0 && (
+              <div class="inline-flex gap-x-2.5">
+                <span class="flex">
+                  {availableFormats
+                    .slice(0, 2)
+                    .map(async ({ thumbnail: { src, alt } }) => (
+                      <img
+                        src={await importImage(STRAPI_URL + src)}
+                        alt={alt}
+                        class:list={[
+                          "-ml-[15px] first:ml-0 rounded-full",
+                          "min-w-[24px] h-6 border-2 border-primary",
+                        ]}
+                      />
+                    ))}
+
+                  {availableFormatsCount > 2 && (
+                    <span
+                      class={[
+                        "flex items-center justify-center min-w-[24px] h-6",
+                        "border-2 border-primary rounded-full bg-secondary-light",
+                        "text-[10px] font-semibold text-primary leading-[150%] -ml-[15px]",
+                      ].join(" ")}
+                    >
+                      +{availableFormatsCount - 2}
+                    </span>
+                  )}
+                </span>
+
+                <div class="text-white">
+                  <em>
+                    <span class="hidden sm:block">
+                      {Stock_amount === 0
+                        ? recurData.Product_stock_available_text
+                        : recurData.Product_available_text}
+
+                      <span class="font-bold underline underline-offset-2">
+                        {availableFormatsCount === 1
+                          ? recurData.Product_other_formats_singular_text
+                          : recurData.Product_other_formats_text.replaceAll(
+                              "<count>",
+                              availableFormatsCount,
+                            )}
+                      </span>
+                    </span>
+
+                    <span class="block sm:hidden font-bold underline underline-offset-2">
+                      {Stock_amount === 0
+                        ? recurData.Product_other_formats_singular_text_sm
+                        : recurData.Product_other_formats_text_sm.replaceAll(
+                            "<count>",
+                            availableFormatsCount,
+                          )}
+                    </span>
+                  </em>
+                </div>
+              </div>
+            )}
+
+            {Stock_amount > 0 ? (
+              <button
+                data-sku={SKU}
+                class="unlink product-card-btn text-primary bg-secondary-light"
+              >
+                <Icon
+                  name="mi:shopping-cart-add"
+                  class="hidden sm:inline-flex w-5 h-5"
+                />
+
+                {checkoutRecurData.text_add}
+                <span class="w-1 h-1 bg-primary rounded-full" />
+                <span class="recoleta">
+                  {`€` + Price.toFixed(2).replace(".", ",")}
+                </span>
+              </button>
+            ) : (
+              <div class="unlink product-card-btn cursor-not-allowed text-white bg-slate">
+                <Icon
+                  name="mi:shopping-cart-add"
+                  class="hidden sm:inline-flex w-5 h-5"
+                />
+
+                {recurData.Product_sold_out_text}
+                <span class="w-1 h-1 bg-white rounded-full" />
+                <span class="recoleta">
+                  {`€ ` + Price.toFixed(2).replace(".", ",")}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    })
+  }
+</div>

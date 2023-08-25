@@ -5,7 +5,7 @@ import PageLayout from "@layouts/PageLayout.astro";
 import getAvailableLocales from "@utils/getAvailableLocales";
 
 const requestPath = Astro.url.pathname,
-  { ASSETS_URL } = import.meta.env,
+  { STRAPI_URL } = import.meta.env,
   basicPagesData = CMS.get("basicPages");
 
 const { attributes: _404Page } = basicPagesData.data.find(
@@ -54,7 +54,7 @@ const alternateURLs = Object.fromEntries(
   availableLocales={availableLocales}
   meta={_404Page.Meta}
   recurData={recurringElements}
-  metaImageSrc={ASSETS_URL +
+  metaImageSrc={STRAPI_URL +
     (_404Page.Block_blob?.data?.url ||
       recurringElements.OpenGraph_default.data.attributes.url)}
 >

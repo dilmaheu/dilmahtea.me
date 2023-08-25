@@ -8,7 +8,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   { howTos } = page,
   headingName = recurData.text_practices;
 
-const { ASSETS_URL } = import.meta.env,
+const { STRAPI_URL } = import.meta.env,
   pageURL = Astro.site.origin + Astro.url.pathname + "/";
 ---
 
@@ -126,7 +126,7 @@ const { ASSETS_URL } = import.meta.env,
                 <Picture
                   layout="fill"
                   alt={step.Step_blob.data.attributes.alternativeText}
-                  src={ASSETS_URL + step.Step_blob.data.attributes.url}
+                  src={STRAPI_URL + step.Step_blob.data.attributes.url}
                   sizes="(min-width: 768px) calc(90vw * 2/3 - 72px), calc(90vw - 72px)"
                   attributes={{
                     picture: { style: "margin-top: 20px;" },
@@ -151,7 +151,7 @@ const { ASSETS_URL } = import.meta.env,
     name: page.Title,
     image: {
       "@type": "ImageObject",
-      url: await importImage(ASSETS_URL + page.Intro_blob?.data.attributes.url),
+      url: await importImage(STRAPI_URL + page.Intro_blob?.data.attributes.url),
     },
     step: await Promise.all(
       page.Method.map(async (method) => ({
@@ -168,7 +168,7 @@ const { ASSETS_URL } = import.meta.env,
               url: !step.Step_blob?.data
                 ? ""
                 : await importImage(
-                    ASSETS_URL + step.Step_blob?.data?.attributes.url,
+                    STRAPI_URL + step.Step_blob?.data?.attributes.url,
                   ),
             },
           })),
