@@ -15,7 +15,7 @@ import SecondaryPageLayout from "@layouts/SecondaryPageLayout.astro";
 
 const { page, ariaLabelRecurData } = Astro.props,
   { locale, posts } = page,
-  { ASSETS_URL } = import.meta.env;
+  { STRAPI_URL } = import.meta.env;
 
 posts.sort((a, b) => {
   return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
@@ -160,7 +160,7 @@ const productsToBeAvailableOnClient = [
               <div class="post-img-curve-container mr-auto">
                 <Picture
                   layout="fill"
-                  src={ASSETS_URL + randPost.Intro_blob?.data?.attributes.url}
+                  src={STRAPI_URL + randPost.Intro_blob?.data?.attributes.url}
                   alt={randPost.Intro_blob?.data?.attributes.alternativeText}
                   sizes={[
                     "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
@@ -259,7 +259,7 @@ const productsToBeAvailableOnClient = [
                       <Picture
                         layout="fill"
                         alt={post.Intro_blob.data.attributes.alternativeText}
-                        src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                        src={STRAPI_URL + post.Intro_blob.data.attributes.url}
                         attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
                         sizes="(min-width: 768px) min(580px, calc(40vw - 25px)), min(80vw, 420px)"
                         attributes={{

@@ -10,7 +10,7 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 const { white_love } = RecurringImages;
 
 const { products, locale } = Astro.props,
-  { ASSETS_URL } = import.meta.env;
+  { STRAPI_URL } = import.meta.env;
 
 const recurData = CMS.get("recurringElement", locale),
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
@@ -62,7 +62,7 @@ const recurData = CMS.get("recurringElement", locale),
             <Picture
               layout="fullWidth"
               alt={Intro_blob.data.attributes.alternativeText}
-              src={ASSETS_URL + Intro_blob.data.attributes.url}
+              src={STRAPI_URL + Intro_blob.data.attributes.url}
               attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
               sizes={[
                 "(min-width: 1024px) calc((100vw - min(200px, 10vw) - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
@@ -189,7 +189,7 @@ const recurData = CMS.get("recurringElement", locale),
                     .slice(0, 2)
                     .map(async ({ thumbnail: { src, alt } }) => (
                       <img
-                        src={await importImage(ASSETS_URL + src)}
+                        src={await importImage(STRAPI_URL + src)}
                         alt={alt}
                         class:list={[
                           "-ml-[15px] first:ml-0 rounded-full",

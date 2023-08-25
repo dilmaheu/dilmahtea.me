@@ -19,7 +19,7 @@ const { green_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
-  { ASSETS_URL } = import.meta.env;
+  { STRAPI_URL } = import.meta.env;
 
 const {
   locale,
@@ -39,7 +39,7 @@ const { SKU: productSKU } = page,
   productNames = JSON.stringify(page.names);
 
 const productThumbnailURL = await importImage(
-  ASSETS_URL + page.Intro_blob.data.attributes.formats.thumbnail.url,
+  STRAPI_URL + page.Intro_blob.data.attributes.formats.thumbnail.url,
 );
 
 const infos = page.product_infos.data.map(({ attributes }) => attributes),
@@ -434,7 +434,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           <div class="variant-img w-auto h-full aspect-[6/5] block">
                             <img
                               src={await importImage(
-                                ASSETS_URL + thumbnail.src,
+                                STRAPI_URL + thumbnail.src,
                               )}
                               alt={thumbnail.alt}
                               style="aspect-ratio: 6 / 5;"
@@ -818,7 +818,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     <img
                       alt=""
                       src={
-                        ASSETS_URL + item.Impact_item_icon.data.attributes.url
+                        STRAPI_URL + item.Impact_item_icon.data.attributes.url
                       }
                       class="w-full h-full object-contain p-1"
                     />
@@ -872,7 +872,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <img
                   class="w-full h-full"
                   alt=""
-                  src={ASSETS_URL + info.Product_info_icon.data.attributes.url}
+                  src={STRAPI_URL + info.Product_info_icon.data.attributes.url}
                 />
               </div>
 
@@ -945,7 +945,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     <Picture
                       layout="fullWidth"
                       alt={post.Intro_blob.data.attributes.alternativeText}
-                      src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                      src={STRAPI_URL + post.Intro_blob.data.attributes.url}
                       attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
                       sizes="(min-width: 768px) min(580px, calc(40vw - 25px)), min(80vw, 420px)"
                     />
@@ -1003,7 +1003,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     "@context": "https://schema.org",
     "@type": "Product",
     name: page.Title,
-    image: await importImage(ASSETS_URL + page.Intro_blob?.data.attributes.url),
+    image: await importImage(STRAPI_URL + page.Intro_blob?.data.attributes.url),
     description: `${(await renderMarkdown(page.Intro_text)).replace(
       /(<([^>]+)>)/gi,
       "",
