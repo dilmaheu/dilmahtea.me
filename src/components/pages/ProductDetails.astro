@@ -315,36 +315,38 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             aria-label={checkoutRecurData.text_variant}
             class="product-variants flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full"
           >
+          <div class="flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full">
             {availableVariants.map(({ value, variant, link }) => (
-              <div
-                tabindex="0"
-                role="listitem"
-                aria-label={variant}
-                data-href={link}
-              >
-                <div class="h-full">
-                  <label
-                    class:list={[
-                      "product-variant radio-button flex flex-col relative",
-                      "w-full h-full sm:min-w-[188px] bg-dark-green cursor-pointer",
-                    ]}
+              <div class="product-variant">
+                <input
+                  type="radio"
+                  name="tea_variant"
+                  id={variant}
+                  value={value}
+                  data-href={link}
+                  checked={value === productVariant}
+                  class="peer hidden"
+                />
+                <label
+                  for={variant}
+                  class:list={[
+                    "inline-block p-[3px] md:min-w-[188px] text-white",
+                    "peer-checked:bg-secondary select-none cursor-pointer",
+                  ]}
+                  style="clip-path: url(#product-variant-curve);"
+                >
+                  <div
+                    class="p-1 bg-primary"
                     style="clip-path: url(#product-variant-curve);"
                   >
-                    <input
-                      type="radio"
-                      name="selected_cause"
-                      value={value}
-                      checked={value === productVariant}
-                      class="hidden"
-                    />
-
-                    <div class="p-[18px] flex flex-wrap justify-center items-center">
-                      <div class="text-sm text-secondary leading-[110%]">
-                        {variant}
-                      </div>
+                    <div
+                      class="flex items-center justify-center p-[18px] bg-dark-green"
+                      style="clip-path: url(#product-variant-curve);"
+                    >
+                      {variant}
                     </div>
-                  </label>
-                </div>
+                  </div>
+                </label>
               </div>
             ))}
           </div>
