@@ -160,6 +160,38 @@ function cleanLink(link) {
     );
   }
 
+  .open-sub-menu-checkbox {
+    & + div {
+      .open-sub-menu-icon {
+        display: block;
+      }
+
+      .close-sub-menu-icon {
+        display: none;
+      }
+    }
+
+    & ~ .sub-menu {
+      display: none;
+    }
+
+    &:checked {
+      & + div {
+        .open-sub-menu-icon {
+          display: none;
+        }
+
+        .close-sub-menu-icon {
+          display: block;
+        }
+      }
+
+      & ~ .sub-menu {
+        display: grid;
+      }
+    }
+  }
+
   #sidebar nav {
     .menu-title {
       @apply text-[28px] leading-[150%];
@@ -540,6 +572,14 @@ function cleanLink(link) {
                         <div class="w-full h-0.5 mb-[25px] bg-white rounded" />
                       )}
 
+                      {hasSubMenu && (
+                        <input
+                          type="checkbox"
+                          id={"open-sub-menu-" + index}
+                          class="hidden open-sub-menu-checkbox"
+                        />
+                      )}
+
                       <div class="relative text-white flex items-center justify-between gap-2.5">
                         <a
                           href={Link}
@@ -550,52 +590,46 @@ function cleanLink(link) {
                         >
                           {Title}
                         </a>
-                        {hasSubMenu && (
-                          <div class="block md:hidden w-[29px] h-[29px] p-1 my-auto">
-                            <button
-                              aria-label={
-                                ariaLabelRecurData.Navbar_open_sidebar_sub_menu_text
-                              }
-                              class="sidebar-menu-open-btn block h-full select-none cursor-pointer"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="w-full h-full"
-                                viewBox="0 0 19.9 20"
-                              >
-                                <path
-                                  d="m1.5,10h16.9m-8.5,8.5V1.5"
-                                  style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3px;"
-                                />
-                              </svg>
-                            </button>
 
-                            <button
-                              aria-label={
-                                ariaLabelRecurData.Navbar_close_sidebar_sub_menu_text
-                              }
-                              class="sidebar-menu-close-btn hidden w-full h-full select-none cursor-pointer"
+                        {hasSubMenu && (
+                          <label
+                            for={"open-sub-menu-" + index}
+                            role="button"
+                            aria-label={
+                              ariaLabelRecurData.Navbar_open_sidebar_sub_menu_text
+                            }
+                            class="block md:hidden w-[29px] h-[29px] p-1 my-auto select-none cursor-pointer"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="open-sub-menu-icon pointer-events-none w-full h-full"
+                              viewBox="0 0 19.9 20"
                             >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="w-full h-full"
-                                viewBox="0 0 19.9 3"
-                              >
-                                <line
-                                  x1="1.5"
-                                  y1="1.5"
-                                  x2="18.4"
-                                  y2="1.5"
-                                  style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3px;"
-                                />
-                              </svg>
-                            </button>
-                          </div>
+                              <path
+                                d="m1.5,10h16.9m-8.5,8.5V1.5"
+                                style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3px;"
+                              />
+                            </svg>
+
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="close-sub-menu-icon pointer-events-none w-full h-full"
+                              viewBox="0 0 19.9 3"
+                            >
+                              <line
+                                x1="1.5"
+                                y1="1.5"
+                                x2="18.4"
+                                y2="1.5"
+                                style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3px;"
+                              />
+                            </svg>
+                          </label>
                         )}
                       </div>
 
                       {hasSubMenu && (
-                        <div class="sub-menu hidden gap-[5px]">
+                        <div class="sub-menu gap-[5px]">
                           {Sub_menu.map(
                             ({ Visibility, Title, Link }) =>
                               Visibility && (
@@ -809,31 +843,6 @@ function cleanLink(link) {
       }
     </div>
   </div>
-
-  <script is:inline>
-    document.addEventListener("DOMContentLoaded", function () {
-      const select = document.querySelectorAll.bind(document),
-        openBtns = select(".sidebar-menu-open-btn"),
-        closeBtns = select(".sidebar-menu-close-btn"),
-        subMenus = select(".sub-menu");
-
-      for (let i = 0; i < openBtns.length; i++) {
-        openBtns[i].addEventListener("click", function () {
-          openBtns[i].classList.add("hidden");
-          closeBtns[i].classList.remove("hidden");
-          subMenus[i].classList.add("grid");
-          subMenus[i].classList.remove("hidden");
-        });
-
-        closeBtns[i].addEventListener("click", function () {
-          closeBtns[i].classList.add("hidden");
-          openBtns[i].classList.remove("hidden");
-          subMenus[i].classList.add("hidden");
-          subMenus[i].classList.remove("grid");
-        });
-      }
-    });
-  </script>
 
   <script is:inline>
     document.addEventListener("DOMContentLoaded", () => {
