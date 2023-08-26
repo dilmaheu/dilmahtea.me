@@ -6,7 +6,7 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 
 const { page, recurData } = Astro.props,
   { locale } = page,
-  { ASSETS_URL } = import.meta.env,
+  { STRAPI_URL } = import.meta.env,
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
 const checkoutSuccessLink = `/${locale}/${
@@ -77,7 +77,7 @@ console.log(checkoutSuccessLink);
 
 <script define:vars={{ checkoutShippingLink, checkoutSuccessLink, shopLink }}>
   const { paymentID } = Object.fromEntries(
-    new URLSearchParams(location.search)
+    new URLSearchParams(location.search),
   );
 
   if (!paymentID) {
@@ -129,7 +129,7 @@ console.log(checkoutSuccessLink);
                     layout="fill"
                     sizes="(min-width: 640px) 320px, 90vw"
                     alt={featured_blob.data.attributes.alternativeText}
-                    src={ASSETS_URL + featured_blob.data.attributes.url}
+                    src={STRAPI_URL + featured_blob.data.attributes.url}
                   />
                 </div>
 
@@ -143,7 +143,7 @@ console.log(checkoutSuccessLink);
               </div>
             </div>
           </div>
-        )
+        ),
       )
     }
   </section>
@@ -177,12 +177,12 @@ console.log(checkoutSuccessLink);
     kindnessCausesCards =
       document.querySelectorAll<HTMLElement>(".kindness-cause"),
     submitCauseBtn = document.getElementById(
-      "submit-cause-btn"
+      "submit-cause-btn",
     ) as HTMLButtonElement;
 
   function selectCard(card: HTMLElement) {
     const activeCauseCard = kindnessCausesCardsContainer.querySelector(
-      ".active-kindness-cause"
+      ".active-kindness-cause",
     );
 
     activeCauseCard?.classList?.remove("active-kindness-cause");
@@ -199,7 +199,7 @@ console.log(checkoutSuccessLink);
   submitCauseBtn?.addEventListener("click", () => {
     const kindness_cause =
       kindnessCausesCardsContainer.querySelector<HTMLElement>(
-        ".active-kindness-cause"
+        ".active-kindness-cause",
       ).dataset.cause;
 
     fetch(
@@ -216,7 +216,7 @@ console.log(checkoutSuccessLink);
           payment_type: "ecommerce",
           "Cup of Kindness": kindness_cause,
         }),
-      }
+      },
     );
 
     location.href = window.checkoutSuccessLink;

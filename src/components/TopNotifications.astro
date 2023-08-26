@@ -16,7 +16,10 @@ const topNotifications = notifications
       [
         attributes,
         ...attributes.localizations.data.map(({ attributes }) => attributes),
-      ].map(({ locale, ...attributes }) => [locale.substring(0, 2), attributes])
+      ].map(({ locale, ...attributes }) => [
+        locale.substring(0, 2),
+        attributes,
+      ]),
     ),
   ]);
 ---
@@ -51,12 +54,12 @@ const topNotifications = notifications
     switch (notificationTitle) {
       case "language_not_available":
         const requestedLocale = new URLSearchParams(location.search).get(
-          "requestedLocale"
+          "requestedLocale",
         );
 
         if (locales.includes(requestedLocale)) {
           const irrelevantNotifications = notification.querySelectorAll(
-            `.notification .notification-content span:not(.${requestedLocale})`
+            `.notification .notification-content span:not(.${requestedLocale})`,
           );
 
           irrelevantNotifications.forEach((notification) => {
@@ -77,7 +80,7 @@ const topNotifications = notifications
 
             sessionStorage.setItem(
               "hasShownRegionNotAvailableNotification",
-              true
+              true,
             );
           }
         }

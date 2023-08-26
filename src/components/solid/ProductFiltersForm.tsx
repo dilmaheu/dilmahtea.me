@@ -37,7 +37,7 @@ export default function ProductFiltersForm({
     const [selectedOption] = target.selectedOptions;
 
     const availableCombinations = JSON.parse(
-      selectedOption.dataset.availableCombinations || "null"
+      selectedOption.dataset.availableCombinations || "null",
     );
 
     (target.name === "tea_variant"
@@ -57,11 +57,11 @@ export default function ProductFiltersForm({
 
   onMount(() => {
     const filterSelectors = document.querySelectorAll(
-      "#product-filters select"
+      "#product-filters select",
     );
 
     filterSelectors.forEach((filterSelector) =>
-      displayAvailableCombinations(filterSelector)
+      displayAvailableCombinations(filterSelector),
     );
   });
 

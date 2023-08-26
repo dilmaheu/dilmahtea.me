@@ -9,8 +9,8 @@ const [productFilters, setProductFilters] = createSignal<ProductFilters>(
   JSON.parse(
     (typeof window !== "undefined" &&
       window.sessionStorage.getItem("preferredFilters")) ||
-      "{}"
-  )
+      "{}",
+  ),
 );
 
 export { productFilters, setProductFilters };

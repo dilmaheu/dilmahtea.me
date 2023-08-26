@@ -13,7 +13,7 @@ declare interface Props {
 
 const { footerText, recurData, type } = Astro.props as Props,
   { Footer_menu: menu } = recurData,
-  { ASSETS_URL } = import.meta.env;
+  { STRAPI_URL } = import.meta.env;
 ---
 
 <style lang="scss">
@@ -136,7 +136,7 @@ const { footerText, recurData, type } = Astro.props as Props,
                             <div class="footer-icon-container h-full">
                               <img
                                 class="w-full h-full"
-                                src={ASSETS_URL + icon?.attributes.url}
+                                src={STRAPI_URL + icon?.attributes.url}
                                 alt=""
                               />
                             </div>
@@ -145,7 +145,7 @@ const { footerText, recurData, type } = Astro.props as Props,
                           <div>{Title}</div>
                         </a>
                       </li>
-                    )
+                    ),
                 )}
               </ul>
             </div>

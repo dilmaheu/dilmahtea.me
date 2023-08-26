@@ -121,10 +121,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <DynamicHTML
                   voidFn={(content, currentScript) => {
                     const cartOverlayContent = document.getElementById(
-                        "cart-overlay-content"
+                        "cart-overlay-content",
                       ),
                       emptyCartNotification = document.getElementById(
-                        "empty-cart-notification"
+                        "empty-cart-notification",
                       );
 
                     window.addProductToCart = (id) => {
@@ -142,16 +142,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           id,
                           name,
                           price,
-                        })
+                        }),
                       );
 
                       const { previousElementSibling: productElement } =
                           currentScript,
                         quantityDecrementBtn = productElement.querySelector(
-                          'button[data-action="decrement"]'
+                          'button[data-action="decrement"]',
                         ),
                         quantityInput = productElement.querySelector(
-                          ".cart-overlay-product-amount-input"
+                          ".cart-overlay-product-amount-input",
                         );
 
                       quantityDecrementBtn.disabled =
@@ -385,16 +385,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   import tweakAmount from "@utils/client/tweakAmount";
 
   const cartOverlayProductAmountInputs = document.querySelectorAll(
-      ".cart-overlay-product-amount-input"
+      ".cart-overlay-product-amount-input",
     ),
     cartOverlayProductAmountTweakBtns = document.querySelectorAll(
-      ".cart-overlay-product-amount-tweak-btn"
+      ".cart-overlay-product-amount-tweak-btn",
     );
 
   function tweakAmountCallback(input) {
     const parentCartProduct = input.closest(".cart-product"),
       productPriceElement = parentCartProduct.querySelector(
-        ".cart-overlay-product-price"
+        ".cart-overlay-product-price",
       ),
       productId = parentCartProduct.id,
       productData = { ...window.cart[productId] },
@@ -416,7 +416,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   tweakAmount(
     cartOverlayProductAmountTweakBtns,
     cartOverlayProductAmountInputs,
-    tweakAmountCallback
+    tweakAmountCallback,
   );
 
   window.listenToInputEvents = (tweakBtns, input) => {

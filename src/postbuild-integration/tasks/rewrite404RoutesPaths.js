@@ -7,6 +7,6 @@ export default async function rewrite404RoutesPaths(_404HtmlFilePaths) {
 
       await fs.rename(path, newPath);
       await fs.rm(path.slice(0, -11), { recursive: true, force: true });
-    })
+    }),
   );
 }

@@ -37,7 +37,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
 
 const footerText = recurData.Footer_text.replaceAll(
   "<current_year>",
-  `${new Date().getFullYear()}`
+  `${new Date().getFullYear()}`,
 );
 ---
 
@@ -206,7 +206,7 @@ const footerText = recurData.Footer_text.replaceAll(
           voidFn={(content, currentScript) => {
             const cart = document.getElementById("cart"),
               emptyCartNotification = document.getElementById(
-                "empty-cart-notification"
+                "empty-cart-notification",
               );
 
             if (Object.keys(window.cart).length === 0) {
@@ -233,7 +233,7 @@ const footerText = recurData.Footer_text.replaceAll(
                     price,
                   });
                 })
-                .join("")
+                .join(""),
             );
           }}
         >
@@ -355,13 +355,13 @@ const footerText = recurData.Footer_text.replaceAll(
   import tweakAmount from "@utils/client/tweakAmount";
 
   const cartProductAmountInputs = document.querySelectorAll(
-      ".cart-product-amount-input"
+      ".cart-product-amount-input",
     ),
     cartProductAmountTweakBtns = document.querySelectorAll(
-      ".cart-product-amount-tweak-btn"
+      ".cart-product-amount-tweak-btn",
     ),
     decreaseAmountBtns = document.querySelectorAll(
-      ".cart-product-amount-tweak-btn[data-action='decrement']"
+      ".cart-product-amount-tweak-btn[data-action='decrement']",
     );
 
   decreaseAmountBtns.forEach((button: HTMLButtonElement) => {
@@ -373,7 +373,7 @@ const footerText = recurData.Footer_text.replaceAll(
   function tweakAmountCallback(input) {
     const parentCartProduct = input.closest(".cart-product"),
       productPriceElements = parentCartProduct.querySelectorAll(
-        ".cart-product-price"
+        ".cart-product-price",
       ),
       productId = parentCartProduct.id,
       productData = window.cart[productId],
@@ -397,6 +397,6 @@ const footerText = recurData.Footer_text.replaceAll(
   tweakAmount(
     cartProductAmountTweakBtns,
     cartProductAmountInputs,
-    tweakAmountCallback
+    tweakAmountCallback,
   );
 </script>

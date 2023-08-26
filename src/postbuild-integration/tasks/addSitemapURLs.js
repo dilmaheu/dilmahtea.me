@@ -4,7 +4,7 @@ export default async function addSitemapURLs(
   path,
   document,
   sitemap,
-  htmlFilePaths
+  htmlFilePaths,
 ) {
   if (htmlFilePaths.includes(path)) {
     const pageURL = siteURL + path.slice(6, -10),

@@ -21,7 +21,7 @@ const {
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
-  { ASSETS_URL } = import.meta.env;
+  { STRAPI_URL } = import.meta.env;
 
 const {
   recipe_day,
@@ -100,7 +100,7 @@ const nutrition: Nutrition = {
     page.Nutrition.map((item) => [
       item.Nutrition_name,
       (item.Nutrition_amount || "0") + item.Nutrition_measurements_unit,
-    ])
+    ]),
   ),
 };
 ---
@@ -598,19 +598,19 @@ const nutrition: Nutrition = {
         document.querySelectorAll(".ingredient-amount");
 
       const recipeSectionServingSizeInput = document.getElementById(
-        "recipe-serving-size"
+        "recipe-serving-size",
       ) as HTMLSelectElement;
 
       recipeSectionServingSizeInput?.addEventListener("change", (e) => {
         const recipeSectionServingSize = Number(
-          recipeSectionServingSizeInput.selectedOptions[0].value
+          recipeSectionServingSizeInput.selectedOptions[0].value,
         );
 
         ingredientAmountElements.forEach((element: HTMLElement) => {
           const ingredientAmount = Number(element.dataset.amount);
 
           element.textContent = String(
-            ingredientAmount * recipeSectionServingSize
+            ingredientAmount * recipeSectionServingSize,
           );
         });
       });
@@ -682,7 +682,7 @@ const nutrition: Nutrition = {
                         .alternativeText
                     }
                     src={
-                      ASSETS_URL +
+                      STRAPI_URL +
                       step.Instructions_part_steps_blob.data.attributes.url
                     }
                   />
@@ -777,7 +777,7 @@ const nutrition: Nutrition = {
                       <Picture
                         layout="fullWidth"
                         alt={intro_blob.alternativeText}
-                        src={ASSETS_URL + intro_blob.url}
+                        src={STRAPI_URL + intro_blob.url}
                         attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
                         sizes="(min-width: 768px) min(580px, calc(40vw - 25px)), min(80vw, 420px)"
                       />
@@ -800,7 +800,7 @@ const nutrition: Nutrition = {
                         </div>
                       </div>
                     </div>
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -841,7 +841,7 @@ const nutrition: Nutrition = {
         interactionEvents.forEach((eventType) => {
           document.removeEventListener(
             eventType,
-            firstInteractionEventListener
+            firstInteractionEventListener,
           );
         });
       };
@@ -865,7 +865,7 @@ const nutrition: Nutrition = {
     "@context": "https://schema.org",
     "@type": "Recipe",
     name: page.Title,
-    image: await importImage(ASSETS_URL + page.Intro_blob?.data.attributes.url),
+    image: await importImage(STRAPI_URL + page.Intro_blob?.data.attributes.url),
     author: {
       "@type": "Person",
       name: page.authors.data.map(({ attributes }) => attributes.givenName),
@@ -875,7 +875,7 @@ const nutrition: Nutrition = {
     dateModified: page.updatedAt,
     description: `${(await renderMarkdown(page.Intro_text)).replace(
       /(<([^>]+)>)/gi,
-      ""
+      "",
     )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
     nutrition,
     prepTime: `PT${preparationTimeStringSm.toUpperCase().replace(/\s/g, "")}`,
@@ -892,8 +892,8 @@ const nutrition: Nutrition = {
           item.Instructions_part_ingredient_amount +
           item.Instructions_part_ingredient_measurements_unit +
           ` ` +
-          item.Instructions_part_ingredient_name
-      )
+          item.Instructions_part_ingredient_name,
+      ),
     ),
     recipeInstructions: await Promise.all(
       page.Instructions_part.flatMap((item) =>
@@ -912,12 +912,12 @@ const nutrition: Nutrition = {
           }`,
           image: step.Instructions_part_steps_blob.data
             ? await importImage(
-                ASSETS_URL +
-                  step.Instructions_part_steps_blob?.data?.attributes.url
+                STRAPI_URL +
+                  step.Instructions_part_steps_blob?.data?.attributes.url,
               )
             : "",
-        }))
-      )
+        })),
+      ),
     ),
   }}
 />

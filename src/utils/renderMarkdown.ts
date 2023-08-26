@@ -5,11 +5,11 @@ import {
 
 export default async function renderMarkdown(
   markdown: string,
-  opts?: MarkdownRenderingOptions
+  opts?: MarkdownRenderingOptions,
 ): Promise<string> {
   const { code } = await astroMarkdownRemarkRenderMarkdown(
     markdown,
-    opts ?? {}
+    opts ?? {},
   );
 
   return code;

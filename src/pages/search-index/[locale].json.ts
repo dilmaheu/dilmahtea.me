@@ -2,7 +2,7 @@ import CMS from "@store/CMS.js";
 import Products from "@store/Products";
 import tryUntilResolve from "@utils/tryUntilResolve";
 
-const { ASSETS_URL } = import.meta.env,
+const { STRAPI_URL } = import.meta.env,
   contentTypes = [
     "blogs",
     "howTos",
@@ -18,7 +18,7 @@ const { ASSETS_URL } = import.meta.env,
 
 const searchIndex = {},
   pages = contentTypes.flatMap(
-    (type) => (CMS.get(type) || Products.get("all")).data
+    (type) => (CMS.get(type) || Products.get("all")).data,
   );
 
 pages.forEach(({ attributes }) => {
@@ -30,11 +30,11 @@ pages.forEach(({ attributes }) => {
       Title = attributes.Title || attributes.Estate_name,
       Intro_text = attributes.Intro_text.slice(0, 60).replace(
         /(<([^>]+)>)/gi,
-        ""
+        "",
       ),
       Intro_blob = {
         url:
-          ASSETS_URL +
+          STRAPI_URL +
           (attributes.Intro_blob.data.attributes.formats?.thumbnail.url ||
             attributes.Intro_blob.data.attributes.url),
         alt: attributes.Intro_blob.data.attributes.alternativeText,
@@ -65,9 +65,9 @@ await Promise.all(
     .map(async ({ Intro_blob }) => {
       Intro_blob.url = await tryUntilResolve(
         () => importImage(Intro_blob.url),
-        (message) => message + " " + Intro_blob.url
+        (message) => message + " " + Intro_blob.url,
       );
-    })
+    }),
 );
 
 export function getStaticPaths() {

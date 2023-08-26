@@ -10,7 +10,6 @@ import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
-import { variantsOrder } from "@store/Products";
 
 import renderMarkdown from "@utils/renderMarkdown";
 import localizeCMSImage from "@utils/localizeCMSImage";
@@ -20,7 +19,7 @@ const { green_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
-  { ASSETS_URL } = import.meta.env;
+  { STRAPI_URL } = import.meta.env;
 
 const {
   locale,
@@ -29,6 +28,7 @@ const {
   productSize,
   availableVariants,
   availableSizes,
+  availableFormats,
   Stock_amount: stockAmount,
 } = page;
 
@@ -39,7 +39,7 @@ const { SKU: productSKU } = page,
   productNames = JSON.stringify(page.names);
 
 const productThumbnailURL = await importImage(
-  ASSETS_URL + page.Intro_blob.data.attributes.formats.thumbnail.url
+  STRAPI_URL + page.Intro_blob.data.attributes.formats.thumbnail.url,
 );
 
 const infos = page.product_infos.data.map(({ attributes }) => attributes),
@@ -50,47 +50,15 @@ const infos = page.product_infos.data.map(({ attributes }) => attributes),
 const relevantItems = blogs.concat(recipes, howTos);
 
 const spentAmounts = page.Price_breakdown.map(
-  ({ Spent_amount }) => Spent_amount
+  ({ Spent_amount }) => Spent_amount,
 );
 
 const totalSpentAmount = spentAmounts.reduce(
   (total, currentValue) => total + currentValue,
-  0
+  0,
 );
 
 const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
-
-let availableFormats;
-
-if (stockAmount === 0) {
-  const formats = [];
-
-  availableFormats = [...availableVariants, ...availableSizes].filter(
-    ({ format, stockAmount }) => {
-      if (formats.includes(format)) return false;
-
-      formats.push(format);
-
-      return stockAmount;
-    }
-  );
-
-  availableFormats.sort(
-    ({ value: a }, { value: b }) =>
-      variantsOrder.indexOf(a) - variantsOrder.indexOf(b)
-  );
-
-  availableFormats = await Promise.all(
-    availableFormats.map(async (data) => ({
-      link: data.link,
-      format: data.format,
-      thumbnail: {
-        src: await importImage(ASSETS_URL + data.thumbnail.src),
-        alt: data.thumbnail.alt,
-      },
-    }))
-  );
-}
 ---
 
 <style lang="scss">
@@ -354,19 +322,11 @@ if (stockAmount === 0) {
     <div class="flex flex-wrap gap-5 items-center w-full justify-between">
       {
         stockAmount > 0 && (
-          <div
-            class:list={[
-              "flex items-center text-primary bg-white rounded-full",
-              stockAmount < 1 && "cursor-not-allowed",
-            ]}
-          >
+          <div class="flex items-center text-primary bg-white rounded-full">
             <button
               data-action="decrement"
               aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
-              class:list={[
-                "product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1 select-none",
-                stockAmount < 1 && "cursor-not-allowed",
-              ]}
+              class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-3 pr-1 select-none"
               disabled
             >
               <Icon name="akar-icons:minus" class="w-6 h-6 select-none" />
@@ -376,25 +336,17 @@ if (stockAmount === 0) {
               type="number"
               name="quantity"
               aria-label={ariaLabelRecurData.Product_quantity_text}
-              min={stockAmount > 0 ? 1 : 0}
+              min={1}
               max={stockAmount}
-              value={stockAmount > 0 ? 1 : 0}
-              class:list={[
-                stockAmount < 1 && "cursor-not-allowed",
-                "product-amount-input w-12 h-full text-center lg:text-lg bg-transparent outline-none",
-              ]}
-              disabled={stockAmount < 1 && "disabled"}
+              value={1}
+              class="product-amount-input w-12 h-full text-center lg:text-lg bg-transparent outline-none"
               required
             />
 
             <button
               data-action="increment"
               aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
-              class:list={[
-                "product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3",
-                stockAmount < 1 && "cursor-not-allowed",
-              ]}
-              disabled={stockAmount < 1 && "disabled"}
+              class="product-amount-tweak-btn w-10 h-11 py-2.5 pl-1 pr-3"
             >
               <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
             </button>
@@ -423,8 +375,7 @@ if (stockAmount === 0) {
         }
         {
           stockAmount === 0 && (
-            <button
-              tabindex="0"
+            <div
               class:list={[
                 "w-full xl:w-2/3 flex justify-center items-center gap-4 p-3 mt-auto",
                 "bg-slate text-white font-bold text-base rounded-full cursor-not-allowed",
@@ -432,30 +383,76 @@ if (stockAmount === 0) {
             >
               <Icon name="tabler:shopping-cart-x" class="w-[26px] h-[26px]" />
               {recurData.Product_sold_out_text}
-            </button>
+            </div>
           )
         }
       </div>
+
       {
-        stockAmount < 1 && page.In_stock_date && (
-          <div
-            class:list={[
-              "flex items-center gap-2.5 w-full",
-              "text-sm sm:text-base font-medium text-white",
-            ]}
-          >
-            <Icon
-              name="mdi:alert-circle"
-              class="inline-flex w-[26px] p-0.5 bg-warning text-white rounded-full select-none"
-            />
-            {recurData.Item_stock_text.replace(
-              "<in_stock_date>",
-              new Date(page.In_stock_date).toLocaleString("en-GB", {
-                year: "2-digit",
-                month: "short",
-                day: "numeric",
-              })
-            )}
+        stockAmount < 1 && (
+          <div class="grid gap-4 w-full">
+            <div
+              class:list={[
+                "flex items-center gap-2.5 w-full",
+                "text-sm sm:text-base font-medium text-white2",
+              ]}
+            >
+              <Icon
+                name="mdi:alert-circle"
+                class="inline-flex p-0.5 w-[26px] text-white bg-[#febf21] rounded-full select-none"
+              />
+              {
+                // hide label if in-stock date is in the past or undefined
+                new Date(page.In_stock_date).getTime() > new Date().getTime() &&
+                  recurData.Item_stock_text.replace(
+                    "<in_stock_date>",
+                    new Date(page.In_stock_date).toLocaleString("en-GB", {
+                      year: "2-digit",
+                      month: "short",
+                      day: "numeric",
+                    }),
+                  ) + "."
+              }
+              {availableFormats.length === 1
+                ? recurData.Product_stock_other_formats_text_singular
+                : recurData.Product_stock_other_formats_text.replace(
+                    "<count>",
+                    availableFormats.length,
+                  )}
+            </div>
+
+            <div class="w-full md:w-2/3 lg:w-full">
+              <div class="variant-container">
+                {availableFormats.map(async ({ link, format, thumbnail }) => (
+                  <div
+                    style="clip-path: url(#product-category-card-curve)"
+                    class="bg-dark-green text-center"
+                  >
+                    <a href={link}>
+                      <div class="variant-content-container">
+                        <div class="variant-img-container">
+                          <div class="variant-img w-auto h-full aspect-[6/5] block">
+                            <img
+                              src={await importImage(
+                                STRAPI_URL + thumbnail.src,
+                              )}
+                              alt={thumbnail.alt}
+                              style="aspect-ratio: 6 / 5;"
+                            />
+                          </div>
+                        </div>
+
+                        <div class="variant-txt-container">
+                          <h2 class="alice text-xl sm:text-left leading-[110%] line-clamp-2">
+                            {format}
+                          </h2>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )
       }
@@ -544,19 +541,11 @@ if (stockAmount === 0) {
     <div class="w-full flex flex-wrap justify-between items-center gap-4">
       {
         stockAmount > 0 && (
-          <div
-            class:list={[
-              stockAmount < 1 && "cursor-not-allowed",
-              "w-fit flex items-center text-white p-1 bg-primary rounded-full",
-            ]}
-          >
+          <div class="w-fit flex items-center text-white p-1 bg-primary rounded-full">
             <button
               data-action="decrement"
               aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
-              class:list={[
-                stockAmount < 1 && "cursor-not-allowed",
-                "product-amount-tweak-btn w-10 h-12 py-2.5 pl-3 pr-1",
-              ]}
+              class="product-amount-tweak-btn w-10 h-12 py-2.5 pl-3 pr-1"
               disabled
             >
               <Icon name="akar-icons:minus" class="w-6 h-6 select-none" />
@@ -566,25 +555,17 @@ if (stockAmount === 0) {
               type="number"
               name="quantity"
               aria-label={ariaLabelRecurData.Product_quantity_text}
-              min={stockAmount > 0 ? 1 : 0}
+              min={1}
               max={stockAmount}
-              value={stockAmount > 0 ? 1 : 0}
-              class:list={[
-                stockAmount < 1 && "cursor-not-allowed",
-                "product-amount-input w-12 h-full bg-transparent text-center lg:text-lg outline-none",
-              ]}
+              value={1}
+              class="product-amount-input w-12 h-full bg-transparent text-center lg:text-lg outline-none"
               required
-              disabled={stockAmount < 1 && "disabled"}
             />
 
             <button
               data-action="increment"
               aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
-              class:list={[
-                stockAmount < 1 && "cursor-not-allowed",
-                "product-amount-tweak-btn w-10 h-12 py-2.5 pl-1 pr-3",
-              ]}
-              disabled={stockAmount < 1 && "disabled"}
+              class="product-amount-tweak-btn w-10 h-12 py-2.5 pl-1 pr-3"
             >
               <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
             </button>
@@ -609,8 +590,7 @@ if (stockAmount === 0) {
 
         {
           stockAmount === 0 && (
-            <button
-              tabindex="0"
+            <div
               class:list={[
                 "w-full flex justify-center items-center gap-4 p-3 mt-auto rounded-full",
                 "bg-slate text-white text-base font-bold leading-[19px] cursor-not-allowed",
@@ -618,7 +598,7 @@ if (stockAmount === 0) {
             >
               <Icon name="mi:shopping-cart" class="w-8 h-8" />
               {recurData.Product_sold_out_text}
-            </button>
+            </div>
           )
         }
       </div>
@@ -643,19 +623,11 @@ if (stockAmount === 0) {
         <input type="hidden" name="price" value={productPriceIncludingTax} />
 
         <div class="wrapper flex items-center gap-4 justify-between">
-          <div
-            class:list={[
-              stockAmount < 1 && "cursor-not-allowed",
-              "w-fit flex items-center text-white p-1 bg-primary rounded-full",
-            ]}
-          >
+          <div class="w-fit flex items-center text-white p-1 bg-primary rounded-full">
             <button
               data-action="decrement"
               aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
-              class:list={[
-                stockAmount < 1 && "cursor-not-allowed",
-                "product-amount-tweak-btn w-10 h-10 py-2.5 pl-3 pr-1",
-              ]}
+              class="product-amount-tweak-btn w-10 h-10 py-2.5 pl-3 pr-1"
               disabled
             >
               <Icon name="akar-icons:minus" class="w-6 h-6 select-none" />
@@ -665,25 +637,17 @@ if (stockAmount === 0) {
               type="number"
               name="quantity"
               aria-label={ariaLabelRecurData.Product_quantity_text}
-              min={stockAmount > 0 ? 1 : 0}
+              min={1}
               max={stockAmount}
-              value={stockAmount > 0 ? 1 : 0}
-              class:list={[
-                stockAmount < 1 && "cursor-not-allowed",
-                "product-amount-input w-10 h-full bg-transparent text-center outline-none",
-              ]}
+              value={1}
+              class="product-amount-input w-10 h-full bg-transparent text-center outline-none"
               required
-              disabled={stockAmount < 1 && "disabled"}
             />
 
             <button
               data-action="increment"
               aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
-              class:list={[
-                stockAmount < 1 && "cursor-not-allowed",
-                "product-amount-tweak-btn w-10 h-10 py-2.5 pl-1 pr-3",
-              ]}
-              disabled={stockAmount < 1 && "disabled"}
+              class="product-amount-tweak-btn w-10 h-10 py-2.5 pl-1 pr-3"
             >
               <Icon name="akar-icons:plus" class="w-6 h-6 select-none" />
             </button>
@@ -802,7 +766,7 @@ if (stockAmount === 0) {
                     <img
                       alt=""
                       src={await localizeCMSImage(
-                        item.Transparency_item_icon.data.attributes.url
+                        item.Transparency_item_icon.data.attributes.url,
                       )}
                       class="w-full h-full object-contain p-1"
                     />
@@ -854,7 +818,7 @@ if (stockAmount === 0) {
                     <img
                       alt=""
                       src={
-                        ASSETS_URL + item.Impact_item_icon.data.attributes.url
+                        STRAPI_URL + item.Impact_item_icon.data.attributes.url
                       }
                       class="w-full h-full object-contain p-1"
                     />
@@ -908,7 +872,7 @@ if (stockAmount === 0) {
                 <img
                   class="w-full h-full"
                   alt=""
-                  src={ASSETS_URL + info.Product_info_icon.data.attributes.url}
+                  src={STRAPI_URL + info.Product_info_icon.data.attributes.url}
                 />
               </div>
 
@@ -981,7 +945,7 @@ if (stockAmount === 0) {
                     <Picture
                       layout="fullWidth"
                       alt={post.Intro_blob.data.attributes.alternativeText}
-                      src={ASSETS_URL + post.Intro_blob.data.attributes.url}
+                      src={STRAPI_URL + post.Intro_blob.data.attributes.url}
                       attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
                       sizes="(min-width: 768px) min(580px, calc(40vw - 25px)), min(80vw, 420px)"
                     />
@@ -1039,10 +1003,10 @@ if (stockAmount === 0) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: page.Title,
-    image: await importImage(ASSETS_URL + page.Intro_blob?.data.attributes.url),
+    image: await importImage(STRAPI_URL + page.Intro_blob?.data.attributes.url),
     description: `${(await renderMarkdown(page.Intro_text)).replace(
       /(<([^>]+)>)/gi,
-      ""
+      "",
     )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
     sku: page.SKU,
     gtin: page.GTIN_Barcode,
@@ -1073,7 +1037,7 @@ if (stockAmount === 0) {
   window.baseProductTitle = baseProductTitle;
 
   const preferredProductsVariants = JSON.parse(
-    localStorage.getItem("preferredProductsVariants") || "{}"
+    localStorage.getItem("preferredProductsVariants") || "{}",
   );
 
   preferredProductsVariants[window.baseProductTitle] = {
@@ -1083,7 +1047,7 @@ if (stockAmount === 0) {
 
   localStorage.setItem(
     "preferredProductsVariants",
-    JSON.stringify(preferredProductsVariants)
+    JSON.stringify(preferredProductsVariants),
   );
 </script>
 
@@ -1097,7 +1061,7 @@ if (stockAmount === 0) {
 
   const accordions = queryAll("button.accordion"),
     cartAddingForms = queryAll(
-      ".cart-adding-form, .cart-adding-form-sm, .cart-adding-form-fixed-sm"
+      ".cart-adding-form, .cart-adding-form-sm, .cart-adding-form-fixed-sm",
     ),
     productAmountPriceOutput = query(".product-amount-price"),
     productAmountInputs = queryAll(".product-amount-input"),
@@ -1117,7 +1081,7 @@ if (stockAmount === 0) {
 
       if (["tea_variant", "tea_size"].includes(target.name)) {
         const preferredProductsVariants = JSON.parse(
-          localStorage.getItem("preferredProductsVariants") || "{}"
+          localStorage.getItem("preferredProductsVariants") || "{}",
         );
 
         preferredProductsVariants[window.baseProductTitle] = {
@@ -1127,7 +1091,7 @@ if (stockAmount === 0) {
 
         localStorage.setItem(
           "preferredProductsVariants",
-          JSON.stringify(preferredProductsVariants)
+          JSON.stringify(preferredProductsVariants),
         );
 
         location.href = target.selectedOptions[0].dataset.href;

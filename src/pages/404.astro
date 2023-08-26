@@ -5,11 +5,11 @@ import PageLayout from "@layouts/PageLayout.astro";
 import getAvailableLocales from "@utils/getAvailableLocales";
 
 const requestPath = Astro.url.pathname,
-  { ASSETS_URL } = import.meta.env,
+  { STRAPI_URL } = import.meta.env,
   basicPagesData = CMS.get("basicPages");
 
 const { attributes: _404Page } = basicPagesData.data.find(
-    ({ attributes }) => attributes.Meta.URL_slug === "404"
+    ({ attributes }) => attributes.Meta.URL_slug === "404",
   ),
   flattened404Pages = [
     _404Page,
@@ -25,11 +25,11 @@ if (!availableLocales.includes(locale)) locale = "en";
 
 const recurringElements = CMS.get("recurringElement", locale),
   localized404Page = flattened404Pages.find(
-    (attributes) => attributes.locale.substring(0, 2) === locale
+    (attributes) => attributes.locale.substring(0, 2) === locale,
   );
 
 const alternateURLs = Object.fromEntries(
-  Object.entries(availableLocalesRecord).filter((entry) => entry[0] !== locale)
+  Object.entries(availableLocalesRecord).filter((entry) => entry[0] !== locale),
 );
 ---
 
@@ -37,7 +37,7 @@ const alternateURLs = Object.fromEntries(
   const preferredLocale = localStorage.getItem("locale");
 
   const localeRegex = new RegExp(
-    `^/(${availableLocales.map((locale) => locale).join("|")})/`
+    `^/(${availableLocales.map((locale) => locale).join("|")})/`,
   );
 
   let [, locale] = location.pathname.match(localeRegex) ?? [];
@@ -54,7 +54,7 @@ const alternateURLs = Object.fromEntries(
   availableLocales={availableLocales}
   meta={_404Page.Meta}
   recurData={recurringElements}
-  metaImageSrc={ASSETS_URL +
+  metaImageSrc={STRAPI_URL +
     (_404Page.Block_blob?.data?.url ||
       recurringElements.OpenGraph_default.data.attributes.url)}
 >

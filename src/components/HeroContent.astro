@@ -12,7 +12,7 @@ const { white_cup } = RecurringImages;
 
 const { page, plainTitle, headerBackground, headerBackgroundSm } = Astro.props,
   { locale } = page,
-  { ASSETS_URL } = import.meta.env;
+  { STRAPI_URL } = import.meta.env;
 
 const recurData = CMS.get("recurringElement", locale),
   ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
@@ -58,12 +58,12 @@ const recurData = CMS.get("recurringElement", locale),
                             .alternativeText
                         }
                         src={
-                          ASSETS_URL +
+                          STRAPI_URL +
                           author.attributes.Profile_picture.data.attributes.url
                         }
                       />
                     </div>
-                  )
+                  ),
               )}
 
               <div class="grid content-between">
@@ -73,7 +73,7 @@ const recurData = CMS.get("recurringElement", locale),
                     ({ attributes }, i) =>
                       ariaLabelRecurData.Wrote_by_text +
                       (i > 0 ? ", " : " ") +
-                      attributes.givenName
+                      attributes.givenName,
                   )}
                   class="post-author flex flex-wrap font-bold"
                 >
@@ -184,7 +184,7 @@ const recurData = CMS.get("recurringElement", locale),
           breakpoints={{ minWidth: 640 }}
           sizes="clamp(330px, 26.4vw + 150px, 560px)"
           alt={page.Intro_blob.data.attributes.alternativeText}
-          src={ASSETS_URL + page.Intro_blob.data.attributes.url}
+          src={STRAPI_URL + page.Intro_blob.data.attributes.url}
           path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
           attributes={{ link: { media: "(min-width: 640px)" } }}
         />
@@ -202,7 +202,7 @@ const recurData = CMS.get("recurringElement", locale),
         id="hero-img-curve-sm"
         breakpoints={{ maxWidth: 640 }}
         alt={page.Intro_blob.data.attributes.alternativeText}
-        src={ASSETS_URL + page.Intro_blob.data.attributes.url}
+        src={STRAPI_URL + page.Intro_blob.data.attributes.url}
         path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
         attributes={{ link: { media: "(max-width: 639.98px)" } }}
       />

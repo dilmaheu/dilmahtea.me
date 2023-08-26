@@ -5,7 +5,7 @@ import CMS from "@store/CMS";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
 const { locale, title } = Astro.props,
-  { ASSETS_URL } = import.meta.env;
+  { STRAPI_URL } = import.meta.env;
 
 const categories = CMS.get("productCategories", locale);
 ---
@@ -92,7 +92,7 @@ const categories = CMS.get("productCategories", locale);
         id={title.toLowerCase().replaceAll(" ", "-")}
         class:list={[
           "heading-secondary font-semibold leading-[130%]",
-          "text-black mb-[25px] sm:mb-[30px]",
+          "text-primary mb-[25px] sm:mb-[30px]",
         ]}
       >
         {title}
@@ -114,7 +114,7 @@ const categories = CMS.get("productCategories", locale);
               <div class="product-category-img-container overflow-hidden">
                 <Picture
                   layout="fill"
-                  src={ASSETS_URL + Intro_blob.data.attributes.url}
+                  src={STRAPI_URL + Intro_blob.data.attributes.url}
                   alt={Intro_blob.data.attributes.alternativeText}
                   sizes={[
                     "(min-width: 1024px) calc(clamp(160px, calc(15vw + 46px), 260px) - 1.25rem)",
