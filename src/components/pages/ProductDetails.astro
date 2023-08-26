@@ -63,7 +63,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
 <style lang="scss">
   @use "src/styles/colors";
-  @use "src/styles/poly-fluid" as *;
 
   .cart-adding-form {
     margin-top: clamp(0.625rem, 1vw + 0.35rem, 1.25em);
@@ -269,10 +268,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
     {
       stockAmount > 0 && (
-        <div class="flex flex-wrap gap-[15px]">
-          <div class="flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full">
-            {availableVariants.map(({ value, variant, link }) => (
-              <div class="product-variant">
+        <div class="flex flex-wrap gap-[15px] mt-[15px]">
+          <div class="grid sm:flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full">
+            {availableVariants.map(({ value, variant, variantIcon, link }) => (
+              <div>
                 <input
                   type="radio"
                   name="tea_variant"
@@ -285,20 +284,31 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <label
                   for={variant}
                   class:list={[
-                    "inline-block p-[3px] md:min-w-[188px] text-white",
+                    "inline-block p-[3px] text-secondary w-full",
                     "peer-checked:bg-secondary select-none cursor-pointer",
                   ]}
                   style="clip-path: url(#product-variant-curve);"
                 >
                   <div
-                    class="p-1 bg-primary"
+                    class="md:min-w-[188px] p-1 bg-primary"
                     style="clip-path: url(#product-variant-curve);"
                   >
                     <div
-                      class="flex items-center justify-center p-[18px] bg-dark-green"
+                      class:list={[
+                        "w-full p-[18px] bg-dark-green",
+                        "flex items-center sm:justify-center gap-[15px] ",
+                      ]}
                       style="clip-path: url(#product-variant-curve);"
                     >
-                      {variant}
+                      {variantIcon?.src && (
+                        <img
+                          src={STRAPI_URL + variantIcon.src}
+                          alt={variantIcon.alt}
+                          class="w-7 h-7"
+                        />
+                      )}
+
+                      <span>{variant}</span>
                     </div>
                   </div>
                 </label>
@@ -307,7 +317,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           </div>
 
           <div class="flex flex-wrap items-center gap-[5px] sm:gap-2.5">
-            <div class="text-base leading-[110%]">
+            <div class="text-base leading-[110%] p-2.5">
               {checkoutRecurData.text_size}:
             </div>
 
@@ -326,7 +336,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   <label
                     for={size}
                     class:list={[
-                      "peer-checked:bg-dark-green peer-checked:text-white",
+                      "peer-checked:bg-dark-green peer-checked:text-secondary",
                       "inline-block py-2 px-[25px] text-dark-green rounded-full",
                       "select-none cursor-pointer border-2 border-secondary/80 bg-secondary",
                     ]}
