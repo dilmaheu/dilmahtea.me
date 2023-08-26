@@ -240,20 +240,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   .related-post-card-title-icon {
     height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
   }
-
-  .product-variants {
-    > .active-product-variant {
-      @apply -m-3 p-1.5 bg-primary;
-
-      clip-path: url(#product-variant-curve);
-
-      > div {
-        @apply p-1.5 bg-secondary;
-
-        clip-path: url(#product-variant-curve);
-      }
-    }
-  }
 </style>
 
 <ClipPathSVG
@@ -284,37 +270,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     {
       stockAmount > 0 && (
         <div class="flex flex-wrap gap-[15px]">
-          {/*<fieldset>
-            <legend class="mb-[5px] text-sm lg:text-base font-medium leading-[150%]">
-              {checkoutRecurData.text_variant}:
-            </legend>
-
-            <div class="border-2 border-secondary overflow-hidden rounded-full">
-              <select
-                name="tea_variant"
-                class:list={[
-                  "inline-block py-[9px] pl-5 bg-primary text-white",
-                  "lg:text-lg lg:font-normal border-r-[20px] border-transparent",
-                ]}
-              >
-                {availableVariants.map(({ value, variant, link }) => (
-                  <option
-                    value={value}
-                    data-href={link}
-                    selected={value === productVariant}
-                  >
-                    {variant}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </fieldset>*/}
-
-          <div
-            role="list"
-            aria-label={checkoutRecurData.text_variant}
-            class="product-variants flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full"
-          >
           <div class="flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full">
             {availableVariants.map(({ value, variant, link }) => (
               <div class="product-variant">
