@@ -316,7 +316,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <div>
                   <input
                     type="radio"
-                    name="option"
+                    name="tea_size"
                     id={size}
                     value={value}
                     data-href={link}
@@ -1098,6 +1098,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     productAmountPriceOutput = query(".product-amount-price"),
     productAmountInputs = queryAll(".product-amount-input"),
     productAmountTweakBtns = queryAll(".product-amount-tweak-btn"),
+    radioBtns = queryAll(
+      'input[type="radio"][name="tea_variant"], input[type="radio"][name="tea_size"]',
+    ),
     productPrice = Number(query("input[name='price']")?.value);
 
   accordions.forEach((accordion) => {
@@ -1107,27 +1110,36 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     });
   });
 
+  const handleVariantSizeChange = (element, variantKey, sizeKey) => {
+    const preferredVariants = JSON.parse(
+      localStorage.getItem("preferredProductsVariants") || "{}",
+    );
+    preferredVariants[window.baseProductTitle] = {
+      [variantKey]: element.value,
+      [sizeKey]: element.dataset.href,
+    };
+    localStorage.setItem(
+      "preferredProductsVariants",
+      JSON.stringify(preferredVariants),
+    );
+    location.href = element.dataset.href;
+  };
+
   cartAddingForms.forEach((form: HTMLFormElement) => {
     form.addEventListener("change", (event) => {
       const target = event.target as HTMLSelectElement;
 
       if (["tea_variant", "tea_size"].includes(target.name)) {
-        const preferredProductsVariants = JSON.parse(
-          localStorage.getItem("preferredProductsVariants") || "{}",
-        );
-
-        preferredProductsVariants[window.baseProductTitle] = {
-          tea_variant: form.tea_variant.value,
-          tea_size: form.tea_size.value,
-        };
-
-        localStorage.setItem(
-          "preferredProductsVariants",
-          JSON.stringify(preferredProductsVariants),
-        );
-
-        location.href = target.selectedOptions[0].dataset.href;
+        const selectedOption = target.selectedOptions[0];
+        handleVariantSizeChange(selectedOption, "tea_variant", "tea_size");
       }
+    });
+
+    radioBtns.forEach((radio) => {
+      radio.addEventListener("change", (event) => {
+        const target = event.target as HTMLSelectElement;
+        handleVariantSizeChange(target, "tea_variant", "tea_size");
+      });
     });
 
     form.addEventListener("submit", (event) => {
