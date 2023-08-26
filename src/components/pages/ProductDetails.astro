@@ -266,170 +266,89 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     <input type="hidden" name="tax" value={tax} />
     <input type="hidden" name="price" value={productPriceIncludingTax} />
 
-    {
-      stockAmount > 0 && (
-        <div class="flex flex-wrap gap-[15px] mt-[15px]">
-          <div class="grid sm:flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full">
-            {availableVariants.map(({ value, variant, variantIcon, link }) => (
-              <div>
-                <input
-                  type="radio"
-                  name="tea_variant"
-                  id={variant}
-                  value={value}
-                  data-href={link}
-                  checked={value === productVariant}
-                  class="peer hidden"
-                />
-                <label
-                  for={variant}
+    
+    <div class="flex flex-wrap gap-[15px] mt-[15px]">
+      <div class="grid sm:flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full">
+        {availableVariants.map(({ value, variant, variantIcon, link }) => (
+          <div>
+            <input
+              type="radio"
+              name="tea_variant"
+              id={variant}
+              value={value}
+              data-href={link}
+              checked={value === productVariant}
+              class="peer hidden"
+            />
+            <label
+              for={variant}
+              class:list={[
+                "inline-block p-[3px] text-secondary w-full",
+                "peer-checked:bg-secondary select-none cursor-pointer",
+              ]}
+              style="clip-path: url(#product-variant-curve);"
+            >
+              <div
+                class="md:min-w-[188px] p-1 bg-primary"
+                style="clip-path: url(#product-variant-curve);"
+              >
+                <div
                   class:list={[
-                    "inline-block p-[3px] text-secondary w-full",
-                    "peer-checked:bg-secondary select-none cursor-pointer",
+                    "w-full p-[18px] bg-dark-green",
+                    "flex items-center sm:justify-center gap-[15px] ",
                   ]}
                   style="clip-path: url(#product-variant-curve);"
                 >
-                  <div
-                    class="md:min-w-[188px] p-1 bg-primary"
-                    style="clip-path: url(#product-variant-curve);"
-                  >
-                    <div
-                      class:list={[
-                        "w-full p-[18px] bg-dark-green",
-                        "flex items-center sm:justify-center gap-[15px] ",
-                      ]}
-                      style="clip-path: url(#product-variant-curve);"
-                    >
-                      {variantIcon?.src && (
-                        <img
-                          src={STRAPI_URL + variantIcon.src}
-                          alt={variantIcon.alt}
-                          class="w-7 h-7"
-                        />
-                      )}
+                  {variantIcon?.src && (
+                    <img
+                      src={STRAPI_URL + variantIcon.src}
+                      alt={variantIcon.alt}
+                      class="w-7 h-7"
+                    />
+                  )}
 
-                      <span>{variant}</span>
-                    </div>
-                  </div>
-                </label>
-              </div>
-            ))}
-          </div>
-
-          <div class="flex flex-wrap items-center gap-[5px] sm:gap-2.5">
-            <div class="text-base leading-[110%] p-2.5">
-              {checkoutRecurData.text_size}:
-            </div>
-
-            <div class="flex flex-wrap gap-2">
-              {availableSizes.map(({ value, size, link }) => (
-                <div>
-                  <input
-                    type="radio"
-                    name="tea_size"
-                    id={size}
-                    value={value}
-                    data-href={link}
-                    checked={value === productSize}
-                    class="peer hidden"
-                  />
-                  <label
-                    for={size}
-                    class:list={[
-                      "peer-checked:bg-dark-green peer-checked:text-secondary",
-                      "inline-block py-2 px-[25px] text-dark-green rounded-full",
-                      "select-none cursor-pointer border-2 border-secondary/80 bg-secondary",
-                    ]}
-                  >
-                    {size}
-                  </label>
+                  <span>{variant}</span>
                 </div>
-              ))}
-            </div>
+              </div>
+            </label>
           </div>
-        </div>
-      )
-    }
-
-    <div class="flex flex-wrap gap-5 items-center w-full justify-between">
-      {
-        stockAmount > 0 && (
-          <div class="flex items-center text-secondary border-2 border-secondary bg-dark-green rounded-full">
-            <button
-              data-action="decrement"
-              aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
-              class="product-amount-tweak-btn w-7 h-10 py-2.5 pl-2 pr-1 select-none"
-              disabled
-            >
-              <Icon
-                name="akar-icons:minus"
-                class="w-[14px] h-[14px] select-none"
-              />
-            </button>
-
-            <input
-              type="number"
-              name="quantity"
-              aria-label={ariaLabelRecurData.Product_quantity_text}
-              min={1}
-              max={stockAmount}
-              value={1}
-              class="product-amount-input w-7 h-10 text-primary text-center lg:text-lg bg-secondary outline-none"
-              required
-            />
-
-            <button
-              data-action="increment"
-              aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
-              class="product-amount-tweak-btn w-7 h-10 py-2.5 pl-1 pr-2"
-            >
-              <Icon
-                name="akar-icons:plus"
-                class="w-[14px] h-[14px] select-none"
-              />
-            </button>
-          </div>
-        )
-      }
-
-      <div class="grow">
-        {
-          stockAmount > 0 && (
-            <button
-              class:list={[
-                "w-fit md:w-full p-3 px-5 mt-auto rounded-full",
-                "flex justify-center items-center gap-2 md:gap-4",
-                "text-sm md:text-base text-primary font-bold bg-white",
-              ]}
-            >
-              <Icon
-                name="mi:shopping-cart"
-                class="w-5 md:w-[26px] h-5 md:h-[26px]"
-              />
-              <span>
-                {checkoutRecurData.text_add_to_cart_for} €
-                <output class="product-amount-price">
-                  {productPriceIncludingTax.toFixed(2).replace(".", ",")}
-                </output>
-              </span>
-            </button>
-          )
-        }
-        {
-          stockAmount === 0 && (
-            <div
-              class:list={[
-                "w-full xl:w-2/3 flex justify-center items-center gap-4 p-3 mt-auto",
-                "bg-slate text-white font-bold text-base rounded-full cursor-not-allowed",
-              ]}
-            >
-              <Icon name="tabler:shopping-cart-x" class="w-[26px] h-[26px]" />
-              {recurData.Product_sold_out_text}
-            </div>
-          )
-        }
+        ))}
       </div>
 
+      <div class="flex flex-wrap items-center gap-[5px] sm:gap-2.5">
+        <div class="text-base leading-[110%] p-2.5">
+          {checkoutRecurData.text_size}:
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          {availableSizes.map(({ value, size, link }) => (
+            <div>
+              <input
+                type="radio"
+                name="tea_size"
+                id={size}
+                value={value}
+                data-href={link}
+                checked={value === productSize}
+                class="peer hidden"
+              />
+              <label
+                for={size}
+                class:list={[
+                  "peer-checked:bg-dark-green peer-checked:text-secondary",
+                  "inline-block py-2 px-[25px] text-dark-green rounded-full",
+                  "select-none cursor-pointer border-2 border-secondary/80 bg-secondary",
+                ]}
+              >
+                {size}
+              </label>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-5 items-center w-full justify-between">
       {
         stockAmount < 1 && (
           <div class="grid gap-4 w-full">
@@ -462,42 +381,111 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     availableFormats.length,
                   )}
             </div>
-
-            <div class="w-full md:w-2/3 lg:w-full">
-              <div class="variant-container">
-                {availableFormats.map(async ({ link, format, thumbnail }) => (
-                  <div
-                    style="clip-path: url(#product-category-card-curve)"
-                    class="bg-dark-green text-center"
-                  >
-                    <a href={link}>
-                      <div class="variant-content-container">
-                        <div class="variant-img-container">
-                          <div class="variant-img w-auto h-full aspect-[6/5] block">
-                            <img
-                              src={await importImage(
-                                STRAPI_URL + thumbnail.src,
-                              )}
-                              alt={thumbnail.alt}
-                              style="aspect-ratio: 6 / 5;"
-                            />
-                          </div>
-                        </div>
-
-                        <div class="variant-txt-container">
-                          <h2 class="alice text-xl sm:text-left leading-[110%] line-clamp-2">
-                            {format}
-                          </h2>
-                        </div>
-                      </div>
-                    </a>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         )
       }
+
+      {
+         (
+          <div
+            class:list={[
+              "flex items-center text-secondary border-2 border-secondary rounded-full",
+              stockAmount === 0 ? "bg-slate" : "bg-dark-green",
+            ]}
+          >
+            <button
+              data-action="decrement"
+              aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
+              class:list={[
+                "product-amount-tweak-btn w-7 h-10 py-2.5 pl-2 pr-1 select-none",
+                stockAmount === 0 && "cursor-not-allowed",
+              ]}
+              disabled
+            >
+              <Icon
+                name="akar-icons:minus"
+                class="w-[14px] h-[14px] select-none"
+              />
+            </button>
+
+            <input
+              type="number"
+              name="quantity"
+              aria-label={ariaLabelRecurData.Product_quantity_text}
+              min={1}
+              max={stockAmount}
+              value={1}
+              class:list={[
+                "product-amount-input w-7 h-10 outline-none",
+                "text-primary text-center lg:text-lg bg-secondary",
+                stockAmount === 0 && "cursor-not-allowed",
+              ]}
+              disabled={stockAmount === 0 && "disabled"}
+              required
+            />
+
+            <button
+              data-action="increment"
+              aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
+              class:list={[
+                "product-amount-tweak-btn w-7 h-10 py-2.5 pl-1 pr-2",
+                stockAmount === 0 && "cursor-not-allowed",
+              ]}
+              disabled={stockAmount === 0 && "disabled"}
+            >
+              <Icon
+                name="akar-icons:plus"
+                class="w-[14px] h-[14px] select-none"
+              />
+            </button>
+          </div>
+        )
+      }
+
+      <div class="grow">
+        {
+          stockAmount > 0 && (
+            <button
+              class:list={[
+                "w-fit md:w-full p-3 px-5 mt-auto rounded-full",
+                "flex justify-center items-center gap-2 md:gap-4",
+                "text-sm md:text-base text-primary font-bold bg-white",
+              ]}
+            >
+              <Icon
+                name="mi:shopping-cart"
+                class="w-5 md:w-[26px] h-5 md:h-[26px]"
+              />
+              <span class="flex flex-wrap items-center gap-[5px]">
+                {checkoutRecurData.text_add_to_cart_for}
+                <span class="w-2 h-2 bg-secondary rounded-full"/>
+                <output class="product-amount-price">
+                  €{productPriceIncludingTax.toFixed(2).replace(".", ",")}
+                </output>
+              </span>
+            </button>
+          )
+        }
+        {
+          stockAmount === 0 && (
+            <div
+              class:list={[
+                "w-full xl:w-2/3 flex justify-center items-center gap-4 p-3 mt-auto",
+                "bg-slate text-white font-bold text-base rounded-full cursor-not-allowed",
+              ]}
+            >
+              <Icon name="tabler:shopping-cart-x" class="w-[26px] h-[26px]" />
+              <span class="flex flex-wrap items-center gap-[5px]">
+                {recurData.Product_sold_out_text}
+                <span class="w-2 h-2 bg-secondary rounded-full"/>
+                <output class="product-amount-price">
+                  €{productPriceIncludingTax.toFixed(2).replace(".", ",")}
+                </output>
+              </span>
+            </div>
+          )
+        }
+      </div>
     </div>
   </form>
 
