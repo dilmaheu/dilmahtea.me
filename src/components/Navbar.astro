@@ -845,44 +845,6 @@ function cleanLink(link) {
   </div>
 
   <script is:inline>
-    document.addEventListener("DOMContentLoaded", () => {
-      const updateNavSubMenuClasses = () => {
-        const shouldHide = window.scrollY > 0;
-        document
-          .querySelectorAll(".nav-sub-menu.block")
-          .forEach((navSubMenu) => {
-            navSubMenu.classList.toggle("hidden", shouldHide);
-            navSubMenu.classList.toggle("group-hover:block", shouldHide);
-          });
-        document
-          .querySelectorAll(".nav-sub-menu-content")
-          .forEach((navSubMenu) => {
-            navSubMenu.classList.toggle("nav-bg", shouldHide);
-          });
-      };
-
-      updateNavSubMenuClasses();
-      window.addEventListener("scroll", updateNavSubMenuClasses);
-
-      const headerNavShadow = document.querySelector(".header-nav-shadow");
-      document
-        .querySelectorAll(".nav-menu-container")
-        .forEach((navMenuContainer) => {
-          navMenuContainer.addEventListener("mouseenter", () => {
-            headerNavShadow.style.display = navMenuContainer.querySelector(
-              ".nav-sub-menu",
-            )
-              ? "block"
-              : "none";
-          });
-          navMenuContainer.addEventListener("mouseleave", () => {
-            headerNavShadow.style.display = "none";
-          });
-        });
-    });
-  </script>
-
-  <script is:inline>
     {
       const navigation = document.getElementById("navigation"),
         topNotifications = document.querySelector(".top-notifications");
@@ -901,6 +863,43 @@ function cleanLink(link) {
     }
   </script>
 </header>
+
+<script>
+  const updateNavSubMenuClasses = () => {
+    const shouldHide = window.scrollY > 0;
+
+    document.querySelectorAll(".nav-sub-menu.block").forEach((navSubMenu) => {
+      navSubMenu.classList.toggle("hidden", shouldHide);
+      navSubMenu.classList.toggle("group-hover:block", shouldHide);
+    });
+
+    document.querySelectorAll(".nav-sub-menu-content").forEach((navSubMenu) => {
+      navSubMenu.classList.toggle("nav-bg", shouldHide);
+    });
+  };
+
+  updateNavSubMenuClasses();
+
+  window.addEventListener("scroll", updateNavSubMenuClasses);
+
+  const headerNavShadow =
+    document.querySelector<HTMLDivElement>(".header-nav-shadow");
+
+  document
+    .querySelectorAll(".nav-menu-container")
+    .forEach((navMenuContainer) => {
+      navMenuContainer.addEventListener("mouseenter", () => {
+        headerNavShadow.style.display = navMenuContainer.querySelector(
+          ".nav-sub-menu",
+        )
+          ? "block"
+          : "none";
+      });
+      navMenuContainer.addEventListener("mouseleave", () => {
+        headerNavShadow.style.display = "none";
+      });
+    });
+</script>
 
 <script>
   const id = document.getElementById.bind(document);

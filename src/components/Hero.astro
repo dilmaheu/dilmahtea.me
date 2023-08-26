@@ -1,7 +1,6 @@
 ---
 import fs from "node:fs";
 import path from "node:path";
-import { Icon } from "astro-icon";
 import extractFrames from "ffmpeg-extract-frames";
 import { Picture } from "astro-imagetools/components";
 import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
@@ -29,6 +28,18 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
 function cleanLink(link) {
   return link?.replace(/^\/|\/$/g, "");
 }
+
+const shouldShowHeaderNavShadow = menu.some(
+  ({ Visibility, Link, Sub_menu }) => {
+    const subMenuCleanedLinks = Sub_menu.map(({ Link }) => cleanLink(Link)),
+      currentPageUrl = cleanLink(page?.Meta?.URL_slug),
+      isActive =
+        currentPageUrl === cleanLink(Link) ||
+        subMenuCleanedLinks.includes(currentPageUrl);
+
+    return Visibility && Sub_menu.length > 0 && isActive;
+  },
+);
 ---
 
 <style lang="scss">
@@ -61,8 +72,6 @@ function cleanLink(link) {
   }
 
   .header-nav-shadow {
-    @apply hidden;
-
     @media (min-width: 768px) {
       @apply absolute top-0 w-full z-30;
 
@@ -91,27 +100,13 @@ function cleanLink(link) {
   <UpdateTopMargin />
 
   <div class="relative h-full">
-    {
-      menu.map(({ Visibility, Link, Sub_menu }, index) => {
-        const subMenuCleanedLinks = Sub_menu.map(({ Link }) => cleanLink(Link)),
-          currentPageUrl = cleanLink(page?.Meta?.URL_slug),
-          isActive =
-            currentPageUrl === cleanLink(Link) ||
-            subMenuCleanedLinks.includes(currentPageUrl);
-
-        return (
-          Visibility &&
-          Sub_menu.length > 0 && (
-            <div
-              class:list={[
-                !isActive ? "hidden" : "md:!block",
-                "header-nav-shadow nav-bg",
-              ]}
-            />
-          )
-        );
-      })
-    }
+    <div
+      class:list={[
+        "header-nav-shadow nav-bg",
+        shouldShowHeaderNavShadow ? "md:block" : "hidden",
+      ]}
+    >
+    </div>
 
     {
       (headerBackgrounds || hero_background) && (
