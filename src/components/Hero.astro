@@ -24,6 +24,21 @@ const recurData = CMS.get("recurringElement", locale),
 const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
   headerBackgroundImgSm = page?.Intro_blob_sm?.data?.attributes.url,
   headerBackgroundVideo = page?.Intro_video?.data?.attributes.url;
+
+function trimLink(link) {
+  return link?.replace(/^\/|\/$/g, "");
+}
+
+const shouldShowHeaderNavShadow = menu.some(
+  ({ Visibility, Link, Sub_menu }) => {
+    const currentPageUrl = trimLink(page?.Meta?.URL_slug),
+      isActive =
+        currentPageUrl === trimLink(Link) ||
+        Sub_menu.map(({ Link }) => trimLink(Link)).includes(currentPageUrl);
+
+    return Visibility && Sub_menu.length > 0 && isActive;
+  },
+);
 ---
 
 <style lang="scss">
@@ -33,10 +48,12 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
     @include poly-fluid-sizing(
       "padding-top",
       (
-        639.98px: 130px,
+        639.98px: 131px,
         640px: 70px,
-        768px: 74px,
-        1024px: 104px,
+        767px: 77px,
+        768px: 135px,
+        1024px: 162px,
+        1280px: 175px,
       )
     );
   }
@@ -53,52 +70,16 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
     @apply relative sm:hidden aspect-[6/5];
   }
 
-  .nav-menu {
-    height: poly-fluid-clamp(
-      (
-        768px: 56px,
-        1240px: 76px,
-      )
-    );
-  }
+  .hero-sub-menu-shadow {
+    @media (min-width: 768px) {
+      @apply absolute top-0 w-full z-30;
 
-  .header-content {
-    @apply absolute inset-0;
-
-    @include poly-fluid-sizing(
-      "padding-top",
-      (
-        767.98px: 0px,
-        768px: 56px,
-        1240px: 76px,
-      )
-    );
-  }
-
-  .nav-menu-caontainer {
-    nav {
-      @include poly-fluid-sizing(
-        "padding-right",
+      height: poly-fluid-clamp(
         (
-          639px: 0px,
-          640px: 260px,
-          768px: 300px,
-          1024px: 380px,
-          1440px: 460px,
-          1536px: 550px,
+          768px: 42px,
+          1440px: 51px,
         )
       );
-
-      a {
-        @apply font-bold leading-[150%];
-
-        font-size: poly-fluid-clamp(
-          (
-            768px: 12px,
-            1440px: 18px,
-          )
-        );
-      }
     }
   }
 </style>
@@ -118,19 +99,12 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
   <UpdateTopMargin />
 
   <div class="relative h-full">
-    <div class="nav-menu hidden md:flex items-end bg-dark-green relative z-10">
-      <div class="nav-menu-caontainer wrapper pb-2.5 md:pb-[15px]">
-        <nav class="text-white font-semibold h-full">
-          <span class="flex gap-5 justify-between items-center h-full">
-            {
-              menu.map(
-                ({ Visibility, Title, Link }) =>
-                  Visibility && <a href={Link}>{Title}</a>,
-              )
-            }
-          </span>
-        </nav>
-      </div>
+    <div
+      class:list={[
+        "hero-sub-menu-shadow nav-bg",
+        shouldShowHeaderNavShadow ? "md:block" : "hidden",
+      ]}
+    >
     </div>
 
     {
@@ -232,7 +206,7 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
 
     <div
       class:list={[
-        (headerBackground || hero_background) && "header-content",
+        (headerBackground || hero_background) && "absolute inset-0",
         headerBackgroundSm && "absolute sm:static inset-0",
       ]}
     >
