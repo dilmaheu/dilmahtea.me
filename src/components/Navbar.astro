@@ -45,7 +45,7 @@ const {
   Nav_menu_language_selector_visibility: languageSelectorVisibility,
 } = recurData;
 
-function cleanLink(link) {
+function trimLink(link) {
   return link?.replace(/^\/|\/$/g, "");
 }
 ---
@@ -556,14 +556,14 @@ function cleanLink(link) {
           <nav class="flex flex-col gap-[25px] text-white">
             {
               menu.map(({ Visibility, Title, Link, Sub_menu }, index) => {
-                const hasSubMenu = Sub_menu.length > 0,
-                  subMenuCleanedLinks = Sub_menu.map(({ Link }) =>
-                    cleanLink(Link),
-                  ),
-                  currentPageUrl = cleanLink(page?.Meta?.URL_slug),
+                const currentPageUrl = trimLink(page?.Meta?.URL_slug),
                   isActive =
-                    currentPageUrl === cleanLink(Link) ||
-                    subMenuCleanedLinks.includes(currentPageUrl);
+                    currentPageUrl === trimLink(Link) ||
+                    Sub_menu.map(({ Link }) => trimLink(Link)).includes(
+                      currentPageUrl,
+                    );
+
+                const hasSubMenu = Sub_menu.length > 0;
 
                 return (
                   Visibility && (
@@ -576,7 +576,7 @@ function cleanLink(link) {
                         <input
                           type="checkbox"
                           id={"open-sub-menu-" + index}
-                          class="hidden open-sub-menu-checkbox"
+                          class="open-sub-menu-checkbox hidden"
                         />
                       )}
 
@@ -779,15 +779,17 @@ function cleanLink(link) {
   </div>
 
   <div class="hidden md:block w-full relative z-10">
-    <div class="wrapper nav-menu-flex nav-menu-padding-right">
+    <div class="nav-menu-flex nav-menu-padding-right wrapper">
       {
-        menu.map(({ Visibility, Title, Link, Sub_menu }, index) => {
-          const hasSubMenu = Sub_menu.length > 0,
-            subMenuCleanedLinks = Sub_menu.map(({ Link }) => cleanLink(Link)),
-            currentPageUrl = cleanLink(page?.Meta?.URL_slug),
+        menu.map(({ Visibility, Title, Link, Sub_menu }) => {
+          const currentPageUrl = trimLink(page?.Meta?.URL_slug),
             isActive =
-              currentPageUrl === cleanLink(Link) ||
-              subMenuCleanedLinks.includes(currentPageUrl);
+              currentPageUrl === trimLink(Link) ||
+              Sub_menu.map(({ Link }) => trimLink(Link)).includes(
+                currentPageUrl,
+              );
+
+          const hasSubMenu = Sub_menu.length > 0;
 
           return (
             Visibility && (
@@ -802,6 +804,7 @@ function cleanLink(link) {
                   >
                     {Title}
                   </a>
+
                   {hasSubMenu && <Icon name="ep:arrow-down-bold" class="w-3" />}
 
                   {isActive && (
@@ -812,19 +815,19 @@ function cleanLink(link) {
                 {hasSubMenu && (
                   <div
                     class:list={[
-                      "absolute left-0 w-full nav-sub-menu",
-                      isActive ? "block z-30" : "z-40 hidden group-hover:block",
+                      "nav-sub-menu absolute left-0 w-full",
+                      isActive ? "block" : "hidden group-hover:block",
                     ]}
                   >
-                    <div class="absolute top-0 left-0 w-full nav-sub-menu-content">
-                      <div class="wrapper nav-menu-flex nav-menu-padding-right">
+                    <div class="nav-sub-menu-content absolute top-0 left-0 w-full">
+                      <div class="nav-menu-flex nav-menu-padding-right wrapper">
                         {Sub_menu.map(
                           ({ Visibility, Title, Link }) =>
                             Visibility && (
                               <div
                                 class:list={[
                                   "nav-sub-menu-title",
-                                  currentPageUrl === cleanLink(Link) &&
+                                  currentPageUrl === trimLink(Link) &&
                                     "underline decoration-2 underline-offset-4",
                                 ]}
                               >
@@ -882,8 +885,9 @@ function cleanLink(link) {
 
   window.addEventListener("scroll", updateNavSubMenuClasses);
 
-  const headerNavShadow =
-    document.querySelector<HTMLDivElement>(".header-nav-shadow");
+  const headerNavShadow = document.querySelector<HTMLDivElement>(
+    ".hero-sub-menu-shadow",
+  );
 
   document
     .querySelectorAll(".nav-menu-container")

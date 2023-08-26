@@ -25,17 +25,16 @@ const headerBackgroundImg = page?.Intro_blob?.data?.attributes.url,
   headerBackgroundImgSm = page?.Intro_blob_sm?.data?.attributes.url,
   headerBackgroundVideo = page?.Intro_video?.data?.attributes.url;
 
-function cleanLink(link) {
+function trimLink(link) {
   return link?.replace(/^\/|\/$/g, "");
 }
 
 const shouldShowHeaderNavShadow = menu.some(
   ({ Visibility, Link, Sub_menu }) => {
-    const subMenuCleanedLinks = Sub_menu.map(({ Link }) => cleanLink(Link)),
-      currentPageUrl = cleanLink(page?.Meta?.URL_slug),
+    const currentPageUrl = trimLink(page?.Meta?.URL_slug),
       isActive =
-        currentPageUrl === cleanLink(Link) ||
-        subMenuCleanedLinks.includes(currentPageUrl);
+        currentPageUrl === trimLink(Link) ||
+        Sub_menu.map(({ Link }) => trimLink(Link)).includes(currentPageUrl);
 
     return Visibility && Sub_menu.length > 0 && isActive;
   },
@@ -71,7 +70,7 @@ const shouldShowHeaderNavShadow = menu.some(
     @apply relative sm:hidden aspect-[6/5];
   }
 
-  .header-nav-shadow {
+  .hero-sub-menu-shadow {
     @media (min-width: 768px) {
       @apply absolute top-0 w-full z-30;
 
@@ -102,7 +101,7 @@ const shouldShowHeaderNavShadow = menu.some(
   <div class="relative h-full">
     <div
       class:list={[
-        "header-nav-shadow nav-bg",
+        "hero-sub-menu-shadow nav-bg",
         shouldShowHeaderNavShadow ? "md:block" : "hidden",
       ]}
     >
