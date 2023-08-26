@@ -110,6 +110,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     }
 
     .variant-img-container {
+      @apply bg-white;
+
       @media (max-width: 320px) {
         @apply w-2/5;
       }
@@ -426,12 +428,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 {availableFormats.map(async ({ link, format, thumbnail }) => (
                   <div
                     style="clip-path: url(#product-category-card-curve)"
-                    class="bg-dark-green text-center"
+                    class="bg-secondary text-center"
                   >
                     <a href={link}>
                       <div class="variant-content-container">
                         <div class="variant-img-container">
-                          <div class="variant-img w-auto h-full aspect-[6/5] block">
+                          <div class="w-auto h-full aspect-[6/5] block">
                             <img
                               src={await importImage(
                                 STRAPI_URL + thumbnail.src,
@@ -443,7 +445,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                         </div>
 
                         <div class="variant-txt-container">
-                          <h2 class="alice text-xl sm:text-left leading-[110%] line-clamp-2">
+                          <h2 class="text-dark-green sm:text-left leading-[110%] line-clamp-2">
                             {format}
                           </h2>
                         </div>
