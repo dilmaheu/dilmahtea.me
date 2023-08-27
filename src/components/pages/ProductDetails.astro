@@ -266,53 +266,57 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     <input type="hidden" name="tax" value={tax} />
     <input type="hidden" name="price" value={productPriceIncludingTax} />
 
-    
     <div class="flex flex-wrap gap-[15px] mt-[15px]">
-      <div class="grid sm:flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full">
-        {availableVariants.map(({ value, variant, variantIcon, link }) => (
-          <div>
-            <input
-              type="radio"
-              name="tea_variant"
-              id={variant}
-              value={value}
-              data-href={link}
-              checked={value === productVariant}
-              class="peer hidden"
-            />
-            <label
-              for={variant}
-              class:list={[
-                "inline-block p-[3px] text-secondary w-full",
-                "peer-checked:bg-secondary select-none cursor-pointer",
-              ]}
-              style="clip-path: url(#product-variant-curve);"
-            >
-              <div
-                class="md:min-w-[188px] p-1 bg-primary"
+      <div
+        class="grid sm:flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full"
+      >
+        {
+          availableVariants.map(({ value, variant, variantIcon, link }) => (
+            <div>
+              <input
+                type="radio"
+                name="tea_variant"
+                id={variant}
+                value={value}
+                data-href={link}
+                checked={value === productVariant}
+                class="peer hidden"
+              />
+
+              <label
+                for={variant}
+                class:list={[
+                  "inline-block p-[3px] text-secondary w-full",
+                  "peer-checked:bg-secondary select-none cursor-pointer",
+                ]}
                 style="clip-path: url(#product-variant-curve);"
               >
                 <div
-                  class:list={[
-                    "w-full p-[18px] bg-dark-green",
-                    "flex items-center sm:justify-center gap-[15px] ",
-                  ]}
+                  class="md:min-w-[188px] p-1 bg-primary"
                   style="clip-path: url(#product-variant-curve);"
                 >
-                  {variantIcon?.src && (
-                    <img
-                      src={STRAPI_URL + variantIcon.src}
-                      alt={variantIcon.alt}
-                      class="w-7 h-7"
-                    />
-                  )}
+                  <div
+                    class:list={[
+                      "w-full p-[18px] bg-dark-green",
+                      "flex items-center sm:justify-center gap-[15px] ",
+                    ]}
+                    style="clip-path: url(#product-variant-curve);"
+                  >
+                    {variantIcon?.src && (
+                      <img
+                        src={STRAPI_URL + variantIcon.src}
+                        alt={variantIcon.alt}
+                        class="w-7 h-7"
+                      />
+                    )}
 
-                  <span>{variant}</span>
+                    <span>{variant}</span>
+                  </div>
                 </div>
-              </div>
-            </label>
-          </div>
-        ))}
+              </label>
+            </div>
+          ))
+        }
       </div>
 
       <div class="flex flex-wrap items-center gap-[5px] sm:gap-2.5">
@@ -321,29 +325,32 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         </div>
 
         <div class="flex flex-wrap gap-2">
-          {availableSizes.map(({ value, size, link }) => (
-            <div>
-              <input
-                type="radio"
-                name="tea_size"
-                id={size}
-                value={value}
-                data-href={link}
-                checked={value === productSize}
-                class="peer hidden"
-              />
-              <label
-                for={size}
-                class:list={[
-                  "peer-checked:bg-dark-green peer-checked:text-secondary",
-                  "inline-block py-2 px-[25px] text-dark-green rounded-full",
-                  "select-none cursor-pointer border-2 border-secondary/80 bg-secondary",
-                ]}
-              >
-                {size}
-              </label>
-            </div>
-          ))}
+          {
+            availableSizes.map(({ value, size, link }) => (
+              <div>
+                <input
+                  type="radio"
+                  name="tea_size"
+                  id={size}
+                  value={value}
+                  data-href={link}
+                  checked={value === productSize}
+                  class="peer hidden"
+                />
+
+                <label
+                  for={size}
+                  class:list={[
+                    "peer-checked:bg-dark-green peer-checked:text-secondary",
+                    "inline-block py-2 px-[25px] text-dark-green rounded-full",
+                    "select-none cursor-pointer border-2 border-secondary/80 bg-secondary",
+                  ]}
+                >
+                  {size}
+                </label>
+              </div>
+            ))
+          }
         </div>
       </div>
     </div>
@@ -400,10 +407,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           ]}
           disabled
         >
-          <Icon
-            name="akar-icons:minus"
-            class="w-[14px] h-[14px] select-none"
-          />
+          <Icon name="akar-icons:minus" class="w-[14px] h-[14px] select-none" />
         </button>
 
         <input
@@ -431,10 +435,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           ]}
           disabled={stockAmount === 0 && "disabled"}
         >
-          <Icon
-            name="akar-icons:plus"
-            class="w-[14px] h-[14px] select-none"
-          />
+          <Icon name="akar-icons:plus" class="w-[14px] h-[14px] select-none" />
         </button>
       </div>
 
@@ -452,10 +453,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 name="mi:shopping-cart"
                 class="w-5 md:w-[26px] h-5 md:h-[26px]"
               />
+
               <span class="flex flex-wrap items-center gap-[5px]">
                 {checkoutRecurData.text_add_to_cart_for}
-                <span class="w-2 h-2 bg-secondary rounded-full"/>
-                €
+                <span class="w-2 h-2 bg-secondary rounded-full" />€
                 <output class="product-amount-price">
                   {productPriceIncludingTax.toFixed(2).replace(".", ",")}
                 </output>
@@ -463,24 +464,26 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             </button>
           )
         }
+
         {
           stockAmount === 0 && (
-            <div
+            <button
+              disabled
               class:list={[
+                "bg-slate text-white font-bold text-base rounded-full",
                 "w-full xl:w-2/3 flex justify-center items-center gap-4 p-3 mt-auto",
-                "bg-slate text-white font-bold text-base rounded-full cursor-not-allowed",
               ]}
             >
               <Icon name="tabler:shopping-cart-x" class="w-[26px] h-[26px]" />
+
               <span class="flex flex-wrap items-center gap-[5px]">
                 {recurData.Product_sold_out_text}
-                <span class="w-2 h-2 bg-secondary rounded-full"/>
-                €
+                <span class="w-2 h-2 bg-secondary rounded-full" />€
                 <output class="product-amount-price">
                   {productPriceIncludingTax.toFixed(2).replace(".", ",")}
                 </output>
               </span>
-            </div>
+            </button>
           )
         }
       </div>
