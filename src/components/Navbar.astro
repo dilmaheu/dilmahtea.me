@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon";
 import { Picture } from "astro-imagetools/components";
 
 import CMS from "@store/CMS";
@@ -17,10 +18,11 @@ interface Props {
   docLocale: string;
   footerText: string;
   isCartNavbar?: boolean;
+  page: Record<string, any>;
   availableLocales: string[];
 }
 
-const { docLocale, footerText, isCartNavbar, availableLocales } =
+const { page, docLocale, footerText, isCartNavbar, availableLocales } =
   Astro.props as Props;
 
 const recurData = CMS.get("recurringElement", docLocale),
@@ -42,7 +44,17 @@ const {
   Nav_menu_region_selector_visibility: regionSelectorVisibility,
   Nav_menu_language_selector_visibility: languageSelectorVisibility,
 } = recurData;
+
+function trimLink(link) {
+  return link?.replace(/^\/|\/$/g, "");
+}
 ---
+
+<style lang="scss" is:global>
+  .nav-bg {
+    @apply bg-primary drop-shadow-[0px_4px_5px_rgba(0,0,0,0.15)];
+  }
+</style>
 
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
@@ -90,8 +102,104 @@ const {
     );
   }
 
-  #sidebar nav a {
-    @apply text-[32px] font-bold leading-[150%];
+  .nav-menu-title {
+    @apply leading-[150%] py-[15px];
+
+    font-size: poly-fluid-clamp(
+      (
+        768px: 12px,
+        1440px: 18px,
+      )
+    );
+  }
+
+  .nav-menu-flex {
+    @apply flex items-center;
+
+    gap: poly-fluid-clamp(
+      (
+        768px: 20px,
+        1240px: 80px,
+      )
+    );
+  }
+
+  .nav-menu-padding-right {
+    @include poly-fluid-sizing(
+      "padding-right",
+      (
+        639px: 0px,
+        640px: 260px,
+        768px: 300px,
+        1024px: 380px,
+        1440px: 460px,
+        1536px: 550px,
+      )
+    );
+  }
+
+  .nav-menu-flex {
+    @apply flex items-center;
+
+    gap: poly-fluid-clamp(
+      (
+        768px: 20px,
+        1240px: 80px,
+      )
+    );
+  }
+
+  .nav-sub-menu-title {
+    @apply font-normal leading-[150%] text-white py-3;
+
+    font-size: poly-fluid-clamp(
+      (
+        768px: 12px,
+        1440px: 16px,
+      )
+    );
+  }
+
+  .open-sub-menu-checkbox {
+    & + div {
+      .open-sub-menu-icon {
+        display: block;
+      }
+
+      .close-sub-menu-icon {
+        display: none;
+      }
+    }
+
+    & ~ .sub-menu {
+      display: none;
+    }
+
+    &:checked {
+      & + div {
+        .open-sub-menu-icon {
+          display: none;
+        }
+
+        .close-sub-menu-icon {
+          display: block;
+        }
+      }
+
+      & ~ .sub-menu {
+        display: grid;
+      }
+    }
+  }
+
+  #sidebar nav {
+    .menu-title {
+      @apply text-[28px] leading-[150%];
+    }
+
+    .sub-menu-title {
+      @apply text-2xl font-medium leading-[150%];
+    }
   }
 
   .search-input {
@@ -148,9 +256,7 @@ const {
 
 <header
   id="navigation"
-  class:list={[
-    "md:!relative sticky top-0 z-[999] w-full bg-cover bg-right-bottom",
-  ]}
+  class="shadow-md sm:shadow-none sticky top-0 z-[99] grid w-full md:bg-dark-green"
 >
   <div class="navbar-container relative w-full sm:flex items-center z-10">
     <ClipPathSVG
@@ -418,7 +524,10 @@ const {
 
     <div
       id="sidebar"
-      class="hidden md:!hidden fixed right-0 z-[40] w-[300px] max-w-full h-full bg-primary z-[99]"
+      class:list={[
+        "hidden md:!hidden shadow-md fixed right-0",
+        "w-[300px] max-w-full h-full bg-primary z-[99]",
+      ]}
     >
       {
         sidebar_background && (
@@ -444,12 +553,97 @@ const {
 
       <div class="grid content-between h-full px-[30px] pt-[26px] pb-9 z-10">
         <div class="z-10 grid gap-9 overflow-y-auto">
-          <nav class="flex flex-col gap-[35px] text-white">
+          <nav class="flex flex-col gap-[25px] text-white">
             {
-              menu.map(
-                ({ Visibility, Title, Link }) =>
-                  Visibility && <a href={Link}>{Title}</a>,
-              )
+              menu.map(({ Visibility, Title, Link, Sub_menu }, index) => {
+                const currentPageUrl = trimLink(page?.Meta?.URL_slug),
+                  isActive =
+                    currentPageUrl === trimLink(Link) ||
+                    Sub_menu.map(({ Link }) => trimLink(Link)).includes(
+                      currentPageUrl,
+                    );
+
+                const hasSubMenu = Sub_menu.length > 0;
+
+                return (
+                  Visibility && (
+                    <div>
+                      {index > 0 && (
+                        <div class="w-full h-0.5 mb-[25px] bg-white rounded" />
+                      )}
+
+                      {hasSubMenu && (
+                        <input
+                          type="checkbox"
+                          id={"open-sub-menu-" + index}
+                          class="open-sub-menu-checkbox hidden"
+                        />
+                      )}
+
+                      <div class="relative text-white flex items-center justify-between gap-2.5">
+                        <a
+                          href={Link}
+                          class:list={[
+                            "menu-title",
+                            isActive ? "font-bold" : "font-semibold",
+                          ]}
+                        >
+                          {Title}
+                        </a>
+
+                        {hasSubMenu && (
+                          <label
+                            for={"open-sub-menu-" + index}
+                            role="button"
+                            aria-label={
+                              ariaLabelRecurData.Navbar_open_sidebar_sub_menu_text
+                            }
+                            class="block md:hidden w-[29px] h-[29px] p-1 my-auto select-none cursor-pointer"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="open-sub-menu-icon pointer-events-none w-full h-full"
+                              viewBox="0 0 19.9 20"
+                            >
+                              <path
+                                d="m1.5,10h16.9m-8.5,8.5V1.5"
+                                style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3px;"
+                              />
+                            </svg>
+
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="close-sub-menu-icon pointer-events-none w-full h-full"
+                              viewBox="0 0 19.9 3"
+                            >
+                              <line
+                                x1="1.5"
+                                y1="1.5"
+                                x2="18.4"
+                                y2="1.5"
+                                style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3px;"
+                              />
+                            </svg>
+                          </label>
+                        )}
+                      </div>
+
+                      {hasSubMenu && (
+                        <div class="sub-menu gap-[5px]">
+                          {Sub_menu.map(
+                            ({ Visibility, Title, Link }) =>
+                              Visibility && (
+                                <a href={Link} class="sub-menu-title">
+                                  {Title}
+                                </a>
+                              ),
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )
+                );
+              })
             }
           </nav>
         </div>
@@ -584,6 +778,75 @@ const {
     </div>
   </div>
 
+  <div class="hidden md:block w-full relative z-10">
+    <div class="nav-menu-flex nav-menu-padding-right wrapper">
+      {
+        menu.map(({ Visibility, Title, Link, Sub_menu }) => {
+          const currentPageUrl = trimLink(page?.Meta?.URL_slug),
+            isActive =
+              currentPageUrl === trimLink(Link) ||
+              Sub_menu.map(({ Link }) => trimLink(Link)).includes(
+                currentPageUrl,
+              );
+
+          const hasSubMenu = Sub_menu.length > 0;
+
+          return (
+            Visibility && (
+              <div class="nav-menu-container group">
+                <div class="relative text-white flex items-center gap-[5px] z-40">
+                  <a
+                    href={Link}
+                    class:list={[
+                      "nav-menu-title",
+                      isActive ? "font-bold" : "font-semibold",
+                    ]}
+                  >
+                    {Title}
+                  </a>
+
+                  {hasSubMenu && <Icon name="ep:arrow-down-bold" class="w-3" />}
+
+                  {isActive && (
+                    <div class="absolute bottom-3.5 w-full h-0.5 bg-white rounded" />
+                  )}
+                </div>
+
+                {hasSubMenu && (
+                  <div
+                    class:list={[
+                      "nav-sub-menu absolute left-0 w-full",
+                      isActive ? "block" : "hidden group-hover:block",
+                    ]}
+                  >
+                    <div class="nav-sub-menu-content absolute top-0 left-0 w-full">
+                      <div class="nav-menu-flex nav-menu-padding-right wrapper">
+                        {Sub_menu.map(
+                          ({ Visibility, Title, Link }) =>
+                            Visibility && (
+                              <div
+                                class:list={[
+                                  "nav-sub-menu-title",
+                                  currentPageUrl === trimLink(Link) &&
+                                    "underline decoration-2 underline-offset-4",
+                                ]}
+                              >
+                                <a href={Link}>{Title}</a>
+                              </div>
+                            ),
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          );
+        })
+      }
+    </div>
+  </div>
+
   <script is:inline>
     {
       const navigation = document.getElementById("navigation"),
@@ -603,6 +866,44 @@ const {
     }
   </script>
 </header>
+
+<script>
+  const updateNavSubMenuClasses = () => {
+    const shouldHide = window.scrollY > 0;
+
+    document.querySelectorAll(".nav-sub-menu.block").forEach((navSubMenu) => {
+      navSubMenu.classList.toggle("hidden", shouldHide);
+      navSubMenu.classList.toggle("group-hover:block", shouldHide);
+    });
+
+    document.querySelectorAll(".nav-sub-menu-content").forEach((navSubMenu) => {
+      navSubMenu.classList.toggle("nav-bg", shouldHide);
+    });
+  };
+
+  updateNavSubMenuClasses();
+
+  window.addEventListener("scroll", updateNavSubMenuClasses);
+
+  const headerNavShadow = document.querySelector<HTMLDivElement>(
+    ".hero-sub-menu-shadow",
+  );
+
+  document
+    .querySelectorAll(".nav-menu-container")
+    .forEach((navMenuContainer) => {
+      navMenuContainer.addEventListener("mouseenter", () => {
+        headerNavShadow.style.display = navMenuContainer.querySelector(
+          ".nav-sub-menu",
+        )
+          ? "block"
+          : "none";
+      });
+      navMenuContainer.addEventListener("mouseleave", () => {
+        headerNavShadow.style.display = "none";
+      });
+    });
+</script>
 
 <script>
   const id = document.getElementById.bind(document);
