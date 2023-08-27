@@ -1094,12 +1094,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     cartAddingForms = queryAll(
       ".cart-adding-form, .cart-adding-form-sm, .cart-adding-form-fixed-sm",
     ),
+    productFormatInputs = queryAll(
+      'input:is([name="tea_variant"], [name="tea_size"])',
+    ),
     productAmountPriceOutput = query(".product-amount-price"),
     productAmountInputs = queryAll(".product-amount-input"),
     productAmountTweakBtns = queryAll(".product-amount-tweak-btn"),
-    radioBtns = queryAll(
-      'input[type="radio"][name="tea_variant"], input[type="radio"][name="tea_size"]',
-    ),
     productPrice = Number(query("input[name='price']")?.value);
 
   accordions.forEach((accordion) => {
@@ -1109,20 +1109,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     });
   });
 
-  const handleVariantSizeChange = (element, variantKey, sizeKey) => {
-    const preferredVariants = JSON.parse(
-      localStorage.getItem("preferredProductsVariants") || "{}",
-    );
-    preferredVariants[window.baseProductTitle] = {
-      [variantKey]: element.value,
-      [sizeKey]: element.dataset.href,
-    };
-    localStorage.setItem(
-      "preferredProductsVariants",
-      JSON.stringify(preferredVariants),
-    );
-    location.href = element.dataset.href;
-  };
+  productFormatInputs.forEach((input) => {
+    input.addEventListener("change", (event) => {
+      const target = event.target as HTMLSelectElement;
+
+      location.href = target.dataset.href;
+    });
+  });
 
   cartAddingForms.forEach((form: HTMLFormElement) => {
     form.addEventListener("change", (event) => {
@@ -1130,15 +1123,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
       if (["tea_variant", "tea_size"].includes(target.name)) {
         const selectedOption = target.selectedOptions[0];
-        handleVariantSizeChange(selectedOption, "tea_variant", "tea_size");
-      }
-    });
 
-    radioBtns.forEach((radio) => {
-      radio.addEventListener("change", (event) => {
-        const target = event.target as HTMLSelectElement;
-        handleVariantSizeChange(target, "tea_variant", "tea_size");
-      });
+        location.href = selectedOption.dataset.href;
+      }
     });
 
     form.addEventListener("submit", (event) => {
