@@ -20,6 +20,7 @@ export default function ProductFiltersForm({
   productSizes,
   productVariants,
   recurData,
+  type,
 }) {
   const { tea_variant, tea_size } = productFilters();
 
@@ -37,7 +38,7 @@ export default function ProductFiltersForm({
     const [selectedOption] = target.selectedOptions;
 
     const availableCombinations = JSON.parse(
-      selectedOption.dataset.availableCombinations || "null"
+      selectedOption.dataset.availableCombinations || "null",
     );
 
     (target.name === "tea_variant"
@@ -57,11 +58,11 @@ export default function ProductFiltersForm({
 
   onMount(() => {
     const filterSelectors = document.querySelectorAll(
-      "#product-filters select"
+      "#product-filters select",
     );
 
     filterSelectors.forEach((filterSelector) =>
-      displayAvailableCombinations(filterSelector)
+      displayAvailableCombinations(filterSelector),
     );
   });
 
@@ -75,8 +76,11 @@ export default function ProductFiltersForm({
         id="tea_variant"
         name="tea_variant"
         class={[
-          "bg-primary text-lg leading-[150%] text-secondary-light max-w-[90vw]",
-          "py-[9px] pl-5 border-primary border-r-[20px] rounded-full cursor-pointer",
+          type === "header"
+            ? "text-primary bg-white border-white"
+            : "text-secondary-light border-primary bg-primary",
+          "text-lg leading-[150%] max-w-[90vw]",
+          "py-[9px] pl-5 border-r-[20px] rounded-full cursor-pointer",
           "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
         ].join(" ")}
       >
@@ -96,8 +100,11 @@ export default function ProductFiltersForm({
         id="tea_size"
         name="tea_size"
         class={[
-          "bg-primary text-lg leading-[150%] text-secondary-light max-w-[90vw]",
-          "py-[9px] pl-5 border-primary border-r-[20px] rounded-full cursor-pointer",
+          type === "header"
+            ? "text-primary bg-white border-white"
+            : "text-secondary-light border-primary bg-primary",
+          "text-lg leading-[150%] max-w-[90vw]",
+          "py-[9px] pl-5 border-r-[20px] rounded-full cursor-pointer",
           "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
         ].join(" ")}
       >

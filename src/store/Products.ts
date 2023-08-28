@@ -9,7 +9,7 @@ const filterUnavailableTypes = ({
   attributes: { products, localizations },
 }) => {
   localizations.data = localizations.data.filter(
-    (localization) => localization.attributes.products.data.length > 0
+    (localization) => localization.attributes.products.data.length > 0,
   );
 
   return products.data.length > 0;
@@ -24,8 +24,8 @@ export const variantsOrder = [
   ...productSizes.data.map(({ attributes }) => attributes.Title),
   ...productVariants.data.flatMap(({ attributes: { Title: variant } }) =>
     productSizes.data.map(
-      ({ attributes: { Title: size } }) => variant + " | " + size
-    )
+      ({ attributes: { Title: size } }) => variant + " | " + size,
+    ),
   ),
 ];
 
@@ -50,15 +50,19 @@ const allProducts = catalog.Products.flatMap(
     variants.data.forEach(({ attributes: product }) => {
       const { localizations } = product,
         size = product.size.data.attributes.Title,
-        variant = product.variant.data.attributes.Title;
+        variant = product.variant.data.attributes.Title,
+        variantIcon = {
+          src: product.variant.data.attributes.Icon.data?.attributes?.url,
+          alt: product.variant.data.attributes.Icon.data?.alternativeText,
+        };
 
       const names = Object.fromEntries(
         [{ attributes: product }, ...product.localizations.data].map(
           ({ attributes }) => [
             attributes.locale.substring(0, 2),
             attributes.Title,
-          ]
-        )
+          ],
+        ),
       );
 
       [
@@ -67,6 +71,10 @@ const allProducts = catalog.Products.flatMap(
       ].forEach((attributes) => {
         const locale = attributes.locale.substring(0, 2),
           localizedVariant = attributes.variant.data.attributes.Title,
+          localizedVariantIcon = {
+            src: attributes.variant.data.attributes.Icon.data?.attributes?.url,
+            alt: attributes.variant.data.attributes.Icon.data?.alternativeText,
+          },
           localizedSize = attributes.size.data.attributes.Title,
           link =
             "/" + locale.substring(0, 2) + "/" + attributes.Meta.URL_slug + "/";
@@ -92,6 +100,7 @@ const allProducts = catalog.Products.flatMap(
           availableVariants[locale].push({
             value: variant,
             variant: localizedVariant,
+            variantIcon: localizedVariantIcon,
             link,
             format,
             stockAmount,
@@ -125,18 +134,37 @@ const allProducts = catalog.Products.flatMap(
       ];
 
       flattenedVariants.forEach((attributes) => {
+        const locale = attributes.locale.substring(0, 2);
+
         attributes.baseProductTitle = Title;
-        attributes.availableVariants =
-          availableVariants[attributes.locale.substring(0, 2)];
-        attributes.availableSizes =
-          availableSizes[attributes.locale.substring(0, 2)];
+        attributes.availableVariants = availableVariants[locale];
+        attributes.availableSizes = availableSizes[locale];
+
+        const formats = [],
+          availableFormats = [
+            ...attributes.availableVariants,
+            ...attributes.availableSizes,
+          ].filter(({ format, stockAmount }) => {
+            if (formats.includes(format)) return false;
+
+            formats.push(format);
+
+            return stockAmount;
+          });
+
+        availableFormats.sort(
+          ({ value: a }, { value: b }) =>
+            variantsOrder.indexOf(a) - variantsOrder.indexOf(b),
+        );
+
+        attributes.availableFormats = availableFormats;
       });
 
       return data;
     });
 
     return processedProducts;
-  }
+  },
 );
 
 // sort products by order of productSizes and productVariants
@@ -148,7 +176,7 @@ Object.values(Products)
 
       variants.sort(
         ([aKey], [bKey]) =>
-          variantsOrder.indexOf(aKey) - variantsOrder.indexOf(bKey)
+          variantsOrder.indexOf(aKey) - variantsOrder.indexOf(bKey),
       );
     }
   });

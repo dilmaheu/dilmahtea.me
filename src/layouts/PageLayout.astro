@@ -26,7 +26,7 @@ const {
 
 const footerText = recurData.Footer_text.replaceAll(
   "<current_year>",
-  `${new Date().getFullYear()}`
+  `${new Date().getFullYear()}`,
 );
 ---
 
@@ -46,6 +46,7 @@ const footerText = recurData.Footer_text.replaceAll(
   <div class="flex flex-wrap w-full h-full">
     <div class="block w-full bg-secondary">
       <Navbar
+        page={page}
         docLocale={locale}
         footerText={footerText}
         availableLocales={availableLocales}
@@ -73,7 +74,7 @@ const footerText = recurData.Footer_text.replaceAll(
       event.stopPropagation();
     } else if (linkSection && !isUnlinked) {
       const sectionHeadingLink = linkSection.querySelector(
-        "a.main-link"
+        "a.main-link",
       ) as HTMLAnchorElement;
 
       sectionHeadingLink.click();

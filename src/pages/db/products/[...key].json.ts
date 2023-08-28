@@ -1,9 +1,10 @@
 import { marked } from "marked";
 import { renderPicture } from "astro-imagetools/api";
-import tryUntilResolve from "@utils/tryUntilResolve";
-import productsStore, { variantsOrder } from "@store/Products";
 
-const { ASSETS_URL } = import.meta.env;
+import productsStore from "@store/Products";
+import tryUntilResolve from "@utils/tryUntilResolve";
+
+const { STRAPI_URL } = import.meta.env;
 
 async function processProductData(attributes) {
   if (attributes.In_stock_date) {
@@ -26,8 +27,7 @@ async function processProductData(attributes) {
     sub_category,
     productVariant: tea_variant,
     productSize: tea_size,
-    availableVariants,
-    availableSizes,
+    availableFormats,
     Meta: { URL_slug },
   } = attributes;
 
@@ -38,15 +38,16 @@ async function processProductData(attributes) {
           renderPicture({
             attributes: { img: { style: "aspect-ratio: 6 / 5;" } },
             alt: Intro_blob.data.attributes.alternativeText,
-            src: ASSETS_URL + Intro_blob.data.attributes.url,
+            src: STRAPI_URL + Intro_blob.data.attributes.url,
             sizes: [
               "(min-width: 1024px) calc((90vw - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
               "(min-width: 640px) calc(45vw - 16px)",
               "min(90vw, 380px)",
             ].join(", "),
           }),
-        (message) => message + " " + ASSETS_URL + Intro_blob.data.attributes.url
-      )
+        (message) =>
+          message + " " + STRAPI_URL + Intro_blob.data.attributes.url,
+      ),
     ).join("");
   } catch (error) {
     console.log({
@@ -60,34 +61,17 @@ async function processProductData(attributes) {
   let availableFormatsCount, availableFormatThumbnails;
 
   if (Stock_amount === 0) {
-    const formats = [];
-
-    const availableFormats = [...availableVariants, ...availableSizes].filter(
-      ({ format, stockAmount }) => {
-        if (formats.includes(format)) return false;
-
-        formats.push(format);
-
-        return stockAmount;
-      }
-    );
-
-    availableFormats.sort(
-      ({ value: a }, { value: b }) =>
-        variantsOrder.indexOf(a) - variantsOrder.indexOf(b)
-    );
-
     availableFormatsCount = availableFormats.length;
 
     try {
       availableFormatThumbnails = await Promise.all(
         availableFormats.slice(0, 2).map(async ({ thumbnail }) => ({
           src: await tryUntilResolve(
-            () => importImage(ASSETS_URL + thumbnail.src),
-            (message) => message + " " + ASSETS_URL + thumbnail.src
+            () => importImage(STRAPI_URL + thumbnail.src),
+            (message) => message + " " + STRAPI_URL + thumbnail.src,
           ),
           alt: thumbnail.alt,
-        }))
+        })),
       );
     } catch (error) {
       console.log({
@@ -100,11 +84,11 @@ async function processProductData(attributes) {
   }
 
   const thumbnailUrl =
-    ASSETS_URL + Intro_blob.data.attributes.formats.thumbnail.url;
+    STRAPI_URL + Intro_blob.data.attributes.formats.thumbnail.url;
 
   const thumbnail = await tryUntilResolve(
     () => importImage(thumbnailUrl),
-    (message) => message + " " + thumbnailUrl
+    (message) => message + " " + thumbnailUrl,
   );
 
   // reduce load on client
@@ -166,17 +150,17 @@ const products = productsStore.get("store"),
                     variants.map(async ([variantKey, variant]) => [
                       variantKey,
                       await processProductData(variant),
-                    ])
+                    ]),
                   ),
                 ];
               }
 
               return await processProductData(product);
-            })
+            }),
           ),
         ];
-      })
-    )
+      }),
+    ),
   );
 
 export function getStaticPaths() {

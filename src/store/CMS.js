@@ -1,40 +1,46 @@
 import fs from "fs";
+import { parse, print } from "graphql";
 import printMessage from "@utils/printMessage";
 
 const queries = Object.values(
-  await import.meta.glob("../queries/*.graphql", { as: "raw", eager: true })
+  await import.meta.glob("../queries/*.graphql", { as: "raw", eager: true }),
 );
 
-const queryRegex = /((?<=^\s*){|(?<=\s+)query\s+{)(.*)}\s*$/s;
+const parsedQueries = [],
+  parsedFragments = [];
 
-const fragments = [],
-  query =
-    "{" +
-    queries
-      .map((query) => {
-        const [match, , queryContent] = queryRegex.exec(query);
+queries.forEach((query) => {
+  const graphqlDocument = parse(query);
 
-        fragments.push(query.replace(match, ""));
+  graphqlDocument.definitions.forEach((definition) => {
+    if (definition.kind === "OperationDefinition") {
+      parsedQueries.push(
+        print(definition).slice(parsedQueries.length === 0 ? 0 : 1, -1),
+      );
+    } else if (definition.kind === "FragmentDefinition") {
+      parsedFragments.push(print(definition));
+    }
+  });
+});
 
-        return queryContent;
-      })
-      .join("") +
-    "}",
-  fullQuery = fragments.join("\n") + "\n" + query;
+parsedQueries[parsedQueries.length - 1] += "}";
+
+const fullQuery =
+  parsedQueries.join("") + "\n\n" + parsedFragments.join("\n\n");
 
 const { data, dataWithFlattenedCollections } = await fetch(
-  import.meta.env.DB_URL,
+  import.meta.env.STRAPI_GRAPHQL_ENDPOINT,
   {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${import.meta.env.ACCESS_TOKEN}`,
+      Authorization: `Bearer ${import.meta.env.STRAPI_ACCESS_TOKEN}`,
     },
     body: JSON.stringify({
       query: fullQuery,
     }),
-  }
+  },
 )
   .then(async (res) => {
     const cacheDir = "./.cache/",
@@ -80,13 +86,13 @@ const { data, dataWithFlattenedCollections } = await fetch(
 
                       return true;
                     }
-                  })
+                  }),
                 );
 
                 delete entries[localizationIndex];
 
                 return localization;
-              }
+              },
             );
 
             return true;
@@ -101,12 +107,12 @@ const { data, dataWithFlattenedCollections } = await fetch(
     await fs.promises.writeFile(
       cacheDir + "CMS.json",
       JSON.stringify(response),
-      "utf8"
+      "utf8",
     );
 
     printMessage(
       "info",
-      "Successfully fetched data from CMS and saved it to the cache"
+      "Successfully fetched data from CMS and saved it to the cache",
     );
 
     return {
@@ -135,7 +141,7 @@ const CMS = {
         const content = dataWithFlattenedCollections[contentType];
 
         return content.data.filter(
-          ({ attributes }) => attributes.locale.substring(0, 2) === locale
+          ({ attributes }) => attributes.locale.substring(0, 2) === locale,
         );
       }
 
@@ -145,7 +151,7 @@ const CMS = {
 
       return data[contentType].data.attributes.localizations.data.find(
         ({ attributes }) =>
-          attributes.locale.substring(0, 2) === locale.substring(0, 2)
+          attributes.locale.substring(0, 2) === locale.substring(0, 2),
       ).attributes;
     }
 
@@ -158,17 +164,17 @@ async function catchError(error) {
 
   if (fs.existsSync("./.cache/CMS.json")) {
     cachedData = JSON.parse(
-      await fs.promises.readFile("./.cache/CMS.json", "utf8")
+      await fs.promises.readFile("./.cache/CMS.json", "utf8"),
     );
 
     printMessage(
       "error",
-      "Failed to fetch data from CMS, serving from the cache"
+      "Failed to fetch data from CMS, serving from the cache",
     );
   } else {
     printMessage(
       "error",
-      "Failed to fetch data from CMS, nothing found in cache!"
+      "Failed to fetch data from CMS, nothing found in cache!",
     );
   }
 

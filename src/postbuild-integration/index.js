@@ -11,7 +11,12 @@ import removeAstroIconAttributes from "./tasks/removeAstroIconAttributes.js";
 const CSPRecord = {
   "default-src": ["'none'"],
   "style-src": ["'self'", "'unsafe-inline'", "https://use.fontawesome.com"],
-  "img-src": ["'self'", "data:", "https://dilmahtea.me"],
+  "img-src": [
+    "'self'",
+    "data:",
+    "https://dilmahtea.me",
+    "https://dev.cms.dilmahtea.me",
+  ],
   "media-src": ["'self'", "data:"],
   "video-src": ["'self'"],
   "font-src": ["'self'", "https://use.fontawesome.com"],
@@ -64,7 +69,7 @@ const postbuildIntegration = {
           const stringifiedDocument = simplifyImageFilenames(document);
 
           await fs.writeFile(path, stringifiedDocument);
-        })
+        }),
       );
 
       await Promise.all([

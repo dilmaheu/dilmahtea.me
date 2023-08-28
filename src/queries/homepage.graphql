@@ -4,72 +4,28 @@ fragment HomepageAttributes on Homepage {
   Title
   Intro_text
   Intro_blob {
-    data {
-      id
-      attributes {
-        url
-        provider_metadata
-        formats
-        alternativeText
-      }
-    }
+    ...Media
   }
   Intro_blob_sm {
-    data {
-      id
-      attributes {
-        url
-        provider_metadata
-        formats
-        alternativeText
-      }
-    }
+    ...Media
   }
   Intro_video {
-    data {
-      id
-      attributes {
-        url
-        provider_metadata
-        alternativeText
-      }
-    }
+    ...Media
   }
   Block_visibility
   Block_title
+  Block_button_text
+  Block_button_link
   Block2_visibility
   Block2_title
-  Block2_text
-  Block2_button_text
-  Block2_button_link
-  Block2_blob {
-    data {
-      id
-      attributes {
-        url
-        provider_metadata
-        formats
-        alternativeText
-      }
-    }
-  }
   Block3_visibility
   Block3_title
-  Block3_text
   Estates(filters: { publishedAt: { ne: null } }) {
     data {
       attributes {
         Estate_name
         Intro_blob {
-          data {
-            id
-            attributes {
-              url
-              provider_metadata
-              formats
-              alternativeText
-            }
-          }
+          ...Media
         }
         publishedAt
         Meta {
@@ -80,38 +36,42 @@ fragment HomepageAttributes on Homepage {
   }
   Block4_visibility
   Block4_title
+  Block4_text
+  Block4_button_text
+  Block4_button_link
+  Block4_blob {
+    ...Media
+  }
   Block5_visibility
   Block5_title
   Block5_text
-  Block5_button_text
-  Block5_button_link
-  Block5_blob {
+  Block6_visibility
+  Block6_title
+  Block6_products {
     data {
-      id
       attributes {
-        url
-        provider_metadata
-        formats
-        alternativeText
+        SKU
       }
     }
   }
-  Block6_visibility
-  Block6_title
+  Block6_button_text
+  Block6_button_link
+  Block7_visibility
+  Block7_title
+  Block7_text
+  Block7_button_text
+  Block7_button_link
+  Block7_blob {
+    ...Media
+  }
+  Block8_visibility
+  Block8_title
   Impacts {
     Value
     Value_unit
     Description
     Icon {
-      data {
-        id
-        attributes {
-          url
-          provider_metadata
-          formats
-          alternativeText
-        }
-      }
+      ...Media
     }
   }
   Meta {

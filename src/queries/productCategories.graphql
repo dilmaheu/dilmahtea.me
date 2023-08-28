@@ -4,15 +4,7 @@ fragment ProductCategoryAttributes on ProductCategory {
   Title
   Intro_text
   Intro_blob {
-    data {
-      id
-      attributes {
-        url
-        provider_metadata
-        formats
-        alternativeText
-      }
-    }
+    ...Media
   }
   Heading_button_text
   Block_text
@@ -29,12 +21,6 @@ fragment ProductCategoryAttributes on ProductCategory {
       }
     }
   }
-  Breadcrumb {
-    Steps {
-      Name
-      Link
-    }
-  }
   Relevant_items_title
   Relevant_recipes(filters: { publishedAt: { ne: null } }) {
     data {
@@ -42,13 +28,7 @@ fragment ProductCategoryAttributes on ProductCategory {
         Title
         Intro_text
         Intro_blob {
-          data {
-            attributes {
-              url
-              provider_metadata
-              alternativeText
-            }
-          }
+          ...Media
         }
         Meta {
           URL_slug

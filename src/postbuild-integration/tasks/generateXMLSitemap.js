@@ -6,7 +6,7 @@ export default async function generateXMLSitemap(sitemap) {
       const alternateXLinks = alternateURLs
         .map(
           ([hreflang, href]) =>
-            `<xhtml:link rel="alternate" hreflang="${hreflang}" href="${href}" />`
+            `<xhtml:link rel="alternate" hreflang="${hreflang}" href="${href}" />`,
         )
         .join("");
 
