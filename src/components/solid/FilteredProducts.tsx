@@ -221,14 +221,11 @@ export default function FilteredProducts({
                         <img
                           src={src}
                           alt={alt}
-                          class={[
-                            "-ml-[15px] first:ml-0 rounded-full",
-                            "min-w-[24px] h-6 border-2 border-primary",
-                          ]}
+                          class="-ml-[15px] first:ml-0 rounded-full min-w-[24px] h-6 border-2 border-primary"
                         />
                       ))}
 
-                      {availableFormatsCount > 2 && (
+                      {product.availableFormatsCount > 2 && (
                         <span
                           class={[
                             "flex items-center justify-center min-w-[24px] h-6",
@@ -236,7 +233,7 @@ export default function FilteredProducts({
                             "text-[10px] font-semibold text-primary leading-[150%] -ml-[15px]",
                           ].join(" ")}
                         >
-                          +{availableFormatsCount - 2}
+                          +{product.availableFormatsCount - 2}
                         </span>
                       )}
                     </span>
