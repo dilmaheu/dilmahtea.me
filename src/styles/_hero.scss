@@ -29,18 +29,20 @@
 }
 
 @mixin hero-text-properties {
-  @apply flex items-center sm:min-h-[clamp(350px,38vw+75px,612px)];
-  @include poly-fluid-sizing(
-    "padding-bottom",
-    (
-      767px: 45px,
-      768px: 50px,
-      960px: 55px,
-      1024px: 70px,
-      1280px: 75px,
-      1536px: 80px,
-    )
-  );
+  @apply flex items-center pb-[45px] md:pb-[50px];
+
+  @media (min-width: 640px) {
+    @include poly-fluid-sizing(
+      "min-height",
+      (
+        640px: 350px,
+        1280px: 510px,
+        1440px: 545px,
+        1536px: 570px,
+        1660px: 578px,
+      )
+    );
+  }
 }
 
 .hero-text-container {
