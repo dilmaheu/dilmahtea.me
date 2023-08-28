@@ -243,8 +243,7 @@ export default function FilteredProducts({
                         <span class="hidden sm:block">
                           {product.availableFormatsCount > 0
                             ? recurData.Product_stock_available_text
-                            : recurData.Product_available_text}
-
+                            : recurData.Product_available_text}{" "}
                           <span class="font-bold underline underline-offset-2">
                             {product.availableFormatsCount === 1
                               ? recurData.Product_other_formats_singular_text
