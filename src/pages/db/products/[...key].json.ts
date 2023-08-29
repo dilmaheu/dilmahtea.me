@@ -14,6 +14,7 @@ async function processProductData(attributes) {
   const {
     locale,
     SKU,
+    rank,
     Title,
     names,
     Intro_text,
@@ -108,6 +109,7 @@ async function processProductData(attributes) {
 
   return {
     SKU,
+    rank,
     Title,
     names: JSON.stringify(names),
     Intro_blob_HTML,
