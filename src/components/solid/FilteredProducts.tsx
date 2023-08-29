@@ -213,24 +213,30 @@ export default function FilteredProducts({
                 </div>
               )}
 
-              {product.Stock_amount < 1 &&
+              {
                 product.availableFormatsCount > 0 && (
-                  <div class="inline-flex gap-x-2.5">
+                  <div class="inline-flex items-center gap-[3px] md:gap-x-2">
                     <span class="flex">
                       {product.availableFormatThumbnails.map(({ src, alt }) => (
                         <img
                           src={src}
                           alt={alt}
-                          class="-ml-[15px] first:ml-0 rounded-full min-w-[24px] h-6 border-2 border-primary"
+                          class={[
+                            "rounded-full border-2 border-primary",
+                            "h-[clamp(14px,calc(1.5vw+2.5px),24px)]",
+                            "min-w-[clamp(14px,calc(1.5vw+2.5px),24px)]",
+                            "-ml-[clamp(7px,calc(1.19vw-2.14px),15px)] first:ml-0",
+                          ].join(" ")}
                         />
                       ))}
 
                       {product.availableFormatsCount > 2 && (
                         <span
                           class={[
-                            "flex items-center justify-center min-w-[24px] h-6",
-                            "border-2 border-primary rounded-full bg-secondary-light",
-                            "text-[10px] font-semibold text-primary leading-[150%] -ml-[15px]",
+                            "flex items-center justify-center rounded-full bg-secondary-light",
+                            "text-[clamp(6px,calc(0.6vw+1.4px),10px)] md:font-semibold text-primary",
+                            "leading-[110%] -ml-[clamp(7px,calc(1.19vw-2.14px),15px)] border-2 border-primary",
+                            "h-[clamp(14px,calc(1.5vw+2.5px),24px)] min-w-[clamp(14px,calc(1.5vw+2.5px),24px)]",
                           ].join(" ")}
                         >
                           +{product.availableFormatsCount - 2}
@@ -238,13 +244,14 @@ export default function FilteredProducts({
                       )}
                     </span>
 
-                    <div class="text-white">
+                    <div class="text-xs md:text-sm text-white">
                       <em>
                         <span class="hidden sm:block">
-                          {product.availableFormatsCount > 0
+                          {product.Stock_amount === 0
                             ? recurData.Product_stock_available_text
-                            : recurData.Product_available_text}{" "}
-                          <span class="font-bold underline underline-offset-2">
+                            : recurData.Product_available_text}
+
+                          <span class="font-bold underline underline-offset-2 pl-1">
                             {product.availableFormatsCount === 1
                               ? recurData.Product_other_formats_singular_text
                               : recurData.Product_other_formats_text.replaceAll(
@@ -255,7 +262,7 @@ export default function FilteredProducts({
                         </span>
 
                         <span class="block sm:hidden font-bold underline underline-offset-2">
-                          {product.availableFormatsCount === 1
+                          {product.Stock_amount === 0
                             ? recurData.Product_other_formats_singular_text_sm
                             : recurData.Product_other_formats_text_sm.replaceAll(
                                 "<count>",
