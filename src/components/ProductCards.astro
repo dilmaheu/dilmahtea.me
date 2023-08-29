@@ -20,7 +20,7 @@ const recurData = CMS.get("recurringElement", locale),
   .product-card-btn {
     @apply w-full flex justify-center items-center gap-1
       p-1 md:p-2 lg:p-3 mt-[clamp(5px,calc(2.23vw-12px),20px)]
-      font-bold text-[clamp(12px,0.38vw+10,16px)] rounded-full;
+      font-bold text-[clamp(12px,0.38vw+10px,16px)] rounded-full;
   }
 </style>
 
@@ -183,7 +183,7 @@ const recurData = CMS.get("recurringElement", locale),
             )}
 
             {availableFormatsCount > 0 && (
-              <div class="inline-flex gap-x-2.5">
+              <div class="inline-flex items-center gap-[3px] md:gap-x-2">
                 <span class="flex">
                   {availableFormats
                     .slice(0, 2)
@@ -192,26 +192,29 @@ const recurData = CMS.get("recurringElement", locale),
                         src={await importImage(STRAPI_URL + src)}
                         alt={alt}
                         class:list={[
-                          "-ml-[15px] first:ml-0 rounded-full",
-                          "min-w-[24px] h-6 border-2 border-primary",
+                          "rounded-full border-2 border-primary",
+                          "h-[clamp(14px,calc(1.5vw+2.5px),24px)]",
+                          "min-w-[clamp(14px,calc(1.5vw+2.5px),24px)]",
+                          "-ml-[clamp(7px,calc(1.19vw-2.14px),15px)] first:ml-0",
                         ]}
                       />
                     ))}
 
                   {availableFormatsCount > 2 && (
                     <span
-                      class={[
-                        "flex items-center justify-center min-w-[24px] h-6",
-                        "border-2 border-primary rounded-full bg-secondary-light",
-                        "text-[10px] font-semibold text-primary leading-[150%] -ml-[15px]",
-                      ].join(" ")}
+                      class:list={[
+                        "flex items-center justify-center rounded-full bg-secondary-light",
+                        "text-[clamp(6px,calc(0.6vw+1.4px),10px)] md:font-semibold text-primary",
+                        "leading-[110%] -ml-[clamp(7px,calc(1.19vw-2.14px),15px)] border-2 border-primary",
+                        "h-[clamp(14px,calc(1.5vw+2.5px),24px)] min-w-[clamp(14px,calc(1.5vw+2.5px),24px)]",
+                      ]}
                     >
                       +{availableFormatsCount - 2}
                     </span>
                   )}
                 </span>
 
-                <div class="text-white">
+                <div class="text-xs md:text-sm text-white">
                   <em>
                     <span class="hidden sm:block">
                       {Stock_amount === 0
