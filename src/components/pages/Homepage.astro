@@ -31,12 +31,16 @@ const latestProducts = Products.get("all")
       ...attributes.localizations.data.map(({ attributes }) => attributes),
     ].find((attributes) => locale === attributes.locale.substring(0, 2)),
   )
-  .filter(Boolean)
-  .sort(
-    (productA, productB) =>
-      new Date(productB.createdAt).getTime() -
-      new Date(productA.createdAt).getTime(),
-  );
+  .filter(Boolean);
+
+latestProducts.sort((productA, productB) =>
+  latestProducts
+    .slice(0, 3)
+    .every(({ Active_from }) => Active_from === [latestProducts].Active_from)
+    ? productB.rank - productA.rank
+    : new Date(productB.Active_from).getTime() -
+      new Date(productA.Active_from).getTime(),
+);
 
 const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
   latestProducts.find(({ SKU }) => attributes.SKU === SKU),
