@@ -16,9 +16,6 @@ interface Props {
   availableLocales: string[];
 }
 
-const { user_account_nav_background, user_account_nav_background_sm } =
-  RecurringImages;
-
 const {
   page,
   meta,
@@ -43,39 +40,15 @@ const footerText = recurData.Footer_text.replaceAll(
   metaImageSrc={metaImageSrc}
 >
   <div class="flex flex-wrap w-full h-full">
-    <div class="block w-full bg-lightgray">
-      <div class="fixed relative w-screen">
-        <ClipPathSVG
-          id="nav-curve"
-          path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
-        />
+    <div class="block w-full bg-secondary">
+      <Navbar
+        page={page}
+        docLocale={locale}
+        footerText={footerText}
+        isUserAccountNavbar={true}
+        availableLocales={availableLocales}
+      />
 
-        <Picture
-          alt=""
-          layout="fill"
-          preload="avif"
-          breakpoints={{ maxWidth: 640 }}
-          src={user_account_nav_background_sm.src}
-          artDirectives={[
-            {
-              media: "(min-width: 640px)",
-              breakpoints: { minWidth: 640 },
-              src: user_account_nav_background.src,
-            },
-          ]}
-          attributes={{
-            picture: {
-              style:
-                "position: absolute; top: 0; left: 0; clip-path: url(#nav-curve);",
-            },
-          }}
-        />
-
-        <Navbar
-          docLocale={locale}
-          footerText={footerText}
-          availableLocales={availableLocales}
-        />
       </div>
 
       <main>
@@ -83,6 +56,6 @@ const footerText = recurData.Footer_text.replaceAll(
       </main>
     </div>
 
-    <Footer footerText={footerText} {recurData} />
+    <Footer footerText={footerText} recurData={recurData} />
   </div>
 </BaseLayout>

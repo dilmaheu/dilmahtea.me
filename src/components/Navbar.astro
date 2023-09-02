@@ -11,8 +11,14 @@ import DynamicHTML from "@components/DynamicHTML.astro";
 import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
 import RegionSelectorsDropdown from "./RegionSelectorsDropdown.astro";
 
-const { logo, nav_background, nav_background_sm, sidebar_background } =
-  RecurringImages;
+const {
+  logo,
+  nav_background,
+  nav_background_sm,
+  sidebar_background,
+  user_account_nav_background,
+  user_account_nav_background_sm,
+} = RecurringImages;
 
 interface Props {
   docLocale: string;
@@ -20,10 +26,17 @@ interface Props {
   isCartNavbar?: boolean;
   page: Record<string, any>;
   availableLocales: string[];
+  isUserAccountNavbar?: boolean;
 }
 
-const { page, docLocale, footerText, isCartNavbar, availableLocales } =
-  Astro.props as Props;
+const {
+  page,
+  docLocale,
+  footerText,
+  isCartNavbar,
+  availableLocales,
+  isUserAccountNavbar,
+} = Astro.props as Props;
 
 const recurData = CMS.get("recurringElement", docLocale),
   ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", docLocale);
@@ -269,18 +282,25 @@ function trimLink(link) {
       style="clip-path: url(#nav-curve);"
     >
       {
-        nav_background && (
+        (nav_background || isUserAccountNavbar) && (
           <Picture
             alt=""
             layout="fill"
             preload="avif"
             breakpoints={{ maxWidth: 640 }}
-            src={nav_background_sm?.src || nav_background.src}
+            src={
+              isUserAccountNavbar
+                ? user_account_nav_background_sm?.src ||
+                  user_account_nav_background.src
+                : nav_background_sm?.src || nav_background.src
+            }
             artDirectives={[
               {
                 media: "(min-width: 640px)",
                 breakpoints: { minWidth: 640 },
-                src: nav_background.src,
+                src: isUserAccountNavbar
+                  ? user_account_nav_background.src
+                  : nav_background.src,
               },
             ]}
           />
