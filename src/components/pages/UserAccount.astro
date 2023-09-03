@@ -28,7 +28,7 @@ const emailOrPhone = page?.Form?.Email_or_phone === true;
 function fromEntries(array) {
   const formInputItems = Object.fromEntries(Object.entries(array).slice(0, 4)),
     formIputs = Object.values(formInputItems).filter(
-      (val) => val === true
+      (val) => val === true,
     ).length;
 
   return formIputs;
@@ -77,13 +77,6 @@ function fromEntries(array) {
       @apply w-full md:w-[330px] lg:w-[350px] mx-auto;
     }
   }
-
-  .hero-text-markdown {
-    a {
-      color: colors.$primary;
-      font-weight: 700;
-    }
-  }
 </style>
 
 <div class="wrapper py-[50px]">
@@ -113,8 +106,8 @@ function fromEntries(array) {
     page.Intro_text && (
       <div
         class:list={[
-          "hero-text hero-text-markdown w-full md:max-w-[740px]",
-          "pt-2.5 prose text-black-light text-center mx-auto",
+          "hero-text prose-text prose pt-2.5 mx-auto",
+          "w-full md:max-w-[740px] text-black-light text-center",
         ]}
       >
         <Markdown>{page.Intro_text}</Markdown>
@@ -254,7 +247,7 @@ function fromEntries(array) {
               block_text && (
                 <div
                   class:list={[
-                    "hero-text-markdown prose mt-[35px] text-center text-black-light",
+                    "prose-text prose max-w-none mt-[35px] text-center text-black-light",
                     (emailOrPhone || (form && fromEntries(form) === 1)) &&
                       "form-item",
                   ]}
@@ -278,7 +271,7 @@ function fromEntries(array) {
                       <img
                         class="w-full h-full"
                         src={await localizeCMSImage(
-                          fb_icon?.data?.attributes.url
+                          fb_icon?.data?.attributes.url,
                         )}
                         alt={fb_icon?.data?.attributes.alternativeText}
                       />
@@ -289,7 +282,7 @@ function fromEntries(array) {
                       <img
                         class="w-full h-full"
                         src={await localizeCMSImage(
-                          g_icon?.data?.attributes.url
+                          g_icon?.data?.attributes.url,
                         )}
                         alt={g_icon?.data?.attributes.alternativeText}
                       />
@@ -300,7 +293,7 @@ function fromEntries(array) {
                       <img
                         class="w-full h-full"
                         src={await localizeCMSImage(
-                          twitter_icon?.data?.attributes.url
+                          twitter_icon?.data?.attributes.url,
                         )}
                         alt={twitter_icon?.data?.attributes.alternativeText}
                       />
@@ -319,8 +312,8 @@ function fromEntries(array) {
 
                   <div
                     class:list={[
-                      "flex justify-center py-3 px-20 cursor-pointer",
-                      "font-bold text-lightgray bg-primary rounded-full",
+                      "font-bold text-white py-3 px-[35px] bg-primary",
+                      "flex justify-center rounded-full cursor-pointer",
                     ]}
                   >
                     {page?.Button_text}
