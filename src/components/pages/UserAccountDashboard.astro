@@ -28,7 +28,7 @@ const { page } = Astro.props,
     Support,
   } = page,
   { locale } = page,
-  { ASSETS_URL } = import.meta.env;
+  { STRAPI_URL } = import.meta.env;
 
 const userAccountRecurData = CMS.get("userAccountRecurringElement", locale),
   userAccountAddress = CMS.get("userAccountAddress", locale);
@@ -107,7 +107,7 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
     }
 
     .cause-from {
-      @apply grid gap-[15px] mt-[15px];
+      @apply grid gap-[15px] mt-[15px] overflow-hidden;
 
       label {
         @apply flex gap-5 items-start;
@@ -135,33 +135,23 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
       }
     }
 
-    .kindness-causes {
-      .kindness-cause {
-        clip-path: url(#kindness-cause-card-curve-sm);
+    .kindness-cause-clip-path {
+      clip-path: url(#kindness-cause-card-curve-sm);
 
-        @media (min-width: 640px) {
-          clip-path: url(#kindness-cause-card-curve);
-        }
+      @media (min-width: 640px) {
+        clip-path: url(#kindness-cause-card-curve);
+      }
+    }
+
+    .kindness-cause-img-container {
+      @apply h-full aspect-[6/5] block;
+
+      @media (min-width: 768px) {
+        @apply aspect-[5/5];
       }
 
-      > .active-kindness-cause {
-        @apply -m-3 p-1.5 bg-primary-light flex;
-
-        clip-path: url(#kindness-cause-card-curve-sm);
-
-        @media (min-width: 640px) {
-          clip-path: url(#kindness-cause-card-curve);
-        }
-
-        > div {
-          @apply p-1.5 bg-secondary-light;
-
-          clip-path: url(#kindness-cause-card-curve-sm);
-
-          @media (min-width: 640px) {
-            clip-path: url(#kindness-cause-card-curve);
-          }
-        }
+      @media (min-width: 800px) {
+        @apply aspect-[6/5];
       }
     }
 
@@ -325,7 +315,7 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
                   <span id="show-more-address" class="flex items-center">
                     {text_more_address.replaceAll(
                       "<number>",
-                      address_tag.length - 2
+                      address_tag.length - 2,
                     )}
                   </span>
                 </a>
@@ -355,7 +345,7 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
                       <img
                         class="w-full h-full"
                         src={await localizeCMSImage(
-                          fb_icon.data.attributes.url
+                          fb_icon.data.attributes.url,
                         )}
                         alt={fb_icon.data.attributes.alternativeText}
                       />
@@ -411,7 +401,7 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
                       <img
                         class="w-full h-full"
                         src={await localizeCMSImage(
-                          twitter_icon.data.attributes.url
+                          twitter_icon.data.attributes.url,
                         )}
                         alt={twitter_icon.data.attributes.alternativeText}
                       />
@@ -459,21 +449,35 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
                     </div>
                   </div>
 
-                  <div class="kindness-causes flex flex-wrap sm:grid gap-10 mt-[25px] w-full">
-                    {kindnessCauses.map(
-                      ({ cause, description, featured_blob }) => (
-                        <div>
-                          <div class="h-full w-full">
+                  {kindnessCauses.map(
+                    ({ cause, description, featured_blob }) => (
+                      <div class="-ml-2.5">
+                        <input
+                          type="radio"
+                          name="kindness_cause"
+                          id={cause}
+                          value={cause}
+                          class="peer hidden"
+                        />
+
+                        <label
+                          for={cause}
+                          class:list={[
+                            "kindness-cause-clip-path text-secondary",
+                            "p-1.5 max-w-[380px] sm:max-w-full sm:h-[170px]",
+                            "peer-checked:bg-primary-light select-none cursor-pointer",
+                          ]}
+                        >
+                          <div class="kindness-cause-clip-path p-[5px] bg-secondary-light w-full h-full">
                             <div
-                              cause={cause}
                               class:list={[
-                                "kindness-cause relative w-full max-w-[380px] sm:max-w-full h-full sm:h-[148px]",
-                                "flex flex-wrap sm:flex-nowrap bg-lightgray cursor-pointer",
+                                "kindness-cause-clip-path w-full h-full",
+                                "flex flex-wrap sm:flex-nowrap bg-secondary",
                               ]}
                             >
-                              <div class="w-full sm:w-auto aspect-[6/5] block">
+                              <div class="kindness-cause-img-container">
                                 <Picture
-                                  layout="fullWidth"
+                                  layout="fill"
                                   sizes="(min-width: 640px) 320px, 90vw)"
                                   alt={
                                     featured_blob.data.attributes
@@ -483,27 +487,37 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
                                     img: { style: "aspect-ratio: 6 / 5;" },
                                   }}
                                   src={
-                                    ASSETS_URL +
+                                    STRAPI_URL +
                                     featured_blob.data.attributes.url
                                   }
                                 />
                               </div>
 
-                              <div class="sm:grow px-[22px] sm:px-[25px] py-[20px] sm:py-[15px] flex flex-col justify-center gap-2">
+                              <div
+                                class:list={[
+                                  "px-[15px] sm:px-[25px] py-5 sm:py-[15px] h-full",
+                                  "flex flex-col justify-center gap-2 lg:gap-[15px]",
+                                ]}
+                              >
                                 <h4 class="recoleta text-2xl text-black leading-[120%]">
                                   {cause}
                                 </h4>
 
-                                <div class="prose max-w-none text-base sm:text-lg text-black-light sm:line-clamp-2 lg:line-clamp-3">
+                                <div
+                                  class:list={[
+                                    "prose max-w-none text-base sm:text-lg",
+                                    "text-black-light sm:line-clamp-2 lg:line-clamp-3",
+                                  ]}
+                                >
                                   <Markdown>{description}</Markdown>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      )
-                    )}
-                  </div>
+                        </label>
+                      </div>
+                    ),
+                  )}
                 </div>
               </label>
 
@@ -579,7 +593,9 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
                   </div>
 
                   <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">1x Chamomile tea</h2>
+                    <h2 class="recoleta text-2xl text-black">
+                      1x Chamomile tea
+                    </h2>
 
                     <div class="text-black-light">Variant: 100gm</div>
                   </div>
@@ -590,7 +606,7 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
                 Button_track_package && (
                   <div>
                     <a href="#">
-                      <div 
+                      <div
                         class:list={[
                           "font-bold leading-[150%] text-white",
                           "px-[30px] py-1.5 bg-primary rounded-full",
@@ -716,7 +732,7 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
                 Button_track_package && (
                   <div>
                     <a href="#">
-                      <div 
+                      <div
                         class:list={[
                           "font-bold leading-[150%] text-white",
                           "px-[30px] py-1.5 bg-primary rounded-full",
@@ -788,7 +804,7 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
 
               <div>
                 <a href="#">
-                  <div 
+                  <div
                     class:list={[
                       "font-bold leading-[150%] text-white",
                       "px-[30px] py-1.5 bg-primary rounded-full",
@@ -918,7 +934,7 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
             <img
               class="w-full h-full object-contain"
               src={await localizeCMSImage(
-                Support.Button_icon.data.attributes.url
+                Support.Button_icon.data.attributes.url,
               )}
               alt={Support.Button_icon?.data?.attributes?.alternativeText}
             />
@@ -943,13 +959,13 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
       document.querySelector(".kindness-causes"),
     kindnessCausesCards = document.querySelectorAll(".kindness-cause"),
     continueToPaymentBtn = document.getElementById(
-      "continue-to-payment-btn"
+      "continue-to-payment-btn",
     ) as HTMLButtonElement;
 
   kindnessCausesCards.forEach((card) => {
     card.addEventListener("click", () => {
       const activeCauseCard = kindnessCausesCardsContainer.querySelector(
-          ".active-kindness-cause"
+          ".active-kindness-cause",
         ),
         kindness_cause = card.getAttribute("cause");
 
@@ -959,7 +975,7 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
 
       localStorage.setItem(
         "checkout-info",
-        JSON.stringify(window.checkoutInfo)
+        JSON.stringify(window.checkoutInfo),
       );
 
       card.parentElement.parentElement.classList.add("active-kindness-cause");
