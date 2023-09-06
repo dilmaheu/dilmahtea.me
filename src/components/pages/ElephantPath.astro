@@ -1,62 +1,57 @@
 ---
 import Markdown from "@astrojs/markdown-component";
+import { Picture } from "astro-imagetools/components";
 
-import Banner from "@components/Banner.astro";
-import KindnessImpact from "@components/KindnessImpact.astro";
-
-import SecondaryPageLayout from "@layouts/SecondaryPageLayout.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
 
 const { page, ariaLabelRecurData } = Astro.props,
-  { locale, Relevant_items_title, Relevant_items_text, Relevant_blogs } = page,
   { STRAPI_URL } = import.meta.env;
-
-const relatedPosts = Relevant_blogs?.data?.map(({ attributes }) => attributes);
 ---
 
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
 
-  .description-container {
-    gap: poly-fluid-clamp(
-      (
-        640px: 50px,
-        1440px: 150px,
-      )
-    );
-  }
-
   .line-container-odd {
-    @apply z-10 absolute -left-[4vw] sm:left-[50%];
+    @apply z-10 absolute top-[95%] -left-[6vw];
 
-    @media (max-width: 639px) {
-      @apply top-[60%];
+    @media (min-width: 400px) {
+      @apply -left-[4vw];
+    }
+
+    @media (min-width: 550px) {
+      @apply top-[50%];
     }
   }
 
   .line-container-even {
-    @apply absolute -right-[4vw] sm:right-[60%];
+    @apply absolute top-[95%] -right-[6vw];
 
-    @media (max-width: 639px) {
-      @apply top-[60%];
+    @media (min-width: 400px) {
+      @apply -right-[4vw];
+    }
+
+    @media (min-width: 550px) {
+      @apply top-[50%];
     }
   }
 
-  .line {
-    width: poly-fluid-clamp(
+  .line-sm {
+    @include poly-fluid-sizing(
+      "width",
       (
-        640px: 310px,
-        1920px: 720px,
+        300px: 70px,
+        639px: 90px,
+        640px: 200px,
       )
     );
   }
 
-  .line-sm {
-    width: poly-fluid-clamp(
-      (
-        300px: 170px,
-        639px: 150px,
-      )
-    );
+  .post-img-curve-container {
+    aspect-ratio: 6 / 5;
+    width: 100%;
+    height: 100%;
+    max-width: 600px;
+    max-height: 500px;
   }
 
   .post-title {
@@ -72,205 +67,416 @@ const relatedPosts = Relevant_blogs?.data?.map(({ attributes }) => attributes);
     line-height: 150%;
   }
 
-  .information-post-icon {
-    @apply w-full h-full mx-auto;
-
-    width: poly-fluid-clamp(
+  .impact-chart-line {
+    @include poly-fluid-sizing(
+      "padding",
       (
-        375px: 170px,
-        1440px: 280px,
-      )
-    );
-    height: poly-fluid-clamp(
-      (
-        375px: 170px,
-        1440px: 280px,
+        768px: 20px 155px 0px 155px,
+        1024px: 40px 220px 0px 220px,
+        1440px: 45px 305px 0px 290px,
+        1920px: 45px 380px 0px 360px,
       )
     );
   }
+
+  .impact-chart-container {
+    @apply flex flex-wrap gap-[25px] md:gap-0 text-center;
+
+    .impact-chart-img {
+      height: poly-fluid-clamp(
+        (
+          768px: 40px,
+          1440px: 80px,
+        )
+      );
+    }
+
+    .impact-chart-heading {
+      @apply pt-[5px] text-white;
+
+      font-size: poly-fluid-clamp(
+        (
+          768px: 18px,
+          1440px: 24px,
+        )
+      );
+
+      .icon {
+        height: poly-fluid-clamp(
+          (
+            768px: 16px,
+            1440px: 26px,
+          )
+        );
+      }
+    }
+
+    .impact-chart-text {
+      @apply font-normal text-white;
+
+      font-size: poly-fluid-clamp(
+        (
+          768px: 14px,
+          1440px: 18px,
+        )
+      );
+    }
+
+    .impact-chart-1 {
+      @apply md:w-[32%];
+
+      .impact-chart-1-content {
+        @apply w-[80%] md:w-full mx-auto;
+      }
+    }
+
+    .impact-chart-2 {
+      @apply md:w-[68%] mt-[3vw] mr-auto;
+
+      @media (min-width: 768px) {
+        @include poly-fluid-sizing(
+          "height",
+          (
+            768px: 160px,
+            1024px: 185px,
+            1440px: 235px,
+          )
+        );
+      }
+
+      .impact-chart-2-content {
+        @apply w-[80%] md:w-[56%] mx-auto md:ml-0;
+
+        @media (min-width: 768px) {
+          @include poly-fluid-sizing(
+            "padding-left",
+            (
+              768px: 60px,
+              1024px: 80px,
+              1920px: 120px,
+            )
+          );
+        }
+      }
+    }
+
+    .impact-chart-3 {
+      @apply md:w-[40%];
+
+      @media (min-width: 768px) {
+        @include poly-fluid-sizing(
+          "height",
+          (
+            768px: 160px,
+            1024px: 185px,
+            1440px: 235px,
+          )
+        );
+
+        @include poly-fluid-sizing(
+          "margin-top",
+          (
+            768px: -10px,
+            1024px: 10px,
+            1440px: 40px,
+            1725px: 110px,
+          )
+        );
+      }
+
+      @media (min-width: 1725px) {
+        @include poly-fluid-sizing(
+          "margin-top",
+          (
+            1725px: 110px,
+            1800px: 100px,
+            1900px: 70px,
+            1920px: 60px,
+          )
+        );
+      }
+
+      .impact-chart-3-content {
+        @apply w-[80%] lg:w-full pl-[1.5vw] mx-auto;
+      }
+    }
+
+    .impact-chart-4 {
+      @apply flex md:w-[60%];
+
+      @media (min-width: 768px) {
+        @include poly-fluid-sizing(
+          "margin-top",
+          (
+            768px: -20px,
+            1024px: 0px,
+            1440px: 30px,
+            1725px: 110px,
+          )
+        );
+      }
+
+      @media (min-width: 1725px) {
+        @include poly-fluid-sizing(
+          "margin-top",
+          (
+            1725px: 110px,
+            1800px: 80px,
+            1850px: 60px,
+            1920px: 30px,
+          )
+        );
+      }
+
+      .impact-chart-4-content {
+        @apply w-[80%] md:w-[48%] mx-auto md:ml-auto md:mr-0;
+      }
+    }
+
+    .impact-chart-5 {
+      @apply md:w-[65%] mt-[3vw];
+
+      @media (min-width: 768px) {
+        @include poly-fluid-sizing(
+          "margin-top",
+          (
+            768px: -30px,
+            1024px: 5px,
+            1440px: 20px,
+            1725px: 75px,
+          )
+        );
+      }
+
+      @media (min-width: 1725px) {
+        @include poly-fluid-sizing(
+          "margin-top",
+          (
+            1725px: 75px,
+            1800px: 55px,
+            2560px: 20px,
+          )
+        );
+      }
+
+      .impact-chart-5-content {
+        @apply w-[80%] md:w-[90%] md:pl-[18vw] mx-auto;
+      }
+    }
+
+    .impact-chart-6 {
+      @apply md:w-[28%];
+
+      @media (min-width: 768px) {
+        @include poly-fluid-sizing(
+          "height",
+          (
+            768px: 160px,
+            1024px: 185px,
+            1440px: 235px,
+          )
+        );
+
+        margin-top: poly-fluid-clamp(
+          (
+            768px: 0px,
+            1725px: 110px,
+          )
+        );
+      }
+
+      @media (min-width: 1725px) {
+        margin-top: poly-fluid-clamp(
+          (
+            1725px: 110px,
+            2560px: 60px,
+          )
+        );
+      }
+
+      .impact-chart-6-content {
+        @apply w-[80%] md:w-full mx-auto;
+      }
+    }
+  }
 </style>
 
-<SecondaryPageLayout
-  {page}
-  {relatedPosts}
-  relatedPostsText={Relevant_items_text}
-  relatedPostsHeading={Relevant_items_title}
+<ClipPathSVG
+  id="hero-background-curve"
+  path="M1 0v.939A.27.27 0 0 1 .828 1H.81A1.462 1.462 0 0 1 .648.987C.586.981.522.974.451.974.376.974.312.981.252.988.202.994.156 1 .11 1H.097C.009.996 0 .956 0 .956V0"
+/>
+
+
+<section
+  class="bg-primary relative"
+  style="clip-path: url(#hero-background-curve);"
 >
-  <div class="my-[50px]">
-    <div class="grid gap-y-[50px]">
-      <section role="main">
-        <div class="wrapper grid gap-5 pb-[50px]">
-          <div
-            id="description"
-            role="list"
-            aria-label={ariaLabelRecurData.All_posts_text}
-            class="description-container flex flex-wrap items-center"
+  <div class="absolute inset-0 w-full h-full">
+    <Picture
+      alt=""
+      layout="fill"
+      src={STRAPI_URL + page.Intro_blob.data?.attributes.url}
+    />
+  </div>
+
+  <div
+    class:list={[
+      "absolute inset-0 w-full h-full",
+      "bg-gradient-to-b from-black/20 to-black/10",
+    ]}
+  >
+  </div>
+
+  <div class="wrapper relative z-10 pt-[60px] pb-[100px] -mt-2.5">
+    <h1 class="recoleta hero-title text-center pb-[50px] md:pb-5">
+      {page.Title}
+    </h1>
+
+    <div class="relative">
+      <div class="hidden md:block absolute w-full inset-0 z-10 select-none">
+        <div class="flex impact-chart-line">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 705.7 592"
+            class="w-full h-full mx-auto"
+            ><path
+              d="m1.5,1.5s183,2.2,211,153c13,70-10.1,76.7-34.5,157-7,23-89.8,66.9-100.5,15.5-8.5-41,19.7-56.4,59-64,54-10.5,151.9,127.9,283.5,121.5,95.8-4.7,74.1,1.7,165.5-27.5,31.3-10,84.6-38,97.5-54,23.8-29.5,27.5-40,11.5-69-13-23.5-54.5,3-65,22.5-32.4,60.1,25.9,240.8-99.5,294.5-39.5,16.9-62.8,32.6-83.5-5-15.7-28.5,12.5-33,45-33,46.5,0,86.7,40.1,158,77.5"
+              style="fill:none; stroke:rgba(255,255,255,.6); stroke-dasharray:0 0 12 12; stroke-linecap:round; stroke-width:3px;"
+            ></path></svg
           >
-            {
-              page.Description.map(
-                (
-                  {
-                    Title,
-                    Intro_text,
-                    Blob: { data: blob },
-                    Blog: { data: blog },
-                  },
-                  index,
-                ) => {
-                  const isEven = index % 2 === 0,
-                    totalPost = page.Description.length;
+        </div>
+      </div>
 
-                  return (
-                    <div
-                      role="listitem"
-                      aria-label={`${
-                        ariaLabelRecurData.Kindness_Item + (index + 1)
-                      } ${
-                        ariaLabelRecurData.Kindness_items_of_text
-                      } ${totalPost}`}
-                      class="link-section flex flex-wrap items-center w-full"
-                    >
-                      <div
-                        class:list={[
-                          "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
-                          !isEven && "sm:order-2",
-                        ]}
-                      >
-                        <div class="relative z-50 w-full h-full mx-auto">
-                          <img
-                            class="information-post-icon p-2 bg-secondary"
-                            src={STRAPI_URL + blob?.attributes.url}
-                            alt={blob?.attributes.alternativeText}
-                          />
-                        </div>
+      <div
+        role="list"
+        aria-label={ariaLabelRecurData.All_posts_text}
+        class="impact-chart-container relative z-20"
+      >
+        {
+          page.Description.map(
+            (
+              { Title, Intro_text, Blob: { data: blob }, Blog: { data: blog } },
+              index,
+            ) => {
+              const isEven = index % 2 === 0,
+                totalPost = page.Description.length;
 
-                        {/* Lines between text */}
-                        {index !== totalPost - 1 &&
-                          (isEven ? (
-                            <div class="line-container-odd">
-                              <div class="hidden sm:block line">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 696.1 209.3"
-                                >
-                                  <path
-                                    d="M3.5.6S20,115.1,159,119.7c173.8,5.7,256.4-102.5,404-84S691.8,208.9,691.8,208.9"
-                                    transform="translate(0 -0.1)"
-                                    style="fill:none;stroke:#b3cccc;stroke-width:7px;stroke-dasharray:20,20"
-                                  />
-                                </svg>
-                              </div>
+              return (
+                <div
+                  role="listitem"
+                  aria-label={`${
+                    ariaLabelRecurData.Kindness_Item + (index + 1)
+                  } ${ariaLabelRecurData.Kindness_items_of_text} ${totalPost}`}
+                  class:list={[
+                    "h-[190px] md:h-full",
+                    `impact-chart-${index + 1}`,
+                  ]}
+                >
+                  <div class={`impact-chart-${index + 1}-content`}>
+                    <div class:list={["relative w-full"]}>
+                      <img
+                        class="impact-chart-img mx-auto mb-[20px] md:mb-0"
+                        src={STRAPI_URL + blob?.attributes.url}
+                        alt={blob?.attributes.alternativeText}
+                      />
 
-                              <div class="block sm:hidden line-sm">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 137.8 337.4"
-                                >
-                                  <path
-                                    d="M137.3,335.4C-.9,317.4-3.9,315.5,5.2,126.9,1.3,68.4-6.2,29.7,34.2,7.2,66.3-8.6,61.6,20.4,137.3,1.9"
-                                    style="fill:none;stroke:#b3cccc;stroke-width:4px;stroke-dasharray:20,20"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
-                          ) : (
-                            <div class="line-container-even">
-                              <div class="hidden sm:block line pl-[2vw]">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 701.2 210.4"
-                                >
-                                  <path
-                                    d="M694.6,1.5s-49,99.1-189.2,103.7c-175.4,5.7-190.1-50-339.1-31.5S0,209.9,0,209.9"
-                                    transform="translate(3.5 0)"
-                                    style="fill:none;stroke:#b3cccc;stroke-width:7px;stroke-dasharray:20,20"
-                                  />
-                                </svg>
-                              </div>
-
-                              <div class="block sm:hidden line-sm">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 137.8 337.4"
-                                >
-                                  <path
-                                    d="M2,335.4c138.2-18,141.2-19.9,132.1-208.5,3.9-58.5,11.4-97.2-29-119.7C73-8.6,77.7,20.4,2,1.9"
-                                    transform="translate(-1.5)"
-                                    style="fill:none;stroke:#b3cccc;stroke-width:4px;stroke-dasharray:20,20"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-
-                      {/* Text content */}
-                      <div
-                        class:list={[
-                          "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
-                          !isEven && "sm:order-1",
-                        ]}
-                      >
-                        <div>
-                          <h2 class="post-title recoleta text-primary pt-[15px]">
-                            <a
-                              class="main-link"
-                              href={
-                                blog
-                                  ? `/` + blog?.attributes.Meta.URL_slug
-                                  : "#"
-                              }
-                              set:text={Title}
-                            />
-
-                            <span class="icon heading-inline-icon">
+                      {/* Lines between text */}
+                      {index !== totalPost - 1 &&
+                        (isEven ? (
+                          <div class="line-container-odd">
+                            <div class="block md:hidden line-sm">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 49 49"
-                                class="w-full h-full"
+                                viewBox="0 0 301.2 342.1"
+                                class="hidden sm:block"
                               >
-                                <circle
-                                  cx="24.5"
-                                  cy="24.5"
-                                  r="24.5"
-                                  style="fill:#547b7d"
-                                />
                                 <path
-                                  d="M10.6,24.3a1.5,1.5,0,0,1,.9-.7,2,2,0,0,1,1.1.2c4.4,2.9,8.3,1.3,11.6-.4l7.3-3.9-5.6-1.8-.5-.2-.3-.4a1.4,1.4,0,0,1-.2-.6A.7.7,0,0,1,25,16a.5.5,0,0,1,.3-.5.8.8,0,0,1,.4-.4h1.1l8.8,2.7a2.2,2.2,0,0,1,.9.7,1.4,1.4,0,0,1,0,1.1l-2.7,8.9a2.7,2.7,0,0,1-.7.8H32a1.6,1.6,0,0,1-.8-.6,1.4,1.4,0,0,1-.1-1.1L32.8,22l-7.3,3.8c-3.4,1.8-8.7,4.1-14.4.4a1.3,1.3,0,0,1-.7-.9A1.8,1.8,0,0,1,10.6,24.3Z"
-                                  style="fill:#fff"
+                                  d="m300.5,340.3s-21.4-7.7-95-6.6c-10.7.1-138.2,8.2-146.6,5.1C.5,316.8-2.7,290.8,5.2,126.9,1.3,68.4-6.2,29.7,34.2,7.2c32.1-15.8,190.6,13.2,266.3-5.3"
+                                  style="fill:none; stroke:#b3cccc; stroke-dasharray:0 0 20 20; stroke-width:4px;"
                                 />
                               </svg>
-                            </span>
-                          </h2>
 
-                          <div class="post-intro pt-[15px] prose max-w-none">
-                            <Markdown>{Intro_text}</Markdown>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 137.8 337.4"
+                                class="block sm:hidden"
+                              >
+                                <path
+                                  d="M137.3,335.4C-.9,317.4-3.9,315.5,5.2,126.9,1.3,68.4-6.2,29.7,34.2,7.2,66.3-8.6,61.6,20.4,137.3,1.9"
+                                  style="fill:none;stroke:#b3cccc;stroke-width:4px;stroke-dasharray:20,20"
+                                />
+                              </svg>
+                            </div>
                           </div>
-                        </div>
-                      </div>
+                        ) : (
+                          <div class="line-container-even">
+                            <div class="block md:hidden line-sm">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 301.2 342.1"
+                                class="hidden sm:block"
+                              >
+                                <path
+                                  d="m.7,1.9s21.4,7.7,95,6.6c10.7-.1,138.2-8.2,146.6-5.1,58.4,21.9,61.6,47.9,53.7,211.8,3.9,58.5,11.4,97.2-29,119.7-32.1,15.8-190.6-13.2-266.3,5.3"
+                                  style="fill:none; stroke:#b3cccc; stroke-dasharray:0 0 20 20; stroke-width:4px;"
+                                />
+                              </svg>
+
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 137.8 337.4"
+                                class="block sm:hidden"
+                              >
+                                <path
+                                  d="M2,335.4c138.2-18,141.2-19.9,132.1-208.5,3.9-58.5,11.4-97.2-29-119.7C73-8.6,77.7,20.4,2,1.9"
+                                  transform="translate(-1.5)"
+                                  style="fill:none;stroke:#b3cccc;stroke-width:4px;stroke-dasharray:20,20"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        ))}
                     </div>
-                  );
-                },
-              )
-            }
-          </div>
-        </div>
-      </section>
 
-      {/* Banner Section */}
-      <Banner
-        title={page.Block2_title}
-        intro={page.Block2_text}
-        button_text={page.Block2_button_text}
-        button_link={page.Block2_button_link}
-        blob={page.Block2_blob}
-      />
+                    <h2 class="impact-chart-heading recoleta line-clamp-2">
+                      <a
+                        class="main-link"
+                        href={blog ? `/` + blog?.attributes.Meta.URL_slug : "#"}
+                        set:text={Title}
+                      />
 
-      <KindnessImpact
-        {locale}
-        heading={page.Block3_title}
-        impacts={page.Impacts}
-      />
+                      <span class="icon">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 49 49"
+                          class="w-full h-full"
+                        >
+                          <circle
+                            cx="24.5"
+                            cy="24.5"
+                            r="24.5"
+                            style="fill:#fff"
+                          />
+                          <path
+                            d="M10.6,24.3a1.5,1.5,0,0,1,.9-.7,2,2,0,0,1,1.1.2c4.4,2.9,8.3,1.3,11.6-.4l7.3-3.9-5.6-1.8-.5-.2-.3-.4a1.4,1.4,0,0,1-.2-.6A.7.7,0,0,1,25,16a.5.5,0,0,1,.3-.5.8.8,0,0,1,.4-.4h1.1l8.8,2.7a2.2,2.2,0,0,1,.9.7,1.4,1.4,0,0,1,0,1.1l-2.7,8.9a2.7,2.7,0,0,1-.7.8H32a1.6,1.6,0,0,1-.8-.6,1.4,1.4,0,0,1-.1-1.1L32.8,22l-7.3,3.8c-3.4,1.8-8.7,4.1-14.4.4a1.3,1.3,0,0,1-.7-.9A1.8,1.8,0,0,1,10.6,24.3Z"
+                            style="fill:#547b7d"
+                          />
+                        </svg>
+                      </span>
+                    </h2>
+
+                    <div class="impact-chart-text line-clamp-3 prose max-w-none">
+                      <Markdown>{Intro_text}</Markdown>
+                    </div>
+                  </div>
+                </div>
+              );
+            },
+          )
+        }
+      </div>
     </div>
   </div>
-</SecondaryPageLayout>
+</section>
+    </div>
+  </div>
