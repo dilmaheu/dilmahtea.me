@@ -11,41 +11,6 @@ const { page, ariaLabelRecurData } = Astro.props,
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
 
-  .line-container-odd {
-    @apply z-10 absolute top-[95%] -left-[6vw];
-
-    @media (min-width: 400px) {
-      @apply -left-[4vw];
-    }
-
-    @media (min-width: 550px) {
-      @apply top-[50%];
-    }
-  }
-
-  .line-container-even {
-    @apply absolute top-[95%] -right-[6vw];
-
-    @media (min-width: 400px) {
-      @apply -right-[4vw];
-    }
-
-    @media (min-width: 550px) {
-      @apply top-[50%];
-    }
-  }
-
-  .line-sm {
-    @include poly-fluid-sizing(
-      "width",
-      (
-        300px: 70px,
-        639px: 90px,
-        640px: 200px,
-      )
-    );
-  }
-
   .post-img-curve-container {
     aspect-ratio: 6 / 5;
     width: 100%;
@@ -81,6 +46,41 @@ const { page, ariaLabelRecurData } = Astro.props,
 
   .impact-chart-container {
     @apply flex flex-wrap gap-[25px] md:gap-0 text-center;
+
+    .line-container-odd {
+      @apply z-10 absolute top-[95%] -left-[6vw] select-none pointer-events-none;
+
+      @media (min-width: 400px) {
+        @apply -left-[4vw];
+      }
+
+      @media (min-width: 550px) {
+        @apply top-[50%];
+      }
+    }
+
+    .line-container-even {
+      @apply absolute top-[95%] -right-[6vw] select-none pointer-events-none;
+
+      @media (min-width: 400px) {
+        @apply -right-[4vw];
+      }
+
+      @media (min-width: 550px) {
+        @apply top-[50%];
+      }
+    }
+
+    .line-sm {
+      @include poly-fluid-sizing(
+        "width",
+        (
+          300px: 70px,
+          639px: 90px,
+          640px: 200px,
+        )
+      );
+    }
 
     .impact-chart-img {
       height: poly-fluid-clamp(
@@ -197,7 +197,7 @@ const { page, ariaLabelRecurData } = Astro.props,
       }
 
       .impact-chart-3-content {
-        @apply w-[80%] lg:w-full pl-[1.5vw] mx-auto;
+        @apply w-[80%] lg:w-full mx-auto md:ml-[1.5vw];
       }
     }
 
@@ -260,12 +260,12 @@ const { page, ariaLabelRecurData } = Astro.props,
       }
 
       .impact-chart-5-content {
-        @apply w-[80%] md:w-[90%] md:pl-[18vw] mx-auto;
+        @apply w-[80%] md:w-[60%] mx-auto md:mr-[2.5vw];
       }
     }
 
     .impact-chart-6 {
-      @apply md:w-[28%];
+      @apply md:w-[32%] 2xl:w-[28%] md:ml-auto lg:mr-auto;
 
       @media (min-width: 768px) {
         @include poly-fluid-sizing(
