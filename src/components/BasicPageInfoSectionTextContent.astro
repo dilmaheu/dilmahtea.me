@@ -1,34 +1,43 @@
 ---
 import Markdown from "@astrojs/markdown-component";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 const { page } = Astro.props;
 ---
 
 <style lang="scss" is:global>
   .content-text {
+    picture {
+      clip-path: url(#content-images-curve);
+    }
+
     p,
     ol,
     ul,
     p s,
     blockquote p {
       a {
-        @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat transition-all;
+        @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat hover:brightness-95 transition-all;
 
         background-size: 100% 45%;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23b3cccc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
-
-        &:hover {
-          filter: brightness(0.95);
-        }
       }
     }
   }
 </style>
+
+<ClipPathSVG
+  id="content-images-curve"
+  path="M.516.008C.36.008.1-.008.04.082S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1.005.624 1.021.395.945.128.897-.045.734.008.516.008"
+/>
 
 <h2 class="heading-primary text-primary leading-[115%] font-bold">
   {page.Heading_block}
 </h2>
 
 <div class="content-text prose pt-0.5 mt-7">
-  <Markdown>{page.Block_text}</Markdown>
+  <OptimizeContentImages>
+    <Markdown>{page.Block_text}</Markdown>
+  </OptimizeContentImages>
 </div>
