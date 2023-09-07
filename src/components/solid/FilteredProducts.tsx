@@ -62,7 +62,13 @@ export default function FilteredProducts({
               !attributes.subCategory) ||
             (subCategory && subCategory === attributes.subCategory),
         )
-        .sort((productA, productB) => productB.rank - productA.rank),
+        .sort((productA, productB) =>
+          productA.rank === null
+            ? 1
+            : productB.rank === null
+            ? -1
+            : productA.rank - productB.rank,
+        ),
     );
   });
 
