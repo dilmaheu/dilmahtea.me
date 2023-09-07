@@ -61,7 +61,7 @@ async function processProductData(attributes) {
 
   let availableFormatsCount, availableFormatThumbnails;
 
-  availableFormatsCount = availableFormats.length;
+  availableFormatsCount = availableFormats.length - 1;
 
   try {
     availableFormatThumbnails = await Promise.all(
