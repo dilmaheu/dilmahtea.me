@@ -61,27 +61,25 @@ async function processProductData(attributes) {
 
   let availableFormatsCount, availableFormatThumbnails;
 
-  if (Stock_amount === 0) {
-    availableFormatsCount = availableFormats.length;
+  availableFormatsCount = availableFormats.length;
 
-    try {
-      availableFormatThumbnails = await Promise.all(
-        availableFormats.slice(0, 2).map(async ({ thumbnail }) => ({
-          src: await tryUntilResolve(
-            () => importImage(STRAPI_URL + thumbnail.src),
-            (message) => message + " " + STRAPI_URL + thumbnail.src,
-          ),
-          alt: thumbnail.alt,
-        })),
-      );
-    } catch (error) {
-      console.log({
-        message: error.message,
-        src: Intro_blob.data.attributes.url,
-      });
+  try {
+    availableFormatThumbnails = await Promise.all(
+      availableFormats.slice(0, 2).map(async ({ thumbnail }) => ({
+        src: await tryUntilResolve(
+          () => importImage(STRAPI_URL + thumbnail.src),
+          (message) => message + " " + STRAPI_URL + thumbnail.src,
+        ),
+        alt: thumbnail.alt,
+      })),
+    );
+  } catch (error) {
+    console.log({
+      message: error.message,
+      src: Intro_blob.data.attributes.url,
+    });
 
-      throw error;
-    }
+    throw error;
   }
 
   const thumbnailUrl =
