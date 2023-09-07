@@ -376,100 +376,104 @@ const { page, ariaLabelRecurData } = Astro.props,
                   ]}
                 >
                   <div class={`impact-chart-${index + 1}-content`}>
-                    <div class:list={["relative w-full"]}>
-                      <img
-                        class="impact-chart-img mx-auto mb-[20px] md:mb-0"
-                        src={STRAPI_URL + blob?.attributes.url}
-                        alt={blob?.attributes.alternativeText}
-                      />
+                    <div class="link-section">
+                      <div class="relative">
+                        <img
+                          class="impact-chart-img mx-auto mb-[20px] md:mb-0"
+                          src={STRAPI_URL + blob?.attributes.url}
+                          alt={blob?.attributes.alternativeText}
+                        />
 
-                      {/* Lines between text */}
-                      {index !== totalPost - 1 &&
-                        (isEven ? (
-                          <div class="line-container-odd">
-                            <div class="block md:hidden line-sm">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 301.2 342.1"
-                                class="hidden sm:block"
-                              >
-                                <path
-                                  d="m300.5,340.3s-21.4-7.7-95-6.6c-10.7.1-138.2,8.2-146.6,5.1C.5,316.8-2.7,290.8,5.2,126.9,1.3,68.4-6.2,29.7,34.2,7.2c32.1-15.8,190.6,13.2,266.3-5.3"
-                                  style="fill:none; stroke:#b3cccc; stroke-dasharray:0 0 20 20; stroke-width:4px;"
-                                />
-                              </svg>
+                        {/* Lines between text */}
+                        {index !== totalPost - 1 &&
+                          (isEven ? (
+                            <div class="line-container-odd unlink">
+                              <div class="block md:hidden line-sm">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 301.2 342.1"
+                                  class="hidden sm:block"
+                                >
+                                  <path
+                                    d="m300.5,340.3s-21.4-7.7-95-6.6c-10.7.1-138.2,8.2-146.6,5.1C.5,316.8-2.7,290.8,5.2,126.9,1.3,68.4-6.2,29.7,34.2,7.2c32.1-15.8,190.6,13.2,266.3-5.3"
+                                    style="fill:none; stroke:#b3cccc; stroke-dasharray:0 0 20 20; stroke-width:4px;"
+                                  />
+                                </svg>
 
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 137.8 337.4"
-                                class="block sm:hidden"
-                              >
-                                <path
-                                  d="M137.3,335.4C-.9,317.4-3.9,315.5,5.2,126.9,1.3,68.4-6.2,29.7,34.2,7.2,66.3-8.6,61.6,20.4,137.3,1.9"
-                                  style="fill:none;stroke:#b3cccc;stroke-width:4px;stroke-dasharray:20,20"
-                                />
-                              </svg>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 137.8 337.4"
+                                  class="block sm:hidden"
+                                >
+                                  <path
+                                    d="M137.3,335.4C-.9,317.4-3.9,315.5,5.2,126.9,1.3,68.4-6.2,29.7,34.2,7.2,66.3-8.6,61.6,20.4,137.3,1.9"
+                                    style="fill:none;stroke:#b3cccc;stroke-width:4px;stroke-dasharray:20,20"
+                                  />
+                                </svg>
+                              </div>
                             </div>
-                          </div>
-                        ) : (
-                          <div class="line-container-even">
-                            <div class="block md:hidden line-sm">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 301.2 342.1"
-                                class="hidden sm:block"
-                              >
-                                <path
-                                  d="m.7,1.9s21.4,7.7,95,6.6c10.7-.1,138.2-8.2,146.6-5.1,58.4,21.9,61.6,47.9,53.7,211.8,3.9,58.5,11.4,97.2-29,119.7-32.1,15.8-190.6-13.2-266.3,5.3"
-                                  style="fill:none; stroke:#b3cccc; stroke-dasharray:0 0 20 20; stroke-width:4px;"
-                                />
-                              </svg>
+                          ) : (
+                            <div class="line-container-even unlink">
+                              <div class="block md:hidden line-sm">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 301.2 342.1"
+                                  class="hidden sm:block"
+                                >
+                                  <path
+                                    d="m.7,1.9s21.4,7.7,95,6.6c10.7-.1,138.2-8.2,146.6-5.1,58.4,21.9,61.6,47.9,53.7,211.8,3.9,58.5,11.4,97.2-29,119.7-32.1,15.8-190.6-13.2-266.3,5.3"
+                                    style="fill:none; stroke:#b3cccc; stroke-dasharray:0 0 20 20; stroke-width:4px;"
+                                  />
+                                </svg>
 
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 137.8 337.4"
-                                class="block sm:hidden"
-                              >
-                                <path
-                                  d="M2,335.4c138.2-18,141.2-19.9,132.1-208.5,3.9-58.5,11.4-97.2-29-119.7C73-8.6,77.7,20.4,2,1.9"
-                                  transform="translate(-1.5)"
-                                  style="fill:none;stroke:#b3cccc;stroke-width:4px;stroke-dasharray:20,20"
-                                />
-                              </svg>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 137.8 337.4"
+                                  class="block sm:hidden"
+                                >
+                                  <path
+                                    d="M2,335.4c138.2-18,141.2-19.9,132.1-208.5,3.9-58.5,11.4-97.2-29-119.7C73-8.6,77.7,20.4,2,1.9"
+                                    transform="translate(-1.5)"
+                                    style="fill:none;stroke:#b3cccc;stroke-width:4px;stroke-dasharray:20,20"
+                                  />
+                                </svg>
+                              </div>
                             </div>
-                          </div>
-                        ))}
-                    </div>
+                          ))}
+                      </div>
 
-                    <h2 class="impact-chart-heading recoleta line-clamp-2">
-                      <a
-                        class="main-link"
-                        href={blog ? `/` + blog?.attributes.Meta.URL_slug : "#"}
-                        set:text={Title}
-                      />
+                      <h2 class="impact-chart-heading recoleta line-clamp-2">
+                        <a
+                          class="main-link"
+                          href={
+                            blog ? `/` + blog?.attributes.Meta.URL_slug : "#"
+                          }
+                          set:text={Title}
+                        />
 
-                      <span class="icon">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 49 49"
-                          class="w-full h-full"
-                        >
-                          <circle
-                            cx="24.5"
-                            cy="24.5"
-                            r="24.5"
-                            style="fill:#fff"
-                          />
-                          <path
-                            d="M10.6,24.3a1.5,1.5,0,0,1,.9-.7,2,2,0,0,1,1.1.2c4.4,2.9,8.3,1.3,11.6-.4l7.3-3.9-5.6-1.8-.5-.2-.3-.4a1.4,1.4,0,0,1-.2-.6A.7.7,0,0,1,25,16a.5.5,0,0,1,.3-.5.8.8,0,0,1,.4-.4h1.1l8.8,2.7a2.2,2.2,0,0,1,.9.7,1.4,1.4,0,0,1,0,1.1l-2.7,8.9a2.7,2.7,0,0,1-.7.8H32a1.6,1.6,0,0,1-.8-.6,1.4,1.4,0,0,1-.1-1.1L32.8,22l-7.3,3.8c-3.4,1.8-8.7,4.1-14.4.4a1.3,1.3,0,0,1-.7-.9A1.8,1.8,0,0,1,10.6,24.3Z"
-                            style="fill:#547b7d"
-                          />
-                        </svg>
-                      </span>
-                    </h2>
+                        <span class="icon">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 49 49"
+                            class="w-full h-full"
+                          >
+                            <circle
+                              cx="24.5"
+                              cy="24.5"
+                              r="24.5"
+                              style="fill:#fff"
+                            />
+                            <path
+                              d="M10.6,24.3a1.5,1.5,0,0,1,.9-.7,2,2,0,0,1,1.1.2c4.4,2.9,8.3,1.3,11.6-.4l7.3-3.9-5.6-1.8-.5-.2-.3-.4a1.4,1.4,0,0,1-.2-.6A.7.7,0,0,1,25,16a.5.5,0,0,1,.3-.5.8.8,0,0,1,.4-.4h1.1l8.8,2.7a2.2,2.2,0,0,1,.9.7,1.4,1.4,0,0,1,0,1.1l-2.7,8.9a2.7,2.7,0,0,1-.7.8H32a1.6,1.6,0,0,1-.8-.6,1.4,1.4,0,0,1-.1-1.1L32.8,22l-7.3,3.8c-3.4,1.8-8.7,4.1-14.4.4a1.3,1.3,0,0,1-.7-.9A1.8,1.8,0,0,1,10.6,24.3Z"
+                              style="fill:#547b7d"
+                            />
+                          </svg>
+                        </span>
+                      </h2>
 
-                    <div class="impact-chart-text line-clamp-3 prose max-w-none">
-                      <Markdown>{Intro_text}</Markdown>
+                      <div class="impact-chart-text line-clamp-3 prose max-w-none">
+                        <Markdown>{Intro_text}</Markdown>
+                      </div>
                     </div>
                   </div>
                 </div>
