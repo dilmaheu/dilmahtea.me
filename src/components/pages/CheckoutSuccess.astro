@@ -5,9 +5,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 
 import Navbar from "@components/Navbar.astro";
 import Footer from "@components/Footer.astro";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
 import CartOverlay from "@components/CartOverlay.astro";
-
 import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 
 interface Props {
@@ -133,20 +131,7 @@ const { Nav_menu: menu } = recurData;
       )
     );
   }
-
-  .prose {
-    img {
-      @apply mx-auto max-h-[300px] md:max-h-[400px];
-
-      clip-path: url(#image-curve);
-    }
-  }
 </style>
-
-<ClipPathSVG
-  id="image-curve"
-  path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
-/>
 
 <BaseLayout
   page={page}
@@ -197,9 +182,7 @@ const { Nav_menu: menu } = recurData;
 
             <h1 class="recoleta font-semibold text-primary">{page.Title}</h1>
 
-            <div class="prose content-text">
-              <Markdown>{page.Intro_text}</Markdown>
-            </div>
+            <div class="prose"><Markdown>{page.Intro_text}</Markdown></div>
           </div>
         </div>
       </div>
