@@ -357,10 +357,7 @@ const { page, ariaLabelRecurData } = Astro.props,
       >
         {
           page.Description.map(
-            (
-              { Title, Intro_text, Blob: { data: blob }, Blog: { data: blog } },
-              index,
-            ) => {
+            ({ Title, Intro_text, Blob: { data: blob }, Link }, index) => {
               const isEven = index % 2 === 0,
                 totalPost = page.Description.length;
 
@@ -445,9 +442,7 @@ const { page, ariaLabelRecurData } = Astro.props,
                       <h2 class="impact-chart-heading recoleta line-clamp-2">
                         <a
                           class="main-link"
-                          href={
-                            blog ? `/` + blog?.attributes.Meta.URL_slug : "#"
-                          }
+                          href={Link || "#"}
                           set:text={Title}
                         />
 
