@@ -50,11 +50,7 @@ const allProducts = catalog.Products.flatMap(
     variants.data.forEach(({ attributes: product }) => {
       const { localizations } = product,
         size = product.size.data.attributes.Title,
-        variant = product.variant.data.attributes.Title,
-        variantIcon = {
-          src: product.variant.data.attributes.Icon.data?.attributes?.url,
-          alt: product.variant.data.attributes.Icon.data?.alternativeText,
-        };
+        variant = product.variant.data.attributes.Title;
 
       const names = Object.fromEntries(
         [{ attributes: product }, ...product.localizations.data].map(
@@ -92,9 +88,10 @@ const allProducts = catalog.Products.flatMap(
 
         Products[locale + " | " + variant + " | " + size].push(attributes);
 
+        attributes.names = names;
         attributes.productVariant = variant;
         attributes.productSize = size;
-        attributes.names = names;
+        attributes.productFormat = format;
 
         if (!availableVariants[locale].some(({ value }) => value === variant)) {
           availableVariants[locale].push({
@@ -140,7 +137,8 @@ const allProducts = catalog.Products.flatMap(
         attributes.availableVariants = availableVariants[locale];
         attributes.availableSizes = availableSizes[locale];
 
-        const formats = [],
+        // remove duplicates & current format from availableFormats
+        const formats = [attributes.productFormat],
           availableFormats = [
             ...attributes.availableVariants,
             ...attributes.availableSizes,
