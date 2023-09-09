@@ -73,14 +73,14 @@ export default function FilteredProducts({
   });
 
   const addProductToCart = (product) => {
-    const { SKU, names, thumbnail, Price, Tax, tea_variant, tea_size } =
-      product;
+    const { SKU, names, thumbnail, Price, tea_variant, tea_size } = product;
 
     const inCartProduct = window.cart[SKU];
 
     const quantity = 1 + (inCartProduct?.quantity || 0),
-      price = +(Price * quantity).toFixed(2),
-      tax = +(Tax * quantity).toFixed(2);
+      total = Price * quantity,
+      tax = +(Math.round(Number(total) * 9) / 100).toFixed(2),
+      price = +(total + tax).toFixed(2);
 
     const productData = {
       sku: SKU,

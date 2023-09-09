@@ -91,7 +91,7 @@ const allProducts = catalog.Products.flatMap(
         attributes.names = names;
         attributes.productVariant = variant;
         attributes.productSize = size;
-        attributes.productFormat = format;
+        attributes.productLocalizedFormat = format;
 
         if (!availableVariants[locale].some(({ value }) => value === variant)) {
           availableVariants[locale].push({
@@ -138,7 +138,7 @@ const allProducts = catalog.Products.flatMap(
         attributes.availableSizes = availableSizes[locale];
 
         // remove duplicates & current format from availableFormats
-        const formats = [attributes.productFormat],
+        const formats = [attributes.productLocalizedFormat],
           availableFormats = [
             ...attributes.availableVariants,
             ...attributes.availableSizes,
