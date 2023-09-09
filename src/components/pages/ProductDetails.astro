@@ -32,15 +32,9 @@ const {
   Stock_amount: stockAmount,
 } = page;
 
-const { SKU: productSKU } = page,
-  productPrice = Number(page.Price),
-  tax = Math.round(productPrice * 9) / 100,
-  productPriceIncludingTax = productPrice + tax,
-  productNames = JSON.stringify(page.names);
-
-const productThumbnailURL = await importImage(
-  STRAPI_URL + page.Intro_blob.data.attributes.formats.thumbnail.url,
-);
+const { SKU: productSKU, Price } = page,
+  tax = Math.round(Price * 9) / 100,
+  productPriceIncludingTax = Price + tax;
 
 const infos = page.product_infos.data.map(({ attributes }) => attributes),
   blogs = page.related_blogs?.data?.map(({ attributes }) => attributes),
@@ -259,12 +253,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       stockAmount > 0 && "xl:w-2/3",
     ]}
   >
-    <input type="hidden" name="sku" value={productSKU} />
-    <input type="hidden" name="names" value={productNames} />
-    <input type="hidden" name="image" value={productThumbnailURL} />
-
-    <input type="hidden" name="tax" value={tax} />
-    <input type="hidden" name="price" value={productPriceIncludingTax} />
+    <input type="hidden" name="SKU" value={productSKU} />
+    <input type="hidden" name="price" value={Price} />
 
     <div class="flex flex-wrap gap-[15px] mt-[15px]">
       <div
@@ -310,7 +300,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       />
                     )}
 
-                    <span class="text-sm font-bold leading-[110%]">{variant}</span>
+                    <span class="text-sm font-bold leading-[110%]">
+                      {variant}
+                    </span>
                   </div>
                 </div>
               </label>
@@ -494,12 +486,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     slot="cart-adding-form-sm"
     class="cart-adding-form-sm flex flex-wrap justify-between gap-6 mt-8 w-full"
   >
-    <input type="hidden" name="sku" value={productSKU} />
-    <input type="hidden" name="names" value={productNames} />
-    <input type="hidden" name="image" value={productThumbnailURL} />
-
-    <input type="hidden" name="tax" value={tax} />
-    <input type="hidden" name="price" value={productPriceIncludingTax} />
+    <input type="hidden" name="SKU" value={productSKU} />
+    <input type="hidden" name="price" value={Price} />
 
     {
       stockAmount > 0 && (
@@ -646,12 +634,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           "shadow-[0_4px_10px_rgba(0,0,0,0.6)] bg-secondary",
         ]}
       >
-        <input type="hidden" name="sku" value={productSKU} />
-        <input type="hidden" name="names" value={productNames} />
-        <input type="hidden" name="image" value={productThumbnailURL} />
-
-        <input type="hidden" name="tax" value={tax} />
-        <input type="hidden" name="price" value={productPriceIncludingTax} />
+        <input type="hidden" name="SKU" value={productSKU} />
+        <input type="hidden" name="price" value={Price} />
 
         <div class="wrapper flex items-center gap-4 justify-between">
           <div class="w-fit flex items-center text-white p-1 bg-primary rounded-full">
@@ -1029,41 +1013,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   }
 </PostDetailsLayout>
 
-<Schema
-  item={{
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: page.Title,
-    image: await importImage(STRAPI_URL + page.Intro_blob?.data.attributes.url),
-    description: `${(await renderMarkdown(page.Intro_text)).replace(
-      /(<([^>]+)>)/gi,
-      "",
-    )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
-    sku: page.SKU,
-    gtin: page.GTIN_Barcode,
-    brand: {
-      "@type": "Brand",
-      name: page.brand?.data?.attributes.Brand_name,
-    },
-    offers: {
-      "@type": "Offer",
-      url: Astro.site.origin + Astro.url.pathname + "/",
-      itemCondition: "https://schema.org/NewCondition",
-      availability: "https://schema.org/InStock",
-      price: page.Price,
-      priceCurrency: page.Currency,
-      priceValidUntil: new Date().toISOString(),
-      shippingDetails: {
-        "@type": "OfferShippingDetails",
-        shippingDestination: {
-          "@type": "DefinedRegion",
-          addressCountry: "EU",
-        },
-      },
-    },
-  }}
-/>
-
 <script define:vars={{ baseProductTitle, productSize, productVariant }}>
   window.baseProductTitle = baseProductTitle;
 
@@ -1132,20 +1081,20 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       event.preventDefault();
 
       const productData = Object.fromEntries(new FormData(form)) as ProductData,
-        { sku: id, price, tax } = productData as Record<string, string>,
-        existingCartProduct = window.cart[id];
+        { SKU } = productData,
+        inCartProduct = window.cart[SKU];
 
-      productData.quantity =
-        Number(productData.quantity) + (existingCartProduct?.quantity || 0);
+      const quantity =
+        Number(productData.quantity) + (inCartProduct?.quantity || 0);
 
-      productData.price = +(Number(price) * productData.quantity).toFixed(2);
-      productData.tax = +(Number(tax) * productData.quantity).toFixed(2);
+      window.cart[SKU] = { quantity };
 
-      window.cart[id] = productData;
+      cartAddingForms.forEach((form: HTMLFormElement) => form.reset());
 
-      form.reset();
+      const tax = Math.round(productPrice * 9) / 100,
+        productPriceIncludingTax = productPrice + tax;
 
-      productAmountPriceOutput.textContent = Number(price)
+      productAmountPriceOutput.textContent = productPriceIncludingTax
         .toFixed(2)
         .replace(".", ",");
 
@@ -1160,12 +1109,48 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       }
     });
 
-    productAmountPriceOutput.textContent = (
-      Number(input.value) * Number(productPrice)
-    )
-      .toFixed(2)
-      .replace(".", ",");
+    const quantity = Number(input.value),
+      total = productPrice * quantity,
+      tax = Math.round(Number(total) * 9) / 100,
+      price = total + tax;
+
+    productAmountPriceOutput.textContent = price.toFixed(2).replace(".", ",");
   }
 
   tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
 </script>
+
+<Schema
+  item={{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: page.Title,
+    image: await importImage(STRAPI_URL + page.Intro_blob?.data.attributes.url),
+    description: `${(await renderMarkdown(page.Intro_text)).replace(
+      /(<([^>]+)>)/gi,
+      "",
+    )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
+    sku: page.SKU,
+    gtin: page.GTIN_Barcode,
+    brand: {
+      "@type": "Brand",
+      name: page.brand?.data?.attributes.Brand_name,
+    },
+    offers: {
+      "@type": "Offer",
+      url: Astro.site.origin + Astro.url.pathname + "/",
+      itemCondition: "https://schema.org/NewCondition",
+      availability: "https://schema.org/InStock",
+      price: page.Price,
+      priceCurrency: page.Currency,
+      priceValidUntil: new Date().toISOString(),
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "EU",
+        },
+      },
+    },
+  }}
+/>

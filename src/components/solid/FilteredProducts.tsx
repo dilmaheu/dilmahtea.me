@@ -73,27 +73,13 @@ export default function FilteredProducts({
   });
 
   const addProductToCart = (product) => {
-    const { SKU, names, thumbnail, Price, tea_variant, tea_size } = product;
+    const { SKU } = product;
 
     const inCartProduct = window.cart[SKU];
 
-    const quantity = 1 + (inCartProduct?.quantity || 0),
-      total = Price * quantity,
-      tax = +(Math.round(Number(total) * 9) / 100).toFixed(2),
-      price = +(total + tax).toFixed(2);
+    const quantity = 1 + (inCartProduct?.quantity || 0);
 
-    const productData = {
-      sku: SKU,
-      names,
-      image: thumbnail,
-      quantity,
-      price,
-      tax,
-      tea_variant,
-      tea_size,
-    };
-
-    window.cart[SKU] = productData;
+    window.cart[SKU] = { quantity };
 
     window.openCart();
   };

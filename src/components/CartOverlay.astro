@@ -393,22 +393,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     const parentCartProduct = input.closest(".cart-product"),
       productPriceElement = parentCartProduct.querySelector(
         ".cart-overlay-product-price",
-      ),
-      productId = parentCartProduct.id,
-      productData = { ...window.cart[productId] },
-      { price, tax, quantity } = productData,
-      productPrice = Number(price) / Number(quantity),
-      productTax = Number(tax) / Number(quantity),
-      updatedQuantity = Number(input.value);
+      );
 
-    productData.quantity = updatedQuantity;
-    productData.tax = +(updatedQuantity * productTax).toFixed(2);
-    productData.price = +(updatedQuantity * productPrice).toFixed(2);
+    const SKU = parentCartProduct.id,
+      quantity = Number(input.value);
 
-    window.cart[productId] = productData;
+    window.cart[SKU] = { quantity };
 
     productPriceElement.textContent =
-      "€" + Number(productData.price).toFixed(2).replace(".", ",");
+      "€" + window.cart[SKU].price.toFixed(2).replace(".", ",");
   }
 
   tweakAmount(

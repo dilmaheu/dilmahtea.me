@@ -16,7 +16,6 @@ async function processProductData(attributes) {
     SKU,
     rank,
     Title,
-    names,
     Intro_text,
     Stock_amount,
     variant,
@@ -82,14 +81,6 @@ async function processProductData(attributes) {
     throw error;
   }
 
-  const thumbnailUrl =
-    STRAPI_URL + Intro_blob.data.attributes.formats.thumbnail.url;
-
-  const thumbnail = await tryUntilResolve(
-    () => importImage(thumbnailUrl),
-    (message) => message + " " + thumbnailUrl,
-  );
-
   // reduce load on client
   let { In_stock_date, Price } = attributes;
 
@@ -109,7 +100,6 @@ async function processProductData(attributes) {
     SKU,
     rank,
     Title,
-    names: JSON.stringify(names),
     Intro_blob_HTML,
     Intro_text_HTML,
     Stock_amount,
@@ -120,7 +110,6 @@ async function processProductData(attributes) {
     Weight_tea,
     Weight_tea_unit,
     estate_name,
-    thumbnail,
     tea_variant,
     tea_size,
     availableFormatsCount,
