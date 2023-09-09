@@ -34,7 +34,9 @@ const latestProducts = Products.get("all")
   .filter(Boolean)
   .sort((productA, productB) => {
     const dateComparison =
-      new Date(productB.Active_from) - new Date(productA.Active_from);
+      new Date(productB.Active_from).getTime() -
+      new Date(productA.Active_from).getTime();
+
     return dateComparison !== 0
       ? dateComparison
       : (productB.rank || 0) - (productA.rank || 0);
