@@ -1089,7 +1089,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
       window.cart[SKU] = { quantity };
 
-      cartAddingForms.forEach((form: HTMLFormElement) => form.reset());
+      cartAddingForms.forEach((form: HTMLFormElement) => {
+        form.reset();
+
+        const decrementBtn = form.querySelector<HTMLButtonElement>(
+          "button[data-action='decrement']",
+        );
+
+        decrementBtn.disabled = true;
+      });
 
       const tax = Math.round(productPrice * 9) / 100,
         productPriceIncludingTax = productPrice + tax;
