@@ -1106,6 +1106,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
       if (otherAmountInput !== input) {
         otherAmountInput.value = input.value;
+
+        const decrementBtn =
+          otherAmountInput.previousElementSibling as HTMLButtonElement;
+
+        decrementBtn.disabled = input.value === "1";
       }
     });
 
