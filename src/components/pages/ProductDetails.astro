@@ -717,7 +717,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               {page.Price_breakdown_text.split("<")[0]}
               <span class="recoleta text-[clamp(2rem,3vw+0.55rem,2.625rem)] text-primary">
                 {page.Price_breakdown_text.match("<total_spent>") &&
-                  `€${totalSpentAmount.toFixed(2)}`}
+                  `€${totalSpentAmount.toFixed(2).replace(".", ",")}`}
               </span>
               {page.Price_breakdown_text.split(">")[1]}
             </Markdown>
@@ -747,12 +747,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     "text-sm lg:text-base font-medium lg:font-normal",
                   ]}
                 >
-                  {((item.Spent_amount * 100) / totalSpentAmount).toFixed(2)}%
+                  {((item.Spent_amount * 100) / totalSpentAmount)
+                    .toFixed(2)
+                    .replace(".", ",")}
+                  %
                 </div>
 
                 <div class="grid">
                   <div class="recoleta text-primary text-[clamp(1.75rem,2.2vw+0.15rem,2rem)]">
-                    €{item.Spent_amount.toFixed(2)}
+                    €{item.Spent_amount.toFixed(2).replace(".", ",")}
                   </div>
 
                   <div class="text-[clamp(0.875rem,1vw+0.25rem,1.125rem)]">
