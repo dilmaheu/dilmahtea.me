@@ -1,5 +1,6 @@
 ---
 import productsStore from "@store/Products";
+import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const isProduction = !shouldDisplayExperimentals;
@@ -41,7 +42,18 @@ const products = Object.fromEntries(
 );
 ---
 
-<script is:inline define:vars={{ products, isProduction }}>
+<script
+  is:inline
+  define:vars={{
+    products,
+    isProduction,
+    stringifiedGetPriceIncludingTax: getPriceIncludingTax.toString(),
+  }}
+>
+  window.getPriceIncludingTax = new Function(
+    "return " + stringifiedGetPriceIncludingTax,
+  )();
+
   window.replacePlaceholders = (content, data) => {
     const placeholderRegex =
       /<placeholder\s+name=(?:"|&#34;)(\w+)(?:"|&#34;)[^>]*><\/placeholder>/g;
@@ -73,14 +85,16 @@ const products = Object.fromEntries(
       const { Price } = productData,
         { quantity } = inCartProductData;
 
-      const total = Price * quantity,
-        tax = +(Math.round(Number(total) * 9) / 100).toFixed(2),
-        price = +(total + tax).toFixed(2);
+      const [tax, priceIncludingTax] = window.getPriceIncludingTax({
+        Price,
+        quantity,
+        fix: true,
+      });
 
       storedCart[SKU] = {
         quantity: inCartProductData.quantity,
         tax,
-        price,
+        price: priceIncludingTax,
         ...productData,
       };
 
@@ -97,11 +111,12 @@ const products = Object.fromEntries(
         const { Price } = products[SKU],
           { quantity } = cart[SKU];
 
-        const total = Price * quantity,
-          tax = Math.round(Number(total) * 9) / 100,
-          price = total + tax;
+        const [tax, priceIncludingTax] = window.getPriceIncludingTax({
+          Price,
+          quantity,
+        });
 
-        return [subTotal + Number(price), taxSum + Number(tax)];
+        return [subTotal + priceIncludingTax, taxSum + tax];
       },
       [0, 0],
     );

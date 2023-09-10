@@ -3,6 +3,7 @@ import { renderPicture } from "astro-imagetools/api";
 
 import productsStore from "@store/Products";
 import tryUntilResolve from "@utils/tryUntilResolve";
+import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
 
 const { STRAPI_URL } = import.meta.env;
 
@@ -92,9 +93,7 @@ async function processProductData(attributes) {
       day: "numeric",
     });
 
-  const Tax = Math.round(Number(Price) * 9) / 100;
-
-  Price += Tax;
+  const [_, PriceIncludingTax] = getPriceIncludingTax({ Price, quantity: 1 });
 
   return {
     SKU,
@@ -104,8 +103,7 @@ async function processProductData(attributes) {
     Intro_text_HTML,
     Stock_amount,
     In_stock_date,
-    Price,
-    Tax,
+    PriceIncludingTax,
     variant,
     Weight_tea,
     Weight_tea_unit,

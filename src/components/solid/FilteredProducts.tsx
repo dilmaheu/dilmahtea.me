@@ -283,7 +283,8 @@ export default function FilteredProducts({
                   {checkoutRecurData.text_add}
                   <span class="w-1 h-1 bg-primary rounded-full" />
                   <span class="recoleta">
-                    {`€` + product.Price.toFixed(2).replace(".", ",")}
+                    {`€` +
+                      product.PriceIncludingTax.toFixed(2).replace(".", ",")}
                   </span>
                 </button>
               ) : (
@@ -302,7 +303,8 @@ export default function FilteredProducts({
                   {recurData.Product_sold_out_text}
                   <span class="w-1 h-1 bg-white rounded-full" />
                   <span class="recoleta">
-                    {`€` + product.Price.toFixed(2).replace(".", ",")}
+                    {`€` +
+                      product.PriceIncludingTax.toFixed(2).replace(".", ",")}
                   </span>
                 </div>
               )}

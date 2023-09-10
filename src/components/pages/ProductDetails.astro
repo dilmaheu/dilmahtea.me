@@ -13,7 +13,9 @@ import RecurringImages from "@store/RecurringImages";
 
 import renderMarkdown from "@utils/renderMarkdown";
 import localizeCMSImage from "@utils/localizeCMSImage";
+
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
 
 const { green_right_arrow } = RecurringImages;
 
@@ -33,8 +35,10 @@ const {
 } = page;
 
 const { SKU: productSKU, Price } = page,
-  tax = Math.round(Price * 9) / 100,
-  productPriceIncludingTax = Price + tax;
+  [_, productPriceIncludingTax] = getPriceIncludingTax({
+    Price,
+    quantity: 1,
+  });
 
 const infos = page.product_infos.data.map(({ attributes }) => attributes),
   blogs = page.related_blogs?.data?.map(({ attributes }) => attributes),
@@ -1033,6 +1037,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
 <script>
   import tweakAmount from "@utils/client/tweakAmount";
+  import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
 
   type ProductData = Record<string, number | string>;
 
@@ -1099,8 +1104,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         decrementBtn.disabled = true;
       });
 
-      const tax = Math.round(productPrice * 9) / 100,
-        productPriceIncludingTax = productPrice + tax;
+      const [_, productPriceIncludingTax] = getPriceIncludingTax({
+        Price: productPrice,
+        quantity: 1,
+      });
 
       productAmountPriceOutput.textContent = productPriceIncludingTax
         .toFixed(2)
@@ -1123,11 +1130,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     });
 
     const quantity = Number(input.value),
-      total = productPrice * quantity,
-      tax = Math.round(Number(total) * 9) / 100,
-      price = total + tax;
+      [_, priceIncludingTax] = getPriceIncludingTax({
+        Price: productPrice,
+        quantity,
+      });
 
-    productAmountPriceOutput.textContent = price.toFixed(2).replace(".", ",");
+    productAmountPriceOutput.textContent = priceIncludingTax
+      .toFixed(2)
+      .replace(".", ",");
   }
 
   tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
