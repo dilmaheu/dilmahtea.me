@@ -1,0 +1,38 @@
+fragment SearchResultAttributes on SearchResult {
+  locale
+  updatedAt
+  Title
+  Breadcrumb {
+    Steps {
+      Name
+      Link
+    }
+  }
+  Meta {
+    HTML_Title
+    Meta_description
+    noindex
+    nofollow
+    URL_slug
+    Canonical_link
+  }
+}
+
+query {
+  searchResult {
+    data {
+      id
+      attributes {
+        ...SearchResultAttributes
+        localizations {
+          data {
+            id
+            attributes {
+              ...SearchResultAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}
