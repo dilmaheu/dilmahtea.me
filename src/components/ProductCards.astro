@@ -7,6 +7,8 @@ import RecurringImages from "@store/RecurringImages";
 
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
+import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
+
 const { white_love } = RecurringImages;
 
 const { products, locale } = Astro.props,
@@ -51,6 +53,11 @@ const recurData = CMS.get("recurringElement", locale),
       } = product;
 
       const availableFormatsCount = availableFormats.length;
+
+      const [_, productPriceIncludingTax] = getPriceIncludingTax({
+        Price,
+        quantity: 1,
+      });
 
       return (
         <div
@@ -256,7 +263,7 @@ const recurData = CMS.get("recurringElement", locale),
                 {checkoutRecurData.text_add}
                 <span class="w-1 h-1 bg-primary rounded-full" />
                 <span class="recoleta">
-                  {`€` + Price.toFixed(2).replace(".", ",")}
+                  {`€` + productPriceIncludingTax.toFixed(2).replace(".", ",")}
                 </span>
               </button>
             ) : (
@@ -269,7 +276,7 @@ const recurData = CMS.get("recurringElement", locale),
                 {recurData.Product_sold_out_text}
                 <span class="w-1 h-1 bg-white rounded-full" />
                 <span class="recoleta">
-                  {`€ ` + Price.toFixed(2).replace(".", ",")}
+                  {`€ ` + productPriceIncludingTax.toFixed(2).replace(".", ",")}
                 </span>
               </div>
             )}

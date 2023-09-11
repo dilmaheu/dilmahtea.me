@@ -28,7 +28,7 @@ pages.forEach(({ attributes }) => {
   ].forEach((attributes) => {
     const locale = attributes.locale.substring(0, 2),
       Title = attributes.Title || attributes.Estate_name,
-      Intro_text = attributes.Intro_text.slice(0, 60).replace(
+      Intro_text = attributes?.Intro_text?.slice(0, 60).replace(
         /(<([^>]+)>)/gi,
         "",
       ),

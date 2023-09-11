@@ -1,3 +1,5 @@
+import type { GetPriceIncludingTax } from "@utils/shared/getPriceIncludingTax";
+
 export {};
 
 type Regions = {
@@ -64,6 +66,8 @@ declare global {
     disableScrolling: () => void; // defined in Navbar.astro
 
     baseProductTitle: string; // defined in ProductDetails.astro
+
+    getPriceIncludingTax: GetPriceIncludingTax; // defined in getPriceIncludingTax.ts; declared in CartStore.astro
 
     cart: Cart; // defined in CartStore.astro
     cookies: Cookies; // defined in Cookies.astro
