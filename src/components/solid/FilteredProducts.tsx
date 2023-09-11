@@ -73,27 +73,13 @@ export default function FilteredProducts({
   });
 
   const addProductToCart = (product) => {
-    const { SKU, names, thumbnail, Price, Tax, tea_variant, tea_size } =
-      product;
+    const { SKU } = product;
 
     const inCartProduct = window.cart[SKU];
 
-    const quantity = 1 + (inCartProduct?.quantity || 0),
-      price = +(Price * quantity).toFixed(2),
-      tax = +(Tax * quantity).toFixed(2);
+    const quantity = 1 + (inCartProduct?.quantity || 0);
 
-    const productData = {
-      sku: SKU,
-      names,
-      image: thumbnail,
-      quantity,
-      price,
-      tax,
-      tea_variant,
-      tea_size,
-    };
-
-    window.cart[SKU] = productData;
+    window.cart[SKU] = { quantity };
 
     window.openCart();
   };
@@ -297,7 +283,8 @@ export default function FilteredProducts({
                   {checkoutRecurData.text_add}
                   <span class="w-1 h-1 bg-primary rounded-full" />
                   <span class="recoleta">
-                    {`€` + product.Price.toFixed(2).replace(".", ",")}
+                    {`€` +
+                      product.PriceIncludingTax.toFixed(2).replace(".", ",")}
                   </span>
                 </button>
               ) : (
@@ -316,7 +303,8 @@ export default function FilteredProducts({
                   {recurData.Product_sold_out_text}
                   <span class="w-1 h-1 bg-white rounded-full" />
                   <span class="recoleta">
-                    {`€` + product.Price.toFixed(2).replace(".", ",")}
+                    {`€` +
+                      product.PriceIncludingTax.toFixed(2).replace(".", ",")}
                   </span>
                 </div>
               )}

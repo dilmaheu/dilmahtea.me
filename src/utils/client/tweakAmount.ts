@@ -36,7 +36,7 @@ export default function (amountTweakBtns, amountInputs, tweakAmountCallback) {
 
       const decrementBtn = input.previousElementSibling as HTMLButtonElement;
 
-      decrementBtn.disabled = input.value === "1" ? true : false;
+      decrementBtn.disabled = input.value === "1";
 
       tweakAmountCallback(input);
     });

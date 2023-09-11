@@ -175,7 +175,7 @@ const { page } = Astro.props,
             const productData = window.cart[id],
               names = JSON.parse(productData.names),
               name = names[window.preferredLocale] || names["en"],
-              price = Number(productData.price).toFixed(2).replace(".", ",");
+              price = productData.price.toFixed(2).replace(".", ",");
 
             return window.replacePlaceholders(content, {
               ...productData,

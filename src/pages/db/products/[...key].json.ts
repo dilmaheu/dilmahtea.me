@@ -3,6 +3,7 @@ import { renderPicture } from "astro-imagetools/api";
 
 import productsStore from "@store/Products";
 import tryUntilResolve from "@utils/tryUntilResolve";
+import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
 
 const { STRAPI_URL } = import.meta.env;
 
@@ -16,7 +17,6 @@ async function processProductData(attributes) {
     SKU,
     rank,
     Title,
-    names,
     Intro_text,
     Stock_amount,
     variant,
@@ -82,14 +82,6 @@ async function processProductData(attributes) {
     throw error;
   }
 
-  const thumbnailUrl =
-    STRAPI_URL + Intro_blob.data.attributes.formats.thumbnail.url;
-
-  const thumbnail = await tryUntilResolve(
-    () => importImage(thumbnailUrl),
-    (message) => message + " " + thumbnailUrl,
-  );
-
   // reduce load on client
   let { In_stock_date, Price } = attributes;
 
@@ -101,26 +93,21 @@ async function processProductData(attributes) {
       day: "numeric",
     });
 
-  const Tax = Math.round(Number(Price) * 9) / 100;
-
-  Price += Tax;
+  const [_, PriceIncludingTax] = getPriceIncludingTax({ Price, quantity: 1 });
 
   return {
     SKU,
     rank,
     Title,
-    names: JSON.stringify(names),
     Intro_blob_HTML,
     Intro_text_HTML,
     Stock_amount,
     In_stock_date,
-    Price,
-    Tax,
+    PriceIncludingTax,
     variant,
     Weight_tea,
     Weight_tea_unit,
     estate_name,
-    thumbnail,
     tea_variant,
     tea_size,
     availableFormatsCount,
