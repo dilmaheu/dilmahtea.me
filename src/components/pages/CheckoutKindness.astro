@@ -205,15 +205,15 @@ console.log(checkoutSuccessLink);
     fetch(
       `https://${
         window.shouldDisplayExperimentals ? "dev." : ""
-      }baserow.scripts.dilmahtea.me`,
+      }baserow.scripts.dilmahtea.me/order/cup-of-kindness`,
       {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          origin: location.origin,
           paymentID: window.paymentID,
-          payment_type: "ecommerce",
           "Cup of Kindness": kindness_cause,
         }),
       },
