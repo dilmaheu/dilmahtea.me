@@ -4,6 +4,8 @@ import { Picture } from "astro-imagetools/components";
 
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
+import localizeCMSImage from "@utils/localizeCMSImage";
+
 const { page, ariaLabelRecurData } = Astro.props,
   { STRAPI_URL } = import.meta.env;
 ---
@@ -375,11 +377,13 @@ const { page, ariaLabelRecurData } = Astro.props,
                   <div class={`impact-chart-${index + 1}-content`}>
                     <div class="link-section">
                       <div class="relative">
-                        <img
-                          class="impact-chart-img mx-auto mb-[20px] md:mb-0"
-                          src={STRAPI_URL + blob?.attributes.url}
-                          alt={blob?.attributes.alternativeText}
-                        />
+                        {async () => (
+                          <img
+                            class="impact-chart-img mx-auto mb-[20px] md:mb-0"
+                            src={await localizeCMSImage(blob.attributes.url)}
+                            alt={blob?.attributes.alternativeText}
+                          />
+                        )}
 
                         {/* Lines between text */}
                         {index !== totalPost - 1 &&

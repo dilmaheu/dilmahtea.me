@@ -1,8 +1,11 @@
 ---
+import Markdown from "@astrojs/markdown-component";
+
 import CMS from "@store/CMS";
 
-import Markdown from "@astrojs/markdown-component";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+
+import localizeCMSImage from "@utils/localizeCMSImage";
 
 const { locale, heading, impacts } = Astro.props,
   { STRAPI_URL } = import.meta.env;
@@ -81,11 +84,13 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
                 class="grid justify-items-center"
               >
                 <div class="h-[43px] mb-2.5">
-                  <img
-                    class="w-full h-full"
-                    src={STRAPI_URL + icon?.attributes.url}
-                    alt=""
-                  />
+                  {async () => (
+                    <img
+                      class="w-full h-full"
+                      alt=""
+                      src={await localizeCMSImage(icon.attributes.url)}
+                    />
+                  )}
                 </div>
 
                 <div class="kindness-impacts-num recoleta">
