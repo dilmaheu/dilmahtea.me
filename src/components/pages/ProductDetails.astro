@@ -296,13 +296,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     ]}
                     style="clip-path: url(#product-variant-curve);"
                   >
-                    {variantIcon?.src && (
-                      <img
-                        src={STRAPI_URL + variantIcon.src}
-                        alt={variantIcon.alt}
-                        class="w-7 h-7"
-                      />
-                    )}
+                    {variantIcon?.src &&
+                      (async () => (
+                        <img
+                          src={await localizeCMSImage(variantIcon.src)}
+                          alt={variantIcon.alt}
+                          class="w-7 h-7"
+                        />
+                      ))}
 
                     <span class="text-sm font-bold leading-[110%]">
                       {variant}

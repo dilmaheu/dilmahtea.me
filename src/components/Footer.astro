@@ -1,7 +1,11 @@
 ---
-import RecurringImages from "@store/RecurringImages";
 import { Picture } from "astro-imagetools/components";
+
+import RecurringImages from "@store/RecurringImages";
+
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+
+import localizeCMSImage from "@utils/localizeCMSImage";
 
 const { logo, footer_background, footer_background_sm } = RecurringImages;
 
@@ -134,11 +138,15 @@ const { footerText, recurData, type } = Astro.props as Props,
                         >
                           {icon && (
                             <div class="footer-icon-container h-full">
-                              <img
-                                class="w-full h-full"
-                                src={STRAPI_URL + icon?.attributes.url}
-                                alt=""
-                              />
+                              {async () => (
+                                <img
+                                  class="w-full h-full"
+                                  alt=""
+                                  src={await localizeCMSImage(
+                                    icon.attributes.url,
+                                  )}
+                                />
+                              )}
                             </div>
                           )}
 
