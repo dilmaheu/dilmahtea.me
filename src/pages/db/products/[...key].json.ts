@@ -28,6 +28,11 @@ async function processProductData(attributes) {
     sub_category,
     productVariant: tea_variant,
     productSize: tea_size,
+    size: {
+      data: {
+        attributes: { Title: productLocalizedSize },
+      },
+    },
     availableFormats,
     Meta: { URL_slug },
   } = attributes;
@@ -110,6 +115,7 @@ async function processProductData(attributes) {
     estate_name,
     tea_variant,
     tea_size,
+    productLocalizedSize,
     availableFormatsCount,
     availableFormatThumbnails,
     category: category.data?.attributes.Title,
