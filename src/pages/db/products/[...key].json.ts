@@ -25,9 +25,15 @@ async function processProductData(attributes) {
     estate_name,
     Intro_blob,
     category,
+    category_tea_range,
     sub_category,
     productVariant: tea_variant,
     productSize: tea_size,
+    size: {
+      data: {
+        attributes: { Title: productLocalizedSize },
+      },
+    },
     availableFormats,
     Meta: { URL_slug },
   } = attributes;
@@ -110,9 +116,11 @@ async function processProductData(attributes) {
     estate_name,
     tea_variant,
     tea_size,
+    productLocalizedSize,
     availableFormatsCount,
     availableFormatThumbnails,
     category: category.data?.attributes.Title,
+    categoryTeaRange: category_tea_range.data?.attributes.Title,
     subCategory: sub_category.data?.attributes.Title,
     Meta: { URL_slug: "/" + locale.substring(0, 2) + "/" + URL_slug + "/" },
   };

@@ -6,13 +6,15 @@ const catalog = CMS.get("catalog").data.attributes,
   productCategories = CMS.get("productCategories");
 
 const filterUnavailableTypes = ({
-  attributes: { products, localizations },
+  attributes: { products, products_tea_range, localizations },
 }) => {
   localizations.data = localizations.data.filter(
-    (localization) => localization.attributes.products.data.length > 0,
+    (localization) =>
+      localization.attributes.products.data.length > 0 ||
+      localization.attributes.products_tea_range?.data.length > 0,
   );
 
-  return products.data.length > 0;
+  return products.data.length > 0 || products_tea_range?.data.length > 0;
 };
 
 productSizes.data = productSizes.data.filter(filterUnavailableTypes);
