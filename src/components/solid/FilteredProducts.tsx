@@ -58,8 +58,9 @@ export default function FilteredProducts({
           (attributes) =>
             (!category && !subCategory) ||
             (category &&
-              category === attributes.category &&
-              !attributes.subCategory) ||
+              (category === attributes.categoryTeaRange ||
+                (category === attributes.category &&
+                  !attributes.subCategory))) ||
             (subCategory && subCategory === attributes.subCategory),
         )
         .sort((productA, productB) =>
