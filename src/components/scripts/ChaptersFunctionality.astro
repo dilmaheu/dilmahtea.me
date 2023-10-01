@@ -3,18 +3,18 @@
     const query = document.querySelector.bind(document),
       queryAll = document.querySelectorAll.bind(document);
 
-    const navbar = query("#navigation"),
+    const header = query("#navigation"),
       postDetails = query("#post-details"),
       chapters = [...queryAll("#post-details .chapter")],
       [firstChapter] = chapters,
-      stickyHeader = query("#sticky-header"),
-      stickyHeaderHeading = query("#sticky-header-heading"),
+      stickyChapters = query("#sticky-chapters"),
+      stickyChaptersHeading = query("#sticky-chapters-heading"),
       stickyDropdownToggle = query("#sticky-dropdown-toggle"),
-      headingLinks = [...queryAll(".chapter-link")],
-      stickyHeadingLinks = [...queryAll(".chapter-link-sm")],
-      headingLinksContainer = query("#heading-links"),
-      stickyHeadingLinksContainer = query("#sticky-heading-links"),
-      headingIDs = headingLinks.map((link) => link.hash.slice(1)),
+      chapterLinks = [...queryAll(".chapter-link")],
+      stickyChapterLinks = [...queryAll(".chapter-link-sm")],
+      chapterLinksContainer = query("#chapter-links"),
+      stickyChapterLinksContainer = query("#sticky-chapter-links"),
+      headingIDs = chapterLinks.map((link) => link.hash.slice(1)),
       [firstHeadingID] = headingIDs,
       readingProgressBar = query("#reading-progress-bar");
 
@@ -55,29 +55,29 @@
         activeChapterIndex = chapters.indexOf(activeChapter),
         activeChapterHeading = activeChapter.querySelector("h2");
 
-      [...headingLinks, ...stickyHeadingLinks].forEach((link) =>
+      [...chapterLinks, ...stickyChapterLinks].forEach((link) =>
         link.classList.remove("active"),
       );
 
       // highlight active chapter link
-      headingLinks[activeChapterIndex].classList.add("active");
-      stickyHeadingLinks[activeChapterIndex].classList.add("active");
+      chapterLinks[activeChapterIndex].classList.add("active");
+      stickyChapterLinks[activeChapterIndex].classList.add("active");
 
-      const { bottom: navbarBottom } = navbar.getBoundingClientRect(),
-        displayStickyHeader =
+      const { bottom: headerBottom } = header.getBoundingClientRect(),
+        displayStickyChapters =
           window.innerWidth < 768 &&
-          firstChapter.getBoundingClientRect().y - navbarBottom < 0;
+          firstChapter.getBoundingClientRect().y - headerBottom < 0;
 
-      if (displayStickyHeader) {
-        stickyHeader.style.top = navbarBottom + "px";
+      if (displayStickyChapters) {
+        stickyChapters.style.top = headerBottom + "px";
 
-        stickyHeaderHeading.textContent = activeChapterHeading.textContent;
+        stickyChaptersHeading.textContent = activeChapterHeading.textContent;
 
         const containerRect = postDetails.getBoundingClientRect(),
           readPixels = Math.abs(containerRect.y - window.innerHeight),
           detailedBlogHeight = containerRect.height,
           minProgress =
-            ((window.innerHeight - navbarBottom) / detailedBlogHeight) * 100,
+            ((window.innerHeight - headerBottom) / detailedBlogHeight) * 100,
           progress = (readPixels / detailedBlogHeight) * 100,
           correctedProgress =
             ((progress - minProgress) / (100 - minProgress)) * 100;
@@ -86,22 +86,22 @@
         readingProgressBar.style.width = `${correctedProgress}%`;
       }
 
-      // display sticky header
-      stickyHeader.classList[displayStickyHeader ? "remove" : "add"](
+      // display sticky chapters
+      stickyChapters.classList[displayStickyChapters ? "remove" : "add"](
         "invisible",
       );
 
-      const [visibleHeadingLinks, visibleLinksContainer] =
-        window.innerWidth >= 768 && isChapterOnScreen(headingLinksContainer)
-          ? [headingLinks, headingLinksContainer]
-          : !stickyHeadingLinksContainer.parentElement.classList.contains(
+      const [visibleChapterLinks, visibleLinksContainer] =
+        window.innerWidth >= 768 && isChapterOnScreen(chapterLinksContainer)
+          ? [chapterLinks, chapterLinksContainer]
+          : !stickyChapterLinksContainer.parentElement.classList.contains(
               "hidden",
             )
-          ? [stickyHeadingLinks, stickyHeadingLinksContainer]
+          ? [stickyChapterLinks, stickyChapterLinksContainer]
           : [];
 
       if (visibleLinksContainer) {
-        const activeHeadingLink = visibleHeadingLinks[activeChapterIndex];
+        const activeHeadingLink = visibleChapterLinks[activeChapterIndex];
 
         visibleLinksContainer.style.height = "auto";
 
@@ -133,7 +133,7 @@
     window.addEventListener("resize", styleActiveChapter);
 
     stickyDropdownToggle.addEventListener("click", () => {
-      stickyHeadingLinksContainer.parentElement.classList.toggle("hidden");
+      stickyChapterLinksContainer.parentElement.classList.toggle("hidden");
     });
 
     // collapse dropdown when an item is clicked
@@ -150,14 +150,15 @@
           if (window.innerWidth < 640) {
             const isFirstHeadingLink = firstHeadingID === headingID;
 
-            stickyHeadingLinksContainer.parentElement.classList.add("hidden");
+            stickyChapterLinksContainer.parentElement.classList.add("hidden");
 
-            const navbarHeight = navbar.getBoundingClientRect().height,
-              stickyHeaderHeight = stickyHeader.getBoundingClientRect().height;
+            const headerHeight = header.getBoundingClientRect().height,
+              stickyChaptersHeight =
+                stickyChapters.getBoundingClientRect().height;
 
             blockedAreaBottom =
-              navbarHeight +
-              (isFirstHeadingLink ? 10 : stickyHeaderHeight - 10);
+              headerHeight +
+              (isFirstHeadingLink ? 10 : stickyChaptersHeight - 10);
           }
 
           const { offsetTop: headingOffsetTop } = heading;
