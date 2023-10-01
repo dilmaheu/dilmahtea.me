@@ -147,22 +147,22 @@
           event.preventDefault();
 
           const headingID = link.hash.slice(1),
-            heading = document.getElementById(headingID);
+            heading = document.getElementById(headingID),
+            headerHeight = header.getBoundingClientRect().height;
 
-          let blockedAreaBottom = 0;
+          let blockedAreaBottom = headerHeight;
 
           if (window.innerWidth < 768) {
             const isFirstHeadingLink = firstHeadingID === headingID;
 
             stickyChapterLinksContainer.parentElement.classList.add("hidden");
 
-            const headerHeight = header.getBoundingClientRect().height,
-              stickyChaptersHeight =
-                stickyChapters.getBoundingClientRect().height;
+            const stickyChaptersHeight =
+              stickyChapters.getBoundingClientRect().height;
 
-            blockedAreaBottom =
-              headerHeight +
-              (isFirstHeadingLink ? 10 : stickyChaptersHeight - 10);
+            blockedAreaBottom += isFirstHeadingLink
+              ? 10
+              : stickyChaptersHeight - 10;
           }
 
           const { offsetTop: headingOffsetTop } = heading;
