@@ -37,9 +37,7 @@
       return false;
     };
 
-    const getActiveChapter = () => {
-      const visibleChapters = chapters.filter(isChapterOnScreen);
-
+    const getActiveChapter = (visibleChapters) => {
       const activeChapter =
         visibleChapters.find((chapterElement) =>
           isChapterOnScreen(chapterElement.firstElementChild),
@@ -51,8 +49,9 @@
     };
 
     const styleActiveChapter = () => {
-      // mark first chapter on screen as active and fallback to the first chapter
-      const activeChapter = getActiveChapter(),
+      const visibleChapters = chapters.filter(isChapterOnScreen),
+        // mark first chapter on screen as active and fallback to the first chapter
+        activeChapter = getActiveChapter(visibleChapters),
         activeChapterIndex = chapters.indexOf(activeChapter),
         activeChapterHeading = activeChapter.querySelector("h2");
 
@@ -64,10 +63,13 @@
       chapterLinks[activeChapterIndex].classList.add("active");
       stickyChapterLinks[activeChapterIndex].classList.add("active");
 
-      const { bottom: headerBottom } = header.getBoundingClientRect(),
-        displayStickyChapters =
-          window.innerWidth < 768 &&
-          firstChapter.getBoundingClientRect().y - headerBottom < 0;
+      const containerRect = postDetails.getBoundingClientRect(),
+        { bottom: headerBottom } = header.getBoundingClientRect();
+
+      const displayStickyChapters =
+        window.innerWidth < 768 &&
+        firstChapter.getBoundingClientRect().y - headerBottom < 0 &&
+        visibleChapters.length > 0;
 
       if (displayStickyChapters) {
         stickyChapters.style.top =
@@ -75,8 +77,7 @@
 
         stickyChaptersHeading.textContent = activeChapterHeading.textContent;
 
-        const containerRect = postDetails.getBoundingClientRect(),
-          readPixels = Math.abs(containerRect.y - window.innerHeight),
+        const readPixels = Math.abs(containerRect.y - window.innerHeight),
           detailedBlogHeight = containerRect.height,
           minProgress =
             ((window.innerHeight - headerBottom) / detailedBlogHeight) * 100,
