@@ -2,8 +2,8 @@
 import { Icon } from "astro-icon";
 import { Schema } from "astro-seo-schema";
 import { Picture } from "astro-imagetools/components";
-import Markdown from "@astrojs/markdown-component";
 
+import Markdown from "@components/Markdown.astro";
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
@@ -1153,10 +1153,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     "@type": "Product",
     name: page.Title,
     image: await importImage(STRAPI_URL + page.Intro_blob?.data.attributes.url),
-    description: `${(await renderMarkdown(page.Intro_text)).replace(
+    description: `${renderMarkdown(page.Intro_text).replace(
       /(<([^>]+)>)/gi,
       "",
-    )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
+    )} ${renderMarkdown(page.Block_text).replace(/(<([^>]+)>)/gi, "")}`,
     sku: page.SKU,
     gtin: page.GTIN_Barcode,
     brand: {

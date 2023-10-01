@@ -78,10 +78,8 @@ export function getStaticPaths() {
   return staticPaths;
 }
 
-export function get({ params: { locale } }) {
+export function GET({ params: { locale } }) {
   const localizedIndex = searchIndex[locale];
 
-  return {
-    body: JSON.stringify(localizedIndex),
-  };
+  return new Response(JSON.stringify(localizedIndex));
 }
