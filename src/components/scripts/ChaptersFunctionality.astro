@@ -70,7 +70,8 @@
           firstChapter.getBoundingClientRect().y - headerBottom < 0;
 
       if (displayStickyChapters) {
-        stickyChapters.style.top = headerBottom + "px";
+        stickyChapters.style.top =
+          headerBottom - (window.innerWidth >= 640 ? 10 : 0) + "px";
 
         stickyChaptersHeading.textContent = activeChapterHeading.textContent;
 
@@ -150,7 +151,7 @@
 
           let blockedAreaBottom = 0;
 
-          if (window.innerWidth < 640) {
+          if (window.innerWidth < 768) {
             const isFirstHeadingLink = firstHeadingID === headingID;
 
             stickyChapterLinksContainer.parentElement.classList.add("hidden");
