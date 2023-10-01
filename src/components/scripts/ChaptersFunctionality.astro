@@ -4,6 +4,7 @@
       queryAll = document.querySelectorAll.bind(document);
 
     const header = query("#navigation"),
+      headings = query("#headings"),
       postDetails = query("#post-details"),
       chapters = [...queryAll("#post-details .chapter")],
       [firstChapter] = chapters,
@@ -84,6 +85,8 @@
 
         // update progress meter
         readingProgressBar.style.width = `${correctedProgress}%`;
+      } else if (window.innerWidth >= 768) {
+        headings.style.top = headerBottom + 25 + "px";
       }
 
       // display sticky chapters
