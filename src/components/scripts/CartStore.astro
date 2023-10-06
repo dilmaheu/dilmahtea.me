@@ -18,9 +18,18 @@ const products = Object.fromEntries(
       const names = JSON.stringify(
         Object.fromEntries(
           [{ attributes }, ...attributes.localizations.data].map(
-            ({ attributes: { locale, Title } }) => [
+            ({
+              attributes: { locale, Title, category, category_tea_range, size },
+            }) => [
               locale.substring(0, 2),
-              Title,
+              [
+                Title,
+                category_tea_range?.data?.attributes?.Title,
+                category?.data?.attributes?.Title,
+                size?.data?.attributes?.Title,
+              ]
+                .filter(Boolean)
+                .join(" | "),
             ],
           ),
         ),

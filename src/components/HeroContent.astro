@@ -139,10 +139,23 @@ const recurData = CMS.get("recurringElement", locale),
 
         {
           page.Weight_tea && (
-            <div class="mt-[15px]">
+            <div class="flex flex-wrap items-center gap-[5px] md:gap-2 mt-[15px]">
               <div class="text-sm md:text-base font-medium">
                 {page.Weight_tea + page.Weight_tea_unit}
               </div>
+
+              {page.category_tea_range?.data && (
+                <Fragment>
+                  <div class="w-1.5 h-1.5 bg-secondary rounded-full" />
+
+                  <a
+                    href={page.category_tea_range.data?.attributes.Meta.URL_slug}
+                    class="link-text-white text-sm md:text-base font-medium"
+                  >
+                    {page.category_tea_range.data?.attributes.Title}
+                  </a>
+                </Fragment>
+              )}
             </div>
           )
         }
