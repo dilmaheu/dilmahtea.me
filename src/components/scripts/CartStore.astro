@@ -194,9 +194,10 @@ const products = Object.fromEntries(
       const { quantity } = productData,
         { Price, image, names, tea_variant, tea_size } = products[productId];
 
-      const total = Price * quantity,
-        tax = Math.round(Number(total) * 9) / 100,
-        price = total + tax;
+      const [tax, price] = window.getPriceIncludingTax({
+        Price,
+        quantity,
+      });
 
       productData = {
         sku: productId,
