@@ -91,8 +91,6 @@ const { data: validationDataset } = await fetch(STRAPI_GRAPHQL_ENDPOINT, {
   body: JSON.stringify({ query }),
 }).then((response) => response.json());
 
-export function get() {
-  return {
-    body: JSON.stringify(validationDataset),
-  };
+export function GET() {
+  return new Response(JSON.stringify(validationDataset));
 }

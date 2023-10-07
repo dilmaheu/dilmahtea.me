@@ -1,16 +1,7 @@
-import {
-  MarkdownRenderingOptions,
-  renderMarkdown as astroMarkdownRemarkRenderMarkdown,
-} from "@astrojs/markdown-remark";
+import { marked } from "marked";
 
-export default async function renderMarkdown(
-  markdown: string,
-  opts?: MarkdownRenderingOptions,
-): Promise<string> {
-  const { code } = await astroMarkdownRemarkRenderMarkdown(
-    markdown,
-    opts ?? {},
-  );
+export default function renderMarkdown(markdown: string): string {
+  const html = marked(markdown);
 
-  return code;
+  return html;
 }

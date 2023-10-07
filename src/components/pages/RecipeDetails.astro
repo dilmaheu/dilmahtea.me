@@ -1,14 +1,14 @@
 ---
 import { Schema } from "astro-seo-schema";
-import Markdown from "@astrojs/markdown-component";
 import { Picture } from "astro-imagetools/components";
 
-import renderMarkdown from "@utils/renderMarkdown";
+import Markdown from "@components/Markdown.astro";
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import RecipesInfoSection from "@components/RecipesInfoSection.astro";
 
+import renderMarkdown from "@utils/renderMarkdown";
 import RecurringImages from "@store/RecurringImages";
 
 const {
@@ -873,10 +873,10 @@ const nutrition: Nutrition = {
     dateCreated: page.createdAt,
     datePublished: page.publishedAt,
     dateModified: page.updatedAt,
-    description: `${(await renderMarkdown(page.Intro_text)).replace(
+    description: `${renderMarkdown(page.Intro_text).replace(
       /(<([^>]+)>)/gi,
       "",
-    )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
+    )} ${renderMarkdown(page.Block_text).replace(/(<([^>]+)>)/gi, "")}`,
     nutrition,
     prepTime: `PT${preparationTimeStringSm.toUpperCase().replace(/\s/g, "")}`,
     cookTime:

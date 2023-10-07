@@ -166,12 +166,10 @@ export function getStaticPaths() {
   });
 }
 
-export function get({ params: { key } }) {
+export function GET({ params: { key } }) {
   key = key.replace(/\//g, " | ");
 
   const products = processedProducts[key];
 
-  return {
-    body: JSON.stringify(products),
-  };
+  return new Response(JSON.stringify(products));
 }
