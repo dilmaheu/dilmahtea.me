@@ -34,9 +34,10 @@ const {
   Stock_amount: stockAmount,
 } = page;
 
-const { SKU: productSKU, Price } = page,
+const { SKU: productSKU, Price, VatPercentage } = page,
   [_, productPriceIncludingTax] = getPriceIncludingTax({
     Price,
+    VatPercentage,
     quantity: 1,
   });
 
@@ -258,7 +259,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     ]}
   >
     <input type="hidden" name="SKU" value={productSKU} />
-    <input type="hidden" name="price" value={Price} />
 
     <div class="flex flex-wrap gap-[15px] mt-[15px]">
       <div
@@ -492,7 +492,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     class="cart-adding-form-sm flex flex-wrap justify-between gap-6 mt-8 w-full"
   >
     <input type="hidden" name="SKU" value={productSKU} />
-    <input type="hidden" name="price" value={Price} />
 
     {
       stockAmount > 0 && (
@@ -640,7 +639,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         ]}
       >
         <input type="hidden" name="SKU" value={productSKU} />
-        <input type="hidden" name="price" value={Price} />
 
         <div class="wrapper flex items-center gap-4 justify-between">
           <div class="w-fit flex items-center text-white p-1 bg-primary rounded-full">
@@ -1021,7 +1019,18 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   }
 </PostDetailsLayout>
 
-<script define:vars={{ baseProductTitle, productSize, productVariant }}>
+<script
+  define:vars={{
+    baseProductTitle,
+    Price,
+    VatPercentage,
+    productSize,
+    productVariant,
+  }}
+>
+  window.productPrice = Price;
+  window.productVatPercentage = VatPercentage;
+
   const preferredProductsVariants = JSON.parse(
     localStorage.getItem("preferredProductsVariants") || "{}",
   );
@@ -1055,8 +1064,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     ),
     productAmountPriceOutput = query(".product-amount-price"),
     productAmountInputs = queryAll(".product-amount-input"),
-    productAmountTweakBtns = queryAll(".product-amount-tweak-btn"),
-    productPrice = Number(query("input[name='price']")?.value);
+    productAmountTweakBtns = queryAll(".product-amount-tweak-btn");
 
   accordions.forEach((accordion) => {
     accordion.addEventListener("click", () => {
@@ -1107,7 +1115,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       });
 
       const [_, productPriceIncludingTax] = getPriceIncludingTax({
-        Price: productPrice,
+        Price: window.productPrice,
+        VatPercentage: window.productVatPercentage,
         quantity: 1,
       });
 
@@ -1133,7 +1142,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
     const quantity = Number(input.value),
       [_, priceIncludingTax] = getPriceIncludingTax({
-        Price: productPrice,
+        Price: window.productPrice,
+        VatPercentage: window.productVatPercentage,
         quantity,
       });
 

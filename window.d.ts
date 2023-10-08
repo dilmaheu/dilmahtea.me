@@ -65,6 +65,9 @@ declare global {
     enableScrolling: () => void; // defined in Navbar.astro
     disableScrolling: () => void; // defined in Navbar.astro
 
+    productPrice: number; // defined in ProductDetails.astro
+    productVatPercentage: number; // defined in ProductDetails.astro
+
     getPriceIncludingTax: GetPriceIncludingTax; // defined in getPriceIncludingTax.ts; declared in CartStore.astro
 
     cart: Cart; // defined in CartStore.astro

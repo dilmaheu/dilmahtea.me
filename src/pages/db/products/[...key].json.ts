@@ -18,6 +18,7 @@ async function processProductData(attributes) {
     rank,
     Title,
     Intro_text,
+    VatPercentage,
     Stock_amount,
     variant,
     Weight_tea,
@@ -99,7 +100,11 @@ async function processProductData(attributes) {
       day: "numeric",
     });
 
-  const [_, PriceIncludingTax] = getPriceIncludingTax({ Price, quantity: 1 });
+  const [_, PriceIncludingTax] = getPriceIncludingTax({
+    Price,
+    VatPercentage,
+    quantity: 1,
+  });
 
   return {
     SKU,
