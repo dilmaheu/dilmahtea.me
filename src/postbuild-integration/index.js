@@ -34,6 +34,10 @@ const postbuildIntegration = {
     "astro:build:done": async () => {
       const start = performance.now();
 
+      const { simplifyImageFilenames } = await import(
+        "./tasks/simplifyImageFilenames.js"
+      );
+
       const htmlFilePaths = await globby([
           "./dist/**/*.html",
           "!./dist/**/404/index.html",
@@ -49,10 +53,6 @@ const postbuildIntegration = {
           removeAstroIconAttributes(document);
           addScriptsHashes(document, CSPRecord);
           addSitemapURLs(path, document, sitemap, htmlFilePaths);
-
-          const { simplifyImageFilenames } = await import(
-            "./tasks/simplifyImageFilenames.js"
-          );
 
           const stringifiedDocument = simplifyImageFilenames(document);
 

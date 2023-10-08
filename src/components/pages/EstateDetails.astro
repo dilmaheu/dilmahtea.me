@@ -1,7 +1,7 @@
 ---
 import { Schema } from "astro-seo-schema";
-import Markdown from "@astrojs/markdown-component";
 
+import Markdown from "@components/Markdown.astro";
 import renderMarkdown from "@utils/renderMarkdown";
 import Chapterize from "@components/Chapterize.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
@@ -72,10 +72,10 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
     "@type": "LocalBusiness",
     image: await importImage(STRAPI_URL + page.Intro_blob?.data.attributes.url),
     name: page.Estate_name,
-    description: `${(await renderMarkdown(page.Intro_text)).replace(
+    description: `${renderMarkdown(page.Intro_text).replace(
       /(<([^>]+)>)/gi,
       "",
-    )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
+    )} ${renderMarkdown(page.Block_text).replace(/(<([^>]+)>)/gi, "")}`,
     address: {
       "@type": "PostalAddress",
       streetAddress: optional_data?.Street_address,
