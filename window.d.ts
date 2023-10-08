@@ -13,8 +13,8 @@ interface CartProduct {
   quantity: number;
   tax: number;
   sku: string;
-  tea_size: string;
-  tea_variant: string;
+  tea_size: string!;
+  tea_variant: string!;
   [key: string]: string | number;
 }
 

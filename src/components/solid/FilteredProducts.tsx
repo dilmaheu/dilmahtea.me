@@ -163,7 +163,7 @@ export default function FilteredProducts({
                   ? product.productLocalizedSize
                   : product.Weight_tea + product.Weight_tea_unit}
                 <span class="inline-block w-1 h-1 mx-[5px] mb-0.5 rounded-full bg-secondary" />
-                {product.variant?.data?.attributes.Title}
+                {product.variant.data?.attributes.Title}
               </div>
 
               {product.estate_name?.data.length > 0 && (

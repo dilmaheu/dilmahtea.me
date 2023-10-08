@@ -30,14 +30,11 @@ async function processProductData(attributes) {
     sub_category,
     productVariant: tea_variant,
     productSize: tea_size,
-    size: {
-      data: {
-        attributes: { Title: productLocalizedSize },
-      },
-    },
     availableFormats,
     Meta: { URL_slug },
   } = attributes;
+
+  const productLocalizedSize = attributes.size.data?.attributes.Title;
 
   try {
     var Intro_blob_HTML = Object.values(

@@ -261,95 +261,97 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     <input type="hidden" name="SKU" value={productSKU} />
 
     <div class="flex flex-wrap gap-[15px] mt-[15px]">
-      <div
-        class="grid sm:flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full"
-      >
-        {
-          availableVariants.map(({ value, variant, variantIcon, link }) => (
-            <div>
-              <input
-                type="radio"
-                name="tea_variant"
-                id={variant}
-                value={value}
-                data-href={link}
-                checked={value === productVariant}
-                class="peer hidden"
-              />
-
-              <label
-                for={variant}
-                class:list={[
-                  "inline-block p-[3px] text-secondary w-full",
-                  "peer-checked:bg-secondary select-none cursor-pointer",
-                ]}
-                style="clip-path: url(#product-variant-curve);"
-              >
-                <div
-                  class="md:w-[188px] p-1 bg-primary"
-                  style="clip-path: url(#product-variant-curve);"
-                >
-                  <div
-                    class:list={[
-                      "w-full py-3 px-5 bg-dark-green",
-                      "flex items-center sm:justify-center gap-[15px] ",
-                    ]}
-                    style="clip-path: url(#product-variant-curve);"
-                  >
-                    {variantIcon?.src &&
-                      (async () => (
-                        <img
-                          src={await localizeCMSImage(variantIcon.src)}
-                          alt={variantIcon.alt}
-                          class="w-7 h-7"
-                        />
-                      ))}
-
-                    <span class="text-sm font-bold leading-[110%]">
-                      {variant}
-                    </span>
-                  </div>
-                </div>
-              </label>
-            </div>
-          ))
-        }
-      </div>
-
-      <div class="flex flex-wrap items-center gap-[5px] sm:gap-2.5">
-        <div class="text-base leading-[110%] p-2.5">
-          {checkoutRecurData.text_size}:
-        </div>
-
-        <div class="flex flex-wrap gap-2">
-          {
-            availableSizes.map(({ value, size, link }) => (
+      {
+        availableVariants.length > 0 && (
+          <div class="grid sm:flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full">
+            {availableVariants.map(({ value, variant, variantIcon, link }) => (
               <div>
                 <input
                   type="radio"
-                  name="tea_size"
-                  id={size}
+                  name="tea_variant"
+                  id={variant}
                   value={value}
                   data-href={link}
-                  checked={value === productSize}
+                  checked={value === productVariant}
                   class="peer hidden"
                 />
 
                 <label
-                  for={size}
+                  for={variant}
                   class:list={[
-                    "peer-checked:bg-dark-green peer-checked:text-secondary",
-                    "inline-block py-2 px-[25px] text-dark-green rounded-full",
-                    "select-none cursor-pointer border-2 border-secondary/80 bg-secondary",
+                    "inline-block p-[3px] text-secondary w-full",
+                    "peer-checked:bg-secondary select-none cursor-pointer",
                   ]}
+                  style="clip-path: url(#product-variant-curve);"
                 >
-                  {size}
+                  <div
+                    class="md:w-[188px] p-1 bg-primary"
+                    style="clip-path: url(#product-variant-curve);"
+                  >
+                    <div
+                      class:list={[
+                        "w-full py-3 px-5 bg-dark-green",
+                        "flex items-center sm:justify-center gap-[15px] ",
+                      ]}
+                      style="clip-path: url(#product-variant-curve);"
+                    >
+                      {variantIcon?.src &&
+                        (async () => (
+                          <img
+                            src={await localizeCMSImage(variantIcon.src)}
+                            alt={variantIcon.alt}
+                            class="w-7 h-7"
+                          />
+                        ))}
+
+                      <span class="text-sm font-bold leading-[110%]">
+                        {variant}
+                      </span>
+                    </div>
+                  </div>
                 </label>
               </div>
-            ))
-          }
-        </div>
-      </div>
+            ))}
+          </div>
+        )
+      }
+
+      {
+        availableSizes.length > 0 && (
+          <div class="flex flex-wrap items-center gap-[5px] sm:gap-2.5">
+            <div class="text-base leading-[110%] p-2.5">
+              {checkoutRecurData.text_size}:
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              {availableSizes.map(({ value, size, link }) => (
+                <div>
+                  <input
+                    type="radio"
+                    name="tea_size"
+                    id={size}
+                    value={value}
+                    data-href={link}
+                    checked={value === productSize}
+                    class="peer hidden"
+                  />
+
+                  <label
+                    for={size}
+                    class:list={[
+                      "peer-checked:bg-dark-green peer-checked:text-secondary",
+                      "inline-block py-2 px-[25px] text-dark-green rounded-full",
+                      "select-none cursor-pointer border-2 border-secondary/80 bg-secondary",
+                    ]}
+                  >
+                    {size}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      }
     </div>
 
     <div class="flex flex-wrap gap-5 items-center w-full justify-between">
@@ -496,67 +498,71 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     {
       stockAmount > 0 && (
         <div class="w-full flex flex-wrap gap-4 items-center justify-between">
-          <fieldset>
-            <legend
-              class:list={[
-                "text-sm lg:text-base font-medium leading-[150%]",
-                "text-black-light mb-[5px] outline-none",
-              ]}
-            >
-              {checkoutRecurData.text_variant}:
-            </legend>
-
-            <div class="border-2 border-primary overflow-hidden rounded-full">
-              <select
-                name="tea_variant"
+          {availableVariants.length > 0 && (
+            <fieldset>
+              <legend
                 class:list={[
-                  "inline-block bg-white border-r-[15px] border-transparent",
-                  "py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
+                  "text-sm lg:text-base font-medium leading-[150%]",
+                  "text-black-light mb-[5px] outline-none",
                 ]}
               >
-                {availableVariants.map(({ value, variant, link }) => (
-                  <option
-                    value={value}
-                    data-href={link}
-                    selected={value === productVariant}
-                  >
-                    {variant}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </fieldset>
+                {checkoutRecurData.text_variant}:
+              </legend>
 
-          <fieldset>
-            <legend
-              class:list={[
-                "text-sm lg:text-base font-medium leading-[150%]",
-                "text-black-light mb-[5px] outline-none",
-              ]}
-            >
-              {checkoutRecurData.text_size}:
-            </legend>
+              <div class="border-2 border-primary overflow-hidden rounded-full">
+                <select
+                  name="tea_variant"
+                  class:list={[
+                    "inline-block bg-white border-r-[15px] border-transparent",
+                    "py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
+                  ]}
+                >
+                  {availableVariants.map(({ value, variant, link }) => (
+                    <option
+                      value={value}
+                      data-href={link}
+                      selected={value === productVariant}
+                    >
+                      {variant}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </fieldset>
+          )}
 
-            <div class="border-2 border-primary overflow-hidden rounded-full">
-              <select
-                name="tea_size"
+          {availableSizes.length > 0 && (
+            <fieldset>
+              <legend
                 class:list={[
-                  "inline-block bg-white border-r-[15px] border-transparent",
-                  "py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
+                  "text-sm lg:text-base font-medium leading-[150%]",
+                  "text-black-light mb-[5px] outline-none",
                 ]}
               >
-                {availableSizes.map(({ value, size, link }) => (
-                  <option
-                    value={value}
-                    data-href={link}
-                    selected={value === productSize}
-                  >
-                    {size}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </fieldset>
+                {checkoutRecurData.text_size}:
+              </legend>
+
+              <div class="border-2 border-primary overflow-hidden rounded-full">
+                <select
+                  name="tea_size"
+                  class:list={[
+                    "inline-block bg-white border-r-[15px] border-transparent",
+                    "py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
+                  ]}
+                >
+                  {availableSizes.map(({ value, size, link }) => (
+                    <option
+                      value={value}
+                      data-href={link}
+                      selected={value === productSize}
+                    >
+                      {size}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </fieldset>
+          )}
         </div>
       )
     }
