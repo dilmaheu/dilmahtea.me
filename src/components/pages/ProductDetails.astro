@@ -1022,13 +1022,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 </PostDetailsLayout>
 
 <script define:vars={{ baseProductTitle, productSize, productVariant }}>
-  window.baseProductTitle = baseProductTitle;
-
   const preferredProductsVariants = JSON.parse(
     localStorage.getItem("preferredProductsVariants") || "{}",
   );
 
-  preferredProductsVariants[window.baseProductTitle] = {
+  preferredProductsVariants[baseProductTitle] = {
     tea_variant: productVariant,
     tea_size: productSize,
   };
