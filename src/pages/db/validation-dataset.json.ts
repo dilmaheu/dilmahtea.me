@@ -24,6 +24,7 @@ const query = `
           SKU
           Title
           Price
+          VatPercentage
           Stock_amount
           localizations {
             data {
