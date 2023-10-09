@@ -195,13 +195,13 @@ const checkoutSuccessLink = `/${locale}/${
     card.addEventListener("focus", () => selectCard(card));
   });
 
-  submitCauseBtn?.addEventListener("click", () => {
+  submitCauseBtn?.addEventListener("click", async () => {
     const kindness_cause =
       kindnessCausesCardsContainer.querySelector<HTMLElement>(
         ".active-kindness-cause",
       ).dataset.cause;
 
-    fetch(
+    await fetch(
       `https://${
         window.shouldDisplayExperimentals ? "dev." : ""
       }baserow.scripts.dilmahtea.me/order/cup-of-kindness`,
