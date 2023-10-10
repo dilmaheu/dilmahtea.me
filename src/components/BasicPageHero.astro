@@ -1,6 +1,6 @@
 ---
 import Hero from "@components/Hero.astro";
-import Markdown from "@astrojs/markdown-component";
+import Markdown from "@components/Markdown.astro";
 import RecurringImages from "@store/RecurringImages";
 
 const { white_cup, white_love_ribbon } = RecurringImages;
@@ -16,7 +16,7 @@ const { title, introText, locale } = Astro.props;
   .hero-text {
     &,
     a {
-      @apply text-secondary;
+      @apply text-white;
 
       font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem) !important;
     }
@@ -42,7 +42,9 @@ const { title, introText, locale } = Astro.props;
         {...white_love_ribbon}
       />
 
-      <h1 class="hero-title leading-tight tracking-tight">{title}</h1>
+      <h1 class="hero-title leading-tight tracking-tight text-white">
+        {title}
+      </h1>
 
       <div class="hero-text prose max-w-none pt-7 mt-0.5">
         <Markdown>{introText}</Markdown>

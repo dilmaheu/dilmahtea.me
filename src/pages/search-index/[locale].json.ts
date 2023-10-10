@@ -27,8 +27,16 @@ pages.forEach(({ attributes }) => {
     ...attributes.localizations.data.map(({ attributes }) => attributes),
   ].forEach((attributes) => {
     const locale = attributes.locale.substring(0, 2),
-      Title = attributes.Title || attributes.Estate_name,
-      Intro_text = attributes.Intro_text.slice(0, 60).replace(
+      Title =
+        [
+          attributes.Title,
+          attributes.category_tea_range?.data?.attributes?.Title,
+          attributes.category?.data?.attributes?.Title,
+          attributes.size?.data?.attributes?.Title,
+        ]
+          .filter(Boolean)
+          .join(" | ") || attributes.Estate_name,
+      Intro_text = attributes?.Intro_text?.slice(0, 60).replace(
         /(<([^>]+)>)/gi,
         "",
       ),
@@ -78,10 +86,8 @@ export function getStaticPaths() {
   return staticPaths;
 }
 
-export function get({ params: { locale } }) {
+export function GET({ params: { locale } }) {
   const localizedIndex = searchIndex[locale];
 
-  return {
-    body: JSON.stringify(localizedIndex),
-  };
+  return new Response(JSON.stringify(localizedIndex));
 }

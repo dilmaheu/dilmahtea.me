@@ -3,6 +3,7 @@ import { renderPicture } from "astro-imagetools/api";
 
 import productsStore from "@store/Products";
 import tryUntilResolve from "@utils/tryUntilResolve";
+import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
 
 const { STRAPI_URL } = import.meta.env;
 
@@ -14,9 +15,10 @@ async function processProductData(attributes) {
   const {
     locale,
     SKU,
+    rank,
     Title,
-    names,
     Intro_text,
+    VatPercentage,
     Stock_amount,
     variant,
     Weight_tea,
@@ -24,12 +26,15 @@ async function processProductData(attributes) {
     estate_name,
     Intro_blob,
     category,
+    category_tea_range,
     sub_category,
     productVariant: tea_variant,
     productSize: tea_size,
     availableFormats,
     Meta: { URL_slug },
   } = attributes;
+
+  const productLocalizedSize = attributes.size.data?.attributes.Title;
 
   try {
     var Intro_blob_HTML = Object.values(
@@ -81,14 +86,6 @@ async function processProductData(attributes) {
     throw error;
   }
 
-  const thumbnailUrl =
-    STRAPI_URL + Intro_blob.data.attributes.formats.thumbnail.url;
-
-  const thumbnail = await tryUntilResolve(
-    () => importImage(thumbnailUrl),
-    (message) => message + " " + thumbnailUrl,
-  );
-
   // reduce load on client
   let { In_stock_date, Price } = attributes;
 
@@ -100,30 +97,32 @@ async function processProductData(attributes) {
       day: "numeric",
     });
 
-  const Tax = Math.round(Number(Price) * 9) / 100;
-
-  Price += Tax;
+  const [_, PriceIncludingTax] = getPriceIncludingTax({
+    Price,
+    VatPercentage,
+    quantity: 1,
+  });
 
   return {
     SKU,
+    rank,
     Title,
-    names: JSON.stringify(names),
     Intro_blob_HTML,
     Intro_text_HTML,
     Stock_amount,
     In_stock_date,
-    Price,
-    Tax,
+    PriceIncludingTax,
     variant,
     Weight_tea,
     Weight_tea_unit,
     estate_name,
-    thumbnail,
     tea_variant,
     tea_size,
+    productLocalizedSize,
     availableFormatsCount,
     availableFormatThumbnails,
     category: category.data?.attributes.Title,
+    categoryTeaRange: category_tea_range.data?.attributes.Title,
     subCategory: sub_category.data?.attributes.Title,
     Meta: { URL_slug: "/" + locale.substring(0, 2) + "/" + URL_slug + "/" },
   };
@@ -169,12 +168,10 @@ export function getStaticPaths() {
   });
 }
 
-export function get({ params: { key } }) {
+export function GET({ params: { key } }) {
   key = key.replace(/\//g, " | ");
 
   const products = processedProducts[key];
 
-  return {
-    body: JSON.stringify(products),
-  };
+  return new Response(JSON.stringify(products));
 }

@@ -1,3 +1,5 @@
+import type { GetPriceIncludingTax } from "@utils/shared/getPriceIncludingTax";
+
 export {};
 
 type Regions = {
@@ -11,8 +13,8 @@ interface CartProduct {
   quantity: number;
   tax: number;
   sku: string;
-  tea_size: string;
-  tea_variant: string;
+  tea_size: string!;
+  tea_variant: string!;
   [key: string]: string | number;
 }
 
@@ -63,7 +65,10 @@ declare global {
     enableScrolling: () => void; // defined in Navbar.astro
     disableScrolling: () => void; // defined in Navbar.astro
 
-    baseProductTitle: string; // defined in ProductDetails.astro
+    productPrice: number; // defined in ProductDetails.astro
+    productVatPercentage: number; // defined in ProductDetails.astro
+
+    getPriceIncludingTax: GetPriceIncludingTax; // defined in getPriceIncludingTax.ts; declared in CartStore.astro
 
     cart: Cart; // defined in CartStore.astro
     cookies: Cookies; // defined in Cookies.astro

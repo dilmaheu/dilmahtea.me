@@ -7,6 +7,8 @@ import RecurringImages from "@store/RecurringImages";
 
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
+import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
+
 const { white_love } = RecurringImages;
 
 const { products, locale } = Astro.props,
@@ -39,18 +41,27 @@ const recurData = CMS.get("recurringElement", locale),
         SKU,
         Title,
         Intro_blob,
+        size,
         Price,
+        VatPercentage,
         Weight_tea,
         Weight_tea_unit,
         variant,
         Stock_amount,
         In_stock_date,
+        productSize,
         availableFormats,
         estate_name,
         Meta: { URL_slug },
       } = product;
 
       const availableFormatsCount = availableFormats.length;
+
+      const [_, productPriceIncludingTax] = getPriceIncludingTax({
+        Price,
+        VatPercentage,
+        quantity: 1,
+      });
 
       return (
         <div
@@ -136,9 +147,17 @@ const recurData = CMS.get("recurringElement", locale),
               class="text-white"
               style={{ "font-size": "clamp(0.75rem, 1.5vw + 0.1rem, 1rem)" }}
             >
-              {Weight_tea + Weight_tea_unit}
-              <span class="inline-block w-1 h-1 mx-[5px] mb-0.5 rounded-full bg-secondary" />
-              {variant?.data?.attributes.Title}
+              {(productSize || Weight_tea) &&
+                (productSize?.toLowerCase().includes("bag")
+                  ? size.data?.attributes.Title
+                  : Weight_tea + Weight_tea_unit)}
+
+              {variant.data?.attributes.Title && (
+                <>
+                  <span class="inline-block w-1 h-1 mx-[5px] mb-0.5 rounded-full bg-secondary" />
+                  {variant.data?.attributes.Title}
+                </>
+              )}
             </div>
 
             {estate_name?.data.length > 0 && (
@@ -256,7 +275,7 @@ const recurData = CMS.get("recurringElement", locale),
                 {checkoutRecurData.text_add}
                 <span class="w-1 h-1 bg-primary rounded-full" />
                 <span class="recoleta">
-                  {`€` + Price.toFixed(2).replace(".", ",")}
+                  {`€` + productPriceIncludingTax.toFixed(2).replace(".", ",")}
                 </span>
               </button>
             ) : (
@@ -269,7 +288,7 @@ const recurData = CMS.get("recurringElement", locale),
                 {recurData.Product_sold_out_text}
                 <span class="w-1 h-1 bg-white rounded-full" />
                 <span class="recoleta">
-                  {`€ ` + Price.toFixed(2).replace(".", ",")}
+                  {`€ ` + productPriceIncludingTax.toFixed(2).replace(".", ",")}
                 </span>
               </div>
             )}

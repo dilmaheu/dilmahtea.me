@@ -58,35 +58,29 @@ export default function FilteredProducts({
           (attributes) =>
             (!category && !subCategory) ||
             (category &&
-              category === attributes.category &&
-              !attributes.subCategory) ||
+              (category === attributes.categoryTeaRange ||
+                (category === attributes.category &&
+                  !attributes.subCategory))) ||
             (subCategory && subCategory === attributes.subCategory),
+        )
+        .sort((productA, productB) =>
+          productA.rank === null
+            ? 1
+            : productB.rank === null
+            ? -1
+            : productA.rank - productB.rank,
         ),
     );
   });
 
   const addProductToCart = (product) => {
-    const { SKU, names, thumbnail, Price, Tax, tea_variant, tea_size } =
-      product;
+    const { SKU } = product;
 
     const inCartProduct = window.cart[SKU];
 
-    const quantity = 1 + (inCartProduct?.quantity || 0),
-      price = +(Price * quantity).toFixed(2),
-      tax = +(Tax * quantity).toFixed(2);
+    const quantity = 1 + (inCartProduct?.quantity || 0);
 
-    const productData = {
-      sku: SKU,
-      names,
-      image: thumbnail,
-      quantity,
-      price,
-      tax,
-      tea_variant,
-      tea_size,
-    };
-
-    window.cart[SKU] = productData;
+    window.cart[SKU] = { quantity };
 
     window.openCart();
   };
@@ -165,9 +159,17 @@ export default function FilteredProducts({
                 class="text-white"
                 style={{ "font-size": "clamp(0.75rem, 1.5vw + 0.1rem, 1rem)" }}
               >
-                {product.Weight_tea + product.Weight_tea_unit}
-                <span class="inline-block w-1 h-1 mx-[5px] mb-0.5 rounded-full bg-secondary" />
-                {product.variant?.data?.attributes.Title}
+                {(product.tea_size || product.Weight_tea) &&
+                  (product.tea_size?.toLowerCase().includes("bag")
+                    ? product.productLocalizedSize
+                    : product.Weight_tea + product.Weight_tea_unit)}
+
+                {product.variant.data?.attributes.Title && (
+                  <>
+                    <span class="inline-block w-1 h-1 mx-[5px] mb-0.5 rounded-full bg-secondary" />
+                    {product.variant.data?.attributes.Title}
+                  </>
+                )}
               </div>
 
               {product.estate_name?.data.length > 0 && (
@@ -290,7 +292,8 @@ export default function FilteredProducts({
                   {checkoutRecurData.text_add}
                   <span class="w-1 h-1 bg-primary rounded-full" />
                   <span class="recoleta">
-                    {`€` + product.Price.toFixed(2).replace(".", ",")}
+                    {`€` +
+                      product.PriceIncludingTax.toFixed(2).replace(".", ",")}
                   </span>
                 </button>
               ) : (
@@ -309,7 +312,8 @@ export default function FilteredProducts({
                   {recurData.Product_sold_out_text}
                   <span class="w-1 h-1 bg-white rounded-full" />
                   <span class="recoleta">
-                    {`€` + product.Price.toFixed(2).replace(".", ",")}
+                    {`€` +
+                      product.PriceIncludingTax.toFixed(2).replace(".", ",")}
                   </span>
                 </div>
               )}

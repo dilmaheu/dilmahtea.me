@@ -2,8 +2,8 @@
 import { Icon } from "astro-icon";
 import { Schema } from "astro-seo-schema";
 import { Picture } from "astro-imagetools/components";
-import Markdown from "@astrojs/markdown-component";
 
+import Markdown from "@components/Markdown.astro";
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
@@ -13,7 +13,9 @@ import RecurringImages from "@store/RecurringImages";
 
 import renderMarkdown from "@utils/renderMarkdown";
 import localizeCMSImage from "@utils/localizeCMSImage";
+
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
 
 const { green_right_arrow } = RecurringImages;
 
@@ -32,15 +34,12 @@ const {
   Stock_amount: stockAmount,
 } = page;
 
-const { SKU: productSKU } = page,
-  productPrice = Number(page.Price),
-  tax = Math.round(productPrice * 9) / 100,
-  productPriceIncludingTax = productPrice + tax,
-  productNames = JSON.stringify(page.names);
-
-const productThumbnailURL = await importImage(
-  STRAPI_URL + page.Intro_blob.data.attributes.formats.thumbnail.url,
-);
+const { SKU: productSKU, Price, VatPercentage } = page,
+  [_, productPriceIncludingTax] = getPriceIncludingTax({
+    Price,
+    VatPercentage,
+    quantity: 1,
+  });
 
 const infos = page.product_infos.data.map(({ attributes }) => attributes),
   blogs = page.related_blogs?.data?.map(({ attributes }) => attributes),
@@ -259,100 +258,100 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       stockAmount > 0 && "xl:w-2/3",
     ]}
   >
-    <input type="hidden" name="sku" value={productSKU} />
-    <input type="hidden" name="names" value={productNames} />
-    <input type="hidden" name="image" value={productThumbnailURL} />
-
-    <input type="hidden" name="tax" value={tax} />
-    <input type="hidden" name="price" value={productPriceIncludingTax} />
+    <input type="hidden" name="SKU" value={productSKU} />
 
     <div class="flex flex-wrap gap-[15px] mt-[15px]">
-      <div
-        class="grid sm:flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full"
-      >
-        {
-          availableVariants.map(({ value, variant, variantIcon, link }) => (
-            <div>
-              <input
-                type="radio"
-                name="tea_variant"
-                id={variant}
-                value={value}
-                data-href={link}
-                checked={value === productVariant}
-                class="peer hidden"
-              />
-
-              <label
-                for={variant}
-                class:list={[
-                  "inline-block p-[3px] text-secondary w-full",
-                  "peer-checked:bg-secondary select-none cursor-pointer",
-                ]}
-                style="clip-path: url(#product-variant-curve);"
-              >
-                <div
-                  class="md:w-[188px] p-1 bg-primary"
-                  style="clip-path: url(#product-variant-curve);"
-                >
-                  <div
-                    class:list={[
-                      "w-full py-3 px-5 bg-dark-green",
-                      "flex items-center sm:justify-center gap-[15px] ",
-                    ]}
-                    style="clip-path: url(#product-variant-curve);"
-                  >
-                    {variantIcon?.src && (
-                      <img
-                        src={STRAPI_URL + variantIcon.src}
-                        alt={variantIcon.alt}
-                        class="w-7 h-7"
-                      />
-                    )}
-
-                    <span class="text-sm font-bold leading-[110%]">{variant}</span>
-                  </div>
-                </div>
-              </label>
-            </div>
-          ))
-        }
-      </div>
-
-      <div class="flex flex-wrap items-center gap-[5px] sm:gap-2.5">
-        <div class="text-base leading-[110%] p-2.5">
-          {checkoutRecurData.text_size}:
-        </div>
-
-        <div class="flex flex-wrap gap-2">
-          {
-            availableSizes.map(({ value, size, link }) => (
+      {
+        availableVariants.length > 0 && (
+          <div class="grid sm:flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full">
+            {availableVariants.map(({ value, variant, variantIcon, link }) => (
               <div>
                 <input
                   type="radio"
-                  name="tea_size"
-                  id={size}
+                  name="tea_variant"
+                  id={variant}
                   value={value}
                   data-href={link}
-                  checked={value === productSize}
+                  checked={value === productVariant}
                   class="peer hidden"
                 />
 
                 <label
-                  for={size}
+                  for={variant}
                   class:list={[
-                    "peer-checked:bg-dark-green peer-checked:text-secondary",
-                    "inline-block py-2 px-[25px] text-dark-green rounded-full",
-                    "select-none cursor-pointer border-2 border-secondary/80 bg-secondary",
+                    "inline-block p-[3px] text-secondary w-full",
+                    "peer-checked:bg-secondary select-none cursor-pointer",
                   ]}
+                  style="clip-path: url(#product-variant-curve);"
                 >
-                  {size}
+                  <div
+                    class="md:w-[188px] p-1 bg-primary"
+                    style="clip-path: url(#product-variant-curve);"
+                  >
+                    <div
+                      class:list={[
+                        "w-full py-3 px-5 bg-dark-green",
+                        "flex items-center sm:justify-center gap-[15px] ",
+                      ]}
+                      style="clip-path: url(#product-variant-curve);"
+                    >
+                      {variantIcon?.src &&
+                        (async () => (
+                          <img
+                            src={await localizeCMSImage(variantIcon.src)}
+                            alt={variantIcon.alt}
+                            class="w-7 h-7"
+                          />
+                        ))}
+
+                      <span class="text-sm font-bold leading-[110%]">
+                        {variant}
+                      </span>
+                    </div>
+                  </div>
                 </label>
               </div>
-            ))
-          }
-        </div>
-      </div>
+            ))}
+          </div>
+        )
+      }
+
+      {
+        availableSizes.length > 0 && (
+          <div class="flex flex-wrap items-center gap-[5px] sm:gap-2.5">
+            <div class="text-base leading-[110%] p-2.5">
+              {checkoutRecurData.text_size}:
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              {availableSizes.map(({ value, size, link }) => (
+                <div>
+                  <input
+                    type="radio"
+                    name="tea_size"
+                    id={size}
+                    value={value}
+                    data-href={link}
+                    checked={value === productSize}
+                    class="peer hidden"
+                  />
+
+                  <label
+                    for={size}
+                    class:list={[
+                      "peer-checked:bg-dark-green peer-checked:text-secondary",
+                      "inline-block py-2 px-[25px] text-dark-green rounded-full",
+                      "select-none cursor-pointer border-2 border-secondary/80 bg-secondary",
+                    ]}
+                  >
+                    {size}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      }
     </div>
 
     <div class="flex flex-wrap gap-5 items-center w-full justify-between">
@@ -494,77 +493,76 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     slot="cart-adding-form-sm"
     class="cart-adding-form-sm flex flex-wrap justify-between gap-6 mt-8 w-full"
   >
-    <input type="hidden" name="sku" value={productSKU} />
-    <input type="hidden" name="names" value={productNames} />
-    <input type="hidden" name="image" value={productThumbnailURL} />
-
-    <input type="hidden" name="tax" value={tax} />
-    <input type="hidden" name="price" value={productPriceIncludingTax} />
+    <input type="hidden" name="SKU" value={productSKU} />
 
     {
       stockAmount > 0 && (
         <div class="w-full flex flex-wrap gap-4 items-center justify-between">
-          <fieldset>
-            <legend
-              class:list={[
-                "text-sm lg:text-base font-medium leading-[150%]",
-                "text-black-light mb-[5px] outline-none",
-              ]}
-            >
-              {checkoutRecurData.text_variant}:
-            </legend>
-
-            <div class="border-2 border-primary overflow-hidden rounded-full">
-              <select
-                name="tea_variant"
+          {availableVariants.length > 0 && (
+            <fieldset>
+              <legend
                 class:list={[
-                  "inline-block bg-white border-r-[15px] border-transparent",
-                  "py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
+                  "text-sm lg:text-base font-medium leading-[150%]",
+                  "text-black-light mb-[5px] outline-none",
                 ]}
               >
-                {availableVariants.map(({ value, variant, link }) => (
-                  <option
-                    value={value}
-                    data-href={link}
-                    selected={value === productVariant}
-                  >
-                    {variant}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </fieldset>
+                {checkoutRecurData.text_variant}:
+              </legend>
 
-          <fieldset>
-            <legend
-              class:list={[
-                "text-sm lg:text-base font-medium leading-[150%]",
-                "text-black-light mb-[5px] outline-none",
-              ]}
-            >
-              {checkoutRecurData.text_size}:
-            </legend>
+              <div class="border-2 border-primary overflow-hidden rounded-full">
+                <select
+                  name="tea_variant"
+                  class:list={[
+                    "inline-block bg-white border-r-[15px] border-transparent",
+                    "py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
+                  ]}
+                >
+                  {availableVariants.map(({ value, variant, link }) => (
+                    <option
+                      value={value}
+                      data-href={link}
+                      selected={value === productVariant}
+                    >
+                      {variant}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </fieldset>
+          )}
 
-            <div class="border-2 border-primary overflow-hidden rounded-full">
-              <select
-                name="tea_size"
+          {availableSizes.length > 0 && (
+            <fieldset>
+              <legend
                 class:list={[
-                  "inline-block bg-white border-r-[15px] border-transparent",
-                  "py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
+                  "text-sm lg:text-base font-medium leading-[150%]",
+                  "text-black-light mb-[5px] outline-none",
                 ]}
               >
-                {availableSizes.map(({ value, size, link }) => (
-                  <option
-                    value={value}
-                    data-href={link}
-                    selected={value === productSize}
-                  >
-                    {size}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </fieldset>
+                {checkoutRecurData.text_size}:
+              </legend>
+
+              <div class="border-2 border-primary overflow-hidden rounded-full">
+                <select
+                  name="tea_size"
+                  class:list={[
+                    "inline-block bg-white border-r-[15px] border-transparent",
+                    "py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
+                  ]}
+                >
+                  {availableSizes.map(({ value, size, link }) => (
+                    <option
+                      value={value}
+                      data-href={link}
+                      selected={value === productSize}
+                    >
+                      {size}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </fieldset>
+          )}
         </div>
       )
     }
@@ -646,12 +644,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           "shadow-[0_4px_10px_rgba(0,0,0,0.6)] bg-secondary",
         ]}
       >
-        <input type="hidden" name="sku" value={productSKU} />
-        <input type="hidden" name="names" value={productNames} />
-        <input type="hidden" name="image" value={productThumbnailURL} />
-
-        <input type="hidden" name="tax" value={tax} />
-        <input type="hidden" name="price" value={productPriceIncludingTax} />
+        <input type="hidden" name="SKU" value={productSKU} />
 
         <div class="wrapper flex items-center gap-4 justify-between">
           <div class="w-fit flex items-center text-white p-1 bg-primary rounded-full">
@@ -729,7 +722,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               {page.Price_breakdown_text.split("<")[0]}
               <span class="recoleta text-[clamp(2rem,3vw+0.55rem,2.625rem)] text-primary">
                 {page.Price_breakdown_text.match("<total_spent>") &&
-                  `€${totalSpentAmount.toFixed(2)}`}
+                  `€${totalSpentAmount.toFixed(2).replace(".", ",")}`}
               </span>
               {page.Price_breakdown_text.split(">")[1]}
             </Markdown>
@@ -759,12 +752,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     "text-sm lg:text-base font-medium lg:font-normal",
                   ]}
                 >
-                  {((item.Spent_amount * 100) / totalSpentAmount).toFixed(2)}%
+                  {((item.Spent_amount * 100) / totalSpentAmount)
+                    .toFixed(2)
+                    .replace(".", ",")}
+                  %
                 </div>
 
                 <div class="grid">
                   <div class="recoleta text-primary text-[clamp(1.75rem,2.2vw+0.15rem,2rem)]">
-                    €{item.Spent_amount.toFixed(2)}
+                    €{item.Spent_amount.toFixed(2).replace(".", ",")}
                   </div>
 
                   <div class="text-[clamp(0.875rem,1vw+0.25rem,1.125rem)]">
@@ -1029,16 +1025,152 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   }
 </PostDetailsLayout>
 
+<script
+  define:vars={{
+    baseProductTitle,
+    Price,
+    VatPercentage,
+    productSize,
+    productVariant,
+  }}
+>
+  window.productPrice = Price;
+  window.productVatPercentage = VatPercentage;
+
+  const preferredProductsVariants = JSON.parse(
+    localStorage.getItem("preferredProductsVariants") || "{}",
+  );
+
+  preferredProductsVariants[baseProductTitle] = {
+    tea_variant: productVariant,
+    tea_size: productSize,
+  };
+
+  localStorage.setItem(
+    "preferredProductsVariants",
+    JSON.stringify(preferredProductsVariants),
+  );
+</script>
+
+<script>
+  import tweakAmount from "@utils/client/tweakAmount";
+  import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
+
+  type ProductData = Record<string, number | string>;
+
+  const query = document.querySelector.bind(document),
+    queryAll = document.querySelectorAll.bind(document);
+
+  const accordions = queryAll("button.accordion"),
+    cartAddingForms = queryAll(
+      ".cart-adding-form, .cart-adding-form-sm, .cart-adding-form-fixed-sm",
+    ),
+    productFormatInputs = queryAll(
+      'input:is([name="tea_variant"], [name="tea_size"])',
+    ),
+    productAmountPriceOutput = query(".product-amount-price"),
+    productAmountInputs = queryAll(".product-amount-input"),
+    productAmountTweakBtns = queryAll(".product-amount-tweak-btn");
+
+  accordions.forEach((accordion) => {
+    accordion.addEventListener("click", () => {
+      accordion.classList.toggle("is-active");
+      accordion.nextElementSibling.classList.toggle("is-open");
+    });
+  });
+
+  productFormatInputs.forEach((input) => {
+    input.addEventListener("change", (event) => {
+      const target = event.target as HTMLInputElement;
+
+      location.href = target.dataset.href;
+    });
+  });
+
+  cartAddingForms.forEach((form: HTMLFormElement) => {
+    form.addEventListener("change", (event) => {
+      const target = event.target as HTMLSelectElement;
+
+      if (["tea_variant", "tea_size"].includes(target.name)) {
+        const selectedOption = target.selectedOptions[0];
+
+        location.href = selectedOption.dataset.href;
+      }
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const productData = Object.fromEntries(new FormData(form)) as ProductData,
+        { SKU } = productData,
+        inCartProduct = window.cart[SKU];
+
+      const quantity =
+        Number(productData.quantity) + (inCartProduct?.quantity || 0);
+
+      window.cart[SKU] = { quantity };
+
+      cartAddingForms.forEach((form: HTMLFormElement) => {
+        form.reset();
+
+        const decrementBtn = form.querySelector<HTMLButtonElement>(
+          "button[data-action='decrement']",
+        );
+
+        decrementBtn.disabled = true;
+      });
+
+      const [_, productPriceIncludingTax] = getPriceIncludingTax({
+        Price: window.productPrice,
+        VatPercentage: window.productVatPercentage,
+        quantity: 1,
+      });
+
+      productAmountPriceOutput.textContent = productPriceIncludingTax
+        .toFixed(2)
+        .replace(".", ",");
+
+      window.openCart();
+    });
+  });
+
+  function tweakAmountCallback(input) {
+    productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
+      if (otherAmountInput !== input) {
+        otherAmountInput.value = input.value;
+
+        const decrementBtn =
+          otherAmountInput.previousElementSibling as HTMLButtonElement;
+
+        decrementBtn.disabled = input.value === "1";
+      }
+    });
+
+    const quantity = Number(input.value),
+      [_, priceIncludingTax] = getPriceIncludingTax({
+        Price: window.productPrice,
+        VatPercentage: window.productVatPercentage,
+        quantity,
+      });
+
+    productAmountPriceOutput.textContent = priceIncludingTax
+      .toFixed(2)
+      .replace(".", ",");
+  }
+
+  tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
+</script>
+
 <Schema
   item={{
     "@context": "https://schema.org",
     "@type": "Product",
-    name: page.Title,
+    name: page.Meta.HTML_Title,
     image: await importImage(STRAPI_URL + page.Intro_blob?.data.attributes.url),
-    description: `${(await renderMarkdown(page.Intro_text)).replace(
+    description: `${renderMarkdown(page.Intro_text).replace(
       /(<([^>]+)>)/gi,
       "",
-    )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
+    )} ${renderMarkdown(page.Block_text).replace(/(<([^>]+)>)/gi, "")}`,
     sku: page.SKU,
     gtin: page.GTIN_Barcode,
     brand: {
@@ -1063,109 +1195,3 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     },
   }}
 />
-
-<script define:vars={{ baseProductTitle, productSize, productVariant }}>
-  window.baseProductTitle = baseProductTitle;
-
-  const preferredProductsVariants = JSON.parse(
-    localStorage.getItem("preferredProductsVariants") || "{}",
-  );
-
-  preferredProductsVariants[window.baseProductTitle] = {
-    tea_variant: productVariant,
-    tea_size: productSize,
-  };
-
-  localStorage.setItem(
-    "preferredProductsVariants",
-    JSON.stringify(preferredProductsVariants),
-  );
-</script>
-
-<script>
-  import tweakAmount from "@utils/client/tweakAmount";
-
-  type ProductData = Record<string, number | string>;
-
-  const query = document.querySelector.bind(document),
-    queryAll = document.querySelectorAll.bind(document);
-
-  const accordions = queryAll("button.accordion"),
-    cartAddingForms = queryAll(
-      ".cart-adding-form, .cart-adding-form-sm, .cart-adding-form-fixed-sm",
-    ),
-    productFormatInputs = queryAll(
-      'input:is([name="tea_variant"], [name="tea_size"])',
-    ),
-    productAmountPriceOutput = query(".product-amount-price"),
-    productAmountInputs = queryAll(".product-amount-input"),
-    productAmountTweakBtns = queryAll(".product-amount-tweak-btn"),
-    productPrice = Number(query("input[name='price']")?.value);
-
-  accordions.forEach((accordion) => {
-    accordion.addEventListener("click", () => {
-      accordion.classList.toggle("is-active");
-      accordion.nextElementSibling.classList.toggle("is-open");
-    });
-  });
-
-  productFormatInputs.forEach((input) => {
-    input.addEventListener("change", (event) => {
-      const target = event.target as HTMLSelectElement;
-
-      location.href = target.dataset.href;
-    });
-  });
-
-  cartAddingForms.forEach((form: HTMLFormElement) => {
-    form.addEventListener("change", (event) => {
-      const target = event.target as HTMLSelectElement;
-
-      if (["tea_variant", "tea_size"].includes(target.name)) {
-        const selectedOption = target.selectedOptions[0];
-
-        location.href = selectedOption.dataset.href;
-      }
-    });
-
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-
-      const productData = Object.fromEntries(new FormData(form)) as ProductData,
-        { sku: id, price, tax } = productData as Record<string, string>,
-        existingCartProduct = window.cart[id];
-
-      productData.quantity =
-        Number(productData.quantity) + (existingCartProduct?.quantity || 0);
-
-      productData.price = +(Number(price) * productData.quantity).toFixed(2);
-      productData.tax = +(Number(tax) * productData.quantity).toFixed(2);
-
-      window.cart[id] = productData;
-
-      form.reset();
-
-      productAmountPriceOutput.textContent = Number(price)
-        .toFixed(2)
-        .replace(".", ",");
-
-      window.openCart();
-    });
-  });
-
-  function tweakAmountCallback(input) {
-    productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
-      if (otherAmountInput !== input) {
-        otherAmountInput.value = input.value;
-      }
-    });
-
-    productAmountPriceOutput.textContent = (
-      Number(input.value) * Number(productPrice)
-    )
-      .toFixed(2)
-      .replace(".", ",");
-  }
-
-  tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
-</script>

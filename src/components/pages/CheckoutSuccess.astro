@@ -1,16 +1,13 @@
 ---
-import Markdown from "@astrojs/markdown-component";
-import { Picture, BackgroundPicture } from "astro-imagetools/components";
-
-import CMS from "@store/CMS";
-import RecurringImages from "@store/RecurringImages";
-
 import BaseLayout from "@layouts/BaseLayout.astro";
+import RecurringImages from "@store/RecurringImages";
 
 import Navbar from "@components/Navbar.astro";
 import Footer from "@components/Footer.astro";
+import Markdown from "@components/Markdown.astro";
 import CartOverlay from "@components/CartOverlay.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+
 import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 
 interface Props {
@@ -40,18 +37,7 @@ const footerText = recurData.Footer_text.replaceAll(
   `${new Date().getFullYear()}`,
 );
 
-const { data: checkoutKindnessData } = CMS.get("checkoutKindness"),
-  { STRAPI_URL } = import.meta.env;
-
-const EnvironmentalAdvocacyImage =
-  checkoutKindnessData.attributes.kindness_causes.data.find(
-    ({ attributes: { cause } }) => cause === "Environmental Advocacy",
-  ).attributes.featured_blob.data.attributes;
-
 const { Nav_menu: menu } = recurData;
-
-const bestWayToMakeCompostLink = CMS.get("howTos", locale)[0].attributes.Meta
-  .URL_slug;
 ---
 
 <style lang="scss">
@@ -148,52 +134,18 @@ const bestWayToMakeCompostLink = CMS.get("howTos", locale)[0].attributes.Meta
     );
   }
 
-  .post-container {
-    > div:first-child {
-      clip-path: url(#post-container-top-curve);
+  .prose {
+    img {
+      @apply mx-auto max-h-[300px] md:max-h-[400px];
 
-      @media (min-width: 640px) {
-        clip-path: url(#post-container-left-curve);
-      }
+      clip-path: url(#image-curve);
     }
-
-    > div:last-child {
-      clip-path: url(#post-container-bottom-curve);
-
-      @media (min-width: 640px) {
-        clip-path: url(#post-container-right-curve);
-      }
-    }
-  }
-
-  .linked-post-text {
-    font-size: poly-fluid-clamp(
-      (
-        375px: 18px,
-        1440px: 24px,
-      )
-    );
   }
 </style>
 
 <ClipPathSVG
-  id="post-container-top-curve"
-  path="M0.513,0.005 C0.359,0.005,0.102,-0.024,0.043,0.141 C-0.003,0.266,-0.005,0.637,0.005,1 h0.985 c0.005,-0.205,0.027,-0.443,-0.018,-0.74 C0.924,-0.057,0.729,0.004,0.513,0.004"
-/>
-
-<ClipPathSVG
-  id="post-container-bottom-curve"
-  path="M1,0 H0 v0.41 c0,0.698,0.081,0.583,0.526,0.583 S1,1,1,0.37 c0,-0.083,-0.003,-0.21,0,-0.37"
-/>
-
-<ClipPathSVG
-  id="post-container-left-curve"
-  path="M0.005,0.487 c0,0.155,-0.028,0.411,0.137,0.471 c0.125,0.046,0.495,0.047,0.859,0.038 V0.009 C0.795,0.005,0.557,-0.017,0.26,0.028 C-0.057,0.076,0.005,0.271,0.005,0.486"
-/>
-
-<ClipPathSVG
-  id="post-container-right-curve"
-  path="M0,0 v1 h0.428 c0.676,0,0.565,-0.064,0.565,-0.526 S1,0,0.39,0 C0.31,0,0.155,0.003,0,0"
+  id="image-curve"
+  path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
 />
 
 <BaseLayout
@@ -210,6 +162,11 @@ const bestWayToMakeCompostLink = CMS.get("howTos", locale)[0].attributes.Meta
         footerText={footerText}
         availableLocales={availableLocales}
       />
+
+      <div class="relative z-5">
+        <div class="hero-sub-menu-shadow nav-bg hidden"></div>
+      </div>
+
       <div class="hero overflow-hidden relativ w-full">
         <UpdateTopMargin />
 
@@ -240,43 +197,10 @@ const bestWayToMakeCompostLink = CMS.get("howTos", locale)[0].attributes.Meta
 
             <h1 class="recoleta font-semibold text-primary">{page.Title}</h1>
 
-            <div class="prose"><Markdown>{page.Intro_text}</Markdown></div>
+            <div class="prose content-text">
+              <Markdown>{page.Intro_text}</Markdown>
+            </div>
           </div>
-
-          {
-            (page.text_here_is_how || page.text_here_is_how) && (
-              <div class="post-container max-w-4xl flex flex-col sm:flex-row">
-                <div class="w-full sm:w-[37.5%] h-48 sm:h-auto">
-                  <Picture
-                    layout="fill"
-                    sizes="(min-width: 640px) calc(min(896px, 90vw) * 0.375), 90vw"
-                    alt={EnvironmentalAdvocacyImage.alternativeText}
-                    src={STRAPI_URL + EnvironmentalAdvocacyImage.url}
-                  />
-                </div>
-
-                <div class="flex flex-col gap-8 sm:gap-9 px-[22px] sm:px-8 pt-6 pb-9 sm:pb-5 bg-white">
-                  {page.linked_post_text && (
-                    <div class="prose linked-post-text font-medium">
-                      <Markdown>{page.linked_post_text}</Markdown>
-                    </div>
-                  )}
-
-                  {page.text_here_is_how && (
-                    <a
-                      href={bestWayToMakeCompostLink}
-                      class:list={[
-                        "w-fit px-16 py-4 sm:px-18 sm:py-[18px]",
-                        "font-bold leading-[115%] text-white bg-primary rounded-full",
-                      ]}
-                    >
-                      {page.text_here_is_how}
-                    </a>
-                  )}
-                </div>
-              </div>
-            )
-          }
         </div>
       </div>
     </div>
