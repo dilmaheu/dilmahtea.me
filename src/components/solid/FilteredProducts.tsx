@@ -159,11 +159,17 @@ export default function FilteredProducts({
                 class="text-white"
                 style={{ "font-size": "clamp(0.75rem, 1.5vw + 0.1rem, 1rem)" }}
               >
-                {product.tea_size?.toLowerCase().includes("bag")
-                  ? product.productLocalizedSize
-                  : product.Weight_tea + product.Weight_tea_unit}
-                <span class="inline-block w-1 h-1 mx-[5px] mb-0.5 rounded-full bg-secondary" />
-                {product.variant?.data?.attributes.Title}
+                {(product.tea_size || product.Weight_tea) &&
+                  (product.tea_size?.toLowerCase().includes("bag")
+                    ? product.productLocalizedSize
+                    : product.Weight_tea + product.Weight_tea_unit)}
+
+                {product.variant.data?.attributes.Title && (
+                  <>
+                    <span class="inline-block w-1 h-1 mx-[5px] mb-0.5 rounded-full bg-secondary" />
+                    {product.variant.data?.attributes.Title}
+                  </>
+                )}
               </div>
 
               {product.estate_name?.data.length > 0 && (

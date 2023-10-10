@@ -17,8 +17,6 @@ const checkoutSuccessLink = `/${locale}/${
     CMS.get("checkoutShipping", locale).Meta.URL_slug
   }/`,
   shopLink = `/${locale}/${CMS.get("homeProduct", locale).Meta.URL_slug}/`;
-
-console.log(checkoutSuccessLink);
 ---
 
 <style lang="scss">
@@ -197,13 +195,13 @@ console.log(checkoutSuccessLink);
     card.addEventListener("focus", () => selectCard(card));
   });
 
-  submitCauseBtn?.addEventListener("click", () => {
+  submitCauseBtn?.addEventListener("click", async () => {
     const kindness_cause =
       kindnessCausesCardsContainer.querySelector<HTMLElement>(
         ".active-kindness-cause",
       ).dataset.cause;
 
-    fetch(
+    await fetch(
       `https://${
         window.shouldDisplayExperimentals ? "dev." : ""
       }baserow.scripts.dilmahtea.me/order/cup-of-kindness`,
