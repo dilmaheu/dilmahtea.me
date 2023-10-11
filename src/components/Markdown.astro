@@ -1,8 +1,9 @@
 ---
 import renderMarkdown from "@utils/renderMarkdown";
 
-const markdown = await Astro.slots.render("default"),
-  html = renderMarkdown(markdown);
+const [cid] = Object.keys(Astro.props),
+  markdown = await Astro.slots.render("default"),
+  html = renderMarkdown(markdown, cid);
 ---
 
 <Fragment set:html={html} />
