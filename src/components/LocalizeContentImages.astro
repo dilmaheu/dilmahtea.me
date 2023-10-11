@@ -1,0 +1,22 @@
+---
+import { parseHTML } from "linkedom";
+import localizeCMSImage from "@utils/localizeCMSImage";
+
+let contentHTML = await Astro.slots.render("default");
+
+const { document: contentDocument } = parseHTML(contentHTML),
+  images = contentDocument.querySelectorAll("img");
+
+// wrap every heading and its following content with div.chapter
+await Promise.all(
+  [...images].map(async (img) => {
+    const { src } = img;
+
+    img.src = await localizeCMSImage(src);
+
+    contentHTML = contentHTML.replace(src, img.src);
+  }),
+);
+---
+
+<Fragment set:html={contentHTML} />
