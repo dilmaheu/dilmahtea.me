@@ -23,7 +23,7 @@ const {
   Twitter_icon: twitter_icon,
 } = userAccountRecurData;
 
-const emailOrPhone = page?.Form?.Email_or_phone === true;
+const isEmailOrPhoneForm = form?.Email_or_phone;
 
 function fromEntries(array) {
   const formInputItems = Object.fromEntries(Object.entries(array).slice(0, 4)),
@@ -96,6 +96,8 @@ function fromEntries(array) {
     <h1 class="hero-title recoleta text-primary text-center">
       {page.Title}
 
+      {" "}
+
       <span class="icon heading-inline-icon">
         <img class="w-full h-full" {...green_cup} />
       </span>
@@ -135,15 +137,15 @@ function fromEntries(array) {
                     : "justify-between",
                 ]}
               >
-                {emailOrPhone ? (
+                {isEmailOrPhoneForm ? (
                   <label class="mx-auto">
                     {userAccountRecurData.Input_label_email +
                       ` / ` +
                       userAccountRecurData.Input_label_phone}
 
                     <input
-                      type="text"
-                      name="first_name"
+                      type="email"
+                      name="email"
                       placeholder={
                         userAccountRecurData.Input_placeholder_email_or_phone
                       }
@@ -248,7 +250,7 @@ function fromEntries(array) {
                 <div
                   class:list={[
                     "prose-text prose max-w-none mt-[35px] text-center text-black-light",
-                    (emailOrPhone || (form && fromEntries(form) === 1)) &&
+                    (isEmailOrPhoneForm || (form && fromEntries(form) === 1)) &&
                       "form-item",
                   ]}
                 >
@@ -262,7 +264,7 @@ function fromEntries(array) {
                 <div
                   class:list={[
                     "flex flex-wrap gap-[25px] justify-center mt-[25px] text-center text-black-light",
-                    (emailOrPhone || (form && fromEntries(form) === 1)) &&
+                    (isEmailOrPhoneForm || (form && fromEntries(form) === 1)) &&
                       "form-item",
                   ]}
                 >
