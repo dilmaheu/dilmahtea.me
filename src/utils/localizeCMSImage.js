@@ -10,15 +10,19 @@ if (fs.existsSync(IMAGES_DIR)) {
 
 await fs.promises.mkdir(IMAGES_DIR, { recursive: true });
 
-export default async function localizeCMSImage(relativeUrl) {
-  const isFullURL = relativeUrl.startsWith("https://");
+export default async function localizeCMSImage(remoteURL) {
+  const isFullURL = remoteURL.startsWith("https://");
 
   const src =
-      "/_astro/" + relativeUrl.slice((isFullURL ? STRAPI_URL.length : 0) + 9),
+      "/_astro/" +
+      remoteURL.slice(
+        (isFullURL ? STRAPI_URL.length : 0) +
+          9 /* remove /uploads/ if not full URL */,
+      ),
     imagePath = "./public" + src;
 
   if (!fs.existsSync(imagePath)) {
-    const remoteSrc = (isFullURL ? "" : STRAPI_URL) + relativeUrl;
+    const remoteSrc = (isFullURL ? "" : STRAPI_URL) + remoteURL;
 
     const imageBuffer = Buffer.from(
       await fetch(remoteSrc).then((res) => res.arrayBuffer()),
