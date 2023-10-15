@@ -5,11 +5,12 @@ import { Picture } from "astro-imagetools/components";
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 import localizeCMSImage from "@utils/localizeCMSImage";
+import getUserAccountPagesLink from "@utils/getUserAccountPagesLink";
 
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import LangSelectorsDropdown from "@components/LangSelectorsDropdown.astro";
-import RegionSelectorsDropdown from "./RegionSelectorsDropdown.astro";
+import RegionSelectorsDropdown from "@components/RegionSelectorsDropdown.astro";
 
 const {
   logo,
@@ -62,9 +63,7 @@ function trimLink(link) {
   return link?.replace(/^\/|\/$/g, "");
 }
 
-const loginLink = CMS.get("userAccounts", docLocale).find(
-  ({ attributes: { UID } }) => UID === "login",
-).attributes.Meta.URL_slug;
+const loginLink = getUserAccountPagesLink("login", docLocale);
 ---
 
 <style lang="scss" is:global>
