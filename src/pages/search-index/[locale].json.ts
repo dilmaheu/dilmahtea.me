@@ -35,7 +35,7 @@ pages.forEach(({ attributes }) => {
           attributes.size?.data?.attributes?.Title,
         ]
           .filter(Boolean)
-          .join(" &#x025CF ") || attributes.Estate_name,
+          .join(" &#x025CF; ") || attributes.Estate_name,
       Intro_text = attributes?.Intro_text?.slice(0, 60).replace(
         /(<([^>]+)>)/gi,
         "",
