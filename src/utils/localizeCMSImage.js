@@ -1,5 +1,7 @@
 import fs from "node:fs";
 
+const { STRAPI_URL } = import.meta.env;
+
 const IMAGES_DIR = "./public/_astro/";
 
 if (fs.existsSync(IMAGES_DIR)) {
@@ -8,12 +10,24 @@ if (fs.existsSync(IMAGES_DIR)) {
 
 await fs.promises.mkdir(IMAGES_DIR, { recursive: true });
 
-export default async function localizeCMSImage(relativeUrl) {
-  const src = "/_astro/" + relativeUrl.slice(9),
+export default async function localizeCMSImage(remoteURL) {
+  let origin, relativeURL;
+
+  const isFullURL = remoteURL.startsWith("https://");
+
+  if (isFullURL) {
+    ({ origin, pathname: relativeURL } = new URL(remoteURL));
+  } else {
+    origin = STRAPI_URL;
+    relativeURL = remoteURL;
+  }
+
+  const src =
+      "/_astro/" + relativeURL.slice(9 /* remove /uploads/ if not full URL */),
     imagePath = "./public" + src;
 
   if (!fs.existsSync(imagePath)) {
-    const remoteSrc = import.meta.env.STRAPI_URL + relativeUrl;
+    const remoteSrc = origin + relativeURL;
 
     const imageBuffer = Buffer.from(
       await fetch(remoteSrc).then((res) => res.arrayBuffer()),

@@ -7,6 +7,7 @@ import Footer from "@components/Footer.astro";
 import Markdown from "@components/Markdown.astro";
 import CartOverlay from "@components/CartOverlay.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import LocalizeContentImages from "@components/LocalizeContentImages.astro";
 
 import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 
@@ -40,114 +41,6 @@ const footerText = recurData.Footer_text.replaceAll(
 const { Nav_menu: menu } = recurData;
 ---
 
-<style lang="scss">
-  @use "src/styles/poly-fluid" as *;
-
-  .hero {
-    @include poly-fluid-sizing(
-      "padding-top",
-      (
-        639.98px: 135px,
-        640px: 70px,
-        768px: 74px,
-        1024px: 104px,
-      )
-    );
-  }
-
-  .nav-menu-container {
-    nav {
-      @include poly-fluid-sizing(
-        "padding-right",
-        (
-          639px: 0px,
-          640px: 260px,
-          768px: 300px,
-          1024px: 380px,
-          1440px: 460px,
-          1536px: 550px,
-        )
-      );
-
-      a {
-        @apply font-bold leading-[150%];
-
-        font-size: poly-fluid-clamp(
-          (
-            768px: 12px,
-            1440px: 18px,
-          )
-        );
-      }
-    }
-  }
-
-  :global(#checkout-cart-container) {
-    > div {
-      padding-bottom: poly-fluid-clamp(
-        (
-          375px: 20px,
-          1440px: 56px,
-        )
-      );
-
-      @include poly-fluid-sizing(
-        "padding-top",
-        (
-          639px: 90px,
-          640px: 95px,
-          768px: 100px,
-          960px: 110px,
-          1024px: 120px,
-          1280px: 130px,
-          1536px: 145px,
-          2050px: 165px,
-        )
-      );
-    }
-  }
-
-  h1 {
-    @apply leading-[115%] md:tracking-[-0.02em];
-
-    font-size: poly-fluid-clamp(
-      (
-        375px: 32px,
-        1440px: 48px,
-      )
-    );
-  }
-
-  .hero-icon {
-    width: poly-fluid-clamp(
-      (
-        375px: 48px,
-        1440px: 100px,
-      )
-    );
-
-    height: poly-fluid-clamp(
-      (
-        375px: 48px,
-        1440px: 100px,
-      )
-    );
-  }
-
-  .prose {
-    img {
-      @apply mx-auto max-h-[300px] md:max-h-[400px];
-
-      clip-path: url(#image-curve);
-    }
-  }
-</style>
-
-<ClipPathSVG
-  id="image-curve"
-  path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
-/>
-
 <BaseLayout
   page={page}
   meta={meta}
@@ -155,6 +48,114 @@ const { Nav_menu: menu } = recurData;
   alternateURLs={alternateURLs}
   metaImageSrc={metaImageSrc}
 >
+  <style lang="scss">
+    @use "src/styles/poly-fluid" as *;
+
+    .hero {
+      @include poly-fluid-sizing(
+        "padding-top",
+        (
+          639.98px: 135px,
+          640px: 70px,
+          768px: 74px,
+          1024px: 104px,
+        )
+      );
+    }
+
+    .nav-menu-container {
+      nav {
+        @include poly-fluid-sizing(
+          "padding-right",
+          (
+            639px: 0px,
+            640px: 260px,
+            768px: 300px,
+            1024px: 380px,
+            1440px: 460px,
+            1536px: 550px,
+          )
+        );
+
+        a {
+          @apply font-bold leading-[150%];
+
+          font-size: poly-fluid-clamp(
+            (
+              768px: 12px,
+              1440px: 18px,
+            )
+          );
+        }
+      }
+    }
+
+    :global(#checkout-cart-container) {
+      > div {
+        padding-bottom: poly-fluid-clamp(
+          (
+            375px: 20px,
+            1440px: 56px,
+          )
+        );
+
+        @include poly-fluid-sizing(
+          "padding-top",
+          (
+            639px: 90px,
+            640px: 95px,
+            768px: 100px,
+            960px: 110px,
+            1024px: 120px,
+            1280px: 130px,
+            1536px: 145px,
+            2050px: 165px,
+          )
+        );
+      }
+    }
+
+    h1 {
+      @apply leading-[115%] md:tracking-[-0.02em];
+
+      font-size: poly-fluid-clamp(
+        (
+          375px: 32px,
+          1440px: 48px,
+        )
+      );
+    }
+
+    .hero-icon {
+      width: poly-fluid-clamp(
+        (
+          375px: 48px,
+          1440px: 100px,
+        )
+      );
+
+      height: poly-fluid-clamp(
+        (
+          375px: 48px,
+          1440px: 100px,
+        )
+      );
+    }
+
+    .prose {
+      img {
+        @apply mx-auto max-h-[300px] md:max-h-[400px];
+
+        clip-path: url(#image-curve);
+      }
+    }
+  </style>
+
+  <ClipPathSVG
+    id="image-curve"
+    path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
+  />
+
   <div class="flex flex-wrap w-full h-full">
     <div class="block w-full bg-secondary">
       <Navbar
@@ -167,7 +168,7 @@ const { Nav_menu: menu } = recurData;
         <div class="hero-sub-menu-shadow nav-bg hidden"></div>
       </div>
 
-      <div class="hero overflow-hidden relativ w-full">
+      <div class="hero overflow-hidden relative w-full">
         <UpdateTopMargin />
 
         <div class="relative">
@@ -198,7 +199,9 @@ const { Nav_menu: menu } = recurData;
             <h1 class="recoleta font-semibold text-primary">{page.Title}</h1>
 
             <div class="prose content-text">
-              <Markdown>{page.Intro_text}</Markdown>
+              <LocalizeContentImages>
+                <Markdown>{page.Intro_text}</Markdown>
+              </LocalizeContentImages>
             </div>
           </div>
         </div>
