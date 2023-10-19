@@ -1,12 +1,12 @@
 ---
 import { parseHTML } from "linkedom";
 import { Picture } from "astro-imagetools/components";
-import Markdown from "@astrojs/markdown-component";
 
+import Markdown from "@components/Markdown.astro";
 import renderMarkdown from "@utils/renderMarkdown";
 
 const { page } = Astro.props,
-  infoBlocksHTML = await renderMarkdown(page.Block3);
+  infoBlocksHTML = renderMarkdown(page.Block3);
 
 const { document: infoBlocksDocument } = parseHTML(infoBlocksHTML),
   titles = [...infoBlocksDocument.querySelectorAll("h2")];

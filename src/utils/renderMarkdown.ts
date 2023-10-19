@@ -1,16 +1,18 @@
-import {
-  MarkdownRenderingOptions,
-  renderMarkdown as astroMarkdownRemarkRenderMarkdown,
-} from "@astrojs/markdown-remark";
+import { marked } from "marked";
+import { parseHTML } from "linkedom";
 
-export default async function renderMarkdown(
-  markdown: string,
-  opts?: MarkdownRenderingOptions,
-): Promise<string> {
-  const { code } = await astroMarkdownRemarkRenderMarkdown(
-    markdown,
-    opts ?? {},
-  );
+export default function renderMarkdown(markdown: string, cid?: string): string {
+  const html = marked(markdown);
 
-  return code;
+  if (cid) {
+    const { document } = parseHTML(html);
+
+    document.querySelectorAll("*").forEach((element) => {
+      element.setAttribute(cid, "");
+    });
+
+    return document.toString();
+  }
+
+  return html;
 }

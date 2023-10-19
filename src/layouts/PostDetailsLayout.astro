@@ -42,35 +42,14 @@ const contentHTML = await Astro.slots.render("post-details"),
   headings = contentDocument.querySelectorAll("h2");
 ---
 
-<style lang="scss" is:global>
-  #post-details {
-    picture {
-      clip-path: url(#content-images-curve);
-    }
-
-    p,
-    ol,
-    ul,
-    p s,
-    blockquote p {
-      a {
-        @apply font-bold sm:font-semibold px-1 no-underline bg-bottom bg-no-repeat hover:brightness-95 transition-all;
-
-        background-size: 100% 45%;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23b3cccc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
-      }
-    }
-  }
-</style>
-
 <style lang="scss">
   @use "src/styles/colors";
 
-  #sticky-header {
+  #sticky-chapters {
     box-shadow: 0 4px 5px gray;
   }
 
-  #sticky-heading-links {
+  #sticky-chapter-links {
     border-color: colors.$primary-light;
   }
 
@@ -83,7 +62,7 @@ const contentHTML = await Astro.slots.render("post-details"),
     font-size: clamp(1.5rem, 2.2vw + 0.15rem, 2rem);
   }
 
-  #heading-links {
+  #chapter-links {
     font-size: clamp(1rem, 1.2vw + 0.2rem, 1.5rem);
   }
 </style>
@@ -113,7 +92,7 @@ const contentHTML = await Astro.slots.render("post-details"),
   aria-label={ariaLabelRecurData.Post_details_text}
 >
   <div
-    id="sticky-header"
+    id="sticky-chapters"
     class="pt-1.5 self-start invisible md:hidden w-full sticky top-0 z-[998] bg-secondary text-black overflow-hidden"
   >
     <div class="wrapper relative select-none">
@@ -129,7 +108,7 @@ const contentHTML = await Astro.slots.render("post-details"),
             <img class="w-full h-full" {...green_book} />
           </div>
 
-          <div id="sticky-header-heading" class="font-medium">
+          <div id="sticky-chapters-heading" class="font-medium">
             {headingName}
           </div>
         </div>
@@ -156,7 +135,7 @@ const contentHTML = await Astro.slots.render("post-details"),
           >
             <div
               role="list"
-              id="sticky-heading-links"
+              id="sticky-chapter-links"
               class="grid overflow-y-auto"
             >
               <HeadingLinks type="mobile" headings={headings}>
@@ -186,7 +165,7 @@ const contentHTML = await Astro.slots.render("post-details"),
     />
 
     <div id="post-details" class="md:w-2/3 2xl:w-1/2">
-      <div class="xl:w-5/6 2xl:w-full">
+      <div class="prose-text xl:w-5/6 2xl:w-full">
         {/* post content */}
         <slot name="post-details" />
       </div>
@@ -217,7 +196,7 @@ const contentHTML = await Astro.slots.render("post-details"),
 
             <div
               role="list"
-              id="heading-links"
+              id="chapter-links"
               class="flex flex-col leading-[130%] lg:leading-[150%] overflow-y-auto"
             >
               <HeadingLinks headings={headings}>

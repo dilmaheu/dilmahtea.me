@@ -2,8 +2,8 @@
 import { Icon } from "astro-icon";
 import { Schema } from "astro-seo-schema";
 import { Picture } from "astro-imagetools/components";
-import Markdown from "@astrojs/markdown-component";
 
+import Markdown from "@components/Markdown.astro";
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
@@ -34,9 +34,10 @@ const {
   Stock_amount: stockAmount,
 } = page;
 
-const { SKU: productSKU, Price } = page,
+const { SKU: productSKU, Price, VatPercentage } = page,
   [_, productPriceIncludingTax] = getPriceIncludingTax({
     Price,
+    VatPercentage,
     quantity: 1,
   });
 
@@ -258,98 +259,99 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     ]}
   >
     <input type="hidden" name="SKU" value={productSKU} />
-    <input type="hidden" name="price" value={Price} />
 
     <div class="flex flex-wrap gap-[15px] mt-[15px]">
-      <div
-        class="grid sm:flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full"
-      >
-        {
-          availableVariants.map(({ value, variant, variantIcon, link }) => (
-            <div>
-              <input
-                type="radio"
-                name="tea_variant"
-                id={variant}
-                value={value}
-                data-href={link}
-                checked={value === productVariant}
-                class="peer hidden"
-              />
-
-              <label
-                for={variant}
-                class:list={[
-                  "inline-block p-[3px] text-secondary w-full",
-                  "peer-checked:bg-secondary select-none cursor-pointer",
-                ]}
-                style="clip-path: url(#product-variant-curve);"
-              >
-                <div
-                  class="md:w-[188px] p-1 bg-primary"
-                  style="clip-path: url(#product-variant-curve);"
-                >
-                  <div
-                    class:list={[
-                      "w-full py-3 px-5 bg-dark-green",
-                      "flex items-center sm:justify-center gap-[15px] ",
-                    ]}
-                    style="clip-path: url(#product-variant-curve);"
-                  >
-                    {variantIcon?.src &&
-                      (async () => (
-                        <img
-                          src={await localizeCMSImage(variantIcon.src)}
-                          alt={variantIcon.alt}
-                          class="w-7 h-7"
-                        />
-                      ))}
-
-                    <span class="text-sm font-bold leading-[110%]">
-                      {variant}
-                    </span>
-                  </div>
-                </div>
-              </label>
-            </div>
-          ))
-        }
-      </div>
-
-      <div class="flex flex-wrap items-center gap-[5px] sm:gap-2.5">
-        <div class="text-base leading-[110%] p-2.5">
-          {checkoutRecurData.text_size}:
-        </div>
-
-        <div class="flex flex-wrap gap-2">
-          {
-            availableSizes.map(({ value, size, link }) => (
+      {
+        availableVariants.length > 0 && (
+          <div class="grid sm:flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full">
+            {availableVariants.map(({ value, variant, variantIcon, link }) => (
               <div>
                 <input
                   type="radio"
-                  name="tea_size"
-                  id={size}
+                  name="tea_variant"
+                  id={variant}
                   value={value}
                   data-href={link}
-                  checked={value === productSize}
+                  checked={value === productVariant}
                   class="peer hidden"
                 />
 
                 <label
-                  for={size}
+                  for={variant}
                   class:list={[
-                    "peer-checked:bg-dark-green peer-checked:text-secondary",
-                    "inline-block py-2 px-[25px] text-dark-green rounded-full",
-                    "select-none cursor-pointer border-2 border-secondary/80 bg-secondary",
+                    "inline-block p-[3px] text-secondary w-full",
+                    "peer-checked:bg-secondary select-none cursor-pointer",
                   ]}
+                  style="clip-path: url(#product-variant-curve);"
                 >
-                  {size}
+                  <div
+                    class="md:w-[188px] p-1 bg-primary"
+                    style="clip-path: url(#product-variant-curve);"
+                  >
+                    <div
+                      class:list={[
+                        "w-full py-3 px-5 bg-dark-green",
+                        "flex items-center sm:justify-center gap-[15px] ",
+                      ]}
+                      style="clip-path: url(#product-variant-curve);"
+                    >
+                      {variantIcon?.src &&
+                        (async () => (
+                          <img
+                            src={await localizeCMSImage(variantIcon.src)}
+                            alt={variantIcon.alt}
+                            class="w-7 h-7"
+                          />
+                        ))}
+
+                      <span class="text-sm font-bold leading-[110%]">
+                        {variant}
+                      </span>
+                    </div>
+                  </div>
                 </label>
               </div>
-            ))
-          }
-        </div>
-      </div>
+            ))}
+          </div>
+        )
+      }
+
+      {
+        availableSizes.length > 0 && (
+          <div class="flex flex-wrap items-center gap-[5px] sm:gap-2.5">
+            <div class="text-base leading-[110%] p-2.5">
+              {checkoutRecurData.text_size}:
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              {availableSizes.map(({ value, size, link }) => (
+                <div>
+                  <input
+                    type="radio"
+                    name="tea_size"
+                    id={size}
+                    value={value}
+                    data-href={link}
+                    checked={value === productSize}
+                    class="peer hidden"
+                  />
+
+                  <label
+                    for={size}
+                    class:list={[
+                      "peer-checked:bg-dark-green peer-checked:text-secondary",
+                      "inline-block py-2 px-[25px] text-dark-green rounded-full",
+                      "select-none cursor-pointer border-2 border-secondary/80 bg-secondary",
+                    ]}
+                  >
+                    {size}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      }
     </div>
 
     <div class="flex flex-wrap gap-5 items-center w-full justify-between">
@@ -492,72 +494,75 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     class="cart-adding-form-sm flex flex-wrap justify-between gap-6 mt-8 w-full"
   >
     <input type="hidden" name="SKU" value={productSKU} />
-    <input type="hidden" name="price" value={Price} />
 
     {
       stockAmount > 0 && (
         <div class="w-full flex flex-wrap gap-4 items-center justify-between">
-          <fieldset>
-            <legend
-              class:list={[
-                "text-sm lg:text-base font-medium leading-[150%]",
-                "text-black-light mb-[5px] outline-none",
-              ]}
-            >
-              {checkoutRecurData.text_variant}:
-            </legend>
-
-            <div class="border-2 border-primary overflow-hidden rounded-full">
-              <select
-                name="tea_variant"
+          {availableVariants.length > 0 && (
+            <fieldset>
+              <legend
                 class:list={[
-                  "inline-block bg-white border-r-[15px] border-transparent",
-                  "py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
+                  "text-sm lg:text-base font-medium leading-[150%]",
+                  "text-black-light mb-[5px] outline-none",
                 ]}
               >
-                {availableVariants.map(({ value, variant, link }) => (
-                  <option
-                    value={value}
-                    data-href={link}
-                    selected={value === productVariant}
-                  >
-                    {variant}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </fieldset>
+                {checkoutRecurData.text_variant}:
+              </legend>
 
-          <fieldset>
-            <legend
-              class:list={[
-                "text-sm lg:text-base font-medium leading-[150%]",
-                "text-black-light mb-[5px] outline-none",
-              ]}
-            >
-              {checkoutRecurData.text_size}:
-            </legend>
+              <div class="border-2 border-primary overflow-hidden rounded-full">
+                <select
+                  name="tea_variant"
+                  class:list={[
+                    "inline-block bg-white border-r-[15px] border-transparent",
+                    "py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
+                  ]}
+                >
+                  {availableVariants.map(({ value, variant, link }) => (
+                    <option
+                      value={value}
+                      data-href={link}
+                      selected={value === productVariant}
+                    >
+                      {variant}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </fieldset>
+          )}
 
-            <div class="border-2 border-primary overflow-hidden rounded-full">
-              <select
-                name="tea_size"
+          {availableSizes.length > 0 && (
+            <fieldset>
+              <legend
                 class:list={[
-                  "inline-block bg-white border-r-[15px] border-transparent",
-                  "py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
+                  "text-sm lg:text-base font-medium leading-[150%]",
+                  "text-black-light mb-[5px] outline-none",
                 ]}
               >
-                {availableSizes.map(({ value, size, link }) => (
-                  <option
-                    value={value}
-                    data-href={link}
-                    selected={value === productSize}
-                  >
-                    {size}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </fieldset>
+                {checkoutRecurData.text_size}:
+              </legend>
+
+              <div class="border-2 border-primary overflow-hidden rounded-full">
+                <select
+                  name="tea_size"
+                  class:list={[
+                    "inline-block bg-white border-r-[15px] border-transparent",
+                    "py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
+                  ]}
+                >
+                  {availableSizes.map(({ value, size, link }) => (
+                    <option
+                      value={value}
+                      data-href={link}
+                      selected={value === productSize}
+                    >
+                      {size}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </fieldset>
+          )}
         </div>
       )
     }
@@ -640,7 +645,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         ]}
       >
         <input type="hidden" name="SKU" value={productSKU} />
-        <input type="hidden" name="price" value={Price} />
 
         <div class="wrapper flex items-center gap-4 justify-between">
           <div class="w-fit flex items-center text-white p-1 bg-primary rounded-full">
@@ -1021,14 +1025,23 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   }
 </PostDetailsLayout>
 
-<script define:vars={{ baseProductTitle, productSize, productVariant }}>
-  window.baseProductTitle = baseProductTitle;
+<script
+  define:vars={{
+    baseProductTitle,
+    Price,
+    VatPercentage,
+    productSize,
+    productVariant,
+  }}
+>
+  window.productPrice = Price;
+  window.productVatPercentage = VatPercentage;
 
   const preferredProductsVariants = JSON.parse(
     localStorage.getItem("preferredProductsVariants") || "{}",
   );
 
-  preferredProductsVariants[window.baseProductTitle] = {
+  preferredProductsVariants[baseProductTitle] = {
     tea_variant: productVariant,
     tea_size: productSize,
   };
@@ -1057,8 +1070,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     ),
     productAmountPriceOutput = query(".product-amount-price"),
     productAmountInputs = queryAll(".product-amount-input"),
-    productAmountTweakBtns = queryAll(".product-amount-tweak-btn"),
-    productPrice = Number(query("input[name='price']")?.value);
+    productAmountTweakBtns = queryAll(".product-amount-tweak-btn");
 
   accordions.forEach((accordion) => {
     accordion.addEventListener("click", () => {
@@ -1069,7 +1081,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
   productFormatInputs.forEach((input) => {
     input.addEventListener("change", (event) => {
-      const target = event.target as HTMLSelectElement;
+      const target = event.target as HTMLInputElement;
 
       location.href = target.dataset.href;
     });
@@ -1109,7 +1121,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       });
 
       const [_, productPriceIncludingTax] = getPriceIncludingTax({
-        Price: productPrice,
+        Price: window.productPrice,
+        VatPercentage: window.productVatPercentage,
         quantity: 1,
       });
 
@@ -1135,7 +1148,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
     const quantity = Number(input.value),
       [_, priceIncludingTax] = getPriceIncludingTax({
-        Price: productPrice,
+        Price: window.productPrice,
+        VatPercentage: window.productVatPercentage,
         quantity,
       });
 
@@ -1151,12 +1165,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   item={{
     "@context": "https://schema.org",
     "@type": "Product",
-    name: page.Title,
+    name: page.Meta.HTML_Title,
     image: await importImage(STRAPI_URL + page.Intro_blob?.data.attributes.url),
-    description: `${(await renderMarkdown(page.Intro_text)).replace(
+    description: `${renderMarkdown(page.Intro_text).replace(
       /(<([^>]+)>)/gi,
       "",
-    )} ${(await renderMarkdown(page.Block_text)).replace(/(<([^>]+)>)/gi, "")}`,
+    )} ${renderMarkdown(page.Block_text).replace(/(<([^>]+)>)/gi, "")}`,
     sku: page.SKU,
     gtin: page.GTIN_Barcode,
     brand: {

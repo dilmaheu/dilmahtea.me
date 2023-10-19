@@ -43,6 +43,7 @@ const recurData = CMS.get("recurringElement", locale),
         Intro_blob,
         size,
         Price,
+        VatPercentage,
         Weight_tea,
         Weight_tea_unit,
         variant,
@@ -58,6 +59,7 @@ const recurData = CMS.get("recurringElement", locale),
 
       const [_, productPriceIncludingTax] = getPriceIncludingTax({
         Price,
+        VatPercentage,
         quantity: 1,
       });
 
@@ -145,11 +147,17 @@ const recurData = CMS.get("recurringElement", locale),
               class="text-white"
               style={{ "font-size": "clamp(0.75rem, 1.5vw + 0.1rem, 1rem)" }}
             >
-              {productSize?.toLowerCase().includes("bag")
-                ? size.data?.attributes.Title
-                : Weight_tea + Weight_tea_unit}
-              <span class="inline-block w-1 h-1 mx-[5px] mb-0.5 rounded-full bg-secondary" />
-              {variant?.data?.attributes.Title}
+              {(productSize || Weight_tea) &&
+                (productSize?.toLowerCase().includes("bag")
+                  ? size.data?.attributes.Title
+                  : Weight_tea + Weight_tea_unit)}
+
+              {variant.data?.attributes.Title && (
+                <>
+                  <span class="inline-block w-1 h-1 mx-[5px] mb-0.5 rounded-full bg-secondary" />
+                  {variant.data?.attributes.Title}
+                </>
+              )}
             </div>
 
             {estate_name?.data.length > 0 && (

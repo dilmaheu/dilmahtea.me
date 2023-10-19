@@ -18,6 +18,7 @@ async function processProductData(attributes) {
     rank,
     Title,
     Intro_text,
+    VatPercentage,
     Stock_amount,
     variant,
     Weight_tea,
@@ -29,14 +30,11 @@ async function processProductData(attributes) {
     sub_category,
     productVariant: tea_variant,
     productSize: tea_size,
-    size: {
-      data: {
-        attributes: { Title: productLocalizedSize },
-      },
-    },
     availableFormats,
     Meta: { URL_slug },
   } = attributes;
+
+  const productLocalizedSize = attributes.size.data?.attributes.Title;
 
   try {
     var Intro_blob_HTML = Object.values(
@@ -99,7 +97,11 @@ async function processProductData(attributes) {
       day: "numeric",
     });
 
-  const [_, PriceIncludingTax] = getPriceIncludingTax({ Price, quantity: 1 });
+  const [_, PriceIncludingTax] = getPriceIncludingTax({
+    Price,
+    VatPercentage,
+    quantity: 1,
+  });
 
   return {
     SKU,
@@ -166,12 +168,10 @@ export function getStaticPaths() {
   });
 }
 
-export function get({ params: { key } }) {
+export function GET({ params: { key } }) {
   key = key.replace(/\//g, " | ");
 
   const products = processedProducts[key];
 
-  return {
-    body: JSON.stringify(products),
-  };
+  return new Response(JSON.stringify(products));
 }

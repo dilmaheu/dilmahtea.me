@@ -8,7 +8,13 @@ const isProduction = !shouldDisplayExperimentals;
 const products = Object.fromEntries(
   await Promise.all(
     productsStore.get("all").data.map(async ({ attributes }) => {
-      const { SKU: sku, Price, productVariant, productSize } = attributes;
+      const {
+        SKU: sku,
+        Price,
+        VatPercentage,
+        productVariant,
+        productSize,
+      } = attributes;
 
       const image = await importImage(
         import.meta.env.STRAPI_URL +
@@ -18,9 +24,18 @@ const products = Object.fromEntries(
       const names = JSON.stringify(
         Object.fromEntries(
           [{ attributes }, ...attributes.localizations.data].map(
-            ({ attributes: { locale, Title } }) => [
+            ({
+              attributes: { locale, Title, category, category_tea_range, size },
+            }) => [
               locale.substring(0, 2),
-              Title,
+              [
+                Title,
+                category_tea_range?.data?.attributes?.Title,
+                category?.data?.attributes?.Title,
+                size?.data?.attributes?.Title,
+              ]
+                .filter(Boolean)
+                .join(" &#x025CF; "),
             ],
           ),
         ),
@@ -31,6 +46,7 @@ const products = Object.fromEntries(
         {
           sku,
           Price,
+          VatPercentage,
           image,
           names,
           tea_variant: productVariant,
@@ -82,11 +98,12 @@ const products = Object.fromEntries(
     if (!productData) {
       delete storedCart[SKU];
     } else {
-      const { Price } = productData,
+      const { Price, VatPercentage } = productData,
         { quantity } = inCartProductData;
 
       const [tax, priceIncludingTax] = window.getPriceIncludingTax({
         Price,
+        VatPercentage,
         quantity,
         fix: true,
       });
@@ -108,11 +125,12 @@ const products = Object.fromEntries(
   const updateAmounts = (cart) => {
     [subTotal = 0, tax = 0] = Object.keys(cart).reduce(
       ([subTotal, taxSum], SKU) => {
-        const { Price } = products[SKU],
+        const { Price, VatPercentage } = products[SKU],
           { quantity } = cart[SKU];
 
         const [tax, priceIncludingTax] = window.getPriceIncludingTax({
           Price,
+          VatPercentage,
           quantity,
         });
 
@@ -183,11 +201,14 @@ const products = Object.fromEntries(
       const productExistsInCart = !!cart[productId];
 
       const { quantity } = productData,
-        { Price, image, names, tea_variant, tea_size } = products[productId];
+        { Price, VatPercentage, image, names, tea_variant, tea_size } =
+          products[productId];
 
-      const total = Price * quantity,
-        tax = Math.round(Number(total) * 9) / 100,
-        price = total + tax;
+      const [tax, price] = window.getPriceIncludingTax({
+        Price,
+        VatPercentage,
+        quantity,
+      });
 
       productData = {
         sku: productId,

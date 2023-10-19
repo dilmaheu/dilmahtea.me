@@ -274,7 +274,6 @@ function trimLink(link) {
             alt=""
             layout="fill"
             preload="avif"
-            breakpoints={{ maxWidth: 640 }}
             src={nav_background_sm?.src || nav_background.src}
             artDirectives={[
               {
@@ -911,6 +910,7 @@ function trimLink(link) {
   const cart = id("cart"),
     sidebar = id("sidebar"),
     navigation = id("navigation"),
+    stickyChapters = id("sticky-chapters"),
     openCartBtn = id("open-cart-btn"),
     sidebarOpenButton = id("sidebar-open-btn"),
     sidebarCloseButton = id("sidebar-close-btn"),
@@ -956,8 +956,16 @@ function trimLink(link) {
   };
 
   const updateSidebarTopPosition = () => {
-    // reduce top by 10px to hide the transparent gap caused by the curve
-    const sidebarTop = navigation.getBoundingClientRect().bottom - 10;
+    const isStickyChaptersVisible =
+      stickyChapters && !stickyChapters.classList.contains("invisible");
+
+    const sidebarTop =
+      (isStickyChaptersVisible
+        ? stickyChapters
+        : navigation
+      ).getBoundingClientRect().bottom -
+      // reduce top by 10px to hide the transparent gap caused by the curve
+      (!isStickyChaptersVisible && window.innerWidth >= 640 ? 10 : 0);
 
     sidebar.style.top = `${sidebarTop}px`;
     sidebar.style.paddingBottom = `${sidebarTop}px`;
