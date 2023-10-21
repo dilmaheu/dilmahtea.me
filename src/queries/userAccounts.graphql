@@ -36,16 +36,14 @@ fragment UserAccountsAttributes on UserAccount {
 }
 
 query {
-  userAccounts {
+  userAccounts(locale: "all") {
     data {
       id
       attributes {
         ...UserAccountsAttributes
         localizations(filters: { publishedAt: { ne: null } }) {
           data {
-            attributes {
-              ...UserAccountsAttributes
-            }
+            id
           }
         }
       }
