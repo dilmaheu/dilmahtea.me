@@ -3,12 +3,14 @@ import Markdown from "@components/Markdown.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+import getUserAccountPagesLink from "@utils/getUserAccountPagesLink";
 import localizeCMSImage from "@utils/localizeCMSImage";
 
 const { green_cup } = RecurringImages;
 
 const { page } = Astro.props,
   {
+    UID,
     locale,
     Form: form,
     Social_media: social_media,
@@ -33,6 +35,8 @@ function fromEntries(array) {
 
   return formIputs;
 }
+
+const verificationLink = getUserAccountPagesLink("verification", locale);
 ---
 
 <style lang="scss">
@@ -117,7 +121,7 @@ function fromEntries(array) {
     )
   }
 
-  <section class="w-full md:max-w-[740px] mx-auto">
+  <section id="account-action" class="w-full md:max-w-[740px] mx-auto">
     <div
       class:list={[
         form?.Blob?.data
@@ -213,16 +217,19 @@ function fromEntries(array) {
                   </>
                 )}
 
-                <div class="w-full">
+                <div class="w-full flex flex-col justify-center">
                   <button
                     class:list={[
                       "font-bold text-white bg-primary rounded-full",
-                      "flex justify-center py-3 px-[35px] mt-2.5 mx-auto",
-                      "w-full md:w-auto md:min-w-[330px] lg:min-w-[350px]",
+                      "w-full md:w-fit md:min-w-[330px] lg:min-w-[350px] py-3 px-[35px] mt-2.5 mx-auto",
                     ]}
                   >
                     {form?.Submit_button_text}
                   </button>
+
+                  <strong>
+                    <p class="text-error pt-4 -mb-4 text-center" />
+                  </strong>
                 </div>
               </div>
             </form>
@@ -339,3 +346,40 @@ function fromEntries(array) {
     </div>
   </section>
 </div>
+
+<script define:vars={{ UID, verificationLink }}>
+  const accountActionSection = document.getElementById("account-action");
+
+  const form = accountActionSection.querySelector("form"),
+    ctaButton = accountActionSection.querySelector("button"),
+    errorArea = accountActionSection.querySelector(".text-error");
+
+  ctaButton.addEventListener("click", async (event) => {
+    event.preventDefault();
+
+    formdata = form && Object.fromEntries(new FormData(form));
+
+    switch (UID) {
+      case "login":
+        const response = await fetch("/account/login", {
+          method: "POST",
+          body: JSON.stringify({
+            ...formdata,
+            locale: window.preferredLocale,
+            referrer: document.referrer,
+          }),
+        }).then((res) => res.json());
+
+        if (response.success) {
+          location.href = "/" + window.preferredLocale + "/" + verificationLink;
+        } else {
+          errorArea.textContent = response.message;
+        }
+
+        break;
+
+      default:
+        break;
+    }
+  });
+</script>
