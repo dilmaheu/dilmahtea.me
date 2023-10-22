@@ -47,18 +47,18 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
   let response: Response;
 
-  const mailData = JSON.parse(await env.MAILS.get("Magic Link Email"));
-
-  const mail = mailData[locale],
-    { Subject, From_email, SMS, htmlEmail } = mail;
-
-  function replacePlaceholders(text: string): string {
-    return text
-      .replaceAll("<magic_link>", "https://dilmahtea.me/en/")
-      .replaceAll("<from_email>", From_email);
-  }
-
   try {
+    const mailData = JSON.parse(await env.MAILS.get("Magic Link Email"));
+
+    const mail = mailData[locale],
+      { Subject, From_email, SMS, htmlEmail } = mail;
+
+    function replacePlaceholders(text: string): string {
+      return text
+        .replaceAll("<magic_link>", "https://dilmahtea.me/en/")
+        .replaceAll("<from_email>", From_email);
+    }
+
     if (email) {
       const finalHTMLEmail = replacePlaceholders(htmlEmail);
 
