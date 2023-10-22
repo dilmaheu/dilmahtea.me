@@ -48,9 +48,17 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     });
   }
 
-  const token = await getToken(env.USERS, { email, phone }, referrer),
-    magicLink =
+  try {
+    const token = await getToken(env.USERS, { email, phone }, referrer);
+
+    var magicLink =
       new URL(request.url).origin + "/account/verify/" + "?token=" + token;
+  } catch (error) {
+    return Response.json({
+      success: false,
+      message: "Something went wrong. Failed to generate magic link.",
+    });
+  }
 
   let response: Response;
 
