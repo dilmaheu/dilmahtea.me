@@ -27,7 +27,7 @@ export const getToken: GetToken = async (db, { email, phone }, referrer) => {
 
   if (reusableToken) return reusableToken.id;
 
-  const token = generateRandomString(128);
+  const token = generateRandomString(64);
 
   await db
     .prepare("INSERT INTO verification_tokens VALUES (?, ?, ?, ?)")
@@ -36,3 +36,22 @@ export const getToken: GetToken = async (db, { email, phone }, referrer) => {
 
   return token;
 };
+
+export async function validateToken(db: D1Database, token: string) {
+  const storedToken = await db
+    .prepare("SELECT * FROM verification_tokens WHERE id = ?")
+    .bind(token)
+    .first<Token>();
+
+  if (!storedToken) throw new Error("Invalid token");
+
+  await db
+    .prepare("DELETE FROM verification_tokens WHERE id = ?")
+    .bind(token)
+    .all();
+
+  if (!isWithinExpiration(storedToken.expires))
+    throw new Error("Expired token");
+
+  return storedToken;
+}
