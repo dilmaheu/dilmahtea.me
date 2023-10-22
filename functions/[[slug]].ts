@@ -1,6 +1,6 @@
 // @ts-check
 
-export async function onRequestGet(context) {
+export const onRequestGet: PagesFunction<Env> = async (context) => {
   const { request, passThroughOnException, next, env } = context;
 
   passThroughOnException();
@@ -27,4 +27,4 @@ export async function onRequestGet(context) {
   } else {
     next();
   }
-}
+};
