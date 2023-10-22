@@ -21,7 +21,8 @@ const BodySchema = z.object({
 type Body = z.infer<typeof BodySchema>;
 
 export const onRequestPost: PagesFunction<ENV> = async (context) => {
-  const { request, env } = context;
+  const { request, env } = context,
+    requestOrigin = new URL(request.url).origin;
 
   const body = await request.json<Body>();
 
@@ -41,6 +42,10 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     }
 
     ({ locale, referrer } = loginData);
+
+    if (!referrer || new URL(referrer).origin !== requestOrigin) {
+      referrer = requestOrigin;
+    }
   } catch (error) {
     return Response.json({
       success: false,
