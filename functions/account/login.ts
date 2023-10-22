@@ -1,9 +1,12 @@
 import { z } from "zod";
 import validator from "validator";
 
+import { getToken } from "../utils/token";
+
 declare interface ENV {
   MAILS: KVNamespace;
   EMAIL: Fetcher;
+  USERS: D1Database;
   TWILIO_ACCOUNT_SID: string;
   TWILIO_AUTH_TOKEN: string;
   TWILIO_PHONE_NUMBER: string;
@@ -45,6 +48,10 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     });
   }
 
+  const token = await getToken(env.USERS, { email, phone }, referrer),
+    magicLink =
+      new URL(request.url).origin + "/account/verify/" + "?token=" + token;
+
   let response: Response;
 
   try {
@@ -55,7 +62,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
     function replacePlaceholders(text: string): string {
       return text
-        .replaceAll("<magic_link>", "https://dilmahtea.me/en/")
+        .replaceAll("<magic_link>", magicLink)
         .replaceAll("<from_email>", From_email);
     }
 
