@@ -22,7 +22,7 @@ export const getToken: GetToken = async (db, { email, phone }, referrer) => {
     .all<Token>();
 
   const reusableToken = storedTokens.find(({ expires }) =>
-    isWithinExpiration(Number(expires) - EXPIRES_IN / 2),
+    isWithinExpiration(expires - EXPIRES_IN / 2),
   );
 
   if (reusableToken) return reusableToken.id;
