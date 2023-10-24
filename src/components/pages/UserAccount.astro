@@ -340,8 +340,8 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
 
                   <button
                     class:list={[
-                      "font-bold text-white py-3 px-[35px] bg-primary",
-                      "flex justify-center rounded-full cursor-pointer",
+                      "flex justify-center rounded-full font-bold text-white py-3 px-[35px]",
+                      "bg-primary cursor-pointer disabled:bg-slate disabled:cursor-not-allowed",
                     ]}
                   >
                     {page?.Button_text}
@@ -372,6 +372,41 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
   const form = accountActionSection.querySelector("form"),
     ctaButton = accountActionSection.querySelector("button"),
     errorArea = accountActionSection.querySelector(".text-error");
+
+  function updateTimeLeft() {
+    ctaButton.disabled = true;
+
+    const { innerText: buttonText } = ctaButton;
+
+    let timeLeft = 61;
+
+    const updateTimeLeft = () => {
+      timeLeft -= 1;
+
+      ctaButton.innerText = buttonText + ` (${timeLeft})`;
+    };
+
+    updateTimeLeft();
+
+    const setTimeLeftID = setInterval(updateTimeLeft, 1000);
+
+    setTimeout(() => {
+      ctaButton.disabled = false;
+      ctaButton.innerText = buttonText;
+
+      clearInterval(setTimeLeftID);
+    }, 60000);
+  }
+
+  switch (UID) {
+    case "verification":
+      updateTimeLeft();
+
+      break;
+
+    default:
+      break;
+  }
 
   ctaButton.addEventListener("click", async (event) => {
     event.preventDefault();
