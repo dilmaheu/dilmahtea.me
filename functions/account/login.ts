@@ -47,10 +47,10 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
       referrer = requestOrigin;
     }
   } catch (error) {
-    return Response.json({
-      success: false,
-      message: "Invalid email or phone number",
-    });
+    return Response.json(
+      { success: false, message: "Invalid email or phone number" },
+      { status: 400 },
+    );
   }
 
   try {
@@ -59,10 +59,13 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     var magicLink =
       new URL(request.url).origin + "/account/verify/" + "?token=" + token;
   } catch (error) {
-    return Response.json({
-      success: false,
-      message: "Something went wrong. Failed to generate magic link.",
-    });
+    return Response.json(
+      {
+        success: false,
+        message: "Something went wrong. Failed to generate magic link.",
+      },
+      { status: 500 },
+    );
   }
 
   let response: Response;
@@ -122,9 +125,12 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
     return Response.json({ success: true });
   } catch (error) {
-    return Response.json({
-      success: false,
-      message: "Something went wrong. Failed to send magic link.",
-    });
+    return Response.json(
+      {
+        success: false,
+        message: "Something went wrong. Failed to send magic link.",
+      },
+      { status: 500 },
+    );
   }
 };
