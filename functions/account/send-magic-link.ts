@@ -1,16 +1,9 @@
+import type { ENV } from "../utils/types";
+
 import { z } from "zod";
 import validator from "validator";
 
 import { getToken } from "../utils/token";
-
-declare interface ENV {
-  MAILS: KVNamespace;
-  EMAIL: Fetcher;
-  USERS: D1Database;
-  TWILIO_ACCOUNT_SID: string;
-  TWILIO_AUTH_TOKEN: string;
-  TWILIO_PHONE_NUMBER: string;
-}
 
 const BodySchema = z.object({
   email_or_phone: z.string(),
@@ -53,8 +46,10 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     );
   }
 
+  const contact = email || phone;
+
   try {
-    const token = await getToken(env.USERS, { email, phone }, referrer);
+    const token = await getToken(env.USERS, contact, referrer);
 
     var magicLink =
       new URL(request.url).origin + "/account/verify/" + "?token=" + token;
