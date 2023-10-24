@@ -1,3 +1,5 @@
+import type { Token } from "./types";
+
 import { generateRandomString, isWithinExpiration } from "lucia/utils";
 
 type GetToken = (
