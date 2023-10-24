@@ -1,5 +1,6 @@
 ---
 import Markdown from "@components/Markdown.astro";
+import DynamicHTML from "@components/DynamicHTML.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
@@ -261,7 +262,25 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
                       "form-item",
                   ]}
                 >
-                  <Markdown>{block_text}</Markdown>
+                  {UID !== "verification" ? (
+                    <Markdown>{block_text}</Markdown>
+                  ) : (
+                    <DynamicHTML
+                      voidFn={(content, currentScript) => {
+                        currentScript.insertAdjacentHTML(
+                          "beforebegin",
+                          content.replace(
+                            "&lt;contact&gt;",
+                            `<strong>${new URLSearchParams(location.search).get(
+                              "contact",
+                            )}</strong>`,
+                          ),
+                        );
+                      }}
+                    >
+                      <Markdown>{block_text}</Markdown>
+                    </DynamicHTML>
+                  )}
                 </div>
               )
             }
@@ -371,7 +390,9 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
         }).then((res) => res.json());
 
         if (response.success) {
-          location.href = "/" + window.preferredLocale + "/" + verificationLink;
+          const contact = encodeURIComponent(formdata.email_or_phone);
+
+          location.href = `/${window.preferredLocale}/${verificationLink}?contact=${contact}`;
         } else {
           errorArea.textContent = response.message;
         }
