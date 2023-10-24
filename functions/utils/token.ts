@@ -6,14 +6,7 @@ type GetToken = (
   referrer: string,
 ) => Promise<string>;
 
-interface Token {
-  id: string;
-  expires: number;
-  contact: string;
-  referrer: string;
-}
-
-const EXPIRES_IN = 1000 * 60 * 2;
+const EXPIRES_IN = 1000 * 60 * 60;
 
 export const getToken: GetToken = async (db, { email, phone }, referrer) => {
   const { results: storedTokens } = await db
