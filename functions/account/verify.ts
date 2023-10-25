@@ -44,7 +44,7 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
     throw error;
   }
 
-  const user: User = auth.getUser(key.userId);
+  const user: User = await auth.getUser(key.userId);
 
   const session: Session = await auth.createSession({
     userId: user.userId,
