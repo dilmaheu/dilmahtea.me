@@ -53,6 +53,11 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
 
   const sessionCookie = auth.createSessionCookie(session);
 
+  // delete stored token
+  await env.USERS.prepare("DELETE FROM verification_tokens WHERE id = ?")
+    .bind(token)
+    .all();
+
   return new Response(null, {
     headers: {
       Location: referrer,

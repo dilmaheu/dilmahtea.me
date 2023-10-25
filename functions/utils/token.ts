@@ -48,7 +48,11 @@ export const getToken: GetToken = async (db, locale, contact, referrer) => {
   return token;
 };
 
-export async function validateToken(db: D1Database, token: string) {
+export async function validateToken(
+  db: D1Database,
+  token: string,
+  checkIfExpired: boolean = true,
+) {
   if (!token) throw new Error("Bad Request");
 
   const storedToken = await db
@@ -58,12 +62,7 @@ export async function validateToken(db: D1Database, token: string) {
 
   if (!storedToken) throw new Error("Invalid token");
 
-  await db
-    .prepare("DELETE FROM verification_tokens WHERE id = ?")
-    .bind(token)
-    .all();
-
-  if (!isWithinExpiration(storedToken.expires))
+  if (checkIfExpired && !isWithinExpiration(storedToken.expires))
     throw new Error("Expired token");
 
   return storedToken;
