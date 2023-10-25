@@ -1,5 +1,7 @@
 import type { Token } from "./types";
 
+import validator from "validator";
+
 import { isWithinExpiration } from "lucia/utils";
 
 export async function handleAccountPath(
@@ -10,12 +12,20 @@ export async function handleAccountPath(
   const [fullMatch, specificPath] = accountPath,
     pathID = specificPath.replace(/(^\/|\/$)/g, "");
 
+  const { origin } = URL,
+    searchParams = Object.fromEntries(new URLSearchParams(URL.searchParams));
+
+  function redirectToLogin() {
+    return Response.redirect(
+      origin + fullMatch.replace(specificPath, "/login"),
+      303,
+    );
+  }
+
   switch (pathID) {
     // redirect to login page if request is invalid
-    case "verification":
-      const { origin, searchParams } = URL,
-        contact = searchParams.get("contact"),
-        referrer = searchParams.get("referrer");
+    case "verification": {
+      const { contact, referrer } = searchParams;
 
       if (contact && referrer) {
         const { results: storedTokens } = await USERS.prepare(
@@ -33,10 +43,33 @@ export async function handleAccountPath(
         }
       }
 
-      return Response.redirect(
-        origin + fullMatch.replace(specificPath, "/login"),
-        303,
-      );
+      return redirectToLogin();
+    }
+
+    case "signup":
+    case "link": {
+      const { token, email, phone } = searchParams;
+
+      if (token && (email || phone)) {
+        const { results: storedTokens } = await USERS.prepare(
+          "SELECT * FROM verification_tokens WHERE id = ?",
+        )
+          .bind(token)
+          .all<Token>();
+
+        if (storedTokens.length > 0) {
+          const validToken = storedTokens.find(({ contact }) => {
+            const isEmail = validator.isEmail(contact);
+
+            return email ? isEmail : !isEmail;
+          });
+
+          if (validToken) break;
+        }
+      }
+
+      return redirectToLogin();
+    }
 
     default:
       break;
