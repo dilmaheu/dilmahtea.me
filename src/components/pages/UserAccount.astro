@@ -402,6 +402,10 @@ const verificationLink = getUserAccountPagesLink("verification", locale),
     }, 60000);
   }
 
+  function continueToWhereLeft() {
+    location.href = searchParams.referrer;
+  }
+
   switch (UID) {
     case "verification":
       updateTimeLeft();
@@ -420,6 +424,11 @@ const verificationLink = getUserAccountPagesLink("verification", locale),
         "&lt;alternate_contact_type&gt;",
         email ? textMobileNumber : textEmail,
       );
+
+      break;
+
+    case "congrats":
+      setTimeout(continueToWhereLeft, 5000);
 
       break;
 
@@ -510,6 +519,11 @@ const verificationLink = getUserAccountPagesLink("verification", locale),
             },
           });
         }
+
+        break;
+
+      case "congrats":
+        continueToWhereLeft();
 
         break;
 
