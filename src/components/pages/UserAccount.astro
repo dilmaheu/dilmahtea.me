@@ -366,7 +366,7 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
     errorArea = accountActionSection.querySelector(".text-error"),
     blockText = accountActionSection.querySelector(".block-text");
 
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = Object.fromEntries(new URLSearchParams(location.search));
 
   function updateTimeLeft() {
     ctaButton.disabled = true;
@@ -399,13 +399,13 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
 
       blockText.innerHTML = blockText.innerHTML.replace(
         "&lt;contact&gt;",
-        searchParams.get("contact"),
+        searchParams.contact,
       );
 
       break;
 
     case "signup":
-      const email = searchParams.get("email");
+      const { email } = searchParams;
 
       blockText.innerHTML = blockText.innerHTML.replace(
         "&lt;alternate_contact_type&gt;",
@@ -418,6 +418,19 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
       break;
   }
 
+  async function sendRequest({ url, data, onSuccess }) {
+    const response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(data),
+    }).then((res) => res.json());
+
+    if (response.success) {
+      onSuccess();
+    } else {
+      errorArea.textContent = response.message;
+    }
+  }
+
   ctaButton.addEventListener("click", async (event) => {
     event.preventDefault();
 
@@ -426,54 +439,45 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
     switch (UID) {
       case "login":
         {
-          const response = await fetch("/account/send-magic-link", {
-            method: "POST",
-            body: JSON.stringify({
+          await sendRequest({
+            url: "/account/send-magic-link",
+            data: {
               ...formdata,
               locale: window.preferredLocale,
               referrer: document.referrer,
-            }),
-          }).then((res) => res.json());
+            },
+            onSuccess: () => {
+              const searchParams = new URLSearchParams({
+                contact: formdata.email_or_phone,
+                referrer: document.referrer,
+              });
 
-          if (response.success) {
-            const searchParams = new URLSearchParams({
-              contact: formdata.email_or_phone,
-              referrer: document.referrer,
-            });
-
-            location.href =
-              "/" +
-              window.preferredLocale +
-              "/" +
-              verificationLink +
-              "?" +
-              searchParams.toString();
-          } else {
-            errorArea.textContent = response.message;
-          }
+              location.href =
+                "/" +
+                window.preferredLocale +
+                "/" +
+                verificationLink +
+                "?" +
+                searchParams.toString();
+            },
+          });
         }
 
         break;
 
       case "verification":
         {
-          const contact = searchParams.get("contact"),
-            referrer = searchParams.get("referrer");
+          const { contact, referrer } = searchParams;
 
-          const response = await fetch("/account/send-magic-link", {
-            method: "POST",
-            body: JSON.stringify({
+          await sendRequest({
+            url: "/account/send-magic-link",
+            data: {
               email_or_phone: contact,
               referrer,
               locale: window.preferredLocale,
-            }),
-          }).then((res) => res.json());
-
-          if (response.success) {
-            updateTimeLeft();
-          } else {
-            errorArea.textContent = response.message;
-          }
+            },
+            onSuccess: updateTimeLeft,
+          });
         }
 
         break;
