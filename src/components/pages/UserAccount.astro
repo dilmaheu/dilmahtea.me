@@ -23,6 +23,8 @@ const {
   Facebook_icon: fb_icon,
   Google_icon: g_icon,
   Twitter_icon: twitter_icon,
+  text_email: textEmail,
+  text_mobile_number: textMobileNumber,
 } = userAccountRecurData;
 
 const isEmailOrPhoneForm = form?.Email_or_phone;
@@ -172,6 +174,7 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
                         />
                       </label>
                     )}
+
                     {form.Last_name && (
                       <label>
                         {userAccountRecurData.Input_label_last_name}
@@ -186,6 +189,7 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
                         />
                       </label>
                     )}
+
                     {form.Email && (
                       <label>
                         {userAccountRecurData.Input_label_email}
@@ -200,13 +204,14 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
                         />
                       </label>
                     )}
+
                     {form.Phone && (
                       <label>
                         {userAccountRecurData.Input_label_phone}
 
                         <input
                           type="text"
-                          name="phone_number"
+                          name="phone"
                           placeholder={
                             userAccountRecurData.Input_placeholder_phone
                           }
@@ -353,12 +358,13 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
   </section>
 </div>
 
-<script define:vars={{ UID, verificationLink }}>
+<script define:vars={{ UID, verificationLink, textEmail, textMobileNumber }}>
   const accountActionSection = document.getElementById("account-action");
 
   const form = accountActionSection.querySelector("form"),
     ctaButton = accountActionSection.querySelector("button"),
-    errorArea = accountActionSection.querySelector(".text-error");
+    errorArea = accountActionSection.querySelector(".text-error"),
+    blockText = accountActionSection.querySelector(".block-text");
 
   const searchParams = new URLSearchParams(location.search);
 
@@ -391,11 +397,19 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
     case "verification":
       updateTimeLeft();
 
-      const blockText = accountActionSection.querySelector(".block-text");
-
       blockText.innerHTML = blockText.innerHTML.replace(
         "&lt;contact&gt;",
         searchParams.get("contact"),
+      );
+
+      break;
+
+    case "signup":
+      const email = searchParams.get("email");
+
+      blockText.innerHTML = blockText.innerHTML.replace(
+        "&lt;alternate_contact_type&gt;",
+        email ? textMobileNumber : textEmail,
       );
 
       break;
