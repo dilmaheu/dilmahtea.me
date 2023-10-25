@@ -6,13 +6,14 @@ import { generateRandomString, isWithinExpiration } from "lucia/utils";
 
 type GetToken = (
   db: D1Database,
+  locale: string,
   contact: string,
   referrer: string,
 ) => Promise<string>;
 
 const EXPIRES_IN = 1000 * 60 * 60;
 
-export const getToken: GetToken = async (db, contact, referrer) => {
+export const getToken: GetToken = async (db, locale, contact, referrer) => {
   const { results: storedTokens } = await db
     .prepare(`SELECT * FROM verification_tokens WHERE contact = ?`)
     .bind(contact)
@@ -40,14 +41,16 @@ export const getToken: GetToken = async (db, contact, referrer) => {
   const token = generateRandomString(64);
 
   await db
-    .prepare("INSERT INTO verification_tokens VALUES (?, ?, ?, ?)")
-    .bind(token, Date.now() + EXPIRES_IN, contact, referrer)
+    .prepare("INSERT INTO verification_tokens VALUES (?, ?, ?, ?, ?)")
+    .bind(token, Date.now() + EXPIRES_IN, locale, contact, referrer)
     .all();
 
   return token;
 };
 
 export async function validateToken(db: D1Database, token: string) {
+  if (!token) throw new Error("Bad Request");
+
   const storedToken = await db
     .prepare("SELECT * FROM verification_tokens WHERE id = ?")
     .bind(token)

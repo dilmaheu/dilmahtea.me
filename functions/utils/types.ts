@@ -1,6 +1,7 @@
 export interface Token {
   id: string;
   expires: number;
+  locale: string;
   contact: string;
   referrer: string;
 }

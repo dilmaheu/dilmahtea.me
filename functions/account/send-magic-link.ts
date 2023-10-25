@@ -50,7 +50,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
   const contact = email || phone;
 
   try {
-    const token = await getToken(env.USERS, contact, referrer);
+    const token = await getToken(env.USERS, locale, contact, referrer);
 
     var magicLink =
       new URL(request.url).origin + "/account/verify/" + "?token=" + token;

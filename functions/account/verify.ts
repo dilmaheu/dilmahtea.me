@@ -1,4 +1,7 @@
+import type { Key, User, Session } from "lucia";
+
 import { validateToken } from "../utils/token";
+import { initializeLucia } from "../utils/auth";
 
 declare interface ENV {
   USERS: D1Database;
@@ -7,9 +10,10 @@ declare interface ENV {
 export const onRequestGet: PagesFunction<ENV> = async (context) => {
   const { request, env } = context;
 
-  const token = new URL(request.url).searchParams.get("token");
+  const requestURL = new URL(request.url),
+    { origin, searchParams } = requestURL;
 
-  if (!token) throw new Error("Bad Request");
+  const token = searchParams.get("token");
 
   try {
     var storedToken = await validateToken(env.USERS, token);
@@ -17,7 +21,39 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
     return new Response(error.message, { status: 400 });
   }
 
-  const { referrer } = storedToken;
+  const { locale, contact, referrer } = storedToken;
 
-  return Response.redirect(referrer, 303);
+  const auth = initializeLucia(env.USERS);
+
+  try {
+    var key: Key = await auth.useKey("magic_link", contact.toLowerCase(), null);
+  } catch (error) {
+    if (error.message === "AUTH_INVALID_KEY_ID") {
+      const queryParams = new URLSearchParams({ token });
+
+      return Response.redirect(
+        origin + "/" + locale + "/account/signup?" + queryParams,
+        303,
+      );
+    }
+
+    throw error;
+  }
+
+  const user: User = auth.getUser(key.userId);
+
+  const session: Session = await auth.createSession({
+    userId: user.userId,
+    attributes: { referrer },
+  });
+
+  const sessionCookie = auth.createSessionCookie(session);
+
+  return new Response(null, {
+    headers: {
+      Location: referrer,
+      "Set-Cookie": sessionCookie.serialize(),
+    },
+    status: 303,
+  });
 };
