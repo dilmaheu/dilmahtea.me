@@ -1,5 +1,7 @@
 import type { Key, User, Session } from "lucia";
 
+import validator from "validator";
+
 import { validateToken } from "../utils/token";
 import { initializeLucia } from "../utils/auth";
 
@@ -29,7 +31,12 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
     var key: Key = await auth.useKey("magic_link", contact.toLowerCase(), null);
   } catch (error) {
     if (error.message === "AUTH_INVALID_KEY_ID") {
-      const queryParams = new URLSearchParams({ token });
+      const isEmail = validator.isEmail(contact);
+
+      const queryParams = new URLSearchParams({
+        token,
+        [isEmail ? "email" : "phone"]: "true",
+      }).toString();
 
       return Response.redirect(
         origin + "/" + locale + "/account/signup?" + queryParams,
