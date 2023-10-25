@@ -1,13 +1,10 @@
+import type { ENV } from "../utils/types";
 import type { Key, User, Session } from "lucia";
 
 import validator from "validator";
 
 import { validateToken } from "../utils/token";
 import { initializeLucia } from "../utils/auth";
-
-declare interface ENV {
-  USERS: D1Database;
-}
 
 export const onRequestGet: PagesFunction<ENV> = async (context) => {
   const { request, env } = context;
