@@ -4,6 +4,7 @@ import { z } from "zod";
 import validator from "validator";
 
 import { getToken } from "../utils/token";
+import { PublicError } from "../utils/error";
 
 const BodySchema = z.object({
   email_or_phone: z.string(),
@@ -54,12 +55,16 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     var magicLink =
       new URL(request.url).origin + "/account/verify/" + "?token=" + token;
   } catch (error) {
+    const isPublicError = error instanceof PublicError;
+
     return Response.json(
       {
         success: false,
-        message: "Something went wrong. Failed to generate magic link.",
+        message: isPublicError
+          ? error.message
+          : "Something went wrong. Failed to generate magic link.",
       },
-      { status: 500 },
+      { status: isPublicError ? 400 : 500 },
     );
   }
 

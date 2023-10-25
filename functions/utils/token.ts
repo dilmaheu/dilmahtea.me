@@ -1,5 +1,7 @@
 import type { Token } from "./types";
 
+import { PublicError } from "./error";
+
 import { generateRandomString, isWithinExpiration } from "lucia/utils";
 
 type GetToken = (
@@ -20,7 +22,20 @@ export const getToken: GetToken = async (db, contact, referrer) => {
     isWithinExpiration(expires - EXPIRES_IN / 2),
   );
 
-  if (reusableToken) return reusableToken.id;
+  if (reusableToken) {
+    const { id, expires } = reusableToken;
+
+    if (isWithinExpiration(expires - EXPIRES_IN * (59 / 60))) {
+      throw new PublicError("Too many requests");
+    }
+
+    await db
+      .prepare("UPDATE verification_tokens SET expires = ? WHERE id = ?")
+      .bind(Date.now() + EXPIRES_IN, id)
+      .all();
+
+    return id;
+  }
 
   const token = generateRandomString(64);
 
