@@ -39,7 +39,8 @@ function fromEntries(array) {
 }
 
 const verificationLink = getUserAccountPagesLink("verification", locale),
-  congratsLink = getUserAccountPagesLink("congrats", locale);
+  congratsLink = getUserAccountPagesLink("congrats", locale),
+  linkPageLink = getUserAccountPagesLink("link", locale);
 ---
 
 <style lang="scss">
@@ -363,6 +364,7 @@ const verificationLink = getUserAccountPagesLink("verification", locale),
   define:vars={{
     UID,
     verificationLink,
+    linkPageLink,
     congratsLink,
     textEmail,
     textMobileNumber,
@@ -418,12 +420,15 @@ const verificationLink = getUserAccountPagesLink("verification", locale),
       break;
 
     case "signup":
-      const { email } = searchParams;
+      const { email } = searchParams,
+        linkPageHref = "/" + window.preferredLocale + "/" + linkPageLink + "/";
 
-      blockText.innerHTML = blockText.innerHTML.replace(
-        "&lt;alternate_contact_type&gt;",
-        email ? textMobileNumber : textEmail,
-      );
+      blockText.innerHTML = blockText.innerHTML
+        .replace(
+          "&lt;alternate_contact_type&gt;",
+          email ? textMobileNumber : textEmail,
+        )
+        .replace(linkPageHref, linkPageHref + "?" + location.search);
 
       break;
 
