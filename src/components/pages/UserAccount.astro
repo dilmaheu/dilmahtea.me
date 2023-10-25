@@ -1,6 +1,5 @@
 ---
 import Markdown from "@components/Markdown.astro";
-import DynamicHTML from "@components/DynamicHTML.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
@@ -257,30 +256,12 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
               block_text && (
                 <div
                   class:list={[
-                    "prose-text prose max-w-none mt-[35px] text-center text-black-light",
+                    "block-text prose-text prose max-w-none mt-[35px] text-center text-black-light",
                     (isEmailOrPhoneForm || (form && fromEntries(form) === 1)) &&
                       "form-item",
                   ]}
                 >
-                  {UID !== "verification" ? (
-                    <Markdown>{block_text}</Markdown>
-                  ) : (
-                    <DynamicHTML
-                      voidFn={(content, currentScript) => {
-                        currentScript.insertAdjacentHTML(
-                          "beforebegin",
-                          content.replace(
-                            "&lt;contact&gt;",
-                            `<strong>${new URLSearchParams(location.search).get(
-                              "contact",
-                            )}</strong>`,
-                          ),
-                        );
-                      }}
-                    >
-                      <Markdown>{block_text}</Markdown>
-                    </DynamicHTML>
-                  )}
+                  <Markdown>{block_text}</Markdown>
                 </div>
               )
             }
@@ -379,6 +360,8 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
     ctaButton = accountActionSection.querySelector("button"),
     errorArea = accountActionSection.querySelector(".text-error");
 
+  const searchParams = new URLSearchParams(location.search);
+
   function updateTimeLeft() {
     ctaButton.disabled = true;
 
@@ -407,6 +390,13 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
   switch (UID) {
     case "verification":
       updateTimeLeft();
+
+      const blockText = accountActionSection.querySelector(".block-text");
+
+      blockText.innerHTML = blockText.innerHTML.replace(
+        "&lt;contact&gt;",
+        searchParams.get("contact"),
+      );
 
       break;
 
@@ -453,8 +443,7 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
 
       case "verification":
         {
-          const searchParams = new URLSearchParams(location.search),
-            contact = searchParams.get("contact"),
+          const contact = searchParams.get("contact"),
             referrer = searchParams.get("referrer");
 
           const response = await fetch("/account/send-magic-link", {
