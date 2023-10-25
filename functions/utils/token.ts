@@ -1,6 +1,6 @@
 import type { Token } from "./types";
 
-import { PublicError } from "./error";
+import { PublicError } from "./";
 
 import { generateRandomString, isWithinExpiration } from "lucia/utils";
 
@@ -66,4 +66,11 @@ export async function validateToken(
     throw new Error("Expired token");
 
   return storedToken;
+}
+
+export async function removeToken(db: D1Database, token: string) {
+  await db
+    .prepare("DELETE FROM verification_tokens WHERE id = ?")
+    .bind(token)
+    .all();
 }

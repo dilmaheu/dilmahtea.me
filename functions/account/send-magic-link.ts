@@ -3,8 +3,8 @@ import type { ENV } from "../utils/types";
 import { z } from "zod";
 import validator from "validator";
 
+import { PublicError } from "../utils";
 import { getToken } from "../utils/token";
-import { PublicError } from "../utils/error";
 
 const BodySchema = z.object({
   email_or_phone: z.string(),

@@ -38,7 +38,8 @@ function fromEntries(array) {
   return formIputs;
 }
 
-const verificationLink = getUserAccountPagesLink("verification", locale);
+const verificationLink = getUserAccountPagesLink("verification", locale),
+  congratsLink = getUserAccountPagesLink("congrats", locale);
 ---
 
 <style lang="scss">
@@ -358,7 +359,15 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
   </section>
 </div>
 
-<script define:vars={{ UID, verificationLink, textEmail, textMobileNumber }}>
+<script
+  define:vars={{
+    UID,
+    verificationLink,
+    congratsLink,
+    textEmail,
+    textMobileNumber,
+  }}
+>
   const accountActionSection = document.getElementById("account-action");
 
   const form = accountActionSection.querySelector("form"),
@@ -425,7 +434,7 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
     }).then((res) => res.json());
 
     if (response.success) {
-      onSuccess();
+      onSuccess(response);
     } else {
       errorArea.textContent = response.message;
     }
@@ -447,10 +456,10 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
               referrer: document.referrer,
             },
             onSuccess: () => {
-              const searchParams = new URLSearchParams({
+              const queryParams = new URLSearchParams({
                 contact: formdata.email_or_phone,
                 referrer: document.referrer,
-              });
+              }).toString();
 
               location.href =
                 "/" +
@@ -458,7 +467,7 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
                 "/" +
                 verificationLink +
                 "?" +
-                searchParams.toString();
+                queryParams;
             },
           });
         }
@@ -477,6 +486,28 @@ const verificationLink = getUserAccountPagesLink("verification", locale);
               locale: window.preferredLocale,
             },
             onSuccess: updateTimeLeft,
+          });
+        }
+
+        break;
+
+      case "signup":
+        {
+          await sendRequest({
+            url: "/account/signup",
+            data: {
+              ...formdata,
+              token: searchParams.token,
+            },
+            onSuccess: (response) => {
+              location.href =
+                "/" +
+                window.preferredLocale +
+                "/" +
+                congratsLink +
+                "?" +
+                new URLSearchParams({ referrer: response.referrer }).toString();
+            },
           });
         }
 

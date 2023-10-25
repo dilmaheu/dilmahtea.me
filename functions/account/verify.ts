@@ -1,10 +1,11 @@
+import type { Key, User } from "lucia";
 import type { ENV } from "../utils/types";
-import type { Key, User, Session } from "lucia";
 
 import validator from "validator";
 
-import { validateToken } from "../utils/token";
+import { createSessionCookie } from "../utils";
 import { initializeLucia } from "../utils/auth";
+import { removeToken, validateToken } from "../utils/token";
 
 export const onRequestGet: PagesFunction<ENV> = async (context) => {
   const { request, env } = context;
@@ -46,22 +47,14 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
 
   const user: User = await auth.getUser(key.userId);
 
-  const session: Session = await auth.createSession({
-    userId: user.userId,
-    attributes: { referrer },
-  });
+  const sessionCookie = await createSessionCookie(auth, user);
 
-  const sessionCookie = auth.createSessionCookie(session);
-
-  // delete stored token
-  await env.USERS.prepare("DELETE FROM verification_tokens WHERE id = ?")
-    .bind(token)
-    .all();
+  await removeToken(env.USERS, token);
 
   return new Response(null, {
     headers: {
       Location: referrer,
-      "Set-Cookie": sessionCookie.serialize(),
+      "Set-Cookie": sessionCookie,
     },
     status: 303,
   });
