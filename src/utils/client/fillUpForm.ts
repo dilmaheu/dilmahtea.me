@@ -2,7 +2,7 @@ const query = document.querySelector.bind(document);
 
 export default function fillUpForm(entries) {
   entries.forEach(([name, value]) => {
-    if (value) {
+    if (value && value !== "true") {
       const option: HTMLOptionElement = query(
         `select[name="${name}"] option[value="${value}"]`,
       );
