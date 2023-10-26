@@ -420,15 +420,30 @@ const verificationLink = getUserAccountPagesLink("verification", locale),
       break;
 
     case "signup":
-      const { email } = searchParams,
-        linkPageHref = "/" + window.preferredLocale + "/" + linkPageLink + "/";
+      {
+        const { email } = searchParams,
+          linkPageHref =
+            "/" + window.preferredLocale + "/" + linkPageLink + "/";
 
-      blockText.innerHTML = blockText.innerHTML
-        .replace(
-          "&lt;alternate_contact_type&gt;",
-          email ? textMobileNumber : textEmail,
-        )
-        .replace(linkPageHref, linkPageHref + "?" + location.search);
+        blockText.innerHTML = blockText.innerHTML
+          .replace(
+            "&lt;alternate_contact_type&gt;",
+            email ? textMobileNumber : textEmail,
+          )
+          .replace(linkPageHref, linkPageHref + "?" + location.search);
+      }
+
+      break;
+
+    case "link":
+      {
+        const { email } = searchParams,
+          inputToHide = form.querySelector(
+            "input[name=" + (email ? "email" : "phone") + "]",
+          );
+
+        inputToHide.parentElement.style.display = "none";
+      }
 
       break;
 
