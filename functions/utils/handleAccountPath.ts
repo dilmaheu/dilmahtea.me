@@ -1,19 +1,33 @@
+import type { Session } from "lucia";
 import type { Token } from "./types";
 
 import validator from "validator";
-
 import { isWithinExpiration } from "lucia/utils";
+
+import { initializeLucia } from "./auth";
 
 export async function handleAccountPath(
   accountPath: RegExpMatchArray,
   URL: URL,
   USERS: D1Database,
+  request: Request,
 ): Promise<Response | void> {
   const [fullMatch, specificPath] = accountPath,
     pathID = specificPath.replace(/(^\/|\/$)/g, "");
 
   const { origin } = URL,
     searchParams = Object.fromEntries(new URLSearchParams(URL.searchParams));
+
+  const auth = initializeLucia(USERS),
+    authRequest = auth.handleRequest(request);
+
+  const session: Session = await authRequest.validate();
+
+  if (session && pathID !== "congrats") {
+    const referrer = request.headers.get("Referer") || origin;
+
+    return Response.redirect(referrer, 303);
+  }
 
   function redirectToLogin() {
     return Response.redirect(
