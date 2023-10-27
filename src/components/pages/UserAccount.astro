@@ -466,7 +466,15 @@ const verificationHref = getHref(verificationLink),
     const response = await fetch(url, {
       method: "POST",
       body: JSON.stringify(data),
-    }).then((res) => res.json());
+    })
+      .then((res) => res.text())
+      .then((text) => {
+        try {
+          return JSON.parse(text);
+        } catch (error) {
+          return { message: "Something went wrong" };
+        }
+      });
 
     if (response.success) {
       onSuccess(response);
