@@ -1,5 +1,3 @@
-// @ts-check
-
 import { handleAccountPath } from "./utils/handleAccountPath";
 
 declare interface Env {
