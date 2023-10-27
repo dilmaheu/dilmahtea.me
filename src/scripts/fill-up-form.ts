@@ -39,3 +39,11 @@ Object.entries<string>(availableData).forEach(([name, value]) => {
     }
   }
 });
+
+const emailOrPhoneInput: HTMLInputElement = query(
+  'input[name="email_or_phone"]',
+);
+
+if (emailOrPhoneInput) {
+  emailOrPhoneInput.value = availableData.email || availableData.phone || "";
+}
