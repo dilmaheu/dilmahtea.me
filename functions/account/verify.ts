@@ -74,8 +74,8 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
 
   return new Response(null, {
     headers: {
-      Location: referrer,
       "Set-Cookie": sessionCookie,
+      Location: referrer + (link_with ? "?linkedMobileAndEmail=true" : ""),
     },
     status: 303,
   });
