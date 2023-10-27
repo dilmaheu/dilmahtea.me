@@ -2,11 +2,10 @@ import type { User } from "lucia";
 import type { ENV } from "../utils/types";
 
 import { z } from "zod";
-import validator from "validator";
 
-import { createSessionCookie } from "../utils";
 import { initializeLucia } from "../utils/auth";
 import { removeToken, validateToken } from "../utils/token";
+import { getProviderId, createSessionCookie } from "../utils";
 
 const BodySchema = z.object({
   first_name: z.string(),
@@ -36,18 +35,18 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     );
   }
 
-  const isEmail = validator.isEmail(contact);
-
   const auth = initializeLucia(env.USERS);
+
+  const providerId = getProviderId(contact);
 
   const user: User = await auth.createUser({
     key: {
-      providerId: "magic_link",
+      providerId,
       providerUserId: contact.toLowerCase(),
       password: null,
     },
     attributes: {
-      [isEmail ? "email" : "phone"]: contact.toLowerCase(),
+      [providerId]: contact.toLowerCase(),
       first_name,
       last_name,
       locale,

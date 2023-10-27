@@ -4,6 +4,7 @@ export interface Token {
   locale: string;
   contact: string;
   referrer: string;
+  link_with: string;
 }
 
 export interface ENV {

@@ -38,9 +38,17 @@ function fromEntries(array) {
   return formIputs;
 }
 
+function getHref(link) {
+  return "/" + locale + "/" + link + "/";
+}
+
 const verificationLink = getUserAccountPagesLink("verification", locale),
   congratsLink = getUserAccountPagesLink("congrats", locale),
   linkPageLink = getUserAccountPagesLink("link", locale);
+
+const verificationHref = getHref(verificationLink),
+  congratsHref = getHref(congratsLink),
+  linkPageHref = getHref(linkPageLink);
 ---
 
 <style lang="scss">
@@ -363,9 +371,9 @@ const verificationLink = getUserAccountPagesLink("verification", locale),
 <script
   define:vars={{
     UID,
-    verificationLink,
-    linkPageLink,
-    congratsLink,
+    verificationHref,
+    linkPageHref,
+    congratsHref,
     textEmail,
     textMobileNumber,
   }}
@@ -421,9 +429,7 @@ const verificationLink = getUserAccountPagesLink("verification", locale),
 
     case "signup":
       {
-        const { email } = searchParams,
-          linkPageHref =
-            "/" + window.preferredLocale + "/" + linkPageLink + "/";
+        const { email } = searchParams;
 
         blockText.innerHTML = blockText.innerHTML
           .replace(
@@ -442,7 +448,7 @@ const verificationLink = getUserAccountPagesLink("verification", locale),
             "input[name=" + (email ? "email" : "phone") + "]",
           );
 
-        inputToHide.parentElement.style.display = "none";
+        inputToHide.parentElement.remove();
       }
 
       break;
@@ -490,13 +496,7 @@ const verificationLink = getUserAccountPagesLink("verification", locale),
                 referrer: document.referrer,
               }).toString();
 
-              location.href =
-                "/" +
-                window.preferredLocale +
-                "/" +
-                verificationLink +
-                "?" +
-                queryParams;
+              location.href = verificationHref + "?" + queryParams;
             },
           });
         }
@@ -530,12 +530,25 @@ const verificationLink = getUserAccountPagesLink("verification", locale),
             },
             onSuccess: (response) => {
               location.href =
-                "/" +
-                window.preferredLocale +
-                "/" +
-                congratsLink +
+                congratsHref +
                 "?" +
                 new URLSearchParams({ referrer: response.referrer }).toString();
+            },
+          });
+        }
+
+        break;
+
+      case "link":
+        {
+          await sendRequest({
+            url: "/account/send-magic-link",
+            data: {
+              ...formdata,
+              token: searchParams.token,
+            },
+            onSuccess: (response) => {
+              location.href = response.referrer;
             },
           });
         }

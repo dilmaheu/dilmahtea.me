@@ -1,6 +1,8 @@
 import type { Auth } from "./auth";
 import type { User, Session } from "lucia";
 
+import validator from "validator";
+
 export class PublicError extends Error {
   private: false;
 
@@ -9,6 +11,12 @@ export class PublicError extends Error {
 
     this.private = false;
   }
+}
+
+export function getProviderId(contact: string): "email" | "phone" {
+  const isEmail = validator.isEmail(contact);
+
+  return isEmail ? "email" : "phone";
 }
 
 export async function createSessionCookie(

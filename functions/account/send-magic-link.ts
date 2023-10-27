@@ -4,13 +4,21 @@ import { z } from "zod";
 import validator from "validator";
 
 import { PublicError } from "../utils";
-import { getToken } from "../utils/token";
+import { getToken, removeToken, validateToken } from "../utils/token";
 
-const BodySchema = z.object({
-  email_or_phone: z.string(),
-  locale: z.string(),
-  referrer: z.string(),
-});
+const BodySchema = z
+  .object({
+    email_or_phone: z.string(),
+    locale: z.string(),
+    referrer: z.string(),
+  })
+  .or(
+    z.object({
+      email: z.string().email().optional(),
+      phone: z.string().refine(validator.isMobilePhone).optional(),
+      token: z.string(),
+    }),
+  );
 
 type Body = z.infer<typeof BodySchema>;
 
@@ -20,29 +28,62 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
   const body = await request.json<Body>();
 
-  let email: string, phone: string, locale: string, referrer: string;
+  let email: string,
+    phone: string,
+    locale: string,
+    referrer: string,
+    linkWith: string;
 
   try {
-    const loginData = BodySchema.parse(body);
+    const bodyData = BodySchema.parse(body);
 
-    const { email_or_phone } = loginData;
+    if ("email_or_phone" in bodyData) {
+      const { email_or_phone } = bodyData;
 
-    if (validator.isEmail(email_or_phone)) {
-      email = email_or_phone;
-    } else if (validator.isMobilePhone(email_or_phone)) {
-      phone = email_or_phone;
-    } else {
-      throw new Error();
-    }
+      if (validator.isEmail(email_or_phone)) {
+        email = email_or_phone;
+      } else if (validator.isMobilePhone(email_or_phone)) {
+        phone = email_or_phone;
+      } else {
+        throw new Error();
+      }
 
-    ({ locale, referrer } = loginData);
+      ({ locale, referrer } = bodyData);
 
-    if (!referrer || new URL(referrer).origin !== requestOrigin) {
-      referrer = requestOrigin;
+      if (!referrer || new URL(referrer).origin !== requestOrigin) {
+        referrer = requestOrigin;
+      }
+    } else if ("token" in bodyData) {
+      const { token } = bodyData;
+
+      try {
+        ({
+          locale,
+          referrer,
+          contact: linkWith,
+        } = await validateToken(env.USERS, token, false));
+      } catch (error) {
+        throw new PublicError(error.message);
+      }
+
+      ({ email, phone } = bodyData);
+
+      const isEmail = validator.isEmail(linkWith);
+
+      if (!(email || phone) || (isEmail && email) || (!isEmail && phone)) {
+        throw new PublicError("Bad request");
+      }
     }
   } catch (error) {
+    const isPublicError = error instanceof PublicError;
+
     return Response.json(
-      { success: false, message: "Invalid email or phone number" },
+      {
+        success: false,
+        message: isPublicError
+          ? error.message
+          : "Invalid email or phone number",
+      },
       { status: 400 },
     );
   }
@@ -50,7 +91,13 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
   const contact = email || phone;
 
   try {
-    const token = await getToken(env.USERS, locale, contact, referrer);
+    const token = await getToken(
+      env.USERS,
+      locale,
+      contact,
+      referrer,
+      linkWith,
+    );
 
     var magicLink =
       new URL(request.url).origin + "/account/verify/" + "?token=" + token;
@@ -123,7 +170,11 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
     if (!response.ok) throw new Error();
 
-    return Response.json({ success: true });
+    if ("token" in body) {
+      await removeToken(env.USERS, body.token);
+    }
+
+    return Response.json({ success: true, referrer });
   } catch (error) {
     return Response.json(
       {
