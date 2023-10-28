@@ -1,3 +1,6 @@
+import type { Session } from "lucia";
+
+import { initializeLucia } from "./utils/auth";
 import { handleAccountPath } from "./utils/handleAccountPath";
 
 declare interface Env {
@@ -10,7 +13,12 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   passThroughOnException();
 
   const requestURL = new URL(request.url),
-    { origin, pathname } = requestURL;
+    { pathname } = requestURL;
+
+  const auth = initializeLucia(env.USERS),
+    authRequest = auth.handleRequest(request);
+
+  const session: Session = await authRequest.validate();
 
   const accountPath = pathname.match(/^\/[^/]+\/account([^]+)/);
 
@@ -20,6 +28,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       requestURL,
       env.USERS,
       request,
+      session,
     );
 
     if (redirectResponse) return redirectResponse;
