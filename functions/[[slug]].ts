@@ -1,5 +1,7 @@
 import type { Session } from "lucia";
 
+import { parseCookie, serializeCookie } from "lucia/utils";
+
 import { initializeLucia } from "./utils/auth";
 import { handleAccountPath } from "./utils/handleAccountPath";
 
@@ -10,17 +12,19 @@ declare interface Env {
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   const { request, passThroughOnException, next, env } = context;
 
-  passThroughOnException();
-
   const requestURL = new URL(request.url),
     { pathname } = requestURL;
+
+  const accountPath = pathname.match(/^\/[^/]+\/account([^]+)/);
+
+  if (!accountPath) {
+    passThroughOnException();
+  }
 
   const auth = initializeLucia(env.USERS),
     authRequest = auth.handleRequest(request);
 
   const session: Session = await authRequest.validate();
-
-  const accountPath = pathname.match(/^\/[^/]+\/account([^]+)/);
 
   if (accountPath) {
     const redirectResponse = await handleAccountPath(
@@ -34,23 +38,19 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     if (redirectResponse) return redirectResponse;
   }
 
-  const cookie = request.headers.get("Cookie") || "",
-    countryCookie = `country=${request.cf.country}`,
-    [existingCountryCookie] = cookie.match(/country=[^;]+(?=;|$)/) || [];
+  const parsedCookie = parseCookie(request.headers.get("Cookie") || "");
 
-  if (existingCountryCookie !== countryCookie) {
+  const { country } = request.cf,
+    cookie = Object.entries({ country });
+
+  if (cookie.some(([name, value]) => parsedCookie[name] !== value)) {
     let response = await env.ASSETS.fetch(request.url);
 
     response = new Response(response.body, response);
 
-    response.headers.set(
-      "Set-Cookie",
-      cookie
-        ? existingCountryCookie
-          ? cookie.replace(existingCountryCookie, countryCookie)
-          : `${cookie}; ${countryCookie}`
-        : countryCookie,
-    );
+    cookie.forEach(([name, value]) => {
+      response.headers.append("Set-Cookie", serializeCookie(name, value));
+    });
 
     return response;
   } else {
