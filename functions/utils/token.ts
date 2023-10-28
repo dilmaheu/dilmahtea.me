@@ -19,7 +19,7 @@ export const getToken: GetToken = async (
   locale,
   contact,
   referrer,
-  linkWith = "",
+  linkWith = null,
 ) => {
   const { results: storedTokens } = await db
     .prepare(`SELECT * FROM verification_tokens WHERE contact = ?`)
