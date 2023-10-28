@@ -41,7 +41,8 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   const parsedCookie = parseCookie(request.headers.get("Cookie") || "");
 
   const { country } = request.cf,
-    cookie = Object.entries({ country });
+    isAuthenticated = String(!!session),
+    cookie = Object.entries({ country, isAuthenticated });
 
   if (cookie.some(([name, value]) => parsedCookie[name] !== value)) {
     let response = await env.ASSETS.fetch(request.url);
