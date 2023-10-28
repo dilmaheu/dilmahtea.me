@@ -503,9 +503,10 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
           profileVisibility && (
             <a
               href={loginLink}
+              id="profile-icon"
               class:list={[
-                "nav-icon flex justify-center items-center",
                 "bg-white rounded-full cursor-pointer",
+                "nav-icon flex justify-center items-center",
               ]}
             >
               <img
@@ -874,8 +875,13 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
   <script is:inline>
     {
-      const navigation = document.getElementById("navigation"),
+      const profileIcon = document.getElementById("profile-icon"),
+        navigation = document.getElementById("navigation"),
         topNotifications = document.querySelector(".top-notifications");
+
+      if (window.cookies.isAuthenticated === "true") {
+        profileIcon.style.display = "none";
+      }
 
       const updateNavbarStyles = () => {
         // fix sticky navbar position on mobile if top notification is shown
