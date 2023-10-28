@@ -556,7 +556,12 @@ const verificationHref = getHref(verificationLink),
               token: searchParams.token,
             },
             onSuccess: (response) => {
-              location.href = response.referrer;
+              const queryParams = new URLSearchParams({
+                contact: formdata.email || formdata.phone,
+                referrer: response.referrer,
+              }).toString();
+
+              location.href = verificationHref + "?" + queryParams;
             },
           });
         }
