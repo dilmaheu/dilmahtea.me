@@ -97,7 +97,10 @@ const { page } = Astro.props,
     >
       <h2 class="recoleta">{page.text_customer}</h2>
 
-      <div class="prose-text prose max-w-none leading-[150%] text-black-light">
+      <div
+        id="guest-intro-text"
+        class="prose-text prose max-w-none leading-[150%] text-black-light"
+      >
         <Markdown>{page.Guest_intro_text}</Markdown>
       </div>
 
@@ -114,7 +117,10 @@ const { page } = Astro.props,
         </label>
       </div>
 
-      <div class="prose-text prose max-w-none leading-[150%] text-black-light">
+      <div
+        id="sign-in-text"
+        class="prose-text prose max-w-none leading-[150%] text-black-light"
+      >
         <Markdown>{page.Sign_in_text}</Markdown>
       </div>
     </div>
@@ -233,6 +239,16 @@ const { page } = Astro.props,
 >
   <OrderSummary page={page} />
 </section>
+
+<script is:inline>
+  const guestIntroText = document.getElementById("guest-intro-text"),
+    signInText = document.getElementById("sign-in-text");
+
+  if (window.cookies.isAuthenticated === "true") {
+    guestIntroText.remove();
+    signInText.remove();
+  }
+</script>
 
 <script>
   const inputToBeChanged = new URLSearchParams(location.search).get("change"),
