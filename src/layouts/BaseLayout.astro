@@ -14,6 +14,7 @@ import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
 import NotificationAnimations from "@scripts/NotificationAnimations.astro";
 
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+import SetGlobalVariables from "@components/scripts/SetGlobalVariables.astro";
 
 interface Props {
   page: Record<string, any>;
@@ -67,10 +68,7 @@ const relPreloadLinksHTML = [...relPreloadLinks]
 
     <SetPreferredLocale />
 
-    <script define:vars={{ alternateURLs, shouldDisplayExperimentals }}>
-      window.alternateURLs = alternateURLs;
-      window.shouldDisplayExperimentals = shouldDisplayExperimentals;
-    </script>
+    <SetGlobalVariables {alternateURLs} {shouldDisplayExperimentals} />
 
     <CartStore />
 

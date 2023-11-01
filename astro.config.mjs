@@ -3,6 +3,7 @@ import taiwlind from "@astrojs/tailwind";
 import { defineConfig } from "astro/config";
 import { astroImageTools } from "astro-imagetools";
 
+import AstroFavicons from "astro-favicons";
 import AutoImport from "unplugin-auto-import/vite";
 
 import PermissionsPolicy from "./src/store/PermissionsPolicy.js";
@@ -32,5 +33,15 @@ export default defineConfig({
     ],
   },
 
-  integrations: [solid(), taiwlind(), astroImageTools, postbuildIntegration],
+  integrations: [
+    solid(),
+    taiwlind(),
+    astroImageTools,
+    postbuildIntegration,
+    AstroFavicons({
+      masterPicture: "./public/favicon.svg",
+      emitAssets: true,
+      faviconsDarkMode: true,
+    }),
+  ],
 });
