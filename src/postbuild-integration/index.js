@@ -1,3 +1,5 @@
+// @ts-check
+
 import fs from "fs/promises";
 import { globby } from "globby";
 import { parseHTML } from "linkedom";
@@ -8,22 +10,7 @@ import rewrite404RoutesPaths from "./tasks/rewrite404RoutesPaths.js";
 import generateSecurityHeaders from "./tasks/generateSecurityHeaders.js";
 import removeAstroIconAttributes from "./tasks/removeAstroIconAttributes.js";
 
-const CSPRecord = {
-  "default-src": ["'none'"],
-  "style-src": ["'self'", "'unsafe-inline'", "https://use.fontawesome.com"],
-  "img-src": ["'self'", "data:", "https://dilmahtea.me"],
-  "media-src": ["'self'", "data:"],
-  "font-src": ["'self'", "https://use.fontawesome.com"],
-  "worker-src": ["blob:"],
-  "connect-src": [
-    "'self'",
-    "https://baserow.scripts.dilmahtea.me",
-    "https://api.openreplay.com",
-    "https://analytics.scripts.dilmahtea.me",
-  ],
-  "upgrade-insecure-requests": [],
-  "script-src": ["'self'", "https://static.openreplay.com"],
-};
+import CSPRecord from "../store/CSPRecord.js";
 
 const sitemap = [];
 
@@ -51,7 +38,7 @@ const postbuildIntegration = {
             { document } = parseHTML(htmlContent);
 
           removeAstroIconAttributes(document);
-          addScriptsHashes(document, CSPRecord);
+          addScriptsHashes(document, CSPRecord());
           addSitemapURLs(path, document, sitemap, htmlFilePaths);
 
           const stringifiedDocument = simplifyImageFilenames(document);
@@ -64,7 +51,7 @@ const postbuildIntegration = {
         import("./tasks/generateRobotsMeta.js"),
         import("./tasks/generateSecurityMeta.js"),
         generateXMLSitemap(sitemap),
-        generateSecurityHeaders(CSPRecord),
+        generateSecurityHeaders(CSPRecord()),
         rewrite404RoutesPaths(_404HtmlFilePaths),
       ]);
 

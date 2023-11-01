@@ -1,3 +1,5 @@
+// @ts-check
+
 import fs from "fs/promises";
 import PermissionsPolicy from "../../store/PermissionsPolicy.js";
 
