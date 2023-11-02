@@ -55,6 +55,6 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
     return response;
   } else {
-    next();
+    return next();
   }
 };
