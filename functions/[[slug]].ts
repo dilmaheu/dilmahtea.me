@@ -50,7 +50,10 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     response = new Response(response.body, response);
 
     cookie.forEach(([name, value]) => {
-      response.headers.append("Set-Cookie", serializeCookie(name, value));
+      response.headers.append(
+        "Set-Cookie",
+        serializeCookie(name, value, { path: "/" }),
+      );
     });
 
     return response;
