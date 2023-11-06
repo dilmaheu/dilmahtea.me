@@ -12,7 +12,8 @@ import removeAstroIconAttributes from "./tasks/removeAstroIconAttributes.js";
 
 import CSPRecord from "../store/CSPRecord.js";
 
-const sitemap = [];
+const sitemap = [],
+  CSPRecords = CSPRecord();
 
 /** @type {typeof import('astro').AstroIntegration} */
 const postbuildIntegration = {
@@ -38,7 +39,7 @@ const postbuildIntegration = {
             { document } = parseHTML(htmlContent);
 
           removeAstroIconAttributes(document);
-          addScriptsHashes(document, CSPRecord());
+          addScriptsHashes(document, CSPRecords);
           addSitemapURLs(path, document, sitemap, htmlFilePaths);
 
           const stringifiedDocument = simplifyImageFilenames(document);
@@ -51,7 +52,7 @@ const postbuildIntegration = {
         import("./tasks/generateRobotsMeta.js"),
         import("./tasks/generateSecurityMeta.js"),
         generateXMLSitemap(sitemap),
-        generateSecurityHeaders(CSPRecord()),
+        generateSecurityHeaders(CSPRecords),
         rewrite404RoutesPaths(_404HtmlFilePaths),
       ]);
 
