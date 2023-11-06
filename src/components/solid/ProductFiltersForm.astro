@@ -1,5 +1,6 @@
 ---
 import ProductFiltersForm from "@solid/ProductFiltersForm";
+import Products, { teaBag, teaBagVariants } from "@store/Products";
 
 let { locale, productSizes, productVariants, recurData, type } = Astro.props;
 
@@ -8,30 +9,56 @@ recurData = {
   text_all_tea_sizes: recurData.text_all_tea_sizes,
 };
 
+const teaBagVariant = productVariants.data.find(
+  ({ attributes }) => attributes.is_tea_bag,
+);
+
+const teaBagVariantLocalizedTitle = [
+  teaBagVariant,
+  ...teaBagVariant.attributes.localizations.data,
+].find(({ attributes }) => attributes.locale.substring(0, 2) === locale)
+  .attributes.Title;
+
 [productSizes, productVariants] = [productSizes, productVariants].map(
   ({ data }, i) => ({
     data: data
       .map(({ attributes }) => {
-        const allVersions = [{ attributes }, ...attributes.localizations.data],
-          localizedTitle = allVersions.find(
-            ({ attributes }) => attributes.locale.substring(0, 2) === locale,
-          )?.attributes.Title;
+        const allVersions = [{ attributes }, ...attributes.localizations.data];
+
+        let localizedTitle = allVersions.find(
+          ({ attributes }) => attributes.locale.substring(0, 2) === locale,
+        )?.attributes.Title;
 
         if (localizedTitle) {
-          const {
-            attributes: { Title, products },
-          } = allVersions.find(({ attributes }) => attributes.locale === "en");
+          const { Title, is_tea_bag, is_tea_bag_subvariant } = attributes;
+
+          if (is_tea_bag_subvariant) {
+            localizedTitle =
+              teaBagVariantLocalizedTitle + "- " + localizedTitle;
+          }
+
+          const products = !is_tea_bag
+            ? attributes.products.data.map(({ attributes }) => attributes)
+            : Products.get("en | " + teaBag)
+                .map(([, variants]) => variants.map(([, variant]) => variant))
+                .flat();
+
+          const rawAvailableCombinations = products.map(
+            (attributes) =>
+              attributes[i === 0 ? "variant" : "size"].data.attributes.Title,
+          );
+
+          if (
+            i === 0 &&
+            rawAvailableCombinations.some((variant) =>
+              teaBagVariants.includes(variant),
+            )
+          ) {
+            rawAvailableCombinations.push(teaBag);
+          }
 
           const availableCombinations = JSON.stringify(
-            Array.from(
-              new Set(
-                products.data.map(
-                  ({ attributes }) =>
-                    attributes[i === 0 ? "variant" : "size"].data.attributes
-                      .Title,
-                ),
-              ),
-            ),
+            Array.from(new Set(rawAvailableCombinations)),
           );
 
           return {
@@ -46,7 +73,15 @@ recurData = {
         a.localizedTitle.localeCompare(b.localizedTitle, locale, {
           numeric: true,
         }),
-      ),
+      )
+      .map((data) => {
+        data.localizedTitle = data.localizedTitle.replace(
+          teaBagVariantLocalizedTitle + "-",
+          "-",
+        );
+
+        return data;
+      }),
   }),
 );
 ---
