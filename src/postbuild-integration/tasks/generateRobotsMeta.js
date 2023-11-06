@@ -1,3 +1,5 @@
+// @ts-check
+
 import dotenv from "dotenv";
 import fs from "fs/promises";
 import fetch from "node-fetch";
