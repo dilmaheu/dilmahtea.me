@@ -1,3 +1,5 @@
+// @ts-check
+
 import fs from "fs/promises";
 
 export default async function rewrite404RoutesPaths(_404HtmlFilePaths) {

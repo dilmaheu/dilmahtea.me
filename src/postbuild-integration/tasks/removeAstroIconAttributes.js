@@ -1,3 +1,5 @@
+// @ts-check
+
 export default function removeAstroIconAttributes(document) {
   const astroIcons = document.querySelectorAll("[astro-icon]");
 
