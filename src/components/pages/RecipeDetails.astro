@@ -546,9 +546,9 @@ const nutrition: Nutrition = {
             <div
               role="listitem"
               aria-label={item.Instructions_part_name}
-              class="w-full sm:w-1/2"
+              class="w-full sm:w-1/2 grid gap-2.5"
             >
-              <h4 class="mb-[10px] md:mb-[15px] text-black text-base md:text-lg font-bold leading-[150%]">
+              <h4 class="mb-[5px] text-black text-base md:text-lg font-bold leading-[150%]">
                 {item.Instructions_part_name}
               </h4>
 
@@ -577,13 +577,17 @@ const nutrition: Nutrition = {
 
                   <div class="ml-2.5 text-base md:text-lg leading-[150%]">
                     <span
-                      class="ingredient-amount"
+                      class="ingredient-amount mr-[3px]"
                       data-amount={item.Instructions_part_ingredient_amount}
                     >
                       {item.Instructions_part_ingredient_amount}
                     </span>
-                    {item.Instructions_part_ingredient_measurements_unit}
-                    {item.Instructions_part_ingredient_name}
+                      {`${
+                        item.Instructions_part_ingredient_measurements_unit ?? ""
+                      }
+                      ${
+                        item.Instructions_part_ingredient_name
+                      }`}
                   </div>
                 </label>
               ))}

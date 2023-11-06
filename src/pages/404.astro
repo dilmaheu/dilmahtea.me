@@ -36,14 +36,19 @@ const alternateURLs = Object.fromEntries(
 <script is:inline define:vars={{ availableLocales }}>
   const preferredLocale = localStorage.getItem("locale");
 
-  const localeRegex = new RegExp(
-    `^/(${availableLocales.map((locale) => locale).join("|")})/`,
-  );
+  if (preferredLocale) {
+    const localeRegex = new RegExp(
+      `^/(${availableLocales.map((locale) => locale).join("|")})/`,
+    );
 
-  let [, locale] = location.pathname.match(localeRegex) ?? [];
+    let [, locale] = location.pathname.match(localeRegex) ?? [];
 
-  if (!locale && preferredLocale !== "en") {
-    location.pathname = location.pathname.replace("/", `/${preferredLocale}/`);
+    if (!locale && preferredLocale !== "en") {
+      location.pathname = location.pathname.replace(
+        "/",
+        `/${preferredLocale}/`,
+      );
+    }
   }
 </script>
 
