@@ -3,7 +3,7 @@ import type { ENV } from "../utils/types";
 import { z } from "zod";
 import validator from "validator";
 
-import { PublicError } from "../utils";
+import { PublicError, isMobilePhone } from "../utils";
 import { getToken, removeToken, validateToken } from "../utils/token";
 
 const BodySchema = z
@@ -15,7 +15,7 @@ const BodySchema = z
   .or(
     z.object({
       email: z.string().email().optional(),
-      phone: z.string().refine(validator.isMobilePhone).optional(),
+      phone: z.string().refine(isMobilePhone).optional(),
       token: z.string(),
     }),
   );
@@ -42,7 +42,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
       if (validator.isEmail(email_or_phone)) {
         email = email_or_phone;
-      } else if (validator.isMobilePhone(email_or_phone)) {
+      } else if (isMobilePhone(email_or_phone)) {
         phone = email_or_phone;
       } else {
         throw new Error();
