@@ -11,8 +11,10 @@ import Cookies from "@scripts/Cookies.astro";
 import CartStore from "@scripts/CartStore.astro";
 import SetUserRegion from "@scripts/SetUserRegion.astro";
 import SetPreferredLocale from "@scripts/SetPreferredLocale.astro";
+import SetGlobalVariables from "@scripts/SetGlobalVariables.astro";
 import NotificationAnimations from "@scripts/NotificationAnimations.astro";
 
+import CSPRecord from "@store/CSPRecord";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 interface Props {
@@ -56,7 +58,9 @@ const relPreloadLinksHTML = [...relPreloadLinks]
       import.meta.env.DEV && (
         /* content-security-policy header for the development server */ <meta
           http-equiv="Content-Security-Policy"
-          content="default-src 'none'; style-src 'self' 'unsafe-inline' https://use.fontawesome.com; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://static.openreplay.com; img-src 'self' data: https://dilmahtea.me; media-src data: 'self'; font-src 'self' https://use.fontawesome.com; worker-src blob:; connect-src 'self' wss: https://dev.baserow.scripts.dilmahtea.me https://api.openreplay.com;"
+          content={Object.entries(CSPRecord({ dev: true }))
+            .map(([policy, sources]) => `${policy} ${sources.join(" ")}`)
+            .join("; ")}
         />
       )
     }
@@ -67,10 +71,7 @@ const relPreloadLinksHTML = [...relPreloadLinks]
 
     <SetPreferredLocale />
 
-    <script define:vars={{ alternateURLs, shouldDisplayExperimentals }}>
-      window.alternateURLs = alternateURLs;
-      window.shouldDisplayExperimentals = shouldDisplayExperimentals;
-    </script>
+    <SetGlobalVariables {alternateURLs} {shouldDisplayExperimentals} />
 
     <CartStore />
 

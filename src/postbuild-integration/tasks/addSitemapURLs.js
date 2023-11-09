@@ -1,3 +1,5 @@
+// @ts-check
+
 const siteURL = "https://dilmahtea.me";
 
 export default async function addSitemapURLs(
