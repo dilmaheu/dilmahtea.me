@@ -6,12 +6,12 @@ const { selectorType, ariaLabel } = Astro.props;
 const defaultSlotHTML = await Astro.slots.render("default");
 
 const { document } = parseHTML(defaultSlotHTML),
-  listItems = [...document.querySelectorAll("a")];
+  listItems = [...document.querySelectorAll("button")];
 
 const firstListItemHTML = listItems[0].outerHTML,
   dropdownOpenAreaInnerHTML = listItems
     .slice(1)
-    .map((a) => a.outerHTML)
+    .map((button) => button.outerHTML)
     .join("");
 
 const dropdownInnerHTML = `${firstListItemHTML}<div>${dropdownOpenAreaInnerHTML}</div>`;
@@ -19,7 +19,7 @@ const dropdownInnerHTML = `${firstListItemHTML}<div>${dropdownOpenAreaInnerHTML}
 
 <style lang="scss" is:global>
   .selectors-dropdown[data-selector-type="lang"]
-    > a
+    > button
     > span
     > span
     > span:not(:first-child) {
@@ -27,8 +27,8 @@ const dropdownInnerHTML = `${firstListItemHTML}<div>${dropdownOpenAreaInnerHTML}
   }
 
   .selectors-dropdown {
-    > a {
-      @apply font-medium border-2 border-primary rounded-full;
+    > button {
+      @apply w-full font-medium border-2 border-primary rounded-full;
 
       > span {
         @apply py-2.5 px-[15px];
@@ -39,8 +39,8 @@ const dropdownInnerHTML = `${firstListItemHTML}<div>${dropdownOpenAreaInnerHTML}
       @apply absolute mt-[5px] w-full overflow-y-auto
         rounded-t-[25px] rounded-b-[25px];
 
-      > a {
-        display: none;
+      > button {
+        @apply w-full hidden;
 
         > span {
           @apply hover:font-semibold hover:bg-primary-light;
@@ -60,7 +60,7 @@ const dropdownInnerHTML = `${firstListItemHTML}<div>${dropdownOpenAreaInnerHTML}
       > div {
         @apply border-2 border-primary;
 
-        > a {
+        > button {
           display: block;
         }
       }
