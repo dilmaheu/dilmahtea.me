@@ -1018,16 +1018,20 @@ function trimLink(link) {
 
   const toggleSidebar = () => {
     sidebarOpened = !sidebarOpened;
+
     sidebar.style.display = sidebarOpened ? "block" : "none";
     sidebarOpenButton.style.display = sidebarOpened ? "none" : "block";
     sidebarCloseButton.style.display = sidebarOpened ? "block" : "none";
 
     if (sidebarOpened) {
       window.disableScrolling();
+
       updateSidebarTopPosition();
+
       window.addEventListener("resize", updateSidebarTopPosition);
     } else {
       window.enableScrolling();
+
       window.removeEventListener("resize", updateSidebarTopPosition);
     }
   };
@@ -1072,9 +1076,11 @@ function trimLink(link) {
 
       if (localizationOpenedByClick) {
         localizationMenuClassList.add("hidden");
+
         localizationOpenedByClick = false;
       } else {
         localizationMenuClassList.remove("hidden");
+
         localizationOpenedByClick = true;
       }
 
