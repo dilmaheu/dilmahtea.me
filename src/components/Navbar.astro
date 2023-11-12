@@ -926,18 +926,23 @@ function trimLink(link) {
   const localization = localizationMenuOpenButton?.parentElement,
     localizationMenu = localizationMenuOpenButton?.nextElementSibling;
 
-  let scrollingDisabled = false;
-  let scrollYPosition = 0;
+  let scrollYPosition = 0,
+    scrollingDisabled = false;
 
   window.disableScrolling = () => {
     if (scrollingDisabled) return;
 
     scrollYPosition = window.scrollY;
-    document.body.style.overflowY = "hidden";
-    document.body.style.width = "100%";
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollYPosition}px`;
-    document.body.style.left = "0";
+
+    const overflowY =
+      window.innerHeight < document.body.scrollHeight ? "scroll" : "auto";
+
+    Object.assign(document.body.style, {
+      overflowY,
+      width: "100%",
+      position: "fixed",
+      top: `-${scrollYPosition}px`,
+    });
 
     scrollingDisabled = true;
   };
@@ -945,10 +950,12 @@ function trimLink(link) {
   window.enableScrolling = () => {
     if (!scrollingDisabled) return;
 
-    document.body.style.overflowY = "auto";
-    document.body.style.width = "auto";
-    document.body.style.position = "static";
-    document.body.style.top = "0";
+    Object.assign(document.body.style, {
+      width: "auto",
+      overflowY: "auto",
+      position: "static",
+      top: "0",
+    });
 
     window.scrollTo({ top: scrollYPosition });
 
