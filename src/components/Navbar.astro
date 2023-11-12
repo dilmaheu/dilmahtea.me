@@ -978,28 +978,33 @@ function trimLink(link) {
 
       // remove event listener to prevent memory leaks
       window.removeEventListener("resize", updateSidebarTopPosition);
-    } else if (sidebarOpened || localizationMenuVisible) {
+    } else if (sidebarOpened) {
       window.disableScrolling();
 
-      if (sidebarOpened) {
-        // re-add event listener in case it was removed
-        window.addEventListener("resize", updateSidebarTopPosition);
+      // re-add event listener in case it was removed
+      window.addEventListener("resize", updateSidebarTopPosition);
+    } else if (localizationMenuVisible) {
+      if (window.innerWidth < 640) {
+        window.disableScrolling();
+      } else {
+        window.enableScrolling();
       }
     }
   });
 
-  let localizationMenuVisible = false;
-  let sidebarOpened = false;
+  let sidebarOpened = false,
+    localizationMenuVisible = false;
 
   const toggleLocalizationMenu = () => {
     localizationMenuVisible = !localizationMenuVisible;
+
     localizationMenuSm.style.display = localizationMenuVisible
       ? "block"
       : "none";
 
-    if (localizationMenuVisible) {
+    if (localizationMenuVisible && window.innerWidth < 640) {
       window.disableScrolling();
-    } else {
+    } else if (scrollingDisabled) {
       window.enableScrolling();
     }
   };
