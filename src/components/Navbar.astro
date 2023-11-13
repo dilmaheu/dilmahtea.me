@@ -1041,13 +1041,26 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
   <script is:inline>
     {
-      const profileIcon = document.getElementById("profile-icon"),
-        navigation = document.getElementById("navigation"),
+      const id = document.getElementById.bind(document);
+
+      const navigation = id("navigation"),
+        profileIcon = id("profile-icon"),
+        profileMenuSm = id("profile-menu-sm"),
+        profileSmOpenButton = id("profile-menu-sm-open-btn"),
+        profileMenuSmCloseButton = id("profile-menu-sm-close-btn"),
         topNotifications = document.querySelector(".top-notifications");
 
       if (window.cookies.isAuthenticated === "true") {
         profileIcon.style.display = "none";
       }
+
+      const toggleProfileMenuSm = () => {
+        profileMenuSm.classList.toggle("hidden");
+      };
+
+      profileSmOpenButton?.addEventListener("click", toggleProfileMenuSm);
+
+      profileMenuSmCloseButton?.addEventListener("click", toggleProfileMenuSm);
 
       const updateNavbarStyles = () => {
         // fix sticky navbar position on mobile if top notification is shown
