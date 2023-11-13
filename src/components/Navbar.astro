@@ -54,6 +54,7 @@ const {
   Nav_menu_cart_visibility: cartVisibility,
   Nav_menu_search_visibility: searchVisibility,
   Nav_menu_profile_visibility: profileVisibility,
+  Nav_menu_profile_menu: profile_menu,
   Nav_menu_localization_visibility: localizationVisibility,
   Nav_menu_region_selector_visibility: regionSelectorVisibility,
   Nav_menu_language_selector_visibility: languageSelectorVisibility,
@@ -77,6 +78,15 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
   .brand-logo {
     height: clamp(35px, 5vw, 50px);
+  }
+
+  .profile-dropdown-notch {
+    padding-right: poly-fluid-clamp(
+      (
+        1024px: 20px,
+        768px: 28px,
+      )
+    );
   }
 
   .nav-icon {
@@ -496,6 +506,84 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
                 </span>
               </span>
             </button>
+          )
+        }
+        {
+          profileVisibility && (
+            <div class="hidden sm:block relative group">
+              <a
+                href={loginLink}
+                id="profile-icon"
+                class:list={[
+                  "nav-icon rounded-full cursor-pointer",
+                  "flex justify-center items-center bg-white",
+                ]}
+              >
+                <img
+                  class="w-full h-full"
+                  src={await localizeCMSImage(profileIcon.data?.attributes.url)}
+                  alt={profileIcon.data?.attributes.alternativeText}
+                />
+              </a>
+
+              <div
+                id="profile-menu"
+                class="hidden group-hover:block absolute w-[280px] -translate-x-[80%] drop-shadow-lg"
+              >
+                <div class="profile-dropdown-notch relative flex justify-end pt-1">
+                  <div class="w-5 h-5 bg-white rotate-45 rounded" />
+                </div>
+
+                <div class="grid gap-[15px] bg-white p-[25px] rounded-[12px] -translate-y-3">
+                  {profile_menu.Menu.map(
+                    ({ Visibility, Title, Link, Icon: { data: icon } }) =>
+                      Visibility && (
+                        <a href={Link || "#"}>
+                          <div class="flex gap-[15px] items-center">
+                            <div class="w-[20px] h-[20px]">
+                              {async () => (
+                                <img
+                                  class="w-full h-full"
+                                  alt=""
+                                  src={await localizeCMSImage(
+                                    icon?.attributes.url,
+                                  )}
+                                />
+                              )}
+                            </div>
+
+                            <div class="text-lg font-medium text-black">
+                              {Title}
+                            </div>
+                          </div>
+                        </a>
+                      ),
+                  )}
+
+                  <div class="pt-[15px] border-t border-primary-light">
+                    <button>
+                      <div class="flex gap-[15px] items-center">
+                        <div class="w-[20px] h-[20px]">
+                          {async () => (
+                            <img
+                              class="w-full h-full"
+                              alt=""
+                              src={await localizeCMSImage(
+                                profile_menu.Log_out_icon.data?.attributes.url,
+                              )}
+                            />
+                          )}
+                        </div>
+
+                        <div class="text-lg font-medium text-black">
+                          {profile_menu.text_log_out}
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           )
         }
 
