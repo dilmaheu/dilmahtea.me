@@ -589,20 +589,21 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
         {
           profileVisibility && (
-            <a
-              href={loginLink}
-              id="profile-icon"
-              class:list={[
-                "bg-white rounded-full cursor-pointer",
-                "nav-icon flex justify-center items-center",
-              ]}
-            >
-              <img
-                class="w-full h-full"
-                src={await localizeCMSImage(profileIcon.data?.attributes.url)}
-                alt={profileIcon.data?.attributes.alternativeText}
-              />
-            </a>
+            <div class="block sm:hidden">
+              <div
+                id="profile-menu-sm-open-btn"
+                class:list={[
+                  "nav-icon rounded-full cursor-pointer",
+                  "flex justify-center items-center bg-white",
+                ]}
+              >
+                <img
+                  class="w-full h-full"
+                  src={await localizeCMSImage(profileIcon.data?.attributes.url)}
+                  alt={profileIcon.data?.attributes.alternativeText}
+                />
+              </div>
+            </div>
           )
         }
 
@@ -873,6 +874,83 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
           {Button_save_text}
         </button> */
         }
+      </div>
+    </div>
+
+    <div
+      id="profile-menu-sm"
+      class:list={[
+        "fixed hidden sm:!hidden right-0 top-0 z-[9999]",
+        "w-full h-screen wrapper py-[25px] bg-secondary text-black-light",
+      ]}
+    >
+      <div class="grid gap-[25px]">
+        <div class="flex justify-end">
+          <button
+            type="button"
+            id="profile-menu-sm-close-btn"
+            class="select-none cursor-pointer"
+          >
+            <svg
+              viewBox="0 0 19.2 19.2"
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-[35px] h-[35px]"
+            >
+              <path
+                d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+                style="fill: #474747; fill-rule: evenodd"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="grid gap-[25px]">
+          {
+            profile_menu.Menu.map(
+              ({ Visibility, Title, Link, Icon: { data: icon } }) =>
+                Visibility && (
+                  <a href={Link || "#"}>
+                    <div class="flex gap-[15px] items-center">
+                      <div class="w-[20px] h-[20px]">
+                        {async () => (
+                          <img
+                            class="w-full h-full"
+                            alt=""
+                            src={await localizeCMSImage(icon?.attributes.url)}
+                          />
+                        )}
+                      </div>
+
+                      <div class="text-lg font-medium text-black">{Title}</div>
+                    </div>
+                  </a>
+                ),
+            )
+          }
+
+          <div class="pt-[25px] border-t border-primary-light">
+            <button>
+              <div class="flex gap-[15px] items-center">
+                <div class="w-[20px] h-[20px]">
+                  {
+                    async () => (
+                      <img
+                        class="w-full h-full"
+                        alt=""
+                        src={await localizeCMSImage(
+                          profile_menu.Log_out_icon.data?.attributes.url,
+                        )}
+                      />
+                    )
+                  }
+                </div>
+
+                <div class="text-lg font-medium text-black">
+                  {profile_menu.text_log_out}
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
