@@ -78,7 +78,7 @@ const verificationHref = getHref(verificationLink),
       input {
         border: 1px solid colors.$primary;
 
-        @apply block w-full mt-2.5 px-4 py-3 text-lg font-normal leading-[115%] text-black rounded-[20px] bg-transparent;
+        @apply block w-full mt-2.5 px-4 py-3 text-lg font-normal leading-[115%] text-black rounded-full bg-transparent;
         @apply focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring;
       }
 
@@ -154,20 +154,43 @@ const verificationHref = getHref(verificationLink),
                 ]}
               >
                 {isEmailOrPhoneForm ? (
-                  <label class="mx-auto">
-                    {userAccountRecurData.Input_label_email +
-                      ` / ` +
-                      userAccountRecurData.Input_label_phone}
+                  <div class="grid gap-[15px]">
+                    <label class="mx-auto">
+                      {userAccountRecurData.Input_label_email}
 
-                    <input
-                      type="text"
-                      name="email_or_phone"
-                      placeholder={
-                        userAccountRecurData.Input_placeholder_email_or_phone
-                      }
-                      required
-                    />
-                  </label>
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder={
+                          userAccountRecurData.Input_placeholder_email
+                        }
+                        required
+                      />
+                    </label>
+
+                    <div class="form-item w-full">
+                      <div class="flex items-center">
+                        <span class="w-full h-px bg-black" />
+                        <span class="text-black-light px-3">
+                          {userAccountRecurData.Social_media_divider_or_text}
+                        </span>
+                        <span class="w-full h-px bg-black" />
+                      </div>
+                    </div>
+
+                    <label class="mx-auto">
+                      {userAccountRecurData.Input_label_phone}
+
+                      <input
+                        type="phone"
+                        name="phone"
+                        placeholder={
+                          userAccountRecurData.Input_placeholder_phone
+                        }
+                        required
+                      />
+                    </label>
+                  </div>
                 ) : (
                   <>
                     {form.First_name && (
