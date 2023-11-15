@@ -89,6 +89,12 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     );
   }
 
+  .profile-menu-sm-block {
+    @media (max-width: 640px) {
+      display: block !important;
+    }
+  }
+
   .nav-icon {
     width: poly-fluid-clamp(
       (
@@ -508,12 +514,12 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
             </button>
           )
         }
+
         {
           profileVisibility && (
-            <div class="hidden sm:block relative group">
-              <a
-                href={loginLink}
-                id="profile-icon"
+            <div class="relative group">
+              <div
+                id="profile-menu-open-btn"
                 class:list={[
                   "nav-icon rounded-full cursor-pointer",
                   "flex justify-center items-center bg-white",
@@ -524,18 +530,46 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
                   src={await localizeCMSImage(profileIcon.data?.attributes.url)}
                   alt={profileIcon.data?.attributes.alternativeText}
                 />
-              </a>
+              </div>
 
               <div
                 id="profile-menu"
-                class="hidden group-hover:block absolute w-[280px] -translate-x-[80%] drop-shadow-lg"
+                class:list={[
+                  "hidden sm:group-hover:block fixed sm:absolute top-0 sm:top-auto left-0",
+                  "bg-secondary sm:bg-transparent sm:-translate-x-[80%] drop-shadow-lg",
+                  "px-[min(100px,5vw)] py-[25px] sm:p-0 w-screen sm:w-[280px] h-screen sm:h-full",
+                ]}
               >
-                <div class="profile-dropdown-notch relative flex justify-end pt-1">
+                <div class="profile-dropdown-notch hidden sm:flex justify-end relative pt-1">
                   <div class="w-5 h-5 bg-white rotate-45 rounded" />
                 </div>
 
-                <div class="grid gap-[15px] bg-white p-[25px] rounded-[12px] -translate-y-3">
-                  <div class="recoleta text-xl font-bold text-black mb-2.5">
+                <div
+                  class:list={[
+                    "grid gap-[25px] sm:gap-[15px] sm:p-[25px]",
+                    "sm:bg-white sm:rounded-[12px] sm:-translate-y-3",
+                  ]}
+                >
+                  <div class="flex sm:hidden justify-end">
+                    <button
+                      type="button"
+                      id="profile-menu-close-btn"
+                      class="select-none cursor-pointer"
+                    >
+                      <svg
+                        viewBox="0 0 19.2 19.2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-[35px] h-[35px]"
+                      >
+                        <path
+                          d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+                          style="fill: #474747; fill-rule: evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <div class="recoleta text-xl font-bold text-black sm:mb-2.5">
                     Person Name
                   </div>
 
@@ -566,7 +600,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
                       ),
                   )}
 
-                  <div class="pt-[15px] border-t border-primary-light">
+                  <div class="pt-[25px] sm:pt-[15px] border-t border-primary-light">
                     <button>
                       <div class="flex gap-[15px] items-center">
                         <div class="w-[20px] h-[20px]">
@@ -588,26 +622,6 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
                     </button>
                   </div>
                 </div>
-              </div>
-            </div>
-          )
-        }
-
-        {
-          profileVisibility && (
-            <div class="block sm:hidden">
-              <div
-                id="profile-menu-sm-open-btn"
-                class:list={[
-                  "nav-icon rounded-full cursor-pointer",
-                  "flex justify-center items-center bg-white",
-                ]}
-              >
-                <img
-                  class="w-full h-full"
-                  src={await localizeCMSImage(profileIcon.data?.attributes.url)}
-                  alt={profileIcon.data?.attributes.alternativeText}
-                />
               </div>
             </div>
           )
@@ -884,89 +898,6 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     </div>
 
     <div
-      id="profile-menu-sm"
-      class:list={[
-        "fixed hidden sm:!hidden right-0 top-0 z-[9999]",
-        "w-full h-screen wrapper py-[25px] bg-secondary text-black-light",
-      ]}
-    >
-      <div class="grid gap-[25px]">
-        <div class="flex justify-end">
-          <button
-            type="button"
-            id="profile-menu-sm-close-btn"
-            class="select-none cursor-pointer"
-          >
-            <svg
-              viewBox="0 0 19.2 19.2"
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-[35px] h-[35px]"
-            >
-              <path
-                d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
-                style="fill: #474747; fill-rule: evenodd"></path>
-            </svg>
-          </button>
-        </div>
-
-        <div class="grid gap-[25px]">
-          <div class="recoleta text-xl font-bold text-black">Person Name</div>
-
-          {
-            profile_menu.Menu.map(
-              ({ Visibility, Title, Link, Icon: { data: icon } }) =>
-                Visibility && (
-                  <div class="flex">
-                    <a href={Link || "#"}>
-                      <div class="flex gap-[15px] items-center">
-                        <div class="w-[20px] h-[20px]">
-                          {async () => (
-                            <img
-                              class="w-full h-full"
-                              alt=""
-                              src={await localizeCMSImage(icon?.attributes.url)}
-                            />
-                          )}
-                        </div>
-
-                        <div class="text-lg font-medium text-black-light">
-                          {Title}
-                        </div>
-                      </div>
-                    </a>
-                  </div>
-                ),
-            )
-          }
-
-          <div class="pt-[25px] border-t border-primary-light">
-            <button>
-              <div class="flex gap-[15px] items-center">
-                <div class="w-[20px] h-[20px]">
-                  {
-                    async () => (
-                      <img
-                        class="w-full h-full"
-                        alt=""
-                        src={await localizeCMSImage(
-                          profile_menu.Log_out_icon.data?.attributes.url,
-                        )}
-                      />
-                    )
-                  }
-                </div>
-
-                <div class="text-lg font-medium text-black-light">
-                  {profile_menu.text_log_out}
-                </div>
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div
       id="search-results-container"
       class="hidden absolute rounded-xl bg-white overflow-hidden"
     >
@@ -1057,9 +988,9 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
       const navigation = id("navigation"),
         profileIcon = id("profile-icon"),
-        profileMenuSm = id("profile-menu-sm"),
-        profileSmOpenButton = id("profile-menu-sm-open-btn"),
-        profileMenuSmCloseButton = id("profile-menu-sm-close-btn"),
+        profileMenuSm = id("profile-menu"),
+        profileOpenButton = id("profile-menu-open-btn"),
+        profileMenuCloseButton = id("profile-menu-close-btn"),
         topNotifications = document.querySelector(".top-notifications");
 
       if (window.cookies.isAuthenticated === "true") {
@@ -1067,12 +998,12 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
       }
 
       const toggleProfileMenuSm = () => {
-        profileMenuSm.classList.toggle("hidden");
+        profileMenuSm.classList.toggle("profile-menu-sm-block");
       };
 
-      profileSmOpenButton?.addEventListener("click", toggleProfileMenuSm);
+      profileOpenButton?.addEventListener("click", toggleProfileMenuSm);
 
-      profileMenuSmCloseButton?.addEventListener("click", toggleProfileMenuSm);
+      profileMenuCloseButton?.addEventListener("click", toggleProfileMenuSm);
 
       const updateNavbarStyles = () => {
         // fix sticky navbar position on mobile if top notification is shown
