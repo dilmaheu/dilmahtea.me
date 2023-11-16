@@ -1009,18 +1009,23 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
   // const localization = localizationMenuOpenButton?.parentElement,
   //   localizationMenu = localizationMenuOpenButton?.nextElementSibling;
 
-  let scrollingDisabled = false;
-  let scrollYPosition = 0;
+  let scrollYPosition = 0,
+    scrollingDisabled = false;
 
   window.disableScrolling = () => {
     if (scrollingDisabled) return;
 
     scrollYPosition = window.scrollY;
-    document.body.style.overflowY = "hidden";
-    document.body.style.width = "100%";
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollYPosition}px`;
-    document.body.style.left = "0";
+
+    const overflowY =
+      window.innerHeight < document.body.scrollHeight ? "scroll" : "auto";
+
+    Object.assign(document.body.style, {
+      overflowY,
+      width: "100%",
+      position: "fixed",
+      top: `-${scrollYPosition}px`,
+    });
 
     scrollingDisabled = true;
   };
@@ -1028,10 +1033,12 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
   window.enableScrolling = () => {
     if (!scrollingDisabled) return;
 
-    document.body.style.overflowY = "auto";
-    document.body.style.width = "auto";
-    document.body.style.position = "static";
-    document.body.style.top = "0";
+    Object.assign(document.body.style, {
+      width: "auto",
+      overflowY: "auto",
+      position: "static",
+      top: "0",
+    });
 
     window.scrollTo({ top: scrollYPosition });
 
@@ -1061,33 +1068,39 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
       // remove event listener to prevent memory leaks
       window.removeEventListener("resize", updateSidebarTopPosition);
-    } else if (sidebarOpened || localizationMenuVisible) {
+    } else if (sidebarOpened) {
       window.disableScrolling();
 
-      if (sidebarOpened) {
-        // re-add event listener in case it was removed
-        window.addEventListener("resize", updateSidebarTopPosition);
+      // re-add event listener in case it was removed
+      window.addEventListener("resize", updateSidebarTopPosition);
+    } else if (localizationMenuVisible) {
+      if (window.innerWidth < 640) {
+        window.disableScrolling();
+      } else {
+        window.enableScrolling();
       }
     }
   });
 
-  let localizationMenuVisible = false;
-  let profileMenuVisible = false;
-  let sidebarOpened = false;
+  let sidebarOpened = false,
+    profileMenuVisible = false,
+    localizationMenuVisible = false;
 
   const toggleLocalizationMenu = () => {
     localizationMenuVisible = !localizationMenuVisible;
+
     localizationMenu.classList.toggle("fullscreen-menu-sm-block");
 
-    if (localizationMenuVisible) {
+    if (localizationMenuVisible && window.innerWidth < 640) {
       window.disableScrolling();
-    } else {
+    } else if (scrollingDisabled) {
       window.enableScrolling();
     }
   };
 
   const toggleProfileMenu = () => {
     profileMenuVisible = !profileMenuVisible;
+
     profileMenu.classList.toggle("fullscreen-menu-sm-block");
 
     if (profileMenuVisible) {
@@ -1099,16 +1112,20 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
   const toggleSidebar = () => {
     sidebarOpened = !sidebarOpened;
+
     sidebar.style.display = sidebarOpened ? "block" : "none";
     sidebarOpenButton.style.display = sidebarOpened ? "none" : "block";
     sidebarCloseButton.style.display = sidebarOpened ? "block" : "none";
 
     if (sidebarOpened) {
       window.disableScrolling();
+
       updateSidebarTopPosition();
+
       window.addEventListener("resize", updateSidebarTopPosition);
     } else {
       window.enableScrolling();
+
       window.removeEventListener("resize", updateSidebarTopPosition);
     }
   };
