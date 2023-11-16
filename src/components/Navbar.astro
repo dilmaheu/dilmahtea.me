@@ -89,7 +89,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     );
   }
 
-  .profile-menu-sm-block {
+  .fullscreen-menu-sm-block {
     @media (max-width: 640px) {
       display: block !important;
     }
@@ -390,7 +390,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
       <div class="flex justify-end items-center gap-2.5 md:gap-[15px]">
         {
           localizationVisibility && (
-            <div class="hidden sm:block relative">
+            <div class="relative group">
               <button
                 id="localization-menu-open-btn"
                 aria-label={
@@ -407,12 +407,43 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
                 />
               </button>
 
-              <div class="hidden absolute w-[280px] -translate-x-1/2 left-1/2 drop-shadow-lg">
-                <div class="relative flex justify-center pt-1">
+              <div
+                id="localization-menu"
+                class:list={[
+                  "hidden sm:group-hover:block fixed sm:absolute z-[99] top-0 sm:top-auto",
+                  "left-0 sm:left-1/2 sm:-translate-x-1/2 px-[min(100px,5vw)] py-[25px] sm:p-0",
+                  "w-screen sm:w-[280px] h-screen sm:h-full bg-secondary sm:bg-transparent drop-shadow-lg",
+                ]}
+              >
+                <div class="relative hidden sm:flex justify-center pt-1">
                   <div class="w-5 h-5 bg-white rotate-45 rounded" />
                 </div>
 
-                <div class="grid gap-[15px] content-between bg-white rounded-[12px] p-[25px] -translate-y-3">
+                <div
+                  class:list={[
+                    "grid gap-[25px] sm:gap-[15px] sm:p-[25px]",
+                    "sm:bg-white sm:rounded-[10px] sm:-translate-y-3",
+                  ]}
+                >
+                  <div class="flex sm:hidden justify-end">
+                    <button
+                      type="button"
+                      id="localization-menu-close-btn"
+                      class="select-none cursor-pointer"
+                    >
+                      <svg
+                        viewBox="0 0 19.2 19.2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-[35px] h-[35px] p-[5px]"
+                      >
+                        <path
+                          d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+                          style="fill: #474747; fill-rule: evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+
                   <div class="grid gap-1.5 text-black-light">
                     <div class="text-[15px] font-medium text-black">
                       {text_language}
@@ -449,27 +480,6 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
                   </button> */}
                 </div>
               </div>
-            </div>
-          )
-        }
-
-        {
-          localizationVisibility && (
-            <div class="block sm:hidden relative">
-              <button
-                id="localization-menu-sm-open-btn"
-                class:list={[
-                  "nav-icon flex justify-center items-center",
-                  "peer bg-white rounded-full cursor-pointer",
-                ]}
-              >
-                <img
-                  src={await localizeCMSImage(
-                    localizationIcon?.data?.attributes.url,
-                  )}
-                  alt={localizationIcon?.data?.attributes.alternativeText}
-                />
-              </button>
             </div>
           )
         }
@@ -535,9 +545,9 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
               <div
                 id="profile-menu"
                 class:list={[
-                  "hidden sm:group-hover:block fixed sm:absolute top-0 sm:top-auto left-0",
-                  "bg-secondary sm:bg-transparent sm:-translate-x-[80%] drop-shadow-lg",
-                  "px-[min(100px,5vw)] py-[25px] sm:p-0 w-screen sm:w-[280px] h-screen sm:h-full",
+                  "hidden sm:group-hover:block fixed sm:absolute z-[99] top-0 sm:top-auto",
+                  "left-0 sm:-translate-x-[80%] px-[min(100px,5vw)] py-[25px] sm:p-0 w-screen",
+                  "sm:w-[280px] h-screen sm:h-full bg-secondary sm:bg-transparent drop-shadow-lg",
                 ]}
               >
                 <div class="profile-dropdown-notch hidden sm:flex justify-end relative pt-1">
@@ -547,7 +557,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
                 <div
                   class:list={[
                     "grid gap-[25px] sm:gap-[15px] sm:p-[25px]",
-                    "sm:bg-white sm:rounded-[12px] sm:-translate-y-3",
+                    "sm:bg-white sm:rounded-[10px] sm:-translate-y-3",
                   ]}
                 >
                   <div class="flex sm:hidden justify-end">
@@ -559,7 +569,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
                       <svg
                         viewBox="0 0 19.2 19.2"
                         xmlns="http://www.w3.org/2000/svg"
-                        class="w-[35px] h-[35px]"
+                        class="w-[35px] h-[35px] p-[5px]"
                       >
                         <path
                           d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
@@ -826,78 +836,6 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     }
 
     <div
-      id="localization-menu-sm"
-      class:list={[
-        "fixed hidden sm:!hidden right-0 top-0",
-        "w-full h-screen p-[25px] bg-secondary text-black-light z-[9999]",
-      ]}
-    >
-      <div class="grid gap-[25px]">
-        <div class="flex justify-end">
-          <button
-            type="button"
-            aria-label={ariaLabelRecurData.Navbar_close_localization_menu_text}
-            id="localization-menu-sm-close-btn"
-            class="select-none cursor-pointer"
-          >
-            <svg
-              viewBox="0 0 19.2 19.2"
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-[35px] h-[35px]"
-            >
-              <path
-                d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
-                style="fill: #474747; fill-rule: evenodd"></path>
-            </svg>
-          </button>
-        </div>
-
-        <div class="grid gap-[25px] content-between h-full">
-          <div class="grid gap-2.5">
-            <div class="text-[15px] font-medium">
-              {text_language}
-            </div>
-
-            {
-              languageSelectorVisibility &&
-                (availableLocales.length > 1 ? (
-                  <LangSelectorsDropdown
-                    docLocale={docLocale}
-                    availableLocales={availableLocales}
-                  />
-                ) : (
-                  <p>
-                    <i>{recurData.text_lang_selector_unavailable}</i>
-                  </p>
-                ))
-            }
-          </div>
-
-          <div class="grid gap-2.5">
-            <div class="text-[15px] font-medium">
-              {text_region}
-            </div>
-
-            {
-              regionSelectorVisibility && (
-                <RegionSelectorsDropdown docLocale={docLocale} />
-              )
-            }
-          </div>
-        </div>
-
-        {
-          /* <button
-          type="submit"
-          class="py-2.5 px-4 bg-primary text-secondary-light leading-[120%] rounded-full"
-        >
-          {Button_save_text}
-        </button> */
-        }
-      </div>
-    </div>
-
-    <div
       id="search-results-container"
       class="hidden absolute rounded-xl bg-white overflow-hidden"
     >
@@ -1060,17 +998,16 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     profileMenu = id("profile-menu"),
     profileMenuOpenButton = id("profile-menu-open-btn"),
     profileMenuCloseButton = id("profile-menu-close-btn"),
-    localizationMenuSm = id("localization-menu-sm"),
+    localizationMenu = id("localization-menu"),
     localizationMenuOpenButton = id("localization-menu-open-btn"),
-    localizationMenuSmOpenButton = id("localization-menu-sm-open-btn"),
-    localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
+    localizationMenuCloseButton = id("localization-menu-close-btn");
 
   const SelectorsDropdownItems = document.querySelectorAll<HTMLUListElement>(
     ".selectors-dropdown > div > .selectors-dropdown-item",
   );
 
-  const localization = localizationMenuOpenButton?.parentElement,
-    localizationMenu = localizationMenuOpenButton?.nextElementSibling;
+  // const localization = localizationMenuOpenButton?.parentElement,
+  //   localizationMenu = localizationMenuOpenButton?.nextElementSibling;
 
   let scrollingDisabled = false;
   let scrollYPosition = 0;
@@ -1135,13 +1072,12 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
   });
 
   let localizationMenuVisible = false;
+  let profileMenuVisible = false;
   let sidebarOpened = false;
 
   const toggleLocalizationMenu = () => {
     localizationMenuVisible = !localizationMenuVisible;
-    localizationMenuSm.style.display = localizationMenuVisible
-      ? "block"
-      : "none";
+    localizationMenu.classList.toggle("fullscreen-menu-sm-block");
 
     if (localizationMenuVisible) {
       window.disableScrolling();
@@ -1150,8 +1086,15 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     }
   };
 
-  const toggleProfileMenuSm = () => {
-    profileMenu.classList.toggle("profile-menu-sm-block");
+  const toggleProfileMenu = () => {
+    profileMenuVisible = !profileMenuVisible;
+    profileMenu.classList.toggle("fullscreen-menu-sm-block");
+
+    if (profileMenuVisible) {
+      window.disableScrolling();
+    } else {
+      window.enableScrolling();
+    }
   };
 
   const toggleSidebar = () => {
@@ -1178,60 +1121,58 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
   sidebarCloseButton?.addEventListener("click", toggleSidebar);
 
-  profileMenuOpenButton?.addEventListener("click", toggleProfileMenuSm);
+  profileMenuOpenButton?.addEventListener("click", toggleProfileMenu);
 
-  profileMenuCloseButton?.addEventListener("click", toggleProfileMenuSm);
+  profileMenuCloseButton?.addEventListener("click", toggleProfileMenu);
 
   localizationMenuOpenButton?.addEventListener("click", toggleLocalizationMenu);
 
-  localizationMenuSmOpenButton?.addEventListener(
+  localizationMenuCloseButton?.addEventListener(
     "click",
     toggleLocalizationMenu,
   );
 
-  localizationMenuSmCloseButton?.addEventListener(
-    "click",
-    toggleLocalizationMenu,
-  );
+  // localization?.addEventListener("mouseenter", () => {
+  //   localizationMenu.classList.remove("hidden");
+  // });
+  // localization?.addEventListener("mouseenter", () => {
+  //   localizationMenu.classList.remove("hidden");
+  // });
 
-  localization?.addEventListener("mouseenter", () => {
-    localizationMenu.classList.remove("hidden");
-  });
+  // const hideLocalizationMenu = () => {
+  //   localizationMenu.classList.add("hidden");
+  // };
 
-  const hideLocalizationMenu = () => {
-    localizationMenu.classList.add("hidden");
-  };
+  // localization?.addEventListener("mouseleave", hideLocalizationMenu);
 
-  localization?.addEventListener("mouseleave", hideLocalizationMenu);
+  // let localizationOpenedByClick = false;
 
-  let localizationOpenedByClick = false;
+  // document.addEventListener("click", (event) => {
+  //   const target = event.target as HTMLElement;
 
-  document.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement;
+  //   if (localizationMenuOpenButton?.contains(target)) {
+  //     const { classList: localizationMenuClassList } = localizationMenu;
 
-    if (localizationMenuOpenButton?.contains(target)) {
-      const { classList: localizationMenuClassList } = localizationMenu;
+  //     if (localizationOpenedByClick) {
+  //       localizationMenuClassList.add("hidden");
+  //       localizationOpenedByClick = false;
+  //     } else {
+  //       localizationMenuClassList.remove("hidden");
+  //       localizationOpenedByClick = true;
+  //     }
 
-      if (localizationOpenedByClick) {
-        localizationMenuClassList.add("hidden");
-        localizationOpenedByClick = false;
-      } else {
-        localizationMenuClassList.remove("hidden");
-        localizationOpenedByClick = true;
-      }
+  //     localization[
+  //       !localizationMenuClassList.contains("hidden")
+  //         ? "removeEventListener"
+  //         : "addEventListener"
+  //     ]("mouseleave", hideLocalizationMenu);
+  //   }
 
-      localization[
-        !localizationMenuClassList.contains("hidden")
-          ? "removeEventListener"
-          : "addEventListener"
-      ]("mouseleave", hideLocalizationMenu);
-    }
-
-    if (localization && !localization?.contains(target)) {
-      hideLocalizationMenu();
-      localization.addEventListener("mouseleave", hideLocalizationMenu);
-    }
-  });
+  //   if (localization && !localization?.contains(target)) {
+  //     hideLocalizationMenu();
+  //     localization.addEventListener("mouseleave", hideLocalizationMenu);
+  //   }
+  // });
 
   SelectorsDropdownItems.forEach((li) => {
     li.addEventListener("click", () => {
