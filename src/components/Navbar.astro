@@ -89,7 +89,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     );
   }
 
-  .profile-menu-sm-block {
+  .fullscreen-menu-sm-block {
     @media (max-width: 640px) {
       display: block !important;
     }
@@ -407,7 +407,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
                 />
               </button>
 
-              <div 
+              <div
                 id="localization-menu"
                 class:list={[
                   "hidden sm:group-hover:block fixed sm:absolute z-[99] top-0 sm:top-auto",
@@ -425,7 +425,6 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
                     "sm:bg-white sm:rounded-[12px] sm:-translate-y-3",
                   ]}
                 >
-
                   <div class="flex sm:hidden justify-end">
                     <button
                       type="button"
@@ -485,7 +484,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
           )
         }
 
-        {
+        <!-- {
           localizationVisibility && (
             <div class="block sm:hidden relative">
               <button
@@ -505,7 +504,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
             </div>
           )
         }
-
+ -->
         {
           cartVisibility && !isCartNavbar && (
             <button
@@ -857,7 +856,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
       )
     }
 
-    <div
+    <!-- <div
       id="localization-menu-sm"
       class:list={[
         "fixed hidden sm:!hidden right-0 top-0",
@@ -927,7 +926,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
         </button> */
         }
       </div>
-    </div>
+    </div> -->
 
     <div
       id="search-results-container"
@@ -1020,22 +1019,11 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
       const navigation = id("navigation"),
         profileIcon = id("profile-icon"),
-        profileMenuSm = id("profile-menu"),
-        profileOpenButton = id("profile-menu-open-btn"),
-        profileMenuCloseButton = id("profile-menu-close-btn"),
         topNotifications = document.querySelector(".top-notifications");
 
       if (window.cookies.isAuthenticated === "true") {
         profileIcon.style.display = "none";
       }
-
-      const toggleProfileMenuSm = () => {
-        profileMenuSm.classList.toggle("profile-menu-sm-block");
-      };
-
-      profileOpenButton?.addEventListener("click", toggleProfileMenuSm);
-
-      profileMenuCloseButton?.addEventListener("click", toggleProfileMenuSm);
 
       const updateNavbarStyles = () => {
         // fix sticky navbar position on mobile if top notification is shown
@@ -1100,17 +1088,19 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     openCartBtn = id("open-cart-btn"),
     sidebarOpenButton = id("sidebar-open-btn"),
     sidebarCloseButton = id("sidebar-close-btn"),
-    localizationMenuSm = id("localization-menu-sm"),
+    profileMenu = id("profile-menu"),
+    profileOpenButton = id("profile-menu-open-btn"),
+    profileMenuCloseButton = id("profile-menu-close-btn"),
+    localizationMenu = id("localization-menu"),
     localizationMenuOpenButton = id("localization-menu-open-btn"),
-    localizationMenuSmOpenButton = id("localization-menu-sm-open-btn"),
-    localizationMenuSmCloseButton = id("localization-menu-sm-close-btn");
+    localizationMenuCloseButton = id("localization-menu-close-btn");
 
   const SelectorsDropdownItems = document.querySelectorAll<HTMLUListElement>(
     ".selectors-dropdown > div > .selectors-dropdown-item",
   );
 
-  const localization = localizationMenuOpenButton?.parentElement,
-    localizationMenu = localizationMenuOpenButton?.nextElementSibling;
+  // const localization = localizationMenuOpenButton?.parentElement,
+  //   localizationMenu = localizationMenuOpenButton?.nextElementSibling;
 
   let scrollingDisabled = false;
   let scrollYPosition = 0;
@@ -1175,15 +1165,25 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
   });
 
   let localizationMenuVisible = false;
+  let profileMenuVisible = false;
   let sidebarOpened = false;
 
   const toggleLocalizationMenu = () => {
     localizationMenuVisible = !localizationMenuVisible;
-    localizationMenuSm.style.display = localizationMenuVisible
-      ? "block"
-      : "none";
+    localizationMenu.classList.toggle("fullscreen-menu-sm-block");
 
     if (localizationMenuVisible) {
+      window.disableScrolling();
+    } else {
+      window.enableScrolling();
+    }
+  };
+
+  const toggleProfileMenu = () => {
+    profileMenuVisible = !profileMenuVisible;
+    profileMenu.classList.toggle("fullscreen-menu-sm-block");
+
+    if (profileMenuVisible) {
       window.disableScrolling();
     } else {
       window.enableScrolling();
@@ -1214,56 +1214,58 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
   sidebarCloseButton?.addEventListener("click", toggleSidebar);
 
+  profileOpenButton?.addEventListener("click", toggleProfileMenu);
+
+  profileMenuCloseButton?.addEventListener("click", toggleProfileMenu);
+
   localizationMenuOpenButton?.addEventListener("click", toggleLocalizationMenu);
 
-  localizationMenuSmOpenButton?.addEventListener(
+  localizationMenuCloseButton?.addEventListener(
     "click",
     toggleLocalizationMenu,
   );
 
-  localizationMenuSmCloseButton?.addEventListener(
-    "click",
-    toggleLocalizationMenu,
-  );
+  // localization?.addEventListener("mouseenter", () => {
+  //   localizationMenu.classList.remove("hidden");
+  // });
+  // localization?.addEventListener("mouseenter", () => {
+  //   localizationMenu.classList.remove("hidden");
+  // });
 
-  localization?.addEventListener("mouseenter", () => {
-    localizationMenu.classList.remove("hidden");
-  });
+  // const hideLocalizationMenu = () => {
+  //   localizationMenu.classList.add("hidden");
+  // };
 
-  const hideLocalizationMenu = () => {
-    localizationMenu.classList.add("hidden");
-  };
+  // localization?.addEventListener("mouseleave", hideLocalizationMenu);
 
-  localization?.addEventListener("mouseleave", hideLocalizationMenu);
+  // let localizationOpenedByClick = false;
 
-  let localizationOpenedByClick = false;
+  // document.addEventListener("click", (event) => {
+  //   const target = event.target as HTMLElement;
 
-  document.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement;
+  //   if (localizationMenuOpenButton?.contains(target)) {
+  //     const { classList: localizationMenuClassList } = localizationMenu;
 
-    if (localizationMenuOpenButton?.contains(target)) {
-      const { classList: localizationMenuClassList } = localizationMenu;
+  //     if (localizationOpenedByClick) {
+  //       localizationMenuClassList.add("hidden");
+  //       localizationOpenedByClick = false;
+  //     } else {
+  //       localizationMenuClassList.remove("hidden");
+  //       localizationOpenedByClick = true;
+  //     }
 
-      if (localizationOpenedByClick) {
-        localizationMenuClassList.add("hidden");
-        localizationOpenedByClick = false;
-      } else {
-        localizationMenuClassList.remove("hidden");
-        localizationOpenedByClick = true;
-      }
+  //     localization[
+  //       !localizationMenuClassList.contains("hidden")
+  //         ? "removeEventListener"
+  //         : "addEventListener"
+  //     ]("mouseleave", hideLocalizationMenu);
+  //   }
 
-      localization[
-        !localizationMenuClassList.contains("hidden")
-          ? "removeEventListener"
-          : "addEventListener"
-      ]("mouseleave", hideLocalizationMenu);
-    }
-
-    if (localization && !localization?.contains(target)) {
-      hideLocalizationMenu();
-      localization.addEventListener("mouseleave", hideLocalizationMenu);
-    }
-  });
+  //   if (localization && !localization?.contains(target)) {
+  //     hideLocalizationMenu();
+  //     localization.addEventListener("mouseleave", hideLocalizationMenu);
+  //   }
+  // });
 
   SelectorsDropdownItems.forEach((li) => {
     li.addEventListener("click", () => {
