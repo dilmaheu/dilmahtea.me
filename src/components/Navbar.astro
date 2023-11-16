@@ -1073,7 +1073,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
       // re-add event listener in case it was removed
       window.addEventListener("resize", updateSidebarTopPosition);
-    } else if (localizationMenuVisible) {
+    } else if (localizationMenuVisible || profileMenuVisible) {
       if (window.innerWidth < 640) {
         window.disableScrolling();
       } else {
@@ -1087,26 +1087,30 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     localizationMenuVisible = false;
 
   const toggleLocalizationMenu = () => {
-    localizationMenuVisible = !localizationMenuVisible;
+    if (window.innerWidth < 640) {
+      localizationMenuVisible = !localizationMenuVisible;
 
-    localizationMenu.classList.toggle("fullscreen-menu-sm-block");
+      localizationMenu.classList.toggle("fullscreen-menu-sm-block");
 
-    if (localizationMenuVisible && window.innerWidth < 640) {
-      window.disableScrolling();
-    } else if (scrollingDisabled) {
-      window.enableScrolling();
+      if (localizationMenuVisible) {
+        window.disableScrolling();
+      } else if (scrollingDisabled) {
+        window.enableScrolling();
+      }
     }
   };
 
   const toggleProfileMenu = () => {
-    profileMenuVisible = !profileMenuVisible;
+    if (window.innerWidth < 640) {
+      profileMenuVisible = !profileMenuVisible;
 
-    profileMenu.classList.toggle("fullscreen-menu-sm-block");
+      profileMenu.classList.toggle("fullscreen-menu-sm-block");
 
-    if (profileMenuVisible) {
-      window.disableScrolling();
-    } else {
-      window.enableScrolling();
+      if (profileMenuVisible) {
+        window.disableScrolling();
+      } else {
+        window.enableScrolling();
+      }
     }
   };
 
