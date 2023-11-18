@@ -396,10 +396,10 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
                 aria-label={
                   ariaLabelRecurData.Navbar_open_localization_menu_text
                 }
-                class="nav-icon peer w-fit flex justify-center items-center bg-white rounded-full cursor-pointer"
+                class="peer w-fit flex justify-center items-center bg-white rounded-full cursor-pointer"
               >
                 <img
-                  class="w-full h-full"
+                  class="nav-icon w-full h-full"
                   src={await localizeCMSImage(
                     localizationIcon?.data?.attributes.url,
                   )}
@@ -410,7 +410,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
               <div
                 id="localization-menu"
                 class:list={[
-                  "hidden sm:group-hover:block fixed sm:absolute z-[99] top-0 sm:top-auto",
+                  "hidden fixed sm:absolute z-[99] top-0 sm:top-auto",
                   "left-0 sm:left-1/2 sm:-translate-x-1/2 px-[min(100px,5vw)] py-[25px] sm:p-0",
                   "w-screen sm:w-[280px] h-screen sm:h-full bg-secondary sm:bg-transparent drop-shadow-lg",
                 ]}
@@ -530,13 +530,10 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
             <div class="relative group">
               <div
                 id="profile-menu-open-btn"
-                class:list={[
-                  "nav-icon rounded-full cursor-pointer",
-                  "flex justify-center items-center bg-white",
-                ]}
+                class="flex justify-center items-center bg-white rounded-full cursor-pointer"
               >
                 <img
-                  class="w-full h-full"
+                  class="nav-icon w-full h-full"
                   src={await localizeCMSImage(profileIcon.data?.attributes.url)}
                   alt={profileIcon.data?.attributes.alternativeText}
                 />
@@ -979,6 +976,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
           ? "block"
           : "none";
       });
+
       navMenuContainer.addEventListener("mouseleave", () => {
         headerNavShadow.style.display = "none";
       });
@@ -1005,9 +1003,6 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
   const SelectorsDropdownItems = document.querySelectorAll<HTMLUListElement>(
     ".selectors-dropdown > div > .selectors-dropdown-item",
   );
-
-  // const localization = localizationMenuOpenButton?.parentElement,
-  //   localizationMenu = localizationMenuOpenButton?.nextElementSibling;
 
   let scrollYPosition = 0,
     scrollingDisabled = false;
@@ -1073,7 +1068,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
       // re-add event listener in case it was removed
       window.addEventListener("resize", updateSidebarTopPosition);
-    } else if (localizationMenuVisible || profileMenuVisible) {
+    } else if (localizationMenuOpened || profileMenuOpened) {
       if (window.innerWidth < 640) {
         window.disableScrolling();
       } else {
@@ -1083,34 +1078,32 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
   });
 
   let sidebarOpened = false,
-    profileMenuVisible = false,
-    localizationMenuVisible = false;
+    profileMenuOpened = false,
+    localizationMenuOpened = false;
 
-  const toggleLocalizationMenu = () => {
-    if (window.innerWidth < 640) {
-      localizationMenuVisible = !localizationMenuVisible;
+  const toggleProfileMenu = () => {
+    profileMenu.classList[profileMenuOpened ? "add" : "remove"]("hidden");
 
-      localizationMenu.classList.toggle("fullscreen-menu-sm-block");
+    profileMenuOpened = !profileMenuOpened;
 
-      if (localizationMenuVisible) {
-        window.disableScrolling();
-      } else if (scrollingDisabled) {
-        window.enableScrolling();
-      }
+    if (profileMenuOpened && window.innerWidth < 640) {
+      window.disableScrolling();
+    } else {
+      window.enableScrolling();
     }
   };
 
-  const toggleProfileMenu = () => {
-    if (window.innerWidth < 640) {
-      profileMenuVisible = !profileMenuVisible;
+  const toggleLocalizationMenu = () => {
+    localizationMenu.classList[localizationMenuOpened ? "add" : "remove"](
+      "hidden",
+    );
 
-      profileMenu.classList.toggle("fullscreen-menu-sm-block");
+    localizationMenuOpened = !localizationMenuOpened;
 
-      if (profileMenuVisible) {
-        window.disableScrolling();
-      } else {
-        window.enableScrolling();
-      }
+    if (localizationMenuOpened && window.innerWidth < 640) {
+      window.disableScrolling();
+    } else {
+      window.enableScrolling();
     }
   };
 
@@ -1142,58 +1135,71 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
   sidebarCloseButton?.addEventListener("click", toggleSidebar);
 
-  profileMenuOpenButton?.addEventListener("click", toggleProfileMenu);
-
   profileMenuCloseButton?.addEventListener("click", toggleProfileMenu);
-
-  localizationMenuOpenButton?.addEventListener("click", toggleLocalizationMenu);
 
   localizationMenuCloseButton?.addEventListener(
     "click",
     toggleLocalizationMenu,
   );
 
-  // localization?.addEventListener("mouseenter", () => {
-  //   localizationMenu.classList.remove("hidden");
-  // });
-  // localization?.addEventListener("mouseenter", () => {
-  //   localizationMenu.classList.remove("hidden");
-  // });
+  profileMenuOpenButton?.addEventListener("mouseenter", () => {
+    if (window.innerWidth >= 640) {
+      profileMenu.classList.remove("hidden");
+    }
+  });
 
-  // const hideLocalizationMenu = () => {
-  //   localizationMenu.classList.add("hidden");
-  // };
+  const hideProfileMenu = () => {
+    if (window.innerWidth >= 640) {
+      profileMenu.classList.add("hidden");
+    }
+  };
 
-  // localization?.addEventListener("mouseleave", hideLocalizationMenu);
+  profileMenuOpenButton?.addEventListener("mouseleave", hideProfileMenu);
 
-  // let localizationOpenedByClick = false;
+  localizationMenuOpenButton?.addEventListener("mouseenter", () => {
+    if (window.innerWidth >= 640) {
+      localizationMenu.classList.remove("hidden");
+    }
+  });
 
-  // document.addEventListener("click", (event) => {
-  //   const target = event.target as HTMLElement;
+  const hideLocalizationMenu = () => {
+    if (window.innerWidth >= 640) {
+      localizationMenu.classList.add("hidden");
+    }
+  };
 
-  //   if (localizationMenuOpenButton?.contains(target)) {
-  //     const { classList: localizationMenuClassList } = localizationMenu;
+  localizationMenuOpenButton?.addEventListener(
+    "mouseleave",
+    hideLocalizationMenu,
+  );
 
-  //     if (localizationOpenedByClick) {
-  //       localizationMenuClassList.add("hidden");
-  //       localizationOpenedByClick = false;
-  //     } else {
-  //       localizationMenuClassList.remove("hidden");
-  //       localizationOpenedByClick = true;
-  //     }
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
 
-  //     localization[
-  //       !localizationMenuClassList.contains("hidden")
-  //         ? "removeEventListener"
-  //         : "addEventListener"
-  //     ]("mouseleave", hideLocalizationMenu);
-  //   }
+    if (profileMenuOpenButton?.contains(target)) {
+      toggleProfileMenu();
 
-  //   if (localization && !localization?.contains(target)) {
-  //     hideLocalizationMenu();
-  //     localization.addEventListener("mouseleave", hideLocalizationMenu);
-  //   }
-  // });
+      profileMenuOpenButton[
+        profileMenuOpened ? "removeEventListener" : "addEventListener"
+      ]("mouseleave", hideProfileMenu);
+    } else if (!localizationMenu?.contains(target)) {
+      hideProfileMenu();
+
+      localizationMenu.addEventListener("mouseleave", hideProfileMenu);
+    }
+
+    if (localizationMenuOpenButton?.contains(target)) {
+      toggleLocalizationMenu();
+
+      localizationMenuOpenButton[
+        localizationMenuOpened ? "removeEventListener" : "addEventListener"
+      ]("mouseleave", hideLocalizationMenu);
+    } else if (!localizationMenu?.contains(target)) {
+      hideLocalizationMenu();
+
+      localizationMenu.addEventListener("mouseleave", hideLocalizationMenu);
+    }
+  });
 
   SelectorsDropdownItems.forEach((li) => {
     li.addEventListener("click", () => {
