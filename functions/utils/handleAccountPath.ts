@@ -17,17 +17,21 @@ export async function handleAccountPath(
   const { origin } = URL,
     searchParams = Object.fromEntries(new URLSearchParams(URL.searchParams));
 
-  if (session && pathID !== "congrats") {
-    const referrer = request.headers.get("Referer") || origin;
-
-    return Response.redirect(referrer, 303);
-  }
-
   function redirectToLogin() {
     return Response.redirect(
-      origin + fullMatch.replace(specificPath, "/login"),
+      origin + fullMatch.replace(new RegExp(`${specificPath}$`), "/login"),
       303,
     );
+  }
+
+  if (session) {
+    if (!["", "congrats"].includes(pathID)) {
+      const referrer = request.headers.get("Referer") || origin;
+
+      return Response.redirect(referrer, 303);
+    }
+  } else if ([""].includes(pathID)) {
+    return redirectToLogin();
   }
 
   switch (pathID) {
