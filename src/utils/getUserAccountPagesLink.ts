@@ -8,5 +8,5 @@ export default function getUserAccountPagesLink(
     ({ attributes: { UID } }) => UID === uid,
   ).attributes.Meta.URL_slug;
 
-  return link;
+  return "/" + locale + "/" + link + "/";
 }
