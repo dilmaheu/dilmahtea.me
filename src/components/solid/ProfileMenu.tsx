@@ -2,6 +2,11 @@ import { createEffect, createSignal } from "solid-js";
 
 import { user } from "@signals/user";
 
+declare interface LogoutResponse {
+  success: boolean;
+  returnTo: string;
+}
+
 export default function ProfileMenu({
   profileMenu,
   profileIcon,
@@ -13,6 +18,12 @@ export default function ProfileMenu({
   createEffect(() => {
     setIsAuthenticated(window.cookies.isAuthenticated === "true");
   });
+
+  function handleLogout() {
+    fetch("/account/logout")
+      .then((res) => res.json<LogoutResponse>())
+      .then(({ success }) => success && location.reload());
+  }
 
   return (
     <div class="relative group">
@@ -96,7 +107,7 @@ export default function ProfileMenu({
               )}
 
               <div class="pt-[25px] sm:pt-[15px] border-t border-primary-light">
-                <button>
+                <button onclick={handleLogout}>
                   <div class="flex gap-[15px] items-center">
                     <div class="w-[20px] h-[20px]">
                       <img
