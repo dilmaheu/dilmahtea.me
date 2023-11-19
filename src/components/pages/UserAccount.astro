@@ -80,6 +80,10 @@ const verificationHref = getHref(verificationLink),
 
         @apply block w-full mt-2.5 px-4 py-3 text-lg font-normal leading-[115%] text-black rounded-full bg-transparent;
         @apply focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring;
+
+        &:disabled {
+          @apply cursor-not-allowed bg-black-light/10;
+        }
       }
 
       input:is([type="text"], [type="email"])::placeholder {
@@ -440,6 +444,19 @@ const verificationHref = getHref(verificationLink),
   }
 
   switch (UID) {
+    case "login":
+      const formInputs = form.querySelectorAll("input");
+
+      formInputs.forEach((input, i) => {
+        input.addEventListener("input", () => {
+          const { value } = input;
+
+          formInputs[i === 0 ? 1 : 0].disabled = value.length > 0;
+        });
+      });
+
+      break;
+
     case "verification":
       updateTimeLeft();
 

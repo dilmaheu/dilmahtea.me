@@ -14,8 +14,6 @@ const availableData = {
   ...contactInfo,
 };
 
-availableData.email_or_phone = availableData.email || availableData.phone;
-
 Object.entries<string>(availableData).forEach(([name, value]) => {
   if (value && value !== "true") {
     const option: HTMLOptionElement = query(
@@ -36,6 +34,8 @@ Object.entries<string>(availableData).forEach(([name, value]) => {
           selectedOptionInput.checked = true;
         } else {
           input.value = value || "";
+
+          input.dispatchEvent(new Event("input"));
         }
       }
     }

@@ -6,19 +6,19 @@ import validator from "validator";
 import { PublicError, isMobilePhone } from "../utils";
 import { getToken, removeToken, validateToken } from "../utils/token";
 
-const BodySchema = z
-  .object({
-    email_or_phone: z.string(),
-    locale: z.string(),
-    referrer: z.string(),
-  })
-  .or(
-    z.object({
-      email: z.string().email().optional(),
-      phone: z.string().refine(isMobilePhone).optional(),
-      token: z.string(),
-    }),
-  );
+const BaseSchema = z.object({
+  email: z.string().email().optional(),
+  phone: z.string().refine(isMobilePhone).optional(),
+});
+
+const BodySchema = BaseSchema.extend({
+  locale: z.string(),
+  referrer: z.string(),
+}).or(
+  BaseSchema.extend({
+    token: z.string(),
+  }),
+);
 
 type Body = z.infer<typeof BodySchema>;
 
@@ -37,18 +37,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
   try {
     const bodyData = BodySchema.parse(body);
 
-    if ("email_or_phone" in bodyData) {
-      const { email_or_phone } = bodyData;
-
-      if (validator.isEmail(email_or_phone)) {
-        email = email_or_phone;
-      } else if (isMobilePhone(email_or_phone)) {
-        phone = email_or_phone;
-      } else {
-        throw new Error();
-      }
-
-      ({ locale, referrer } = bodyData);
+    if ("referrer" in bodyData) {
+      ({ email, phone, locale, referrer } = bodyData);
 
       if (!referrer || new URL(referrer).origin !== requestOrigin) {
         referrer = requestOrigin;
