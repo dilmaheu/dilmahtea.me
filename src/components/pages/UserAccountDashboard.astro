@@ -6,6 +6,8 @@ import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 import localizeCMSImage from "@utils/localizeCMSImage";
 
+import UserInfo from "@solid/UserInfo";
+
 import Markdown from "@components/Markdown.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
@@ -92,17 +94,17 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
       padding: 15px;
     }
 
-    .information-label {
+    :global(.information-label) {
       @apply text-sm md:text-base font-medium leading-[150%] text-black-light;
     }
 
-    .information-text {
+    :global(.information-text) {
       @apply leading-[150%] text-black sm:font-medium;
 
       font-size: clamp(1.125rem, 1.5vw + 0.3rem, 1.5rem);
     }
 
-    .information-btn {
+    :global(.information-btn) {
       @apply leading-[150%] font-semibold text-primary;
 
       font-size: clamp(1rem, 1.4vw + 0.3rem, 1.375rem);
@@ -221,52 +223,16 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
       </div>
 
       <div class="dashboard-sec">
-        <div class="grid gap-1 pb-[25px] mb-[25px] border-b border-lightgray">
-          <div class="information-label">
-            {Label_username}
-          </div>
+        <UserInfo
+          client:load
+          Label_username={Label_username}
+          Label_phone={Label_phone}
+          Label_email={Label_email}
+          Button_edit_text={Button_edit_text}
+          Button_update_text={Button_update_text}
+        />
 
-          <div class="flex flex-wrap items-center gap-2.5 justify-between">
-            <div class="information-text">Sara Jones</div>
-            <div class="information-btn">
-              <a href="account/update-information">
-                {Button_edit_text}
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid gap-1 pb-[25px] mb-[25px] border-b border-lightgray">
-          <div class="information-label">
-            {Label_phone}
-          </div>
-
-          <div class="flex flex-wrap items-center gap-2.5 justify-between">
-            <div class="information-text">91-9978676545</div>
-            <div class="information-btn">
-              <a href="account/update-information">
-                {Button_update_text}
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid gap-1 pb-[25px] mb-[25px] border-b border-lightgray">
-          <div class="information-label">
-            {Label_email}
-          </div>
-
-          <div class="flex flex-wrap items-center gap-2.5 justify-between">
-            <div class="information-text">marverick.john@gmail.com</div>
-            <div class="information-btn">
-              <a href="account/update-information">
-                {Button_update_text}
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid gap-[25px]">
+        <!-- <div class="grid gap-[25px]">
           <div class="grid gap-1">
             <div class="information-label">
               {Label_delivery_address}
@@ -324,12 +290,12 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
               </div>
             )
           }
-        </div>
+        </div> -->
       </div>
 
-      <div class="dashboard-sec">
-        {
-          Social_media && (
+      {
+        Social_media && (
+          <div class="dashboard-sec">
             <div>
               <div class="recoleta text-2xl leading-[110%] text-black">
                 {Social_media_title}
@@ -414,9 +380,9 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
                 </div>
               </div>
             </div>
-          )
-        }
-      </div>
+          </div>
+        )
+      }
     </section>
 
     {
@@ -541,7 +507,7 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
       )
     }
 
-    <section>
+    <!-- <section>
       <div
         id={block3_title.toLowerCase().replaceAll(" ", "-")}
         class="dashboard-sec-title recoleta mt-[50px]"
@@ -829,9 +795,9 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
           </a>
         </div>
       </div>
-    </section>
+    </section> -->
 
-    <div class="dashboard-sec grid gap-5 justify-center text-center">
+    <!-- <div class="dashboard-sec grid gap-5 justify-center text-center">
       <div class="w-full max-h-[200px]">
         <img
           class="w-full h-full"
@@ -858,7 +824,7 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
       >
         {Empty_order_button_text}
       </a>
-    </div>
+    </div> -->
   </div>
 
   <div
@@ -950,7 +916,7 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
   )
 }
 
-<script>
+<!-- <script>
   const kindnessCausesCardsContainer =
       document.querySelector(".kindness-causes"),
     kindnessCausesCards = document.querySelectorAll(".kindness-cause");
@@ -974,4 +940,4 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
       card.parentElement.parentElement.classList.add("active-kindness-cause");
     });
   });
-</script>
+</script> -->
