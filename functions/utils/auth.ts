@@ -14,6 +14,7 @@ export const initializeLucia = (db: D1Database) => {
       key: "user_key",
       session: "user_session",
     }),
+    getUserAttributes: (databaseUser) => databaseUser,
   });
 
   return auth;

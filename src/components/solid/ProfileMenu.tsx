@@ -1,5 +1,7 @@
 import { createEffect, createSignal } from "solid-js";
 
+import { user } from "@signals/user";
+
 export default function ProfileMenu({
   profileMenu,
   profileIcon,
@@ -71,7 +73,7 @@ export default function ProfileMenu({
               </div>
 
               <div class="recoleta text-xl font-bold text-black sm:mb-2.5">
-                Person Name
+                {user().name}
               </div>
 
               {profileMenu.Menu.map(
