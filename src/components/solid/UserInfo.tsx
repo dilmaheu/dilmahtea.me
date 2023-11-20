@@ -15,9 +15,9 @@ export default function UserInfo({
         <div class="flex flex-wrap items-center gap-2.5 justify-between">
           <div class="information-text">{user().name}</div>
 
-          <div class="information-btn">
+          {/* <div class="information-btn">
             <a href="#">{Button_edit_text}</a>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -27,9 +27,9 @@ export default function UserInfo({
         <div class="flex flex-wrap items-center gap-2.5 justify-between">
           <div class="information-text">{user().phone}</div>
 
-          <div class="information-btn">
+          {/* <div class="information-btn">
             <a href="#">{Button_update_text}</a>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -39,9 +39,9 @@ export default function UserInfo({
         <div class="flex flex-wrap items-center gap-2.5 justify-between">
           <div class="information-text">{user().email}</div>
 
-          <div class="information-btn">
+          {/* <div class="information-btn">
             <a href="#">{Button_update_text}</a>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
