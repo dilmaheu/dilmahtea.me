@@ -35,7 +35,7 @@ const topNotifications = notifications
                 <span class={lang}>{notification[lang].Content}</span>
               ));
 
-            case "region_not_available":
+            default:
               return notification[locale].Content;
           }
         }}
@@ -48,14 +48,14 @@ const topNotifications = notifications
   const topNotifications =
     document.currentScript.previousElementSibling.children;
 
+  const searchParams = Object.fromEntries(new URLSearchParams(location.search));
+
   [...topNotifications].forEach((notification) => {
     const notificationTitle = notification.classList[0];
 
     switch (notificationTitle) {
       case "language_not_available":
-        const requestedLocale = new URLSearchParams(location.search).get(
-          "requestedLocale",
-        );
+        const { requestedLocale } = searchParams;
 
         if (locales.includes(requestedLocale)) {
           const irrelevantNotifications = notification.querySelectorAll(
@@ -68,6 +68,7 @@ const topNotifications = notifications
 
           notification.style.display = "flex";
         }
+
         break;
 
       case "region_not_available":
@@ -84,6 +85,16 @@ const topNotifications = notifications
             );
           }
         }
+
+        break;
+
+      case "link_mobile_and_email":
+        const { linkedMobileAndEmail } = searchParams;
+
+        if (linkedMobileAndEmail) {
+          notification.style.display = "flex";
+        }
+
         break;
     }
 

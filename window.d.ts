@@ -28,6 +28,7 @@ type Cart = {
 
 type Cookies = {
   country: string;
+  isAuthenticated: string;
   [key: string]: string;
 };
 

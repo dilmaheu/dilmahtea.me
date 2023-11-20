@@ -1,0 +1,42 @@
+---
+import ProfileMenu from "@solid/ProfileMenu";
+import localizeCMSImage from "@utils/localizeCMSImage";
+
+const { profileMenu, profileIcon, loginLink } = Astro.props;
+
+await Promise.all([
+  ...profileMenu.Menu.map(async ({ Icon }) => {
+    if (Icon.src) return;
+
+    Icon.src = await localizeCMSImage(Icon.data.attributes.url);
+  }),
+  (async () => {
+    if (profileMenu.logOutIcon) return;
+
+    profileMenu.logOutIcon = {
+      src: await localizeCMSImage(profileMenu.Log_out_icon.data.attributes.url),
+    };
+  })(),
+]);
+
+const [, , , cid] = Object.keys(Astro.props);
+---
+
+<ProfileMenu
+  client:load
+  profileMenu={profileMenu}
+  loginLink={loginLink}
+  cid={cid}
+>
+  {
+    async () => (
+      <img
+        slot="profileIcon"
+        class="nav-icon w-full h-full"
+        src={await localizeCMSImage(profileIcon.data.attributes.url)}
+        alt={profileIcon.data.attributes.alternativeText}
+        {...{ [cid]: true }}
+      />
+    )
+  }
+</ProfileMenu>
