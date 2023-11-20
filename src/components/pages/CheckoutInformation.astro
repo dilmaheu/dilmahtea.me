@@ -1,5 +1,6 @@
 ---
 import CMS from "@store/CMS";
+import Markdown from "@components/Markdown.astro";
 import OrderSummary from "@components/OrderSummary.astro";
 
 const { page } = Astro.props,
@@ -37,20 +38,29 @@ const { page } = Astro.props,
     gap: poly-fluid-clamp(
       (
         375px: 10px,
-        1440px: 35px,
+        1440px: 25px,
       )
     );
+
+    .prose-text {
+      font-size: poly-fluid-clamp(
+        (
+          375px: 16px,
+          1440px: 20px,
+        )
+      );
+    }
 
     .form-grid {
       @apply w-full grid gap-y-2.5;
 
-      @media (min-width: 480px) {
+      @media (min-width: 640px) {
         @apply grid-cols-2;
 
         gap: poly-fluid-clamp(
           (
             480px: 10px 40px,
-            1440px: 25px 100px,
+            1440px: 25px 50px,
           )
         );
       }
@@ -77,7 +87,7 @@ const { page } = Astro.props,
     role="main"
     aria-label={page.Aria_label_form_text}
     id="checkout-info-form"
-    class="flex flex-col gap-12"
+    class="flex flex-col gap-[25px]"
     action={"/" + locale + "/" + checkoutShippingLink + "/"}
   >
     <div
@@ -85,7 +95,14 @@ const { page } = Astro.props,
       aria-label={page.text_contact_info}
       class="form-grid-container"
     >
-      <h2 class="recoleta">{page.text_contact_info}</h2>
+      <h2 class="recoleta">{page.text_customer}</h2>
+
+      <div
+        id="guest-intro-text"
+        class="prose-text prose max-w-none leading-[150%] text-black-light"
+      >
+        <Markdown>{page.Guest_intro_text}</Markdown>
+      </div>
 
       <div class="form-grid">
         <label>
@@ -99,7 +116,16 @@ const { page } = Astro.props,
           />
         </label>
       </div>
+
+      <div
+        id="sign-in-text"
+        class="prose-text prose max-w-none leading-[150%] text-black-light"
+      >
+        <Markdown>{page.Sign_in_text}</Markdown>
+      </div>
     </div>
+
+    <div class="w-full h-px bg-primary-light"></div>
 
     <div
       role="form"
@@ -196,7 +222,7 @@ const { page } = Astro.props,
       class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-9 sm:gap-12"
     >
       <button
-        class="w-full sm:w-auto py-4 px-8 sm:px-20 sm:px-24 bg-primary text-white font-bold rounded-full"
+        class="w-full sm:w-auto py-4 px-8 sm:px-20 bg-primary text-white font-bold rounded-full"
       >
         {page.text_continue_to_shipping}
       </button>
@@ -214,25 +240,22 @@ const { page } = Astro.props,
   <OrderSummary page={page} />
 </section>
 
-<script>
-  import fillUpForm from "@utils/client/fillUpForm";
+<script is:inline>
+  const guestIntroText = document.getElementById("guest-intro-text"),
+    signInText = document.getElementById("sign-in-text");
 
+  if (window.cookies.isAuthenticated === "true") {
+    guestIntroText.remove();
+    signInText.remove();
+  }
+</script>
+
+<script>
   const inputToBeChanged = new URLSearchParams(location.search).get("change"),
-    savedCheckoutInfo = localStorage.getItem("checkout-info"),
     returnToCartBtn = document.getElementById("return-to-cart-btn"),
     checkoutInfoForm = document.getElementById(
       "checkout-info-form",
     ) as HTMLFormElement;
-
-  const parsedContactInfo = savedCheckoutInfo
-    ? JSON.parse(savedCheckoutInfo)
-    : window.userRegion
-    ? { country: window.regions[window.userRegion] }
-    : null;
-
-  if (parsedContactInfo) {
-    fillUpForm(Object.entries(parsedContactInfo));
-  }
 
   checkoutInfoForm?.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -242,7 +265,7 @@ const { page } = Astro.props,
       contactInfo = {
         ...formData,
         delivery_address: [street, city, country].join(", "),
-        kindness_cause: parsedContactInfo?.kindness_cause,
+        kindness_cause: window.checkoutInfo.kindness_cause,
       };
 
     localStorage.setItem("checkout-info", JSON.stringify(contactInfo));

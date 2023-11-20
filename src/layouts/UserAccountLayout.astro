@@ -1,0 +1,66 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Navbar from "@components/Navbar.astro";
+import Footer from "@components/Footer.astro";
+import RecurringImages from "@store/RecurringImages";
+import { Picture } from "astro-imagetools/components";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import CartOverlay from "@components/CartOverlay.astro";
+
+interface Props {
+  page: Record<string, any>;
+  meta: Record<string, any>;
+  locale: string;
+  recurData: Record<string, any>;
+  metaImageSrc: string;
+  alternateURLs: { [locale: string]: string };
+  availableLocales: string[];
+}
+
+const {
+  page,
+  meta,
+  locale,
+  recurData,
+  alternateURLs,
+  availableLocales,
+  metaImageSrc,
+} = Astro.props as Props;
+
+const footerText = recurData.Footer_text.replaceAll(
+  "<current_year>",
+  `${new Date().getFullYear()}`
+);
+---
+
+<BaseLayout
+  page={page}
+  meta={meta}
+  locale={locale}
+  alternateURLs={alternateURLs}
+  metaImageSrc={metaImageSrc}
+>
+  <div class="flex flex-wrap w-full h-full">
+    <div class="block w-full bg-secondary">
+      <Navbar
+        page={page}
+        docLocale={locale}
+        footerText={footerText}
+        isUserAccountNavbar={true}
+        availableLocales={availableLocales}
+      />
+
+      <div class="relative">
+        <div class="hero-sub-menu-shadow nav-bg hidden" />
+      </div>
+      
+      <main>
+        <slot />
+      </main>
+    </div>
+
+    <Footer footerText={footerText} recurData={recurData} />
+  </div>
+
+  <CartOverlay page={page} />
+</BaseLayout>

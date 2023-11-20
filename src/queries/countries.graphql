@@ -1,0 +1,21 @@
+fragment CountryAttributes on Country {
+  locale
+  name
+}
+
+query {
+  countries {
+    data {
+      attributes {
+        ...CountryAttributes
+        localizations(filters: { publishedAt: { ne: null } }) {
+          data {
+            attributes {
+              ...CountryAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}

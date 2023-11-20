@@ -1,0 +1,52 @@
+fragment UserAccountsAttributes on UserAccount {
+  locale
+  UID
+  Title
+  Intro_text
+  Intro_blob {
+    ...Media
+  }
+  Form {
+    Email_or_phone
+    First_name
+    Last_name
+    Email
+    Phone
+    Submit_button_text
+    Blob {
+      ...Media
+    }
+  }
+  Block_text
+  Social_media {
+    Facebook
+    Google
+    Twitter
+  }
+  Button_pretext
+  Button_text
+  Meta {
+    HTML_Title
+    Meta_description
+    noindex
+    nofollow
+    URL_slug
+    Canonical_link
+  }
+}
+
+query {
+  userAccounts(locale: "all") {
+    data {
+      id
+      attributes {
+        ...UserAccountsAttributes
+        localizations(filters: { publishedAt: { ne: null } }) {
+          data {
+            id
+          }
+        }
+      }
+    }
+  }
+}

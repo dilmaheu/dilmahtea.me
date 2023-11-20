@@ -4,6 +4,7 @@ import products from "@store/Products";
 
 import PageLayout from "@layouts/PageLayout.astro";
 import CheckoutLayout from "@layouts/CheckoutLayout.astro";
+import UserAccountLayout from "@layouts/UserAccountLayout.astro";
 
 import Cart from "@pages/Cart.astro";
 import Posts from "@pages/Posts.astro";
@@ -24,6 +25,10 @@ import CheckoutSuccess from "@pages/CheckoutSuccess.astro";
 import CheckoutKindness from "@pages/CheckoutKindness.astro";
 import CheckoutShipping from "@pages/CheckoutShipping.astro";
 import CheckoutInformation from "@pages/CheckoutInformation.astro";
+import UserAccount from "@pages/UserAccount.astro";
+import UserAccountDashboard from "@pages/UserAccountDashboard.astro";
+import UserAccountOrder from "@pages/UserAccountOrder.astro";
+import UserAccountAddress from "@pages/UserAccountAddress.astro";
 
 import DefaultRouteRedirect from "@scripts/DefaultRouteRedirect.astro";
 import TranslationNotFoundRedirect from "@scripts/TranslationNotFoundRedirect.astro";
@@ -51,10 +56,16 @@ export async function getStaticPaths() {
     homeElephantPath,
     productCategories,
     cart,
+    countries,
     checkoutKindness,
     checkoutInformation,
     checkoutShipping,
     checkoutSuccess,
+    kindnessCauses,
+    userAccounts,
+    userAccountDashboard,
+    userAccountOrder,
+    userAccountAddress,
   } = CMS.get("all");
 
   const allProducts = products.get("all");
@@ -305,6 +316,10 @@ export async function getStaticPaths() {
     true,
   );
 
+  const kindnessPages = getRoutes(homeElephantPath, () => ({
+    type: "kindness",
+  }));
+
   const cartPages = getRoutes(cart, () => ({
     type: "cart",
   }));
@@ -325,9 +340,29 @@ export async function getStaticPaths() {
     type: "checkoutSuccess",
   }));
 
-  const kindnessPages = getRoutes(homeElephantPath, () => ({
-    type: "kindness",
+  const userAccountPages = getRoutes(userAccounts, () => ({
+    type: "account",
   }));
+
+  const userAccountDashboardPages = getRoutes(
+    userAccountDashboard,
+    (_, { locale }) => ({
+      type: "accountDashboard",
+      kindnessCauses: locale && getPosts(kindnessCauses, locale),
+    }),
+  );
+
+  // const userAccountAddressPages = getRoutes(
+  //   userAccountAddress,
+  //   (_, { locale }) => ({
+  //     type: "accountAddress",
+  //     countries: locale && getPosts(countries, locale),
+  //   }),
+  // );
+
+  // const userAccountOrderPages = getRoutes(userAccountOrder, () => ({
+  //   type: "accountOrders",
+  // }));
 
   return [
     ...plansPages,
@@ -346,12 +381,16 @@ export async function getStaticPaths() {
     ...estatePages,
     ...productPages,
     ...homepagePages,
+    ...kindnessPages,
     ...cartPages,
     ...checkoutKindnessPages,
     ...checkoutInformationPages,
     ...checkoutShippingPages,
     ...checkoutSuccessPages,
-    ...kindnessPages,
+    ...userAccountPages,
+    // ...userAccountDashboardPages,
+    // ...userAccountOrderPages,
+    // ...userAccountAddressPages,
   ];
 }
 
@@ -383,8 +422,10 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
 
       const metaImageSrc =
         STRAPI_URL +
-        (page.Intro_blob?.data?.attributes.url ||
-          page.Block_blob?.data?.attributes.url ||
+        ((!page.Intro_blob?.data?.attributes.url.includes(".svg") &&
+          page.Intro_blob?.data?.attributes.url) ||
+          (!page.Block_blob?.data?.attributes.url.includes(".svg") &&
+            page.Block_blob?.data?.attributes.url) ||
           recurData.OpenGraph_default?.data?.attributes.url);
 
       const Layout =
@@ -394,6 +435,8 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
           ? CheckoutSuccess
           : page.type.startsWith("checkout")
           ? CheckoutLayout
+          : page.type.startsWith("account")
+          ? UserAccountLayout
           : PageLayout;
 
       const Pages = {
@@ -416,6 +459,10 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
         checkoutKindness: CheckoutKindness,
         checkoutShipping: CheckoutShipping,
         kindness: Kindness,
+        account: UserAccount,
+        accountDashboard: UserAccountDashboard,
+        accountOrders: UserAccountOrder,
+        accountAddress: UserAccountAddress,
       };
 
       const Page = Pages[page.type];
