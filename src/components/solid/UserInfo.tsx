@@ -9,10 +9,10 @@ export default function UserInfo({
   Button_update_text,
 }) {
   return (
-    <section>
-      <div class="dashboard-sec-title recoleta">
+    <>
+      <h2 id="personal-information" class="dashboard-sec-title recoleta">
         {Title.replace("<username>", user().name)}
-      </div>
+      </h2>
 
       <div class="dashboard-sec">
         <div class="grid gap-1 pb-[25px] mb-[25px] border-b border-lightgray">
@@ -192,6 +192,6 @@ export default function UserInfo({
           </div>
         </div>
       )} */}
-    </section>
+    </>
   );
 }

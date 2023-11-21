@@ -1,5 +1,4 @@
 ---
-import { Icon } from "astro-icon";
 import { Img, Picture } from "astro-imagetools/components";
 
 import CMS from "@store/CMS";
@@ -9,11 +8,12 @@ import localizeCMSImage from "@utils/localizeCMSImage";
 import UserInfo from "@solid/UserInfo";
 
 import Markdown from "@components/Markdown.astro";
+import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
 const { success_notification, green_right_arrow } = RecurringImages;
 
-const { page } = Astro.props,
+const { page, recurData, ariaLabelRecurData } = Astro.props,
   {
     Personal_information: {
       Name: block_section1_name,
@@ -70,6 +70,8 @@ const {
 } = userAccountAddress;
 
 const title = page.Title.replaceAll("<username>", `Sara Jones`);
+
+const headingName = recurData.text_chapter;
 ---
 
 <style lang="scss" is:global>
@@ -182,177 +184,147 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
   path="M0.517,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 S0.002,0.495,0.018,0.737 S0.182,1,0.528,1 c0.286,0,0.375,-0.063,0.447,-0.282 c0.031,-0.094,0.047,-0.323,-0.029,-0.591 C0.898,-0.045,0.734,0.008,0.517,0.008"
 />
 
-<div class="wrapper">
-  {
-    page.Breadcrumb && (
-      <div
-        role="banner"
-        class="flex flex-wrap gap-2 recoleta text-2xl leading-[110%] text-primary mt-[25px]"
-      >
-        {page.Breadcrumb?.Steps.map((step, index) => (
-          <div class="flex items-center gap-2">
-            {index > 0 && (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="8"
-                height="17"
-                viewBox="0 0 8 16.7"
-              >
-                <path
-                  d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
-                  style="fill:#2b4b50"
-                />
-              </svg>
-            )}
-            <a href={step.Link}>{step.Name}</a>
-          </div>
-        ))}
-      </div>
-    )
-  }
-</div>
-
 <div class="wrapper py-[50px] w-full flex flex-col-reverse md:flex-row">
   <div class="md:w-2/3">
-    <UserInfo
-      client:load
-      Title={page.Title}
-      Label_username={Label_username}
-      Label_phone={Label_phone}
-      Label_email={Label_email}
-      Button_edit_text={Button_edit_text}
-      Button_update_text={Button_update_text}
-    />
+    <Chapterize>
+      <UserInfo
+        client:load
+        Title={page.Title}
+        Label_username={Label_username}
+        Label_phone={Label_phone}
+        Label_email={Label_email}
+        Button_edit_text={Button_edit_text}
+        Button_update_text={Button_update_text}
+      />
 
-    {
-      page.Block2_visibility && block2 && (
-        <section>
-          <div
-            id={block2?.Block2_title.toLowerCase().replaceAll(" ", "-")}
-            class="dashboard-sec-title recoleta mt-[50px]"
-          >
-            {block2.Block2_title}
-          </div>
+      {
+        page.Block2_visibility && block2 && (
+          <Fragment>
+            <h2
+              id={block2?.Block2_title.toLowerCase().replaceAll(" ", "-")}
+              class="dashboard-sec-title recoleta mt-[50px]"
+            >
+              {block2.Block2_title}
+            </h2>
 
-          <div class="dashboard-sec">
-            {block2.Block2_text && (
-              <div class="hero-text text-black block prose max-w-none">
-                <Markdown>{block2.Block2_text}</Markdown>
-              </div>
-            )}
+            <div class="dashboard-sec">
+              {block2.Block2_text && (
+                <div class="hero-text text-black block prose max-w-none">
+                  <Markdown>{block2.Block2_text}</Markdown>
+                </div>
+              )}
 
-            <form class="cause-from">
-              <label>
-                <input type="radio" name="my_cause" />
+              <form class="cause-from">
+                <label>
+                  <input type="radio" name="my_cause" />
 
-                <div>
-                  <div class="flex flex-wrap items-center justify-between gap-[7px]">
-                    <h3 class="cause-from-label">
-                      {block2.Label_my_selected_cause}
-                    </h3>
+                  <div>
+                    <div class="flex flex-wrap items-center justify-between gap-[7px]">
+                      <h3 class="cause-from-label">
+                        {block2.Label_my_selected_cause}
+                      </h3>
 
-                    <div class="cause-from-txt text-black-light w-full prose max-w-none">
-                      <Markdown>{block2.My_selected_cause_text}</Markdown>
+                      <div class="cause-from-txt text-black-light w-full prose max-w-none">
+                        <Markdown>{block2.My_selected_cause_text}</Markdown>
+                      </div>
                     </div>
-                  </div>
 
-                  {kindnessCauses.map(
-                    ({ cause, description, featured_blob }) => (
-                      <div class="-ml-2.5">
-                        <input
-                          type="radio"
-                          name="kindness_cause"
-                          id={cause}
-                          value={cause}
-                          class="peer hidden"
-                        />
+                    {kindnessCauses.map(
+                      ({ cause, description, featured_blob }) => (
+                        <div class="-ml-2.5">
+                          <input
+                            type="radio"
+                            name="kindness_cause"
+                            id={cause}
+                            value={cause}
+                            class="peer hidden"
+                          />
 
-                        <label
-                          for={cause}
-                          class:list={[
-                            "kindness-cause-clip-path text-secondary",
-                            "p-1.5 max-w-[380px] sm:max-w-full sm:h-[170px]",
-                            "peer-checked:bg-primary-light select-none cursor-pointer",
-                          ]}
-                        >
-                          <div class="kindness-cause-clip-path p-[5px] bg-secondary-light w-full h-full">
-                            <div
-                              class:list={[
-                                "kindness-cause-clip-path w-full h-full",
-                                "flex flex-wrap sm:flex-nowrap bg-secondary",
-                              ]}
-                            >
-                              <div class="kindness-cause-img-container">
-                                <Picture
-                                  layout="fill"
-                                  sizes="(min-width: 640px) 320px, 90vw)"
-                                  alt={
-                                    featured_blob.data.attributes
-                                      .alternativeText
-                                  }
-                                  attributes={{
-                                    img: { style: "aspect-ratio: 6 / 5;" },
-                                  }}
-                                  src={
-                                    STRAPI_URL +
-                                    featured_blob.data.attributes.url
-                                  }
-                                />
-                              </div>
-
+                          <label
+                            for={cause}
+                            class:list={[
+                              "kindness-cause-clip-path text-secondary",
+                              "p-1.5 max-w-[380px] sm:max-w-full sm:h-[170px]",
+                              "peer-checked:bg-primary-light select-none cursor-pointer",
+                            ]}
+                          >
+                            <div class="kindness-cause-clip-path p-[5px] bg-secondary-light w-full h-full">
                               <div
                                 class:list={[
-                                  "px-[15px] sm:px-[25px] py-5 sm:py-[15px] h-full",
-                                  "flex flex-col justify-center gap-2 lg:gap-[15px]",
+                                  "kindness-cause-clip-path w-full h-full",
+                                  "flex flex-wrap sm:flex-nowrap bg-secondary",
                                 ]}
                               >
-                                <h4 class="recoleta text-2xl text-black leading-[120%]">
-                                  {cause}
-                                </h4>
+                                <div class="kindness-cause-img-container">
+                                  <Picture
+                                    layout="fill"
+                                    sizes="(min-width: 640px) 320px, 90vw)"
+                                    alt={
+                                      featured_blob.data.attributes
+                                        .alternativeText
+                                    }
+                                    attributes={{
+                                      img: { style: "aspect-ratio: 6 / 5;" },
+                                    }}
+                                    src={
+                                      STRAPI_URL +
+                                      featured_blob.data.attributes.url
+                                    }
+                                  />
+                                </div>
 
                                 <div
                                   class:list={[
-                                    "prose max-w-none text-base sm:text-lg",
-                                    "text-black-light sm:line-clamp-2 lg:line-clamp-3",
+                                    "px-[15px] sm:px-[25px] py-5 sm:py-[15px] h-full",
+                                    "flex flex-col justify-center gap-2 lg:gap-[15px]",
                                   ]}
                                 >
-                                  <Markdown>{description}</Markdown>
+                                  <h4 class="recoleta text-2xl text-black leading-[120%]">
+                                    {cause}
+                                  </h4>
+
+                                  <div
+                                    class:list={[
+                                      "prose max-w-none text-base sm:text-lg",
+                                      "text-black-light sm:line-clamp-2 lg:line-clamp-3",
+                                    ]}
+                                  >
+                                    <Markdown>{description}</Markdown>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </label>
-                      </div>
-                    ),
-                  )}
-                </div>
-              </label>
-
-              <label>
-                <input type="radio" name="my_cause" />
-
-                <div>
-                  <h3 class="cause-from-label">
-                    {block2.Label_let_dilmah_pick_cause}
-                  </h3>
-                  <div class="cause-from-txt text-black-light prose max-w-none">
-                    <Markdown>{block2.Let_dilmah_pick_cause_text}</Markdown>
+                          </label>
+                        </div>
+                      ),
+                    )}
                   </div>
-                </div>
-              </label>
-            </form>
-          </div>
-        </section>
-      )
-    }
+                </label>
 
-    <!-- <section>
-      <div
+                <label>
+                  <input type="radio" name="my_cause" />
+
+                  <div>
+                    <h3 class="cause-from-label">
+                      {block2.Label_let_dilmah_pick_cause}
+                    </h3>
+                    <div class="cause-from-txt text-black-light prose max-w-none">
+                      <Markdown>{block2.Let_dilmah_pick_cause_text}</Markdown>
+                    </div>
+                  </div>
+                </label>
+              </form>
+            </div>
+          </Fragment>
+        )
+      }
+
+      <!-- <h2
         id={block3_title.toLowerCase().replaceAll(" ", "-")}
         class="dashboard-sec-title recoleta mt-[50px]"
       >
         {block3_title}
-      </div>
+      </h2>
 
       <div class="dashboard-sec grid gap-2.5">
         <div class="flex flex-col gap-5">
@@ -633,102 +605,8 @@ const title = page.Title.replaceAll("<username>", `Sara Jones`);
             {Button_view_all_orders_text}
           </a>
         </div>
-      </div>
-    </section> -->
-
-    <!-- <div class="dashboard-sec grid gap-5 justify-center text-center">
-      <div class="w-full max-h-[200px]">
-        <img
-          class="w-full h-full"
-          src={await localizeCMSImage(empty_blob?.attributes.url)}
-          alt={empty_blob?.attributes.alternativeText}
-        />
-      </div>
-
-      <div
-        class:list={[
-          "recoleta prose leading-[110%] text-black",
-          "text-[clamp(1.125rem,1.5vw+0.15rem,1.5rem)]",
-        ]}
-      >
-        <Markdown>{Empty_order_text}</Markdown>
-      </div>
-
-      <a
-        href={Empty_order_button_link}
-        class:list={[
-          "px-[35px] sm:px-[50px] py-3 w-full sm:min-w-[230px] font-bold",
-          "leading-[150%] text-white bg-primary rounded-full",
-        ]}
-      >
-        {Empty_order_button_text}
-      </a>
-    </div> -->
-  </div>
-
-  <div
-    role="complementary"
-    aria-label="Chapters"
-    id="headings"
-    class:list={[
-      "w-full md:w-1/3 md:h-screen self-start flex flex-col md:sticky",
-      "top-0 md:pb-6 mb-[75px] text-black overflow-hidden",
-      "md:pl-[clamp(24px,3.8vw+0.16px,50px)] lg:pl-[clamp(70px,11.3125vw-46px,128px)]",
-    ]}
-  >
-    <h3
-      id="headings-header"
-      class="pb-2.5 lg:pb-5 xl:pb-[30px] text-[clamp(1.5rem,2vw+0.2rem,2rem)] font-bold"
-    >
-      {text_content}
-    </h3>
-
-    <div
-      role="list"
-      class="heading-content flex flex-col gap-[35px] leading-[130%] lg:leading-[150%] overflow-y-auto"
-    >
-      <a
-        role="listitem"
-        href={`#` + title.toLowerCase().replaceAll(" ", "-")}
-        class="flex text-black-light pt-4 xl:pt-5"
-      >
-        <div
-          class="w-[clamp(37px,4.6875vw-18.75px,45px)] mr-[clamp(10px,4.6875vw-43.75px,20px);] lnline-flex"
-        >
-          <img {...green_right_arrow} />
-        </div>
-
-        {block_section1_name}
-      </a>
-
-      <a
-        role="listitem"
-        href={`#` + block2?.Block2_title.toLowerCase().replaceAll(" ", "-")}
-        class="flex text-black-light pt-4 xl:pt-5"
-      >
-        <div
-          class="w-[clamp(37px,4.6875vw-18.75px,45px)] mr-[clamp(10px,4.6875vw-43.75px,20px);] lnline-flex"
-        >
-          <img {...green_right_arrow} />
-        </div>
-
-        {block2?.Block2_title}
-      </a>
-
-      <a
-        role="listitem"
-        href={`#` + block3_title.toLowerCase().replaceAll(" ", "-")}
-        class="flex text-black-light pt-4 xl:pt-5"
-      >
-        <div
-          class="w-[clamp(37px,4.6875vw-18.75px,45px)] mr-[clamp(10px,4.6875vw-43.75px,20px);] lnline-flex"
-        >
-          <img {...green_right_arrow} />
-        </div>
-
-        {block3_title}
-      </a>
-    </div>
+      </div> -->
+    </Chapterize>
   </div>
 </div>
 
