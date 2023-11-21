@@ -60,6 +60,10 @@ export default function ProfileMenu({
           profileMenu.classList[window.profileMenuOpened ? "remove" : "add"](
             "hidden",
           );
+
+          window.innerWidth < 640 &&
+            window.sidebarOpened &&
+            window.toggleSidebar();
         } else if (profileMenu && !profileMenu.contains(target)) {
           window.profileMenuOpened = false;
 

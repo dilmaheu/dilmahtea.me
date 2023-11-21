@@ -952,8 +952,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     sidebar.style.paddingBottom = `${sidebarTop}px`;
   };
 
-  let sidebarOpened = false;
-
+  window.sidebarOpened = false;
   window.localizationMenuOpened = false;
 
   window.addEventListener("resize", () => {
@@ -963,7 +962,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
       // remove event listener to prevent memory leaks
       window.removeEventListener("resize", updateSidebarTopPosition);
-    } else if (sidebarOpened) {
+    } else if (window.sidebarOpened) {
       window.disableScrolling();
 
       // re-add event listener in case it was removed
@@ -977,14 +976,14 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     }
   });
 
-  const toggleSidebar = () => {
-    sidebarOpened = !sidebarOpened;
+  window.toggleSidebar = () => {
+    window.sidebarOpened = !window.sidebarOpened;
 
-    sidebar.style.display = sidebarOpened ? "block" : "none";
-    sidebarOpenButton.style.display = sidebarOpened ? "none" : "block";
-    sidebarCloseButton.style.display = sidebarOpened ? "block" : "none";
+    sidebar.style.display = window.sidebarOpened ? "block" : "none";
+    sidebarOpenButton.style.display = window.sidebarOpened ? "none" : "block";
+    sidebarCloseButton.style.display = window.sidebarOpened ? "block" : "none";
 
-    if (sidebarOpened) {
+    if (window.sidebarOpened) {
       window.disableScrolling();
 
       updateSidebarTopPosition();
@@ -1001,9 +1000,9 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     window.openCart();
   });
 
-  sidebarOpenButton?.addEventListener("click", toggleSidebar);
+  sidebarOpenButton?.addEventListener("click", window.toggleSidebar);
 
-  sidebarCloseButton?.addEventListener("click", toggleSidebar);
+  sidebarCloseButton?.addEventListener("click", window.toggleSidebar);
 
   localizationMenuContainer?.addEventListener("mouseenter", () => {
     if (!window.profileMenuOpened && window.innerWidth >= 640) {
@@ -1039,6 +1038,8 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
       localizationMenu.classList[
         window.localizationMenuOpened ? "remove" : "add"
       ]("hidden");
+
+      window.innerWidth < 640 && window.sidebarOpened && window.toggleSidebar();
     } else if (localizationMenu && !localizationMenu.contains(target)) {
       window.localizationMenuOpened = false;
 
