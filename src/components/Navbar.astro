@@ -392,7 +392,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
       <div class="flex justify-end items-center gap-2.5 md:gap-[15px]">
         {
           localizationVisibility && (
-            <div class="relative group">
+            <div class="relative group hover:z-10">
               <button
                 id="localization-menu-open-btn"
                 aria-label={
@@ -891,10 +891,8 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     openCartBtn = id("open-cart-btn"),
     sidebarOpenButton = id("sidebar-open-btn"),
     sidebarCloseButton = id("sidebar-close-btn"),
-    profileMenu = id("profile-menu"),
-    profileMenuOpenButton = id("profile-menu-open-btn"),
-    profileMenuCloseButton = id("profile-menu-close-btn"),
     localizationMenu = id("localization-menu"),
+    localizationMenuContainer = localizationMenu.parentElement,
     localizationMenuOpenButton = id("localization-menu-open-btn"),
     localizationMenuCloseButton = id("localization-menu-close-btn");
 
@@ -954,6 +952,10 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     sidebar.style.paddingBottom = `${sidebarTop}px`;
   };
 
+  let sidebarOpened = false;
+
+  window.localizationMenuOpened = false;
+
   window.addEventListener("resize", () => {
     if (window.innerWidth > 768) {
       // enable scrolling if cart is not open
@@ -966,7 +968,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
       // re-add event listener in case it was removed
       window.addEventListener("resize", updateSidebarTopPosition);
-    } else if (localizationMenuOpened || profileMenuOpened) {
+    } else if (window.profileMenuOpened || window.localizationMenuOpened) {
       if (window.innerWidth < 640) {
         window.disableScrolling();
       } else {
@@ -974,36 +976,6 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
       }
     }
   });
-
-  let sidebarOpened = false,
-    profileMenuOpened = false,
-    localizationMenuOpened = false;
-
-  const toggleProfileMenu = () => {
-    profileMenu.classList[profileMenuOpened ? "add" : "remove"]("hidden");
-
-    profileMenuOpened = !profileMenuOpened;
-
-    if (profileMenuOpened && window.innerWidth < 640) {
-      window.disableScrolling();
-    } else {
-      window.enableScrolling();
-    }
-  };
-
-  const toggleLocalizationMenu = () => {
-    localizationMenu.classList[localizationMenuOpened ? "add" : "remove"](
-      "hidden",
-    );
-
-    localizationMenuOpened = !localizationMenuOpened;
-
-    if (localizationMenuOpened && window.innerWidth < 640) {
-      window.disableScrolling();
-    } else {
-      window.enableScrolling();
-    }
-  };
 
   const toggleSidebar = () => {
     sidebarOpened = !sidebarOpened;
@@ -1033,40 +1005,27 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
   sidebarCloseButton?.addEventListener("click", toggleSidebar);
 
-  profileMenuCloseButton?.addEventListener("click", toggleProfileMenu);
-
-  localizationMenuCloseButton?.addEventListener(
-    "click",
-    toggleLocalizationMenu,
-  );
-
-  profileMenuOpenButton?.addEventListener("mouseenter", () => {
-    if (window.innerWidth >= 640) {
-      profileMenu.classList.remove("hidden");
-    }
-  });
-
-  const hideProfileMenu = () => {
-    if (window.innerWidth >= 640) {
-      profileMenu.classList.add("hidden");
-    }
-  };
-
-  profileMenuOpenButton?.addEventListener("mouseleave", hideProfileMenu);
-
-  localizationMenuOpenButton?.addEventListener("mouseenter", () => {
-    if (window.innerWidth >= 640) {
+  localizationMenuContainer?.addEventListener("mouseenter", () => {
+    if (!window.profileMenuOpened && window.innerWidth >= 640) {
       localizationMenu.classList.remove("hidden");
     }
   });
 
+  localizationMenuCloseButton?.addEventListener("click", () => {
+    localizationMenu.classList.add("hidden");
+
+    window.localizationMenuOpened = false;
+
+    window.enableScrolling();
+  });
+
   const hideLocalizationMenu = () => {
-    if (window.innerWidth >= 640) {
+    if (!window.localizationMenuOpened && window.innerWidth >= 640) {
       localizationMenu.classList.add("hidden");
     }
   };
 
-  localizationMenuOpenButton?.addEventListener(
+  localizationMenuContainer?.addEventListener(
     "mouseleave",
     hideLocalizationMenu,
   );
@@ -1074,28 +1033,16 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
   document.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
 
-    if (profileMenuOpenButton?.contains(target)) {
-      toggleProfileMenu();
-
-      profileMenuOpenButton[
-        profileMenuOpened ? "removeEventListener" : "addEventListener"
-      ]("mouseleave", hideProfileMenu);
-    } else if (profileMenu && !profileMenu.contains(target)) {
-      hideProfileMenu();
-
-      profileMenu.addEventListener("mouseleave", hideProfileMenu);
-    }
-
     if (localizationMenuOpenButton?.contains(target)) {
-      toggleLocalizationMenu();
+      window.localizationMenuOpened = !window.localizationMenuOpened;
 
-      localizationMenuOpenButton[
-        localizationMenuOpened ? "removeEventListener" : "addEventListener"
-      ]("mouseleave", hideLocalizationMenu);
-    } else if (!localizationMenu?.contains(target)) {
+      localizationMenu.classList[
+        window.localizationMenuOpened ? "remove" : "add"
+      ]("hidden");
+    } else if (localizationMenu && !localizationMenu.contains(target)) {
+      window.localizationMenuOpened = false;
+
       hideLocalizationMenu();
-
-      localizationMenu.addEventListener("mouseleave", hideLocalizationMenu);
     }
   });
 
