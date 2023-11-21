@@ -1039,8 +1039,14 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
         window.localizationMenuOpened ? "remove" : "add"
       ]("hidden");
 
-      window.innerWidth < 640 && window.sidebarOpened && window.toggleSidebar();
+      if (window.innerWidth < 640) {
+        window.sidebarOpened && window.toggleSidebar();
+
+        window.disableScrolling();
+      }
     } else if (localizationMenu && !localizationMenu.contains(target)) {
+      window.localizationMenuOpened && window.enableScrolling();
+
       window.localizationMenuOpened = false;
 
       hideLocalizationMenu();

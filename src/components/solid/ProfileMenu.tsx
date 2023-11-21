@@ -61,10 +61,14 @@ export default function ProfileMenu({
             "hidden",
           );
 
-          window.innerWidth < 640 &&
-            window.sidebarOpened &&
-            window.toggleSidebar();
+          if (window.innerWidth < 640) {
+            window.sidebarOpened && window.toggleSidebar();
+
+            window.disableScrolling();
+          }
         } else if (profileMenu && !profileMenu.contains(target)) {
+          window.profileMenuOpened && window.enableScrolling();
+
           window.profileMenuOpened = false;
 
           hideProfileMenu();
