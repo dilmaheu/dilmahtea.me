@@ -1,12 +1,13 @@
-import { user } from "@store/signals/user";
+import { user } from "@signals/user";
+
+import InfoUnit from "@solid/InfoUnit";
 
 export default function UserInfo({
   Title,
   Label_username,
   Label_phone,
   Label_email,
-  Button_edit_text,
-  Button_update_text,
+  userAccountRecurData,
 }) {
   return (
     <>
@@ -15,47 +16,32 @@ export default function UserInfo({
       </h2>
 
       <div class="dashboard-sec">
-        <div class="grid gap-1 pb-[25px] mb-[25px] border-b border-lightgray">
-          <div class="information-label">{Label_username}</div>
+        <InfoUnit
+          label={Label_username}
+          type="text"
+          property="name"
+          userAccountRecurData={userAccountRecurData}
+        />
 
-          <div class="flex flex-wrap items-center gap-2.5 justify-between">
-            <div class="information-text">{user().name}</div>
+        <InfoUnit
+          label={Label_phone}
+          type="tel"
+          property="phone"
+          userAccountRecurData={userAccountRecurData}
+        />
 
-            {/* <div class="information-btn">
-              <a href="#">{Button_edit_text}</a>
-            </div> */}
-          </div>
-        </div>
-
-        <div class="grid gap-1 pb-[25px] mb-[25px] border-b border-lightgray">
-          <div class="information-label">{Label_phone}</div>
-
-          <div class="flex flex-wrap items-center gap-2.5 justify-between">
-            <div class="information-text">{user().phone}</div>
-
-            {/* <div class="information-btn">
-              <a href="#">{Button_update_text}</a>
-            </div> */}
-          </div>
-        </div>
-
-        <div class="grid gap-1 pb-[25px] mb-[25px] border-b border-lightgray">
-          <div class="information-label">{Label_email}</div>
-
-          <div class="flex flex-wrap items-center gap-2.5 justify-between">
-            <div class="information-text">{user().email}</div>
-
-            {/* <div class="information-btn">
-              <a href="#">{Button_update_text}</a>
-            </div> */}
-          </div>
-        </div>
+        <InfoUnit
+          label={Label_email}
+          type="email"
+          property="email"
+          userAccountRecurData={userAccountRecurData}
+        />
 
         {/* <div class="grid gap-[25px]">
           <div class="grid gap-1">
             <div class="information-label">{Label_delivery_address}</div>
 
-            <div class="flex flex-wrap items-center gap-2.5 justify-between">
+            <div class="flex flex-wrap items-center gap-[15px] justify-between">
               <div class="information-text">456B, Oakwoods, Germany</div>
               <div class="information-btn cursor-pointer">
                 {Button_edit_text}
@@ -66,7 +52,7 @@ export default function UserInfo({
           <div class="grid gap-1">
             <div class="information-label">{Label_billing_address}</div>
 
-            <div class="flex flex-wrap items-center gap-2.5 justify-between">
+            <div class="flex flex-wrap items-center gap-[15px] justify-between">
               <div class="information-text">456B, Oakwoods, Germany</div>
               <div class="information-btn cursor-pointer">
                 {Button_edit_text}

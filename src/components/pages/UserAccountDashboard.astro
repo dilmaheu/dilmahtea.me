@@ -49,6 +49,8 @@ const {
   Button_update_text,
   Button_remove_text,
   Button_add_new_address_text,
+  Button_save_text,
+  Button_cancel_text,
   Button_track_package,
   Button_track_package_text,
   Button_buy_again_text,
@@ -101,7 +103,11 @@ const headingName = recurData.text_chapter;
     }
 
     .information-text {
-      @apply leading-[150%] text-black sm:font-medium;
+      @apply w-full pl-1.5 leading-[150%] text-black sm:font-medium bg-secondary-light outline-none;
+
+      &:not(:disabled) {
+        @apply mb-[-2px] border-b-2 border-primary-light;
+      }
 
       font-size: clamp(1.125rem, 1.5vw + 0.3rem, 1.5rem);
     }
@@ -193,8 +199,12 @@ const headingName = recurData.text_chapter;
         Label_username={Label_username}
         Label_phone={Label_phone}
         Label_email={Label_email}
-        Button_edit_text={Button_edit_text}
-        Button_update_text={Button_update_text}
+        userAccountRecurData={{
+          Button_edit_text,
+          Button_update_text,
+          Button_save_text,
+          Button_cancel_text,
+        }}
       />
 
       {
