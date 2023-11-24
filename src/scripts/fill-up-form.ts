@@ -23,7 +23,9 @@ Object.entries<string>(availableData).forEach(([name, value]) => {
     if (option) {
       option.selected = true;
     } else {
-      const input: HTMLInputElement = query(`input[name="${name}"]`);
+      const input: HTMLInputElement = query(
+        `input[name="${name}"]:not([data-no-fill-up])`,
+      );
 
       if (input) {
         if (input.type === "radio") {

@@ -63,6 +63,11 @@ declare global {
     alternateURLs: { [locale: string]: string }; // defined in BaseLayout.astro
     shouldDisplayExperimentals: boolean; // defined in BaseLayout.astro
 
+    toggleSidebar: () => void; // defined in Navbar.astro
+    sidebarOpened: boolean; // defined in Navbar.astro
+    profileMenuOpened: boolean; // defined in ProfileMenu.tsx
+    localizationMenuOpened: boolean; // defined in Navbar.astro
+
     enableScrolling: () => void; // defined in Navbar.astro
     disableScrolling: () => void; // defined in Navbar.astro
 
