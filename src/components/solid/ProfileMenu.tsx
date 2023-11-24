@@ -16,8 +16,66 @@ export default function ProfileMenu({
   const [isAuthenticated, setIsAuthenticated] = createSignal(false);
 
   createEffect(() => {
-    setIsAuthenticated(window.cookies.isAuthenticated === "true");
+    setIsAuthenticated(window.cookies.isAuthenticated !== "true");
   });
+
+  setTimeout(() => {
+    if (isAuthenticated()) {
+      const id = document.getElementById.bind(document);
+
+      const profileMenu = id("profile-menu"),
+        profileMenuOpenButton = id("profile-menu-open-btn"),
+        profileMenuCloseButton = id("profile-menu-close-btn");
+
+      window.profileMenuOpened = false;
+
+      profileMenuOpenButton.addEventListener("mouseenter", () => {
+        if (!window.localizationMenuOpened && window.innerWidth >= 640) {
+          profileMenu.classList.remove("hidden");
+        }
+      });
+
+      profileMenuCloseButton.addEventListener("click", () => {
+        profileMenu.classList.add("hidden");
+
+        window.profileMenuOpened = false;
+
+        window.enableScrolling();
+      });
+
+      const hideProfileMenu = () => {
+        if (!window.profileMenuOpened && window.innerWidth >= 640) {
+          profileMenu.classList.add("hidden");
+        }
+      };
+
+      profileMenuOpenButton.addEventListener("mouseleave", hideProfileMenu);
+
+      document.addEventListener("click", (event) => {
+        const target = event.target as HTMLElement;
+
+        if (profileMenuOpenButton.contains(target)) {
+          window.profileMenuOpened = !window.profileMenuOpened;
+
+          profileMenu.classList[window.profileMenuOpened ? "remove" : "add"](
+            "hidden",
+          );
+
+          if (window.innerWidth < 640) {
+            window.sidebarOpened && window.toggleSidebar();
+
+            window.disableScrolling();
+          }
+        } else if (profileMenu && !profileMenu.contains(target)) {
+          window.profileMenuOpened && window.enableScrolling();
+
+          window.profileMenuOpened = false;
+
+          hideProfileMenu();
+        }
+      });
+    }
+  }, 0);
 
   function handleLogout() {
     fetch("/account/logout")
@@ -46,7 +104,7 @@ export default function ProfileMenu({
           <div
             id="profile-menu"
             class={[
-              "hidden sm:group-hover:block fixed sm:absolute z-[99] top-0 sm:top-auto",
+              "hidden fixed sm:absolute z-[99] top-0 sm:top-auto",
               "left-0 sm:-translate-x-[80%] px-[min(100px,5vw)] py-[25px] sm:p-0 w-screen",
               "sm:w-[280px] h-screen sm:h-full bg-secondary sm:bg-transparent drop-shadow-lg",
             ].join(" ")}

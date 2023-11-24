@@ -4,9 +4,34 @@ import { parseHTML } from "linkedom";
 let contentHTML = await Astro.slots.render("default");
 
 const { document: contentDocument } = parseHTML(contentHTML),
-  headings = contentDocument.querySelectorAll("h2");
+  astroIslands = contentDocument.querySelectorAll("astro-island");
+
+let headings = contentDocument.querySelectorAll("h2");
 
 // wrap every heading and its following content with div.chapter
+
+astroIslands.forEach((island) => {
+  let islandHTML = island.innerHTML;
+
+  headings.forEach((heading, i) => {
+    if (islandHTML.includes(heading.outerHTML)) {
+      islandHTML = islandHTML.replace(
+        heading.outerHTML,
+        (i === 0 ? "" : "</div>") + "<div class='chapter'>" + heading.outerHTML,
+      );
+
+      delete headings[i];
+    }
+  });
+
+  headings.length > 0 && (islandHTML += "</div>");
+
+  contentHTML = contentHTML.replace(island.innerHTML, islandHTML);
+});
+
+// @ts-ignore
+headings = [...headings].filter(Boolean);
+
 headings.forEach((heading, i) => {
   contentHTML = contentHTML.replace(
     heading.outerHTML,
