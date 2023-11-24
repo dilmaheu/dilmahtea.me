@@ -1,6 +1,7 @@
 ---
 import CMS from "@store/CMS";
 import Markdown from "@components/Markdown.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
 import OrderSummary from "@components/OrderSummary.astro";
 
 const { page } = Astro.props,
@@ -134,6 +135,173 @@ const { page } = Astro.props,
     >
       <h2 class="recoleta">{page.text_shipping_address}</h2>
 
+      <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
+        <div>
+          <input
+            type="radio"
+            name="shipping_address"
+            id={`address1`}
+            value={`value`}
+            checked
+            class="peer hidden"
+          />
+
+          <label
+            for={`address1`}
+            class:list={[
+              "inline-block py-2 px-5 border-2 border-secondary-light",
+              "text-dark-green font-medium bg-secondary-light rounded-full",
+              "peer-checked:bg-dark-green peer-checked:text-secondary-light",
+              "peer-checked:text-dark-green peer-checked:font-bold cursor-pointer select-none",
+            ]}
+          >
+            Home
+          </label>
+        </div>
+
+        <div>
+          <input
+            type="radio"
+            name="shipping_address"
+            id={`address2`}
+            value={`value`}
+            class="peer hidden"
+          />
+
+          <label
+            for={`address2`}
+            class:list={[
+              "inline-block py-2 px-5 border-2 border-secondary-light",
+              "text-dark-green font-medium bg-secondary-light rounded-full",
+              "peer-checked:bg-dark-green peer-checked:text-secondary-light",
+              "peer-checked:text-dark-green peer-checked:font-bold cursor-pointer select-none",
+            ]}
+          >
+            Parents
+          </label>
+        </div>
+
+        <div>
+          <input
+            type="radio"
+            name="shipping_address"
+            id={`address3`}
+            value={`value`}
+            class="peer hidden"
+          />
+
+          <label
+            for={`address3`}
+            class:list={[
+              "inline-block py-2 px-5 border-2 border-secondary-light",
+              "text-dark-green font-medium bg-secondary-light rounded-full",
+              "peer-checked:bg-dark-green peer-checked:text-secondary-light",
+              "peer-checked:text-dark-green peer-checked:font-bold cursor-pointer select-none",
+            ]}
+          >
+            Family
+          </label>
+        </div>
+
+        <div class="more-address hidden">
+          <input
+            type="radio"
+            name="shipping_address"
+            id={`address4`}
+            value={`value`}
+            class="peer hidden"
+          />
+
+          <label
+            for={`address4`}
+            class:list={[
+              "py-2 px-5 border-2 border-secondary-light",
+              "inline-block text-dark-green font-medium bg-secondary-light rounded-full",
+              "peer-checked:bg-dark-green peer-checked:text-secondary-light select-none",
+              "peer-checked:text-dark-green peer-checked:font-bold cursor-pointer",
+            ]}
+          >
+            Address Line 1
+          </label>
+        </div>
+
+        <div class="more-address hidden">
+          <input
+            type="radio"
+            name="shipping_address"
+            id={`address5`}
+            value={`value`}
+            class="peer hidden"
+          />
+
+          <label
+            for={`address5`}
+            class:list={[
+              "py-2 px-5 border-2 border-secondary-light",
+              "inline-block text-dark-green font-medium bg-secondary-light rounded-full",
+              "peer-checked:bg-dark-green peer-checked:text-secondary-light select-none",
+              "peer-checked:text-dark-green peer-checked:font-bold cursor-pointer",
+            ]}
+          >
+            Address Line 2
+          </label>
+        </div>
+
+        <div class="more-address hidden">
+          <input
+            type="radio"
+            name="shipping_address"
+            id={`address6`}
+            value={`value`}
+            class="peer hidden"
+          />
+
+          <label
+            for={`address6`}
+            class:list={[
+              "py-2 px-5 border-2 border-secondary-light",
+              "inline-block text-dark-green font-medium bg-secondary-light rounded-full",
+              "peer-checked:bg-dark-green peer-checked:text-secondary-light select-none",
+              "peer-checked:text-dark-green peer-checked:font-bold cursor-pointer",
+            ]}
+          >
+            Address Line 3
+          </label>
+        </div>
+
+        <div
+          id="address-toggle-button"
+          class="flex items-center gap-1 text-primary font-bold cursor-pointer"
+        >
+          <svg
+            id="address-arrow-left"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 8 14"
+            class="hidden w-3 h-3 fill-primary"
+          >
+            <path
+              d="M7.7,13.7a1.1,1.1,0,0,0,.3-.8,1.1,1.1,0,0,0-.3-.7L2.5,7,7.7,1.8A1.1,1.1,0,0,0,8,1,1.1,1.1,0,0,0,7.7.3,1.1,1.1,0,0,0,7,0a1.1,1.1,0,0,0-.8.3L.3,6.2A1.1,1.1,0,0,0,0,7a.9.9,0,0,0,.3.7l5.9,6A1.1,1.1,0,0,0,7,14a1.1,1.1,0,0,0,.7-.3Z"
+            ></path>
+          </svg>
+
+          <div>
+            <div id="hide-address-text" class="hidden">Hide 3 addresses</div>
+            <div id="show-address-text">Show more 3 addresses</div>
+          </div>
+
+          <svg
+            id="address-arrow-right"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 8 14"
+            class="w-3 h-3 fill-primary"
+          >
+            <path
+              d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+
       <div class="form-grid">
         <label>
           <span>{page.text_first_name}</span>
@@ -239,6 +407,31 @@ const { page } = Astro.props,
 >
   <OrderSummary page={page} />
 </section>
+
+<script is:inline>
+  const id = document.getElementById.bind(document);
+
+  const addressToggleBtn = id("address-toggle-button"),
+    hideAddressTxt = id("hide-address-text"),
+    showAddressTxt = id("show-address-text"),
+    addressArrowLeft = id("address-arrow-left"),
+    addressArrowRight = id("address-arrow-right"),
+    selectorsMoreAddress = document.getElementsByClassName("more-address");
+
+  function toggleAddress() {
+    const moreAddressArray = Array.from(selectorsMoreAddress);
+
+    moreAddressArray.forEach((item) => {
+      item.classList.toggle("hidden");
+    });
+    hideAddressTxt.classList.toggle("hidden");
+    showAddressTxt.classList.toggle("hidden");
+    addressArrowLeft.classList.toggle("hidden");
+    addressArrowRight.classList.toggle("hidden");
+  }
+
+  addressToggleBtn?.addEventListener("click", toggleAddress);
+</script>
 
 <script is:inline>
   const guestIntroText = document.getElementById("guest-intro-text"),
