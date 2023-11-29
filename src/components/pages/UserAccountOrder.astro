@@ -22,18 +22,20 @@ const {
   text_estimated_delivery,
   text_estimated_shipment,
   text_delivered,
-  text_more_products_in_this_order,
+  text_show_more_products_in_this_order,
+  text_hide_more_products_in_this_order,
 } = userAccountRecurData;
 ---
 
 <style lang="scss">
+  @use "src/styles/poly-fluid" as *;
   @use "src/styles/colors";
 
   .dashboard-sec-title {
     @apply bg-primary leading-[110%] text-secondary-light rounded-[10px];
 
     font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
-    padding: 10px clamp(15px, 2.08vw + 0.01rem, 30px);
+    padding: 15px clamp(15px, 2.2vw + 0.1rem, 35px);
 
     @media (max-width: 767.98px) {
       padding: 15px;
@@ -41,7 +43,7 @@ const {
   }
 
   .dashboard-sec {
-    @apply bg-secondary-light rounded-[10px] text-black;
+    @apply bg-secondary-light rounded-[10px] m-0;
 
     padding: clamp(15px, 2.08vw + 0.01rem, 25px)
       clamp(15px, 2.2vw + 0.1rem, 35px);
@@ -49,7 +51,59 @@ const {
     @media (max-width: 767.98px) {
       padding: 15px;
     }
+
+    h2 {
+      @apply text-[clamp(1.25rem,1.5vw+0.15rem,1.5rem)] font-bold text-primary;
+    }
+
+    .order-item {
+      @apply grid gap-[25px] sm:gap-[30px];
+
+      .order-img {
+        width: poly-fluid-clamp(
+          (
+            640px: 50px,
+            1440px: 65px,
+          )
+        );
+      }
+
+      .order-item-label {
+        @apply flex items-center gap-2 text-lg font-bold leading-[150%] text-black;
+      }
+
+      .order-item-date {
+        @apply text-sm sm:text-base text-black-light;
+      }
+
+      .order-item-title {
+        @apply font-bold text-[clamp(1.25rem,1.5vw+0.15rem,1.5rem)];
+      }
+
+      .order-item-info {
+        @apply flex flex-wrap gap-1 sm:gap-2 text-sm sm:text-base text-black-light;
+      }
+
+      .order-item-quantity {
+        @apply text-sm sm:text-base font-semibold text-black-light;
+      }
+
+      .order-item-cart-btn {
+        @apply flex gap-1 sm:gap-2 w-fit py-[5px] sm:py-2.5 px-3 sm:px-5
+          text-sm sm:text-base font-semibold sm:font-bold text-white bg-primary rounded-full;
+
+        &:disabled,
+        &[disabled] {
+          @apply bg-black/60 text-secondary-light cursor-not-allowed;
+        }
+      }
+
+      .show-more-toggle-btn {
+        @apply flex gap-1 sm:gap-2 items-center font-bold text-primary;
+      }
+    }
   }
+
   .month-container {
     @apply grid grid-cols-[repeat(auto-fit,minmax(96px,1fr))] gap-y-[15px] items-center w-full;
 
@@ -63,591 +117,375 @@ const {
 </style>
 
 <ClipPathSVG
-  id="orders-curve"
+  id="orders-blob-curve"
   path="M0.517,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 S0.002,0.495,0.018,0.737 S0.182,1,0.528,1 c0.286,0,0.375,-0.063,0.447,-0.282 c0.031,-0.094,0.047,-0.323,-0.029,-0.591 C0.898,-0.045,0.734,0.008,0.517,0.008"
 />
 
 <div class="wrapper py-[50px] w-full flex flex-wrap">
   <div class="w-full md:w-2/3 order-2 md:order-1">
-    <section class="grid gap-[30px]">
+    <section class="grid gap-[25px] sm:gap-[30px]">
       <h1 class="dashboard-sec-title recoleta">
         {Title}
       </h1>
 
-      <div class="dashboard-sec grid gap-2.5">
+      <div class="dashboard-sec grid gap-[25px] sm:gap-[30px]">
+        <h2>January 2022</h2>
+
         <div
-          class="text-[clamp(1.25rem,1.5vw+0.15rem,1.5rem)] font-bold text-black"
+          class="order-item pb-[25px] sm:pb-[30px] border-b border-primary-light"
         >
-          January 2022
-        </div>
-
-        <div class="flex flex-col gap-5">
           <div
-            class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1"
+            class="flex flex-wrap items-center gap-[5px] sm:gap-2.5 justify-between"
           >
-            <div
-              class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-black"
-            >
-              {Label_order} #132131
+            <div class="grid gap-[5px] sm:gap-2.5">
+              <div class="order-item-label">
+                {Label_order} #132131
 
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="8"
-                height="16"
-                viewBox="0 0 8 16.7"
-              >
-                <path
-                  d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
-                  style="fill:#2b4b50"></path>
-              </svg>
-            </div>
-            <div class="text-black-light">
-              {text_estimated_delivery} 18-Feb-2023
-            </div>
-          </div>
-
-          <div class="flex justify-between gap-4 w-full">
-            <div class="flex flex-wrap gap-4 justify-between w-full">
-              <div class="grid gap-4">
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
-
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="alice text-2xl text-black">1x Chamomile tea</h2>
-
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
-                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 8 16"
+                  class="h-4"
+                >
+                  <path
+                    d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
+                  ></path>
+                </svg>
               </div>
 
-              {
-                Button_track_package && (
-                  <div>
-                    <a href="#">
-                      <div
-                        class:list={[
-                          "font-bold leading-[150%] text-white",
-                          "px-[30px] py-1.5 bg-primary rounded-full",
-                        ]}
-                      >
-                        {Button_track_package_text}
-                      </div>
-                    </a>
-                  </div>
-                )
-              }
-            </div>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-5 pt-2.5 border-t border-lightgray">
-          <div
-            class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1"
-          >
-            <div
-              class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-black"
-            >
-              {Label_order} #35995
-
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="8"
-                height="16"
-                viewBox="0 0 8 16.7"
-              >
-                <path
-                  d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
-                  style="fill:#2b4b50"></path>
-              </svg>
-            </div>
-            <div class="text-black-light">
-              {text_estimated_shipment} 18-Feb-2023
-            </div>
-          </div>
-
-          <div class="flex justify-between gap-4 w-full">
-            <div class="flex flex-wrap gap-4 justify-between w-full">
-              <div class="grid gap-4">
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
-
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">
-                      2x Ceylon cinnamon spice tea
-                    </h2>
-
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
-                </div>
-
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
-
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">1x Green tea</h2>
-
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
-                </div>
-
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
-
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">
-                      3x Rose with french vanilla tea
-                    </h2>
-
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
-                </div>
+              <div class="order-item-date">
+                {text_estimated_delivery} 18-Jan-2023
               </div>
-
-              {
-                Button_track_package && (
-                  <div>
-                    <a href="#">
-                      <div
-                        class:list={[
-                          "font-bold leading-[150%] text-white",
-                          "px-[30px] py-1.5 bg-primary rounded-full",
-                        ]}
-                      >
-                        {Button_track_package_text}
-                      </div>
-                    </a>
-                  </div>
-                )
-              }
             </div>
-          </div>
-        </div>
 
-        <div class="flex flex-col gap-5 pt-2.5 border-t border-lightgray">
-          <div
-            class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1"
-          >
-            <div
-              class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-black"
-            >
-              {Label_order} #35995
-
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="8"
-                height="17"
-                viewBox="0 0 8 16.7"
-              >
-                <path
-                  d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
-                  style="fill:#2b4b50"></path>
-              </svg>
-            </div>
-            <div class="text-black-light">
-              {text_delivered} 18-Feb-2023
-            </div>
-          </div>
-
-          <div class="flex justify-between gap-4 w-full">
-            <div class="flex flex-wrap gap-4 justify-between w-full">
-              <div class="grid gap-4">
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
-
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">
-                      3x Natural rooibos tea
-                    </h2>
-
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <a href="#">
-                  <div
-                    class:list={[
-                      "font-bold leading-[150%] text-white",
-                      "px-[30px] py-1.5 bg-primary rounded-full",
-                    ]}
-                  >
-                    {Button_buy_again_text}
-                  </div>
+            {
+              Button_track_package && (
+                <a
+                  href="#"
+                  class="py-2.5 px-5 font-bold text-white bg-primary rounded-full"
+                >
+                  {Button_track_package_text}
                 </a>
+              )
+            }
+          </div>
+
+          <div class="flex gap-2.5 sm:gap-[15px]">
+            <div class="oder-img">
+              <Img
+                layout="fullWidth"
+                width={65}
+                alt=""
+                attributes={{
+                  img: {
+                    style:
+                      "aspect-ratio: 1 / 1; clip-path: url(#orders-blob-curve)",
+                  },
+                }}
+                src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
+              />
+            </div>
+
+            <div class="grow grid gap-[5px] sm:gap-2.5">
+              <div class="grid gap-[5px] sm:gap-2.5">
+                <div class="order-item-title recoleta line-height-[110%]">
+                  Ceylon cinnamon spice tea
+                </div>
+                <div class="order-item-info">
+                  <span>20 tea bags</span>
+                  <span>&#8226;</span>
+                  <span>100gm</span>
+                  <span>&#8226;</span>
+                  <span>True organincs</span>
+                  <span>&#8226;</span>
+                  <span>Black tea</span>
+                </div>
+              </div>
+
+              <div
+                class="flex flex-wrap gap-[5px] sm:gap-2.5 items-center justify-between"
+              >
+                <div class="order-item-quantity">Quantity: 1</div>
+
+                <button data-sku={`SKU`} class="order-item-cart-btn">
+                  {Button_buy_again_text}
+                  <span class="text-secondary-light">&#8226;</span>
+                  <span class="recoleta font-bold">€24</span>
+                </button>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="dashboard-sec grid gap-2.5">
+          <div class="flex gap-2.5 sm:gap-[15px]">
+            <div class="oder-img">
+              <Img
+                layout="fullWidth"
+                width={65}
+                alt=""
+                attributes={{
+                  img: {
+                    style:
+                      "aspect-ratio: 1 / 1; clip-path: url(#orders-blob-curve)",
+                  },
+                }}
+                src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
+              />
+            </div>
+
+            <div class="grow grid gap-[5px] sm:gap-2.5">
+              <div class="grid gap-[5px] sm:gap-2.5">
+                <div class="order-item-title recoleta line-height-[110%]">
+                  Ceylon cinnamon spice tea
+                </div>
+                <div class="order-item-info">
+                  <span>20 tea bags</span>
+                  <span>&#8226;</span>
+                  <span>100gm</span>
+                  <span>&#8226;</span>
+                  <span>True organincs</span>
+                  <span>&#8226;</span>
+                  <span>Black tea</span>
+                </div>
+              </div>
+
+              <div
+                class="flex flex-wrap gap-[5px] sm:gap-2.5 items-center justify-between"
+              >
+                <div class="order-item-quantity">Quantity: 1</div>
+
+                <button class="order-item-cart-btn" disabled>
+                  {Button_sold_out_text}
+                  <span class="text-secondary-light">&#8226;</span>
+                  <span class="recoleta font-bold">€24</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-2.5 sm:gap-[15px]">
+            <div class="oder-img">
+              <Img
+                layout="fullWidth"
+                width={65}
+                alt=""
+                attributes={{
+                  img: {
+                    style:
+                      "aspect-ratio: 1 / 1; clip-path: url(#orders-blob-curve)",
+                  },
+                }}
+                src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
+              />
+            </div>
+
+            <div class="grow grid gap-[5px] sm:gap-2.5">
+              <div class="grid gap-[5px] sm:gap-2.5">
+                <div class="order-item-title recoleta line-height-[110%]">
+                  Ceylon cinnamon spice tea
+                </div>
+                <div class="order-item-info">
+                  <span>20 tea bags</span>
+                  <span>&#8226;</span>
+                  <span>100gm</span>
+                  <span>&#8226;</span>
+                  <span>True organincs</span>
+                  <span>&#8226;</span>
+                  <span>Black tea</span>
+                </div>
+              </div>
+
+              <div
+                class="flex flex-wrap gap-[5px] sm:gap-2.5 items-center justify-between"
+              >
+                <div class="order-item-quantity">Quantity: 1</div>
+
+                <button data-sku={`SKU`} class="order-item-cart-btn">
+                  {Button_buy_again_text}
+                  <span class="text-secondary-light">&#8226;</span>
+                  <span class="recoleta font-bold">€24</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Max 3 items per order would be visible, otherwise toggle needed -->
+          <div class="flex justify-center w-full">
+            <div class="show-more-toggle-btn">
+              <span
+                >{
+                  text_show_more_products_in_this_order.replace(
+                    "<number>",
+                    "10",
+                  )
+                }</span
+              >
+
+              <!-- after toggle show hide text
+              <span>{text_hide_more_products_in_this_order.replace("<number>", "10")}</span> -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 8"
+                class="w-4 fill-primary"
+              >
+                <path
+                  d="M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
         <div
-          class="text-[clamp(1.125rem,1.5vw+0.15rem,1.5rem)] font-bold text-black"
+          class="order-item pb-[25px] sm:pb-[30px] border-b border-primary-light"
         >
-          February 2022
-        </div>
-
-        <div class="flex flex-col gap-5">
           <div
-            class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1"
+            class="flex flex-wrap items-center gap-[5px] sm:gap-2.5 justify-between"
           >
-            <div
-              class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-black"
-            >
-              {Label_order} #132131
+            <div class="grid gap-[5px] sm:gap-2.5">
+              <div class="order-item-label">
+                {Label_order} #132131
 
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="8"
-                height="16"
-                viewBox="0 0 8 16.7"
-              >
-                <path
-                  d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
-                  style="fill:#2b4b50"></path>
-              </svg>
-            </div>
-            <div class="text-black-light">
-              {text_estimated_delivery} 18-Feb-2023
-            </div>
-          </div>
-
-          <div class="flex justify-between gap-4 w-full">
-            <div class="flex flex-wrap gap-4 justify-between w-full">
-              <div class="grid gap-4">
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
-
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">
-                      1x Chamomile tea
-                    </h2>
-
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
-                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 8 16"
+                  class="h-4"
+                >
+                  <path
+                    d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
+                  ></path>
+                </svg>
               </div>
 
-              {
-                Button_track_package && (
-                  <div>
-                    <a href="#">
-                      <div
-                        class:list={[
-                          "font-bold leading-[150%] text-white",
-                          "px-[30px] py-1.5 bg-primary rounded-full",
-                        ]}
-                      >
-                        {Button_track_package_text}
-                      </div>
-                    </a>
-                  </div>
-                )
-              }
-            </div>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-5 pt-2.5 border-t border-lightgray">
-          <div
-            class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1"
-          >
-            <div
-              class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-black"
-            >
-              {Label_order} #35995
-
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="8"
-                height="16"
-                viewBox="0 0 8 16.7"
-              >
-                <path
-                  d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
-                  style="fill:#2b4b50"></path>
-              </svg>
-            </div>
-            <div class="text-black-light">
-              {text_estimated_shipment} 18-Feb-2023
-            </div>
-          </div>
-
-          <div
-            class:list={[
-              "flex items-center justify-center gap-2.5 w-full p-[15px] sm:py-2.5 select-none",
-              "text-sm sm:text-base font-medium text-black bg-[#FDF6B9] rounded-[5px]",
-            ]}
-          >
-            <img
-              class:list={[
-                "inline-flex p-0.5 w-[26px] text-white bg-[#febf21]",
-                "rounded-full select-none drop-shadow-lg",
-              ]}
-              {...warning_notification}
-            />
-            {recurData.Item_stock_text} 23 Jun 2023
-          </div>
-
-          <div class="flex justify-between gap-4 w-full">
-            <div class="flex flex-wrap gap-4 justify-between w-full">
-              <div class="grid gap-4">
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
-
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">
-                      2x Ceylon cinnamon spice tea
-                    </h2>
-
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
-                </div>
-
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
-
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">1x Green tea</h2>
-
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
-                </div>
-
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
-
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">
-                      3x Rose with french vanilla tea
-                    </h2>
-
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
-                </div>
+              <div class="order-item-date">
+                {text_estimated_shipment} 28-Jan-2023
               </div>
+            </div>
 
-              {
-                Button_track_package && (
-                  <div>
-                    <a href="#">
-                      <div
-                        class:list={[
-                          "font-bold leading-[150%] text-white",
-                          "px-[30px] py-1.5 bg-primary rounded-full",
-                        ]}
-                      >
-                        {Button_track_package_text}
-                      </div>
-                    </a>
-                  </div>
-                )
-              }
-
-              <div class="flex justify-center w-full">
-                <a href="#" class="font-bold leading-[150%] text-primary">
-                  10 {text_more_products_in_this_order}
-
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="8"
-                    viewBox="0 0 16.7 8"
-                    class="inline-flex ml-2.5"
-                  >
-                    <path
-                      d="M.4.3A1.4,1.4,0,0,1,2.1.3L8.4,5.4,14.6.3a1.4,1.4,0,0,1,.9-.3,1.6,1.6,0,0,1,.9.3.8.8,0,0,1,.3.8.9.9,0,0,1-.3.7L9.3,7.7a1.5,1.5,0,0,1-1.8,0L.4,1.8A.8.8,0,0,1,0,1.1,1.2,1.2,0,0,1,.4.3Z"
-                      style="fill:#2b4b50"></path>
-                  </svg>
+            {
+              Button_track_package && (
+                <a
+                  href="#"
+                  class="py-2.5 px-5 font-bold text-white bg-primary rounded-full"
+                >
+                  {Button_track_package_text}
                 </a>
+              )
+            }
+          </div>
+
+          <div class="flex gap-2.5 sm:gap-[15px]">
+            <div class="oder-img">
+              <Img
+                layout="fullWidth"
+                width={65}
+                alt=""
+                attributes={{
+                  img: {
+                    style:
+                      "aspect-ratio: 1 / 1; clip-path: url(#orders-blob-curve)",
+                  },
+                }}
+                src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
+              />
+            </div>
+
+            <div class="grow grid gap-[5px] sm:gap-2.5">
+              <div class="grid gap-[5px] sm:gap-2.5">
+                <div class="order-item-title recoleta line-height-[110%]">
+                  Ceylon cinnamon spice tea
+                </div>
+                <div class="order-item-info">
+                  <span>20 tea bags</span>
+                  <span>&#8226;</span>
+                  <span>100gm</span>
+                  <span>&#8226;</span>
+                  <span>True organincs</span>
+                  <span>&#8226;</span>
+                  <span>Black tea</span>
+                </div>
+              </div>
+
+              <div
+                class="flex flex-wrap gap-[5px] sm:gap-2.5 items-center justify-between"
+              >
+                <div class="order-item-quantity">Quantity: 1</div>
+
+                <button data-sku={`SKU`} class="order-item-cart-btn">
+                  {Button_buy_again_text}
+                  <span class="text-secondary-light">&#8226;</span>
+                  <span class="recoleta font-bold">€24</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="flex flex-col gap-5 pt-2.5 border-t border-lightgray">
+        <div class="order-item">
           <div
-            class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1"
+            class="flex flex-wrap items-center gap-[5px] sm:gap-2.5 justify-between"
           >
-            <div
-              class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-black"
-            >
-              {Label_order} #35995
+            <div class="grid gap-[5px] sm:gap-2.5">
+              <div class="order-item-label">
+                {Label_order} #132131
 
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="8"
-                height="17"
-                viewBox="0 0 8 16.7"
-              >
-                <path
-                  d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
-                  style="fill:#2b4b50"></path>
-              </svg>
-            </div>
-            <div class="text-black-light">
-              {text_delivered} 18-Feb-2023
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 8 16"
+                  class="h-4"
+                >
+                  <path
+                    d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
+                  ></path>
+                </svg>
+              </div>
+
+              <div class="order-item-date">
+                {text_delivered} 10-Jan-2023
+              </div>
             </div>
           </div>
 
-          <div class="flex justify-between gap-4 w-full">
-            <div class="flex flex-wrap gap-4 justify-between w-full">
-              <div class="grid gap-4">
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
+          <div class="flex gap-2.5 sm:gap-[15px]">
+            <div class="oder-img">
+              <Img
+                layout="fullWidth"
+                width={65}
+                alt=""
+                attributes={{
+                  img: {
+                    style:
+                      "aspect-ratio: 1 / 1; clip-path: url(#orders-blob-curve)",
+                  },
+                }}
+                src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
+              />
+            </div>
 
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">
-                      3x Natural rooibos tea
-                    </h2>
-
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
+            <div class="grow grid gap-[5px] sm:gap-2.5">
+              <div class="grid gap-[5px] sm:gap-2.5">
+                <div class="order-item-title recoleta line-height-[110%]">
+                  Ceylon cinnamon spice tea
+                </div>
+                <div class="order-item-info">
+                  <span>20 tea bags</span>
+                  <span>&#8226;</span>
+                  <span>100gm</span>
+                  <span>&#8226;</span>
+                  <span>True organincs</span>
+                  <span>&#8226;</span>
+                  <span>Black tea</span>
                 </div>
               </div>
 
-              <div>
-                <a href="#" class="cursor-not-allowed">
-                  <div
-                    class:list={[
-                      "font-bold leading-[150%] text-white",
-                      "px-[30px] py-1.5 bg-slate rounded-full",
-                    ]}
-                  >
-                    {Button_sold_out_text}
-                  </div>
-                </a>
+              <div
+                class="flex flex-wrap gap-[5px] sm:gap-2.5 items-center justify-between"
+              >
+                <div class="order-item-quantity">Quantity: 1</div>
+
+                <button data-sku={`SKU`} class="order-item-cart-btn">
+                  {Button_buy_again_text}
+                  <span class="text-secondary-light">&#8226;</span>
+                  <span class="recoleta font-bold">€24</span>
+                </button>
               </div>
             </div>
           </div>
@@ -658,7 +496,7 @@ const {
 
   <div
     class:list={[
-      "w-full md:w-1/3 order-1 md:order-2 overflow-hidden pl-0",
+      "w-full md:w-1/3 order-1 md:order-2 overflow-hidden pl-0 pb-[25px]",
       "md:pl-[clamp(24px,3.8vw+0.16px,50px)] lg:pl-[clamp(70px,11.3125vw-46px,128px)]",
     ]}
   >
