@@ -7,7 +7,8 @@ import OrderSummary from "@components/OrderSummary.astro";
 const { page } = Astro.props,
   { locale } = page,
   checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug,
-  checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug;
+  checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
+  userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
 ---
 
 <style lang="scss">
@@ -285,8 +286,17 @@ const { page } = Astro.props,
           </svg>
 
           <div>
-            <div id="hide-address-text" class="hidden">Hide 3 addresses</div>
-            <div id="show-address-text">Show more 3 addresses</div>
+            <div id="hide-address-text" class="hidden">
+              {
+                userAccountRecurData.text_hide_more_address.replace(
+                  "<number>",
+                  "3",
+                )
+              }
+            </div>
+            <div id="show-address-text">
+              {userAccountRecurData.text_more_address.replace("<number>", "3")}
+            </div>
           </div>
 
           <svg
