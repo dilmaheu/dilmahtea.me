@@ -135,8 +135,10 @@ const {
   path="M0.517,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 S0.002,0.495,0.018,0.737 S0.182,1,0.528,1 c0.286,0,0.375,-0.063,0.447,-0.282 c0.031,-0.094,0.047,-0.323,-0.029,-0.591 C0.898,-0.045,0.734,0.008,0.517,0.008"
 />
 
-<div class="wrapper py-[50px] w-full flex flex-wrap">
-  <div class="w-full md:w-2/3 order-2 md:order-1">
+<div
+  class="wrapper py-[50px] w-full flex flex-col-reverse md:flex-row gap-[25px] md:gap-[30px]"
+>
+  <div class="w-full md:w-2/3">
     <section class="grid gap-[25px] sm:gap-[30px]">
       <h1 class="dashboard-sec-title recoleta">
         {Title}
@@ -515,10 +517,140 @@ const {
     </section>
   </div>
 
+  <div class="md:hidden w-full">
+    <div class="flex justify-end">
+      <button
+        id="date-range-sm-open-btn"
+        class="font-bold text-primary select-none"
+      >
+        Date range
+      </button>
+    </div>
+
+    <div
+      id="date-range-sm"
+      class:list={[
+        "wrapper flex flex-col gap-[50px] py-[25px]",
+        "hidden fixed z-[9999] top-0 left-0 w-screen h-screen bg-secondary",
+      ]}
+    >
+      <div class="flex justify-end">
+        <button
+          type="button"
+          id="date-range-sm-close-btn"
+          class="select-none cursor-pointer"
+        >
+          <svg
+            viewBox="0 0 19.2 19.2"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-[35px] h-[35px] p-[5px] fill-black"
+          >
+            <path
+              d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+            ></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="grid gap-[25px]">
+        <div class="flex items-center justify-between gap-2.5">
+          <svg
+            id="year-selector-sm-arrow-left"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 8 14"
+            class="w-4 h-4 fill-primary cursor-pointer"
+          >
+            <path
+              d="M7.7,13.7a1.1,1.1,0,0,0,.3-.8,1.1,1.1,0,0,0-.3-.7L2.5,7,7.7,1.8A1.1,1.1,0,0,0,8,1,1.1,1.1,0,0,0,7.7.3,1.1,1.1,0,0,0,7,0a1.1,1.1,0,0,0-.8.3L.3,6.2A1.1,1.1,0,0,0,0,7a.9.9,0,0,0,.3.7l5.9,6A1.1,1.1,0,0,0,7,14a1.1,1.1,0,0,0,.7-.3Z"
+            ></path>
+          </svg>
+
+          <select
+            id="year-selector-sm"
+            class:list={[
+              "grow text-[20px] font-bold",
+              "text-primary text-center bg-transparent appearance-none",
+            ]}
+          >
+            <option class="select-none">2021</option>
+            <option class="select-none" selected>2022</option>
+            <option class="select-none">2023</option>
+          </select>
+
+          <svg
+            id="year-selector-sm-arrow-right"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 8 14"
+            class="w-4 h-4 fill-primary cursor-pointer"
+          >
+            <path
+              d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"
+            ></path>
+          </svg>
+        </div>
+
+        <div class="month-container">
+          <div class="month">
+            <input type="checkbox" id="jan0" checked />
+            <label for="jan0">Jan</label>
+          </div>
+          <div class="month">
+            <input type="checkbox" id="feb0" checked />
+            <label for="feb0">Feb</label>
+          </div>
+          <div class="month">
+            <input type="checkbox" id="mar0" />
+            <label for="mar0">Mar</label>
+          </div>
+          <div class="month">
+            <input type="checkbox" id="apr0" />
+            <label for="apr0">Apr</label>
+          </div>
+          <div class="month">
+            <input type="checkbox" id="may0" />
+            <label for="may0">May</label>
+          </div>
+          <div class="month">
+            <input type="checkbox" id="jun0" />
+            <label for="jun0">Jun</label>
+          </div>
+          <div class="month">
+            <input type="checkbox" id="jul0" />
+            <label for="jul0">Jul</label>
+          </div>
+          <div class="month">
+            <input type="checkbox" id="aug0" />
+            <label for="aug0">Aug</label>
+          </div>
+          <div class="month">
+            <input type="checkbox" id="sep0" />
+            <label for="sep0">Sep</label>
+          </div>
+          <div class="month">
+            <input type="checkbox" id="oct0" />
+            <label for="oct0">Oct</label>
+          </div>
+          <div class="month">
+            <input type="checkbox" id="nov0" />
+            <label for="nov0">Nov</label>
+          </div>
+          <div class="month">
+            <input type="checkbox" id="dec0" />
+            <label for="dec0">Dec</label>
+          </div>
+        </div>
+
+        <div class="w-full flex justify-end">
+          <div class="font-bold text-primary cursor-pointer">Clear range</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div
     class:list={[
       "w-full md:w-1/3 self-start hidden md:flex flex-col gap-[50px] md:sticky",
-      "top-0 text-black overflow-hidden order-1 md:order-2",
+      "top-0 text-black overflow-hidden",
       "md:pl-[clamp(24px,3.8vw+0.16px,50px)] lg:pl-[clamp(70px,11.3125vw-46px,128px)]",
     ]}
   >
@@ -565,6 +697,7 @@ const {
     </div>
 
     <div
+      id="date-range"
       class="grid gap-[25px] lg:gap-[30px] p-[35px] bg-secondary-light rounded-[10px]"
     >
       <div class="font-bold text-black-light">Date range</div>
