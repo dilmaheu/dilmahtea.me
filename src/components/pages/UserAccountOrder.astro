@@ -798,21 +798,88 @@ const {
 
 <script is:inline>
   const id = document.getElementById.bind(document),
-    yearSelector = id("year-selector"),
-    yearSelectorOptions = Array.from(yearSelector?.options),
-    btnLeft = id("year-selector-arrow-left"),
-    btnRight = id("year-selector-arrow-right");
+    dateRangeSm = id("date-range-sm"),
+    dateRangeSmOpenBtn = id("date-range-sm-open-btn"),
+    dateRangeSmCloseBtn = id("date-range-sm-close-btn");
 
-  btnLeft?.addEventListener("click", () => changeSelected(true));
-  btnRight?.addEventListener("click", () => changeSelected(false));
+  let scrollYPosition = 0,
+    scrollingDisabled = false;
 
-  function changeSelected(index) {
-    const currentIndex = yearSelectorOptions.findIndex(
-      (option) => option.value === yearSelector.value,
+  window.disableScrolling = () => {
+    if (scrollingDisabled) return;
+
+    scrollYPosition = window.scrollY;
+
+    const overflowY =
+      window.innerHeight < document.body.scrollHeight ? "scroll" : "auto";
+
+    Object.assign(document.body.style, {
+      overflowY,
+      width: "100%",
+      position: "fixed",
+      top: `-${scrollYPosition}px`,
+    });
+
+    scrollingDisabled = true;
+  };
+
+  window.enableScrolling = () => {
+    if (!scrollingDisabled) return;
+
+    Object.assign(document.body.style, {
+      width: "auto",
+      overflowY: "auto",
+      position: "static",
+      top: "0",
+    });
+
+    window.scrollTo({ top: scrollYPosition });
+
+    scrollingDisabled = false;
+  };
+
+  dateRangeSmOpenBtn?.addEventListener("click", () => {
+    dateRangeSm.classList.remove("hidden");
+    window.disableScrolling();
+  });
+  dateRangeSmCloseBtn?.addEventListener("click", () => {
+    dateRangeSm.classList.add("hidden");
+    window.enableScrolling();
+  });
+
+  function setupYearSelector(selectorId, leftBtnId, rightBtnId) {
+    const yearSelector = id(selectorId);
+    const yearSelectorOptions = Array.from(yearSelector?.options);
+    const btnLeft = id(leftBtnId);
+    const btnRight = id(rightBtnId);
+
+    btnLeft?.addEventListener("click", () =>
+      changeSelected(-1, yearSelector, yearSelectorOptions),
     );
-    const newIndex = index
-      ? Math.max(0, currentIndex - 1)
-      : Math.min(yearSelectorOptions.length - 1, currentIndex + 1);
-    yearSelector.value = yearSelectorOptions[newIndex]?.value;
+    btnRight?.addEventListener("click", () =>
+      changeSelected(1, yearSelector, yearSelectorOptions),
+    );
+  }
+
+  setupYearSelector(
+    "year-selector",
+    "year-selector-arrow-left",
+    "year-selector-arrow-right",
+  );
+  setupYearSelector(
+    "year-selector-sm",
+    "year-selector-sm-arrow-left",
+    "year-selector-sm-arrow-right",
+  );
+
+  function changeSelected(step, selector, options) {
+    const currentIndex = options.findIndex(
+      (option) => option.value === selector.value,
+    );
+    const newIndex = Math.min(
+      Math.max(0, currentIndex + step),
+      options.length - 1,
+    );
+    selector.value = options[newIndex]?.value;
   }
 </script>
