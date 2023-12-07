@@ -17,7 +17,11 @@ astroIslands.forEach((island) => {
     if (islandHTML.includes(heading.outerHTML)) {
       islandHTML = islandHTML.replace(
         heading.outerHTML,
-        (i === 0 ? "" : "</div>") + "<div class='chapter'>" + heading.outerHTML,
+        (i === 0 ? "" : "</div>") +
+          `<div id=${heading.innerText
+            ?.toLowerCase()
+            ?.replaceAll(" ", "-")} class='chapter'>` +
+          heading.outerHTML,
       );
 
       delete headings[i];
@@ -33,9 +37,14 @@ astroIslands.forEach((island) => {
 headings = [...headings].filter(Boolean);
 
 headings.forEach((heading, i) => {
+  console.log(heading.innerText);
   contentHTML = contentHTML.replace(
     heading.outerHTML,
-    (i === 0 ? "" : "</div>") + "<div class='chapter'>" + heading.outerHTML,
+    (i === 0 ? "" : "</div>") +
+      `<div id=${heading.innerText
+        ?.toLowerCase()
+        ?.replaceAll(" ", "-")} class='chapter'>` +
+      heading.outerHTML,
   );
 });
 
