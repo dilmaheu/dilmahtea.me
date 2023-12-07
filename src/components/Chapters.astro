@@ -1,0 +1,88 @@
+---
+import RecurringImages from "@store/RecurringImages";
+
+const { green_right_arrow } = RecurringImages;
+
+declare interface Props {
+  desktopOnly?: boolean;
+  headingName: string;
+  headings: NodeListOf<HTMLHeadingElement>;
+  staticHeadings: string[];
+}
+
+const { desktopOnly, headingName, headings, staticHeadings } = Astro.props as Props;
+
+const dynamicHeadings = headings ? Array.from(headings, ({ innerText }) => innerText) : [];
+
+const headingTexts = dynamicHeadings || staticHeadings ;
+---
+
+<style lang="scss">
+  @use "src/styles/colors";
+
+  a.chapter-link{
+    &.active {
+      font-weight: 700;
+      color: colors.$primary;
+    }
+
+    &:not(.active) img {
+      opacity: 0;
+    }
+  }
+</style>
+
+<div 
+  role="complementary"
+  aria-label={headingName}
+  id="headings"
+  class:list={[
+    "w-fit overflow-hidden px-[15px] md:px-0 h-full md:sticky",
+    desktopOnly && "hidden md:block",
+  ]}
+>
+  <div 
+    class:list={["w-full md:max-w-[484px] flex flex-col gap-[25px] sm:gap-[30px]"]}
+  >
+    <div class="flex flex-col gap-[25px] sm:gap-[30px]">
+      <h3 
+        id="headings-header"
+        class="text-[clamp(24px,calc(1vw+17.6px),32px)] font-bold text-black"
+      >
+        {headingName}
+      </h3>
+
+      <slot name="top-slot" />
+
+      <div
+        role="list"
+        id="chapter-links"
+        class="flex flex-col gap-2.5 sm:gap-[15px] overflow-y-auto"
+      >
+        {
+          headingTexts.map((title, i) => (
+            <a
+              href={`#${title.toLowerCase().replaceAll(" ", "-")}`}
+              role="listitem"
+              class:list={[
+              "chapter-link inline-flex items-center",
+              "gap-[clamp(10px,calc(0.625vw+6px),15px)]",
+              "text-[clamp(18px,calc(0.75vw+13.2px),24px)] text-black-light",
+              ]}
+            >
+              <div class="min-w-[clamp(35px,calc(1.25vw+27px),45px)]">
+                <img src={green_right_arrow.src} alt="" />
+              </div>
+              
+              <div>{title}</div>
+            </a>
+          ))
+        } 
+      </div>
+
+      <slot />
+    </div>
+
+
+  </div>
+</div>
