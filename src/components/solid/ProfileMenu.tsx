@@ -16,7 +16,7 @@ export default function ProfileMenu({
   const [isAuthenticated, setIsAuthenticated] = createSignal(false);
 
   createEffect(() => {
-    setIsAuthenticated(window.cookies.isAuthenticated !== "true");
+    setIsAuthenticated(window.cookies.isAuthenticated === "true");
   });
 
   setTimeout(() => {
