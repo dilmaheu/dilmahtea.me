@@ -24,12 +24,13 @@ export default function ProfileMenu({
       const id = document.getElementById.bind(document);
 
       const profileMenu = id("profile-menu"),
+        profileMenuContainer = profileMenu.parentElement,
         profileMenuOpenButton = id("profile-menu-open-btn"),
         profileMenuCloseButton = id("profile-menu-close-btn");
 
       window.profileMenuOpened = false;
 
-      profileMenuOpenButton.addEventListener("mouseenter", () => {
+      profileMenuContainer.addEventListener("mouseenter", () => {
         if (!window.localizationMenuOpened && window.innerWidth >= 640) {
           profileMenu.classList.remove("hidden");
         }
@@ -49,7 +50,7 @@ export default function ProfileMenu({
         }
       };
 
-      profileMenuOpenButton.addEventListener("mouseleave", hideProfileMenu);
+      profileMenuContainer.addEventListener("mouseleave", hideProfileMenu);
 
       document.addEventListener("click", (event) => {
         const target = event.target as HTMLElement;
