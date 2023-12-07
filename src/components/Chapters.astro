@@ -10,17 +10,20 @@ declare interface Props {
   staticHeadings: string[];
 }
 
-const { desktopOnly, headingName, headings, staticHeadings } = Astro.props as Props;
+const { desktopOnly, headingName, headings, staticHeadings } =
+  Astro.props as Props;
 
-const dynamicHeadings = headings ? Array.from(headings, ({ innerText }) => innerText) : [];
+const dynamicHeadings = headings
+  ? Array.from(headings, ({ innerText }) => innerText)
+  : [];
 
-const headingTexts = dynamicHeadings || staticHeadings ;
+const headingTexts = dynamicHeadings || staticHeadings;
 ---
 
 <style lang="scss">
   @use "src/styles/colors";
 
-  a.chapter-link{
+  a.chapter-link {
     &.active {
       font-weight: 700;
       color: colors.$primary;
@@ -32,7 +35,7 @@ const headingTexts = dynamicHeadings || staticHeadings ;
   }
 </style>
 
-<div 
+<div
   role="complementary"
   aria-label={headingName}
   id="headings"
@@ -41,11 +44,13 @@ const headingTexts = dynamicHeadings || staticHeadings ;
     desktopOnly && "hidden md:block",
   ]}
 >
-  <div 
-    class:list={["w-full md:max-w-[484px] flex flex-col gap-[25px] sm:gap-[30px]"]}
+  <div
+    class:list={[
+      "w-full md:max-w-[484px] flex flex-col gap-[25px] sm:gap-[30px]",
+    ]}
   >
     <div class="flex flex-col gap-[25px] sm:gap-[30px]">
-      <h3 
+      <h3
         id="headings-header"
         class="text-[clamp(24px,calc(1vw+17.6px),32px)] font-bold text-black"
       >
@@ -62,27 +67,25 @@ const headingTexts = dynamicHeadings || staticHeadings ;
         {
           headingTexts.map((title, i) => (
             <a
-              href={`#${title.toLowerCase().replaceAll(" ", "-")}`}
+              href={`#${title?.toLowerCase()?.replaceAll(" ", "-")}`}
               role="listitem"
               class:list={[
-              "chapter-link inline-flex items-center",
-              "gap-[clamp(10px,calc(0.625vw+6px),15px)]",
-              "text-[clamp(18px,calc(0.75vw+13.2px),24px)] text-black-light",
+                "chapter-link inline-flex items-center",
+                "gap-[clamp(10px,calc(0.625vw+6px),15px)]",
+                "text-[clamp(18px,calc(0.75vw+13.2px),24px)] text-black-light",
               ]}
             >
               <div class="min-w-[clamp(35px,calc(1.25vw+27px),45px)]">
                 <img src={green_right_arrow.src} alt="" />
               </div>
-              
+
               <div>{title}</div>
             </a>
           ))
-        } 
+        }
       </div>
 
       <slot />
     </div>
-
-
   </div>
 </div>
