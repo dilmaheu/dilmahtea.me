@@ -1,16 +1,17 @@
 ---
 import RecurringImages from "@store/RecurringImages";
 
-const { green_right_arrow } = RecurringImages;
+const { green_book, green_right_arrow } = RecurringImages;
 
 declare interface Props {
+  fixedTop?: boolean;
   desktopOnly?: boolean;
   headingName: string;
   headings: NodeListOf<HTMLHeadingElement>;
   staticHeadings: string[];
 }
 
-const { desktopOnly, headingName, headings, staticHeadings } =
+const { fixedTop, desktopOnly, headingName, headings, staticHeadings } =
   Astro.props as Props;
 
 const dynamicHeadings = headings
@@ -23,14 +24,17 @@ const headingTexts = dynamicHeadings || staticHeadings;
 <style lang="scss">
   @use "src/styles/colors";
 
-  a.chapter-link {
-    &.active {
-      font-weight: 700;
-      color: colors.$primary;
-    }
+  a {
+    &.chapter-link,
+    &.chapter-link-sm {
+      &.active {
+        font-weight: 700;
+        color: colors.$primary;
+      }
 
-    &:not(.active) img {
-      opacity: 0;
+      &:not(.active) img {
+        opacity: 0;
+      }
     }
   }
 </style>
@@ -38,31 +42,76 @@ const headingTexts = dynamicHeadings || staticHeadings;
 <div
   role="complementary"
   aria-label={headingName}
-  id="headings"
+  id={fixedTop ? "sticky-chapters" : "headings"}
   class:list={[
-    "w-fit overflow-hidden px-[15px] md:px-0 h-full md:sticky",
+    "overflow-hidden sticky",
+    fixedTop
+      ? "w-full invisible md:hidden z-10 top-0 bg-secondary shadow-[0_4px_5px_gray]"
+      : "md:w-1/3 2xl:w-1/2 px-[15px] md:px-0 h-full md:top-0",
     desktopOnly && "hidden md:block",
   ]}
 >
   <div
     class:list={[
-      "w-full md:max-w-[484px] flex flex-col gap-[25px] sm:gap-[30px]",
+      fixedTop
+        ? "flex flex-col wrapper relative select-none"
+        : "w-full md:max-w-[484px] ml-auto grid gap-[25px] sm:gap-[30px]",
     ]}
   >
-    <div class="flex flex-col gap-[25px] sm:gap-[30px]">
+    <div
+      id={fixedTop && "sticky-dropdown-toggle"}
+      class={fixedTop &&
+        "flex items-center gap-2.5 py-[15px] sm:pt-6 cursor-pointer focus:outline-none"}
+    >
+      {
+        fixedTop && (
+          <div class="w-[25px] min-w-[25px]">
+            <img class="w-full h-full" {...green_book} />
+          </div>
+        )
+      }
+
       <h3
-        id="headings-header"
-        class="text-[clamp(24px,calc(1vw+17.6px),32px)] font-bold text-black"
+        id={fixedTop && "sticky-chapters-heading"}
+        class:list={[
+          "text-black",
+          fixedTop
+            ? "grow text-sm font-medium"
+            : "text-[clamp(24px,calc(1vw+17.6px),32px)] font-bold",
+        ]}
       >
         {headingName}
       </h3>
 
+      {
+        fixedTop && (
+          <svg
+            viewBox="0 0 11.6 6.7"
+            xmlns="http://www.w3.org/2000/svg"
+            id="sticky-dropdown-toggle-icon"
+            class="w-[14px] min-w-[14px] fill-primary"
+          >
+            <path d="M.3.3A.6.6 0 0 1 .9 0a.9.9 0 0 1 .6.3l4.3 4.3L10.2.3a.6.6 0 0 1 .6-.3l.6.3a.8.8 0 0 1 .2.6.7.7 0 0 1-.2.6l-5 4.9a.6.6 0 0 1-.6.3.9.9 0 0 1-.6-.3L.3 1.5A.9.9 0 0 1 0 .9.6.6 0 0 1 .3.3Z" />
+          </svg>
+        )
+      }
+    </div>
+
+    <div
+      class:list={[
+        "grid gap-[25px] md:gap-[30px] overflow-y-auto",
+        fixedTop && "hidden py-[25px] border-t border-primary-light",
+      ]}
+    >
       <slot name="top-slot" />
 
       <div
         role="list"
-        id="chapter-links"
-        class="flex flex-col gap-2.5 sm:gap-[15px] overflow-y-auto"
+        id={fixedTop ? "sticky-chapter-links" : "chapter-links"}
+        class:list={[
+          "grid gap-2.5 md:gap-[15px] overflow-y-auto",
+          fixedTop && "max-h-[50vh]",
+        ]}
       >
         {
           headingTexts.map((title, i) => (
@@ -73,6 +122,8 @@ const headingTexts = dynamicHeadings || staticHeadings;
                 "chapter-link inline-flex items-center",
                 "gap-[clamp(10px,calc(0.625vw+6px),15px)]",
                 "text-[clamp(18px,calc(0.75vw+13.2px),24px)] text-black-light",
+                fixedTop && "chapter-link-sm",
+                i === 0 && "active",
               ]}
             >
               <div class="min-w-[clamp(35px,calc(1.25vw+27px),45px)]">
@@ -88,4 +139,13 @@ const headingTexts = dynamicHeadings || staticHeadings;
       <slot />
     </div>
   </div>
+
+  {
+    fixedTop && (
+      <div
+        id="reading-progress-bar"
+        class="py-[2.5px] bg-primary rounded-r-full duration-150"
+      />
+    )
+  }
 </div>
