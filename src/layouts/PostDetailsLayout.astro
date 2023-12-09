@@ -97,18 +97,15 @@ const contentHTML = await Astro.slots.render("post-details"),
 >
   {
     headings.length > 0 && (
-      <Chapters 
-        fixedTop={true}
-        headingName={headingName}
-        headings={headings}
-      >
+      <Chapters fixedTop={true} headingName={headingName} headings={headings}>
         <slot name="jump-to-recipe-sm" slot="top-slot" />
       </Chapters>
     )
   }
 
-  <div class="wrapper w-full flex flex-col-reverse md:flex-row justify-between gap-[50px]">
-
+  <div
+    class="wrapper w-full flex flex-col-reverse md:flex-row justify-between gap-[50px]"
+  >
     <div id="post-details" class="md:w-2/3 2xl:w-1/2 md:min-w-[400px]">
       <div class="prose-text xl:w-5/6 2xl:w-full">
         {/* post content */}
@@ -116,16 +113,16 @@ const contentHTML = await Astro.slots.render("post-details"),
       </div>
     </div>
 
-
     {
       headings.length > 0 && (
         <Chapters
           headingName={headingName}
           headings={headings}
+          desktopOnly={page.type === "howToDetails" && true}
         >
           {/* Jump to Recipe Button */}
           <slot name="jump-to-recipe" slot="top-slot" />
-          
+
           {/* Cart Adding Form (Sm) */}
           <slot name="cart-adding-form-sm" />
 
