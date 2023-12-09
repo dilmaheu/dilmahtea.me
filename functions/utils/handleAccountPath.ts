@@ -37,7 +37,9 @@ export async function handleAccountPath(
   switch (pathID) {
     // redirect to login page if request is invalid
     case "verification": {
-      const { contact, referrer } = searchParams;
+      const { email, phone, referrer } = searchParams;
+
+      const contact = email || phone;
 
       if (contact && referrer) {
         const { results: storedTokens } = await USERS.prepare(

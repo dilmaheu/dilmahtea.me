@@ -452,9 +452,11 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
     case "verification":
       updateTimeLeft();
 
+      const contact = searchParams.email || searchParams.phone;
+
       blockText.innerHTML = blockText.innerHTML.replace(
         "&lt;contact&gt;",
-        searchParams.contact,
+        contact,
       );
 
       break;
@@ -529,12 +531,13 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
             url: "/account/send-magic-link",
             data: {
               ...formdata,
-              locale: window.preferredLocale,
               referrer: document.referrer,
+              locale: window.preferredLocale,
             },
             onSuccess: () => {
               const queryParams = new URLSearchParams({
-                contact: formdata.email_or_phone,
+                [formdata.email ? "email" : "phone"]:
+                  formdata.email || formdata.phone,
                 referrer: document.referrer,
               }).toString();
 
@@ -547,12 +550,13 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
 
       case "verification":
         {
-          const { contact, referrer } = searchParams;
+          const { email, phone, referrer } = searchParams;
 
           await sendRequest({
             url: "/account/send-magic-link",
             data: {
-              email_or_phone: contact,
+              email,
+              phone,
               referrer,
               locale: window.preferredLocale,
             },
