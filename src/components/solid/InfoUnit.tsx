@@ -51,6 +51,23 @@ export default function InfoUnit({
   function handleSave(event: Event) {
     const input = (event.target as HTMLButtonElement).previousElementSibling
       .previousElementSibling as HTMLInputElement;
+
+    fetch("/account/update", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        [property]: input.value,
+        referrer: location.href,
+      }),
+    })
+      .then((res) => res.json<any>())
+      .then((response) => {
+        if (response.success) {
+          location.href = response.redirect;
+        }
+      });
   }
 
   return (
@@ -82,7 +99,9 @@ export default function InfoUnit({
           </>
         ) : (
           <button class="information-btn" onclick={handleEdit}>
-            {property === "name" ? Button_edit_text : Button_update_text}
+            {property === "display_name"
+              ? Button_edit_text
+              : Button_update_text}
           </button>
         )}
       </div>

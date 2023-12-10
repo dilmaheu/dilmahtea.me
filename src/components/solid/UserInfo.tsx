@@ -12,14 +12,14 @@ export default function UserInfo({
   return (
     <>
       <h2 id="personal-information" class="dashboard-sec-title recoleta">
-        {Title.replace("<username>", user().name)}
+        {Title.replace("<username>", user().display_name)}
       </h2>
 
       <div class="dashboard-sec">
         <InfoUnit
           label={Label_username}
           type="text"
-          property="name"
+          property="display_name"
           userAccountRecurData={userAccountRecurData}
         />
 

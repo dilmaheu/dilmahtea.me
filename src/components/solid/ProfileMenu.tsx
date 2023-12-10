@@ -143,7 +143,7 @@ export default function ProfileMenu({
               </div>
 
               <div class="recoleta text-xl font-bold text-black sm:mb-2.5">
-                {user().name}
+                {user().display_name}
               </div>
 
               {profileMenu.Menu.map(

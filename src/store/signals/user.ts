@@ -7,8 +7,6 @@ createEffect(() => {
     fetch("/account/user")
       .then((response) => response.json())
       .then((user: any) => {
-        user.name = user.first_name + " " + user.last_name;
-
         Object.keys(user).forEach((key) => {
           if (!user[key]) {
             user[key] = "N/A";
