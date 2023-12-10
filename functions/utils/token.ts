@@ -10,6 +10,7 @@ type GetToken = (
   contact: string,
   referrer: string,
   linkWith: string,
+  updated_contact: string,
 ) => Promise<string>;
 
 const EXPIRES_IN = 1000 * 60 * 60;
@@ -20,6 +21,7 @@ export const getToken: GetToken = async (
   contact,
   referrer,
   linkWith = null,
+  updated_contact = null,
 ) => {
   const { results: storedTokens } = await db
     .prepare(`SELECT * FROM verification_tokens WHERE contact = ?`)
@@ -48,8 +50,16 @@ export const getToken: GetToken = async (
   const token = generateRandomString(64);
 
   await db
-    .prepare("INSERT INTO verification_tokens VALUES (?, ?, ?, ?, ?, ?)")
-    .bind(token, Date.now() + EXPIRES_IN, locale, contact, referrer, linkWith)
+    .prepare("INSERT INTO verification_tokens VALUES (?, ?, ?, ?, ?, ?, ?)")
+    .bind(
+      token,
+      Date.now() + EXPIRES_IN,
+      locale,
+      contact,
+      referrer,
+      linkWith,
+      updated_contact,
+    )
     .all();
 
   return token;

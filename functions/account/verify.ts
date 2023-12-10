@@ -19,7 +19,7 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
     return new Response(error.message, { status: 400 });
   }
 
-  const { locale, contact, referrer, link_with } = storedToken;
+  const { locale, contact, referrer, link_with, updated_contact } = storedToken;
 
   const auth = initializeLucia(env.USERS);
 
@@ -67,6 +67,27 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
   }
 
   const user: User = await auth.getUser(userId);
+
+  if (updated_contact) {
+    const [newProviderId, newContact] = updated_contact.split(":");
+
+    await auth.createKey({
+      userId,
+      providerId: newProviderId,
+      providerUserId: newContact.toLowerCase(),
+      password: null,
+    });
+
+    await auth.updateUserAttributes(userId, {
+      [newProviderId]: newContact.toLowerCase(),
+    });
+
+    if (providerId === newProviderId) {
+      await auth.deleteKey(providerId, contact.toLowerCase());
+
+      await auth.invalidateAllUserSessions(userId);
+    }
+  }
 
   const sessionCookie = await createSessionCookie(auth, user);
 

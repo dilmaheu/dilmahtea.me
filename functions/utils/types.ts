@@ -5,6 +5,7 @@ export interface Token {
   contact: string;
   referrer: string;
   link_with: string;
+  updated_contact: string;
 }
 
 export interface ENV {

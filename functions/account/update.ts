@@ -5,14 +5,15 @@ import { z } from "zod";
 import { isMobilePhone } from "validator";
 
 import { initializeLucia } from "../utils/auth";
+import { checkUpdatedContact } from "../utils";
 
 const BodySchema = z
   .object({
     display_name: z.string(),
     email: z.string().email(),
     phone: z.string().refine(isMobilePhone),
+    updated_contact: z.string().refine(checkUpdatedContact),
     referrer: z.string(),
-    token: z.string(),
   })
   .partial();
 
@@ -33,27 +34,34 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
   const body = await request.json<Body>();
 
   try {
-    const parsedBody = BodySchema.parse(body),
-      [property] = Object.keys(parsedBody),
-      { display_name, email, phone, referrer, token } = parsedBody;
+    const { display_name, email, phone, updated_contact, referrer } =
+      BodySchema.parse(body);
 
-    const { userId } = session.user;
+    const { userId, locale } = session.user;
 
-    switch (property) {
-      case "display_name":
-        await auth.updateUserAttributes(userId, {
-          [property]: parsedBody[property],
-        });
+    if (display_name) {
+      await auth.updateUserAttributes(userId, { display_name });
 
-        break;
-      case "email":
-      case "phone":
-        break;
-      default:
-        throw new Error();
+      return Response.json({ success: true, redirect: referrer });
+    } else if (updated_contact) {
+      return await fetch(
+        new URL(request.url).origin + "/account/send-magic-link",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "update",
+            email,
+            phone,
+            locale,
+            referrer,
+            updated_contact,
+          }),
+        },
+      );
     }
 
-    return Response.json({ success: true, redirect: referrer });
+    throw new Error();
   } catch (error) {
     return Response.json(
       { success: false, message: "Bad request" },

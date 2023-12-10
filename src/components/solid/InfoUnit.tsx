@@ -58,14 +58,28 @@ export default function InfoUnit({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        [property]: input.value,
         referrer: location.href,
+        ...(property === "display_name"
+          ? { display_name: input.value }
+          : (() => {
+              const providerId =
+                user()[property] !== "N/A"
+                  ? property
+                  : property === "email"
+                  ? "phone"
+                  : "email";
+
+              return {
+                [providerId]: user()[providerId],
+                updated_contact: `${property}:${input.value}`,
+              };
+            })()),
       }),
     })
       .then((res) => res.json<any>())
       .then((response) => {
         if (response.success) {
-          location.href = response.redirect;
+          location.href = response.referrer;
         }
       });
   }
