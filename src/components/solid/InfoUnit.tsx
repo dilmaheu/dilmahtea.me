@@ -55,13 +55,18 @@ export default function InfoUnit({
     const input = (event.target as HTMLButtonElement).previousElementSibling
       .previousElementSibling as HTMLInputElement;
 
+    const referrerURL = new URL(location.href);
+
+    referrerURL.searchParams.set("updated_user_info", "true");
+    referrerURL.searchParams.set("info", property);
+
     fetch("/account/update", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        referrer: location.href + "?updated_user_info=true&info=" + property,
+        referrer: referrerURL.toString(),
         ...(property === "display_name"
           ? { display_name: input.value }
           : (() => {
