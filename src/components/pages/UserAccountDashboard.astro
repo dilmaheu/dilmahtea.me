@@ -3,7 +3,9 @@ import { Img, Picture } from "astro-imagetools/components";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+
 import localizeCMSImage from "@utils/localizeCMSImage";
+import getUserAccountPagesLink from "@utils/getUserAccountPagesLink";
 
 import UserInfo from "@solid/UserInfo";
 
@@ -78,6 +80,8 @@ const {
 const title = page.Title.replaceAll("<username>", `Sara Jones`);
 
 const headingName = recurData.text_chapter;
+
+const verificationHref = getUserAccountPagesLink("verification", locale);
 ---
 
 <style lang="scss" is:global>
@@ -207,6 +211,7 @@ const headingName = recurData.text_chapter;
         {display_name_update_success_notification_label}
         {email_update_success_notification_label}
         {phone_number_update_success_notification_label}
+        {verificationHref}
         recurringImages={{
           success_notification: RecurringImages.success_notification,
           error_notification: RecurringImages.error_notification,

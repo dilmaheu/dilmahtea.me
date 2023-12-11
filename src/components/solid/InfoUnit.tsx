@@ -5,6 +5,7 @@ export default function InfoUnit({
   label,
   type,
   property,
+  verificationHref,
   userAccountRecurData: {
     Button_edit_text,
     Button_update_text,
@@ -87,7 +88,16 @@ export default function InfoUnit({
       .then((res) => res.json<any>())
       .then((response) => {
         if (response.success) {
-          location.href = response.referrer;
+          if (property === "display_name") {
+            location.href = response.referrer;
+          } else {
+            const queryParams = new URLSearchParams({
+              [property]: input.value,
+              referrer: document.referrer,
+            }).toString();
+
+            location.href = verificationHref + "?" + queryParams;
+          }
         } else {
           throw new Error(response.message);
         }

@@ -13,6 +13,7 @@ export default function UserInfo({
   display_name_update_success_notification_label,
   email_update_success_notification_label,
   phone_number_update_success_notification_label,
+  verificationHref,
   recurringImages,
   userAccountRecurData,
 }) {
@@ -72,6 +73,7 @@ export default function UserInfo({
           label={Label_username}
           type="text"
           property="display_name"
+          verificationHref={verificationHref}
           userAccountRecurData={userAccountRecurData}
           setNotification={setNotification}
         />
@@ -80,6 +82,7 @@ export default function UserInfo({
           label={Label_phone}
           type="tel"
           property="phone"
+          verificationHref={verificationHref}
           userAccountRecurData={userAccountRecurData}
           setNotification={setNotification}
         />
@@ -88,6 +91,7 @@ export default function UserInfo({
           label={Label_email}
           type="email"
           property="email"
+          verificationHref={verificationHref}
           userAccountRecurData={userAccountRecurData}
           setNotification={setNotification}
         />
