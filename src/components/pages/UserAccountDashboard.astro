@@ -24,6 +24,10 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
       Label_billing_address,
       Social_media_title,
       Social_media,
+      user_info_update_success_notification,
+      display_name_update_success_notification_label,
+      email_update_success_notification_label,
+      phone_number_update_success_notification_label,
     },
     kindnessCauses,
     Block3_title: block3_title,
@@ -196,9 +200,17 @@ const headingName = recurData.text_chapter;
       <UserInfo
         client:load
         Title={page.Title}
-        Label_username={Label_username}
-        Label_phone={Label_phone}
-        Label_email={Label_email}
+        {Label_username}
+        {Label_phone}
+        {Label_email}
+        {user_info_update_success_notification}
+        {display_name_update_success_notification_label}
+        {email_update_success_notification_label}
+        {phone_number_update_success_notification_label}
+        recurringImages={{
+          success_notification: RecurringImages.success_notification,
+          error_notification: RecurringImages.error_notification,
+        }}
         userAccountRecurData={{
           Button_edit_text,
           Button_update_text,

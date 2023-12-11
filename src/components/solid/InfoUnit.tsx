@@ -11,6 +11,7 @@ export default function InfoUnit({
     Button_save_text,
     Button_cancel_text,
   },
+  setNotification,
 }) {
   const [isEditing, setIsEditing] = createSignal(false);
 
@@ -49,6 +50,8 @@ export default function InfoUnit({
   }
 
   function handleSave(event: Event) {
+    setNotification(null);
+
     const input = (event.target as HTMLButtonElement).previousElementSibling
       .previousElementSibling as HTMLInputElement;
 
@@ -58,7 +61,7 @@ export default function InfoUnit({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        referrer: location.href,
+        referrer: location.href + "?updated_user_info=true&info=" + property,
         ...(property === "display_name"
           ? { display_name: input.value }
           : (() => {
@@ -80,7 +83,15 @@ export default function InfoUnit({
       .then((response) => {
         if (response.success) {
           location.href = response.referrer;
+        } else {
+          throw new Error(response.message);
         }
+      })
+      .catch((error) => {
+        setNotification({
+          type: "error",
+          message: error.message,
+        });
       });
   }
 

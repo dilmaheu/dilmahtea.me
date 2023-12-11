@@ -121,8 +121,6 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
     var magicLink =
       new URL(request.url).origin + "/account/verify/" + "?token=" + token;
-
-    console.log(magicLink);
   } catch (error) {
     const isPublicError = error instanceof PublicError;
 
