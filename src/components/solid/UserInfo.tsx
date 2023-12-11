@@ -26,7 +26,7 @@ export default function UserInfo({
         InfoLabels = {
           display_name: display_name_update_success_notification_label,
           email: email_update_success_notification_label,
-          phone_number: phone_number_update_success_notification_label,
+          phone: phone_number_update_success_notification_label,
         };
 
       setNotification({
