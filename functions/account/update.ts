@@ -42,7 +42,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     if (display_name) {
       await auth.updateUserAttributes(userId, { display_name });
 
-      return Response.json({ success: true, redirect: referrer });
+      return Response.json({ success: true, referrer });
     } else if (updated_contact) {
       return await fetch(
         new URL(request.url).origin + "/account/send-magic-link",
