@@ -11,7 +11,7 @@
       stickyChapters = query("#sticky-chapters"),
       stickyChaptersHeading = query("#sticky-chapters-heading"),
       stickyDropdownToggle = query("#sticky-dropdown-toggle"),
-      chapterLinks = [...queryAll(".chapter-link")],
+      chapterLinks = [...queryAll(".chapter-link:not(.chapter-link-sm)")],
       stickyChapterLinks = [...queryAll(".chapter-link-sm")],
       chapterLinksContainer = query("#chapter-links"),
       stickyChapterLinksContainer = query("#sticky-chapter-links"),
@@ -57,6 +57,11 @@
 
       [...chapterLinks, ...stickyChapterLinks].forEach((link) =>
         link.classList.remove("active"),
+      );
+
+      console.log(
+        chapterLinks[activeChapterIndex],
+        stickyChapterLinks[activeChapterIndex],
       );
 
       // highlight active chapter link
