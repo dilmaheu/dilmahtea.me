@@ -138,11 +138,11 @@
             heading = document.getElementById(headingID),
             headerHeight = header.getBoundingClientRect().height;
 
+          const isFirstHeadingLink = firstHeadingID === headingID;
+
           let blockedAreaBottom = headerHeight;
 
           if (window.innerWidth < 768) {
-            const isFirstHeadingLink = firstHeadingID === headingID;
-
             stickyChapterLinksContainer.parentElement.classList.add("hidden");
 
             const stickyChaptersHeight =
@@ -156,7 +156,7 @@
           const { offsetTop: headingOffsetTop } = heading;
 
           window.scrollTo({
-            top: headingOffsetTop - blockedAreaBottom,
+            top: headingOffsetTop - (blockedAreaBottom + 20),
           });
         });
       }
