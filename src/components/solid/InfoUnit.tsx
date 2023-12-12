@@ -71,30 +71,38 @@ export default function InfoUnit({
 
     const referrer = referrerURL.toString();
 
-    fetch("/account/update", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        referrer,
-        ...(property === "display_name"
-          ? { display_name: input.value }
-          : (() => {
-              const providerId =
-                user()[property] !== "N/A"
-                  ? property
-                  : property === "email"
-                  ? "phone"
-                  : "email";
+    fetch(
+      property === "display_name"
+        ? "/account/update"
+        : "/account/send-magic-link",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          referrer,
+          ...(property === "display_name"
+            ? { display_name: input.value }
+            : (() => {
+                const previousContactId =
+                  user()[property] !== "N/A"
+                    ? property
+                    : property === "email"
+                    ? "phone"
+                    : "email";
 
-              return {
-                [providerId]: user()[providerId],
-                updated_contact: `${property}:${input.value}`,
-              };
-            })()),
-      }),
-    })
+                return {
+                  action: "update",
+                  [property]: input.value,
+                  previous_contact: `${previousContactId}:${
+                    user()[previousContactId]
+                  }`,
+                };
+              })()),
+        }),
+      },
+    )
       .then((res) => res.json<any>())
       .then((response) => {
         if (response.success) {

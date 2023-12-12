@@ -10,7 +10,7 @@ type GetToken = (
   contact: string,
   referrer: string,
   linkWith: string,
-  updated_contact: string,
+  previous_contact: string,
 ) => Promise<string>;
 
 const EXPIRES_IN = 1000 * 60 * 60;
@@ -21,7 +21,7 @@ export const getToken: GetToken = async (
   contact,
   referrer,
   linkWith = null,
-  updated_contact = null,
+  previous_contact = null,
 ) => {
   const { results: storedTokens } = await db
     .prepare(`SELECT * FROM verification_tokens WHERE contact = ?`)
@@ -58,7 +58,7 @@ export const getToken: GetToken = async (
       contact,
       referrer,
       linkWith,
-      updated_contact,
+      previous_contact,
     )
     .all();
 

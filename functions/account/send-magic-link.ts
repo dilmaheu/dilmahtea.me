@@ -5,6 +5,8 @@ import validator from "validator";
 
 import { getToken, removeToken, validateToken } from "../utils/token";
 import { PublicError, checkUpdatedContact, isMobilePhone } from "../utils";
+import type { Session } from "lucia";
+import { initializeLucia } from "functions/utils/auth";
 
 const BaseSchema = z.object({
   email: z.string().email().optional(),
@@ -25,9 +27,8 @@ const BodySchema = BaseSchema.extend({
   .or(
     BaseSchema.extend({
       action: z.literal("update"),
-      locale: z.string(),
       referrer: z.string(),
-      updated_contact: z.string().refine(checkUpdatedContact),
+      previous_contact: z.string().refine(checkUpdatedContact),
     }),
   );
 
@@ -44,7 +45,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     locale: string,
     referrer: string,
     linkWith: string,
-    updated_contact: string;
+    previous_contact: string;
 
   try {
     const bodyData = BodySchema.parse(body);
@@ -86,7 +87,16 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
       case "update":
         {
-          ({ email, phone, locale, referrer, updated_contact } = bodyData);
+          const auth = initializeLucia(env.USERS),
+            authRequest = auth.handleRequest(request);
+
+          const session: Session = await authRequest.validate();
+
+          if (!session) throw new PublicError("Unauthorized");
+
+          ({ email, phone, referrer, previous_contact } = bodyData);
+
+          ({ locale } = session.user);
         }
         break;
 
@@ -116,7 +126,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
       contact,
       referrer,
       linkWith,
-      updated_contact,
+      previous_contact,
     );
 
     var magicLink =

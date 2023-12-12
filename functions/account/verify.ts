@@ -19,14 +19,19 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
     return new Response(error.message, { status: 400 });
   }
 
-  const { locale, contact, referrer, link_with, updated_contact } = storedToken;
+  const { locale, contact, referrer, link_with, previous_contact } =
+    storedToken;
 
   const auth = initializeLucia(env.USERS);
 
   const providerId = getProviderId(contact);
 
   try {
-    var key: Key = await auth.useKey(providerId, contact.toLowerCase(), null);
+    var key: Key = await auth.useKey(
+      providerId,
+      (previous_contact?.split(":")[1] || contact).toLowerCase(),
+      null,
+    );
   } catch (error) {
     if (error.message === "AUTH_INVALID_KEY_ID") {
       if (link_with) {
@@ -68,22 +73,22 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
 
   const user: User = await auth.getUser(userId);
 
-  if (updated_contact) {
-    const [newProviderId, newContact] = updated_contact.split(":");
+  if (previous_contact) {
+    const [previousProviderId, previousContact] = previous_contact.split(":");
 
     await auth.createKey({
       userId,
-      providerId: newProviderId,
-      providerUserId: newContact.toLowerCase(),
+      providerId,
+      providerUserId: contact.toLowerCase(),
       password: null,
     });
 
     await auth.updateUserAttributes(userId, {
-      [newProviderId]: newContact.toLowerCase(),
+      [previousProviderId]: previousContact.toLowerCase(),
     });
 
-    if (providerId === newProviderId) {
-      await auth.deleteKey(providerId, contact.toLowerCase());
+    if (providerId === previousProviderId) {
+      await auth.deleteKey(previousProviderId, previousContact.toLowerCase());
 
       await auth.invalidateAllUserSessions(userId);
     }
