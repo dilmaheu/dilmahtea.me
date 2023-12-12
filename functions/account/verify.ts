@@ -27,9 +27,14 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
   const providerId = getProviderId(contact);
 
   try {
-    var key: Key = await auth.useKey(
+    const [keyProviderId, keyProviderUserId] = previous_contact?.split(":") || [
       providerId,
-      (previous_contact?.split(":")[1] || contact).toLowerCase(),
+      contact,
+    ];
+
+    var key: Key = await auth.useKey(
+      keyProviderId,
+      keyProviderUserId.toLowerCase(),
       null,
     );
   } catch (error) {
