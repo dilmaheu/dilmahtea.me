@@ -51,10 +51,18 @@ export default function InfoUnit({
   }
 
   function handleSave(event: Event) {
-    setNotification(null);
-
     const input = (event.target as HTMLButtonElement).previousElementSibling
       .previousElementSibling as HTMLInputElement;
+
+    if ([user()[property], ""].includes(input.value)) {
+      input.classList.add("errored");
+
+      return;
+    } else {
+      input.classList.remove("errored");
+    }
+
+    setNotification(null);
 
     const referrerURL = new URL(location.href);
 
