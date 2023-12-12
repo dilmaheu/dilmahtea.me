@@ -61,13 +61,15 @@ export default function InfoUnit({
     referrerURL.searchParams.set("updated_user_info", "true");
     referrerURL.searchParams.set("info", property);
 
+    const referrer = referrerURL.toString();
+
     fetch("/account/update", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        referrer: referrerURL.toString(),
+        referrer,
         ...(property === "display_name"
           ? { display_name: input.value }
           : (() => {
@@ -93,7 +95,7 @@ export default function InfoUnit({
           } else {
             const queryParams = new URLSearchParams({
               [property]: input.value,
-              referrer: document.referrer,
+              referrer,
             }).toString();
 
             location.href = verificationHref + "?" + queryParams;
