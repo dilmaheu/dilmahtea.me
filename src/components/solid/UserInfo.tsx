@@ -39,7 +39,10 @@ export default function UserInfo({
       });
 
       setTimeout(() => {
-        setNotification(null);
+        // skip if an error notification is set within 7 seconds
+        if (notification().type === "success") {
+          setNotification(null);
+        }
       }, 7000);
     }
   });
