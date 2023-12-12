@@ -2,6 +2,8 @@ import { createEffect, createSignal } from "solid-js";
 
 import { user } from "@signals/user";
 
+import LocalizeLink from "@solid/LocalizedLink";
+
 declare interface LogoutResponse {
   success: boolean;
   returnTo: string;
@@ -150,7 +152,7 @@ export default function ProfileMenu({
                 ({ Visibility, Title, Link, Icon }) =>
                   Visibility && (
                     <div class="flex">
-                      <a href={Link || "#"}>
+                      <LocalizeLink link={Link}>
                         <div class="flex gap-[15px] items-center">
                           <div class="w-[20px] h-[20px]">
                             <img class="w-full h-full" alt="" src={Icon.src} />
@@ -160,7 +162,7 @@ export default function ProfileMenu({
                             {Title}
                           </div>
                         </div>
-                      </a>
+                      </LocalizeLink>
                     </div>
                   ),
               )}
