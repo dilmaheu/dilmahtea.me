@@ -106,10 +106,16 @@
           : [];
 
       if (visibleLinksContainer) {
-        visibleLinksContainer.style.maxHeight =
+        const activeHeadingLink = visibleChapterLinks[activeChapterIndex];
+
+        const containerHeight =
           window.innerHeight -
-          (visibleLinksContainer.getBoundingClientRect().top + 15) +
-          "px";
+          (visibleLinksContainer.getBoundingClientRect().top + 15);
+
+        visibleLinksContainer.style.maxHeight = containerHeight + "px";
+
+        visibleLinksContainer.scrollTop =
+          activeHeadingLink.offsetTop - containerHeight;
       }
     };
 
