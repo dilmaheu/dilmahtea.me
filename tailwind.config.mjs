@@ -7,21 +7,27 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#547B7D", // green
-        "primary-light": "#B2CCCC", // green light
-        secondary: "#E2DFDE", // beige
-        "secondary-light": "#FAF4F2", // beige light
-        "black-bg": "#13110B",
-        black: "#2F2F2F",
+        primary: "#1E4848",
+        "primary-light": "#2E595C",
+        "primary-lighter": "#547B7D",
+        "primary-lightest": "#B2CCCC",
+        secondary: "#E3DFDE",
+        "secondary-light": "#FAF4F2",
+        white: "#FFFFFF",
+        black: "#000000",
         "black-light": "#474747",
-        error: "#E06464",
-        "error-light": "#FFE2E2",
+        "black-lighter": "#595959",
+        info: "#3087E9",
+        "info-light": "#E7EDF9",
         success: "#3C994E",
         "success-light": "#E9F9EF",
         warning: "#FEBF21",
         "warning-light": "#FAF8E5",
-        info: "#3087E9",
-        "info-light": "#E7EDF9",
+        error: "#E06464",
+        "error-light": "#FFE2E2",
+
+        //"black-bg": "#13110B",
+        // "primary-light": "#B2CCCC",
 
         // exceptions
         teal: "#405658",
