@@ -39,7 +39,7 @@ headings = [...headings].filter(Boolean);
 
 headings.forEach((heading, i) => {
   contentHTML = contentHTML.replace(
-    he.decode(heading.outerHTML),
+    he.decode(heading.outerHTML).replace(/(?<=(data-astro-cid-\w+))=""/g, ""),
     (i === 0 ? "" : "</div>") +
       `<div id="${heading.innerText
         ?.toLowerCase()
