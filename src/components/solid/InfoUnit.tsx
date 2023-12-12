@@ -27,7 +27,7 @@ export default function InfoUnit({
 
       input.type = "text";
 
-      input.value === "…" && (input.value = "");
+      ["…", "N/A"].includes(input.value) && (input.value = "");
 
       input.selectionStart = input.selectionEnd = input.value.length;
 
