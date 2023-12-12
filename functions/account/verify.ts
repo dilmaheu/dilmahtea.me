@@ -84,7 +84,7 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
     });
 
     await auth.updateUserAttributes(userId, {
-      [previousProviderId]: previousContact.toLowerCase(),
+      [providerId]: contact.toLowerCase(),
     });
 
     if (providerId === previousProviderId) {
