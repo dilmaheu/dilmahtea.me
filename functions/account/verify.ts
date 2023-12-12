@@ -33,7 +33,7 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
       null,
     );
   } catch (error) {
-    if (error.message === "AUTH_INVALID_KEY_ID") {
+    if (!previous_contact && error.message === "AUTH_INVALID_KEY_ID") {
       if (link_with) {
         return new Response("No user account exists with " + contact, {
           status: 400,
