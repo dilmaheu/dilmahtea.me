@@ -106,29 +106,10 @@
           : [];
 
       if (visibleLinksContainer) {
-        const activeHeadingLink = visibleChapterLinks[activeChapterIndex];
-
-        visibleLinksContainer.style.height = "auto";
-
-        const visibleLinksContainerHeight =
-          visibleLinksContainer.getBoundingClientRect().height;
-
-        visibleLinksContainer.style.flexGrow = 1;
-
-        const availableHeight =
-          visibleLinksContainer.getBoundingClientRect().height;
-
-        const containerHeight = Math.min(
-          visibleLinksContainerHeight,
-          availableHeight,
-        );
-
-        visibleLinksContainer.style.flexGrow = 0;
-
-        visibleLinksContainer.style.height = containerHeight + "px";
-
-        visibleLinksContainer.scrollTop =
-          activeHeadingLink.offsetTop - containerHeight;
+        visibleLinksContainer.style.maxHeight =
+          window.innerHeight -
+          (visibleLinksContainer.getBoundingClientRect().top + 15) +
+          "px";
       }
     };
 
