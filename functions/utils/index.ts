@@ -37,3 +37,13 @@ export async function createSessionCookie(
 export function isMobilePhone(str: string): boolean {
   return validator.isMobilePhone(str, undefined, { strictMode: true });
 }
+
+export function checkUpdatedContact(str: string): boolean {
+  const [providerId, contact] = str.split(":");
+
+  if (!["email", "phone"].includes(providerId)) return false;
+
+  return providerId === "email"
+    ? validator.isEmail(contact)
+    : isMobilePhone(contact);
+}

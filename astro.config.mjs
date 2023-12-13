@@ -39,6 +39,7 @@ export default defineConfig({
     astroImageTools,
     postbuildIntegration,
     AstroFavicons({
+      appName: "Dilmahtea.me",
       masterPicture: "./public/favicon.svg",
       emitAssets: true,
       faviconsDarkMode: true,
