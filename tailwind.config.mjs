@@ -15,6 +15,7 @@ export default {
         black: "#2F2F2F",
         "black-light": "#474747",
         error: "#E06464",
+        "error-dark": "#AB0504",
         "error-light": "#FFE2E2",
         success: "#3C994E",
         "success-light": "#E9F9EF",
