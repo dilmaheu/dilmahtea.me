@@ -57,18 +57,23 @@ export default function UserInfo({
         {notification() && (
           <div
             class={[
-              "flex justify-center p-2.5 mb-[25px] gap-[7px]",
+              "py-[clamp(10px,calc(0.625vw+6px),15px)]",
+              "px-[clamp(15px,calc(0.625vw+11px),20px)] rounded-[10px] border",
               notification().type === "success"
-                ? "bg-success-light"
-                : "bg-error-light",
+                ? "bg-success-light border-success"
+                : "bg-error-light border-error",
             ].join(" ")}
           >
-            <img
-              class="w-[26px] h-[26px]"
-              {...recurringImages[`${notification().type}_notification`]}
-            />
+            <div class="flex gap-[clamp(8px,calc(0.25vw+6.4px),10px)] justify-center">
+              <img
+                class="w-[clamp(22px,calc(0.5vw+18.8px),26px)] h-[clamp(22px,calc(0.5vw+18.8px),26px)]"
+                {...recurringImages[`${notification().type}_notification`]}
+              />
 
-            <p class="text-black-bg font-medium">{notification().message}</p>
+              <div class="text-[clamp(14px,calc(0.25vw+12.4px),16px)] text-black">
+                {notification().message}
+              </div>
+            </div>
           </div>
         )}
 
