@@ -159,23 +159,30 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
       }
     }
 
-    .kindness-cause-clip-path {
-      clip-path: url(#kindness-cause-card-curve-sm);
+    .kindness-cause-grid {
+      @apply grid items-center gap-2.5 md:gap-[25px] w-full;
 
-      @media (min-width: 640px) {
-        clip-path: url(#kindness-cause-card-curve);
-      }
-    }
-
-    .kindness-cause-img-container {
-      @apply h-full aspect-[6/5] block;
-
-      @media (min-width: 768px) {
-        @apply aspect-[5/5];
+      @media (min-width: 520px) {
+        @apply grid-cols-2 md:grid-cols-1;
       }
 
-      @media (min-width: 800px) {
-        @apply aspect-[6/5];
+      .kindness-cause-clip-path {
+        clip-path: url(#kindness-cause-card-curve-sm);
+
+        @media (min-width: 767px) {
+          clip-path: url(#kindness-cause-card-curve);
+        }
+      }
+
+      .kindness-cause-img-container {
+        @apply w-full h-full aspect-[6/5];
+
+        Picture,
+        img {
+          @media (min-width: 767px) {
+            height: 100% !important;
+          }
+        }
       }
     }
 
@@ -189,7 +196,7 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
 
 <ClipPathSVG
   id="kindness-cause-card-curve"
-  path="M0.551,1 H0.213 c-0.079,0,-0.156,-0.001,-0.183,-0.046 c-0.035,-0.06,-0.029,-0.315,-0.029,-0.47 C0.002,0.269,-0.012,0.053,0.056,0.026 A1,7,0,0,1,0.213,0.001 V0 C0.335,0.004,0.457,0,0.521,0 c0.531,0,0.475,0.013,0.475,0.475 S1,1,0.551,1"
+  path="M0.547,0.01 c0.072,0.003,0.13,0,0.167,0 c0.315,0,0.282,0.03,0.282,0.467 s0.052,0.518,-0.264,0.518 c-0.105,0,-0.154,0,-0.174,-0.001 l-0.011,0.001 h-0.001 c-0.199,0.01,-0.401,0.008,-0.47,-0.037 C-0.013,0.898,0.003,0.642,0.003,0.487 c0,-0.216,-0.034,-0.411,0.14,-0.459 C0.305,-0.018,0.435,0.005,0.547,0.01"
 />
 
 <ClipPathSVG
@@ -260,74 +267,84 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
                       </div>
                     </div>
 
-                    {kindnessCauses.map(
-                      ({ cause, description, featured_blob }) => (
-                        <div class="-ml-2.5">
-                          <input
-                            type="radio"
-                            name="kindness_cause"
-                            id={cause}
-                            value={cause}
-                            class="peer hidden"
-                          />
+                    {kindnessCauses.length > 0 && (
+                      <div class="kindness-cause-grid">
+                        {kindnessCauses.map(
+                          ({ cause, description, featured_blob }) => (
+                            <div class="w-full h-full">
+                              <input
+                                type="radio"
+                                name="kindness_cause"
+                                id={cause}
+                                value={cause}
+                                class="peer hidden"
+                              />
 
-                          <label
-                            for={cause}
-                            class:list={[
-                              "kindness-cause-clip-path text-secondary",
-                              "p-1.5 max-w-[380px] sm:max-w-full sm:h-[170px]",
-                              "peer-checked:bg-primary-light select-none cursor-pointer",
-                            ]}
-                          >
-                            <div class="kindness-cause-clip-path p-[5px] bg-secondary-light w-full h-full">
-                              <div
+                              <label
+                                for={cause}
                                 class:list={[
-                                  "kindness-cause-clip-path w-full h-full",
-                                  "flex flex-wrap sm:flex-nowrap bg-secondary",
+                                  "kindness-cause-clip-path inline-block w-full h-full",
+                                  "p-[3px] md:p-[5px] peer-checked:bg-primary select-none cursor-pointer",
                                 ]}
                               >
-                                <div class="kindness-cause-img-container">
-                                  <Picture
-                                    layout="fill"
-                                    sizes="(min-width: 640px) 320px, 90vw)"
-                                    alt={
-                                      featured_blob.data.attributes
-                                        .alternativeText
-                                    }
-                                    attributes={{
-                                      img: { style: "aspect-ratio: 6 / 5;" },
-                                    }}
-                                    src={
-                                      STRAPI_URL +
-                                      featured_blob.data.attributes.url
-                                    }
-                                  />
-                                </div>
-
-                                <div
-                                  class:list={[
-                                    "px-[15px] sm:px-[25px] py-5 sm:py-[15px] h-full",
-                                    "flex flex-col justify-center gap-2 lg:gap-[15px]",
-                                  ]}
-                                >
-                                  <h4 class="recoleta text-2xl text-black leading-[120%]">
-                                    {cause}
-                                  </h4>
-
+                                <div class="kindness-cause-clip-path w-full h-full p-[3px] md:p-[5px] bg-secondary-light">
                                   <div
                                     class:list={[
-                                      "prose max-w-none text-base sm:text-lg",
-                                      "text-black-light sm:line-clamp-2 lg:line-clamp-3",
+                                      "kindness-cause-clip-path w-full h-full bg-secondary",
+                                      "grid md:grid-cols-[140px_1fr] lg:grid-cols-[180px_1fr] items-center sm:justify-center",
                                     ]}
                                   >
-                                    <Markdown>{description}</Markdown>
+                                    <div class="kindness-cause-img-container">
+                                      <Picture
+                                        layout="fullWidth"
+                                        sizes="(min-width: 640px) 320px, 90vw)"
+                                        alt={
+                                          featured_blob.data.attributes
+                                            .alternativeText
+                                        }
+                                        attributes={{
+                                          img: {
+                                            style: "aspect-ratio: 6 / 5;",
+                                          },
+                                        }}
+                                        src={
+                                          STRAPI_URL +
+                                          featured_blob.data.attributes.url
+                                        }
+                                      />
+                                    </div>
+
+                                    <div
+                                      class:list={[
+                                        "w-full h-full ",
+                                        "px-[clamp(15px,calc(4.43vw-13px),32px)] pt-2.5 lg:px-[15px] py-[15px]",
+                                      ]}
+                                    >
+                                      <div
+                                        class:list={[
+                                          "recoleta font-bold text-primary",
+                                          "text-[clamp(18px,calc(0.75vw+13.2px),24px)] leading-[110%]",
+                                        ]}
+                                      >
+                                        {cause}
+                                      </div>
+                                      <div
+                                        class:list={[
+                                          "prose max-w-none text-black-light mt-2.5",
+                                          "text-[clamp(14px,calc(0.25vw+12.4px),16px)]",
+                                        ]}
+                                      >
+                                        {" "}
+                                        {description}
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
+                              </label>
                             </div>
-                          </label>
-                        </div>
-                      ),
+                          ),
+                        )}
+                      </div>
                     )}
                   </div>
                 </label>
