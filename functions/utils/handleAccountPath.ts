@@ -24,11 +24,15 @@ export async function handleAccountPath(
     );
   }
 
-  if (session) {
-    if (!["", "congrats"].includes(pathID)) {
-      const referrer = request.headers.get("Referer") || origin;
+  function redirectToReferrer() {
+    const referrer = request.headers.get("Referer") || origin;
 
-      return Response.redirect(referrer, 303);
+    return Response.redirect(referrer, 303);
+  }
+
+  if (session) {
+    if (!["", "verification", "congrats"].includes(pathID)) {
+      return redirectToReferrer();
     }
   } else if ([""].includes(pathID)) {
     return redirectToLogin();
@@ -37,7 +41,9 @@ export async function handleAccountPath(
   switch (pathID) {
     // redirect to login page if request is invalid
     case "verification": {
-      const { contact, referrer } = searchParams;
+      const { email, phone, referrer } = searchParams;
+
+      const contact = email || phone;
 
       if (contact && referrer) {
         const { results: storedTokens } = await USERS.prepare(
@@ -55,7 +61,7 @@ export async function handleAccountPath(
         }
       }
 
-      return redirectToLogin();
+      return session ? redirectToReferrer() : redirectToLogin();
     }
 
     case "signup":
