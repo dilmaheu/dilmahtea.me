@@ -38,14 +38,21 @@ astroIslands.forEach((island) => {
 headings = [...headings].filter(Boolean);
 
 headings.forEach((heading, i) => {
-  contentHTML = contentHTML.replace(
-    he.decode(heading.outerHTML).replace(/(?<=(data-astro-cid-\w+))=""/g, ""),
-    (i === 0 ? "" : "</div>") +
-      `<div id="${heading.innerText
-        ?.toLowerCase()
-        ?.replaceAll(" ", "-")}" class='chapter'>` +
-      heading.outerHTML,
-  );
+  const decodedHeadingOuterHTML = he.decode(heading.outerHTML);
+
+  [
+    decodedHeadingOuterHTML,
+    decodedHeadingOuterHTML.replace(/(?<=(data-astro-cid-\w+))=""/g, ""),
+  ].forEach((headingOuterHTML) => {
+    contentHTML = contentHTML.replace(
+      headingOuterHTML,
+      (i === 0 ? "" : "</div>") +
+        `<div id="${heading.innerText
+          ?.toLowerCase()
+          ?.replaceAll(" ", "-")}" class='chapter'>` +
+        heading.outerHTML,
+    );
+  });
 });
 
 headings.length > 0 && (contentHTML += "</div>");
