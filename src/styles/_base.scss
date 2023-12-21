@@ -112,3 +112,318 @@ body {
     p-1 md:p-2 lg:p-3 mt-[clamp(5px,calc(2.23vw-12px),20px)]
     font-bold text-[clamp(12px,0.38vw+10,16px)] rounded-full;
 }
+
+// buttons
+
+@mixin button {
+  @apply flex items-center gap-2 py-2.5 px-5;
+}
+
+@mixin button-cart {
+  @apply flex items-center gap-2
+    py-[clamp(5px,calc(0.625vw+1px),10px)] px-[clamp(12px,calc(1vw+5.6px),20px)];
+}
+
+@mixin button-font {
+  @apply text-base font-bold;
+}
+
+@mixin button-font-sm {
+  @apply text-sm font-medium;
+}
+
+@mixin button-cart-font {
+  @apply text-b6 font-semibold sm:font-bold;
+}
+
+@mixin button-large {
+  @apply py-[15px] px-[25px] text-base font-bold;
+}
+
+@mixin button-default-colors {
+  @apply bg-white text-primary;
+}
+
+@mixin button-primary-colors {
+  @apply bg-primary text-white;
+}
+
+@mixin button-disabled-colors {
+  @apply bg-black-lighter text-secondary-light;
+}
+
+.button-default {
+  @include button;
+  @include button-font;
+  @include button-default-colors;
+}
+
+.button-default-large {
+  @include button-large;
+  @include button-font;
+  @include button-default-colors;
+}
+
+.button-primary {
+  @include button;
+  @include button-font;
+  @include button-primary-colors;
+}
+
+.button-primary-large {
+  @include button-large;
+  @include button-font;
+  @include button-primary-colors;
+}
+
+.button-disabled {
+  @include button;
+  @include button-font;
+  @include button-disabled-colors;
+}
+
+.button-disabled-large {
+  @include button-large;
+  @include button-font;
+  @include button-disabled-colors;
+}
+
+.button-link {
+  @include button-font;
+
+  @apply text-primary;
+}
+
+// cart-buttons
+
+@mixin button-cart-icon {
+  @apply hidden sm:inline-block h-[clamp(16px,calc(0.25vw+14.4px),18px)];
+}
+
+@mixin button-cart-icon-normal {
+  @apply h-[18px];
+}
+
+.button-cart-default-normal {
+  @include button;
+  @include button-font;
+  @include button-default-colors;
+
+  .cart-icon {
+    @include button-cart-icon-normal;
+  }
+}
+
+.button-cart-default {
+  @include button-default-colors;
+
+  @apply flex items-center gap-2 text-[clamp(12px,calc(1.25vw+6px),14px)]
+    py-[clamp(4px,calc(0.625vw+1px),5px)] px-[clamp(4px,calc(5vw-20px),12px)];
+
+  @media (min-width: 640px) {
+    @include button-cart;
+    @include button-cart-font;
+  }
+
+  .cart-icon {
+    @include button-cart-icon;
+  }
+}
+
+.button-cart-primary {
+  @include button-cart;
+  @include button-cart-font;
+  @include button-default-colors;
+
+  .cart-icon {
+    @include button-cart-icon;
+  }
+}
+
+.button-cart-primary-normal {
+  @include button;
+  @include button-font;
+  @include button-primary-colors;
+
+  .cart-icon {
+    @include button-cart-icon-normal;
+  }
+}
+
+.button-cart-disabled-normal {
+  @include button;
+  @include button-font;
+  @include button-disabled-colors;
+
+  .cart-icon {
+    @include button-cart-icon-normal;
+  }
+}
+
+.button-cart-disabled {
+  @include button-cart;
+  @include button-cart-font;
+  @include button-disabled-colors;
+
+  .cart-icon {
+    @include button-cart-icon;
+  }
+}
+
+// cart-plus/minus-buttons
+
+@mixin button-cart-quantity {
+  @apply text-white bg-primary rounded-full;
+}
+
+@mixin button-cart-quantity-big {
+  @include button-cart-quantity;
+
+  @apply text-lg;
+}
+
+@mixin button-cart-quantity-icon-big {
+  @apply w-[18px] h-[18px];
+}
+
+@mixin button-cart-quantity-item {
+  @apply flex items-center text-center;
+}
+
+@mixin button-cart-quantity-item-default {
+  @include button-cart-quantity-item;
+
+  @apply w-10 h-10;
+}
+
+@mixin button-cart-quantity-item-primary {
+  @include button-cart-quantity-item;
+
+  @apply w-10 h-11;
+}
+
+.button-cart-quantity-default-big {
+  @include button-cart-quantity-big;
+
+  @apply border-2 border-secondary;
+
+  input {
+    @include button-cart-quantity-big;
+
+    @apply bg-secondary;
+  }
+
+  .quantity-icon-big {
+    @include button-cart-quantity-icon-big;
+  }
+}
+
+.button-cart-quantity-primary-big {
+  @include button-cart-quantity-big;
+
+  input {
+    @include button-cart-quantity-big;
+
+    @apply bg-primary;
+  }
+
+  .quantity-icon-big {
+    @include button-cart-quantity-icon-big;
+  }
+}
+
+.button-cart-quantity-primary {
+  @include button-cart-quantity-big;
+
+  input {
+    @include button-cart-quantity-big;
+
+    @apply bg-primary;
+  }
+
+  .quantity-icon-big {
+    @apply w-[clamp(15px,calc(0.375vw+12.6px),18px)] 
+      h-[clamp(15px,calc(0.375vw+12.6px),18px)];
+  }
+}
+
+// blob-button
+
+.blob-button {
+  @apply flex items-center gap-2.5 text-sm font-bold;
+
+  .blob-button-icon {
+    @apply w-[25px];
+  }
+}
+
+// radio/checkbox-buttons
+
+@mixin radio-button {
+  @include button;
+  @include button-font-sm;
+
+  @apply border-2;
+}
+
+.radio-button-default-checked {
+  @include radio-button;
+
+  @apply bg-primary border-secondary-light;
+}
+
+.radio-button-default-unchecked {
+  @include radio-button;
+  @apply bg-secondary-light border-secondary-light;
+}
+
+@mixin checkbox-button {
+  @include button;
+  @include button-font-sm;
+}
+
+.checkbox-button-default-checked {
+  @include checkbox-button;
+
+  @apply bg-primary;
+}
+
+.checkbox-button-default-unchecked {
+  @include checkbox-button;
+
+  @apply bg-transparent;
+}
+
+// toggle-buttons
+
+@mixin toggle-button-primary {
+  @include button-font;
+
+  @apply flex items-center gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-primary;
+}
+
+.horizontal-toggle-button-primary {
+  @include toggle-button-primary;
+
+  .toggle-button-arrow {
+    @apply w-2 h-[14px];
+  }
+}
+
+.vertical-toggle-button-primary {
+  @include toggle-button-primary;
+
+  .toggle-button-arrow {
+    @apply w-[14px] h-2;
+  }
+}
+
+// breadcrumb
+
+.breadcrumb {
+  @apply recoleta text-h5 text-primary flex items-center gap-[clamp(8px,calc(0.25vw+6.4px),10px)];
+
+  .breadcrumb-arrow {
+    @apply h-[clamp(16px,calc(0.25vw+14.4px),18px)];
+  }
+}

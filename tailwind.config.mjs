@@ -51,6 +51,7 @@ export default {
         b3: ['clamp(18px,calc(0.75vw + 13.2px),24px)', '150%'],
         b4: ['clamp(16px,calc(0.5vw + 12.8px),20px)', '150%'],
         b5: ['clamp(16px,calc(0.25vw + 14.4px),18px)', '150%'],
+        'b5-sm': ['clamp(14px,calc(0.5vw + 10.8px),18px)', '150%'],
         b6: ['clamp(14px,calc(0.25vw + 12.4px),16px)', '150%'],
         'b6-sm': ['clamp(12px,calc(0.5vw + 8.8px),16px)', '150%'],
         b7: ['clamp(12px,calc(0.25vw + 10.4px),14px)', '150%'],
