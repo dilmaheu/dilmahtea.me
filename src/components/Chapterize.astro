@@ -40,19 +40,23 @@ headings = [...headings].filter(Boolean);
 headings.forEach((heading, i) => {
   const decodedHeadingOuterHTML = he.decode(heading.outerHTML);
 
-  [
+  for (const headingOuterHTML of [
     decodedHeadingOuterHTML,
     decodedHeadingOuterHTML.replace(/(?<=(data-astro-cid-\w+))=""/g, ""),
-  ].forEach((headingOuterHTML) => {
-    contentHTML = contentHTML.replace(
-      headingOuterHTML,
-      (i === 0 ? "" : "</div>") +
-        `<div id="${heading.innerText
-          ?.toLowerCase()
-          ?.replaceAll(" ", "-")}" class='chapter'>` +
-        heading.outerHTML,
-    );
-  });
+  ]) {
+    if (contentHTML.includes(headingOuterHTML)) {
+      contentHTML = contentHTML.replace(
+        headingOuterHTML,
+        (i === 0 ? "" : "</div>") +
+          `<div id=${heading.innerText
+            ?.toLowerCase()
+            ?.replaceAll(" ", "-")} class='chapter'>` +
+          headingOuterHTML,
+      );
+
+      break;
+    }
+  }
 });
 
 headings.length > 0 && (contentHTML += "</div>");
