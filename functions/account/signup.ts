@@ -49,6 +49,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
       [providerId]: contact.toLowerCase(),
       first_name,
       last_name,
+      display_name: `${first_name} ${last_name}`,
       locale,
     },
   });

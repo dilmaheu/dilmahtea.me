@@ -3,8 +3,10 @@ import type { ENV } from "../utils/types";
 import { z } from "zod";
 import validator from "validator";
 
-import { PublicError, isMobilePhone } from "../utils";
 import { getToken, removeToken, validateToken } from "../utils/token";
+import { PublicError, checkUpdatedContact, isMobilePhone } from "../utils";
+import type { Session } from "lucia";
+import { initializeLucia } from "functions/utils/auth";
 
 const BaseSchema = z.object({
   email: z.string().email().optional(),
@@ -12,13 +14,23 @@ const BaseSchema = z.object({
 });
 
 const BodySchema = BaseSchema.extend({
+  action: z.literal("login"),
   locale: z.string(),
   referrer: z.string(),
-}).or(
-  BaseSchema.extend({
-    token: z.string(),
-  }),
-);
+})
+  .or(
+    BaseSchema.extend({
+      action: z.literal("link"),
+      token: z.string(),
+    }),
+  )
+  .or(
+    BaseSchema.extend({
+      action: z.literal("update"),
+      referrer: z.string(),
+      previous_contact: z.string().refine(checkUpdatedContact),
+    }),
+  );
 
 type Body = z.infer<typeof BodySchema>;
 
@@ -32,37 +44,64 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     phone: string,
     locale: string,
     referrer: string,
-    linkWith: string;
+    linkWith: string,
+    previous_contact: string;
 
   try {
     const bodyData = BodySchema.parse(body);
 
-    if ("referrer" in bodyData) {
-      ({ email, phone, locale, referrer } = bodyData);
+    switch (bodyData.action) {
+      case "login":
+        {
+          ({ email, phone, locale, referrer } = bodyData);
 
-      if (!referrer || new URL(referrer).origin !== requestOrigin) {
-        referrer = requestOrigin;
-      }
-    } else if ("token" in bodyData) {
-      const { token } = bodyData;
+          if (!referrer || new URL(referrer).origin !== requestOrigin) {
+            referrer = requestOrigin;
+          }
+        }
+        break;
 
-      try {
-        ({
-          locale,
-          referrer,
-          contact: linkWith,
-        } = await validateToken(env.USERS, token, false));
-      } catch (error) {
-        throw new PublicError(error.message);
-      }
+      case "link":
+        {
+          const { token } = bodyData;
 
-      ({ email, phone } = bodyData);
+          try {
+            ({
+              locale,
+              referrer,
+              contact: linkWith,
+            } = await validateToken(env.USERS, token, false));
+          } catch (error) {
+            throw new PublicError(error.message);
+          }
 
-      const isEmail = validator.isEmail(linkWith);
+          ({ email, phone } = bodyData);
 
-      if (!(email || phone) || (isEmail && email) || (!isEmail && phone)) {
-        throw new PublicError("Bad request");
-      }
+          const isEmail = validator.isEmail(linkWith);
+
+          if (!(email || phone) || (isEmail && email) || (!isEmail && phone)) {
+            throw new PublicError("Bad request");
+          }
+        }
+        break;
+
+      case "update":
+        {
+          const auth = initializeLucia(env.USERS),
+            authRequest = auth.handleRequest(request);
+
+          const session: Session = await authRequest.validate();
+
+          if (!session) throw new PublicError("Unauthorized");
+
+          ({ email, phone, referrer, previous_contact } = bodyData);
+
+          ({ locale } = session.user);
+        }
+        break;
+
+      default:
+        break;
     }
   } catch (error) {
     const isPublicError = error instanceof PublicError;
@@ -87,6 +126,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
       contact,
       referrer,
       linkWith,
+      previous_contact,
     );
 
     var magicLink =

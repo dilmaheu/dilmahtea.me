@@ -3,7 +3,9 @@ import { Img, Picture } from "astro-imagetools/components";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+
 import localizeCMSImage from "@utils/localizeCMSImage";
+import getUserAccountPagesLink from "@utils/getUserAccountPagesLink";
 
 import UserInfo from "@solid/UserInfo";
 
@@ -24,6 +26,10 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
       Label_billing_address,
       Social_media_title,
       Social_media,
+      user_info_update_success_notification,
+      display_name_update_success_notification_label,
+      email_update_success_notification_label,
+      phone_number_update_success_notification_label,
     },
     kindnessCauses,
     Block3_title: block3_title,
@@ -74,6 +80,8 @@ const {
 const title = page.Title.replaceAll("<username>", `Sara Jones`);
 
 const headingName = recurData.text_chapter;
+
+const verificationHref = getUserAccountPagesLink("verification", locale);
 ---
 
 <style lang="scss" is:global>
@@ -103,10 +111,14 @@ const headingName = recurData.text_chapter;
     }
 
     .information-text {
-      @apply w-full pl-1.5 leading-[150%] text-black sm:font-medium bg-secondary-light outline-none;
+      @apply w-full pl-1.5 leading-[150%] text-black opacity-100 sm:font-medium bg-secondary-light outline-none;
 
       &:not(:disabled) {
         @apply mb-[-2px] border-b-2 border-primary-light;
+      }
+
+      &.errored {
+        @apply border-error;
       }
 
       font-size: clamp(1.125rem, 1.5vw + 0.3rem, 1.5rem);
@@ -196,9 +208,18 @@ const headingName = recurData.text_chapter;
       <UserInfo
         client:load
         Title={page.Title}
-        Label_username={Label_username}
-        Label_phone={Label_phone}
-        Label_email={Label_email}
+        {Label_username}
+        {Label_phone}
+        {Label_email}
+        {user_info_update_success_notification}
+        {display_name_update_success_notification_label}
+        {email_update_success_notification_label}
+        {phone_number_update_success_notification_label}
+        {verificationHref}
+        recurringImages={{
+          success_notification: RecurringImages.success_notification,
+          error_notification: RecurringImages.error_notification,
+        }}
         userAccountRecurData={{
           Button_edit_text,
           Button_update_text,

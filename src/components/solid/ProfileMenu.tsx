@@ -2,6 +2,8 @@ import { createEffect, createSignal } from "solid-js";
 
 import { user } from "@signals/user";
 
+import LocalizeLink from "@solid/LocalizedLink";
+
 declare interface LogoutResponse {
   success: boolean;
   returnTo: string;
@@ -16,7 +18,7 @@ export default function ProfileMenu({
   const [isAuthenticated, setIsAuthenticated] = createSignal(false);
 
   createEffect(() => {
-    setIsAuthenticated(window.cookies.isAuthenticated !== "true");
+    setIsAuthenticated(window.cookies.isAuthenticated === "true");
   });
 
   setTimeout(() => {
@@ -24,12 +26,13 @@ export default function ProfileMenu({
       const id = document.getElementById.bind(document);
 
       const profileMenu = id("profile-menu"),
+        profileMenuContainer = profileMenu.parentElement,
         profileMenuOpenButton = id("profile-menu-open-btn"),
         profileMenuCloseButton = id("profile-menu-close-btn");
 
       window.profileMenuOpened = false;
 
-      profileMenuOpenButton.addEventListener("mouseenter", () => {
+      profileMenuContainer.addEventListener("mouseenter", () => {
         if (!window.localizationMenuOpened && window.innerWidth >= 640) {
           profileMenu.classList.remove("hidden");
         }
@@ -49,7 +52,7 @@ export default function ProfileMenu({
         }
       };
 
-      profileMenuOpenButton.addEventListener("mouseleave", hideProfileMenu);
+      profileMenuContainer.addEventListener("mouseleave", hideProfileMenu);
 
       document.addEventListener("click", (event) => {
         const target = event.target as HTMLElement;
@@ -142,14 +145,14 @@ export default function ProfileMenu({
               </div>
 
               <div class="recoleta text-xl font-bold text-black sm:mb-2.5">
-                {user().name}
+                {user().display_name}
               </div>
 
               {profileMenu.Menu.map(
                 ({ Visibility, Title, Link, Icon }) =>
                   Visibility && (
                     <div class="flex">
-                      <a href={Link || "#"}>
+                      <LocalizeLink link={Link}>
                         <div class="flex gap-[15px] items-center">
                           <div class="w-[20px] h-[20px]">
                             <img class="w-full h-full" alt="" src={Icon.src} />
@@ -159,7 +162,7 @@ export default function ProfileMenu({
                             {Title}
                           </div>
                         </div>
-                      </a>
+                      </LocalizeLink>
                     </div>
                   ),
               )}
