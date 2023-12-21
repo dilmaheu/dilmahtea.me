@@ -153,7 +153,17 @@
               : stickyChaptersHeight - 10;
           }
 
-          const { offsetTop: headingOffsetTop } = heading;
+          const headingOffsetAdjustment =
+            window.innerWidth < 768 &&
+            !isFirstHeadingLink &&
+            stickyChapters.classList.contains("invisible")
+              ? window.innerWidth < 640
+                ? // the height of the sticky chapters bar (with single line text)
+                  55
+                : 64
+              : 0;
+
+          const headingOffsetTop = heading.offsetTop - headingOffsetAdjustment;
 
           window.scrollTo({
             top: headingOffsetTop - (blockedAreaBottom + 20),
