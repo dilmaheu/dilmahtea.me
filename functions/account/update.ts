@@ -8,6 +8,7 @@ import { initializeLucia } from "../utils/auth";
 const BodySchema = z
   .object({
     display_name: z.string(),
+    kindness_cause: z.string(),
     referrer: z.string(),
   })
   .partial();
@@ -29,17 +30,13 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
   const body = await request.json<Body>();
 
   try {
-    const { display_name, referrer } = BodySchema.parse(body);
+    const { referrer, ...updatedAttributes } = BodySchema.parse(body);
 
     const { userId } = session.user;
 
-    if (display_name) {
-      await auth.updateUserAttributes(userId, { display_name });
+    await auth.updateUserAttributes(userId, updatedAttributes);
 
-      return Response.json({ success: true, referrer });
-    }
-
-    throw new Error();
+    return Response.json({ success: true, referrer });
   } catch (error) {
     return Response.json(
       { success: false, message: "Bad request" },
