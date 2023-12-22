@@ -2,7 +2,7 @@
 import he from "he";
 import { parseHTML } from "linkedom";
 
-let contentHTML = he.decode(await Astro.slots.render("default"));
+let contentHTML = await Astro.slots.render("default");
 
 const { document: contentDocument } = parseHTML(contentHTML),
   astroIslands = contentDocument.querySelectorAll("astro-island");
@@ -11,17 +11,24 @@ let headings = contentDocument.querySelectorAll("h2");
 
 // wrap every heading and its following content with div.chapter
 
+function encodeHeading(heading) {
+  return heading.outerHTML.replace(
+    heading.innerHTML,
+    heading.innerHTML.replaceAll(`'`, `&#39;`).replaceAll(`"`, `&quot;`),
+  );
+}
+
 astroIslands.forEach((island) => {
   let islandHTML = island.innerHTML;
 
   headings.forEach((heading, i) => {
     if (islandHTML.includes(heading.outerHTML)) {
       islandHTML = islandHTML.replace(
-        heading.outerHTML,
+        encodeHeading(heading),
         (i === 0 ? "" : "</div>") +
-          `<div id=${heading.innerText
+          `<div id="${heading.innerText
             ?.toLowerCase()
-            ?.replaceAll(" ", "-")} class='chapter'>` +
+            ?.replaceAll(" ", "-")}" class='chapter'>` +
           heading.outerHTML,
       );
 
@@ -38,7 +45,7 @@ astroIslands.forEach((island) => {
 headings = [...headings].filter(Boolean);
 
 headings.forEach((heading, i) => {
-  const decodedHeadingOuterHTML = he.decode(heading.outerHTML);
+  const decodedHeadingOuterHTML = encodeHeading(heading);
 
   for (const headingOuterHTML of [
     decodedHeadingOuterHTML,
@@ -48,9 +55,9 @@ headings.forEach((heading, i) => {
       contentHTML = contentHTML.replace(
         headingOuterHTML,
         (i === 0 ? "" : "</div>") +
-          `<div id=${heading.innerText
+          `<div id="${heading.innerText
             ?.toLowerCase()
-            ?.replaceAll(" ", "-")} class='chapter'>` +
+            ?.replaceAll(" ", "-")}" class='chapter'>` +
           headingOuterHTML,
       );
 
