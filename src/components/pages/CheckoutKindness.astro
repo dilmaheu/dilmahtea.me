@@ -5,6 +5,8 @@ import CMS from "@store/CMS";
 import Markdown from "@components/Markdown.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
+import CheckoutKindnessScript from "@solid/CheckoutKindnessScript";
+
 const { page, recurData } = Astro.props,
   { locale } = page,
   { STRAPI_URL } = import.meta.env,
@@ -170,54 +172,4 @@ const checkoutSuccessLink = `/${locale}/${
   </div>
 </div>
 
-<script>
-  const kindnessCausesCardsContainer =
-      document.querySelector(".kindness-causes"),
-    kindnessCausesCards =
-      document.querySelectorAll<HTMLElement>(".kindness-cause"),
-    submitCauseBtn = document.getElementById(
-      "submit-cause-btn",
-    ) as HTMLButtonElement;
-
-  function selectCard(card: HTMLElement) {
-    const activeCauseCard = kindnessCausesCardsContainer.querySelector(
-      ".active-kindness-cause",
-    );
-
-    activeCauseCard?.classList?.remove("active-kindness-cause");
-
-    card.classList.add("active-kindness-cause");
-
-    submitCauseBtn.disabled = false;
-  }
-
-  kindnessCausesCards.forEach((card) => {
-    card.addEventListener("focus", () => selectCard(card));
-  });
-
-  submitCauseBtn?.addEventListener("click", async () => {
-    const kindness_cause =
-      kindnessCausesCardsContainer.querySelector<HTMLElement>(
-        ".active-kindness-cause",
-      ).dataset.cause;
-
-    await fetch(
-      `https://${
-        window.shouldDisplayExperimentals ? "dev." : ""
-      }baserow.scripts.dilmahtea.me/order/cup-of-kindness`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          origin: location.origin,
-          paymentID: window.paymentID,
-          "Cup of Kindness": kindness_cause,
-        }),
-      },
-    );
-
-    location.href = window.checkoutSuccessLink;
-  });
-</script>
+<CheckoutKindnessScript client:only />
