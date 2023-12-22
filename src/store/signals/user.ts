@@ -1,6 +1,8 @@
 import { createEffect, createSignal } from "solid-js";
 
-const [user, setUser] = createSignal(new Proxy({}, { get: () => "…" }));
+const [user, setUser] = createSignal<Record<string, any>>(
+  new Proxy({}, { get: () => "…" }),
+);
 
 createEffect(() => {
   if (window.cookies.isAuthenticated === "true") {
