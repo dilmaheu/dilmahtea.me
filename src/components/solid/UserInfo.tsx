@@ -30,13 +30,15 @@ export default function UserInfo({
           phone: phone_number_update_success_notification_label,
         };
 
-      setNotification({
-        type: "success",
-        message: user_info_update_success_notification.replace(
-          "<info_label>",
-          InfoLabels[info],
-        ),
-      });
+      if (InfoLabels[info]) {
+        setNotification({
+          type: "success",
+          message: user_info_update_success_notification.replace(
+            "<info_label>",
+            InfoLabels[info],
+          ),
+        });
+      }
 
       setTimeout(() => {
         // skip if an error notification is set within 7 seconds

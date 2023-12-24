@@ -11,7 +11,7 @@
       stickyChapters = query("#sticky-chapters"),
       stickyChaptersHeading = query("#sticky-chapters-heading"),
       stickyDropdownToggle = query("#sticky-dropdown-toggle"),
-      chapterLinks = [...queryAll(".chapter-link")],
+      chapterLinks = [...queryAll(".chapter-link:not(.chapter-link-sm)")],
       stickyChapterLinks = [...queryAll(".chapter-link-sm")],
       chapterLinksContainer = query("#chapter-links"),
       stickyChapterLinksContainer = query("#sticky-chapter-links"),
@@ -108,27 +108,17 @@
       if (visibleLinksContainer) {
         const activeHeadingLink = visibleChapterLinks[activeChapterIndex];
 
-        visibleLinksContainer.style.height = "auto";
+        const containerHeight =
+          window.innerHeight -
+          (visibleLinksContainer.getBoundingClientRect().top + 15);
 
-        const visibleLinksContainerHeight =
-          visibleLinksContainer.getBoundingClientRect().height;
-
-        visibleLinksContainer.style.flexGrow = 1;
-
-        const availableHeight =
-          visibleLinksContainer.getBoundingClientRect().height;
-
-        const containerHeight = Math.min(
-          visibleLinksContainerHeight,
-          availableHeight,
-        );
-
-        visibleLinksContainer.style.flexGrow = 0;
-
-        visibleLinksContainer.style.height = containerHeight + "px";
+        visibleLinksContainer.style.maxHeight = containerHeight + "px";
 
         visibleLinksContainer.scrollTop =
           activeHeadingLink.offsetTop - containerHeight;
+      } else {
+        chapterLinksContainer.style.maxHeight = "";
+        stickyChapterLinksContainer.style.maxHeight = "";
       }
     };
 
@@ -151,11 +141,11 @@
             heading = document.getElementById(headingID),
             headerHeight = header.getBoundingClientRect().height;
 
+          const isFirstHeadingLink = firstHeadingID === headingID;
+
           let blockedAreaBottom = headerHeight;
 
           if (window.innerWidth < 768) {
-            const isFirstHeadingLink = firstHeadingID === headingID;
-
             stickyChapterLinksContainer.parentElement.classList.add("hidden");
 
             const stickyChaptersHeight =
@@ -166,10 +156,20 @@
               : stickyChaptersHeight - 10;
           }
 
-          const { offsetTop: headingOffsetTop } = heading;
+          const headingOffsetAdjustment =
+            window.innerWidth < 768 &&
+            !isFirstHeadingLink &&
+            stickyChapters.classList.contains("invisible")
+              ? window.innerWidth < 640
+                ? // the height of the sticky chapters bar (with single line text)
+                  55
+                : 64
+              : 0;
+
+          const headingOffsetTop = heading.offsetTop - headingOffsetAdjustment;
 
           window.scrollTo({
-            top: headingOffsetTop - blockedAreaBottom,
+            top: headingOffsetTop - (blockedAreaBottom + 20),
           });
         });
       }
