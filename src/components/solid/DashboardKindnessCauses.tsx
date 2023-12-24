@@ -1,5 +1,10 @@
 import { user } from "@signals/user";
-import { createEffect, createSignal } from "solid-js";
+import { createEffect } from "solid-js";
+
+import DashboardNotification, {
+  notification,
+  setNotification,
+} from "@solid/DashboardNotification";
 
 let effectHasRunOnce = false;
 
@@ -9,8 +14,6 @@ export default function DashboardKindnessCauses({
   recurringImages,
   kindnessCausesHTML,
 }) {
-  const [notification, setNotification] = createSignal(null);
-
   createEffect(() => {
     const kindnessCauseContainer = document.getElementById(
         "kindness-cause-grid",
@@ -117,23 +120,7 @@ export default function DashboardKindnessCauses({
       </h2>
 
       <div class="dashboard-sec">
-        {notification() && (
-          <div
-            class={[
-              "flex justify-center p-2.5 mb-[25px] gap-[7px]",
-              notification().type === "success"
-                ? "bg-success-light"
-                : "bg-error-light",
-            ].join(" ")}
-          >
-            <img
-              class="w-[26px] h-[26px]"
-              {...recurringImages[`${notification().type}_notification`]}
-            />
-
-            <p class="text-black-bg font-medium">{notification().message}</p>
-          </div>
-        )}
+        <DashboardNotification recurringImages={recurringImages} />
 
         {kindnessCausesHTML}
       </div>
