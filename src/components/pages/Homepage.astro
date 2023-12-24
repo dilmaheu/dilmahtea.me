@@ -80,20 +80,21 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
     @apply text-[clamp(20px,1.5vw+8px,30px)] font-medium text-primary;
   }
 </style>
+<ClipPathSVG
+  id="post-img-curve"
+  path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+/>
 
 <SecondaryPageLayout {page} plainTitle={true} headerBackground={true}>
   <div role="main" class="grid gap-[50px] my-[50px]">
     {/* latest Products Section */}
     {
       page.Block_visibility && (
-        <section>
+        <section class="grid division-gap">
           {page.Block_visibility && (
             <h2
               id={page?.Block_title.toLowerCase().replaceAll(" ", "-")}
-              class:list={[
-                "heading-secondary mb-[25px] sm:mb-[30px]",
-                "wrapper font-semibold leading-[130%] text-primary",
-              ]}
+              class="heading-secondary wrapper text-primary"
             >
               {page.Block_title}
             </h2>
@@ -102,12 +103,12 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
           <ProductCards {locale} products={latestProducts} />
 
           {page.Block_button_text && (
-            <div class="flex justify-center mt-[25px] sm:mt-[30px]">
+            <div class="w-full text-center">
               <a
                 href={page?.Block_button_link || "#"}
-                class="link-text linked-button"
+                class="button-link-primary-lightest "
               >
-                {page.Block_button_text}
+                {page.Block_button_text + page.Block_button_text}
               </a>
             </div>
           )}
@@ -125,19 +126,11 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
     {/* Random Post Section */}
     {
       page.Block3_visibility && (
-        <section class="wrapper">
-          <ClipPathSVG
-            id="post-img-curve"
-            path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-          />
-
+        <section class="wrapper grid division-gap">
           {page.Block3_title && (
             <h2
               id={page.Block3_title.toLowerCase().replaceAll(" ", "-")}
-              class:list={[
-                "heading-secondary font-semibold leading-[130%]",
-                "text-primary text-center mb-[30px]",
-              ]}
+              class="heading-secondary text-center text-primary"
             >
               {page.Block3_title}
             </h2>
@@ -173,7 +166,7 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
             {/* Text content */}
             <div class="order-2 w-full sm:w-1/2 h-full flex flex-wrap pr-0 sm:pr-5">
               <div>
-                <h2 class="post-title recoleta text-primary pt-[15px]">
+                <h2 class="heading-secondary text-primary">
                   <a
                     class="main-link"
                     href={`/` + randPost.Meta.URL_slug}
@@ -223,12 +216,12 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
 
             <div class="bg-primary pt-[60px] relative z-10">
               <div class="wrapper pt-[50px] pb-6 text-white">
-                <div class="heading-secondary font-semibold leading-[130%] text-center">
+                <div class="heading-secondary text-center">
                   <h2>{page.Block5_title}</h2>
                 </div>
 
                 {page.Block5_text && (
-                  <div class="hero-text prose max-w-none text-white text-center mt-[15px]">
+                  <div class="prose-text-dark-link text-white text-center mt-[15px]">
                     <Markdown>{page.Block5_text}</Markdown>
                   </div>
                 )}
