@@ -32,6 +32,21 @@ body {
   height: clamp(27px, 3.5vw + 6px, 42px);
 }
 
+.howto-details #headings {
+  @media (max-width: 767.98px) {
+    display: none;
+  }
+}
+
+.product-card-btn {
+  @apply w-full flex justify-center items-center gap-1
+    p-1 md:p-2 lg:p-3 mt-[clamp(5px,calc(2.23vw-12px),20px)]
+    font-bold text-[clamp(12px,0.38vw+10,16px)] rounded-full;
+}
+
+
+// markdown/prose-links
+
 @mixin bg-img-($color) {
   background-size: 100% 45%;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23#{$color}'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
@@ -47,18 +62,23 @@ body {
   ul,
   p s,
   blockquote p {
-    @apply text-white;
+
+    @if $color == 595959 {
+      @apply text-white;
+    } @else {
+      @apply text-black-light;
+    }
 
     a {
       @include bg-img-($color);
 
       @apply font-bold sm:font-semibold px-1 no-underline 
-        bg-bottom bg-no-repeat hover:brightness-95 transition-all;
+        bg-bottom bg-no-repeat hover:brightness-90 transition-all;
 
-      @if $color == 000000 {
-        @apply text-primary;
-      } @else {
+      @if $color == 595959 {
         @apply text-white;
+      } @else {
+        @apply text-primary;
       }
     }
   }
@@ -94,12 +114,12 @@ body {
 
 .prose-text-dark-link {
   @include prose-prose-text;
-  @include prose-content-(000000);
+  @include prose-content-(595959);
   @include prose-content-default-text;
 }
 
 .hero-text {
-  @include prose-content-(000000);
+  @include prose-content-(595959);
   @include prose-prose-text;
 
   @apply text-b5 text-white;
@@ -117,26 +137,17 @@ body {
 }
 
 .link-text-black {
-  @include prose-content-(000000);
+  @include prose-content-(595959);
 }
 
 .button-link-primary-lightest {
-  @include bg-img-(b3cccc);
+  a {
+    @include bg-img-(b3cccc);
 
-  @apply text-b2 font-semibold px-3 no-underline text-primary text-center
-    bg-bottom bg-no-repeat hover:brightness-95 transition-all;
-}
-
-.howto-details #headings {
-  @media (max-width: 767.98px) {
-    display: none;
+    @apply text-b3 font-bold text-primary px-[clamp(6px,calc(0.75vw+1.2px),12px)] 
+      text-center no-underline bg-bottom bg-no-repeat hover:brightness-95 transition-all;
   }
-}
-
-.product-card-btn {
-  @apply w-full flex justify-center items-center gap-1
-    p-1 md:p-2 lg:p-3 mt-[clamp(5px,calc(2.23vw-12px),20px)]
-    font-bold text-[clamp(12px,0.38vw+10,16px)] rounded-full;
+    
 }
 
 // gaps
