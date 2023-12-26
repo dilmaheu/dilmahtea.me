@@ -370,7 +370,7 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
         )
       }
 
-      <!-- <h2
+      <h2
         id={block3_title.toLowerCase().replaceAll(" ", "-")}
         class="dashboard-sec-title recoleta mt-[50px]"
       >
@@ -656,7 +656,40 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
             {Button_view_all_orders_text}
           </a>
         </div>
-      </div> -->
+      </div>
+
+      <div class="dashboard-sec grid gap-5 justify-center text-center">
+        <div class="w-full max-h-[200px]">
+          {
+            async () => (
+              <img
+                class="w-full h-full"
+                src={await localizeCMSImage(empty_blob?.attributes.url)}
+                alt={empty_blob?.attributes.alternativeText}
+              />
+            )
+          }
+        </div>
+
+        <div
+          class:list={[
+            "recoleta prose leading-[110%] text-black",
+            "text-[clamp(1.125rem,1.5vw+0.15rem,1.5rem)]",
+          ]}
+        >
+          <Markdown>{Empty_order_text}</Markdown>
+        </div>
+
+        <a
+          href={Empty_order_button_link}
+          class:list={[
+            "px-[35px] sm:px-[50px] py-3 w-full sm:min-w-[230px] font-bold",
+            "leading-[150%] text-white bg-primary rounded-full",
+          ]}
+        >
+          {Empty_order_button_text}
+        </a>
+      </div>
     </Chapterize>
   </div>
 </div>
