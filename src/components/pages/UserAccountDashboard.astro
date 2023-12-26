@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon";
 import { Img, Picture } from "astro-imagetools/components";
 
 import CMS from "@store/CMS";
@@ -58,7 +59,7 @@ const {
   text_connected,
   text_not_connected,
   text_more_address,
-  Address_tag: address_tag,
+  Address_tag,
   Label_order,
   text_content,
   text_estimated_delivery,
@@ -199,13 +200,21 @@ const headingName = recurData.text_chapter;
         Label_username={Label_username}
         Label_phone={Label_phone}
         Label_email={Label_email}
+        Label_delivery_address={Label_delivery_address}
+        Label_billing_address={Label_billing_address}
+        Address_tag={Address_tag}
+        userAccountAddress_url={userAccountAddress_url}
+        text_more_address={text_more_address}
+        Button_add_new_address_text={Button_add_new_address_text}
         userAccountRecurData={{
           Button_edit_text,
           Button_update_text,
           Button_save_text,
           Button_cancel_text,
         }}
-      />
+      >
+        <Icon slot="plusIcon" name="akar-icons:plus" class="w-5 select-none" />
+      </UserInfo>
 
       {
         page.Block2_visibility && block2 && (

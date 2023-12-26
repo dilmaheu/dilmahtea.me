@@ -3,12 +3,21 @@ import { user } from "@signals/user";
 import InfoUnit from "@solid/InfoUnit";
 
 export default function UserInfo({
+  plusIcon,
   Title,
   Label_username,
   Label_phone,
   Label_email,
+  Label_delivery_address,
+  Label_billing_address,
+  Address_tag,
+  userAccountAddress_url,
+  text_more_address,
+  Button_add_new_address_text,
   userAccountRecurData,
 }) {
+  const { Button_edit_text } = userAccountRecurData;
+
   return (
     <>
       <h2 id="personal-information" class="dashboard-sec-title recoleta">
@@ -37,7 +46,7 @@ export default function UserInfo({
           userAccountRecurData={userAccountRecurData}
         />
 
-        {/* <div class="grid gap-[25px]">
+        <div class="grid gap-[25px]">
           <div class="grid gap-1">
             <div class="information-label">{Label_delivery_address}</div>
 
@@ -63,17 +72,17 @@ export default function UserInfo({
           <div class="flex w-full">
             <a
               href={userAccountAddress_url}
-              class:list={[
+              class={[
                 "flex gap-3 py-[15px] px-10 mt-[15px] md:min-w-[250px] font-bold",
                 "text-white leading-[150%] bg-primary rounded-full cursor-pointer",
-              ]}
+              ].join(" ")}
             >
-              <Icon name="akar-icons:plus" class="w-5 select-none" />
+              {plusIcon}
               {Button_add_new_address_text}
             </a>
           </div>
 
-          {address_tag.length > 2 && (
+          {Address_tag.length > 2 && (
             <div class="mt-[25px] w-full flex justify-center">
               <a
                 href={userAccountAddress_url}
@@ -83,13 +92,13 @@ export default function UserInfo({
                 <span id="show-more-address" class="flex items-center">
                   {text_more_address.replaceAll(
                     "<number>",
-                    address_tag.length - 2,
+                    Address_tag.length - 2,
                   )}
                 </span>
               </a>
             </div>
           )}
-        </div> */}
+        </div>
       </div>
 
       {/* {Social_media && (
