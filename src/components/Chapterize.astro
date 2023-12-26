@@ -1,4 +1,5 @@
 ---
+import he from "he";
 import { parseHTML } from "linkedom";
 
 let contentHTML = await Astro.slots.render("default");
@@ -10,14 +11,25 @@ let headings = contentDocument.querySelectorAll("h2");
 
 // wrap every heading and its following content with div.chapter
 
+function encodeHeading(heading) {
+  return heading.outerHTML.replace(
+    heading.innerHTML,
+    heading.innerHTML.replaceAll(`'`, `&#39;`).replaceAll(`"`, `&quot;`),
+  );
+}
+
 astroIslands.forEach((island) => {
   let islandHTML = island.innerHTML;
 
   headings.forEach((heading, i) => {
     if (islandHTML.includes(heading.outerHTML)) {
       islandHTML = islandHTML.replace(
-        heading.outerHTML,
-        (i === 0 ? "" : "</div>") + "<div class='chapter'>" + heading.outerHTML,
+        encodeHeading(heading),
+        (i === 0 ? "" : "</div>") +
+          `<div id="${heading.innerText
+            ?.toLowerCase()
+            ?.replaceAll(" ", "-")}" class='chapter'>` +
+          heading.outerHTML,
       );
 
       delete headings[i];
@@ -33,10 +45,25 @@ astroIslands.forEach((island) => {
 headings = [...headings].filter(Boolean);
 
 headings.forEach((heading, i) => {
-  contentHTML = contentHTML.replace(
-    heading.outerHTML,
-    (i === 0 ? "" : "</div>") + "<div class='chapter'>" + heading.outerHTML,
-  );
+  const decodedHeadingOuterHTML = encodeHeading(heading);
+
+  for (const headingOuterHTML of [
+    decodedHeadingOuterHTML,
+    decodedHeadingOuterHTML.replace(/(?<=(data-astro-cid-\w+))=""/g, ""),
+  ]) {
+    if (contentHTML.includes(headingOuterHTML)) {
+      contentHTML = contentHTML.replace(
+        headingOuterHTML,
+        (i === 0 ? "" : "</div>") +
+          `<div id="${heading.innerText
+            ?.toLowerCase()
+            ?.replaceAll(" ", "-")}" class='chapter'>` +
+          headingOuterHTML,
+      );
+
+      break;
+    }
+  }
 });
 
 headings.length > 0 && (contentHTML += "</div>");

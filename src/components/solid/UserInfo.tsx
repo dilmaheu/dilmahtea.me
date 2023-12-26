@@ -1,3 +1,5 @@
+import { createEffect, createSignal } from "solid-js";
+
 import { user } from "@signals/user";
 
 import InfoUnit from "@solid/InfoUnit";
@@ -14,36 +16,98 @@ export default function UserInfo({
   userAccountAddress_url,
   text_more_address,
   Button_add_new_address_text,
+  user_info_update_success_notification,
+  display_name_update_success_notification_label,
+  email_update_success_notification_label,
+  phone_number_update_success_notification_label,
+  verificationHref,
+  recurringImages,
   userAccountRecurData,
 }) {
   const { Button_edit_text } = userAccountRecurData;
 
+  const [notification, setNotification] = createSignal(null);
+
+  createEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+
+    if (searchParams.get("updated_user_info") === "true") {
+      const info = searchParams.get("info"),
+        InfoLabels = {
+          display_name: display_name_update_success_notification_label,
+          email: email_update_success_notification_label,
+          phone: phone_number_update_success_notification_label,
+        };
+
+      if (InfoLabels[info]) {
+        setNotification({
+          type: "success",
+          message: user_info_update_success_notification.replace(
+            "<info_label>",
+            InfoLabels[info],
+          ),
+        });
+      }
+
+      setTimeout(() => {
+        // skip if an error notification is set within 7 seconds
+        if (notification().type === "success") {
+          setNotification(null);
+        }
+      }, 7000);
+    }
+  });
+
   return (
     <>
       <h2 id="personal-information" class="dashboard-sec-title recoleta">
-        {Title.replace("<username>", user().name)}
+        {Title.replace("<username>", user().display_name)}
       </h2>
 
       <div class="dashboard-sec">
+        {notification() && (
+          <div
+            class={[
+              "flex justify-center p-2.5 mb-[25px] gap-[7px]",
+              notification().type === "success"
+                ? "bg-success-light"
+                : "bg-error-light",
+            ].join(" ")}
+          >
+            <img
+              class="w-[26px] h-[26px]"
+              {...recurringImages[`${notification().type}_notification`]}
+            />
+
+            <p class="text-black-bg font-medium">{notification().message}</p>
+          </div>
+        )}
+
         <InfoUnit
           label={Label_username}
           type="text"
-          property="name"
+          property="display_name"
+          verificationHref={verificationHref}
           userAccountRecurData={userAccountRecurData}
+          setNotification={setNotification}
         />
 
         <InfoUnit
           label={Label_phone}
           type="tel"
           property="phone"
+          verificationHref={verificationHref}
           userAccountRecurData={userAccountRecurData}
+          setNotification={setNotification}
         />
 
         <InfoUnit
           label={Label_email}
           type="email"
           property="email"
+          verificationHref={verificationHref}
           userAccountRecurData={userAccountRecurData}
+          setNotification={setNotification}
         />
 
         <div class="grid gap-[25px]">
