@@ -535,3 +535,99 @@ $link-light: b3cccc;
     @apply h-[clamp(25px,calc(1.25vw+17px),35px)];
   }
 }
+
+// product-card(smallest-size-375px)
+
+@mixin blob-card {
+  @apply flex flex-col bg-primary;
+
+  .card-content-container {
+    @apply grid content-between grow division-in-gap 
+      text-secondary px-[clamp(12px,calc(2.16vw+3.9px),35px)] 
+      pt-[clamp(10px,calc(0.94vw+6.4px),20px)] pb-[clamp(12px,calc(1.22vw+7.42px),25px)];
+  }
+}
+
+.product-card {
+  @mixin product-more-info {
+    @apply space-x-[3px] sm:space-x-1 text-b7 italic;
+
+    span {
+      @apply inline align-middle;
+    }
+  }
+
+  @mixin product-more-info-link {
+    @include bg-img-($link-dark);
+
+    @apply font-medium sm:font-semibold pl-0 pr-1 no-underline
+      bg-bottom bg-no-repeat hover:brightness-90 transition-all;
+  }
+
+  @mixin product-more-info-icon {
+    @apply w-[clamp(16px,calc(0.37vw+14.6px),20px)] h-[clamp(16px,calc(0.37vw+14.6px),20px)];
+  }
+
+  @mixin product-icon-circle {
+    @apply bg-white border border-primary rounded-full;
+  }
+
+  @include blob-card;
+
+  .product-card-content {
+    @apply grid gap-[5px];
+
+    .product-title {
+      @apply recoleta text-h5-sm text-white;
+    }
+
+    .product-info {
+      @apply flex flex-wrap gap-1 text-b6-sm text-secondary-light;
+    }
+
+    .product-format {
+      @include product-more-info;
+
+      .icon-container {
+        @apply -space-x-[clamp(10px,calc(0.18vw+9.29px),12px)];
+
+        .icon,
+        .number {
+          @include product-more-info-icon;
+          @include product-icon-circle;
+        }
+
+        .number {
+          @apply inline-flex items-center justify-center text-primary
+            text-[clamp(6px,calc(0.5vw+2.8px),10px)] sm:font-medium;
+        }
+      }
+
+      .format-link-text {
+        @include product-more-info-link;
+      }
+
+      .desktop-only-text {
+        @apply hidden sm:inline align-middle;
+      }
+
+      .mobile-only-text {
+        @apply inline sm:hidden align-middle;
+      }
+    }
+
+    .product-estate {
+      @include product-more-info;
+
+      .icon {
+        @include product-more-info-icon;
+      }
+
+      a {
+        @include product-more-info-link;
+
+        @apply inline align-middle;
+      }
+    }
+  }
+}
