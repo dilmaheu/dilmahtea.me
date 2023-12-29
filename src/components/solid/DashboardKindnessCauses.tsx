@@ -20,16 +20,15 @@ export default function DashboardKindnessCauses({
 }) {
   const queryElements = () => {
     if (!memoizedElements) {
-      const kindnessCauseContainer =
-          document.querySelector<HTMLElement>(".kindness-causes"),
-        mySelectedCauseInput =
-          kindnessCauseContainer.querySelector<HTMLInputElement>(
-            ".my-selected-kindness-cause",
-          ),
-        kindnessCauseInputs =
-          kindnessCauseContainer.querySelectorAll<HTMLInputElement>(
-            ".kindness-cause-input",
-          );
+      const kindnessCauseContainer = document.getElementById(
+          "kindness-cause-grid",
+        ),
+        mySelectedCauseInput = document.querySelector<HTMLInputElement>(
+          "#cause-form input:not([name='kindness_cause'])",
+        ),
+        kindnessCauseInputs = document.querySelectorAll<HTMLInputElement>(
+          "input[name='kindness_cause']",
+        );
 
       memoizedElements = {
         kindnessCauseContainer,
