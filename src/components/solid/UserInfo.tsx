@@ -9,18 +9,24 @@ import DashboardNotification, {
 } from "@solid/DashboardNotification";
 
 export default function UserInfo({
-  Title,
-  Label_username,
-  Label_phone,
-  Label_email,
-  user_info_update_success_notification,
-  display_name_update_success_notification_label,
-  email_update_success_notification_label,
-  phone_number_update_success_notification_label,
+  page,
   verificationHref,
   recurringImages,
   userAccountRecurData,
 }) {
+  const {
+    Title,
+    Personal_information: {
+      Label_username,
+      Label_phone,
+      Label_email,
+      user_info_update_success_notification,
+      display_name_update_success_notification_label,
+      email_update_success_notification_label,
+      phone_number_update_success_notification_label,
+    },
+  } = page;
+
   createEffect(() => {
     const searchParams = new URLSearchParams(location.search);
 

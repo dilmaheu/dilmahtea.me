@@ -7,19 +7,17 @@ import RecurringImages from "@store/RecurringImages";
 import localizeCMSImage from "@utils/localizeCMSImage";
 import getUserAccountPagesLink from "@utils/getUserAccountPagesLink";
 
-import Orders from "@solid/Orders";
-import UserInfo from "@solid/UserInfo";
-import DashboardKindnessCauses from "@solid/DashboardKindnessCauses";
+import Dashboard from "@solid/Dashboard";
 
 import Markdown from "@components/Markdown.astro";
-import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
-import AdvancedNotification from "@components/AdvancedNotification.astro";
 
-const { success_notification, green_right_arrow } = RecurringImages;
+const { success_notification, error_notification, green_right_arrow } =
+  RecurringImages;
 
-const { page, recurData, ariaLabelRecurData } = Astro.props,
-  {
+const { page, recurData, ariaLabelRecurData } = Astro.props;
+
+const {
     Personal_information: {
       Name: block_section1_name,
       Label_username,
@@ -35,8 +33,8 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
       phone_number_update_success_notification_label,
     },
     kindnessCauses,
-    Block3_title: block3_title,
-    Block2: block2,
+    Block3_title,
+    Block2,
     Support_visibility,
     Support,
   } = page,
@@ -262,215 +260,178 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
 />
 
 <div class="wrapper py-[50px] w-full flex flex-col-reverse md:flex-row">
-  <div class="md:w-2/3">
-    <Chapterize>
-      <UserInfo
-        client:load
-        Title={page.Title}
-        {Label_username}
-        {Label_phone}
-        {Label_email}
-        {user_info_update_success_notification}
-        {display_name_update_success_notification_label}
-        {email_update_success_notification_label}
-        {phone_number_update_success_notification_label}
-        {verificationHref}
-        recurringImages={{
-          success_notification: RecurringImages.success_notification,
-          error_notification: RecurringImages.error_notification,
-        }}
-        userAccountRecurData={{
-          Button_edit_text,
-          Button_update_text,
-          Button_save_text,
-          Button_cancel_text,
-        }}
-      />
-
+  <Dashboard
+    client:load
+    {page}
+    {verificationHref}
+    {userAccountRecurData}
+    recurringImages={{
+      success_notification,
+      error_notification,
+    }}
+  >
+    <Fragment slot="kindnessCausesHTML">
       {
-        page.Block2_visibility && block2 && (
-          <DashboardKindnessCauses
-            client:load
-            title={block2.Block2_title}
-            successNotificationText={block2.Notification_cause_update_text}
-            recurringImages={{
-              success_notification: RecurringImages.success_notification,
-              error_notification: RecurringImages.error_notification,
-            }}
-          >
-            <Fragment slot="kindnessCausesHTML">
-              {block2.Block2_text && (
-                <div class="hero-text text-black block prose max-w-none">
-                  <Markdown>{block2.Block2_text}</Markdown>
-                </div>
-              )}
-
-              <form id="cause-form">
-                <label>
-                  <input type="radio" disabled />
-
-                  <div>
-                    <div class="flex flex-wrap items-center justify-between gap-[7px]">
-                      <h3 class="text-lg font-bold leading-[150%]">
-                        {block2.Label_my_selected_cause}
-                      </h3>
-
-                      <div class="cause-form-txt text-black-light w-full prose max-w-none">
-                        <Markdown>{block2.My_selected_cause_text}</Markdown>
-                      </div>
-                    </div>
-
-                    {kindnessCauses.length > 0 && (
-                      <div id="kindness-cause-grid">
-                        {kindnessCauses.map(
-                          ({ cause, description, featured_blob }) => (
-                            <div class="w-full h-full">
-                              <input
-                                type="radio"
-                                name="kindness_cause"
-                                id={cause}
-                                value={cause}
-                                class="peer hidden"
-                              />
-
-                              <label
-                                for={cause}
-                                class:list={[
-                                  "kindness-cause-clip-path inline-block w-full h-full",
-                                  "p-[3px] md:p-[5px] peer-checked:bg-primary select-none cursor-pointer",
-                                ]}
-                              >
-                                <div class="kindness-cause-clip-path w-full h-full p-[3px] md:p-[5px] bg-secondary-light">
-                                  <div
-                                    class:list={[
-                                      "kindness-cause-clip-path w-full h-full bg-secondary",
-                                      "grid md:grid-cols-[140px_1fr] lg:grid-cols-[180px_1fr] items-center sm:justify-center",
-                                    ]}
-                                  >
-                                    <div class="kindness-cause-img-container">
-                                      <Picture
-                                        layout="fullWidth"
-                                        sizes="(min-width: 640px) 320px, 90vw)"
-                                        alt={
-                                          featured_blob.data.attributes
-                                            .alternativeText
-                                        }
-                                        attributes={{
-                                          img: {
-                                            style: "aspect-ratio: 6 / 5;",
-                                          },
-                                        }}
-                                        src={
-                                          STRAPI_URL +
-                                          featured_blob.data.attributes.url
-                                        }
-                                      />
-                                    </div>
-
-                                    <div
-                                      class:list={[
-                                        "w-full h-full flex flex-col justify-center",
-                                        "px-[clamp(15px,calc(4.43vw-13px),32px)] pt-2.5 lg:px-[15px] py-[15px]",
-                                      ]}
-                                    >
-                                      <div
-                                        class:list={[
-                                          "recoleta font-bold text-primary",
-                                          "text-[clamp(18px,calc(0.75vw+13.2px),24px)] leading-[110%]",
-                                        ]}
-                                      >
-                                        {cause}
-                                      </div>
-                                      <div
-                                        class:list={[
-                                          "prose max-w-none text-black-light mt-2.5",
-                                          "text-[clamp(14px,calc(0.25vw+12.4px),16px)]",
-                                        ]}
-                                      >
-                                        {" "}
-                                        {description}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </label>
-                            </div>
-                          ),
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </label>
-
-                <label>
-                  <input type="radio" name="kindness_cause" value="null" />
-
-                  <div>
-                    <h3 class="text-lg font-bold leading-[150%] cursor-pointer">
-                      {block2.Label_let_dilmah_pick_cause}
-                    </h3>
-
-                    <div class="cause-form-txt text-black-light prose max-w-none">
-                      <Markdown>{block2.Let_dilmah_pick_cause_text}</Markdown>
-                    </div>
-                  </div>
-                </label>
-              </form>
-            </Fragment>
-          </DashboardKindnessCauses>
+        Block2.Block2_text && (
+          <div class="hero-text text-black block prose max-w-none">
+            <Markdown>{Block2.Block2_text}</Markdown>
+          </div>
         )
       }
 
-      <Orders
-        {block3_title}
-        {Label_order}
-        {text_estimated_delivery}
-        {Button_track_package}
-        {Button_track_package_text}
-        {Button_buy_again_text}
-        {Button_sold_out_text}
-        {text_show_more_products_in_this_order}
-        {text_estimated_shipment}
-        {text_delivered}
-      >
-        <div
-          slot="noOrdersHTML"
-          class="dashboard-sec grid gap-5 justify-center text-center"
-        >
-          <div class="w-full max-h-[200px]">
+      <form id="cause-form">
+        <label>
+          <input type="radio" disabled />
+
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-[7px]">
+              <h3 class="text-lg font-bold leading-[150%]">
+                {Block2.Label_my_selected_cause}
+              </h3>
+
+              <div
+                class="cause-form-txt text-black-light w-full prose max-w-none"
+              >
+                <Markdown>{Block2.My_selected_cause_text}</Markdown>
+              </div>
+            </div>
+
             {
-              async () => (
-                <img
-                  class="w-full h-full"
-                  src={await localizeCMSImage(empty_blob?.attributes.url)}
-                  alt={empty_blob?.attributes.alternativeText}
-                />
+              kindnessCauses.length > 0 && (
+                <div id="kindness-cause-grid">
+                  {kindnessCauses.map(
+                    ({ cause, description, featured_blob }) => (
+                      <div class="w-full h-full">
+                        <input
+                          type="radio"
+                          name="kindness_cause"
+                          id={cause}
+                          value={cause}
+                          class="peer hidden"
+                        />
+
+                        <label
+                          for={cause}
+                          class:list={[
+                            "kindness-cause-clip-path inline-block w-full h-full",
+                            "p-[3px] md:p-[5px] peer-checked:bg-primary select-none cursor-pointer",
+                          ]}
+                        >
+                          <div class="kindness-cause-clip-path w-full h-full p-[3px] md:p-[5px] bg-secondary-light">
+                            <div
+                              class:list={[
+                                "kindness-cause-clip-path w-full h-full bg-secondary",
+                                "grid md:grid-cols-[140px_1fr] lg:grid-cols-[180px_1fr] items-center sm:justify-center",
+                              ]}
+                            >
+                              <div class="kindness-cause-img-container">
+                                <Picture
+                                  layout="fullWidth"
+                                  sizes="(min-width: 640px) 320px, 90vw)"
+                                  alt={
+                                    featured_blob.data.attributes
+                                      .alternativeText
+                                  }
+                                  attributes={{
+                                    img: {
+                                      style: "aspect-ratio: 6 / 5;",
+                                    },
+                                  }}
+                                  src={
+                                    STRAPI_URL +
+                                    featured_blob.data.attributes.url
+                                  }
+                                />
+                              </div>
+
+                              <div
+                                class:list={[
+                                  "w-full h-full flex flex-col justify-center",
+                                  "px-[clamp(15px,calc(4.43vw-13px),32px)] pt-2.5 lg:px-[15px] py-[15px]",
+                                ]}
+                              >
+                                <div
+                                  class:list={[
+                                    "recoleta font-bold text-primary",
+                                    "text-[clamp(18px,calc(0.75vw+13.2px),24px)] leading-[110%]",
+                                  ]}
+                                >
+                                  {cause}
+                                </div>
+                                <div
+                                  class:list={[
+                                    "prose max-w-none text-black-light mt-2.5",
+                                    "text-[clamp(14px,calc(0.25vw+12.4px),16px)]",
+                                  ]}
+                                >
+                                  {" "}
+                                  {description}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </label>
+                      </div>
+                    ),
+                  )}
+                </div>
               )
             }
           </div>
+        </label>
 
-          <div
-            class:list={[
-              "recoleta prose leading-[110%] text-black",
-              "text-[clamp(1.125rem,1.5vw+0.15rem,1.5rem)]",
-            ]}
-          >
-            <Markdown>{Empty_order_text}</Markdown>
+        <label>
+          <input type="radio" name="kindness_cause" value="null" />
+
+          <div>
+            <h3 class="text-lg font-bold leading-[150%] cursor-pointer">
+              {Block2.Label_let_dilmah_pick_cause}
+            </h3>
+
+            <div class="cause-form-txt text-black-light prose max-w-none">
+              <Markdown>{Block2.Let_dilmah_pick_cause_text}</Markdown>
+            </div>
           </div>
+        </label>
+      </form>
+    </Fragment>
 
-          <a
-            href={Empty_order_button_link}
-            class:list={[
-              "px-[35px] sm:px-[50px] py-3 w-full sm:min-w-[230px] font-bold",
-              "leading-[150%] text-white bg-primary rounded-full",
-            ]}
-          >
-            {Empty_order_button_text}
-          </a>
-        </div>
-      </Orders>
-    </Chapterize>
-  </div>
+    <div
+      slot="noOrdersHTML"
+      class="dashboard-sec grid gap-5 justify-center text-center"
+    >
+      <div class="w-full max-h-[200px]">
+        {
+          async () => (
+            <img
+              class="w-full h-full"
+              src={await localizeCMSImage(empty_blob?.attributes.url)}
+              alt={empty_blob?.attributes.alternativeText}
+            />
+          )
+        }
+      </div>
+
+      <div
+        class:list={[
+          "recoleta prose leading-[110%] text-black",
+          "text-[clamp(1.125rem,1.5vw+0.15rem,1.5rem)]",
+        ]}
+      >
+        <Markdown>{Empty_order_text}</Markdown>
+      </div>
+
+      <a
+        href={Empty_order_button_link}
+        class:list={[
+          "px-[35px] sm:px-[50px] py-3 w-full sm:min-w-[230px] font-bold",
+          "leading-[150%] text-white bg-primary rounded-full",
+        ]}
+      >
+        {Empty_order_button_text}
+      </a>
+    </div>
+  </Dashboard>
 </div>
 
 {

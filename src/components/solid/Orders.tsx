@@ -1,23 +1,28 @@
 export default function Orders({
-  noOrdersHTML,
-  block3_title,
-  Label_order,
-  text_estimated_delivery,
-  Button_track_package,
-  Button_track_package_text,
-  Button_buy_again_text,
-  Button_sold_out_text,
-  text_show_more_products_in_this_order,
-  text_estimated_shipment,
-  text_delivered,
+  page,
+  recurringImages,
+  userAccountRecurData,
 }) {
+  const {
+    Button_track_package,
+    Button_track_package_text,
+    Button_buy_again_text,
+    Button_sold_out_text,
+    Label_order,
+    text_estimated_delivery,
+    text_estimated_shipment,
+    text_delivered,
+    text_show_more_products_in_this_order,
+    text_hide_more_products_in_this_order,
+  } = userAccountRecurData;
+
   return (
     <>
       <h2
-        id={block3_title.toLowerCase().replaceAll(" ", "-")}
+        id={page.Block3_title.toLowerCase().replaceAll(" ", "-")}
         class="dashboard-sec-title recoleta mt-[50px]"
       >
-        {block3_title}
+        {page.Block3_title}
       </h2>
 
       <div id="month-1" class="dashboard-sec grid gap-[25px] sm:gap-[30px]">
