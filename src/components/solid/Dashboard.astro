@@ -1,0 +1,49 @@
+---
+import subset from "@utils/shared/subset";
+import Dashboard from "@solid/Dashboard";
+
+let { page, verificationHref, userAccountRecurData, recurringImages } =
+  structuredClone(Astro.props);
+
+page.kindnessCauses.forEach((kindnessCause) => {
+  delete kindnessCause.locale;
+  delete kindnessCause.localizations;
+});
+
+page = subset(page, [
+  "Title",
+  "Personal_information",
+  "Block2_visibility",
+  "Block2",
+  "kindnessCauses",
+  "Block3_title",
+]);
+
+userAccountRecurData = subset(userAccountRecurData, [
+  "Button_edit_text",
+  "Button_update_text",
+  "Button_save_text",
+  "Button_cancel_text",
+  "Button_track_package",
+  "Button_track_package_text",
+  "Button_buy_again_text",
+  "Button_sold_out_text",
+  "Label_order",
+  "text_estimated_delivery",
+  "text_estimated_shipment",
+  "text_delivered",
+  "text_show_more_products_in_this_order",
+  "text_hide_more_products_in_this_order",
+]);
+---
+
+<Dashboard
+  client:load
+  {page}
+  {verificationHref}
+  {userAccountRecurData}
+  {recurringImages}
+>
+  <slot name="kindnessCausesHTML" slot="kindnessCausesHTML" />
+  <slot name="noOrdersHTML" slot="noOrdersHTML" />
+</Dashboard>
