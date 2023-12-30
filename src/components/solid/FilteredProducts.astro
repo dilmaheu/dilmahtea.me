@@ -1,38 +1,29 @@
 ---
+import subset from "@utils/shared/subset";
 import FilteredProducts from "@solid/FilteredProducts";
 
 let { page, recurData, checkoutRecurData, white_love, category, subCategory } =
-  Astro.props;
+  structuredClone(Astro.props);
 
-const alertCircleIcon = await Astro.slots.render("alertCircleIcon");
+page = subset(page, ["Aria_label_all_teas_text", "Aria_label_tea_item_text"]);
 
-page = {
-  Aria_label_all_teas_text: page.Aria_label_all_teas_text,
-  Aria_label_tea_item_text: page.Aria_label_tea_item_text,
-};
+recurData = subset(recurData, [
+  "Item_stock_text",
+  "Product_sold_out_text",
+  "product_made_love_from",
+  "Product_stock_available_text",
+  "Product_available_text",
+  "Product_other_formats_text",
+  "Product_other_formats_singular_text",
+  "Product_other_formats_text_sm",
+  "Product_other_formats_singular_text_sm",
+]);
 
-recurData = {
-  Item_stock_text: recurData.Item_stock_text,
-  Product_sold_out_text: recurData.Product_sold_out_text,
-  product_made_love_from: recurData.product_made_love_from,
-  Product_stock_available_text: recurData.Product_stock_available_text,
-  Product_available_text: recurData.Product_available_text,
-  Product_other_formats_text: recurData.Product_other_formats_text,
-  Product_other_formats_singular_text:
-    recurData.Product_other_formats_singular_text,
-  Product_other_formats_text_sm: recurData.Product_other_formats_text_sm,
-  Product_other_formats_singular_text_sm:
-    recurData.Product_other_formats_singular_text_sm,
-};
-
-checkoutRecurData = {
-  text_add: checkoutRecurData.text_add,
-};
+checkoutRecurData = subset(checkoutRecurData, ["text_add"]);
 ---
 
 <FilteredProducts
   client:load
-  alertCircleIcon={alertCircleIcon}
   page={page}
   recurData={recurData}
   checkoutRecurData={checkoutRecurData}
