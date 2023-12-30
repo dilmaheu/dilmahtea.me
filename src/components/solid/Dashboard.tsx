@@ -1,3 +1,5 @@
+import { user } from "@signals/user";
+
 import Orders from "@solid/Orders";
 import UserInfo from "@solid/UserInfo";
 import DashboardKindnessCauses from "@solid/DashboardKindnessCauses";
@@ -28,11 +30,22 @@ export default function Dashboard({
         recurringImages={recurringImages}
       />
 
-      <Orders
-        page={page}
-        recurringImages={recurringImages}
-        userAccountRecurData={userAccountRecurData}
-      />
+      <h2
+        id={page.Block3_title.toLowerCase().replaceAll(" ", "-")}
+        class="dashboard-sec-title recoleta mt-[50px]"
+      >
+        {page.Block3_title}
+      </h2>
+
+      {user().orders.length > 0 ? (
+        <Orders
+          page={page}
+          recurringImages={recurringImages}
+          userAccountRecurData={userAccountRecurData}
+        />
+      ) : (
+        noOrdersHTML
+      )}
     </div>
   );
 }
