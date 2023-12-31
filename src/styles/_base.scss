@@ -85,7 +85,21 @@ $link-light: b3cccc;
   }
 }
 
+@mixin noMarginFirstLastChild {
+  > *:first-child,
+  > *:last-child {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  > *:first-child {
+    padding-top: 0;
+  }
+}
+
 @mixin prose-prose-text {
+  @include noMarginFirstLastChild;
+
   @apply prose max-w-none;
 
   & h2 {
@@ -98,8 +112,19 @@ $link-light: b3cccc;
     @apply recoleta text-black;
   }
 
-  & .chapter:nth-child(1) h2:nth-of-type(1) {
-    margin-top: 0;
+  & .chapter {
+    &:first-child {
+      > *:first-child {
+        margin-top: 0;
+        padding-top: 0;
+      }
+    }
+
+    &:last-child {
+      > *:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 }
 
@@ -107,28 +132,41 @@ $link-light: b3cccc;
   @apply text-b3;
 }
 
-.prose-text {
+@mixin prose-default {
   @include prose-prose-text;
-  @include prose-content-($link-light);
   @include prose-content-default-text;
+}
+
+.prose-text {
+  @include prose-default;
+  @include prose-content-($link-light);
 }
 
 .prose-text-dark-link {
-  @include prose-prose-text;
+  @include prose-default;
   @include prose-content-($link-dark);
-  @include prose-content-default-text;
 }
 
 .hero-text {
-  @include prose-content-($link-dark);
   @include prose-prose-text;
+  @include prose-content-($link-dark);
 
   @apply text-b5 text-white;
 }
 
-.link-text {
+.intro-text {
+  @include prose-default;
   @include prose-content-($link-light);
+}
+
+.intro-text-dark-link {
+  @include prose-default;
+  @include prose-content-($link-dark);
+}
+
+.link-text {
   @include prose-content-default-text;
+  @include prose-content-($link-light);
 
   @apply px-3;
 }
