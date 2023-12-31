@@ -11,7 +11,7 @@ export default function Orders({
     Button_view_all_orders_text,
     Label_order,
     text_estimated_delivery,
-    text_estimated_shipment,
+    text_order_processing,
     text_delivered,
     text_show_more_products_in_this_order,
     text_hide_more_products_in_this_order,
@@ -201,7 +201,7 @@ export default function Orders({
             </div>
 
             <div class="order-item-date">
-              {text_estimated_shipment} 28-Jan-2023
+              {text_order_processing}
             </div>
           </div>
 
@@ -310,10 +310,7 @@ export default function Orders({
       </div>
 
       <div class="flex justify-center">
-        <a
-          href="/account/orders"
-          class="font-bold leading-[150%] text-primary"
-        >
+        <a href="/account/orders" class="font-bold leading-[150%] text-primary">
           {Button_view_all_orders_text}
         </a>
       </div>
