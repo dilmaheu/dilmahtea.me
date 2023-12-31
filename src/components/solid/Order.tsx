@@ -19,6 +19,7 @@ export default function Order({
     text_estimated_delivery,
     text_estimated_shipment,
     text_delivered,
+    text_in_stock_date,
     text_show_more_products_in_this_order,
     text_hide_more_products_in_this_order,
   } = userAccountRecurData;
@@ -81,8 +82,10 @@ export default function Order({
               tea_weight,
               tea_size,
               tea_variant,
-              in_stock_date,
+              stock_amount,
             } = window.products[sku];
+
+          let { in_stock_date } = window.products[sku];
 
           const title = JSON.parse(titles)[window.preferredLocale],
             [_, productPriceIncludingTax] = getPriceIncludingTax({
@@ -90,6 +93,14 @@ export default function Order({
               VatPercentage,
               quantity,
             });
+
+          const soldOut = stock_amount === 0;
+
+          in_stock_date &&= new Date(in_stock_date).toLocaleString("en-GB", {
+            year: "2-digit",
+            month: "short",
+            day: "numeric",
+          });
 
           return (
             <div class="flex gap-2.5 sm:gap-[15px]">
@@ -122,11 +133,9 @@ export default function Order({
                   <button
                     data-sku={`SKU`}
                     class="order-item-cart-btn"
-                    disabled={!in_stock_date}
+                    disabled={soldOut}
                   >
-                    {in_stock_date
-                      ? Button_buy_again_text
-                      : Button_sold_out_text}
+                    {!soldOut ? Button_buy_again_text : Button_sold_out_text}
                     <span class="text-secondary-light">&#8226;</span>
                     <span class="recoleta font-bold">
                       €{productPriceIncludingTax.toFixed(2).replace(".", ",")}
@@ -139,7 +148,10 @@ export default function Order({
                     recurringImages={recurringImages}
                     staticNotification={{
                       type: "warning",
-                      message: `Item will be in stock by ${in_stock_date}`,
+                      message: text_in_stock_date.replace(
+                        "<in_stock_date>",
+                        in_stock_date,
+                      ),
                     }}
                   />
                 )}

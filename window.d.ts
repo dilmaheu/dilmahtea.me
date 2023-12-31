@@ -28,6 +28,7 @@ interface Product {
   tea_weight: string;
   tea_variant: string;
   tea_size: string;
+  stock_amount: number;
   in_stock_date: string;
 }
 

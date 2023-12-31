@@ -14,8 +14,6 @@ const products = Object.fromEntries(
         VatPercentage,
         productVariant,
         productSize,
-        category,
-        category_tea_range,
         Stock_amount,
         In_stock_date,
         Weight_tea,
@@ -58,12 +56,7 @@ const products = Object.fromEntries(
         ),
       );
 
-      const tea_weight = Weight_tea ? Weight_tea + Weight_tea_unit : null,
-        in_stock_date =
-          Stock_amount < 1 &&
-          new Date(In_stock_date).getTime() > new Date().getTime()
-            ? In_stock_date
-            : null;
+      const tea_weight = Weight_tea ? Weight_tea + Weight_tea_unit : null;
 
       return [
         sku,
@@ -77,7 +70,8 @@ const products = Object.fromEntries(
           tea_weight,
           tea_variant: productVariant,
           tea_size: productSize,
-          in_stock_date,
+          stock_amount: Stock_amount,
+          in_stock_date: In_stock_date,
         },
       ];
     }),

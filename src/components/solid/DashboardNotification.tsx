@@ -19,9 +19,9 @@ export default function DashboardNotification({
       class={[
         "py-[clamp(10px,calc(0.625vw+6px),15px)]",
         "px-[clamp(15px,calc(0.625vw+11px),20px)] rounded-[10px] border mb-5",
-        type === "success"
-          ? "bg-success-light border-success"
-          : "bg-error-light border-error",
+        type === "success" ? "bg-success-light border-success" : "",
+        type === "warning" ? "bg-warning-light border-warning" : "",
+        type === "error" ? "bg-error-light border-error" : "",
       ].join(" ")}
     >
       <div class="flex gap-[clamp(8px,calc(0.25vw+6.4px),10px)] justify-center">
