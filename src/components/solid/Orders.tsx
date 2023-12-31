@@ -1,11 +1,7 @@
 import Order from "@solid/Order";
 import { user } from "@signals/user";
 
-export default function Orders({
-  page,
-  recurringImages,
-  userAccountRecurData,
-}) {
+export default function Orders({ recurringImages, userAccountRecurData }) {
   const {
     Button_track_package,
     Button_track_package_text,

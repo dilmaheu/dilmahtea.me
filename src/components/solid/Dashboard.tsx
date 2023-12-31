@@ -41,7 +41,6 @@ export default function Dashboard({
 
           {user().orders.length > 0 ? (
             <Orders
-              page={page}
               recurringImages={recurringImages}
               userAccountRecurData={userAccountRecurData}
             />
