@@ -38,9 +38,9 @@ export default {
 
       fontSize: {
         "heading-big": ['clamp(64px,calc(-2vw + 76.8px),48px)', '110%'],
-        h1: ['clamp(32px,calc(2vw + 19.2px),48px)', '130%'],
-        h2: ['clamp(28px,calc(1.75vw + 16.8px),42px)', '130%'],
-        h3: ['clamp(24px,calc(1vw + 17.6px),32px)', '130%'],
+        h1: ['clamp(32px,calc(2vw + 19.2px),48px)', '110%'],
+        h2: ['clamp(28px,calc(1.75vw + 16.8px),42px)', '140%'],
+        h3: ['clamp(24px,calc(1vw + 17.6px),32px)', '140%'],
         h4: ['clamp(24px,calc(0.5vw + 20.8px),28px)', '150%'],
         h5: ['clamp(20px,calc(0.5vw + 16.8px),24px)', '150%'],
         "h5-sm": ['clamp(14px,calc(1.25vw + 6px),24px)', '110%'],
