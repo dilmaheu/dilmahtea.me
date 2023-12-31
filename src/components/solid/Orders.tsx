@@ -8,6 +8,7 @@ export default function Orders({
     Button_track_package_text,
     Button_buy_again_text,
     Button_sold_out_text,
+    Button_view_all_orders_text,
     Label_order,
     text_estimated_delivery,
     text_estimated_shipment,
@@ -308,6 +309,15 @@ export default function Orders({
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="flex justify-center">
+        <a
+          href="/account/orders"
+          class="font-bold leading-[150%] text-primary"
+        >
+          {Button_view_all_orders_text}
+        </a>
       </div>
     </div>
   );
