@@ -24,21 +24,25 @@ export default function Orders({
                 />
               );
             } else {
-              const [month, orders] = order;
+              const [year, ordersByMonths] = order;
 
-              return (
-                <>
-                  <h2>{month}</h2>
+              return ordersByMonths.map(([month, orders]) => {
+                return (
+                  <>
+                    <h2>
+                      {month + (user().orders.length > 1 ? " " + year : "")}
+                    </h2>
 
-                  {orders.map((order) => (
-                    <Order
-                      order={order}
-                      recurringImages={recurringImages}
-                      userAccountRecurData={userAccountRecurData}
-                    />
-                  ))}
-                </>
-              );
+                    {orders.map((order) => (
+                      <Order
+                        order={order}
+                        recurringImages={recurringImages}
+                        userAccountRecurData={userAccountRecurData}
+                      />
+                    ))}
+                  </>
+                );
+              });
             }
           })}
         </div>
