@@ -30,21 +30,25 @@ export default function Dashboard({
         recurringImages={recurringImages}
       />
 
-      <h2
-        id={page.Block3_title.toLowerCase().replaceAll(" ", "-")}
-        class="dashboard-sec-title recoleta mt-[50px]"
-      >
-        {page.Block3_title}
-      </h2>
+      {Array.isArray(user().orders) && (
+        <>
+          <h2
+            id={page.Block3_title.toLowerCase().replaceAll(" ", "-")}
+            class="dashboard-sec-title recoleta mt-[50px]"
+          >
+            {page.Block3_title}
+          </h2>
 
-      {user().orders.length > 0 ? (
-        <Orders
-          page={page}
-          recurringImages={recurringImages}
-          userAccountRecurData={userAccountRecurData}
-        />
-      ) : (
-        noOrdersHTML
+          {user().orders.length > 0 ? (
+            <Orders
+              page={page}
+              recurringImages={recurringImages}
+              userAccountRecurData={userAccountRecurData}
+            />
+          ) : (
+            noOrdersHTML
+          )}
+        </>
       )}
     </div>
   );

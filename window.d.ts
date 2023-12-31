@@ -18,6 +18,19 @@ interface CartProduct {
   [key: string]: string | number;
 }
 
+interface Product {
+  sku: string;
+  Price: number;
+  VatPercentage: number;
+  image: string;
+  titles: string;
+  names: string;
+  tea_weight: string;
+  tea_variant: string;
+  tea_size: string;
+  in_stock_date: string;
+}
+
 type Cart = {
   tax: string;
   shippingCost: string;
@@ -73,6 +86,7 @@ declare global {
     productPrice: number; // defined in ProductDetails.astro
     productVatPercentage: number; // defined in ProductDetails.astro
 
+    products: Record<string, Product>; // defined in CartStore.astro
     getPriceIncludingTax: GetPriceIncludingTax; // defined in getPriceIncludingTax.ts; declared in CartStore.astro
 
     cart: Cart; // defined in CartStore.astro

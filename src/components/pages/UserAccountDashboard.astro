@@ -12,8 +12,12 @@ import Dashboard from "@solid/Dashboard.astro";
 import Markdown from "@components/Markdown.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
-const { success_notification, error_notification, green_right_arrow } =
-  RecurringImages;
+const {
+  success_notification,
+  warning_notification,
+  error_notification,
+  green_right_arrow,
+} = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props;
 
@@ -139,6 +143,10 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
 
     .order-item {
       @apply grid gap-[25px] sm:gap-[30px];
+
+      &:not(:last-child) {
+        @apply border-b border-primary-light;
+      }
 
       .order-img {
         width: poly-fluid-clamp(
