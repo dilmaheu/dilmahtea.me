@@ -10,75 +10,20 @@ import getUserAccountPagesLink from "@utils/getUserAccountPagesLink";
 import Dashboard from "@solid/Dashboard.astro";
 
 import Markdown from "@components/Markdown.astro";
+import NoOrders from "@components/NoOrders.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
-const {
-  success_notification,
-  warning_notification,
-  error_notification,
-  green_right_arrow,
-} = RecurringImages;
+const { success_notification, warning_notification, error_notification } =
+  RecurringImages;
 
-const { page, recurData, ariaLabelRecurData } = Astro.props;
+const { page, recurData } = Astro.props;
 
-const {
-    Personal_information: {
-      Name: block_section1_name,
-      Label_username,
-      Label_phone,
-      Label_email,
-      Label_delivery_address,
-      Label_billing_address,
-      Social_media_title,
-      Social_media,
-      user_info_update_success_notification,
-      display_name_update_success_notification_label,
-      email_update_success_notification_label,
-      phone_number_update_success_notification_label,
-    },
-    kindnessCauses,
-    Block3_title,
-    Block2,
-    Support_visibility,
-    Support,
-  } = page,
+const { kindnessCauses, Block2, Support_visibility, Support } = page,
   { locale } = page,
   { STRAPI_URL } = import.meta.env;
 
 const userAccountRecurData = CMS.get("userAccountRecurringElement", locale),
   userAccountAddress = CMS.get("userAccountAddress", locale);
-
-const {
-  Facebook_icon: fb_icon,
-  Google_icon: g_icon,
-  Twitter_icon: twitter_icon,
-  Empty_order_blob: { data: empty_blob },
-  Empty_order_button_text,
-  Empty_order_button_link,
-  Empty_order_text,
-  Button_edit_text,
-  Button_update_text,
-  Button_remove_text,
-  Button_add_new_address_text,
-  Button_save_text,
-  Button_cancel_text,
-  Button_track_package,
-  Button_track_package_text,
-  Button_buy_again_text,
-  Button_sold_out_text,
-  Button_view_all_orders_text,
-  text_connected,
-  text_not_connected,
-  text_more_address,
-  Address_tag: address_tag,
-  Label_order,
-  text_content,
-  text_estimated_delivery,
-  text_estimated_shipment,
-  text_delivered,
-  text_show_more_products_in_this_order,
-  text_hide_more_products_in_this_order,
-} = userAccountRecurData;
 
 const {
   Meta: { URL_slug: userAccountAddress_url },
@@ -404,41 +349,7 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
       </form>
     </Fragment>
 
-    <div
-      slot="noOrdersHTML"
-      class="dashboard-sec grid gap-5 justify-center text-center"
-    >
-      <div class="w-full max-h-[200px]">
-        {
-          async () => (
-            <img
-              class="w-full h-full"
-              src={await localizeCMSImage(empty_blob?.attributes.url)}
-              alt={empty_blob?.attributes.alternativeText}
-            />
-          )
-        }
-      </div>
-
-      <div
-        class:list={[
-          "recoleta prose leading-[110%] text-black",
-          "text-[clamp(1.125rem,1.5vw+0.15rem,1.5rem)]",
-        ]}
-      >
-        <Markdown>{Empty_order_text}</Markdown>
-      </div>
-
-      <a
-        href={Empty_order_button_link}
-        class:list={[
-          "px-[35px] sm:px-[50px] py-3 w-full sm:min-w-[230px] font-bold",
-          "leading-[150%] text-white bg-primary rounded-full",
-        ]}
-      >
-        {Empty_order_button_text}
-      </a>
-    </div>
+    <NoOrders slot="noOrdersHTML" {userAccountRecurData} />
   </Dashboard>
 </div>
 

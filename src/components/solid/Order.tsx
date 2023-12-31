@@ -1,6 +1,6 @@
-import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
 import { Match, Switch, createSignal } from "solid-js";
-import DashboardNotification from "./DashboardNotification";
+import DashboardNotification from "@solid/DashboardNotification";
+import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
 
 export default function Order({
   order,
