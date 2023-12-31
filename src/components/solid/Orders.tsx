@@ -1,20 +1,35 @@
+import { createEffect, createSignal } from "solid-js";
+
 import Order from "@solid/Order";
-import { user } from "@signals/user";
+import { ordersRange, setOrdersRange } from "@signals/ordersRange";
 
 export default function Orders({
   noOrdersHTML,
   recurringImages,
   userAccountRecurData,
+  range,
 }) {
+  setOrdersRange(range);
+
+  const [orders, setOrders] = createSignal(null);
+
+  createEffect(() => {
+    const searchParams = new URLSearchParams({ range: ordersRange() || range });
+
+    fetch("/api/orders?" + searchParams.toString())
+      .then((res) => res.json())
+      .then((data) => setOrders(data));
+  });
+
   return (
     <>
-      {!Array.isArray(user().orders) ? (
+      {!orders() ? (
         <div class="dashboard-sec">Loading...</div>
-      ) : user().orders.length === 0 ? (
+      ) : orders().length === 0 ? (
         noOrdersHTML
       ) : (
         <div class="dashboard-sec grid gap-[25px] sm:gap-[30px]">
-          {user().orders.map((order) => {
+          {orders().map((order) => {
             if (!Array.isArray(order)) {
               return (
                 <Order
@@ -26,14 +41,12 @@ export default function Orders({
             } else {
               const [year, ordersByMonths] = order;
 
-              return ordersByMonths.map(([month, orders]) => {
+              return ordersByMonths.map(([month, ordersByMonths]) => {
                 return (
                   <>
-                    <h2>
-                      {month + (user().orders.length > 1 ? " " + year : "")}
-                    </h2>
+                    <h2>{month + (orders().length > 1 ? " " + year : "")}</h2>
 
-                    {orders.map((order) => (
+                    {ordersByMonths.map((order) => (
                       <Order
                         order={order}
                         recurringImages={recurringImages}

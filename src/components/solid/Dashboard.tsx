@@ -1,5 +1,3 @@
-import { user } from "@signals/user";
-
 import Orders from "@solid/Orders";
 import UserInfo from "@solid/UserInfo";
 import DashboardKindnessCauses from "@solid/DashboardKindnessCauses";
@@ -41,6 +39,7 @@ export default function Dashboard({
         noOrdersHTML={noOrdersHTML}
         recurringImages={recurringImages}
         userAccountRecurData={userAccountRecurData}
+        range={null}
       />
     </div>
   );
