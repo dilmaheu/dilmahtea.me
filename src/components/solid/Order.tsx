@@ -131,9 +131,11 @@ export default function Order({
                   </div>
 
                   <button
-                    data-sku={`SKU`}
                     class="order-item-cart-btn"
                     disabled={soldOut}
+                    onclick={
+                      !soldOut && (() => window.addProductToCart(sku, quantity))
+                    }
                   >
                     {!soldOut ? Button_buy_again_text : Button_sold_out_text}
                     <span class="text-secondary-light">&#8226;</span>

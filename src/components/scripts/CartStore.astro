@@ -103,6 +103,15 @@ const products = Object.fromEntries(
     );
   };
 
+  window.addProductToCart = (sku, quantity) => {
+    const inCartProduct = window.cart[sku],
+      updatedQuantity = (quantity || 1) + (inCartProduct?.quantity || 0);
+
+    window.cart[sku] = { quantity: updatedQuantity };
+
+    window.openCart();
+  };
+
   window.checkoutInfo = JSON.parse(
     localStorage.getItem("checkout-info") || "{}",
   );
@@ -268,7 +277,7 @@ const products = Object.fromEntries(
             "€" + productData.price.toFixed(2).replace(".", ",");
         });
       } else {
-        window.addProductToCart(productId);
+        window.updateCartOverlay(productId);
 
         const newCartProductElement = id(productId),
           newProductAmountInput = newCartProductElement.querySelectorAll(

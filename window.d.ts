@@ -94,7 +94,8 @@ declare global {
     cookies: Cookies; // defined in Cookies.astro
     checkoutInfo: CheckoutInfo; // defined in CartStore.astro
     openCart: () => void; // defined in CartOverlay.astro
-    addProductToCart: (id: string) => void; // defined in CartOverlay.astro
+    updateCartOverlay: (id: string) => void; // defined in CartOverlay.astro
+    addProductToCart: (sku: string, quantity?: number) => void; // defined in CartStore.astro
     replacePlaceholders: (
       content: string,
       data: Record<string, string | number>,
