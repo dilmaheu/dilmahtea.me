@@ -11,8 +11,6 @@ const { title, intro, button_text, button_link, blob, background_img } =
 ---
 
 <style lang="scss">
-  @use "src/styles/poly-fluid" as *;
-
   .banner-container {
     width: 100%;
     height: 100%;
@@ -32,26 +30,6 @@ const { title, intro, button_text, button_link, blob, background_img } =
     @media (min-width: 640px) {
       clip-path: url(#banner-bg-curve);
     }
-  }
-
-  .banner-title {
-    font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
-  }
-
-  .banner-intro {
-    @apply text-[clamp(1rem,1.5vw+0.15rem,1.5rem)] leading-[130%]
-      line-clamp-5 sm:line-clamp-3 md:line-clamp-5 overflow-hidden;
-  }
-
-  .blob-banner-content-container,
-  .blob-banner-blob-container {
-    padding: poly-fluid-clamp(
-      (
-        640px: 25px,
-        1440px: 60px,
-      )
-    );
-    @apply px-0;
   }
 </style>
 
@@ -82,8 +60,8 @@ const { title, intro, button_text, button_link, blob, background_img } =
 
   <div
     class:list={[
-      "relative w-full bg-primary",
-      blob ? "blob-banner-content-container" : "h-full",
+      "relative w-full section-in-v-pad-sm bg-primary",
+      background_img && "h-full",
     ]}
   >
     <div class="h-full flex flex-wrap items-center">
@@ -96,19 +74,11 @@ const { title, intro, button_text, button_link, blob, background_img } =
         {/* Text Content */}
         <div
           class:list={[
-            "w-full grid z-20",
-            intro ? "gap-[15px]" : "gap-[25px]",
-            blob ? "sm:w-1/2 sm:order-2 pt-[25px] pb-16 sm:py-0" : "py-[20px]",
+            "division-in-gap flex flex-col w-full z-20",
+            blob && "sm:w-1/2 sm:order-2 pt-[25px] pb-[50px]",
           ]}
         >
-          <h2
-            class:list={[
-              "recoleta font-semibold leading-[130%] w-full",
-              blob
-                ? "heading-primary text-white"
-                : "banner-title text-secondary",
-            ]}
-          >
+          <h2 class="recoleta text-h2 text-white">
             {title}
           </h2>
 
@@ -116,8 +86,8 @@ const { title, intro, button_text, button_link, blob, background_img } =
             intro && (
               <div
                 class:list={[
-                  "banner-intro hero-text prose max-w-none ",
-                  blob ? "text-white" : "text-secondary",
+                  "intro-text-dark-link overflow-hidden",
+                  "text-white line-clamp-5 sm:line-clamp-3 md:line-clamp-5",
                 ]}
               >
                 <Markdown>{intro}</Markdown>
@@ -130,9 +100,8 @@ const { title, intro, button_text, button_link, blob, background_img } =
               <a
                 href={button_link}
                 class:list={[
-                  "flex w-fit font-bold leading-[150%]",
-                  "text-primary py-[10px] px-[35px] rounded-full",
-                  blob ? "bg-white" : "bg-secondary mx-auto",
+                  "w-fit button-default",
+                  background_img && "mx-auto min-w-[150px]",
                 ]}
               >
                 {button_text}
@@ -144,22 +113,13 @@ const { title, intro, button_text, button_link, blob, background_img } =
         {/* Background Image */}
         {
           background_img && (
-            <>
-              <div class="absolute inset-0 w-full h-full">
-                <Picture
-                  alt=""
-                  layout="fill"
-                  src={STRAPI_URL + background_img.data.attributes.url}
-                />
-              </div>
-
-              <div
-                class:list={[
-                  "absolute inset-0 w-full h-full",
-                  "bg-gradient-to-b from-black/40 to-black/40",
-                ]}
+            <div class="absolute inset-0 w-full h-full brightness-[.7]">
+              <Picture
+                alt=""
+                layout="fill"
+                src={STRAPI_URL + background_img.data.attributes.url}
               />
-            </>
+            </div>
           )
         }
 
@@ -167,7 +127,7 @@ const { title, intro, button_text, button_link, blob, background_img } =
         {
           blob && (
             <div class="hidden sm:flex sm:w-1/2 aspect-[6/5] flex items-center">
-              <div class="blob-banner-blob-container absolute left-0 w-full h-full">
+              <div class="section-in-v-pad-sm absolute left-0 w-full h-full">
                 <div class="h-full aspect-[6/5] my-auto grid items-center">
                   <div class="sm:max-w-[48vw]">
                     <ClippedPicture
@@ -198,7 +158,7 @@ const { title, intro, button_text, button_link, blob, background_img } =
   {/* Blob Image - Mobile View */}
   {
     blob && (
-      <div class="hero-img-sm-container block sm:hidden relative -mt-16 z-20 w-full">
+      <div class="hero-img-sm-container block sm:hidden relative -mt-[50px] z-20 w-full">
         <ClippedPicture
           id="blob-banner-blob-curve-sm"
           alt={blob.data.attributes.alternativeText}
