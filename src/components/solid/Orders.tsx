@@ -19,8 +19,6 @@ export default function Orders({
 
   return (
     <div id="month-1" class="dashboard-sec grid gap-[25px] sm:gap-[30px]">
-      <h3>January 2022</h3>
-
       <div class="order-item pb-[25px] sm:pb-[30px] border-b border-primary-light">
         <div class="flex flex-wrap items-center gap-[5px] sm:gap-2.5 justify-between">
           <div class="grid gap-[5px] sm:gap-2.5">
