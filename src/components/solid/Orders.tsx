@@ -15,7 +15,7 @@ export default function Orders({
       ) : (
         <div class="dashboard-sec grid gap-[25px] sm:gap-[30px]">
           {user().orders.map((order) => {
-            if (!(order instanceof Array)) {
+            if (!Array.isArray(order)) {
               return (
                 <Order
                   order={order}
@@ -24,7 +24,7 @@ export default function Orders({
                 />
               );
             } else {
-              const [month, ...orders] = order;
+              const [month, orders] = order;
 
               return (
                 <>
