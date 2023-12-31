@@ -18,231 +18,232 @@ const recurData = CMS.get("recurringElement", locale),
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
-<ClipPathSVG
-  id="product-card-curve"
-  path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
-/>
+<div>
+  <ClipPathSVG
+    id="product-card-curve"
+    path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
+  />
 
-<div
-  role="list"
-  class="grid grid-cols-2 lg:grid-cols-3 card-gap overflow-hidden"
->
-  {
-    products.slice(0, 3).map((product) => {
-      const {
-        SKU,
-        Title,
-        Intro_blob,
-        size,
-        Price,
-        VatPercentage,
-        Weight_tea,
-        Weight_tea_unit,
-        variant,
-        Stock_amount,
-        In_stock_date,
-        productSize,
-        availableFormats,
-        estate_name,
-        Meta: { URL_slug },
-      } = product;
+  <div
+    role="list"
+    class="grid grid-cols-2 lg:grid-cols-3 card-gap overflow-hidden"
+  >
+    {
+      products.slice(0, 3).map((product) => {
+        const {
+          SKU,
+          Title,
+          Intro_blob,
+          size,
+          Price,
+          VatPercentage,
+          Weight_tea,
+          Weight_tea_unit,
+          variant,
+          Stock_amount,
+          In_stock_date,
+          productSize,
+          availableFormats,
+          estate_name,
+          Meta: { URL_slug },
+        } = product;
 
-      const availableFormatsCount = availableFormats.length;
+        const availableFormatsCount = availableFormats.length;
 
-      const [_, productPriceIncludingTax] = getPriceIncludingTax({
-        Price,
-        VatPercentage,
-        quantity: 1,
-      });
+        const [_, productPriceIncludingTax] = getPriceIncludingTax({
+          Price,
+          VatPercentage,
+          quantity: 1,
+        });
 
-      return (
-        <div
-          role="listitem"
-          class="product-card link-section"
-        >
-          <div class="product-card-image-container">
-            <Picture
-              layout="fullWidth"
-              alt={Intro_blob.data.attributes.alternativeText}
-              src={STRAPI_URL + Intro_blob.data.attributes.url}
-              attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-              sizes={[
-                "(min-width: 1024px) calc((100vw - min(200px, 10vw) - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
-                "(min-width: 640px) calc(45vw - 16px)",
-                "min(90vw, 380px)",
-              ].join(", ")}
-            />
+        return (
+          <div role="listitem" class="product-card link-section">
+            <div class="product-card-image-container">
+              <Picture
+                layout="fullWidth"
+                alt={Intro_blob.data.attributes.alternativeText}
+                src={STRAPI_URL + Intro_blob.data.attributes.url}
+                attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
+                sizes={[
+                  "(min-width: 1024px) calc((100vw - min(200px, 10vw) - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
+                  "(min-width: 640px) calc(45vw - 16px)",
+                  "min(90vw, 380px)",
+                ].join(", ")}
+              />
 
-            {Stock_amount < 1 && (
-              <>
-                <div class="stock-out-label-top">
-                  {recurData.Product_sold_out_text}
-                </div>
+              {Stock_amount < 1 && (
+                <>
+                  <div class="stock-out-label-top">
+                    {recurData.Product_sold_out_text}
+                  </div>
 
-                {
-                  // hide label if in-stock date is in the past or undefined
-                  new Date(In_stock_date).getTime() > new Date().getTime() && (
-                    <div
-                      class={[
-                        "w-full bg-warning-light text-sm sm:text-base font-medium text-black",
-                        "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none",
-                      ].join(" ")}
-                    >
-                      <Icon
-                        name="mdi:alert-circle"
-                        class="inline-flex p-0.5 w-[26px] text-white bg-warning rounded-full select-none"
-                      />
-
-                      {recurData.Item_stock_text.replace(
-                        "<in_stock_date>",
-                        In_stock_date,
-                      )}
-                    </div>
-                  )
-                }
-              </>
-            )}
-          </div>
-
-          <div class:list={["card-content-container"]}>
-            <div class="product-card-content">
-              <div class="product-title">
-                <a
-                  aria-label={
-                    (Stock_amount < 1
-                      ? `${recurData.Product_sold_out_text}, `
-                      : "") + Title
-                  }
-                  class="main-link"
-                  href={URL_slug}
-                >
-                  {Title}
-                </a>
-              </div>
-
-              <div class="product-info">
-                {(productSize || Weight_tea) &&
-                  (productSize?.toLowerCase().includes("bag")
-                    ? size.data?.attributes.Title
-                    : Weight_tea + Weight_tea_unit)}
-
-                {variant.data?.attributes.Title && (
-                  <>
-                    &#x025CF;
-                    {variant.data?.attributes.Title}
-                  </>
-                )}
-              </div>
-
-              {availableFormatsCount > 0 && (
-                <div class="product-format">
-                  <span class="icon-container">
-                    {availableFormats
-                      .slice(0, 2)
-                      .map(async ({ thumbnail: { src, alt } }) => (
-                        <img
-                          src={await importImage(STRAPI_URL + src)}
-                          alt={alt}
-                          class="icon"
+                  {
+                    // hide label if in-stock date is in the past or undefined
+                    new Date(In_stock_date).getTime() >
+                      new Date().getTime() && (
+                      <div
+                        class={[
+                          "w-full bg-warning-light text-sm sm:text-base font-medium text-black",
+                          "absolute bottom-0 flex items-center gap-2.5 px-[34px] py-2.5 select-none",
+                        ].join(" ")}
+                      >
+                        <Icon
+                          name="mdi:alert-circle"
+                          class="inline-flex p-0.5 w-[26px] text-white bg-warning rounded-full select-none"
                         />
-                      ))}
 
-                    {availableFormatsCount > 2 && (
-                      <span class="number">+{availableFormatsCount - 2}</span>
-                    )}
-                  </span>
-
-                  <span class="desktop-only-text">
-                    {Stock_amount === 0
-                      ? recurData.Product_stock_available_text
-                      : recurData.Product_available_text}
-                  </span>
-
-                  <span
-                    class:list={[
-                      "desktop-only-text format-link-text",
-                      Stock_amount === 0 && "text-white",
-                    ]}
-                  >
-                    {availableFormatsCount === 1
-                      ? recurData.Product_other_formats_singular_text
-                      : recurData.Product_other_formats_text.replaceAll(
-                          "<count>",
-                          availableFormatsCount,
+                        {recurData.Item_stock_text.replace(
+                          "<in_stock_date>",
+                          In_stock_date,
                         )}
-                  </span>
-
-                  <span
-                    class:list={[
-                      "mobile-only-text format-link-text",
-                      Stock_amount === 0 && "text-white",
-                    ]}
-                  >
-                    {availableFormatsCount === 1
-                      ? recurData.Product_other_formats_singular_text_sm
-                      : recurData.Product_other_formats_text_sm.replaceAll(
-                          "<count>",
-                          availableFormatsCount,
-                        )}
-                  </span>
-                </div>
-              )}
-
-              {estate_name?.data.length > 0 && (
-                <div class="product-estate">
-                  <img class="icon" {...white_love} />
-
-                  <span class="hidden sm:inline">
-                    {recurData.product_made_love_from}
-                  </span>
-
-                  {estate_name?.data.map(
-                    (
-                      {
-                        attributes: {
-                          Estate_name,
-                          Meta: { URL_slug },
-                        },
-                      },
-                      index,
-                    ) => (
-                      <a href={URL_slug}>
-                        {Estate_name +
-                          (index === estate_name.data.length - 1 ? "" : ",")}
-                      </a>
-                    ),
-                  )}
-                </div>
+                      </div>
+                    )
+                  }
+                </>
               )}
             </div>
 
-            <button
-              data-sku={Stock_amount > 0 && SKU}
-              class:list={[
-                "unlink product-card-btn",
-                Stock_amount > 0
-                  ? "card-button-cart-default"
-                  : "card-button-cart-disabled",
-              ]}
-              disabled={Stock_amount === 0 && "disabled"}
-            >
-              <Icon name="mi:shopping-cart-add" class="cart-icon" />
+            <div class:list={["card-content-container"]}>
+              <div class="product-card-content">
+                <div class="product-title">
+                  <a
+                    aria-label={
+                      (Stock_amount < 1
+                        ? `${recurData.Product_sold_out_text}, `
+                        : "") + Title
+                    }
+                    class="main-link"
+                    href={URL_slug}
+                  >
+                    {Title}
+                  </a>
+                </div>
 
-              <div class="text-container">
-                <span>
-                  {Stock_amount > 0
-                    ? checkoutRecurData.text_add
-                    : recurData.Product_sold_out_text}
-                </span>
-                <span>&#x025CF;</span>
-                <span class="recoleta">
-                  {`€` + productPriceIncludingTax.toFixed(2).replace(".", ",")}
-                </span>
+                <div class="product-info">
+                  {(productSize || Weight_tea) &&
+                    (productSize?.toLowerCase().includes("bag")
+                      ? size.data?.attributes.Title
+                      : Weight_tea + Weight_tea_unit)}
+
+                  {variant.data?.attributes.Title && (
+                    <>
+                      &#x025CF;
+                      {variant.data?.attributes.Title}
+                    </>
+                  )}
+                </div>
+
+                {availableFormatsCount > 0 && (
+                  <div class="product-format">
+                    <span class="icon-container">
+                      {availableFormats
+                        .slice(0, 2)
+                        .map(async ({ thumbnail: { src, alt } }) => (
+                          <img
+                            src={await importImage(STRAPI_URL + src)}
+                            alt={alt}
+                            class="icon"
+                          />
+                        ))}
+
+                      {availableFormatsCount > 2 && (
+                        <span class="number">+{availableFormatsCount - 2}</span>
+                      )}
+                    </span>
+
+                    <span class="desktop-only-text">
+                      {Stock_amount === 0
+                        ? recurData.Product_stock_available_text
+                        : recurData.Product_available_text}
+                    </span>
+
+                    <span
+                      class:list={[
+                        "desktop-only-text format-link-text",
+                        Stock_amount === 0 && "text-white",
+                      ]}
+                    >
+                      {availableFormatsCount === 1
+                        ? recurData.Product_other_formats_singular_text
+                        : recurData.Product_other_formats_text.replaceAll(
+                            "<count>",
+                            availableFormatsCount,
+                          )}
+                    </span>
+
+                    <span
+                      class:list={[
+                        "mobile-only-text format-link-text",
+                        Stock_amount === 0 && "text-white",
+                      ]}
+                    >
+                      {availableFormatsCount === 1
+                        ? recurData.Product_other_formats_singular_text_sm
+                        : recurData.Product_other_formats_text_sm.replaceAll(
+                            "<count>",
+                            availableFormatsCount,
+                          )}
+                    </span>
+                  </div>
+                )}
+
+                {estate_name?.data.length > 0 && (
+                  <div class="product-estate">
+                    <img class="icon" {...white_love} />
+
+                    <span class="hidden sm:inline">
+                      {recurData.product_made_love_from}
+                    </span>
+
+                    {estate_name?.data.map(
+                      (
+                        {
+                          attributes: {
+                            Estate_name,
+                            Meta: { URL_slug },
+                          },
+                        },
+                        index,
+                      ) => (
+                        <a href={URL_slug}>
+                          {Estate_name +
+                            (index === estate_name.data.length - 1 ? "" : ",")}
+                        </a>
+                      ),
+                    )}
+                  </div>
+                )}
               </div>
-            </button>
+
+              <button
+                data-sku={Stock_amount > 0 && SKU}
+                class:list={[
+                  "unlink product-card-btn",
+                  Stock_amount > 0
+                    ? "card-button-cart-default"
+                    : "card-button-cart-disabled",
+                ]}
+                disabled={Stock_amount === 0 && "disabled"}
+              >
+                <Icon name="mi:shopping-cart-add" class="cart-icon" />
+
+                <div class="text-container">
+                  <span>
+                    {Stock_amount > 0
+                      ? checkoutRecurData.text_add
+                      : recurData.Product_sold_out_text}
+                  </span>
+                  <span>&#x025CF;</span>
+                  <span class="recoleta">
+                    {`€` +
+                      productPriceIncludingTax.toFixed(2).replace(".", ",")}
+                  </span>
+                </div>
+              </button>
+            </div>
           </div>
-        </div>
-      );
-    })
-  }
+        );
+      })
+    }
+  </div>
 </div>
