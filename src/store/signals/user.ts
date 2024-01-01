@@ -1,5 +1,17 @@
 import { createEffect, createSignal } from "solid-js";
 
+function handleEmptyFields(obj) {
+  Object.keys(obj).forEach((key) => {
+    if (!obj[key]) {
+      obj[key] = "N/A";
+    } else if (obj[key].constructor === Object) {
+      handleEmptyFields(obj[key]);
+    }
+  });
+
+  return obj;
+}
+
 const [user, setUser] = createSignal<Record<string, any>>(
   new Proxy({}, { get: () => "…" }),
 );
@@ -7,16 +19,9 @@ const [user, setUser] = createSignal<Record<string, any>>(
 createEffect(() => {
   if (window.cookies.isAuthenticated === "true") {
     fetch("/account/user")
-      .then((response) => response.json())
-      .then((user: any) => {
-        Object.keys(user).forEach((key) => {
-          if (!user[key]) {
-            user[key] = "N/A";
-          }
-        });
-
-        setUser(user);
-      });
+      .then((response) => response.text())
+      .then(handleEmptyFields)
+      .then(setUser);
   }
 });
 
