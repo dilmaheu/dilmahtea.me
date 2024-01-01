@@ -3,8 +3,9 @@ import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
 import Orders from "@solid/Orders";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
+import OrderMonths from "@solid/OrderMonths";
 import NoOrders from "@components/NoOrders.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
 
 const { green_right_arrow } = RecurringImages;
 
@@ -184,38 +185,7 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
         Chapters
       </h3>
 
-      <div
-        role="list"
-        class="heading-content flex flex-col gap-[15px] text-2xl leading-[130%] lg:leading-[150%] overflow-y-auto"
-      >
-        <a
-          role="listitem"
-          href="#month-1"
-          class="flex items-center text-black-light font-bold text-primary"
-        >
-          <div
-            class="w-[clamp(37px,4.6875vw-18.75px,45px)] mr-[clamp(10px,4.6875vw-43.75px,20px);] lnline-flex"
-          >
-            <img {...green_right_arrow} />
-          </div>
-
-           January
-        </a>
-
-        <a
-          role="listitem"
-          href={`#`}
-          class="flex items-center text-black-light"
-        >
-          <div
-            class="w-[clamp(37px,4.6875vw-18.75px,45px)] mr-[clamp(10px,4.6875vw-43.75px,20px);] lnline-flex opacity-0"
-          >
-            <img {...green_right_arrow} />
-          </div>
-
-           February
-        </a>
-      </div>
+      <OrderMonths client:load {green_right_arrow} />
     </div>
 
     <div
