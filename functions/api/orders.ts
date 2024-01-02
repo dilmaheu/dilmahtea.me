@@ -19,10 +19,10 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   const shouldLimit = !!new URL(request.url).searchParams.get("limit");
 
   const { results: orders } = await env.USERS.prepare(
-    "SELECT * FROM orders WHERE customer_email = COALESCE(?, customer_email) OR customer_email = COALESCE(?, customer_email) ORDER BY order_date DESC" +
-      shouldLimit
-      ? " LIMIT 4" // the 4th order is just for enabling the "View all orders" link
-      : "",
+    "SELECT * FROM orders WHERE customer_email = COALESCE(?, customer_email) OR customer_phone = COALESCE(?, customer_phone) ORDER BY order_date DESC" +
+      (shouldLimit
+        ? " LIMIT 4" // the 4th order is just for enabling the "View all orders" link
+        : ""),
   )
     .bind(email, phone)
     .all();
