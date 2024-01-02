@@ -12,7 +12,7 @@ export default function Orders({
   isOrdersPage,
 }) {
   createEffect(() => {
-    fetch("/api/orders" + (isOrdersPage ? "" : "?limit"))
+    fetch("/api/orders" + (isOrdersPage ? "" : "?limit=true"))
       .then((res) => res.json())
       .then((orders) => {
         if (orders.constructor === Object) {
