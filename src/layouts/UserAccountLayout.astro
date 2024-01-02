@@ -8,8 +8,10 @@ import ChaptersFunctionality from "@scripts/ChaptersFunctionality.astro";
 
 const { page, headings } = Astro.props;
 
-const recurData = CMS.get("recurringElement", page.locale),
-  userAccountDashboard = CMS.get("userAccountDashboard", page.locale);
+const { locale, type, Breadcrumb } = page;
+
+const recurData = CMS.get("recurringElement", locale),
+  userAccountDashboard = CMS.get("userAccountDashboard", locale),
 
 const { Support, Support_visibility } = userAccountDashboard;
 
@@ -125,12 +127,12 @@ const headingName = recurData.text_chapter;
 
 <div class="wrapper">
   {
-    page.Breadcrumb && (
+    Breadcrumb && (
       <div
         role="banner"
         class="flex flex-wrap gap-2 recoleta text-2xl leading-[110%] text-primary mt-[25px]"
       >
-        {page.Breadcrumb?.Steps.map(({ Link, Name }, index) => (
+        {Breadcrumb?.Steps.map(({ Link, Name }, index) => (
           <div class="flex items-center gap-2">
             {index > 0 && (
               <svg
@@ -152,15 +154,11 @@ const headingName = recurData.text_chapter;
 </div>
 
 <section class="py-[50px]">
-  {
-    headings.length > 0 && (
-      <Chapters
-        fixedTop={true}
-        headingName={headingName}
-        staticHeadings={headings}
-      />
-    )
-  }
+  <Chapters
+    fixedTop={true}
+    headingName={headingName}
+    staticHeadings={headings}
+  />
 
   <div
     class="wrapper w-full flex flex-col-reverse md:flex-row justify-between gap-[30px]"
@@ -171,15 +169,13 @@ const headingName = recurData.text_chapter;
       </div>
     </div>
 
-    {
-      headings.length > 0 && (
-        <Chapters
-          headingName={headingName}
-          staticHeadings={headings}
-          desktopOnly={true}
-        />
-      )
-    }
+    <Chapters
+      headingName={headingName}
+      staticHeadings={headings}
+      desktopOnly={true}
+    >
+      <slot name="top-slot" slot="top-slot" />
+    </Chapters>
   </div>
 </section>
 
@@ -206,4 +202,4 @@ const headingName = recurData.text_chapter;
   )
 }
 
-{headings.length > 0 && <ChaptersFunctionality />}
+{headings?.length > 0 && <ChaptersFunctionality />}
