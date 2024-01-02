@@ -6,6 +6,16 @@ declare interface Env {
   USERS: D1Database;
 }
 
+function convertISODate(ISO_date) {
+  const date = new Date(ISO_date);
+
+  const day = date.getDate(),
+    month = date.toLocaleString("en-US", { month: "short" }),
+    year = date.getFullYear();
+
+  return `${day}-${month}-${year}`;
+}
+
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
 
@@ -29,6 +39,10 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   orders.forEach((order) => {
     order.items = JSON.parse(order.items as string);
+
+    ["estimated_shipment_date", "estimated_delivery_date", "delivery_date"].map(
+      (key) => (order[key] &&= convertISODate(order[key])),
+    );
   });
 
   if (!shouldLimit) {
