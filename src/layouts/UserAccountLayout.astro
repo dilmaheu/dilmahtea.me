@@ -1,34 +1,19 @@
 ---
-import Navbar from "@components/Navbar.astro";
-import Footer from "@components/Footer.astro";
-import CartOverlay from "@components/CartOverlay.astro";
+import CMS from "@store/CMS";
 
-import BaseLayout from "@layouts/BaseLayout.astro";
+import Chapters from "@components/Chapters.astro";
 
-interface Props {
-  page: Record<string, any>;
-  meta: Record<string, any>;
-  locale: string;
-  recurData: Record<string, any>;
-  metaImageSrc: string;
-  alternateURLs: { [locale: string]: string };
-  availableLocales: string[];
-}
+import localizeCMSImage from "@utils/localizeCMSImage";
+import ChaptersFunctionality from "@scripts/ChaptersFunctionality.astro";
 
-const {
-  page,
-  meta,
-  locale,
-  recurData,
-  alternateURLs,
-  availableLocales,
-  metaImageSrc,
-} = Astro.props as Props;
+const { page, headings } = Astro.props;
 
-const footerText = recurData.Footer_text.replaceAll(
-  "<current_year>",
-  `${new Date().getFullYear()}`,
-);
+const recurData = CMS.get("recurringElement", page.locale),
+  userAccountDashboard = CMS.get("userAccountDashboard", page.locale);
+
+const { Support, Support_visibility } = userAccountDashboard;
+
+const headingName = recurData.text_chapter;
 ---
 
 <style lang="scss" is:global>
@@ -160,64 +145,89 @@ const footerText = recurData.Footer_text.replaceAll(
   }
 </style>
 
-<BaseLayout
-  page={page}
-  meta={meta}
-  locale={locale}
-  alternateURLs={alternateURLs}
-  metaImageSrc={metaImageSrc}
->
-  <div class="flex flex-wrap w-full h-full">
-    <div class="block w-full bg-secondary">
-      <Navbar
-        page={page}
-        docLocale={locale}
-        footerText={footerText}
-        isUserAccountNavbar={true}
-        availableLocales={availableLocales}
-      />
+<div class="hero-sub-menu-shadow nav-bg"></div>
 
-      <div class="relative">
-        <div class="hero-sub-menu-shadow nav-bg hidden"></div>
-      </div>
-
-      <main>
-        <div class="wrapper">
-          {
-            page.Breadcrumb && (
-              <div
-                role="banner"
-                class="flex flex-wrap gap-2 recoleta text-2xl leading-[110%] text-primary mt-[25px]"
+<div class="wrapper">
+  {
+    page.Breadcrumb && (
+      <div
+        role="banner"
+        class="flex flex-wrap gap-2 recoleta text-2xl leading-[110%] text-primary mt-[25px]"
+      >
+        {page.Breadcrumb?.Steps.map(({ Link, Name }, index) => (
+          <div class="flex items-center gap-2">
+            {index > 0 && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="8"
+                height="17"
+                viewBox="0 0 8 16.7"
+                class="fill-primary"
               >
-                {page.Breadcrumb?.Steps.map((step, index) => (
-                  <div class="flex items-center gap-2">
-                    {index > 0 && (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="8"
-                        height="17"
-                        viewBox="0 0 8 16.7"
-                      >
-                        <path
-                          d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
-                          style="fill:#2b4b50"
-                        />
-                      </svg>
-                    )}
-                    <a href={step.Link}>{step.Name}</a>
-                  </div>
-                ))}
-              </div>
-            )
-          }
-        </div>
+                <path d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z" />
+              </svg>
+            )}
+            <a href={Link || "#"}>{Name}</a>
+          </div>
+        ))}
+      </div>
+    )
+  }
+</div>
 
+<section class="py-[50px]">
+  {
+    headings.length > 0 && (
+      <Chapters
+        fixedTop={true}
+        headingName={headingName}
+        staticHeadings={headings}
+      />
+    )
+  }
+
+  <div
+    class="wrapper w-full flex flex-col-reverse md:flex-row justify-between gap-[30px]"
+  >
+    <div class="md:w-2/3 2xl:w-1/2 md:min-w-[400px]">
+      <div class="xl:w-5/6 2xl:w-full">
         <slot />
-      </main>
+      </div>
     </div>
 
-    <Footer footerText={footerText} recurData={recurData} />
+    {
+      headings.length > 0 && (
+        <Chapters
+          headingName={headingName}
+          staticHeadings={headings}
+          desktopOnly={true}
+        />
+      )
+    }
   </div>
+</section>
 
-  <CartOverlay page={page} />
-</BaseLayout>
+{
+  Support_visibility && Support && (
+    <div class="z-[999] fixed bottom-[clamp(15px,3vw+5px,50px)] right-[clamp(15px,3vw+5px,50px)]">
+      <a href={Support.Button_link}>
+        <div class="flex items-center gap-4 p-5 md:py-5 md:px-[34px] rounded-full bg-[#3C994E]">
+          <div class="w-[45px] h-[45px]">
+            <img
+              class="w-full h-full object-contain"
+              src={await localizeCMSImage(
+                Support.Button_icon.data.attributes.url,
+              )}
+              alt={Support.Button_icon?.data?.attributes?.alternativeText}
+            />
+          </div>
+          <div class="hidden md:block text-3xl text-white">
+            {Support.Button_text}
+          </div>
+        </div>
+      </a>
+    </div>
+  )
+}
+
+{headings.length > 0 && <ChaptersFunctionality />}
