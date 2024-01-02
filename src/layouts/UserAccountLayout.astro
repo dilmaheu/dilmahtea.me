@@ -12,10 +12,13 @@ const { locale, type, Breadcrumb } = page;
 
 const recurData = CMS.get("recurringElement", locale),
   userAccountDashboard = CMS.get("userAccountDashboard", locale),
+  userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
 
 const { Support, Support_visibility } = userAccountDashboard;
 
-const headingName = recurData.text_chapter;
+const headingName =
+  (type === "accountOrders" && userAccountRecurData.text_orders_timeline) ||
+  recurData.text_chapter;
 ---
 
 <style lang="scss" is:global>
