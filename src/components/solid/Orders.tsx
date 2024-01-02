@@ -29,7 +29,7 @@ export default function Orders({
         noOrdersHTML
       ) : (
         <div class="dashboard-sec grid gap-[25px] sm:gap-[30px]">
-          {orders().map((order) => {
+          {orders().map((order, i) => {
             if (!Array.isArray(order)) {
               return (
                 <Order
@@ -53,6 +53,17 @@ export default function Orders({
                         userAccountRecurData={userAccountRecurData}
                       />
                     ))}
+
+                    {i > 2 && (
+                      <div class="flex justify-center">
+                        <a
+                          href="/account/orders"
+                          class="font-bold leading-[150%] text-primary"
+                        >
+                          {userAccountRecurData.Button_view_all_orders_text}
+                        </a>
+                      </div>
+                    )}
                   </>
                 );
               });
