@@ -1,10 +1,9 @@
 ---
-import { Img, Picture } from "astro-imagetools/components";
+import { Picture } from "astro-imagetools/components";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
-import localizeCMSImage from "@utils/localizeCMSImage";
 import getUserAccountPagesLink from "@utils/getUserAccountPagesLink";
 
 import Dashboard from "@solid/Dashboard.astro";
@@ -12,14 +11,21 @@ import Dashboard from "@solid/Dashboard.astro";
 import Markdown from "@components/Markdown.astro";
 import NoOrders from "@components/NoOrders.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import UserAccountLayout from "@layouts/UserAccountLayout.astro";
 
 const { success_notification, warning_notification, error_notification } =
   RecurringImages;
 
-const { page, recurData } = Astro.props;
+const { page } = Astro.props;
 
-const { kindnessCauses, Block2, Support_visibility, Support } = page,
-  { locale } = page,
+const {
+    locale,
+    Personal_information,
+    kindnessCauses,
+    Block2_visibility,
+    Block2,
+    Block3_title,
+  } = page,
   { STRAPI_URL } = import.meta.env;
 
 const userAccountRecurData = CMS.get("userAccountRecurringElement", locale),
@@ -29,9 +35,13 @@ const {
   Meta: { URL_slug: userAccountAddress_url },
 } = userAccountAddress;
 
-const headingName = recurData.text_chapter;
-
 const verificationHref = getUserAccountPagesLink("verification", locale);
+
+const headings = new Array(
+  Personal_information?.Name,
+  Block2_visibility && Block2?.Block2_title,
+  Block3_title,
+);
 ---
 
 <style lang="scss">
@@ -107,7 +117,7 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
   path="M0.517,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 S0.002,0.495,0.018,0.737 S0.182,1,0.528,1 c0.286,0,0.375,-0.063,0.447,-0.282 c0.031,-0.094,0.047,-0.323,-0.029,-0.591 C0.898,-0.045,0.734,0.008,0.517,0.008"
 />
 
-<div class="wrapper py-[50px] w-full flex flex-col-reverse md:flex-row">
+<UserAccountLayout page={page} headings={headings}>
   <Dashboard
     {page}
     {verificationHref}
@@ -120,9 +130,9 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
   >
     <Fragment slot="kindnessCausesHTML">
       {
-        Block2.Block2_text && (
+        Block2?.Block2_text && (
           <div class="hero-text text-black block prose max-w-none">
-            <Markdown>{Block2.Block2_text}</Markdown>
+            <Markdown>{Block2?.Block2_text}</Markdown>
           </div>
         )
       }
@@ -134,13 +144,13 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
           <div>
             <div class="flex flex-wrap items-center justify-between gap-[7px]">
               <h3 class="text-lg font-bold leading-[150%]">
-                {Block2.Label_my_selected_cause}
+                {Block2?.Label_my_selected_cause}
               </h3>
 
               <div
                 class="cause-form-txt text-black-light w-full prose max-w-none"
               >
-                <Markdown>{Block2.My_selected_cause_text}</Markdown>
+                <Markdown>{Block2?.My_selected_cause_text}</Markdown>
               </div>
             </div>
 
@@ -233,11 +243,11 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
 
           <div>
             <h3 class="text-lg font-bold leading-[150%] cursor-pointer">
-              {Block2.Label_let_dilmah_pick_cause}
+              {Block2?.Label_let_dilmah_pick_cause}
             </h3>
 
             <div class="cause-form-txt text-black-light prose max-w-none">
-              <Markdown>{Block2.Let_dilmah_pick_cause_text}</Markdown>
+              <Markdown>{Block2?.Let_dilmah_pick_cause_text}</Markdown>
             </div>
           </div>
         </label>
@@ -246,27 +256,4 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
 
     <NoOrders slot="noOrdersHTML" {userAccountRecurData} />
   </Dashboard>
-</div>
-
-{
-  Support_visibility && Support && (
-    <div class="z-[999] fixed bottom-[clamp(15px,3vw+5px,50px)] right-[clamp(15px,3vw+5px,50px)]">
-      <a href={Support.Button_link}>
-        <div class="flex items-center gap-4 p-5 md:py-5 md:px-[34px] rounded-full bg-[#3C994E]">
-          <div class="w-[45px] h-[45px]">
-            <img
-              class="w-full h-full object-contain"
-              src={await localizeCMSImage(
-                Support.Button_icon.data.attributes.url,
-              )}
-              alt={Support.Button_icon?.data?.attributes?.alternativeText}
-            />
-          </div>
-          <div class="hidden md:block text-3xl text-white">
-            {Support.Button_text}
-          </div>
-        </div>
-      </a>
-    </div>
-  )
-}
+</UserAccountLayout>
