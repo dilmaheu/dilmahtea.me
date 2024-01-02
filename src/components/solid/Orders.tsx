@@ -2,23 +2,18 @@ import { createEffect } from "solid-js";
 
 import Order from "@solid/Order";
 
-import {
-  orders,
-  setOrders,
-  ordersRange,
-  setOrdersRange,
-} from "@signals/orders";
+import { orders, setOrders, ordersYear, setOrdersYear } from "@signals/orders";
 
 export default function Orders({
   noOrdersHTML,
   recurringImages,
   userAccountRecurData,
-  range,
+  year,
 }) {
-  setOrdersRange(range);
+  setOrdersYear(year);
 
   createEffect(() => {
-    const searchParams = new URLSearchParams({ range: ordersRange() || range });
+    const searchParams = new URLSearchParams({ year: ordersYear() || year });
 
     fetch("/api/orders?" + searchParams.toString())
       .then((res) => res.json())
@@ -33,54 +28,59 @@ export default function Orders({
         noOrdersHTML
       ) : (
         <div class="dashboard-sec grid gap-[25px] sm:gap-[30px]">
-          {orders().map((order, i) => {
-            if (!Array.isArray(order)) {
-              return (
-                <Order
-                  order={order}
-                  recurringImages={recurringImages}
-                  userAccountRecurData={userAccountRecurData}
-                />
-              );
-            } else {
-              const [year, ordersByMonths] = order;
+          {!ordersYear() && orders().length > 3 && (
+            <div class="flex justify-center">
+              <a
+                href="/account/orders"
+                class="font-bold leading-[150%] text-primary"
+              >
+                {userAccountRecurData.Button_view_all_orders_text}
+              </a>
+            </div>
+          )}
 
-              return ordersByMonths.map(([month, ordersByMonths]) => {
-                const shouldShowYear = orders().length > 1;
-
+          {orders()
+            .slice(0, !ordersYear() ? 3 : undefined)
+            .map((order, i) => {
+              if (!ordersYear()) {
                 return (
-                  <>
-                    <h2
-                      id={
-                        month.toLowerCase() + (shouldShowYear ? "-" + year : "")
-                      }
-                    >
-                      {month + (shouldShowYear ? " " + year : "")}
-                    </h2>
-
-                    {ordersByMonths.map((order) => (
-                      <Order
-                        order={order}
-                        recurringImages={recurringImages}
-                        userAccountRecurData={userAccountRecurData}
-                      />
-                    ))}
-
-                    {i > 2 && (
-                      <div class="flex justify-center">
-                        <a
-                          href="/account/orders"
-                          class="font-bold leading-[150%] text-primary"
-                        >
-                          {userAccountRecurData.Button_view_all_orders_text}
-                        </a>
-                      </div>
-                    )}
-                  </>
+                  i < 3 && (
+                    <Order
+                      order={order}
+                      recurringImages={recurringImages}
+                      userAccountRecurData={userAccountRecurData}
+                    />
+                  )
                 );
-              });
-            }
-          })}
+              } else {
+                const [year, ordersByMonths] = order;
+
+                return ordersByMonths.map(([month, ordersByMonths]) => {
+                  const shouldShowYear = orders().length > 1;
+
+                  return (
+                    <>
+                      <h2
+                        id={
+                          month.toLowerCase() +
+                          (shouldShowYear ? "-" + year : "")
+                        }
+                      >
+                        {month + (shouldShowYear ? " " + year : "")}
+                      </h2>
+
+                      {ordersByMonths.map((order) => (
+                        <Order
+                          order={order}
+                          recurringImages={recurringImages}
+                          userAccountRecurData={userAccountRecurData}
+                        />
+                      ))}
+                    </>
+                  );
+                });
+              }
+            })}
         </div>
       )}
     </>
