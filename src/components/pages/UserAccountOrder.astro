@@ -3,6 +3,8 @@ import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
 import Orders from "@solid/Orders";
+import OrdersTimeline from "@solid/OrdersTimeline";
+
 import NoOrders from "@components/NoOrders.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
@@ -16,31 +18,6 @@ const { page } = Astro.props,
 const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
 ---
 
-<style lang="scss">
-  .month-container {
-    @apply grid grid-cols-[repeat(auto-fit,minmax(90px,1fr))] gap-[15px] items-center w-full;
-
-    .state-button {
-      @apply py-2.5 px-5 text-black-light font-medium text-center cursor-not-allowed rounded-full;
-
-      &.selected,
-      &.active {
-        color: white !important;
-        cursor: pointer !important;
-      }
-
-      &.selected {
-        background-color: #547b7d !important;
-      }
-
-      &.active {
-        background-color: #1e4848 !important;
-        font-weight: bold;
-      }
-    }
-  }
-</style>
-
 <ClipPathSVG
   id="orders-blob-curve"
   path="M0.517,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 S0.002,0.495,0.018,0.737 S0.182,1,0.528,1 c0.286,0,0.375,-0.063,0.447,-0.282 c0.031,-0.094,0.047,-0.323,-0.029,-0.591 C0.898,-0.045,0.734,0.008,0.517,0.008"
@@ -48,7 +25,7 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
 
 <UserAccountLayout page={page}>
   <Fragment>
-    <div class="md:hidden w-full">
+    <!-- <div class="md:hidden w-full">
       <div class="flex justify-end mb-[30px]">
         <button
           id="orders-timeline-sm-open-btn"
@@ -121,22 +98,22 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
           </div>
 
           <div class="month-container">
-            <div class="state-button selected">Jan</div>
-            <div class="state-button active">Feb</div>
-            <div class="state-button selected">Mar</div>
-            <div class="state-button selected">Apr</div>
-            <div class="state-button">May</div>
-            <div class="state-button">Jun</div>
-            <div class="state-button">Jul</div>
-            <div class="state-button">Aug</div>
-            <div class="state-button">Sep</div>
-            <div class="state-button">Oct</div>
-            <div class="state-button">Nov</div>
-            <div class="state-button">Dec</div>
+            <a href="#january">Jan</a>
+            <a href="#february">Feb</a>
+            <a href="#march">Mar</a>
+            <a href="#april">Apr</a>
+            <a href="#may">May</a>
+            <a href="#june">Jun</a>
+            <a href="#july">Jul</a>
+            <a href="#august">Aug</a>
+            <a href="#september">Sep</a>
+            <a href="#october">Oct</a>
+            <a href="#november">Nov</a>
+            <a href="#december">Dec</a>
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <h1 class="dashboard-sec-title recoleta">
       {Title}
@@ -144,7 +121,7 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
 
     <section class="grid gap-[25px] sm:gap-[30px]">
       <Orders
-        client:only
+        client:load
         recurringImages={RecurringImages}
         {userAccountRecurData}
         isOrdersPage={true}
@@ -159,60 +136,11 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
     id="orders-timeline"
     class="grid gap-[25px] lg:gap-[30px] p-[35px] bg-secondary-light rounded-[10px]"
   >
-    <div class="flex items-center justify-between gap-2.5">
-      <svg
-        id="year-selector-arrow-left"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 8 14"
-        class="w-[18px] h-[18px] fill-primary cursor-pointer"
-      >
-        <path
-          d="M7.7,13.7a1.1,1.1,0,0,0,.3-.8,1.1,1.1,0,0,0-.3-.7L2.5,7,7.7,1.8A1.1,1.1,0,0,0,8,1,1.1,1.1,0,0,0,7.7.3,1.1,1.1,0,0,0,7,0a1.1,1.1,0,0,0-.8.3L.3,6.2A1.1,1.1,0,0,0,0,7a.9.9,0,0,0,.3.7l5.9,6A1.1,1.1,0,0,0,7,14a1.1,1.1,0,0,0,.7-.3Z"
-        ></path>
-      </svg>
-
-      <select
-        id="year-selector"
-        class:list={[
-          "grow text-[clamp(1.25rem,1.5vw+0.15rem,1.5rem)] font-bold",
-          "text-primary text-center bg-transparent appearance-none",
-        ]}
-      >
-        <option class="select-none">2021</option>
-        <option class="select-none" selected>2022</option>
-        <option class="select-none">2023</option>
-      </select>
-
-      <svg
-        id="year-selector-arrow-right"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 8 14"
-        class="w-[18px] h-[18px] fill-primary cursor-pointer"
-      >
-        <path
-          d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"
-        ></path>
-      </svg>
-    </div>
-
-    <div class="month-container">
-      <div class="state-button selected">Jan</div>
-      <div class="state-button active">Feb</div>
-      <div class="state-button selected">Mar</div>
-      <div class="state-button selected">Apr</div>
-      <div class="state-button">May</div>
-      <div class="state-button">Jun</div>
-      <div class="state-button">Jul</div>
-      <div class="state-button">Aug</div>
-      <div class="state-button">Sep</div>
-      <div class="state-button">Oct</div>
-      <div class="state-button">Nov</div>
-      <div class="state-button">Dec</div>
-    </div>
+    <OrdersTimeline client:load />
   </div>
 </UserAccountLayout>
 
-<script is:inline>
+<!-- <script is:inline>
   const id = document.getElementById.bind(document),
     dateRangeSm = id("orders-timeline-sm"),
     dateRangeSmOpenBtn = id("orders-timeline-sm-open-btn"),
@@ -298,4 +226,4 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
     );
     selector.value = options[newIndex]?.value;
   }
-</script>
+</script> -->

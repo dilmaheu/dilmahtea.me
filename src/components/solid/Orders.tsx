@@ -1,6 +1,7 @@
-import { Match, Switch, createEffect } from "solid-js";
+import { createEffect } from "solid-js";
 
 import Order from "@solid/Order";
+import Loading from "@solid/Loading";
 
 import { orders, setOrders, ordersYear, setOrdersYear } from "@signals/orders";
 
@@ -27,13 +28,7 @@ export default function Orders({
   return (
     <>
       {!orders() ? (
-        <div class="dashboard-sec">
-          <div class="flex items-center justify-center py-[25px]">
-            <span class="animate-ping h-[30px] w-[30px] rounded-full bg-primary" />
-            <span class="animate-ping h-[30px] w-[30px] rounded-full bg-primary" />
-            <span class="animate-ping h-[30px] w-[30px] rounded-full bg-primary" />
-          </div>
-        </div>
+        <Loading />
       ) : (isOrdersPage ? Object.keys(orders()) : orders()).length === 0 ? (
         noOrdersHTML
       ) : (
