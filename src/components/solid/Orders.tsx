@@ -41,14 +41,12 @@ export default function Orders({
           {Array.isArray(orders()) ? (
             <>
               {orders().length > 3 && (
-                <div class="flex justify-center">
-                  <a
-                    href="/account/orders"
-                    class="font-bold leading-[150%] text-primary"
-                  >
-                    {userAccountRecurData.Button_view_all_orders_text}
-                  </a>
-                </div>
+                <a
+                  href="/account/orders"
+                  class="mx-auto font-bold leading-[150%] text-primary"
+                >
+                  {userAccountRecurData.Button_view_all_orders_text}
+                </a>
               )}
 
               {orders()
