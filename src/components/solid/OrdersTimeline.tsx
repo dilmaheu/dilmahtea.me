@@ -25,7 +25,10 @@ export default function OrdersTimeline() {
           <div class="flex items-center justify-between gap-2.5">
             <button
               onclick={() => changeYear({ move: -1 })}
-              class={years().indexOf(ordersYear()) === 0 && "invisible"}
+              class={
+                (years().length === 0 || years().indexOf(ordersYear()) === 0) &&
+                "invisible"
+              }
             >
               <svg
                 id="year-selector-arrow-left"
@@ -45,7 +48,7 @@ export default function OrdersTimeline() {
               ].join(" ")}
               onChange={(event) => setOrdersYear(event.target.value)}
             >
-              {years().length > 0 ? (
+              {years().length ? (
                 years().map((year) => (
                   <option
                     value={year}
@@ -63,7 +66,8 @@ export default function OrdersTimeline() {
             <button
               onclick={() => changeYear({ move: 1 })}
               class={
-                !(years().indexOf(ordersYear()) < years().length - 1) &&
+                (years().length === 0 ||
+                  !(years().indexOf(ordersYear()) < years().length - 1)) &&
                 "invisible"
               }
             >
@@ -95,7 +99,11 @@ export default function OrdersTimeline() {
             ].map((month) => (
               <a
                 href={`#${month.toLowerCase()}`}
-                class={!!orders()[ordersYear()][month] && "selected"}
+                class={
+                  years().length &&
+                  !!orders()[ordersYear()][month] &&
+                  "selected"
+                }
               >
                 {month.slice(0, 3)}
               </a>
