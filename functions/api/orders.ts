@@ -27,6 +27,10 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     .bind(email, phone)
     .all();
 
+  orders.forEach((order) => {
+    order.items = JSON.parse(order.items as string);
+  });
+
   if (!shouldLimit) {
     const ordersByYear = orders.reduce((orders, order) => {
       const orderDate = new Date(order.order_date as string),
