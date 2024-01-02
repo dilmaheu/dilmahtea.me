@@ -2,23 +2,18 @@ import { createEffect } from "solid-js";
 
 import Order from "@solid/Order";
 
-import {
-  orders,
-  setOrders,
-  ordersRange,
-  setOrdersRange,
-} from "@signals/orders";
+import { orders, setOrders, ordersYear, setOrdersYear } from "@signals/orders";
 
 export default function Orders({
   noOrdersHTML,
   recurringImages,
   userAccountRecurData,
-  range,
+  year,
 }) {
-  setOrdersRange(range);
+  setOrdersYear(year);
 
   createEffect(() => {
-    const searchParams = new URLSearchParams({ range: ordersRange() || range });
+    const searchParams = new URLSearchParams({ year: ordersYear() || year });
 
     fetch("/api/orders?" + searchParams.toString())
       .then((res) => res.json())
@@ -33,7 +28,7 @@ export default function Orders({
         noOrdersHTML
       ) : (
         <div class="dashboard-sec grid gap-[25px] sm:gap-[30px]">
-          {!ordersRange() && orders().length > 3 && (
+          {!ordersYear() && orders().length > 3 && (
             <div class="flex justify-center">
               <a
                 href="/account/orders"
@@ -45,9 +40,9 @@ export default function Orders({
           )}
 
           {orders()
-            .slice(0, !ordersRange() ? 3 : undefined)
+            .slice(0, !ordersYear() ? 3 : undefined)
             .map((order, i) => {
-              if (!ordersRange()) {
+              if (!ordersYear()) {
                 return (
                   i < 3 && (
                     <Order
