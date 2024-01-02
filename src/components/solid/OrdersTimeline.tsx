@@ -52,7 +52,7 @@ export default function OrdersTimeline() {
                     class="select-none"
                     selected={year === ordersYear()}
                   >
-                    {year}
+                    {year.slice(5)}
                   </option>
                 ))
               ) : (

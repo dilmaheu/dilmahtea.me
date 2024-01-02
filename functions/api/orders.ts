@@ -34,7 +34,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   if (!shouldLimit) {
     const ordersByYear = orders.reduce((orders, order) => {
       const orderDate = new Date(order.order_date as string),
-        year = orderDate.getFullYear(),
+        year = "year_" + orderDate.getFullYear(),
         month = orderDate.toLocaleString("en-US", { month: "long" });
 
       orders[year] ??= {};
