@@ -1,7 +1,13 @@
-import { createEffect, createSignal } from "solid-js";
+import { createEffect } from "solid-js";
 
 import Order from "@solid/Order";
-import { ordersRange, setOrdersRange } from "@signals/ordersRange";
+
+import {
+  orders,
+  setOrders,
+  ordersRange,
+  setOrdersRange,
+} from "@signals/orders";
 
 export default function Orders({
   noOrdersHTML,
@@ -10,8 +16,6 @@ export default function Orders({
   range,
 }) {
   setOrdersRange(range);
-
-  const [orders, setOrders] = createSignal(null);
 
   createEffect(() => {
     const searchParams = new URLSearchParams({ range: ordersRange() || range });
@@ -42,9 +46,17 @@ export default function Orders({
               const [year, ordersByMonths] = order;
 
               return ordersByMonths.map(([month, ordersByMonths]) => {
+                const shouldShowYear = orders().length > 1;
+
                 return (
                   <>
-                    <h2>{month + (orders().length > 1 ? " " + year : "")}</h2>
+                    <h2
+                      id={
+                        month.toLowerCase() + (shouldShowYear ? "-" + year : "")
+                      }
+                    >
+                      {month + (shouldShowYear ? " " + year : "")}
+                    </h2>
 
                     {ordersByMonths.map((order) => (
                       <Order
