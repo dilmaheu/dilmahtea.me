@@ -1,4 +1,4 @@
-import { createEffect } from "solid-js";
+import { Match, Switch, createEffect } from "solid-js";
 
 import Order from "@solid/Order";
 
@@ -8,16 +8,20 @@ export default function Orders({
   noOrdersHTML,
   recurringImages,
   userAccountRecurData,
-  year,
+  isOrdersPage,
 }) {
-  setOrdersYear(year);
-
   createEffect(() => {
-    const searchParams = new URLSearchParams({ year: ordersYear() || year });
-
-    fetch("/api/orders?" + searchParams.toString())
+    fetch("/api/orders" + (isOrdersPage ? "" : "?limit"))
       .then((res) => res.json())
-      .then((data) => setOrders(data));
+      .then((orders) => {
+        if (orders.constructor === Object) {
+          const [lastYearWithOrders] = Object.keys(orders);
+
+          lastYearWithOrders && setOrdersYear(lastYearWithOrders);
+        }
+
+        setOrders(orders);
+      });
   });
 
   return (
@@ -30,63 +34,52 @@ export default function Orders({
             <span class="animate-ping h-[30px] w-[30px] rounded-full bg-primary" />
           </div>
         </div>
-      ) : orders().length === 0 ? (
+      ) : (isOrdersPage ? Object.keys(orders()) : orders()).length === 0 ? (
         noOrdersHTML
       ) : (
         <div class="dashboard-sec grid gap-[25px] sm:gap-[30px]">
-          {!ordersYear() && orders().length > 3 && (
-            <div class="flex justify-center">
-              <a
-                href="/account/orders"
-                class="font-bold leading-[150%] text-primary"
-              >
-                {userAccountRecurData.Button_view_all_orders_text}
-              </a>
-            </div>
-          )}
+          {Array.isArray(orders()) ? (
+            <>
+              {orders().length > 3 && (
+                <div class="flex justify-center">
+                  <a
+                    href="/account/orders"
+                    class="font-bold leading-[150%] text-primary"
+                  >
+                    {userAccountRecurData.Button_view_all_orders_text}
+                  </a>
+                </div>
+              )}
 
-          {orders()
-            .slice(0, !ordersYear() ? 3 : undefined)
-            .map((order, i) => {
-              if (!ordersYear()) {
-                return (
-                  i < 3 && (
-                    <Order
-                      order={order}
-                      recurringImages={recurringImages}
-                      userAccountRecurData={userAccountRecurData}
-                    />
-                  )
-                );
-              } else {
-                const [year, ordersByMonths] = order;
+              {orders()
+                .slice(0, 3)
+                .map((order) => (
+                  <Order
+                    order={order}
+                    recurringImages={recurringImages}
+                    userAccountRecurData={userAccountRecurData}
+                  />
+                ))}
+            </>
+          ) : (
+            Object.entries(orders()).map(([year, ordersByMonths]) => {
+              if (year === ordersYear()) {
+                return Object.entries(ordersByMonths).map(([month, orders]) => (
+                  <>
+                    <h2 id={month.toLowerCase()}>{month}</h2>
 
-                return ordersByMonths.map(([month, ordersByMonths]) => {
-                  const shouldShowYear = orders().length > 1;
-
-                  return (
-                    <>
-                      <h2
-                        id={
-                          month.toLowerCase() +
-                          (shouldShowYear ? "-" + year : "")
-                        }
-                      >
-                        {month + (shouldShowYear ? " " + year : "")}
-                      </h2>
-
-                      {ordersByMonths.map((order) => (
-                        <Order
-                          order={order}
-                          recurringImages={recurringImages}
-                          userAccountRecurData={userAccountRecurData}
-                        />
-                      ))}
-                    </>
-                  );
-                });
+                    {orders.map((order) => (
+                      <Order
+                        order={order}
+                        recurringImages={recurringImages}
+                        userAccountRecurData={userAccountRecurData}
+                      />
+                    ))}
+                  </>
+                ));
               }
-            })}
+            })
+          )}
         </div>
       )}
     </>

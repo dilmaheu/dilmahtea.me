@@ -39,7 +39,7 @@ export default function Dashboard({
         noOrdersHTML={noOrdersHTML}
         recurringImages={recurringImages}
         userAccountRecurData={userAccountRecurData}
-        year={null}
+        isOrdersPage={false}
       />
     </>
   );
