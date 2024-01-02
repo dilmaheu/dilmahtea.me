@@ -136,7 +136,7 @@ export default function DashboardKindnessCauses({
     <>
       <h2
         id={title.toLowerCase().replaceAll(" ", "-")}
-        class="dashboard-sec-title recoleta mt-[50px]"
+        class="dashboard-sec-title recoleta mt-[30px]"
       >
         {title}
       </h2>

@@ -13,7 +13,7 @@ export default function Dashboard({
   const { Block2 } = page;
 
   return (
-    <div class="md:w-2/3">
+    <>
       <UserInfo
         page={page}
         verificationHref={verificationHref}
@@ -30,7 +30,7 @@ export default function Dashboard({
 
       <h2
         id={page.Block3_title.toLowerCase().replaceAll(" ", "-")}
-        class="dashboard-sec-title recoleta mt-[50px]"
+        class="dashboard-sec-title recoleta mt-[30px]"
       >
         {page.Block3_title}
       </h2>
@@ -41,6 +41,6 @@ export default function Dashboard({
         userAccountRecurData={userAccountRecurData}
         range={null}
       />
-    </div>
+    </>
   );
 }
