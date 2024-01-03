@@ -1,5 +1,8 @@
 import { Match, Switch, createSignal } from "solid-js";
+
 import DashboardNotification from "@solid/DashboardNotification";
+
+import handleEmptyFields from "@utils/shared/handleEmptyFields";
 import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
 
 export default function Order({
@@ -7,6 +10,8 @@ export default function Order({
   recurringImages,
   userAccountRecurData,
 }) {
+  order = handleEmptyFields(order);
+
   const [showingMoreProducts, setShowingMoreProducts] = createSignal(false);
 
   const {
