@@ -115,6 +115,24 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
       </div>
     </div> -->
 
+    <div class="md:hidden w-full mb-[25px]">
+      <div class="flex justify-end mb-[25px]">
+        <button
+          id="orders-timeline-sm-toggle-btn"
+          class="font-bold text-primary select-none"
+        >
+          {userAccountRecurData.text_orders_timeline}
+        </button>
+      </div>
+
+      <div
+        id="orders-timeline-sm"
+        class="hidden md:!hidden grid gap-[25px] lg:gap-[30px] p-[35px] bg-secondary-light rounded-[10px]"
+      >
+        <OrdersTimeline client:load />
+      </div>
+    </div>
+
     <h1 class="dashboard-sec-title recoleta">
       {Title}
     </h1>
@@ -132,13 +150,31 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
   </Fragment>
 
   <div
-    slot="top-slot"
+    slot="sticky-top-timeline"
+    id="orders-timeline-sm-ticky"
+    class="grid gap-[25px] lg:gap-[30px]"
+  >
+    <OrdersTimeline client:load />
+  </div>
+
+  <div
+    slot="timeline"
     id="orders-timeline"
     class="grid gap-[25px] lg:gap-[30px] p-[35px] bg-secondary-light rounded-[10px]"
   >
     <OrdersTimeline client:load />
   </div>
 </UserAccountLayout>
+
+<script is:inline>
+  const id = document.getElementById.bind(document),
+    ordersTimelineSm = id("orders-timeline-sm"),
+    ordersTimelineSmToggleBtn = id("orders-timeline-sm-toggle-btn");
+
+  ordersTimelineSmToggleBtn.addEventListener("click", () => {
+    ordersTimelineSm.classList.toggle("hidden");
+  });
+</script>
 
 <!-- <script is:inline>
   const id = document.getElementById.bind(document),

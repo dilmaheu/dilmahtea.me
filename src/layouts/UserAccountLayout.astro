@@ -184,11 +184,9 @@ const headingName =
 </div>
 
 <section class="py-[50px]">
-  <Chapters
-    fixedTop={true}
-    headingName={headingName}
-    staticHeadings={headings}
-  />
+  <Chapters fixedTop={true} headingName={headingName} headings={headings}>
+    <slot name="sticky-top-timeline" slot="top-slot" />
+  </Chapters>
 
   <div
     class="wrapper w-full flex flex-col-reverse md:flex-row justify-between gap-[30px]"
@@ -204,7 +202,7 @@ const headingName =
       staticHeadings={headings}
       desktopOnly={true}
     >
-      <slot name="top-slot" slot="top-slot" />
+      <slot name="timeline" />
     </Chapters>
   </div>
 </section>
