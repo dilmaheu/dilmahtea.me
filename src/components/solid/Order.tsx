@@ -20,6 +20,8 @@ export default function Order({
     text_estimated_shipment,
     text_delivered,
     text_in_stock_date,
+    text_show_more_product_in_this_order_singular,
+    text_hide_more_product_in_this_order_singular,
     text_show_more_products_in_this_order,
     text_hide_more_products_in_this_order,
   } = userAccountRecurData;
@@ -172,17 +174,23 @@ export default function Order({
           >
             {!showingMoreProducts() ? (
               <span>
-                {text_show_more_products_in_this_order.replace(
-                  "<number>",
-                  order.items.length - 3,
-                )}
+                {order.items.length === 4
+                  ? text_show_more_product_in_this_order_singular
+                  : text_show_more_products_in_this_order.replace(
+                      "<number>",
+                      order.items.length - 3,
+                    )
+                }
               </span>
             ) : (
               <span>
-                {text_hide_more_products_in_this_order.replace(
-                  "<number>",
-                  order.items.length - 3,
-                )}
+                {order.items.length === 4
+                  ? text_hide_more_product_in_this_order_singular
+                  : text_hide_more_products_in_this_order.replace(
+                      "<number>",
+                      order.items.length - 3,
+                    )
+                }
               </span>
             )}
 
