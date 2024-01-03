@@ -179,8 +179,7 @@ export default function Order({
                   : text_show_more_products_in_this_order.replace(
                       "<number>",
                       order.items.length - 3,
-                    )
-                }
+                    )}
               </span>
             ) : (
               <span>
@@ -189,8 +188,7 @@ export default function Order({
                   : text_hide_more_products_in_this_order.replace(
                       "<number>",
                       order.items.length - 3,
-                    )
-                }
+                    )}
               </span>
             )}
 
