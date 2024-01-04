@@ -67,14 +67,16 @@ export default function Order({
           </div>
         </div>
 
-        {Button_track_package && order.status === "shipped" && (
-          <a
-            href={order.tracking_url}
-            class="py-2.5 px-5 font-bold text-white bg-primary rounded-full"
-          >
-            {Button_track_package_text}
-          </a>
-        )}
+        {Button_track_package &&
+          order.status === "shipped" &&
+          order.tracking_url !== "N/A" && (
+            <a
+              href={order.tracking_url}
+              class="py-2.5 px-5 font-bold text-white bg-primary rounded-full"
+            >
+              {Button_track_package_text}
+            </a>
+          )}
       </div>
 
       {order.items
