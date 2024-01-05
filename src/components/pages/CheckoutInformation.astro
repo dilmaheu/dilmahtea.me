@@ -1,7 +1,8 @@
 ---
 import CMS from "@store/CMS";
+import getLocalizedLink from "@utils/getLocalizedLink";
+
 import Markdown from "@components/Markdown.astro";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
 import OrderSummary from "@components/OrderSummary.astro";
 
 const { page } = Astro.props,
@@ -90,7 +91,7 @@ const { page } = Astro.props,
     aria-label={page.Aria_label_form_text}
     id="checkout-info-form"
     class="flex flex-col gap-[25px]"
-    action={"/" + locale + "/" + checkoutShippingLink + "/"}
+    action={getLocalizedLink(locale, checkoutShippingLink)}
   >
     <div
       role="form"
