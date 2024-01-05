@@ -360,9 +360,9 @@ export async function getStaticPaths() {
     }),
   );
 
-  // const userAccountOrderPages = getRoutes(userAccountOrder, () => ({
-  //   type: "accountOrders",
-  // }));
+  const userAccountOrderPages = getRoutes(userAccountOrder, () => ({
+    type: "accountOrders",
+  }));
 
   return [
     ...plansPages,
@@ -389,7 +389,7 @@ export async function getStaticPaths() {
     ...checkoutSuccessPages,
     ...userAccountPages,
     ...userAccountDashboardPages,
-    // ...userAccountOrderPages,
+    ...userAccountOrderPages,
     ...userAccountAddressPages,
   ];
 }
@@ -435,8 +435,6 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
           ? CheckoutSuccess
           : page.type.startsWith("checkout")
           ? CheckoutLayout
-          : page.type.startsWith("account")
-          ? UserAccountLayout
           : PageLayout;
 
       const Pages = {

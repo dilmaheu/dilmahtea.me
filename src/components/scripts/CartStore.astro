@@ -14,11 +14,26 @@ const products = Object.fromEntries(
         VatPercentage,
         productVariant,
         productSize,
+        Stock_amount,
+        In_stock_date,
+        Weight_tea,
+        Weight_tea_unit,
       } = attributes;
 
       const image = await importImage(
         import.meta.env.STRAPI_URL +
           attributes.Intro_blob.data.attributes.formats.thumbnail.url,
+      );
+
+      const titles = JSON.stringify(
+        Object.fromEntries(
+          [{ attributes }, ...attributes.localizations.data].map(
+            ({ attributes: { locale, Title } }) => [
+              locale.substring(0, 2),
+              Title,
+            ],
+          ),
+        ),
       );
 
       const names = JSON.stringify(
@@ -41,6 +56,8 @@ const products = Object.fromEntries(
         ),
       );
 
+      const tea_weight = Weight_tea ? Weight_tea + Weight_tea_unit : null;
+
       return [
         sku,
         {
@@ -48,9 +65,13 @@ const products = Object.fromEntries(
           Price,
           VatPercentage,
           image,
+          titles,
           names,
+          tea_weight,
           tea_variant: productVariant,
           tea_size: productSize,
+          stock_amount: Stock_amount,
+          in_stock_date: In_stock_date,
         },
       ];
     }),
@@ -66,6 +87,8 @@ const products = Object.fromEntries(
     stringifiedGetPriceIncludingTax: getPriceIncludingTax.toString(),
   }}
 >
+  window.products = products;
+
   window.getPriceIncludingTax = new Function(
     "return " + stringifiedGetPriceIncludingTax,
   )();
@@ -78,6 +101,15 @@ const products = Object.fromEntries(
       placeholderRegex,
       (_, placeholderName) => data[placeholderName],
     );
+  };
+
+  window.addProductToCart = (sku, quantity) => {
+    const inCartProduct = window.cart[sku],
+      updatedQuantity = (quantity || 1) + (inCartProduct?.quantity || 0);
+
+    window.cart[sku] = { quantity: updatedQuantity };
+
+    window.openCart();
   };
 
   window.checkoutInfo = JSON.parse(
@@ -245,7 +277,7 @@ const products = Object.fromEntries(
             "€" + productData.price.toFixed(2).replace(".", ",");
         });
       } else {
-        window.addProductToCart(productId);
+        window.updateCartOverlay(productId);
 
         const newCartProductElement = id(productId),
           newProductAmountInput = newCartProductElement.querySelectorAll(

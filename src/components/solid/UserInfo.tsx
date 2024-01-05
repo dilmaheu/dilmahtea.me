@@ -3,30 +3,40 @@ import { createEffect, createSignal } from "solid-js";
 import { user } from "@signals/user";
 
 import InfoUnit from "@solid/InfoUnit";
+import DashboardNotification, {
+  notification,
+  setNotification,
+} from "@solid/DashboardNotification";
 
 export default function UserInfo({
   plusIcon,
-  Title,
-  Label_username,
-  Label_phone,
-  Label_email,
-  Label_delivery_address,
-  Label_billing_address,
-  Address_tag,
-  userAccountAddress_url,
-  text_more_address,
-  Button_add_new_address_text,
-  user_info_update_success_notification,
-  display_name_update_success_notification_label,
-  email_update_success_notification_label,
-  phone_number_update_success_notification_label,
+  page,
   verificationHref,
+  userAccountAddressURL,
   recurringImages,
   userAccountRecurData,
 }) {
-  const { Button_edit_text } = userAccountRecurData;
+  const {
+    Title,
+    Personal_information: {
+      Label_username,
+      Label_phone,
+      Label_email,
+      Label_delivery_address,
+      Label_billing_address,
+      user_info_update_success_notification,
+      display_name_update_success_notification_label,
+      email_update_success_notification_label,
+      phone_number_update_success_notification_label,
+    },
+  } = page;
 
-  const [notification, setNotification] = createSignal(null);
+  const {
+    Button_edit_text,
+    Button_add_new_address_text,
+    Address_tag,
+    text_more_address,
+  } = userAccountRecurData;
 
   createEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -65,23 +75,7 @@ export default function UserInfo({
       </h2>
 
       <div class="dashboard-sec">
-        {notification() && (
-          <div
-            class={[
-              "flex justify-center p-2.5 mb-[25px] gap-[7px]",
-              notification().type === "success"
-                ? "bg-success-light"
-                : "bg-error-light",
-            ].join(" ")}
-          >
-            <img
-              class="w-[26px] h-[26px]"
-              {...recurringImages[`${notification().type}_notification`]}
-            />
-
-            <p class="text-black-bg font-medium">{notification().message}</p>
-          </div>
-        )}
+        <DashboardNotification recurringImages={recurringImages} />
 
         <InfoUnit
           label={Label_username}
@@ -135,7 +129,7 @@ export default function UserInfo({
 
           <div class="flex w-full">
             <a
-              href={userAccountAddress_url}
+              href={userAccountAddressURL}
               class={[
                 "flex gap-3 py-[15px] px-10 mt-[15px] md:min-w-[250px] font-bold",
                 "text-white leading-[150%] bg-primary rounded-full cursor-pointer",
@@ -149,7 +143,7 @@ export default function UserInfo({
           {Address_tag.length > 2 && (
             <div class="mt-[25px] w-full flex justify-center">
               <a
-                href={userAccountAddress_url}
+                href={userAccountAddressURL}
                 id="toggle-more-address"
                 class="font-bold leading-[150%] text-primary cursor-pointer"
               >
