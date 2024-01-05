@@ -7,7 +7,7 @@ export default function OrdersTimeline() {
   const [years, setYears] = createSignal([]);
 
   createEffect(() => {
-    setYears(orders() ? Object.keys(orders()) : []);
+    setYears(orders() ? Object.keys(orders()).reverse() : []);
   });
 
   function changeYear({ move }) {

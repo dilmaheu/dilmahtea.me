@@ -40,7 +40,7 @@ export default function Orders({
                   href="/account/orders"
                   class="mx-auto font-bold leading-[150%] text-primary"
                 >
-                  {userAccountRecurData.Button_view_all_orders_text}
+                  {userAccountRecurData.Button_go_to_my_orders_text}
                 </a>
               )}
 
