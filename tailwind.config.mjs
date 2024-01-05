@@ -25,9 +25,7 @@ export default {
         "warning-light": "#FAF8E5",
         error: "#E06464",
         "error-light": "#FFE2E2",
-
-        //"black-bg": "#13110B",
-        // "primary-light": "#B2CCCC",
+        "error-dark": "#AB0504",
 
         // exceptions
         teal: "#405658",
