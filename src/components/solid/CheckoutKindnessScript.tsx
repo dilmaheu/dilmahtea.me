@@ -1,15 +1,35 @@
 import { user } from "@signals/user";
-import { createEffect } from "solid-js";
+import { createEffect, createMemo, onCleanup } from "solid-js";
 
-export default function CheckoutKindnessScript() {
+let memoizedElements: {
+  kindnessCausesCardsContainer: HTMLElement;
+  kindnessCausesCards: NodeListOf<HTMLElement>;
+  submitCauseBtn: HTMLButtonElement;
+};
+
+export default function CheckoutKindnessScript({ checkoutSuccessLink }) {
   createEffect(() => {
-    const kindnessCausesCardsContainer =
-        document.querySelector(".kindness-causes"),
-      kindnessCausesCards =
-        document.querySelectorAll<HTMLElement>(".kindness-cause"),
-      submitCauseBtn = document.getElementById(
-        "submit-cause-btn",
-      ) as HTMLButtonElement;
+    if (!memoizedElements) {
+      const kindnessCausesCardsContainer =
+          document.querySelector<HTMLElement>(".kindness-causes"),
+        kindnessCausesCards =
+          document.querySelectorAll<HTMLElement>(".kindness-cause"),
+        submitCauseBtn = document.getElementById(
+          "submit-cause-btn",
+        ) as HTMLButtonElement;
+
+      memoizedElements = {
+        kindnessCausesCardsContainer,
+        kindnessCausesCards,
+        submitCauseBtn,
+      };
+    }
+
+    const {
+      kindnessCausesCardsContainer,
+      kindnessCausesCards,
+      submitCauseBtn,
+    } = memoizedElements;
 
     function selectCard(card: HTMLElement) {
       const activeCauseCard = kindnessCausesCardsContainer.querySelector(
@@ -23,15 +43,11 @@ export default function CheckoutKindnessScript() {
       submitCauseBtn.disabled = false;
     }
 
-    kindnessCausesCards.forEach((card) => {
-      if (user().kindness_cause === card.dataset.cause) {
-        selectCard(card);
-      }
+    function handleCardFocus(event: FocusEvent) {
+      selectCard(event.target as HTMLElement);
+    }
 
-      card.addEventListener("focus", () => selectCard(card));
-    });
-
-    submitCauseBtn?.addEventListener("click", async () => {
+    async function handleSubmitCause() {
       const kindness_cause =
         kindnessCausesCardsContainer.querySelector<HTMLElement>(
           ".active-kindness-cause",
@@ -54,7 +70,8 @@ export default function CheckoutKindnessScript() {
             }),
           },
         ),
-        kindness_cause !== user().kindness_cause &&
+        user().kindness_cause !== "…" &&
+          kindness_cause !== user().kindness_cause &&
           fetch("/account/update", {
             method: "POST",
             headers: {
@@ -66,7 +83,25 @@ export default function CheckoutKindnessScript() {
           }),
       ]);
 
-      location.href = window.checkoutSuccessLink;
+      location.href = checkoutSuccessLink;
+    }
+
+    kindnessCausesCards.forEach((card) => {
+      if (user().kindness_cause === card.dataset.cause) {
+        selectCard(card);
+      }
+
+      card.addEventListener("focus", handleCardFocus);
+    });
+
+    submitCauseBtn.addEventListener("click", handleSubmitCause);
+
+    onCleanup(() => {
+      kindnessCausesCards.forEach((card) => {
+        card.removeEventListener("focus", handleCardFocus);
+      });
+
+      submitCauseBtn.removeEventListener("click", handleSubmitCause);
     });
   });
 

@@ -14,11 +14,10 @@ declare interface Props {
 const { fixedTop, desktopOnly, headingName, headings, staticHeadings } =
   Astro.props as Props;
 
-const dynamicHeadings = headings
-  ? Array.from(headings, ({ innerText }) => innerText)
-  : [];
+const dynamicHeadings =
+  headings && Array.from(headings, ({ innerText }) => innerText);
 
-const headingTexts = dynamicHeadings || staticHeadings;
+const headingTexts = dynamicHeadings || staticHeadings?.filter(Boolean);
 ---
 
 <style lang="scss">
@@ -118,7 +117,7 @@ const headingTexts = dynamicHeadings || staticHeadings;
         ]}
       >
         {
-          headingTexts.map((title, i) => (
+          headingTexts?.map((title, i) => (
             <a
               href={`#${title?.toLowerCase()?.replaceAll(" ", "-")}`}
               role="listitem"

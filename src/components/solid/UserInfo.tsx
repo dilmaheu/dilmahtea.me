@@ -3,21 +3,29 @@ import { createEffect, createSignal } from "solid-js";
 import { user } from "@signals/user";
 
 import InfoUnit from "@solid/InfoUnit";
+import DashboardNotification, {
+  notification,
+  setNotification,
+} from "@solid/DashboardNotification";
 
 export default function UserInfo({
-  Title,
-  Label_username,
-  Label_phone,
-  Label_email,
-  user_info_update_success_notification,
-  display_name_update_success_notification_label,
-  email_update_success_notification_label,
-  phone_number_update_success_notification_label,
+  page,
   verificationHref,
   recurringImages,
   userAccountRecurData,
 }) {
-  const [notification, setNotification] = createSignal(null);
+  const {
+    Title,
+    Personal_information: {
+      Label_username,
+      Label_phone,
+      Label_email,
+      user_info_update_success_notification,
+      display_name_update_success_notification_label,
+      email_update_success_notification_label,
+      phone_number_update_success_notification_label,
+    },
+  } = page;
 
   createEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -56,23 +64,7 @@ export default function UserInfo({
       </h2>
 
       <div class="dashboard-sec">
-        {notification() && (
-          <div
-            class={[
-              "flex justify-center p-2.5 mb-[25px] gap-[7px]",
-              notification().type === "success"
-                ? "bg-success-light"
-                : "bg-error-light",
-            ].join(" ")}
-          >
-            <img
-              class="w-[26px] h-[26px]"
-              {...recurringImages[`${notification().type}_notification`]}
-            />
-
-            <p class="text-black-bg font-medium">{notification().message}</p>
-          </div>
-        )}
+        <DashboardNotification recurringImages={recurringImages} />
 
         <InfoUnit
           label={Label_username}
