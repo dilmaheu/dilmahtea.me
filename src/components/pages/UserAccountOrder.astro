@@ -9,10 +9,11 @@ import NoOrders from "@components/NoOrders.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
 import UserAccountLayout from "@layouts/UserAccountLayout.astro";
+import MyOrdersInYearTitle from "@components/solid/MyOrdersInYearTitle";
 
 const { green_right_arrow } = RecurringImages;
 
-const { page } = Astro.props,
+const { page, recurData } = Astro.props,
   { Title, locale } = page;
 
 const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
@@ -43,9 +44,7 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
       </div>
     </div> -->
 
-    <h1 class="dashboard-sec-title recoleta">
-      {Title}
-    </h1>
+    <MyOrdersInYearTitle client:load {Title} text_in={recurData.text_in} />
 
     <section class="grid gap-[25px] sm:gap-[30px]">
       <Orders
