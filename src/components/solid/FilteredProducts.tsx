@@ -104,12 +104,7 @@ export default function FilteredProducts({
 
               {product.Stock_amount < 1 && (
                 <>
-                  <div
-                    class={[
-                      "absolute top-[12%] right-[12%] flex items-center px-5 sm:px-[37px] py-[5px] sm:py-[7px]",
-                      "bg-warning/80 text-black sm:text-xl font-semibold border-2 border-warning rounded-full",
-                    ].join(" ")}
-                  >
+                  <div class="stock-out-label-top">
                     {recurData.Product_sold_out_text}
                   </div>
 
@@ -160,10 +155,7 @@ export default function FilteredProducts({
 
                   {product.variant.data?.attributes.Title && (
                     <div>
-                      <span class="mr-1">
-                      &#x025CF;
-                      </span>
-                    
+                      <span class="mr-1">&#x025CF;</span>
                       {product.variant.data?.attributes.Title}
                     </div>
                   )}
@@ -181,11 +173,7 @@ export default function FilteredProducts({
                     ))}
 
                     {product.availableFormatsCount > 2 && (
-                      <span
-                        class="number"
-                      >
-                        +{product.availableFormatsCount - 2}
-                      </span>
+                      <span class="number">+{product.availableFormatsCount - 2}</span>
                     )}
                   </span>
 
@@ -247,12 +235,12 @@ export default function FilteredProducts({
               {product.Stock_amount > 0 ? (
                 <button
                   onClick={() => addProductToCart(product)}
-                  class="unlink card-button-cart-default"
+                  class="unlink product-card-btn card-button-cart-default"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
-                    class="hidden sm:inline-flex w-5 h-5"
+                    class="cart-icon"
                   >
                     <path
                       d="M6.01 16.136L4.141 4H3a1 1 0 0 1 0-2h1.985a.993.993 0 0 1 .66.235a.997.997 0 0 1 .346.627L6.319 5H14v2H6.627l1.23 8h9.399l1.5-5h2.088l-1.886 6.287A1 1 0 0 1 18 17H7.016a.993.993 0 0 1-.675-.248a.998.998 0 0 1-.332-.616zM10 20a2 2 0 1 1-4 0a2 2 0 0 1 4 0zm9 0a2 2 0 1 1-4 0a2 2 0 0 1 4 0zm0-18a1 1 0 0 1 1 1v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0V6h-1a1 1 0 1 1 0-2h1V3a1 1 0 0 1 1-1z"
@@ -269,11 +257,11 @@ export default function FilteredProducts({
                   </div>
                 </button>
               ) : (
-                <div class="unlink cursor-not-allowed card-button-cart-disabled">
+                <div class="unlink card-button-cart-disabled">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
-                    class="hidden sm:inline-flex w-5 h-5"
+                    class="cart-icon"
                   >
                     <path
                       d="M6.01 16.136L4.141 4H3a1 1 0 0 1 0-2h1.985a.993.993 0 0 1 .66.235a.997.997 0 0 1 .346.627L6.319 5H14v2H6.627l1.23 8h9.399l1.5-5h2.088l-1.886 6.287A1 1 0 0 1 18 17H7.016a.993.993 0 0 1-.675-.248a.998.998 0 0 1-.332-.616zM10 20a2 2 0 1 1-4 0a2 2 0 0 1 4 0zm9 0a2 2 0 1 1-4 0a2 2 0 0 1 4 0zm0-18a1 1 0 0 1 1 1v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0V6h-1a1 1 0 1 1 0-2h1V3a1 1 0 0 1 1-1z"
