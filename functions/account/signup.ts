@@ -58,9 +58,12 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     },
   });
 
+  const Name = first_name + " " + last_name,
+    Language = locale;
+
   const Customer = await fetchExactAPI(
     "GET",
-    "/crm/Accounts?$select=Name,Language,Email,Phone,Country&$filter=" +
+    "/crm/Accounts?$select=ID,Name,Language,Email,Phone,Country&$filter=" +
       `${ProviderId} eq '${contact.toLowerCase()}'}`,
     env,
   ).then(({ feed }) => feed.entry);
@@ -92,6 +95,28 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         [alternateProviderId]: alternateProviderUserId,
       });
     }
+
+    if (
+      CustomerProperties["d:Name"] !== Name ||
+      CustomerProperties["d:Language"] !== Language
+    ) {
+      await fetchExactAPI(
+        "PUT",
+        `/crm/Accounts(guid'${CustomerProperties["d:ID"]}')`,
+        env,
+        {
+          Name,
+          Language,
+        },
+      );
+    }
+  } else {
+    await fetchExactAPI("POST", "/crm/Accounts", env, {
+      [ProviderId]: contact.toLowerCase(),
+      Name,
+      Language,
+      Status: "C",
+    });
   }
 
   await removeToken(env.USERS, token);
