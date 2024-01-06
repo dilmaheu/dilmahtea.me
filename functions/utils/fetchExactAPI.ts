@@ -17,28 +17,22 @@ const fetchExactAPI = async (
       Authorization: `Bearer ${await env.EXACT_TOKENS.get("ACCESS_TOKEN")}`,
     },
     body: JSON.stringify(data),
-  })
-    .then((res) => {
+  }).then(async (res) => {
+    try {
+      var xml = XMLParser.parse(await res.text());
+    } catch (error) {
       if (!res.ok) throw new Error(res.status + " " + res.statusText);
+    }
 
-      console.log(
-        `RateLimit-Remaining: ${res.headers.get("x-ratelimit-remaining")}`,
-      );
+    JSON.stringify(xml, (_, value) => {
+      const error = value && (value["error"] || value["d:Errors"]);
 
-      return res.text();
-    })
-    .then((xml) => {
-      const response = XMLParser.parse(xml);
+      if (error) throw new Error(error.message);
 
-      JSON.stringify(response, (_, value) => {
-        const error = value && (value["error"] || value["d:Errors"]);
-
-        if (error) throw new Error(error.message);
-
-        return value;
-      });
-
-      return response;
+      return value;
     });
+
+    return xml;
+  });
 
 export default fetchExactAPI;
