@@ -1,6 +1,7 @@
 import phoneUtil from "google-libphonenumber";
 
-const phoneUtilInstance = phoneUtil.PhoneNumberUtil.getInstance();
+const phoneUtilInstance = phoneUtil.PhoneNumberUtil.getInstance(),
+  { E164 } = phoneUtil.PhoneNumberFormat;
 
 export default function formatNumber(
   number: string | number,
@@ -8,14 +9,19 @@ export default function formatNumber(
 ): string {
   number = String(number);
 
-  number =
-    number.length === 11
-      ? number
-      : Object.values(phoneUtilInstance.parse(number, country).values_).join(
-          "",
-        );
+  try {
+    const parsedNumber = phoneUtilInstance.parse(
+      number.startsWith("+") ? number : "+" + number,
+    );
 
-  number = "+" + number;
+    if (!phoneUtilInstance.isValidNumber(parsedNumber)) throw new Error();
 
-  return number;
+    number = phoneUtilInstance.format(parsedNumber, E164);
+  } catch (error) {
+    number = phoneUtilInstance.parse(number, country);
+
+    number = phoneUtilInstance.format(number, E164);
+  }
+
+  return number as string;
 }
