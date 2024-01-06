@@ -97,9 +97,9 @@ export default function FilteredProducts({
             role="listitem"
             aria-label={page.Aria_label_tea_item_text + (iSignal() + 1)}
             style="clip-path: url(#product-card-curve)"
-            class="product-card link-section bg-primary"
+            class="product-card link-section"
           >
-            <div class="relative block w-full">
+            <div class="product-card-image-container">
               <div innerHTML={product.Intro_blob_HTML} />
 
               {product.Stock_amount < 1 && (
