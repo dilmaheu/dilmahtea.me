@@ -3,6 +3,9 @@ import type { ENV } from "../utils/types";
 
 import { z } from "zod";
 
+import formatNumber from "../utils/formatNumber";
+import fetchExactAPI from "../utils/fetchExactAPI";
+
 import { initializeLucia } from "../utils/auth";
 import { removeToken, validateToken } from "../utils/token";
 import { getProviderId, createSessionCookie } from "../utils";
@@ -37,7 +40,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
   const auth = initializeLucia(env.USERS);
 
-  const providerId = getProviderId(contact);
+  const providerId = getProviderId(contact),
+    ProviderId = providerId[0].toUpperCase() + providerId.slice(1);
 
   const user: User = await auth.createUser({
     key: {
@@ -53,6 +57,42 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
       locale,
     },
   });
+
+  const Customer = await fetchExactAPI(
+    "GET",
+    "/crm/Accounts?$select=Name,Language,Email,Phone,Country&$filter=" +
+      `${ProviderId} eq '${contact.toLowerCase()}'}`,
+    env,
+  ).then(({ feed }) => feed.entry);
+
+  if (Customer) {
+    const CustomerProperties = Customer.content["m:properties"];
+
+    const alternateProviderId = providerId === "email" ? "phone" : "email",
+      alternateProviderUserId =
+        providerId === "email"
+          ? CustomerProperties["d:Phone"] &&
+            formatNumber(
+              CustomerProperties["d:Phone"],
+              CustomerProperties["d:Country"],
+            )
+          : CustomerProperties["d:Email"];
+
+    if (alternateProviderUserId) {
+      const { userId } = user;
+
+      await auth.createKey({
+        userId,
+        providerId: alternateProviderId,
+        providerUserId: alternateProviderUserId.toLowerCase(),
+        password: null,
+      });
+
+      await auth.updateUserAttributes(userId, {
+        [alternateProviderId]: alternateProviderUserId,
+      });
+    }
+  }
 
   await removeToken(env.USERS, token);
 
