@@ -217,36 +217,34 @@ export default function FilteredProducts({
               )}
 
 
-                {product.estate_name.data.map && (
-                  <div class="product-estate">
-                    <img class="icon" {...white_love} />
+              {product.estate_name.data.length > 0 && (
+                <div class="product-estate">
+                  <img class="icon" {...white_love} />
 
-                    <span class="hidden sm:inline">
-                      {recurData.product_made_love_from}
-                    </span>
+                  <span class="hidden sm:inline">
+                    {recurData.product_made_love_from}
+                  </span>
 
-                    <a href={product.URL_slug}>Estate name</a>
-
-                    {product.estate_name?.data.map(
-                      (
-                        {attributes: {
-                          Estate_name,
-                          Meta: { URL_slug },
-                        },
+                  {product.estate_name?.data.map(
+                    (
+                      {attributes: {
+                        Estate_name,
+                        Meta: { URL_slug },
                       },
-                      index,
-                      ) => (
-                        <a href={URL_slug}>
-                          {Estate_name +
-                            (index === product.estate_name.data.length - 1 ? "" : ",")}
-                        </a>
-                      ),
-                    )}
-                  </div>
-                )}
+                    },
+                    index,
+                    ) => (
+                      <a href={URL_slug}>
+                        {Estate_name +
+                          (index === product.estate_name.data.length - 1 ? "" : ",")}
+                      </a>
+                    ),
+                  )}
                 </div>
+              )}
+              </div>
 
-                {product.Stock_amount > 0 ? (
+              {product.Stock_amount > 0 ? (
                 <button
                   onClick={() => addProductToCart(product)}
                   class="unlink card-button-cart-default"
