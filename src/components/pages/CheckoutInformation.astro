@@ -55,7 +55,7 @@ const { page } = Astro.props,
     }
 
     .form-grid {
-      @apply w-full grid gap-y-2.5;
+      @apply w-full grid gap-y-2.5 overflow-hidden;
 
       @media (min-width: 640px) {
         @apply grid-cols-2;
@@ -72,16 +72,58 @@ const { page } = Astro.props,
         @apply flex flex-col gap-1.5;
 
         span {
-          @apply font-bold text-black-light sm:text-[1.125rem];
+          @apply font-bold text-black-light text-[clamp(16px,calc(0.25vw+14.4px),18px)];
         }
 
         input,
         select {
-          @apply focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none;
-          @apply h-12 bg-secondary py-3 px-4 border border-primary rounded-full text-black sm:text-[1.125rem];
+          @apply text-[clamp(16px,calc(0.25vw+14.4px),18px)] text-black
+            placeholder:text-black-light bg-transparent border border-primary rounded-full
+            focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none
+            py-[clamp(8px,calc(0.25vw+6.4px),10px)] px-[clamp(15px,calc(0.625vw+11px),20px)];
+        }
+
+        span.tag-input-close-button {
+          @apply absolute inset-y-0 right-0
+            flex items-center pr-5 font-bold text-error-dark cursor-pointer;
         }
       }
     }
+  }
+
+  .section-gap {
+    @apply gap-[50px];
+  }
+
+  .division-gap {
+    @apply gap-[clamp(25px,calc(0.625vw+21px),30px)];
+  }
+
+  .division-in-gap {
+    @apply gap-[clamp(10px,calc(0.625vw+6px),15px)];
+  }
+
+  .division-in-element-gap {
+    @apply gap-[clamp(5px,calc(0.625vw+1px),10px)];
+  }
+
+  .text-b5 {
+    @apply text-[clamp(16px,calc(0.25vw+14.4px),18px)] leading-[150%];
+  }
+
+  @mixin radio-button {
+    @apply inline-block py-2.5 px-5 text-sm 
+        border-2 rounded-full cursor-pointer select-none;
+  }
+
+  .radio-button-default {
+    @include radio-button;
+  }
+
+  .radio-button-extended {
+    @include radio-button;
+
+    @apply font-bold text-primary bg-white;
   }
 </style>
 
@@ -90,13 +132,13 @@ const { page } = Astro.props,
     role="main"
     aria-label={page.Aria_label_form_text}
     id="checkout-info-form"
-    class="flex flex-col gap-[25px]"
+    class="section-gap flex flex-col"
     action={getLocalizedLink(locale, checkoutShippingLink)}
   >
     <div
       role="form"
       aria-label={page.text_contact_info}
-      class="form-grid-container"
+      class="division-gap form-grid-container"
     >
       <h2 class="recoleta">{page.text_customer}</h2>
 
@@ -128,188 +170,228 @@ const { page } = Astro.props,
       </div>
     </div>
 
-    <div class="w-full h-px bg-primary-light"></div>
-
     <div
       role="form"
       aria-label={page.text_shipping_address}
-      class="form-grid-container"
+      class="division-gap form-grid-container"
     >
       <h2 class="recoleta">{page.text_shipping_address}</h2>
 
-      <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
-        <div>
-          <input
-            type="radio"
-            name="shipping_address"
-            id={`address1`}
-            value={`value`}
-            checked
-            class="peer hidden"
-          />
+      <div>
+        <div class="division-in-gap grid">
+          <div class="text-b5 font-bold text-black-light">Tag to recognize</div>
 
-          <label
-            for={`address1`}
-            class:list={[
-              "inline-block py-2 px-5 bg-secondary-light",
-              "font-medium text-dark-green border-2 border-secondary-light",
-              "peer-checked:bg-dark-green peer-checked:text-secondary-light",
-              "peer-checked:font-bold cursor-pointer select-none rounded-full",
-            ]}
-          >
-            Home
-          </label>
-        </div>
+          <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
+            <div>
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address1`}
+                value={`value`}
+                checked
+                class="peer hidden"
+              />
 
-        <div>
-          <input
-            type="radio"
-            name="shipping_address"
-            id={`address2`}
-            value={`value`}
-            class="peer hidden"
-          />
-
-          <label
-            for={`address2`}
-            class:list={[
-              "inline-block py-2 px-5 bg-secondary-light",
-              "font-medium text-dark-green border-2 border-secondary-light",
-              "peer-checked:bg-dark-green peer-checked:text-secondary-light",
-              "peer-checked:font-bold cursor-pointer select-none rounded-full",
-            ]}
-          >
-            Parents
-          </label>
-        </div>
-
-        <div>
-          <input
-            type="radio"
-            name="shipping_address"
-            id={`address3`}
-            value={`value`}
-            class="peer hidden"
-          />
-
-          <label
-            for={`address3`}
-            class:list={[
-              "inline-block py-2 px-5 bg-secondary-light",
-              "font-medium text-dark-green border-2 border-secondary-light",
-              "peer-checked:bg-dark-green peer-checked:text-secondary-light",
-              "peer-checked:font-bold cursor-pointer select-none rounded-full",
-            ]}
-          >
-            Family
-          </label>
-        </div>
-
-        <div class="more-address hidden">
-          <input
-            type="radio"
-            name="shipping_address"
-            id={`address4`}
-            value={`value`}
-            class="peer hidden"
-          />
-
-          <label
-            for={`address4`}
-            class:list={[
-              "inline-block py-2 px-5 bg-secondary-light",
-              "font-medium text-dark-green border-2 border-secondary-light",
-              "peer-checked:bg-dark-green peer-checked:text-secondary-light",
-              "peer-checked:font-bold cursor-pointer select-none rounded-full",
-            ]}
-          >
-            Address Line 1
-          </label>
-        </div>
-
-        <div class="more-address hidden">
-          <input
-            type="radio"
-            name="shipping_address"
-            id={`address5`}
-            value={`value`}
-            class="peer hidden"
-          />
-
-          <label
-            for={`address5`}
-            class:list={[
-              "inline-block py-2 px-5 bg-secondary-light",
-              "font-medium text-dark-green border-2 border-secondary-light",
-              "peer-checked:bg-dark-green peer-checked:text-secondary-light",
-              "peer-checked:font-bold cursor-pointer select-none rounded-full",
-            ]}
-          >
-            Address Line 2
-          </label>
-        </div>
-
-        <div class="more-address hidden">
-          <input
-            type="radio"
-            name="shipping_address"
-            id={`address6`}
-            value={`value`}
-            class="peer hidden"
-          />
-
-          <label
-            for={`address6`}
-            class:list={[
-              "inline-block py-2 px-5 bg-secondary-light",
-              "font-medium text-dark-green border-2 border-secondary-light",
-              "peer-checked:bg-dark-green peer-checked:text-secondary-light",
-              "peer-checked:font-bold cursor-pointer select-none rounded-full",
-            ]}
-          >
-            Address Line 3
-          </label>
-        </div>
-
-        <div
-          id="address-toggle-button"
-          class="flex items-center gap-1 text-primary font-bold cursor-pointer"
-        >
-          <svg
-            id="address-arrow-left"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 8 14"
-            class="hidden w-3 h-3 fill-primary"
-          >
-            <path
-              d="M7.7,13.7a1.1,1.1,0,0,0,.3-.8,1.1,1.1,0,0,0-.3-.7L2.5,7,7.7,1.8A1.1,1.1,0,0,0,8,1,1.1,1.1,0,0,0,7.7.3,1.1,1.1,0,0,0,7,0a1.1,1.1,0,0,0-.8.3L.3,6.2A1.1,1.1,0,0,0,0,7a.9.9,0,0,0,.3.7l5.9,6A1.1,1.1,0,0,0,7,14a1.1,1.1,0,0,0,.7-.3Z"
-            ></path>
-          </svg>
-
-          <div>
-            <div id="hide-address-text" class="hidden">
-              {
-                userAccountRecurData.text_hide_more_address.replace(
-                  "<number>",
-                  "3",
-                )
-              }
+              <label
+                for={`address1`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+                class="radio-button-default"
+              >
+                Home
+              </label>
             </div>
-            <div id="show-address-text">
-              {userAccountRecurData.text_more_address.replace("<number>", "3")}
+
+            <div>
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address2`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address2`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Parents
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address3`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address3`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Family
+              </label>
+            </div>
+
+            <div class="more-address hidden">
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address4`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address4`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Address Line 1
+              </label>
+            </div>
+
+            <div class="more-address hidden">
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address5`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address5`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Address Line 2
+              </label>
+            </div>
+
+            <div class="more-address hidden">
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address6`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address6`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Address Line 3
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address-tag`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address-tag`}
+                class:list={[
+                  "radio-button-extended border-white",
+                  "peer-checked:border-primary",
+                ]}
+              >
+                Add +
+              </label>
+            </div>
+
+            <div
+              id="address-toggle-button"
+              class="flex items-center gap-1 text-primary font-bold cursor-pointer"
+            >
+              <svg
+                id="address-arrow-left"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 8 14"
+                class="hidden w-3 h-3 fill-primary"
+              >
+                <path
+                  d="M7.7,13.7a1.1,1.1,0,0,0,.3-.8,1.1,1.1,0,0,0-.3-.7L2.5,7,7.7,1.8A1.1,1.1,0,0,0,8,1,1.1,1.1,0,0,0,7.7.3,1.1,1.1,0,0,0,7,0a1.1,1.1,0,0,0-.8.3L.3,6.2A1.1,1.1,0,0,0,0,7a.9.9,0,0,0,.3.7l5.9,6A1.1,1.1,0,0,0,7,14a1.1,1.1,0,0,0,.7-.3Z"
+                ></path>
+              </svg>
+
+              <div>
+                <div id="hide-address-text" class="hidden">
+                  {
+                    userAccountRecurData.text_hide_more_address.replace(
+                      "<number>",
+                      "3",
+                    )
+                  }
+                </div>
+                <div id="show-address-text">
+                  {
+                    userAccountRecurData.text_more_address.replace(
+                      "<number>",
+                      "3",
+                    )
+                  }
+                </div>
+              </div>
+
+              <svg
+                id="address-arrow-right"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 8 14"
+                class="w-3 h-3 fill-primary"
+              >
+                <path
+                  d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"
+                ></path>
+              </svg>
             </div>
           </div>
 
-          <svg
-            id="address-arrow-right"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 8 14"
-            class="w-3 h-3 fill-primary"
-          >
-            <path
-              d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"
-            ></path>
-          </svg>
+          <div id="tag-input" class="hidden">
+            <div class="form-grid">
+              <label class="relative">
+                <input
+                  type="text"
+                  name="new_tag"
+                  placeholder={`Enter your tag`}
+                  required
+                  class="pr-[40px]"
+                />
+
+                <span class="tag-input-close-button"> &#10005;</span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 
