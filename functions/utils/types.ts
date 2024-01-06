@@ -10,9 +10,11 @@ export interface Token {
 
 export interface ENV {
   MAILS: KVNamespace;
+  EXACT_TOKENS: KVNamespace;
   EMAIL: Fetcher;
   USERS: D1Database;
   TWILIO_ACCOUNT_SID: string;
   TWILIO_AUTH_TOKEN: string;
   TWILIO_PHONE_NUMBER: string;
+  EXACT_API_ENDPOINT: string;
 }
