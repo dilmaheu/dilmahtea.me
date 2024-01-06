@@ -61,25 +61,23 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
   const Name = first_name + " " + last_name,
     Language = locale;
 
-  const Customer = await fetchExactAPI(
+  const ExistingCustomer = await fetchExactAPI(
     "GET",
     "/crm/Accounts?$select=ID,Name,Language,Email,Phone,Country&$filter=" +
       `${ProviderId} eq '${contact.toLowerCase()}'}`,
     env,
-  ).then(({ feed }) => feed.entry);
+  ).then(({ feed }) => feed.entry?.content["m:properties"]);
 
-  if (Customer) {
-    const CustomerProperties = Customer.content["m:properties"];
-
+  if (ExistingCustomer) {
     const alternateProviderId = providerId === "email" ? "phone" : "email",
       alternateProviderUserId =
         providerId === "email"
-          ? CustomerProperties["d:Phone"] &&
+          ? ExistingCustomer["d:Phone"] &&
             formatNumber(
-              CustomerProperties["d:Phone"],
-              CustomerProperties["d:Country"],
+              ExistingCustomer["d:Phone"],
+              ExistingCustomer["d:Country"],
             )
-          : CustomerProperties["d:Email"];
+          : ExistingCustomer["d:Email"];
 
     if (alternateProviderUserId) {
       const { userId } = user;
@@ -97,12 +95,12 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     }
 
     if (
-      CustomerProperties["d:Name"] !== Name ||
-      CustomerProperties["d:Language"] !== Language
+      ExistingCustomer["d:Name"] !== Name ||
+      ExistingCustomer["d:Language"] !== Language
     ) {
       await fetchExactAPI(
         "PUT",
-        `/crm/Accounts(guid'${CustomerProperties["d:ID"]}')`,
+        `/crm/Accounts(guid'${ExistingCustomer["d:ID"]}')`,
         env,
         {
           Name,
@@ -111,11 +109,20 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
       );
     }
   } else {
-    await fetchExactAPI("POST", "/crm/Accounts", env, {
+    const Customer = await fetchExactAPI("POST", "/crm/Accounts", env, {
       [ProviderId]: contact.toLowerCase(),
       Name,
       Language,
       Status: "C",
+    });
+
+    const customerID = Customer.entry.content["m:properties"]["d:ID"];
+
+    await fetchExactAPI("POST", "/CRM/Contacts", env, {
+      Account: customerID,
+      FirstName: first_name,
+      LastName: last_name,
+      [ProviderId]: contact.toLowerCase(),
     });
   }
 
