@@ -64,7 +64,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
   const ExistingCustomer = await fetchExactAPI(
     "GET",
     "/crm/Accounts?$select=ID,Name,Language,Email,Phone,Country&$filter=" +
-      `${ProviderId} eq '${contact.toLowerCase()}'}`,
+      `${ProviderId} eq '${contact.toLowerCase()}'`,
     env,
   ).then(({ feed }) => feed.entry?.content["m:properties"]);
 
