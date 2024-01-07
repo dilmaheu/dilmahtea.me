@@ -85,20 +85,32 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         }
         break;
 
-      case "update":
-        {
-          const auth = initializeLucia(env.USERS),
-            authRequest = auth.handleRequest(request);
+      case "update": {
+        const auth = initializeLucia(env.USERS),
+          authRequest = auth.handleRequest(request);
 
-          const session: Session = await authRequest.validate();
+        const session: Session = await authRequest.validate();
 
-          if (!session) throw new PublicError("Unauthorized");
+        if (!session) throw new PublicError("Unauthorized");
 
-          ({ email, phone, referrer, previous_contact } = bodyData);
+        ({ email, phone, referrer, previous_contact } = bodyData);
 
-          ({ locale } = session.user);
+        ({ locale } = session.user);
+
+        // throw error if account with email or phone already exists
+        try {
+          await auth.getKey(
+            email ? "email" : "phone",
+            (email || phone).toLowerCase(),
+          );
+        } catch (error) {
+          break;
         }
-        break;
+
+        throw new PublicError(
+          "An account with this email or phone already exists",
+        );
+      }
 
       default:
         break;
@@ -131,6 +143,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
     var magicLink =
       new URL(request.url).origin + "/account/verify/" + "?token=" + token;
+
+    console.log(magicLink);
   } catch (error) {
     const isPublicError = error instanceof PublicError;
 
