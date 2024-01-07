@@ -40,8 +40,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
   const auth = initializeLucia(env.USERS);
 
-  const providerId = getProviderId(contact),
-    ProviderId = providerId[0].toUpperCase() + providerId.slice(1);
+  const providerId = getProviderId(contact);
 
   const user: User = await auth.createUser({
     key: {
@@ -58,30 +57,35 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     },
   });
 
+  const ContactIsEmail = providerId === "email";
+
   const FirstName = first_name,
     LastName = last_name,
     Name = FirstName + " " + LastName,
-    Language = locale,
-    CustomerFilter = `${ProviderId} eq '${contact.toLowerCase()}'`;
+    Language = locale;
+
+  const ProviderId = ContactIsEmail ? "Email" : "Phone",
+    AlternateProviderId = ContactIsEmail ? "Phone" : "Email";
+
+  let CustomerFilter = `${ProviderId} eq '${contact.toLowerCase()}'`;
 
   try {
     const ExistingCustomer = await fetchExactAPI(
       "GET",
       "/crm/Accounts?$select=ID,Name,Language,Email,Phone,Country&$filter=" +
-        `${ProviderId} eq '${contact.toLowerCase()}'`,
+        CustomerFilter,
       env,
     ).then(({ feed }) => feed.entry?.content["m:properties"]);
 
     if (ExistingCustomer) {
-      const alternateProviderId = providerId === "email" ? "phone" : "email",
-        alternateProviderUserId =
-          providerId === "email"
-            ? ExistingCustomer["d:Phone"] &&
-              formatNumber(
-                ExistingCustomer["d:Phone"],
-                ExistingCustomer["d:Country"],
-              )
-            : ExistingCustomer["d:Email"];
+      const alternateProviderId = ContactIsEmail ? "phone" : "email",
+        alternateProviderUserId = ContactIsEmail
+          ? ExistingCustomer["d:Phone"] &&
+            formatNumber(
+              ExistingCustomer["d:Phone"],
+              ExistingCustomer["d:Country"],
+            )
+          : ExistingCustomer["d:Email"];
 
       if (alternateProviderUserId) {
         const { userId } = user;
@@ -96,13 +100,15 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         await auth.updateUserAttributes(userId, {
           [alternateProviderId]: alternateProviderUserId,
         });
+
+        CustomerFilter += ` or ${AlternateProviderId} eq '${alternateProviderUserId.toLowerCase()}'`;
       }
 
       const promises = [];
 
       const Contact = await fetchExactAPI(
         "GET",
-        `/CRM/Contacts?$filter=Account eq guid'${ExistingCustomer["d:ID"]}' and ${CustomerFilter}&select=ID,FirstName,LastName`,
+        `/CRM/Contacts?$filter=Account eq guid'${ExistingCustomer["d:ID"]}' and (${CustomerFilter})&select=ID,FirstName,LastName,Email,Phone`,
         env,
       ).then(async ({ feed }) => {
         const matchedContact = [feed.entry]
@@ -117,14 +123,29 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         if (matchedContact) {
           if (
             matchedContact["d:FirstName"] !== FirstName ||
-            matchedContact["d:LastName"] !== LastName
+            matchedContact["d:LastName"] !== LastName ||
+            (alternateProviderUserId &&
+              (matchedContact[`d:${ProviderId}`].toLowerCase() !==
+                contact.toLowerCase() ||
+                matchedContact[`d:${AlternateProviderId}`].toLowerCase() !==
+                  alternateProviderUserId.toLowerCase()))
           ) {
             promises.push(
               fetchExactAPI(
                 "PUT",
                 `/CRM/Contacts(guid'${matchedContact["d:ID"]}')`,
                 env,
-                { FirstName, LastName },
+                {
+                  FirstName,
+                  LastName,
+                  ...(!alternateProviderUserId
+                    ? {}
+                    : {
+                        [ProviderId]: contact.toLowerCase(),
+                        [AlternateProviderId]:
+                          alternateProviderUserId.toLowerCase(),
+                      }),
+                },
               ),
             );
           }
