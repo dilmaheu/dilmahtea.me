@@ -19,10 +19,30 @@ const checkoutInfoLink = `/${locale}/${
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
 
+  .tiled-div-pad {
+    @apply p-[clamp(15px,calc(2.5vw-1px),35px)];
+  }
+
+  .division-gap {
+    @apply gap-[clamp(25px,calc(0.625vw+21px),30px)];
+  }
+
+  .division-in-gap {
+    @apply gap-[clamp(10px,calc(0.625vw+6px),15px)];
+  }
+
+  @mixin division-in-element-gap {
+    @apply gap-[clamp(5px,calc(0.625vw+1px),10px)];
+  }
+
+  .division-in-element-gap {
+    @include division-in-element-gap;
+  }
+
   #shipping-details {
     padding: poly-fluid-clamp(
       (
-        375px: 50px 24px,
+        640px: 50px 24px,
         1024px: 50px 29px,
       )
     );
@@ -42,14 +62,16 @@ const checkoutInfoLink = `/${locale}/${
 
     font-size: poly-fluid-clamp(
       (
-        375px: 28px,
-        1440px: 32px,
+        640px: 28px,
+        1440px: 42px,
       )
     );
   }
 
   .shipping-detail {
-    @apply flex flex-col gap-1.5;
+    @include division-in-element-gap;
+
+    @apply flex flex-col;
 
     div {
       &:first-of-type {
@@ -57,28 +79,22 @@ const checkoutInfoLink = `/${locale}/${
 
         font-size: poly-fluid-clamp(
           (
-            375px: 16px,
+            640px: 16px,
             1440px: 18px,
           )
         );
       }
 
       &:last-of-type {
+        @include division-in-element-gap;
         @apply flex justify-between;
 
-        gap: poly-fluid-clamp(
-          (
-            375px: 20px,
-            1440px: 68px,
-          )
-        );
-
         p {
-          @apply text-primary grow;
+          @apply text-black grow;
 
           font-size: poly-fluid-clamp(
             (
-              375px: 18px,
+              640px: 18px,
               1440px: 24px,
             )
           );
@@ -89,7 +105,7 @@ const checkoutInfoLink = `/${locale}/${
 
           font-size: poly-fluid-clamp(
             (
-              375px: 18px,
+              640px: 18px,
               1440px: 24px,
             )
           );
@@ -102,7 +118,7 @@ const checkoutInfoLink = `/${locale}/${
   .shipping-cost {
     font-size: poly-fluid-clamp(
       (
-        375px: 18px,
+        640px: 18px,
         1440px: 24px,
       )
     );
@@ -111,7 +127,7 @@ const checkoutInfoLink = `/${locale}/${
   .shipping-description {
     font-size: poly-fluid-clamp(
       (
-        375px: 16px,
+        640px: 16px,
         1440px: 18px,
       )
     );
@@ -180,7 +196,7 @@ const checkoutInfoLink = `/${locale}/${
     <div
       role="list"
       aria-label={page.Aria_label_kindness_delivery_address_section_text}
-      class="p-4 gap-6 flex flex-col bg-secondary-light rounded-2xl"
+      class="tiled-div-pad division-in-gap grid bg-secondary-light rounded-[10px]"
     >
       <div
         role="listitem"
@@ -203,7 +219,7 @@ const checkoutInfoLink = `/${locale}/${
         </div>
       </div>
 
-      <div class="border border-black-light opacity-80"></div>
+      <div class="border border-primary-light"></div>
 
       <div
         role="listitem"
@@ -230,7 +246,7 @@ const checkoutInfoLink = `/${locale}/${
     <div
       role="list"
       aria-label={page.text_shipping_method}
-      class="flex flex-col gap-4"
+      class="division-gap flex flex-col"
     >
       <h2 class="recoleta text-black">{page.text_shipping_method}</h2>
 
@@ -248,23 +264,25 @@ const checkoutInfoLink = `/${locale}/${
                   value={localizations?.data[0]?.attributes?.method || method}
                   data-cost={cost}
                   class:list={[
-                    "hover:brightness-50 active:brightness-150 block",
-                    "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
-                    "checked:before:block before:hidden before:w-2 before:h-2 before:bg-primary before:rounded-full",
+                    "active:brightness-150 block appearance-none w-5 h-5",
+                    "flex items-center justify-center border-2 rounded-full",
+                    "checked:before:block before:hidden before:w-2 before:h-2 before:rounded-full",
+                    i > 0
+                      ? "hover:brightness-50 border-primary before:bg-primary"
+                      : "border-black-light before:bg-black-light",
                   ]}
                   checked={i === 0 ? "" : undefined}
                   required
                 />
               </div>
 
-              <div class="grid gap-[5px]">
-                <span class="gap-3 flex items-center">
+              <div class="grid division-in-element-gap">
+                <span class="gap-1.5 flex items-center">
                   <span class="shipping-method font-semibold text-black leading-[130%]">
                     {method}
                   </span>
-                  <span class="w-1 h-1 bg-black rounded-full" />
-                  <span class="shipping-cost font-semibold text-black leading-[130%]">
-                    € {cost.toFixed(2).toString().replace(".", ",")}
+                  <span class="recoleta shipping-cost font-semibold text-black leading-[130%]">
+                    &#x2022; €{cost.toFixed(2).toString().replace(".", ",")}
                   </span>
                 </span>
 
