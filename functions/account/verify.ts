@@ -1,6 +1,8 @@
 import type { Key, User } from "lucia";
 import type { ENV } from "../utils/types";
 
+import fetchExactAPI from "../utils/fetchExactAPI";
+
 import { initializeLucia } from "../utils/auth";
 import { removeToken, validateToken } from "../utils/token";
 import { getProviderId, createSessionCookie } from "../utils";
@@ -121,6 +123,17 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
 
       await auth.invalidateAllUserSessions(userId);
     }
+
+    const ProviderId = providerId === "email" ? "Email" : "Phone";
+
+    await fetchExactAPI(
+      "PUT",
+      "/crm/Accounts(guid'" + user.exact_account_guid + "')",
+      env,
+      {
+        [ProviderId]: contact.toLowerCase(),
+      },
+    );
   }
 
   const sessionCookie = await createSessionCookie(auth, user);

@@ -57,6 +57,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     },
   });
 
+  await removeToken(env.USERS, token);
+
   const ContactIsEmail = providerId === "email";
 
   const FirstName = first_name,
@@ -67,7 +69,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
   const ProviderId = ContactIsEmail ? "Email" : "Phone",
     AlternateProviderId = ContactIsEmail ? "Phone" : "Email";
 
-  let CustomerFilter = `${ProviderId} eq '${contact.toLowerCase()}'`;
+  let CustomerID,
+    CustomerFilter = `${ProviderId} eq '${contact.toLowerCase()}'`;
 
   try {
     const ExistingCustomer = await fetchExactAPI(
@@ -78,6 +81,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     ).then(({ feed }) => feed.entry?.content["m:properties"]);
 
     if (ExistingCustomer) {
+      CustomerID = ExistingCustomer["d:ID"];
+
       const alternateProviderId = ContactIsEmail ? "phone" : "email",
         alternateProviderUserId = ContactIsEmail
           ? ExistingCustomer["d:Phone"] &&
@@ -192,10 +197,10 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         Status: "C",
       });
 
-      const customerID = Customer.entry.content["m:properties"]["d:ID"];
+      CustomerID = Customer.entry.content["m:properties"]["d:ID"];
 
       await fetchExactAPI("POST", "/CRM/Contacts", env, {
-        Account: customerID,
+        Account: CustomerID,
         FirstName,
         LastName,
         [ProviderId]: contact.toLowerCase(),
@@ -208,7 +213,9 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     );
   }
 
-  await removeToken(env.USERS, token);
+  await auth.updateUserAttributes(user.userId, {
+    exact_account_guid: CustomerID,
+  });
 
   const sessionCookie = await createSessionCookie(auth, user);
 
