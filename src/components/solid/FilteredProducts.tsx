@@ -209,9 +209,13 @@ export default function FilteredProducts({
                 <div class="product-estate">
                   <img class="icon" {...white_love} />
 
-                  <span class="hidden sm:inline">
+                  <div class="hidden sm:inline">
                     {recurData.product_made_love_from}
-                  </span>
+                  </div>
+
+                  <div class="inline sm:hidden">
+                    {recurData.product_from}
+                  </div>
 
                   {product.estate_name?.data.map(
                     (
