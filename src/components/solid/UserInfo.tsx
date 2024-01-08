@@ -106,10 +106,10 @@ export default function UserInfo({
 
         <div class="grid gap-[25px]">
           <div class="grid gap-1">
-            <div class="information-label">{Label_delivery_address}</div>
+            <div class="input-label">{Label_delivery_address}</div>
 
             <div class="flex flex-wrap items-center gap-[15px] justify-between">
-              <div class="information-text">456B, Oakwoods, Germany</div>
+              <div class="input-text-large">456B, Oakwoods, Germany</div>
               <div class="information-btn cursor-pointer">
                 {Button_edit_text}
               </div>
@@ -117,10 +117,10 @@ export default function UserInfo({
           </div>
 
           <div class="grid gap-1">
-            <div class="information-label">{Label_billing_address}</div>
+            <div class="input-label">{Label_billing_address}</div>
 
             <div class="flex flex-wrap items-center gap-[15px] justify-between">
-              <div class="information-text">456B, Oakwoods, Germany</div>
+              <div class="input-text-large">456B, Oakwoods, Germany</div>
               <div class="information-btn cursor-pointer">
                 {Button_edit_text}
               </div>
