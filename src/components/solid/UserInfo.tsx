@@ -75,66 +75,68 @@ export default function UserInfo({
       </h2>
 
       <div class="dashboard-sec">
-        <DashboardNotification recurringImages={recurringImages} />
+        <div class="grid division-gap">
+          <div class="grid division-in-gap">
+            <DashboardNotification recurringImages={recurringImages} />
 
-        <InfoUnit
-          label={Label_username}
-          type="text"
-          property="display_name"
-          verificationHref={verificationHref}
-          userAccountRecurData={userAccountRecurData}
-          setNotification={setNotification}
-        />
+            <InfoUnit
+              label={Label_username}
+              type="text"
+              property="display_name"
+              verificationHref={verificationHref}
+              userAccountRecurData={userAccountRecurData}
+              setNotification={setNotification}
+            />
 
-        <InfoUnit
-          label={Label_phone}
-          type="tel"
-          property="phone"
-          verificationHref={verificationHref}
-          userAccountRecurData={userAccountRecurData}
-          setNotification={setNotification}
-        />
+            <div class="h-px bg-primary-light" />
 
-        <InfoUnit
-          label={Label_email}
-          type="email"
-          property="email"
-          verificationHref={verificationHref}
-          userAccountRecurData={userAccountRecurData}
-          setNotification={setNotification}
-        />
+            <InfoUnit
+              label={Label_phone}
+              type="tel"
+              property="phone"
+              verificationHref={verificationHref}
+              userAccountRecurData={userAccountRecurData}
+              setNotification={setNotification}
+            />
 
-        <div class="grid gap-[25px]">
-          <div class="grid gap-1">
-            <div class="input-label">{Label_delivery_address}</div>
+            <div class="h-px bg-primary-light" />
 
-            <div class="flex flex-wrap items-center gap-[15px] justify-between">
-              <div class="input-text-large">456B, Oakwoods, Germany</div>
-              <div class="information-btn cursor-pointer">
-                {Button_edit_text}
-              </div>
-            </div>
+            <InfoUnit
+              label={Label_email}
+              type="email"
+              property="email"
+              verificationHref={verificationHref}
+              userAccountRecurData={userAccountRecurData}
+              setNotification={setNotification}
+            />
+
+            <div class="h-px bg-primary-light" />
+
+            <InfoUnit
+              label={Label_delivery_address}
+              type="text"
+              property="address"
+              verificationHref={verificationHref}
+              userAccountRecurData={userAccountRecurData}
+              setNotification={setNotification}
+            />
+
+            <div class="h-px bg-primary-light" />
+
+            <InfoUnit
+              label={Label_billing_address}
+              type="text"
+              property="address"
+              verificationHref={verificationHref}
+              userAccountRecurData={userAccountRecurData}
+              setNotification={setNotification}
+            />
           </div>
 
-          <div class="grid gap-1">
-            <div class="input-label">{Label_billing_address}</div>
-
-            <div class="flex flex-wrap items-center gap-[15px] justify-between">
-              <div class="input-text-large">456B, Oakwoods, Germany</div>
-              <div class="information-btn cursor-pointer">
-                {Button_edit_text}
-              </div>
-            </div>
-          </div>
+          {/*if there is not default address set then hide button*/}
 
           <div class="flex w-full">
-            <a
-              href={userAccountAddressURL}
-              class={[
-                "flex gap-3 py-[15px] px-10 mt-[15px] md:min-w-[250px] font-bold",
-                "text-white leading-[150%] bg-primary rounded-full cursor-pointer",
-              ].join(" ")}
-            >
+            <a href={userAccountAddressURL} class="button-primary">
               {plusIcon}
               {Button_add_new_address_text}
             </a>

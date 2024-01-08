@@ -129,7 +129,7 @@ export default function InfoUnit({
   }
 
   return (
-    <div class="grid gap-1 pb-[25px] mb-[25px] border-b border-lightgray">
+    <div class="grid division-in-element-gap">
       <div class="input-label">{label}</div>
 
       <div class="flex items-center gap-[15px] justify-between">
@@ -144,20 +144,21 @@ export default function InfoUnit({
 
         {isEditing() ? (
           <>
-            <button
-              class="button-link-error-dark-big"
-              onclick={handleCancel}
-            >
+            <button class="button-link-error-dark-big" onclick={handleCancel}>
               {Button_cancel_text}
             </button>
 
-            <button class="button-link-primary-big" onclick={handleSave} type="submit">
+            <button
+              class="button-link-primary-big"
+              onclick={handleSave}
+              type="submit"
+            >
               {Button_save_text}
             </button>
           </>
         ) : (
           <button class="button-link-primary-big" onclick={handleEdit}>
-            {property === "display_name"
+            {["display_name", "address"].includes(property)
               ? Button_edit_text
               : Button_update_text}
           </button>
