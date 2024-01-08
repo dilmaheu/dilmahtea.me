@@ -24,6 +24,99 @@ const headingName =
 <style lang="scss" is:global>
   @use "src/styles/poly-fluid" as *;
 
+  @mixin division-gap {
+    @apply gap-[clamp(25px,calc(0.625vw+21px),30px)];
+  }
+
+  @mixin division-in-gap {
+    @apply gap-[clamp(10px,calc(0.625vw+6px),15px)];
+  }
+
+  @mixin division-in-element-gap {
+    @apply gap-[clamp(5px,calc(0.625vw+1px),10px)];
+  }
+
+  @mixin text-b3 {
+    @apply text-[clamp(18px,calc(0.75vw+13.2px),24px)] leading-[150%];
+  }
+
+  @mixin text-b5 {
+    @apply text-[clamp(16px,calc(0.25vw+14.4px),18px)] leading-[150%];
+  }
+
+  @mixin button-link-big {
+    @include text-b5;
+
+    @apply font-bold;
+  }
+
+  @mixin button-link-primary-big {
+    @include button-link-big;
+
+    @apply text-primary;
+  }
+
+  @mixin button-link-error-dark-big {
+    @include button-link-big;
+
+    @apply text-error-dark;
+  }
+
+  @mixin input-label {
+    @include text-b5;
+
+    @apply font-semibold text-black-light;
+  }
+
+  @mixin input-text-large {
+    @include text-b3;
+
+    @apply text-black;
+  }
+
+  .division-gap {
+    @include division-gap;
+  }
+
+  .division-in-gap {
+    @include division-in-gap;
+  }
+
+  .division-in-element-gap {
+    @include division-in-element-gap;
+  }
+
+  .text-b5 {
+    @include text-b5;
+  }
+
+  .input-label {
+    @include input-label;
+  }
+
+  .input-text-large {
+    @include input-text-large;
+
+    @apply w-full bg-transparent outline-none;
+
+    &:not(:disabled) {
+      @apply border-b-2 border-primary;
+    }
+
+    &.errored {
+      @apply border-error;
+    }
+  }
+
+  .button-link-primary-big {
+    @include button-link-primary-big;
+  }
+
+  .button-link-error-dark-big {
+    @include button-link-error-dark-big;
+  }
+
+
   .dashboard-sec-title {
     @apply bg-primary leading-[110%] text-secondary-light rounded-[10px];
 
@@ -43,24 +136,6 @@ const headingName =
 
     @media (max-width: 767.98px) {
       padding: 15px;
-    }
-
-    .information-label {
-      @apply text-sm md:text-base font-medium leading-[150%] text-black-light;
-    }
-
-    .information-text {
-      @apply w-full pl-1.5 leading-[150%] text-black opacity-100 sm:font-medium bg-secondary-light outline-none;
-
-      &:not(:disabled) {
-        @apply mb-[-2px] border-b-2 border-primary-light;
-      }
-
-      &.errored {
-        @apply border-error;
-      }
-
-      font-size: clamp(1.125rem, 1.5vw + 0.3rem, 1.5rem);
     }
 
     .information-btn {
