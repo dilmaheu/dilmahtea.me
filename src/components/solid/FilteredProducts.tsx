@@ -257,7 +257,7 @@ export default function FilteredProducts({
                   </div>
                 </button>
               ) : (
-                <div class="unlink card-button-cart-disabled">
+                <div class="unlink product-card-btn card-button-cart-disabled">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
