@@ -36,6 +36,30 @@ const headingName =
     @apply gap-[clamp(5px,calc(0.625vw+1px),10px)];
   }
 
+  @mixin tiled-div-pad {
+    @apply p-[clamp(15px,calc(2.5vw-1px),35px)];
+  }
+
+  @mixin tiled-title-div-pad {
+    @apply py-[15px] px-[clamp(15px,calc(2.5vw-1px),35px)];
+  }
+
+  @mixin text-h2 {
+    @apply text-[clamp(28px,calc(1.75vw+16.8px),42px)] leading-[140%];
+  }
+
+  @mixin text-h3 {
+    @apply text-[clamp(24px,calc(1vw+17.6px),32px)] leading-[140%];
+  }
+
+  @mixin text-h4 {
+    @apply text-[clamp(24px,calc(0.5vw+20.8px),28px)] leading-[150%];
+  }
+
+  @mixin text-h5 {
+    @apply text-[clamp(20px,calc(0.5vw+16.8px),24px)] leading-[150%];
+  }
+
   @mixin text-b3 {
     @apply text-[clamp(18px,calc(0.75vw+13.2px),24px)] leading-[150%];
   }
@@ -81,12 +105,24 @@ const headingName =
     @apply text-error-dark;
   }
 
-  .info-tag-button {
+  @mixin info-tag-button {
     @include text-b7;
 
-    @apply py-1 px-2 text-black-light bg-white rounded-full;
+    @apply py-1 px-2 rounded-full;
 
-    line-height: 130%!important;
+    line-height: 130% !important;
+  }
+
+  .info-tag-button {
+    @include info-tag-button;
+
+    @apply text-black-light bg-white;
+  }
+
+  .info-tag-button-primary {
+    @include info-tag-button;
+
+    @apply text-white bg-primary;
   }
 
   .quick-info {
@@ -119,8 +155,40 @@ const headingName =
     @include division-in-element-gap;
   }
 
+  .tiled-div-pad {
+    @include tiled-div-pad;
+  }
+
+  .tiled-title-div-pad {
+    @include tiled-title-div-pad;
+  }
+
+  .text-h2 {
+    @include text-h2;
+  }
+
+  .text-h3 {
+    @include text-h3;
+  }
+
+  .text-h4 {
+    @include text-h4;
+  }
+
+  .text-h5 {
+    @include text-h5;
+  }
+
+  .text-b3 {
+    @include text-b3;
+  }
+
   .text-b5 {
     @include text-b5;
+  }
+
+  .text-b7 {
+    @include text-b7;
   }
 
   .input-label {
@@ -164,7 +232,8 @@ const headingName =
   }
 
   .horizontal-toggle-button-primary {
-    @apply flex items-center gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-base font-bold text-primary;
+    @apply flex items-center cursor-pointer
+      gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-base font-bold text-primary;
 
     .toggle-button-arrow {
       @apply w-[14px] h-2;
@@ -172,25 +241,16 @@ const headingName =
   }
 
   .dashboard-sec-title {
-    @apply bg-primary leading-[110%] text-secondary-light rounded-[10px];
+    @include text-h2;
+    @include tiled-title-div-pad;
 
-    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
-    padding: 10px clamp(15px, 2.08vw + 0.01rem, 30px);
-
-    @media (max-width: 767.98px) {
-      padding: 15px;
-    }
+    @apply bg-primary text-white rounded-[10px];
   }
 
   .dashboard-sec {
-    @apply bg-secondary-light rounded-[10px] mt-[25px] text-black;
+    @include tiled-div-pad;
 
-    padding: clamp(15px, 2.08vw + 0.01rem, 25px)
-      clamp(15px, 2.2vw + 0.1rem, 35px);
-
-    @media (max-width: 767.98px) {
-      padding: 15px;
-    }
+    @apply bg-secondary-light rounded-[10px] text-black;
 
     .information-btn {
       @apply leading-[150%] font-semibold text-primary;
@@ -199,7 +259,9 @@ const headingName =
     }
 
     h2 {
-      @apply text-[clamp(1.25rem,1.5vw+0.15rem,1.5rem)] font-bold text-primary;
+      @include text-h2;
+
+      @apply font-bold text-primary;
     }
 
     > a {
@@ -321,7 +383,7 @@ const headingName =
     class="wrapper w-full flex flex-col-reverse md:flex-row justify-between gap-[30px]"
   >
     <div class="md:w-2/3 2xl:w-1/2 md:min-w-[400px]">
-      <div class="xl:w-5/6 2xl:w-full">
+      <div class="xl:w-5/6 2xl:w-full grid division-gap">
         <slot />
       </div>
     </div>
