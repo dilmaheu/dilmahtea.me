@@ -44,14 +44,29 @@ const headingName =
     @apply text-[clamp(16px,calc(0.25vw+14.4px),18px)] leading-[150%];
   }
 
+  @mixin text-b7 {
+    @apply text-[clamp(12px,calc(0.25vw+10.4px),14px)] leading-[150%];
+  }
+
   @mixin button {
-    @apply flex items-center justify-center gap-2 py-2.5 px-5 text-base font-bold rounded-full;
+    @apply flex items-center justify-center gap-2 py-2.5 
+      px-5 text-base font-bold cursor-pointer rounded-full;
+  }
+
+  @mixin button-link {
+    @apply text-base font-bold cursor-pointer;
   }
 
   @mixin button-link-big {
     @include text-b5;
 
-    @apply font-bold;
+    @apply font-bold cursor-pointer;
+  }
+
+  @mixin button-link-primary {
+    @include button-link;
+
+    @apply text-primary;
   }
 
   @mixin button-link-primary-big {
@@ -64,6 +79,20 @@ const headingName =
     @include button-link-big;
 
     @apply text-error-dark;
+  }
+
+  .info-tag-button {
+    @include text-b7;
+
+    @apply py-1 px-2 text-black-light bg-white rounded-full;
+
+    line-height: 130%!important;
+  }
+
+  .quick-info {
+    @include text-b7;
+
+    @apply flex items-center gap-[clamp(4px,calc(0.5vw+0.8px),8px)] font-medium text-black-light;
   }
 
   @mixin input-label {
@@ -98,6 +127,10 @@ const headingName =
     @include input-label;
   }
 
+  .input-text-large-static {
+    @include input-text-large;
+  }
+
   .input-text-large {
     @include input-text-large;
 
@@ -118,12 +151,24 @@ const headingName =
     @apply bg-primary text-white;
   }
 
+  .button-link-primary {
+    @include button-link-primary;
+  }
+
   .button-link-primary-big {
     @include button-link-primary-big;
   }
 
   .button-link-error-dark-big {
     @include button-link-error-dark-big;
+  }
+
+  .horizontal-toggle-button-primary {
+    @apply flex items-center gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-base font-bold text-primary;
+
+    .toggle-button-arrow {
+      @apply w-[14px] h-2;
+    }
   }
 
   .dashboard-sec-title {

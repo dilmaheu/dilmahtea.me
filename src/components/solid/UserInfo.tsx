@@ -32,7 +32,11 @@ export default function UserInfo({
   } = page;
 
   const {
+    Button_add_text,
     Button_edit_text,
+    Button_update_text,
+    Button_view_more_address_text_singular,
+    Button_view_more_address_text,
     Button_add_new_address_text,
     Address_tag,
     text_more_address,
@@ -112,25 +116,63 @@ export default function UserInfo({
 
             <div class="h-px bg-primary-light" />
 
-            <InfoUnit
-              label={Label_delivery_address}
-              type="text"
-              property="address"
-              verificationHref={verificationHref}
-              userAccountRecurData={userAccountRecurData}
-              setNotification={setNotification}
-            />
+            <div class="grid division-in-element-gap">
+              <div class="input-label">{Label_delivery_address}</div>
+
+              <div class="quick-info">
+                <div>Sara jones</div>
+                <div>&#x2022;</div>
+                <div class="info-tag-button">
+                  Home
+                </div>  
+              </div>
+
+              <div class="flex items-center division-in-element-gap justify-between">
+
+                <div class="input-text-large-static">456B, Oakwoods, Germany</div>
+
+                <a 
+                  href={`#`}
+                  class="button-link-primary-big"
+                >
+                  {/*if there is no single address then we will show add
+                  {Button_add_text}*/}
+
+                  {/*if there is default address set then we will show update*/}
+                  {Button_update_text}
+                </a>
+              </div>
+            </div>
 
             <div class="h-px bg-primary-light" />
 
-            <InfoUnit
-              label={Label_billing_address}
-              type="text"
-              property="address"
-              verificationHref={verificationHref}
-              userAccountRecurData={userAccountRecurData}
-              setNotification={setNotification}
-            />
+            <div class="grid division-in-element-gap">
+              <div class="input-label">{Label_billing_address}</div>
+
+              <div class="quick-info">
+                <div>Sara jones</div>
+                <div>&#x2022;</div>
+                <div class="info-tag-button">
+                  Home
+                </div>  
+              </div>
+
+              <div class="flex items-center division-in-element-gap justify-between">
+
+                <div class="input-text-large-static">N/A</div>
+
+                <a 
+                  href={`#`}
+                  class="button-link-primary-big"
+                >
+                  {/*if there is no single address then we will show add*/}
+                  {Button_add_text}
+
+                  {/*if there is default address set then we will show update*
+                  {Button_update_text}*/}
+                </a>
+              </div>
+            </div>
           </div>
 
           {/*if there is not default address set then hide button*/}
@@ -143,18 +185,18 @@ export default function UserInfo({
           </div>
 
           {Address_tag.length > 2 && (
-            <div class="mt-[25px] w-full flex justify-center">
+            <div class="w-full flex justify-center">
               <a
                 href={userAccountAddressURL}
-                id="toggle-more-address"
-                class="font-bold leading-[150%] text-primary cursor-pointer"
+                id="more-address"
+                class="button-link-primary"
               >
-                <span id="show-more-address" class="flex items-center">
-                  {text_more_address.replaceAll(
-                    "<number>",
-                    Address_tag.length - 2,
-                  )}
-                </span>
+                {Address_tag.length === 3
+                  ? Button_view_more_address_text_singular
+                  : Button_view_more_address_text.replace(
+                      "<number>",
+                      Address_tag.length - 2,
+                    )}
               </a>
             </div>
           )}
