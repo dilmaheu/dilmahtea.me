@@ -1,187 +1,102 @@
 ---
-import { Img, Picture } from "astro-imagetools/components";
+import { Picture } from "astro-imagetools/components";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
-import localizeCMSImage from "@utils/localizeCMSImage";
 import getUserAccountPagesLink from "@utils/getUserAccountPagesLink";
 
-import UserInfo from "@solid/UserInfo";
+import Dashboard from "@solid/Dashboard.astro";
 
 import Markdown from "@components/Markdown.astro";
-import Chapterize from "@components/Chapterize.astro";
+import NoOrders from "@components/NoOrders.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import UserAccountLayout from "@layouts/UserAccountLayout.astro";
 
-const { success_notification, green_right_arrow } = RecurringImages;
+const { success_notification, warning_notification, error_notification } =
+  RecurringImages;
 
-const { page, recurData, ariaLabelRecurData } = Astro.props,
-  {
-    Personal_information: {
-      Name: block_section1_name,
-      Label_username,
-      Label_phone,
-      Label_email,
-      Label_delivery_address,
-      Label_billing_address,
-      Social_media_title,
-      Social_media,
-      user_info_update_success_notification,
-      display_name_update_success_notification_label,
-      email_update_success_notification_label,
-      phone_number_update_success_notification_label,
-    },
+const { page } = Astro.props;
+
+const {
+    locale,
+    Personal_information,
     kindnessCauses,
-    Block3_title: block3_title,
-    Block2: block2,
-    Support_visibility,
-    Support,
+    Block2_visibility,
+    Block2,
+    Block3_title,
   } = page,
-  { locale } = page,
   { STRAPI_URL } = import.meta.env;
 
 const userAccountRecurData = CMS.get("userAccountRecurringElement", locale),
   userAccountAddress = CMS.get("userAccountAddress", locale);
 
 const {
-  Facebook_icon: fb_icon,
-  Google_icon: g_icon,
-  Twitter_icon: twitter_icon,
-  Empty_order_blob: { data: empty_blob },
-  Empty_order_button_text,
-  Empty_order_button_link,
-  Empty_order_text,
-  Button_edit_text,
-  Button_update_text,
-  Button_remove_text,
-  Button_add_new_address_text,
-  Button_save_text,
-  Button_cancel_text,
-  Button_track_package,
-  Button_track_package_text,
-  Button_buy_again_text,
-  Button_view_all_orders_text,
-  text_connected,
-  text_not_connected,
-  text_more_address,
-  Address_tag: address_tag,
-  Label_order,
-  text_content,
-  text_estimated_delivery,
-  text_estimated_shipment,
-  text_delivered,
-  text_more_products_in_this_order,
-} = userAccountRecurData;
-
-const {
   Meta: { URL_slug: userAccountAddress_url },
 } = userAccountAddress;
 
-const title = page.Title.replaceAll("<username>", `Sara Jones`);
-
-const headingName = recurData.text_chapter;
-
 const verificationHref = getUserAccountPagesLink("verification", locale);
+
+const headings = new Array(
+  Personal_information?.Name,
+  Block2_visibility && Block2?.Block2_title,
+  Block3_title,
+);
 ---
 
-<style lang="scss" is:global>
-  .dashboard-sec-title {
-    @apply bg-primary leading-[110%] text-secondary-light rounded-[10px];
+<style lang="scss">
+  #cause-form {
+    @apply grid gap-[15px] mt-[15px] overflow-hidden;
 
-    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
-    padding: 10px clamp(15px, 2.08vw + 0.01rem, 30px);
+    label {
+      @apply flex gap-5 items-start;
+    }
 
-    @media (max-width: 767.98px) {
-      padding: 15px;
+    .cause-form-text {
+      @apply text-lg font-medium leading-[150%] mt-[7px];
+    }
+
+    input[type="radio"] {
+      &[name="kindness_cause"] {
+        cursor: pointer;
+      }
+
+      @apply min-w-[25px] min-h-[25px] accent-primary after:content-[''];
+
+      &:after {
+        @apply relative inline-block top-0 left-0 min-w-[25px] min-h-[25px] 
+            rounded-full bg-secondary-light border-2 border-primary;
+      }
+      &:checked:after {
+        @apply relative inline-block top-[1.5px] left-[1.5px] min-w-[22px] min-h-[22px] 
+            rounded-full bg-primary border-[6px] border-secondary-light;
+      }
     }
   }
 
-  .dashboard-sec {
-    @apply bg-secondary-light rounded-[10px] mt-[25px] text-black;
+  #kindness-cause-grid {
+    @apply grid items-center gap-2.5 md:gap-[25px] w-full;
 
-    padding: clamp(15px, 2.08vw + 0.01rem, 25px)
-      clamp(15px, 2.2vw + 0.1rem, 35px);
-
-    @media (max-width: 767.98px) {
-      padding: 15px;
-    }
-
-    .information-label {
-      @apply text-sm md:text-base font-medium leading-[150%] text-black-light;
-    }
-
-    .information-text {
-      @apply w-full pl-1.5 leading-[150%] text-black opacity-100 sm:font-medium bg-secondary-light outline-none;
-
-      &:not(:disabled) {
-        @apply mb-[-2px] border-b-2 border-primary-light;
-      }
-
-      &.errored {
-        @apply border-error;
-      }
-
-      font-size: clamp(1.125rem, 1.5vw + 0.3rem, 1.5rem);
-    }
-
-    .information-btn {
-      @apply leading-[150%] font-semibold text-primary;
-
-      font-size: clamp(1rem, 1.4vw + 0.3rem, 1.375rem);
-    }
-
-    .cause-from {
-      @apply grid gap-[15px] mt-[15px] overflow-hidden;
-
-      label {
-        @apply flex gap-5 items-start;
-      }
-
-      .cause-from-label {
-        @apply text-lg font-bold leading-[150%] cursor-pointer;
-      }
-
-      .cause-from-text {
-        @apply text-lg font-medium leading-[150%] mt-[7px];
-      }
-
-      input[type="radio"] {
-        @apply cursor-pointer min-w-[25px] min-h-[25px] accent-primary after:content-[''];
-
-        &:after {
-          @apply relative inline-block top-0 left-0 min-w-[25px] min-h-[25px] 
-            rounded-full bg-secondary-light border-2 border-primary;
-        }
-        &:checked:after {
-          @apply relative inline-block top-[1.5px] left-[1.5px] min-w-[22px] min-h-[22px] 
-            rounded-full bg-primary border-[6px] border-secondary-light;
-        }
-      }
+    @media (min-width: 520px) {
+      @apply grid-cols-2 md:grid-cols-1;
     }
 
     .kindness-cause-clip-path {
       clip-path: url(#kindness-cause-card-curve-sm);
 
-      @media (min-width: 640px) {
+      @media (min-width: 767px) {
         clip-path: url(#kindness-cause-card-curve);
       }
     }
 
     .kindness-cause-img-container {
-      @apply h-full aspect-[6/5] block;
+      @apply w-full h-full aspect-[6/5];
 
-      @media (min-width: 768px) {
-        @apply aspect-[5/5];
-      }
-
-      @media (min-width: 800px) {
-        @apply aspect-[6/5];
-      }
-    }
-
-    .heading-content {
-      a {
-        @apply text-[clamp(1.125rem,1.5vw+0.3rem,1.5rem)];
+      picture,
+      img {
+        @media (min-width: 767px) {
+          height: 100% !important;
+        }
       }
     }
   }
@@ -189,7 +104,7 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
 
 <ClipPathSVG
   id="kindness-cause-card-curve"
-  path="M0.551,1 H0.213 c-0.079,0,-0.156,-0.001,-0.183,-0.046 c-0.035,-0.06,-0.029,-0.315,-0.029,-0.47 C0.002,0.269,-0.012,0.053,0.056,0.026 A1,7,0,0,1,0.213,0.001 V0 C0.335,0.004,0.457,0,0.521,0 c0.531,0,0.475,0.013,0.475,0.475 S1,1,0.551,1"
+  path="M0.547,0.01 c0.072,0.003,0.13,0,0.167,0 c0.315,0,0.282,0.03,0.282,0.467 s0.052,0.518,-0.264,0.518 c-0.105,0,-0.154,0,-0.174,-0.001 l-0.011,0.001 h-0.001 c-0.199,0.01,-0.401,0.008,-0.47,-0.037 C-0.013,0.898,0.003,0.642,0.003,0.487 c0,-0.216,-0.034,-0.411,0.14,-0.459 C0.305,-0.018,0.435,0.005,0.547,0.01"
 />
 
 <ClipPathSVG
@@ -198,494 +113,147 @@ const verificationHref = getUserAccountPagesLink("verification", locale);
 />
 
 <ClipPathSVG
-  id="orders-curve"
+  id="orders-blob-curve"
   path="M0.517,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 S0.002,0.495,0.018,0.737 S0.182,1,0.528,1 c0.286,0,0.375,-0.063,0.447,-0.282 c0.031,-0.094,0.047,-0.323,-0.029,-0.591 C0.898,-0.045,0.734,0.008,0.517,0.008"
 />
 
-<div class="wrapper py-[50px] w-full flex flex-col-reverse md:flex-row">
-  <div class="md:w-2/3">
-    <Chapterize>
-      <UserInfo
-        client:load
-        Title={page.Title}
-        {Label_username}
-        {Label_phone}
-        {Label_email}
-        {user_info_update_success_notification}
-        {display_name_update_success_notification_label}
-        {email_update_success_notification_label}
-        {phone_number_update_success_notification_label}
-        {verificationHref}
-        recurringImages={{
-          success_notification: RecurringImages.success_notification,
-          error_notification: RecurringImages.error_notification,
-        }}
-        userAccountRecurData={{
-          Button_edit_text,
-          Button_update_text,
-          Button_save_text,
-          Button_cancel_text,
-        }}
-      />
-
+<UserAccountLayout page={page} headings={headings}>
+  <Dashboard
+    {page}
+    {verificationHref}
+    {userAccountRecurData}
+    recurringImages={{
+      success_notification,
+      warning_notification,
+      error_notification,
+    }}
+  >
+    <Fragment slot="kindnessCausesHTML">
       {
-        page.Block2_visibility && block2 && (
-          <Fragment>
-            <h2
-              id={block2?.Block2_title.toLowerCase().replaceAll(" ", "-")}
-              class="dashboard-sec-title recoleta mt-[50px]"
-            >
-              {block2.Block2_title}
-            </h2>
-
-            <div class="dashboard-sec">
-              {block2.Block2_text && (
-                <div class="hero-text text-black block prose max-w-none">
-                  <Markdown>{block2.Block2_text}</Markdown>
-                </div>
-              )}
-
-              <form class="cause-from">
-                <label>
-                  <input type="radio" name="my_cause" />
-
-                  <div>
-                    <div class="flex flex-wrap items-center justify-between gap-[7px]">
-                      <h3 class="cause-from-label">
-                        {block2.Label_my_selected_cause}
-                      </h3>
-
-                      <div class="cause-from-txt text-black-light w-full prose max-w-none">
-                        <Markdown>{block2.My_selected_cause_text}</Markdown>
-                      </div>
-                    </div>
-
-                    {kindnessCauses.map(
-                      ({ cause, description, featured_blob }) => (
-                        <div class="-ml-2.5">
-                          <input
-                            type="radio"
-                            name="kindness_cause"
-                            id={cause}
-                            value={cause}
-                            class="peer hidden"
-                          />
-
-                          <label
-                            for={cause}
-                            class:list={[
-                              "kindness-cause-clip-path text-secondary",
-                              "p-1.5 max-w-[380px] sm:max-w-full sm:h-[170px]",
-                              "peer-checked:bg-primary-light select-none cursor-pointer",
-                            ]}
-                          >
-                            <div class="kindness-cause-clip-path p-[5px] bg-secondary-light w-full h-full">
-                              <div
-                                class:list={[
-                                  "kindness-cause-clip-path w-full h-full",
-                                  "flex flex-wrap sm:flex-nowrap bg-secondary",
-                                ]}
-                              >
-                                <div class="kindness-cause-img-container">
-                                  <Picture
-                                    layout="fill"
-                                    sizes="(min-width: 640px) 320px, 90vw)"
-                                    alt={
-                                      featured_blob.data.attributes
-                                        .alternativeText
-                                    }
-                                    attributes={{
-                                      img: { style: "aspect-ratio: 6 / 5;" },
-                                    }}
-                                    src={
-                                      STRAPI_URL +
-                                      featured_blob.data.attributes.url
-                                    }
-                                  />
-                                </div>
-
-                                <div
-                                  class:list={[
-                                    "px-[15px] sm:px-[25px] py-5 sm:py-[15px] h-full",
-                                    "flex flex-col justify-center gap-2 lg:gap-[15px]",
-                                  ]}
-                                >
-                                  <h4 class="recoleta text-2xl text-black leading-[120%]">
-                                    {cause}
-                                  </h4>
-
-                                  <div
-                                    class:list={[
-                                      "prose max-w-none text-base sm:text-lg",
-                                      "text-black-light sm:line-clamp-2 lg:line-clamp-3",
-                                    ]}
-                                  >
-                                    <Markdown>{description}</Markdown>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </label>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                </label>
-
-                <label>
-                  <input type="radio" name="my_cause" />
-
-                  <div>
-                    <h3 class="cause-from-label">
-                      {block2.Label_let_dilmah_pick_cause}
-                    </h3>
-                    <div class="cause-from-txt text-black-light prose max-w-none">
-                      <Markdown>{block2.Let_dilmah_pick_cause_text}</Markdown>
-                    </div>
-                  </div>
-                </label>
-              </form>
-            </div>
-          </Fragment>
+        Block2?.Block2_text && (
+          <div class="hero-text text-black block prose max-w-none">
+            <Markdown>{Block2?.Block2_text}</Markdown>
+          </div>
         )
       }
 
-      <!-- <h2
-        id={block3_title.toLowerCase().replaceAll(" ", "-")}
-        class="dashboard-sec-title recoleta mt-[50px]"
-      >
-        {block3_title}
-      </h2>
+      <form id="cause-form">
+        <label>
+          <input type="radio" disabled />
 
-      <div class="dashboard-sec grid gap-2.5">
-        <div class="flex flex-col gap-5">
-          <div
-            class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1"
-          >
-            <div
-              class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-black"
-            >
-              {Label_order} #132131
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-[7px]">
+              <h3 class="text-lg font-bold leading-[150%]">
+                {Block2?.Label_my_selected_cause}
+              </h3>
 
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="8"
-                height="16"
-                viewBox="0 0 8 16.7"
+              <div
+                class="cause-form-txt text-black-light w-full prose max-w-none"
               >
-                <path
-                  d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
-                  style="fill:#2b4b50"></path>
-              </svg>
-            </div>
-            <div class="text-black-light">
-              {text_estimated_delivery} 18-Feb-2023
-            </div>
-          </div>
-
-          <div class="flex justify-between gap-4 w-full">
-            <div class="flex flex-wrap gap-4 justify-between w-full">
-              <div class="grid gap-4">
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
-
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">
-                      1x Chamomile tea
-                    </h2>
-
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
-                </div>
+                <Markdown>{Block2?.My_selected_cause_text}</Markdown>
               </div>
+            </div>
 
-              {
-                Button_track_package && (
-                  <div>
-                    <a href="#">
-                      <div
-                        class:list={[
-                          "font-bold leading-[150%] text-white",
-                          "px-[30px] py-1.5 bg-primary rounded-full",
-                        ]}
-                      >
-                        {Button_track_package_text}
+            {
+              kindnessCauses.length > 0 && (
+                <div id="kindness-cause-grid">
+                  {kindnessCauses.map(
+                    ({ cause, description, featured_blob }) => (
+                      <div class="w-full h-full">
+                        <input
+                          type="radio"
+                          name="kindness_cause"
+                          id={cause}
+                          value={cause}
+                          class="peer hidden"
+                        />
+
+                        <label
+                          for={cause}
+                          class:list={[
+                            "kindness-cause-clip-path inline-block w-full h-full",
+                            "p-[3px] md:p-[5px] peer-checked:bg-primary select-none cursor-pointer",
+                          ]}
+                        >
+                          <div class="kindness-cause-clip-path w-full h-full p-[3px] md:p-[5px] bg-secondary-light">
+                            <div
+                              class:list={[
+                                "kindness-cause-clip-path w-full h-full bg-secondary",
+                                "grid md:grid-cols-[140px_1fr] lg:grid-cols-[180px_1fr] items-center sm:justify-center",
+                              ]}
+                            >
+                              <div class="kindness-cause-img-container">
+                                <Picture
+                                  layout="fullWidth"
+                                  sizes="(min-width: 640px) 320px, 90vw)"
+                                  alt={
+                                    featured_blob.data.attributes
+                                      .alternativeText
+                                  }
+                                  attributes={{
+                                    img: {
+                                      style: "aspect-ratio: 6 / 5;",
+                                    },
+                                  }}
+                                  src={
+                                    STRAPI_URL +
+                                    featured_blob.data.attributes.url
+                                  }
+                                />
+                              </div>
+
+                              <div
+                                class:list={[
+                                  "w-full h-full flex flex-col justify-center",
+                                  "px-[clamp(15px,calc(4.43vw-13px),32px)] pt-2.5 lg:px-[15px] py-[15px]",
+                                ]}
+                              >
+                                <div
+                                  class:list={[
+                                    "recoleta font-bold text-primary",
+                                    "text-[clamp(18px,calc(0.75vw+13.2px),24px)] leading-[110%]",
+                                  ]}
+                                >
+                                  {cause}
+                                </div>
+                                <div
+                                  class:list={[
+                                    "prose max-w-none text-black-light mt-2.5",
+                                    "text-[clamp(14px,calc(0.25vw+12.4px),16px)]",
+                                  ]}
+                                >
+                                  {" "}
+                                  {description}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </label>
                       </div>
-                    </a>
-                  </div>
-                )
-              }
-            </div>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-5 pt-2.5 border-t border-lightgray">
-          <div
-            class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1"
-          >
-            <div
-              class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-black"
-            >
-              {Label_order} #35995
-
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="8"
-                height="16"
-                viewBox="0 0 8 16.7"
-              >
-                <path
-                  d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
-                  style="fill:#2b4b50"></path>
-              </svg>
-            </div>
-            <div class="text-black-light">
-              {text_estimated_shipment} 18-Feb-2023
-            </div>
-          </div>
-
-          <div class="flex justify-between gap-4 w-full">
-            <div class="flex flex-wrap gap-4 justify-between w-full">
-              <div class="grid gap-4">
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
-
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">
-                      2x Ceylon cinnamon spice tea
-                    </h2>
-
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
+                    ),
+                  )}
                 </div>
+              )
+            }
+          </div>
+        </label>
 
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
+        <label>
+          <input type="radio" name="kindness_cause" value="null" />
 
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">1x Green tea</h2>
+          <div>
+            <h3 class="text-lg font-bold leading-[150%] cursor-pointer">
+              {Block2?.Label_let_dilmah_pick_cause}
+            </h3>
 
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
-                </div>
-
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
-
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">
-                      3x Rose with french vanilla tea
-                    </h2>
-
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
-                </div>
-
-                <div class="font-medium leading-[150%]">
-                  10 {text_more_products_in_this_order}
-                </div>
-              </div>
-
-              {
-                Button_track_package && (
-                  <div>
-                    <a href="#">
-                      <div
-                        class:list={[
-                          "font-bold leading-[150%] text-white",
-                          "px-[30px] py-1.5 bg-primary rounded-full",
-                        ]}
-                      >
-                        {Button_track_package_text}
-                      </div>
-                    </a>
-                  </div>
-                )
-              }
+            <div class="cause-form-txt text-black-light prose max-w-none">
+              <Markdown>{Block2?.Let_dilmah_pick_cause_text}</Markdown>
             </div>
           </div>
-        </div>
+        </label>
+      </form>
+    </Fragment>
 
-        <div class="flex flex-col gap-5 pt-2.5 border-t border-lightgray">
-          <div
-            class="flex flex-wrap items-center justify-between gap-x-5 gap-y-1"
-          >
-            <div
-              class="flex items-center gap-2.5 text-lg font-bold leading-[150%] text-black"
-            >
-              {Label_order} #35995
-
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="8"
-                height="17"
-                viewBox="0 0 8 16.7"
-              >
-                <path
-                  d="M.3,16.3a1.4,1.4,0,0,1,0-1.7L5.4,8.3.3,2.1A1.1,1.1,0,0,1,0,1.3,1.7,1.7,0,0,1,.3.3,1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7.7,7.5a1.1,1.1,0,0,1,.3.8,1.7,1.7,0,0,1-.3,1l-5.9,7a.7.7,0,0,1-.7.4A.9.9,0,0,1,.3,16.3Z"
-                  style="fill:#2b4b50"></path>
-              </svg>
-            </div>
-            <div class="text-black-light">
-              {text_delivered} 18-Feb-2023
-            </div>
-          </div>
-
-          <div class="flex justify-between gap-4 w-full">
-            <div class="flex flex-wrap gap-4 justify-between w-full">
-              <div class="grid gap-4">
-                <div class="flex gap-4 items-center">
-                  <div class="min-w-[62px]">
-                    <Img
-                      layout="fullWidth"
-                      width={62}
-                      alt=""
-                      attributes={{
-                        img: {
-                          style:
-                            "aspect-ratio: 1 / 1; clip-path: url(#orders-curve)",
-                        },
-                      }}
-                      src="https://cms.dilmahtea.me/uploads/rose_with_french_vanilla_with_t_column_be315af184.jpg"
-                    />
-                  </div>
-
-                  <div class="grid gap-[5px] w-auto">
-                    <h2 class="recoleta text-2xl text-black">
-                      3x Natural rooibos tea
-                    </h2>
-
-                    <div class="text-black-light">Variant: 100gm</div>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <a href="#">
-                  <div
-                    class:list={[
-                      "font-bold leading-[150%] text-white",
-                      "px-[30px] py-1.5 bg-primary rounded-full",
-                    ]}
-                  >
-                    {Button_buy_again_text}
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex justify-center">
-          <a
-            href="/account/orders"
-            class="font-bold leading-[150%] text-primary"
-          >
-            {Button_view_all_orders_text}
-          </a>
-        </div>
-      </div> -->
-    </Chapterize>
-  </div>
-</div>
-
-{
-  Support_visibility && Support && (
-    <div class="z-[999] fixed bottom-[clamp(15px,3vw+5px,50px)] right-[clamp(15px,3vw+5px,50px)]">
-      <a href={Support.Button_link}>
-        <div class="flex items-center gap-4 p-5 md:py-5 md:px-[34px] rounded-full bg-[#3C994E]">
-          <div class="w-[45px] h-[45px]">
-            <img
-              class="w-full h-full object-contain"
-              src={await localizeCMSImage(
-                Support.Button_icon.data.attributes.url,
-              )}
-              alt={Support.Button_icon?.data?.attributes?.alternativeText}
-            />
-          </div>
-          <div class="hidden md:block text-3xl text-white">
-            {Support.Button_text}
-          </div>
-        </div>
-      </a>
-    </div>
-  )
-}
-
-<!-- <script>
-  const kindnessCausesCardsContainer =
-      document.querySelector(".kindness-causes"),
-    kindnessCausesCards = document.querySelectorAll(".kindness-cause");
-
-  kindnessCausesCards.forEach((card) => {
-    card.addEventListener("click", () => {
-      const activeCauseCard = kindnessCausesCardsContainer.querySelector(
-          ".active-kindness-cause",
-        ),
-        kindness_cause = card.getAttribute("cause");
-
-      activeCauseCard?.classList?.remove("active-kindness-cause");
-
-      window.checkoutInfo.kindness_cause = kindness_cause;
-
-      localStorage.setItem(
-        "checkout-info",
-        JSON.stringify(window.checkoutInfo),
-      );
-
-      card.parentElement.parentElement.classList.add("active-kindness-cause");
-    });
-  });
-</script> -->
+    <NoOrders slot="noOrdersHTML" {userAccountRecurData} />
+  </Dashboard>
+</UserAccountLayout>

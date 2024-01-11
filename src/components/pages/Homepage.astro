@@ -348,13 +348,7 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
     button.addEventListener("click", () => {
       const { sku } = button.dataset;
 
-      const inCartProduct = window.cart[sku];
-
-      const quantity = 1 + (inCartProduct?.quantity || 0);
-
-      window.cart[sku] = { quantity };
-
-      window.openCart();
+      window.addProductToCart(sku);
     });
   });
 </script>

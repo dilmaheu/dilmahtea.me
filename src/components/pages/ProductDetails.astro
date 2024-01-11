@@ -491,18 +491,18 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
   <form
     slot="cart-adding-form-sm"
-    class="cart-adding-form-sm flex flex-wrap justify-between gap-6 mt-8 w-full"
+    class="cart-adding-form-sm hidden md:flex flex-wrap justify-between gap-[15px] w-full"
   >
     <input type="hidden" name="SKU" value={productSKU} />
 
     {
       stockAmount > 0 && (
-        <div class="w-full flex flex-wrap gap-4 items-center justify-between">
+        <div class="w-full flex flex-wrap gap-2.5 items-center justify-between">
           {availableVariants.length > 0 && (
-            <fieldset>
+            <fieldset class="grow">
               <legend
                 class:list={[
-                  "text-sm lg:text-base font-medium leading-[150%]",
+                  "font-medium leading-[150%]",
                   "text-black-light mb-[5px] outline-none",
                 ]}
               >
@@ -513,8 +513,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <select
                   name="tea_variant"
                   class:list={[
-                    "inline-block bg-white border-r-[15px] border-transparent",
-                    "py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
+                    "w-full inline-block text-primary leading-[150%]",
+                    "py-2.5 pl-2.5 bg-white border-r-[10px] border-transparent",
                   ]}
                 >
                   {availableVariants.map(({ value, variant, link }) => (
@@ -532,10 +532,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           )}
 
           {availableSizes.length > 0 && (
-            <fieldset>
+            <fieldset class="grow">
               <legend
                 class:list={[
-                  "text-sm lg:text-base font-medium leading-[150%]",
+                  "font-medium leading-[150%]",
                   "text-black-light mb-[5px] outline-none",
                 ]}
               >
@@ -546,8 +546,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <select
                   name="tea_size"
                   class:list={[
-                    "inline-block bg-white border-r-[15px] border-transparent",
-                    "py-[9px] pl-[15px] text-primary lg:text-lg lg:font-normal",
+                    "w-full inline-block text-primary leading-[150%]",
+                    "py-2.5 pl-2.5 bg-white border-r-[10px] border-transparent",
                   ]}
                 >
                   {availableSizes.map(({ value, size, link }) => (
@@ -567,7 +567,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       )
     }
 
-    <div class="w-full flex flex-wrap justify-between items-center gap-4">
+    <div class="w-full flex flex-wrap justify-between items-center gap-2.5">
       {
         stockAmount > 0 && (
           <div class="w-fit flex items-center text-white p-1 bg-primary rounded-full">

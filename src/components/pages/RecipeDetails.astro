@@ -311,7 +311,11 @@ const nutrition: Nutrition = {
     </div>
 
     <div class="inline-flex sm:hidden gap-2 md:gap-2.5 mt-[30px] w-auto">
-      <a href="#recipe">
+      <a
+        href={`#${page.Title} ${recipe_recipe}`
+          ?.toLowerCase()
+          ?.replaceAll(" ", "-")}
+      >
         <div
           class:list={[
             "flex items-center justify-center py-[13px] px-[23px] rounded-[40px]",
@@ -328,25 +332,29 @@ const nutrition: Nutrition = {
   </Fragment>
 
   <a
-    href="#recipe"
+    href={`#${page.Title} ${recipe_recipe}`
+      ?.toLowerCase()
+      ?.replaceAll(" ", "-")}
     slot="jump-to-recipe-sm"
     class:list={[
-      "max-w-[200px] bg-primary flex items-center justify-center gap-5 rounded-[40px]",
-      "mt-6 ml-4 py-[13px] px-[23px] text-white text-center text-sm font-bold leading-[19px]",
+      "w-full bg-primary flex items-center justify-center gap-5 rounded-full",
+      "py-[15px] px-[20px] text-white text-center text-sm font-bold",
     ]}
   >
     {recipe_jump_to_recipe}
 
     <span class="icon">
-      <img class="h-5" {...white_down_arrow} />
+      <img class="h-3" {...white_down_arrow} />
     </span>
   </a>
 
   <a
-    href="#recipe"
+    href={`#${page.Title} ${recipe_recipe}`
+      ?.toLowerCase()
+      ?.replaceAll(" ", "-")}
     slot="jump-to-recipe"
     class:list={[
-      "hidden md:block py-5 mb-[50px] rounded-[40px]",
+      "hidden md:block py-5 rounded-[40px]",
       "bg-primary text-white text-center text-base font-bold leading-[19px]",
     ]}
   >
@@ -363,13 +371,14 @@ const nutrition: Nutrition = {
 
     {
       page.Recipe_variations.data.length > 0 && (
-        <div>
+        <>
           <h2
-            id="similar-recipe"
+            id={`${recipe_similar} ${page.Title}`
+              ?.toLowerCase()
+              ?.replaceAll(" ", "-")}
             class="recipe-title recoleta bg-primary mt-[50px] text-secondary-light leading-[110%] rounded-[10px]"
           >
-            {recipe_similar}
-            {page.Title}
+            {`${recipe_similar} ${page.Title}`}
           </h2>
 
           <div class="bg-secondary-light rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
@@ -389,15 +398,16 @@ const nutrition: Nutrition = {
               ))}
             </ul>
           </div>
-        </div>
+        </>
       )
     }
 
     <h2
-      id="recipe"
+      id={`${page.Title} ${recipe_recipe}`?.toLowerCase()?.replaceAll(" ", "-")}
       class="recipe-title recoleta bg-primary text-secondary-light leading-[110%] rounded-[10px] mt-[50px]"
     >
       {page.Title}
+      {" "}
       {recipe_recipe}
     </h2>
 
@@ -620,7 +630,7 @@ const nutrition: Nutrition = {
 
     <h2
       aria-label={recipe_cooking_instructions}
-      id="cooking-instructions"
+      id={recipe_cooking_instructions?.toLowerCase()?.replaceAll(" ", "-")}
       class="recipe-title recoleta bg-primary mt-[50px] text-secondary-light leading-[110%] rounded-[10px]"
     >
       {recipe_cooking_instructions}

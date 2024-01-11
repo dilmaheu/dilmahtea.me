@@ -1,12 +1,11 @@
 ---
+import subset from "@utils/shared/subset";
 import ProductFiltersForm from "@solid/ProductFiltersForm";
 
-let { locale, productSizes, productVariants, recurData, type } = Astro.props;
+let { locale, productSizes, productVariants, recurData, type } =
+  structuredClone(Astro.props);
 
-recurData = {
-  text_all_tea_variants: recurData.text_all_tea_variants,
-  text_all_tea_sizes: recurData.text_all_tea_sizes,
-};
+recurData = subset(recurData, ["text_all_tea_variants", "text_all_tea_sizes"]);
 
 [productSizes, productVariants] = [productSizes, productVariants].map(
   ({ data }, i) => ({
