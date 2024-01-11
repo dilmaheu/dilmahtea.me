@@ -227,6 +227,12 @@ $link-light: b3cccc;
   }
 }
 
+@mixin info-tag-button {
+  @apply text-b7 py-1 px-2 rounded-full;
+
+  line-height: 130% !important;
+}
+
 // cart-buttons
 
 @mixin button-cart-content {
@@ -345,18 +351,13 @@ $link-light: b3cccc;
   }
 }
 
-// radio/checkbox-buttons
+// radio-buttons
 
 @mixin radio-button {
   @include button;
   @include button-font-sm;
 
-  @apply border-2;
-}
-
-@mixin checkbox-button {
-  @include button;
-  @include button-font-sm;
+  @apply text-primary border-2;
 }
 
 // toggle-buttons
@@ -366,6 +367,7 @@ $link-light: b3cccc;
 
   @apply flex items-center gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-primary;
 }
+
 // product-card(smallest-size-375px)
 
 @mixin blob-card {
@@ -379,201 +381,210 @@ $link-light: b3cccc;
 }
 
 
+@mixin product-more-info {
+  @apply space-x-[3px] sm:space-x-1 text-b7 italic;
+
+  span {
+    @apply inline align-middle;
+  }
+}
+
+@mixin product-more-info-link {
+  @include bg-img-($link-dark);
+
+  @apply font-medium sm:font-semibold px-1 no-underline
+    bg-bottom bg-no-repeat hover:brightness-90 transition-all;
+}
+
+@mixin product-more-info-icon {
+  @apply w-[clamp(16px,calc(0.37vw+14.6px),20px)] h-[clamp(16px,calc(0.37vw+14.6px),20px)];
+}
+
+@mixin product-icon-circle {
+  @apply bg-white border border-primary rounded-full;
+}
 
 
+@mixin product-card {
+  @include blob-card;
 
+  clip-path: url(#product-card-curve);
 
-// @mixin info-tag-button {
-//   @apply text-b7 py-1 px-2 rounded-full;
+  .product-card-image-container {
+    @apply relative w-full bg-white;
 
-//   line-height: 130% !important;
-// }
+    .stock-out-label-top {
+      @apply bg-warning/80 border border-warning rounded-full text-black
+        text-[clamp(10px,calc(0.94vw+6.47px),20px)] font-semibold leading-[150%]
+        py-[clamp(3px,calc(0.19vw+2.29px),5px)] px-[clamp(10px,calc(0.47vw+8.23px),15px)]
+        absolute top-[clamp(10px,calc(1.88vw+2.9px),30px)] right-[clamp(20px,calc(2.82vw+9.43px),50px)];
+    }
+  }
 
-// @mixin radio-button {
-//   @apply inline-block py-2.5 px-5 text-sm 
-//     border-2 rounded-full cursor-pointer select-none;
-// }
+  .product-card-content {
+    @apply grid gap-[5px];
 
-// @mixin radio-button-extended {
-//   @include radio-button;
+    .product-title {
+      @apply recoleta text-h5-sm text-white;
+    }
 
-//   @apply font-bold text-primary bg-white;
-// }
+    .product-info {
+      @apply flex flex-wrap gap-1 text-b6-sm text-secondary-light;
+    }
 
-// @mixin input-field-default {
-//   @apply bg-transparent border border-primary rounded-full 
-//     focus:ring focus:ring-primary-light focus:outline-none
-//     py-[clamp(8px,calc(0.25vw+6.4px),10px)] px-[clamp(15px,calc(0.625vw+11px),20px)]
-//     text-[clamp(16px,calc(0.25vw+14.4px),18px)] text-black placeholder:text-black-light;
-// }
+    .product-format {
+      @include product-more-info;
 
-// @mixin selector-default {
-//   select {
-//     @include input-field-default;
+      .icon-container {
+        @apply -space-x-[clamp(10px,calc(0.18vw+9.29px),12px)];
 
-//     @apply w-full pr-[clamp(40px,calc(1.25vw+32px),50px)] cursor-pointer appearance-none;
+        .icon,
+        .number {
+          @include product-more-info-icon;
+          @include product-icon-circle;
+        }
 
-//     background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath d='M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z' style='fill:%231e4848'/%3E%3C/svg%3E")
-//       no-repeat right 20px center;
-//     background-size: clamp(14px, calc(0.25vw + 12.4px), 16px);
-//   }
-// }
+        .number {
+          @apply inline-flex items-center justify-center text-primary
+            text-[clamp(6px,calc(0.5vw+2.8px),10px)] sm:font-medium;
+        }
+      }
 
-// @mixin input-label {
-//   @apply text-b5 font-semibold text-black-light;
-// }
+      .format-link-text {
+        @include product-more-info-link;
+      }
 
-// @mixin input-text-large {
-//   @apply text-b3 text-black;
-// }
+      .desktop-only-text {
+        @apply hidden sm:inline align-middle;
+      }
 
+      .mobile-only-text {
+        @apply inline sm:hidden align-middle;
+      }
+    }
 
+    .product-estate {
+      @include product-more-info;
 
-// .input-field-default {
-//   input {
-//     @include input-field-default;
-//   }
-// }
+      .icon {
+        @include product-more-info-icon;
+      }
 
-// .selector-default {
-//   @include selector-default;
-// }
+      a {
+        @include product-more-info-link;
 
-// .input-label {
-//   @include input-label;
-// }
+        @apply inline align-middle;
+      }
+    }
+  }
+}
 
-// .input-text-large-static {
-//   @include input-text-large;
-// }
+// exceptions
 
-// .input-text-large {
-//   @include input-text-large;
+@mixin quick-info {
+  @apply flex items-center text-b7 gap-[clamp(4px,calc(0.5vw+0.8px),8px)] font-medium text-black-light;
+}
 
-//   @apply w-full bg-transparent outline-none;
+// form & inputs
 
-//   &:not(:disabled) {
-//     @apply border-b-2 border-primary;
-//   }
+@mixin input-field-default {
+  @apply bg-transparent border border-primary rounded-full 
+    focus:ring focus:ring-primary-light focus:outline-none
+    py-[clamp(8px,calc(0.25vw+6.4px),10px)] px-[clamp(15px,calc(0.625vw+11px),20px)]
+    text-[clamp(16px,calc(0.25vw+14.4px),18px)] text-black placeholder:text-black-light;
+}
 
-//   &.errored {
-//     @apply border-error;
-//   }
-// }
+@mixin selector-default {
+  select {
+    @include input-field-default;
 
-// .button-primary {
-//   @include button;
+    @apply w-full pr-[clamp(40px,calc(1.25vw+32px),50px)] cursor-pointer appearance-none;
 
-//   @apply bg-primary text-white;
-// }
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath d='M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z' style='fill:%231e4848'/%3E%3C/svg%3E")
+      no-repeat right 20px center;
+    background-size: clamp(14px, calc(0.25vw + 12.4px), 16px);
+  }
+}
 
-// .button-link-primary {
-//   @include button-link-primary;
-// }
+@mixin input-label {
+  @apply text-b5 font-semibold text-black-light;
+}
 
-// .button-link-primary-big {
-//   @include button-link-primary-big;
-// }
+@mixin input-text-large-text {
+  @apply text-b3 text-black;
+}
 
-// .button-link-error-dark {
-//   @include button-link-error-dark;
-// }
+@mixin input-text-large {
+  @include input-text-large-text;
 
-// .button-link-error-dark-big {
-//   @include button-link-error-dark-big;
-// }
+  @apply w-full bg-transparent outline-none;
 
-// .info-tag-button {
-//   @include info-tag-button;
+  &:not(:disabled) {
+    @apply border-b-2 border-primary;
+  }
 
-//   @apply text-black-light bg-white;
-// }
+  &.errored {
+    @apply border-error;
+  }
+}
 
-// .info-tag-button-primary {
-//   @include info-tag-button;
+@mixin form-grid {
+  @include form-gap;
+  @include selector-default;
+  input {
+    @include input-field-default;
+  }
 
-//   @apply text-white bg-primary;
-// }
+  @apply w-full grid sm:grid-cols-2;
 
-// .radio-button-default {
-//   @include radio-button;
-// }
+  label {
+    @include division-in-element-gap;
 
-// .radio-button-extended {
-//   @include radio-button-extended;
-// }
+    @apply flex flex-col;
 
-// .checkbox-primary {
-//   @include text-b5;
-//   @include division-in-element-gap;
+    span.tag-input-close-button {
+      @apply absolute inset-y-0 right-0 cursor-pointer
+        flex items-center pr-5 font-bold text-error-dark;
+    }
+  }
+}
 
-//   @apply flex items-center text-black-light cursor-pointer select-none;
+@mixin form-button-container {
+  @include division-gap;
 
-//   .checkbox-input-container {
-//     @apply relative block w-5 h-5;
+  @apply flex flex-wrap items-center justify-center sm:justify-start;
+}
 
-//     & input {
-//       @apply absolute opacity-0;
+//checkbox 
 
-//       &:checked ~ .checkbox-primary {
-//         @apply bg-primary rounded;
+@mixin checkbox-primary {
+  @include division-in-element-gap;
 
-//         &::after {
-//           @apply bg-transparent opacity-100;
-//         }
-//       }
-//     }
+  @apply flex items-center text-b5 text-black-light cursor-pointer select-none;
 
-//     & .checkbox-primary {
-//       @apply absolute w-[18px] sm:w-5 h-[18px] sm:h-5 
-//         bg-transparent rounded border-2 border-primary;
+  .checkbox-input-container {
+    @apply relative block w-5 h-5;
 
-//       &::after {
-//         @apply text-sm font-bold text-white content-['✓'] 
-//           absolute -top-[3px] sm:-top-0.5 left-0.5 sm:left-[3px] opacity-0;
-//       }
-//     }
-//   }
-// }
+    & input {
+      @apply absolute opacity-0;
 
-// .quick-info {
-//   @include text-b7;
+      &:checked ~ .checkbox-primary {
+        @apply bg-primary rounded;
 
-//   @apply flex items-center gap-[clamp(4px,calc(0.5vw+0.8px),8px)] font-medium text-black-light;
-// }
+        &::after {
+          @apply bg-transparent opacity-100;
+        }
+      }
+    }
 
-// .horizontal-toggle-button-primary {
-//   @apply flex items-center cursor-pointer
-//     gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-base font-bold text-primary;
+    & .checkbox-primary {
+      @apply absolute w-[18px] sm:w-5 h-[18px] sm:h-5 
+        bg-transparent rounded border-2 border-primary;
 
-//   .toggle-button-arrow {
-//     @apply w-[14px] h-2;
-//   }
-// }
-
-// .form-grid {
-//   @include form-gap;
-//   @include selector-default;
-//   input {
-//     @include input-field-default;
-//   }
-
-//   @apply w-full grid sm:grid-cols-2;
-
-//   label {
-//     @include division-in-element-gap;
-
-//     @apply flex flex-col;
-
-//     span.tag-input-close-button {
-//       @apply absolute inset-y-0 right-0 cursor-pointer
-//         flex items-center pr-5 font-bold text-error-dark;
-//     }
-//   }
-// }
-
-// .form-button-container {
-//   @include division-gap;
-
-//   @apply flex flex-wrap items-center justify-center sm:justify-start;
-// }
+      &::after {
+        @apply text-sm font-bold text-white content-['✓'] 
+          absolute -top-[3px] sm:-top-0.5 left-0.5 sm:left-[3px] opacity-0;
+      }
+    }
+  }
+}

@@ -189,6 +189,26 @@ body {
   @include button-link-light;
 }
 
+.button-link-error-dark {
+  @include button-link-error-dark;
+}
+
+.button-link-error-dark-big {
+  @include button-link-error-dark-big;
+}
+
+
+.info-tag-button-default {
+  @include info-tag-button;
+
+  @apply text-black-light bg-white;
+}
+
+.info-tag-button-primary {
+  @include info-tag-button;
+  @include button-primary-colors;
+}
+
 // cart-buttons
 
 // cart buttons are 
@@ -275,29 +295,19 @@ body {
   }
 }
 
-// radio/checkbox-buttons
+// radio-buttons
 
-.radio-button-default-checked {
+.radio-button-default {
   @include radio-button;
 
-  @apply bg-primary border-secondary-light;
+  @apply bg-secondary-light border-secondary-light
+    peer-checked:font-bold peer-checked:text-secondary-light peer-checked:bg-primary;
 }
 
-.radio-button-default-unchecked {
+.radio-button-extended {
   @include radio-button;
-  @apply bg-secondary-light border-secondary-light;
-}
 
-.checkbox-button-default-checked {
-  @include checkbox-button;
-
-  @apply bg-primary;
-}
-
-.checkbox-button-default-unchecked {
-  @include checkbox-button;
-
-  @apply bg-transparent;
+  @apply font-bold bg-white border-white peer-checked:border-primary;
 }
 
 // toggle-buttons
@@ -350,98 +360,49 @@ body {
 // product-card(smallest-size-375px)
 
 .product-card {
-  @mixin product-more-info {
-    @apply space-x-[3px] sm:space-x-1 text-b7 italic;
+  @include product-card;
+}
 
-    span {
-      @apply inline align-middle;
-    }
+// exceptions
+
+.quick-info {
+  @include quick-info;
+}
+
+// form & inputs
+
+.input-field-default {
+  input {
+    @include input-field-default;
   }
+}
 
-  @mixin product-more-info-link {
-    @include bg-img-($link-dark);
+.selector-default {
+  @include selector-default;
+}
 
-    @apply font-medium sm:font-semibold px-1 no-underline
-      bg-bottom bg-no-repeat hover:brightness-90 transition-all;
-  }
+.input-label {
+  @include input-label;
+}
 
-  @mixin product-more-info-icon {
-    @apply w-[clamp(16px,calc(0.37vw+14.6px),20px)] h-[clamp(16px,calc(0.37vw+14.6px),20px)];
-  }
+.input-text-large-static {
+  @include input-text-large-text;
+}
 
-  @mixin product-icon-circle {
-    @apply bg-white border border-primary rounded-full;
-  }
+.input-text-large {
+  @include input-text-large;
+}
 
-  @include blob-card;
+.form-grid {
+  @include form-grid;
+}
 
-  clip-path: url(#product-card-curve);
+.form-button-container {
+  @include form-button-container;
+}
 
-  .product-card-image-container {
-    @apply relative w-full bg-white;
+//checkbox 
 
-    .stock-out-label-top {
-      @apply bg-warning/80 border border-warning rounded-full text-black
-        text-[clamp(10px,calc(0.94vw+6.47px),20px)] font-semibold leading-[150%]
-        py-[clamp(3px,calc(0.19vw+2.29px),5px)] px-[clamp(10px,calc(0.47vw+8.23px),15px)]
-        absolute top-[clamp(10px,calc(1.88vw+2.9px),30px)] right-[clamp(20px,calc(2.82vw+9.43px),50px)];
-    }
-  }
-
-  .product-card-content {
-    @apply grid gap-[5px];
-
-    .product-title {
-      @apply recoleta text-h5-sm text-white;
-    }
-
-    .product-info {
-      @apply flex flex-wrap gap-1 text-b6-sm text-secondary-light;
-    }
-
-    .product-format {
-      @include product-more-info;
-
-      .icon-container {
-        @apply -space-x-[clamp(10px,calc(0.18vw+9.29px),12px)];
-
-        .icon,
-        .number {
-          @include product-more-info-icon;
-          @include product-icon-circle;
-        }
-
-        .number {
-          @apply inline-flex items-center justify-center text-primary
-            text-[clamp(6px,calc(0.5vw+2.8px),10px)] sm:font-medium;
-        }
-      }
-
-      .format-link-text {
-        @include product-more-info-link;
-      }
-
-      .desktop-only-text {
-        @apply hidden sm:inline align-middle;
-      }
-
-      .mobile-only-text {
-        @apply inline sm:hidden align-middle;
-      }
-    }
-
-    .product-estate {
-      @include product-more-info;
-
-      .icon {
-        @include product-more-info-icon;
-      }
-
-      a {
-        @include product-more-info-link;
-
-        @apply inline align-middle;
-      }
-    }
-  }
+.checkbox-primary {
+  @include checkbox-primary;
 }
