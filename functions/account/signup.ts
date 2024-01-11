@@ -75,7 +75,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
   try {
     const ExistingCustomer = await fetchExactAPI(
       "GET",
-      "/crm/Accounts?$select=ID,Name,Language,Email,Phone,Country&$filter=" +
+      "/crm/Accounts?$select=ID,Name,Language,Email,Phone,Country,LeadSource,Classification1&$filter=" +
         CustomerFilter,
       env,
     ).then(({ feed }) => feed.entry?.content["m:properties"]);
@@ -169,21 +169,32 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         }
       });
 
+      let UpdatedUserAttributes: Record<string, string> = {};
+
       if (
         ExistingCustomer["d:Name"] !== Name ||
         ExistingCustomer["d:Language"] !== Language ||
         ExistingCustomer["d:MainContact"] !== Contact["d:ID"]
       ) {
+        UpdatedUserAttributes = {
+          Name,
+          Language,
+          MainContact: Contact["d:ID"],
+        };
+      }
+
+      if (!ExistingCustomer["d:Classification1"]) {
+        UpdatedUserAttributes.Classification1 =
+          await env.EXACT_GUID_COLLECTION.get("B2C_CUSTOMER_SEGMENT");
+      }
+
+      if (Object.keys(UpdatedUserAttributes).length) {
         promises.push(
           fetchExactAPI(
             "PUT",
             `/crm/Accounts(guid'${ExistingCustomer["d:ID"]}')`,
             env,
-            {
-              Name,
-              Language,
-              MainContact: Contact["d:ID"],
-            },
+            UpdatedUserAttributes,
           ),
         );
       }
