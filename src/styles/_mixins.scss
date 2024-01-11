@@ -40,14 +40,13 @@ $link-light: b3cccc;
 }
 
 @mixin noMarginFirstLastChild {
-  > *:first-child,
-  > *:last-child {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
   > *:first-child {
     padding-top: 0;
+    margin-top: 0;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
   }
 }
 
@@ -56,20 +55,41 @@ $link-light: b3cccc;
 
   @apply prose max-w-none;
 
-  & h2 {
-    @apply recoleta text-h2 font-bold text-black;
-  }
-  & h3,
+  h2,
+  h3,
   h4,
   h5,
   h6 {
     @apply recoleta text-black;
   }
 
+  h2 {
+    @apply text-h2 font-bold;
+  }
+
+  h3 {
+    @apply text-h3;
+  }
+
+  h4 {
+    @apply text-h4;
+  }
+
+  h5 {
+    @apply text-h5;
+  }
+
+  h6 {
+    @apply text-h6;
+  }
+
   & .chapter {
     &:first-child {
       > *:first-child {
         margin-top: 0;
+      }
+
+      > *:not(.tiled-title-div-pad):first-child {
         padding-top: 0;
       }
     }
@@ -78,6 +98,12 @@ $link-light: b3cccc;
       > *:last-child {
         margin-bottom: 0;
       }
+    }
+
+    .tiled-div-pad {
+      @apply mt-[clamp(25px,calc(0.625vw+21px),30px)];
+
+      @include noMarginFirstLastChild;
     }
   }
 }
@@ -150,7 +176,7 @@ $link-light: b3cccc;
 
 @mixin button {
   @apply flex items-center justify-center 
-    gap-2 py-2.5 px-5 cursor-pointer rounded-full;
+    gap-2 py-2.5 px-5 cursor-pointer rounded-full select-none;
 }
 
 @mixin button-font {
@@ -162,7 +188,10 @@ $link-light: b3cccc;
 }
 
 @mixin button-large {
-  @apply py-[15px] px-[25px] text-base font-bold;
+  @include button;
+  @include button-font;
+
+  @apply py-[15px] px-[25px];
 }
 
 @mixin button-default-colors {
@@ -314,12 +343,11 @@ $link-light: b3cccc;
     h-[clamp(15px,calc(0.375vw+12.6px),18px)];
 }
 
-
 @mixin button-cart-quantity {
   @apply flex rounded-full;
 
   .button-cart-quantity-item {
-    @include button-cart-quantity-item
+    @include button-cart-quantity-item;
   }
 
   input {
@@ -380,7 +408,6 @@ $link-light: b3cccc;
   }
 }
 
-
 @mixin product-more-info {
   @apply space-x-[3px] sm:space-x-1 text-b7 italic;
 
@@ -403,7 +430,6 @@ $link-light: b3cccc;
 @mixin product-icon-circle {
   @apply bg-white border border-primary rounded-full;
 }
-
 
 @mixin product-card {
   @include blob-card;
@@ -555,7 +581,7 @@ $link-light: b3cccc;
   @apply flex flex-wrap items-center justify-center sm:justify-start;
 }
 
-//checkbox 
+//checkbox
 
 @mixin checkbox-primary {
   @include division-in-element-gap;
