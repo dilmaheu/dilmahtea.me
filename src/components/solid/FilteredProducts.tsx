@@ -184,7 +184,11 @@ export default function FilteredProducts({
                       : recurData.Product_available_text}
                   </span>
 
-                  <span class={`desktop-only-text format-link-text ${product.Stock_amount === 0 && "text-white"}`}>
+                  <span class={[
+                    "desktop-only-text format-link-text",
+                    product.Stock_amount === 0 && "text-white",
+                  ].join(" ")}
+                  >
                     {product.availableFormatsCount === 1
                       ? recurData.Product_other_formats_singular_text
                       : recurData.Product_other_formats_text.replaceAll(
@@ -193,7 +197,11 @@ export default function FilteredProducts({
                         )}
                   </span>
                       
-                  <span class={`mobile-only-text format-link-text ${product.Stock_amount === 0 && "text-white"}`}>
+                  <span class={[
+                    "mobile-only-text format-link-text",
+                    product.Stock_amount === 0 && "text-white",
+                  ].join(" ")}
+                  >
                     {product.availableFormatsCount === 1
                       ? recurData.Product_other_formats_singular_text_sm
                       : recurData.Product_other_formats_text_sm.replaceAll(
