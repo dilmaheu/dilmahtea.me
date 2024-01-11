@@ -1,4 +1,5 @@
 @use "typography";
+@use "src/styles/mixins" as *;
 
 html {
   @apply h-full bg-white;
@@ -46,97 +47,6 @@ body {
 
 // markdown/prose-links
 
-$link-dark: 000000;
-$link-light: b3cccc;
-
-@mixin bg-img-($color) {
-  background-size: 100% 45%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23#{$color}'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
-}
-
-@mixin prose-content-($color) {
-  picture {
-    clip-path: url(#content-images-curve);
-  }
-
-  p,
-  ol,
-  ul,
-  p s,
-  blockquote p {
-    @if $color == $link-dark {
-      @apply text-white;
-    } @else {
-      @apply text-black-light;
-    }
-
-    a {
-      @include bg-img-($color);
-
-      @apply font-bold sm:font-semibold px-1 no-underline 
-        bg-bottom bg-no-repeat hover:brightness-90 transition-all;
-
-      @if $color == $link-dark {
-        @apply text-white;
-      } @else {
-        @apply text-primary;
-      }
-    }
-  }
-}
-
-@mixin noMarginFirstLastChild {
-  > *:first-child,
-  > *:last-child {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  > *:first-child {
-    padding-top: 0;
-  }
-}
-
-@mixin prose-prose-text {
-  @include noMarginFirstLastChild;
-
-  @apply prose max-w-none;
-
-  & h2 {
-    @apply recoleta text-h2 font-bold text-black;
-  }
-  & h3,
-  h4,
-  h5,
-  h6 {
-    @apply recoleta text-black;
-  }
-
-  & .chapter {
-    &:first-child {
-      > *:first-child {
-        margin-top: 0;
-        padding-top: 0;
-      }
-    }
-
-    &:last-child {
-      > *:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-}
-
-@mixin prose-content-default-text {
-  @apply text-b3;
-}
-
-@mixin prose-default {
-  @include prose-prose-text;
-  @include prose-content-default-text;
-}
-
 .prose-text {
   @include prose-default;
   @include prose-content-($link-light);
@@ -182,78 +92,58 @@ $link-light: b3cccc;
 // gaps
 
 .section-gap {
-  @apply gap-[50px];
+  @include section-gap;
 }
 
 .section-in-v-pad {
-  @apply py-[50px];
+  @include section-in-v-pad;
 }
 
 .section-in-v-pad-sm {
-  @apply py-[clamp(25px,calc(3.125vw+5px),50px)];
-}
-
-.blob-div-in-pad {
-  @apply py-[clamp(35px,calc(1.875vw+23px),50px)] px-[clamp(25px,calc(3.125vw+5px),50px)];
-}
-
-.tiled-div-pad {
-  @apply p-[clamp(15px,calc(2.5vw-1px),35px)];
-}
-
-.tiled-title-div-pad {
-  @apply py-[15px] px-[clamp(15px,calc(2.5vw-1px),35px)];
+  @include section-in-v-pad-sm;
 }
 
 .division-gap {
-  @apply gap-[clamp(25px,calc(0.625vw+21px),30px)];
+  @include division-gap;
 }
 
 .division-in-gap {
-  @apply gap-[clamp(10px,calc(0.625vw+6px),15px)];
+  @include division-in-gap;
 }
 
 .division-in-element-gap {
-  @apply gap-[clamp(5px,calc(0.625vw+1px),10px)];
+  @include division-in-element-gap;
+}
+
+.tiled-div-pad {
+  @include tiled-div-pad;
+}
+
+.tiled-title-div-pad {
+  @include tiled-title-div-pad;
+}
+
+.blob-div-in-pad {
+  @include blob-div-in-pad;
 }
 
 .card-gap {
-  @apply gap-[clamp(15px,calc(4.375vw-13px),50px)];
+  @include card-gap;
 }
 
 .grid-gap {
-  @apply gap-[clamp(15px,calc(4.375vw-13px),50px)];
+  @include card-gap;
+}
+
+.form-gap {
+  @include form-gap;
+}
+
+.tiled-form {
+  @include tiled-form;
 }
 
 // buttons
-
-@mixin button {
-  @apply flex items-center justify-center gap-2 py-2.5 px-5 rounded-full;
-}
-
-@mixin button-font {
-  @apply text-base font-bold;
-}
-
-@mixin button-font-sm {
-  @apply text-sm font-medium;
-}
-
-@mixin button-large {
-  @apply py-[15px] px-[25px] text-base font-bold;
-}
-
-@mixin button-default-colors {
-  @apply bg-white text-primary;
-}
-
-@mixin button-primary-colors {
-  @apply bg-primary text-white;
-}
-
-@mixin button-disabled-colors {
-  @apply bg-black-lighter text-secondary-light;
-}
 
 .button-default {
   @include button;
@@ -292,72 +182,19 @@ $link-light: b3cccc;
 }
 
 .button-link {
-  @include button-font;
-
-  @apply text-primary;
+  @include button-link;
 }
 
 .button-link-light {
-  a {
-    @include bg-img-($link-light);
-
-    @apply text-b3 font-bold text-primary px-[clamp(6px,calc(0.75vw+1.2px),12px)] 
-      text-center no-underline bg-bottom bg-no-repeat hover:brightness-95 transition-all;
-  }
+  @include button-link-light;
 }
 
 // cart-buttons
 
-@mixin button-cart-content {
-  @apply flex items-center justify-center gap-2 rounded-full;
-}
-
-@mixin text-container {
-  .text-container {
-    @apply flex items-center gap-0.5 font-semibold sm:font-bold;
-
-    @media (min-width: 375px) {
-      @apply gap-1;
-    }
-  }
-}
-
-@mixin cart-icon {
-  .cart-icon {
-    @apply hidden sm:inline-block h-[clamp(16px,calc(0.25vw+14.4px),18px)];
-  }
-}
-
-@mixin button-cart-normal {
-  @include button;
-  @include button-font;
-  @include text-container;
-
-  .cart-icon {
-    @apply h-[18px];
-  }
-}
-
-@mixin button-cart {
-  @include cart-icon;
-  @include text-container;
-  @include button-cart-content;
-
-  @apply text-b6 py-[clamp(5px,calc(0.625vw+1px),10px)] px-[clamp(12px,calc(1vw+5.6px),20px)];
-}
-
-@mixin card-button-cart {
-  @include cart-icon;
-  @include text-container;
-  @include button-cart-content;
-
-  @apply text-[clamp(12px,calc(1.25vw+6px),14px)]
-    py-[clamp(4px,calc(0.625vw+1px),5px)] px-[clamp(4px,calc(5vw-20px),12px)];
-
-  @media (min-width: 640px) {
-    @include button-cart;
-  }
-}
+// cart buttons are 
+//   button-cart-default, button-cart-default-normal, card-button-cart-default
+//   button-cart-primary, button-cart-primary-normal, card-button-cart-primary
+//   button-cart-disabled, button-cart-disabled-normal, card-button-cart-disabled
 
 .button-cart-default,
 .button-cart-default-normal,
@@ -376,7 +213,7 @@ $link-light: b3cccc;
 .card-button-cart-disabled {
   @include button-disabled-colors;
 
-  @apply cursor-not-allowed;
+  cursor: not-allowed!important;
 }
 
 .button-cart-default,
@@ -399,78 +236,32 @@ $link-light: b3cccc;
 
 // cart-plus/minus-buttons
 
-@mixin button-cart-quantity {
-  @apply text-white bg-primary rounded-full;
-}
-
-@mixin button-cart-quantity-big {
-  @include button-cart-quantity;
-
-  @apply text-lg;
-}
-
-@mixin button-cart-quantity-icon-big {
-  @apply w-[18px] h-[18px];
-}
-
-@mixin button-cart-quantity-item {
-  @apply flex items-center text-center;
-}
-
-@mixin button-cart-quantity-item-default {
-  @include button-cart-quantity-item;
-
-  @apply w-10 h-10;
-}
-
-@mixin button-cart-quantity-item-primary {
-  @include button-cart-quantity-item;
-
-  @apply w-10 h-11;
-}
-
-.button-cart-quantity-default-big {
+.button-cart-quantity-secondary-big {
   @include button-cart-quantity-big;
+  @include button-primary-colors;
 
   @apply border-2 border-secondary;
 
   input {
-    @include button-cart-quantity-big;
-
-    @apply bg-secondary;
-  }
-
-  .quantity-icon-big {
-    @include button-cart-quantity-icon-big;
+    @include button-secondary-colors;
   }
 }
 
 .button-cart-quantity-primary-big {
   @include button-cart-quantity-big;
+  @include button-primary-colors;
 
   input {
-    @include button-cart-quantity-big;
-
-    @apply bg-primary;
-  }
-
-  .quantity-icon-big {
-    @include button-cart-quantity-icon-big;
+    @include button-primary-colors;
   }
 }
 
 .button-cart-quantity-primary {
-  @include button-cart-quantity-big;
+  @include button-cart-quantity;
+  @include button-primary-colors;
 
   input {
-    @include button-cart-quantity-big;
-
-    @apply bg-primary;
-  }
-
-  .quantity-icon-big {
-    @apply w-[clamp(15px,calc(0.375vw+12.6px),18px)] 
-      h-[clamp(15px,calc(0.375vw+12.6px),18px)];
+    @include button-primary-colors;
   }
 }
 
@@ -486,13 +277,6 @@ $link-light: b3cccc;
 
 // radio/checkbox-buttons
 
-@mixin radio-button {
-  @include button;
-  @include button-font-sm;
-
-  @apply border-2;
-}
-
 .radio-button-default-checked {
   @include radio-button;
 
@@ -502,11 +286,6 @@ $link-light: b3cccc;
 .radio-button-default-unchecked {
   @include radio-button;
   @apply bg-secondary-light border-secondary-light;
-}
-
-@mixin checkbox-button {
-  @include button;
-  @include button-font-sm;
 }
 
 .checkbox-button-default-checked {
@@ -522,12 +301,6 @@ $link-light: b3cccc;
 }
 
 // toggle-buttons
-
-@mixin toggle-button-primary {
-  @include button-font;
-
-  @apply flex items-center gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-primary;
-}
 
 .horizontal-toggle-button-primary {
   @include toggle-button-primary;
@@ -575,16 +348,6 @@ $link-light: b3cccc;
 }
 
 // product-card(smallest-size-375px)
-
-@mixin blob-card {
-  @apply flex flex-col bg-primary;
-
-  .card-content-container {
-    @apply grid content-between grow division-in-gap 
-      text-secondary px-[clamp(12px,calc(2.16vw+3.9px),35px)] 
-      pt-[clamp(10px,calc(0.94vw+6.4px),20px)] pb-[clamp(12px,calc(1.22vw+7.42px),25px)];
-  }
-}
 
 .product-card {
   @mixin product-more-info {

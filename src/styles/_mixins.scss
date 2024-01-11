@@ -1,0 +1,579 @@
+// markdown/prose-links
+
+$link-dark: 000000;
+$link-light: b3cccc;
+
+@mixin bg-img-($color) {
+  background-size: 100% 45%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23#{$color}'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
+}
+
+@mixin prose-content-($color) {
+  picture {
+    clip-path: url(#content-images-curve);
+  }
+
+  p,
+  ol,
+  ul,
+  p s,
+  blockquote p {
+    @if $color == $link-dark {
+      @apply text-white;
+    } @else {
+      @apply text-black-light;
+    }
+
+    a {
+      @include bg-img-($color);
+
+      @apply font-bold sm:font-semibold px-1 no-underline 
+        bg-bottom bg-no-repeat hover:brightness-90 transition-all;
+
+      @if $color == $link-dark {
+        @apply text-white;
+      } @else {
+        @apply text-primary;
+      }
+    }
+  }
+}
+
+@mixin noMarginFirstLastChild {
+  > *:first-child,
+  > *:last-child {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  > *:first-child {
+    padding-top: 0;
+  }
+}
+
+@mixin prose-prose-text {
+  @include noMarginFirstLastChild;
+
+  @apply prose max-w-none;
+
+  & h2 {
+    @apply recoleta text-h2 font-bold text-black;
+  }
+  & h3,
+  h4,
+  h5,
+  h6 {
+    @apply recoleta text-black;
+  }
+
+  & .chapter {
+    &:first-child {
+      > *:first-child {
+        margin-top: 0;
+        padding-top: 0;
+      }
+    }
+
+    &:last-child {
+      > *:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@mixin prose-content-default-text {
+  @apply text-b3;
+}
+
+@mixin prose-default {
+  @include prose-prose-text;
+  @include prose-content-default-text;
+}
+
+// gaps
+
+@mixin section-gap {
+  @apply gap-[50px];
+}
+
+@mixin section-in-v-pad {
+  @apply py-[50px];
+}
+
+@mixin section-in-v-pad-sm {
+  @apply py-[clamp(25px,calc(3.125vw+5px),50px)];
+}
+
+@mixin division-gap {
+  @apply gap-[clamp(25px,calc(0.625vw+21px),30px)];
+}
+
+@mixin division-in-gap {
+  @apply gap-[clamp(10px,calc(0.625vw+6px),15px)];
+}
+
+@mixin division-in-element-gap {
+  @apply gap-[clamp(5px,calc(0.625vw+1px),10px)];
+}
+
+@mixin tiled-div-pad {
+  @apply p-[clamp(15px,calc(2.5vw-1px),35px)];
+}
+
+@mixin tiled-title-div-pad {
+  @apply py-[15px] px-[clamp(15px,calc(2.5vw-1px),35px)];
+}
+
+@mixin blob-div-in-pad {
+  @apply py-[clamp(35px,calc(1.875vw+23px),50px)] px-[clamp(25px,calc(3.125vw+5px),50px)];
+}
+
+@mixin card-gap {
+  @apply gap-[clamp(15px,calc(4.375vw-13px),50px)];
+}
+
+@mixin grid-gap {
+  @apply gap-[clamp(15px,calc(4.375vw-13px),50px)];
+}
+
+@mixin form-gap {
+  @apply gap-[clamp(15px,calc(1.25vw+7px),25px)];
+}
+
+@mixin tiled-form {
+  @apply p-[clamp(10px,calc(1.25vw+2px),20px)]
+    bg-primary-light/30 border border-primary rounded-[10px];
+}
+
+// buttons
+
+@mixin button {
+  @apply flex items-center justify-center 
+    gap-2 py-2.5 px-5 cursor-pointer rounded-full;
+}
+
+@mixin button-font {
+  @apply text-base font-bold;
+}
+
+@mixin button-font-sm {
+  @apply text-sm font-medium;
+}
+
+@mixin button-large {
+  @apply py-[15px] px-[25px] text-base font-bold;
+}
+
+@mixin button-default-colors {
+  @apply bg-white text-primary;
+}
+
+@mixin button-secondary-colors {
+  @apply bg-secondary text-primary;
+}
+
+@mixin button-primary-colors {
+  @apply bg-primary text-white;
+}
+
+@mixin button-disabled-colors {
+  @apply bg-black-lighter text-secondary-light;
+}
+
+@mixin button-link {
+  @include button;
+  @include button-font;
+
+  @apply text-primary;
+}
+
+@mixin button-link-big {
+  @include button;
+
+  @apply text-b5;
+}
+
+@mixin button-link-primary {
+  @include button-link;
+
+  @apply text-primary;
+}
+
+@mixin button-link-primary-big {
+  @include button-link-big;
+
+  @apply text-primary;
+}
+
+@mixin button-link-error-dark {
+  @include button-link;
+
+  @apply text-error-dark;
+}
+
+@mixin button-link-error-dark-big {
+  @include button-link-big;
+
+  @apply text-error-dark;
+}
+
+@mixin button-link-light {
+  a {
+    @include bg-img-($link-light);
+
+    @apply text-b3 font-bold text-primary px-[clamp(6px,calc(0.75vw+1.2px),12px)] 
+      text-center no-underline bg-bottom bg-no-repeat hover:brightness-95 transition-all;
+  }
+}
+
+// cart-buttons
+
+@mixin button-cart-content {
+  @apply flex items-center justify-center gap-2 cursor-pointer rounded-full;
+}
+
+@mixin text-container {
+  .text-container {
+    @apply flex items-center gap-0.5 font-semibold sm:font-bold;
+
+    @media (min-width: 375px) {
+      @apply gap-1;
+    }
+  }
+}
+
+@mixin cart-icon {
+  .cart-icon {
+    @apply hidden sm:inline-block h-[clamp(16px,calc(0.25vw+14.4px),18px)];
+  }
+}
+
+@mixin button-cart-normal {
+  @include button;
+  @include button-font;
+  @include text-container;
+
+  .cart-icon {
+    @apply h-[18px];
+  }
+}
+
+@mixin button-cart {
+  @include cart-icon;
+  @include text-container;
+  @include button-cart-content;
+
+  @apply text-b6 py-[clamp(5px,calc(0.625vw+1px),10px)] px-[clamp(12px,calc(1vw+5.6px),20px)];
+}
+
+@mixin card-button-cart {
+  @include cart-icon;
+  @include text-container;
+  @include button-cart-content;
+
+  @apply text-[clamp(12px,calc(1.25vw+6px),14px)]
+    py-[clamp(4px,calc(0.625vw+1px),5px)] px-[clamp(4px,calc(5vw-20px),12px)];
+
+  @media (min-width: 640px) {
+    @include button-cart;
+  }
+}
+
+// cart-plus/minus-buttons
+
+@mixin button-cart-quantity-item-layout {
+  @apply flex items-center justify-center text-center;
+}
+
+@mixin button-cart-quantity-item-big {
+  @include button-cart-quantity-item-layout;
+
+  @apply w-10 h-10;
+}
+
+@mixin button-cart-quantity-item {
+  @include button-cart-quantity-item-layout;
+
+  @apply w-[clamp(34px,calc(0.37vw+32.6px),38px)] 
+    h-[clamp(34px,calc(0.37vw+32.6px),38px)];
+}
+
+@mixin button-cart-quantity-icon-big {
+  @apply w-[18px] h-[18px];
+}
+
+@mixin button-cart-quantity-icon {
+  @apply w-[clamp(15px,calc(0.375vw+12.6px),18px)] 
+    h-[clamp(15px,calc(0.375vw+12.6px),18px)];
+}
+
+
+@mixin button-cart-quantity {
+  @apply flex rounded-full;
+
+  .button-cart-quantity-item {
+    @include button-cart-quantity-item
+  }
+
+  input {
+    @include button-cart-quantity-item;
+
+    @apply text-b5;
+  }
+
+  .button-cart-quantity-icon {
+    @include button-cart-quantity-icon-big;
+  }
+}
+
+@mixin button-cart-quantity-big {
+  @apply flex rounded-full;
+
+  .button-cart-quantity-item-big {
+    @include button-cart-quantity-item-big;
+  }
+
+  input {
+    @include button-cart-quantity-item-big;
+
+    @apply text-lg;
+  }
+
+  .button-cart-quantity-icon-big {
+    @include button-cart-quantity-icon-big;
+  }
+}
+
+// radio/checkbox-buttons
+
+@mixin radio-button {
+  @include button;
+  @include button-font-sm;
+
+  @apply border-2;
+}
+
+@mixin checkbox-button {
+  @include button;
+  @include button-font-sm;
+}
+
+// toggle-buttons
+
+@mixin toggle-button-primary {
+  @include button-font;
+
+  @apply flex items-center gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-primary;
+}
+// product-card(smallest-size-375px)
+
+@mixin blob-card {
+  @apply flex flex-col bg-primary;
+
+  .card-content-container {
+    @apply grid content-between grow division-in-gap 
+      text-secondary px-[clamp(12px,calc(2.16vw+3.9px),35px)] 
+      pt-[clamp(10px,calc(0.94vw+6.4px),20px)] pb-[clamp(12px,calc(1.22vw+7.42px),25px)];
+  }
+}
+
+
+
+
+
+
+// @mixin info-tag-button {
+//   @apply text-b7 py-1 px-2 rounded-full;
+
+//   line-height: 130% !important;
+// }
+
+// @mixin radio-button {
+//   @apply inline-block py-2.5 px-5 text-sm 
+//     border-2 rounded-full cursor-pointer select-none;
+// }
+
+// @mixin radio-button-extended {
+//   @include radio-button;
+
+//   @apply font-bold text-primary bg-white;
+// }
+
+// @mixin input-field-default {
+//   @apply bg-transparent border border-primary rounded-full 
+//     focus:ring focus:ring-primary-light focus:outline-none
+//     py-[clamp(8px,calc(0.25vw+6.4px),10px)] px-[clamp(15px,calc(0.625vw+11px),20px)]
+//     text-[clamp(16px,calc(0.25vw+14.4px),18px)] text-black placeholder:text-black-light;
+// }
+
+// @mixin selector-default {
+//   select {
+//     @include input-field-default;
+
+//     @apply w-full pr-[clamp(40px,calc(1.25vw+32px),50px)] cursor-pointer appearance-none;
+
+//     background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath d='M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z' style='fill:%231e4848'/%3E%3C/svg%3E")
+//       no-repeat right 20px center;
+//     background-size: clamp(14px, calc(0.25vw + 12.4px), 16px);
+//   }
+// }
+
+// @mixin input-label {
+//   @apply text-b5 font-semibold text-black-light;
+// }
+
+// @mixin input-text-large {
+//   @apply text-b3 text-black;
+// }
+
+
+
+// .input-field-default {
+//   input {
+//     @include input-field-default;
+//   }
+// }
+
+// .selector-default {
+//   @include selector-default;
+// }
+
+// .input-label {
+//   @include input-label;
+// }
+
+// .input-text-large-static {
+//   @include input-text-large;
+// }
+
+// .input-text-large {
+//   @include input-text-large;
+
+//   @apply w-full bg-transparent outline-none;
+
+//   &:not(:disabled) {
+//     @apply border-b-2 border-primary;
+//   }
+
+//   &.errored {
+//     @apply border-error;
+//   }
+// }
+
+// .button-primary {
+//   @include button;
+
+//   @apply bg-primary text-white;
+// }
+
+// .button-link-primary {
+//   @include button-link-primary;
+// }
+
+// .button-link-primary-big {
+//   @include button-link-primary-big;
+// }
+
+// .button-link-error-dark {
+//   @include button-link-error-dark;
+// }
+
+// .button-link-error-dark-big {
+//   @include button-link-error-dark-big;
+// }
+
+// .info-tag-button {
+//   @include info-tag-button;
+
+//   @apply text-black-light bg-white;
+// }
+
+// .info-tag-button-primary {
+//   @include info-tag-button;
+
+//   @apply text-white bg-primary;
+// }
+
+// .radio-button-default {
+//   @include radio-button;
+// }
+
+// .radio-button-extended {
+//   @include radio-button-extended;
+// }
+
+// .checkbox-primary {
+//   @include text-b5;
+//   @include division-in-element-gap;
+
+//   @apply flex items-center text-black-light cursor-pointer select-none;
+
+//   .checkbox-input-container {
+//     @apply relative block w-5 h-5;
+
+//     & input {
+//       @apply absolute opacity-0;
+
+//       &:checked ~ .checkbox-primary {
+//         @apply bg-primary rounded;
+
+//         &::after {
+//           @apply bg-transparent opacity-100;
+//         }
+//       }
+//     }
+
+//     & .checkbox-primary {
+//       @apply absolute w-[18px] sm:w-5 h-[18px] sm:h-5 
+//         bg-transparent rounded border-2 border-primary;
+
+//       &::after {
+//         @apply text-sm font-bold text-white content-['✓'] 
+//           absolute -top-[3px] sm:-top-0.5 left-0.5 sm:left-[3px] opacity-0;
+//       }
+//     }
+//   }
+// }
+
+// .quick-info {
+//   @include text-b7;
+
+//   @apply flex items-center gap-[clamp(4px,calc(0.5vw+0.8px),8px)] font-medium text-black-light;
+// }
+
+// .horizontal-toggle-button-primary {
+//   @apply flex items-center cursor-pointer
+//     gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-base font-bold text-primary;
+
+//   .toggle-button-arrow {
+//     @apply w-[14px] h-2;
+//   }
+// }
+
+// .form-grid {
+//   @include form-gap;
+//   @include selector-default;
+//   input {
+//     @include input-field-default;
+//   }
+
+//   @apply w-full grid sm:grid-cols-2;
+
+//   label {
+//     @include division-in-element-gap;
+
+//     @apply flex flex-col;
+
+//     span.tag-input-close-button {
+//       @apply absolute inset-y-0 right-0 cursor-pointer
+//         flex items-center pr-5 font-bold text-error-dark;
+//     }
+//   }
+// }
+
+// .form-button-container {
+//   @include division-gap;
+
+//   @apply flex flex-wrap items-center justify-center sm:justify-start;
+// }
