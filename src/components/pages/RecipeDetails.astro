@@ -139,46 +139,9 @@ const nutrition: Nutrition = {
     }
   }
 
-  .time-container {
-    margin-top: clamp(1.25rem, 2vw + 0.2rem, 2rem);
-    column-gap: clamp(25px, 3vw + 1px, 60px);
-    row-gap: clamp(0.75rem, 1.5vw + 0.1rem, 1.25rem);
-  }
-
-  .time-icon {
-    width: clamp(1rem, 1.5vw + 0.55rem, 1.875rem);
-  }
-
-  .time-tag {
-    @apply leading-[12px] md:leading-[180%];
-
-    font-size: clamp(0.625rem, 1.3vw + 0.01rem, 0.75rem);
-  }
-
-  .time {
-    @apply leading-[16px] md:leading-[150%];
-
-    font-size: clamp(0.875rem, 1.3vw + 0.1rem, 1rem);
-  }
-
-  .similar-recipies {
-    li {
-      font-size: clamp(1rem, 1.5vw + 0.15rem, 1.5rem);
-    }
-
-    a {
-      background-size: 100% 45%;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23b3cccc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
-    }
-  }
-
-  .recipe-time-container {
-    column-gap: clamp(40px, 6vw + 10px, 80px);
-  }
-
   .recipe-time-icon {
-    width: clamp(1.25rem, 1.5vw + 0.55rem, 1.875rem);
-    height: clamp(1.25rem, 1.5vw + 0.55rem, 1.875rem);
+    width: clamp(25px, calc(0.625vw + 21px), 30px);
+    height: clamp(25px, calc(0.625vw + 21px), 30px);
   }
 
   .recipe-content-border {
@@ -242,6 +205,7 @@ const nutrition: Nutrition = {
   }
 
   .recipe-step-order {
+    @apply inline-flex items-center justify-center font-extrabold bg-primary rounded-full text-white;
     width: clamp(30px, 3vw + 0.4rem, 45px);
     height: clamp(30px, 3vw + 0.4rem, 45px);
     font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
@@ -281,7 +245,7 @@ const nutrition: Nutrition = {
     <div
       role="complementary"
       aria-label={recipe_recipe + ariaLabelRecurData.Recipe_timing_text}
-      class="time-container flex flex-wrap items-center"
+      class="grid-gap flex flex-wrap items-center"
     >
       {
         [
@@ -295,14 +259,17 @@ const nutrition: Nutrition = {
           }
 
           return (
-            <div class="inline-flex items-center gap-2 md:gap-2.5">
-              <img class="time-icon w-full h-full" {...white_clock} />
+            <div class="inline-flex items-center division-in-element-gap text-white">
+              <img class="recipe-time-icon !m-0" {...white_clock} />
 
-              <div class="w-auto">
-                <div class="time-tag">{timeTag} :</div>
+              <div>
+                <div class="text-b7">{timeTag} :</div>
 
-                <div class="time hidden sm:block font-bold">{timeString}</div>
-                <div class="time block sm:hidden font-bold">{timeStringSm}</div>
+                <div class="text-b6 font-bold">
+                  <span class="hidden sm:block">{timeString}</span>
+
+                  <span class="block sm:hidden">{timeStringSm}</span>
+                </div>
               </div>
             </div>
           );
@@ -376,24 +343,16 @@ const nutrition: Nutrition = {
             id={`${recipe_similar} ${page.Title}`
               ?.toLowerCase()
               ?.replaceAll(" ", "-")}
-            class="recipe-title recoleta bg-primary mt-[50px] text-secondary-light leading-[110%] rounded-[10px]"
+            class="tiled-title"
           >
-            {`${recipe_similar} ${page.Title}`}
+            {`${recipe_similar} ${page.Title?.toLowerCase()}`}
           </h2>
 
-          <div class="bg-secondary-light rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
-            <ul class="similar-recipies list-disc list-inside">
+          <div class="tiled-div">
+            <ul>
               {page.Recipe_variations.data.map(({ attributes }) => (
-                <li class="text-primary font-bold sm:font-semibold leading-[175%] sm:leading-[180%]">
-                  <a
-                    href={attributes.Meta.URL_slug}
-                    class:list={[
-                      "hover:brightness-95 transition-all",
-                      "bg-bottom bg-no-repeat px-1 font-bold sm:font-semibold no-underline",
-                    ]}
-                  >
-                    {attributes.Title}
-                  </a>
+                <li>
+                  <a href={attributes.Meta.URL_slug}>{attributes.Title}</a>
                 </li>
               ))}
             </ul>
@@ -404,24 +363,18 @@ const nutrition: Nutrition = {
 
     <h2
       id={`${page.Title} ${recipe_recipe}`?.toLowerCase()?.replaceAll(" ", "-")}
-      class="recipe-title recoleta bg-primary text-secondary-light leading-[110%] rounded-[10px] mt-[50px]"
+      class="tiled-title"
     >
-      {page.Title}
-      {" "}
-      {recipe_recipe}
+      {`${page.Title} ${recipe_recipe?.toLowerCase()}`}
     </h2>
 
-    <div
-      class="bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]"
-    >
-      <div class="recipe-content prose max-w-none mb-[15px] leading-[150%]">
-        <Markdown>{page.Time_text}</Markdown>
-      </div>
+    <div class="tiled-div">
+      <Markdown>{page.Time_text}</Markdown>
 
       <div
         role="complementary"
         aria-label={recipe_recipe + ariaLabelRecurData.Recipe_timing_text}
-        class="recipe-time-container flex flex-wrap mt-5 gap-y-5"
+        class="grid-gap flex flex-wrap items-center"
       >
         {
           [
@@ -435,20 +388,16 @@ const nutrition: Nutrition = {
             }
 
             return (
-              <div class="inline-flex items-center gap-2.5">
-                <div class="recipe-time-icon">
-                  <img class="w-full h-full" {...light_green_clock} />
-                </div>
+              <div class="inline-flex items-center division-in-element-gap">
+                <img class="recipe-time-icon !m-0" {...light_green_clock} />
 
-                <div class="w-auto text-black-light leading-[150%]">
-                  <div class="text-[10px] md:text-xs">{timeTag} :</div>
+                <div>
+                  <div class="text-b7 text-black-light">{timeTag} :</div>
 
-                  <div class="hidden sm:block text-base font-medium">
-                    {timeString}
-                  </div>
+                  <div class="text-b6 font-bold text-black">
+                    <span class="hidden sm:block">{timeString}</span>
 
-                  <div class="block sm:hidden text-base font-medium">
-                    {timeStringSm}
+                    <span class="block sm:hidden">{timeStringSm}</span>
                   </div>
                 </div>
               </div>
@@ -631,7 +580,7 @@ const nutrition: Nutrition = {
     <h2
       aria-label={recipe_cooking_instructions}
       id={recipe_cooking_instructions?.toLowerCase()?.replaceAll(" ", "-")}
-      class="recipe-title recoleta bg-primary mt-[50px] text-secondary-light leading-[110%] rounded-[10px]"
+      class="tiled-title"
     >
       {recipe_cooking_instructions}
     </h2>
@@ -639,19 +588,15 @@ const nutrition: Nutrition = {
     {
       page.Instructions_part.map((item) => (
         <div role="list">
-          <div class="flex bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]">
-            <div class="recipe-content-border w-auto border-l-[3px] border-primary rounded-full" />
+          <div class="tiled-div flex gap-2.5">
+            <div class="border-l-[3px] border-primary rounded-full" />
 
-            <div class="w-full gap-[15px]">
-              <h3
-                class="recipe-cooking-title recoleta md:font-semibold text-black leading-[120%]"
-                id={item.Instructions_part_name.replaceAll(" ", "-")
-                  .replace(/\s+/g, "")
-                  .trim()}
-              >
-                {item.Instructions_part_name}
-              </h3>
-            </div>
+            <h3 
+              id={item.Instructions_part_name?.replaceAll(" ", "-")?.replace(/\s+/g, "").trim()}
+              class="grow !my-0"
+            >
+              {item.Instructions_part_name}
+            </h3>
           </div>
 
           {item.Instructions_part_steps.map((step, index) => (
@@ -665,22 +610,15 @@ const nutrition: Nutrition = {
                 `-step-` +
                 (index + 1)
               }
-              class="bg-secondary-light rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+              class="tiled-div"
             >
               <div class="flex gap-[15px]">
                 <div>
-                  <div
-                    class:list={[
-                      "recipe-step-order bg-primary rounded-full text-white",
-                      "flex items-center justify-center font-extrabold",
-                    ]}
-                  >
-                    {index + 1}
-                  </div>
+                  <div class="number-list-circle">{index + 1}</div>
                 </div>
 
-                <div class="recipe-content prose max-w-none leading-[150%] w-auto">
-                  {step.Instructions_part_steps_text}
+                <div class="no-pad-mar-first-last-child">
+                  <Markdown>{step.Instructions_part_steps_text}</Markdown>
                 </div>
               </div>
 
