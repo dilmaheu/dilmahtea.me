@@ -111,7 +111,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
       const promises = [];
 
-      const Contact = await fetchExactAPI(
+      await fetchExactAPI(
         "GET",
         `/CRM/Contacts?$filter=Account eq guid'${ExistingCustomer["d:ID"]}' and (${CustomerFilter})&select=ID,FirstName,LastName,Email,Phone`,
         env,
@@ -154,18 +154,16 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
               ),
             );
           }
-
-          return matchedContact;
         } else {
           // create a new contact if there is no contact or exact match
-          const newContact = await fetchExactAPI("POST", "/CRM/Contacts", env, {
-            Account: ExistingCustomer["d:ID"],
-            FirstName,
-            LastName,
-            [ProviderId]: contact.toLowerCase(),
-          });
-
-          return newContact.entry.content["m:properties"];
+          promises.push(
+            fetchExactAPI("POST", "/CRM/Contacts", env, {
+              Account: ExistingCustomer["d:ID"],
+              FirstName,
+              LastName,
+              [ProviderId]: contact.toLowerCase(),
+            }),
+          );
         }
       });
 
@@ -173,13 +171,11 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
       if (
         ExistingCustomer["d:Name"] !== Name ||
-        ExistingCustomer["d:Language"] !== Language ||
-        ExistingCustomer["d:MainContact"] !== Contact["d:ID"]
+        ExistingCustomer["d:Language"] !== Language
       ) {
         UpdatedUserAttributes = {
           Name,
           Language,
-          MainContact: Contact["d:ID"],
         };
       }
 
