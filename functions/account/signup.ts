@@ -59,6 +59,11 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
   await removeToken(env.USERS, token);
 
+  const getCustomerFilter = (contact: string, isEmail: boolean): string =>
+    isEmail
+      ? `Email eq '${contact.toLowerCase()}'`
+      : `substringof('${contact.slice(1)}', Phone)`;
+
   const ContactIsEmail = providerId === "email";
 
   const FirstName = first_name,
@@ -70,7 +75,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     AlternateProviderId = ContactIsEmail ? "Phone" : "Email";
 
   let CustomerID,
-    CustomerFilter = `${ProviderId} eq '${contact.toLowerCase()}'`;
+    CustomerFilter = getCustomerFilter(contact, ContactIsEmail);
 
   try {
     const ExistingCustomer = await fetchExactAPI(
@@ -106,7 +111,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
           [alternateProviderId]: alternateProviderUserId,
         });
 
-        CustomerFilter += ` or ${AlternateProviderId} eq '${alternateProviderUserId.toLowerCase()}'`;
+        CustomerFilter +=
+          " or " + getCustomerFilter(alternateProviderUserId, !ContactIsEmail);
       }
 
       const promises = [];
@@ -126,14 +132,16 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
           })?.content["m:properties"];
 
         if (matchedContact) {
+          const matchContact = (contact: string, isEmail: boolean): boolean =>
+            matchedContact[`d:${isEmail ? "Email" : "Phone"}`].toLowerCase() ===
+            (isEmail ? contact.toLowerCase() : String(contact.slice(1)));
+
           if (
             matchedContact["d:FirstName"] !== FirstName ||
             matchedContact["d:LastName"] !== LastName ||
             (alternateProviderUserId &&
-              (matchedContact[`d:${ProviderId}`].toLowerCase() !==
-                contact.toLowerCase() ||
-                matchedContact[`d:${AlternateProviderId}`].toLowerCase() !==
-                  alternateProviderUserId.toLowerCase()))
+              (matchContact(contact, ContactIsEmail) ||
+                matchContact(alternateProviderUserId, !ContactIsEmail)))
           ) {
             promises.push(
               fetchExactAPI(
