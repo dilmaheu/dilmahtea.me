@@ -60,15 +60,10 @@ export default {
         DEFAULT: {
           css: {
             "--tw-prose-body": "#474747",
-            "--tw-prose-headings": "000000",
+            "--tw-prose-headings": "#000000",
             "--tw-prose-links": "#1E4848",
             "--tw-prose-bullets": "#474747",
             "--tw-prose-counters": "#474747",
-
-            h2: {
-              "margin-top": "1em",
-              "padding-top": "1em",
-            },
           },
         },
       }),

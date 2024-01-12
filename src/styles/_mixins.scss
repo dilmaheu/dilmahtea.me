@@ -39,7 +39,7 @@ $link-light: b3cccc;
   }
 }
 
-@mixin noMarginFirstLastChild {
+@mixin no-pad-mar-first-last-child {
   > *:first-child {
     padding-top: 0;
     margin-top: 0;
@@ -50,8 +50,14 @@ $link-light: b3cccc;
   }
 }
 
+@mixin number-list-circle {
+  @apply inline-flex items-center justify-center
+    text-b4 font-bold text-white bg-primary rounded-full
+    w-[clamp(30px,calc(1.875vw+18px),45px)] h-[clamp(30px,calc(1.875vw+18px),45px)];
+}
+
 @mixin prose-prose-text {
-  @include noMarginFirstLastChild;
+  @include no-pad-mar-first-last-child;
 
   @apply prose max-w-none;
 
@@ -60,7 +66,7 @@ $link-light: b3cccc;
   h4,
   h5,
   h6 {
-    @apply recoleta text-black;
+    @apply recoleta;
   }
 
   h2 {
@@ -89,7 +95,7 @@ $link-light: b3cccc;
         margin-top: 0;
       }
 
-      > *:not(.tiled-title-div-pad):first-child {
+      > *:not(.tiled-title):first-child {
         padding-top: 0;
       }
     }
@@ -100,10 +106,28 @@ $link-light: b3cccc;
       }
     }
 
-    .tiled-div-pad {
+    .tiled-div {
       @apply mt-[clamp(25px,calc(0.625vw+21px),30px)];
 
-      @include noMarginFirstLastChild;
+      @include no-pad-mar-first-last-child;
+    }
+  }
+
+  ol {
+    @apply grid division-gap list-none;
+    counter-reset: my-counter;
+
+    li{
+      @apply my-0;
+    }
+
+    li::before {
+      @include number-list-circle;
+
+      @apply -ml-[clamp(40px,calc(1.875vw+28px),55px)] mr-2.5;
+
+      content: counter(my-counter);
+      counter-increment: my-counter;
     }
   }
 }
