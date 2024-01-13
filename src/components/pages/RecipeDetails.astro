@@ -238,6 +238,12 @@ const nutrition: Nutrition = {
 
     font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
   }
+
+  .ingredients-grid {
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 2fr));
+    }
+  }
 </style>
 
 <PostDetailsLayout {page} {recurData} {ariaLabelRecurData} {headingName}>
@@ -299,7 +305,7 @@ const nutrition: Nutrition = {
     <img class="button-icon" {...white_down_arrow} />
   </a>
 
-  <div slot="jump-to-recipe" class="hidden md:block" >
+  <div slot="jump-to-recipe" class="hidden md:block">
     <a
       href={`#${page.Title} ${recipe_recipe}`
         ?.toLowerCase()
@@ -310,7 +316,7 @@ const nutrition: Nutrition = {
       <img class="button-icon" {...white_down_arrow} />
     </a>
   </div>
-    
+
   <Chapterize slot="post-details">
     <RecipesInfoSection page={page} />
 
@@ -390,50 +396,38 @@ const nutrition: Nutrition = {
         <div
           role="complementary"
           aria-label={recipe_nutrition_information}
-          class="flex bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]"
+          class="tiled-div division-in-gap flex w-full"
         >
-          <div class="recipe-content-border w-auto border-l-[3px] border-primary rounded-full" />
+          <div class="border-l-[3px] border-primary rounded-full" />
 
-          <div class="grid w-full items-center gap-[15px]">
-            <h3
-              class:list={[
-                "recipe-content-title leading-[150%]",
-                "text-black sm:text-black font-bold sm:font-semibold",
-              ]}
-            >
-              {recipe_nutrition_information}
-            </h3>
+          <div class="division-gap grid grow">
+            <div class="division-in-gap grid">
+              <h3 class="!m-0">{recipe_nutrition_information}</h3>
 
-            <div class="flex items-center gap-2.5 w-full font-bold leading-[150%]">
-              <div class="text-black text-xs">{recipe_yield}:</div>
-
-              <div class="text-primary text-lg">{page.Nutrition_yield}</div>
-            </div>
-
-            <div class="text-black text-base md:text-lg font-bold">
-              {recipe_amount_per_serving}:
-            </div>
-
-            <div
-              role="list"
-              aria-label={recipe_amount_per_serving}
-              class="recipe-nutritions-container grid grid-flow-row gap-[5px]"
-            >
-              {page.Nutrition.map((item) => (
-                <div
-                  role="list"
-                  class="flex items-center text-black-light text-base lg:text-lg leading-[150%]"
-                >
-                  <div>{item.Nutrition_name}</div>
-
-                  <span class="mr-1">:</span>
-
-                  <div>
-                    {item.Nutrition_amount ? item.Nutrition_amount : "0"}
-                    {item.Nutrition_measurements_unit}
-                  </div>
+              {page.Nutrition_yield && (
+                <div class="division-in-element-gap flex items-center font-bold">
+                  <div class="text-b6">{recipe_yield}:</div>
+                  <div class="text-b5 text-primary">{page.Nutrition_yield}</div>
                 </div>
-              ))}
+              )}
+            </div>
+
+            <div class="division-in-gap grid">
+              <div class="text-b5 font-bold">{recipe_amount_per_serving}:</div>
+
+              <div
+                role="list"
+                aria-label={recipe_amount_per_serving}
+                class="division-in-element-gap recipe-nutritions-container grid grid-flow-row"
+              >
+                {page.Nutrition.map((item) => (
+                  <div role="list" class="text-b5" key={item.id}>
+                    {`${item.Nutrition_name}: ${item.Nutrition_amount || "0"}${
+                      item.Nutrition_measurements_unit || ""
+                    }`}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -442,89 +436,60 @@ const nutrition: Nutrition = {
 
     <div
       aria-label={recipe_ingredients}
-      class="bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]"
+      class="tiled-div division-gap grid w-full"
     >
-      <div class="flex flex-wrap justify-between">
-        <h3
-          class="recipe-content-title font-bold sm:font-semibold text-primary sm:text-black leading-[150%]"
-        >
-          {recipe_ingredients}
-        </h3>
+      <div class="division-in-gap flex flex-wrap justify-between">
+        <h3 class="!m-0">{recipe_ingredients}</h3>
 
-        <label
-          class="recipe-serving-size-input-container relative inline-grid grid-flow-col items-center"
-        >
-          <span class="text-black text-xs leading-[150%] font-bold">
+        <div class="division-in-element-gap flex items-center">
+          <div class="text-b6-sm font-bold whitespace-nowrap">
             {recipe_serving_size}:
-          </span>
+          </div>
 
-          <select
-            id="recipe-serving-size"
-            class:list={[
-              "recipe-serving-size-input text-white py-[5px] pl-[11px] bg-primary",
-              "max-w-[65px] md:max-w-[83px] border-r-[11px] border-transparent rounded-[7px]",
-            ]}
-          >
+          <select id="recipe-serving-size" class="selector-sm-primary">
             <option value="1">1x</option>
             <option value="2">2x</option>
             <option value="3">3x</option>
             <option value="5">5x</option>
             <option value="10">10x</option>
           </select>
-        </label>
+        </div>
       </div>
 
-      <div
-        role="list"
-        class="mt-5 md:mt-[25px] flex flex-wrap sm:flex-nowrap gap-2"
-      >
+      <div role="list" class="ingredients-grid division-in-gap grid">
         {
           page.Instructions_part.map((item) => (
             <div
               role="listitem"
               aria-label={item.Instructions_part_name}
-              class="w-full sm:w-1/2 grid gap-2.5"
+              class="division-in-element-gap flex flex-col text-b5"
             >
-              <h4 class="mb-[5px] text-black text-base md:text-lg font-bold leading-[150%]">
-                {item.Instructions_part_name}
-              </h4>
+              <div class="font-bold">{item.Instructions_part_name}</div>
 
               {item.Instructions_part_ingredients.map((item) => (
-                <label class="inline-flex items-center w-full text-black-light">
-                  <div class="flex">
-                    <div
-                      class:list={[
-                        "recipe-ingredients-checkbox-container",
-                        "relative w-4 h-4 m-auto cursor-pointer clear-both",
-                      ]}
-                    >
-                      <input
-                        type="checkbox"
-                        tabindex="0"
-                        class="absolute opacity-0 cursor-pointer"
-                      />
-                      <span
-                        class:list={[
-                          "recipe-ingredients-checkbox absolute w-4 h-4 bg-transparent",
-                          "border-2 border-black leading-[175%] rounded-[3px]",
-                        ]}
-                      />
-                    </div>
-                  </div>
-
-                  <div class="ml-2.5 text-base md:text-lg leading-[150%]">
-                    <span
-                      class="ingredient-amount mr-[3px]"
-                      data-amount={item.Instructions_part_ingredient_amount}
-                    >
-                      {item.Instructions_part_ingredient_amount}
+                <div class="flex">
+                  <label class="checkbox-primary">
+                    <span class="checkbox-input-container">
+                      <input type="checkbox" />
+                      <span class="checkbox-primary" />
                     </span>
-                    {`${
-                      item.Instructions_part_ingredient_measurements_unit ?? ""
-                    }
-                      ${item.Instructions_part_ingredient_name}`}
-                  </div>
-                </label>
+
+                    <span>
+                      <span
+                        class="ingredient-amount"
+                        data-amount={item.Instructions_part_ingredient_amount}
+                      >
+                        {item.Instructions_part_ingredient_amount}
+                      </span>
+                      {`
+                        ${
+                          item.Instructions_part_ingredient_measurements_unit ??
+                          ""
+                        }
+                        ${item.Instructions_part_ingredient_name}`}
+                    </span>
+                  </label>
+                </div>
               ))}
             </div>
           ))
@@ -566,11 +531,13 @@ const nutrition: Nutrition = {
     {
       page.Instructions_part.map((item) => (
         <div role="list">
-          <div class="tiled-div flex gap-2.5">
+          <div class="tiled-div flex division-in-gap">
             <div class="border-l-[3px] border-primary rounded-full" />
 
-            <h3 
-              id={item.Instructions_part_name?.replaceAll(" ", "-")?.replace(/\s+/g, "").trim()}
+            <h3
+              id={item.Instructions_part_name?.replaceAll(" ", "-")
+                ?.replace(/\s+/g, "")
+                .trim()}
               class="grow !my-0"
             >
               {item.Instructions_part_name}
