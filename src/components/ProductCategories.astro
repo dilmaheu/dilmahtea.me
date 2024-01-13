@@ -76,6 +76,7 @@ const categories = CMS.get("productCategories", locale);
 
 {/* Categories Section */}
 <section class="wrapper overflow-hidden">
+  
   <ClipPathSVG
     id="product-category-card-curve"
     path="M0.45,0.003 C0.756,-0.014,0.9,0.036,0.972,0.287 c0.06,0.212,0.023,0.596,-0.1,0.655 c-0.148,0.071,-0.634,0.084,-0.773,0 C-0.046,0.855,0.001,0.372,0.036,0.225 C0.089,0.003,0.184,0.018,0.45,0.003"
@@ -85,59 +86,62 @@ const categories = CMS.get("productCategories", locale);
     id="product-category-card-curve-sm"
     path="M0.547,0.01 c0.072,0.003,0.13,0,0.167,0 c0.315,0,0.282,0.03,0.282,0.467 s0.052,0.518,-0.264,0.518 c-0.105,0,-0.154,0,-0.174,-0.001 l-0.011,0.001 h-0.001 c-0.199,0.01,-0.401,0.008,-0.47,-0.037 C-0.013,0.898,0.003,0.642,0.003,0.487 c0,-0.216,-0.034,-0.411,0.14,-0.459 C0.305,-0.018,0.435,0.005,0.547,0.01"
   />
-
-  {
-    title && (
-      <h2
-        id={title.toLowerCase().replaceAll(" ", "-")}
-        class:list={[
-          "heading-secondary font-semibold leading-[130%]",
-          "text-primary mb-[25px] sm:mb-[30px]",
-        ]}
-      >
-        {title}
-      </h2>
-    )
-  }
-
-  <div
-    class:list={[
-      "product-category-container grid overflow-hidden",
-      categories.length > 3 && "sm:justify-between",
-    ]}
-  >
+  
+  <div class="grid division-gap">
     {
-      categories.map(
-        ({ attributes: { Title, Intro_blob, Category_type, Meta } }) =>
-          Category_type === "Tea_format" && (
-            <div class="product-category-card">
-              <a href={Meta.URL_slug} class="w-full">
-                <div class="product-category-content-container">
-                  <div class="product-category-img-container overflow-hidden">
-                    <Picture
-                      layout="fill"
-                      src={STRAPI_URL + Intro_blob.data.attributes.url}
-                      alt={Intro_blob.data.attributes.alternativeText}
-                      sizes={[
-                        "(min-width: 1024px) calc(clamp(160px, calc(15vw + 46px), 260px) - 1.25rem)",
-                        "(min-width: 640px) calc(clamp(160px, calc(15vw + 46px), 260px) - 0.75rem)",
-                        "(min-width: 350px) 132px",
-                        "30vw",
-                      ].join(", ")}
-                      attributes={{
-                        img: { style: "aspect-ratio: 6 / 5;" },
-                      }}
-                    />
-                  </div>
-
-                  <div class="product-category-txt-container">
-                    <h3 class="recoleta">{Title}</h3>
-                  </div>
-                </div>
-              </a>
-            </div>
-          ),
+      title && (
+          <h2
+            id={title.toLowerCase().replaceAll(" ", "-")}
+            class:list={[
+              "heading-secondary font-semibold",
+              "text-primary",
+            ]}
+          >
+            {title}
+          </h2>
       )
     }
+
+    <div
+      class:list={[
+        "product-category-container grid overflow-hidden",
+        categories.length > 3 && "sm:justify-between",
+      ]}
+    >
+      {
+        categories.map(
+          ({ attributes: { Title, Intro_blob, Category_type, Meta } }) =>
+            Category_type === "Tea_format" && (
+              <div class="product-category-card">
+                <a href={Meta.URL_slug} class="w-full">
+                  <div class="product-category-content-container">
+                    <div class="product-category-img-container overflow-hidden">
+                      <Picture
+                        layout="fill"
+                        src={STRAPI_URL + Intro_blob.data.attributes.url}
+                        alt={Intro_blob.data.attributes.alternativeText}
+                        sizes={[
+                          "(min-width: 1024px) calc(clamp(160px, calc(15vw + 46px), 260px) - 1.25rem)",
+                          "(min-width: 640px) calc(clamp(160px, calc(15vw + 46px), 260px) - 0.75rem)",
+                          "(min-width: 350px) 132px",
+                          "30vw",
+                        ].join(", ")}
+                        attributes={{
+                          img: { style: "aspect-ratio: 6 / 5;" },
+                        }}
+                      />
+                    </div>
+
+                    <div class="product-category-txt-container">
+                      <h3 class="recoleta">{Title}</h3>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            ),
+        )
+      }
+      </div>
   </div>
+  
 </section>
