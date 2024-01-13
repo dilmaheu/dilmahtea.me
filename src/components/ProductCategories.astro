@@ -14,12 +14,6 @@ const categories = CMS.get("productCategories", locale);
   @use "src/styles/poly-fluid" as *;
 
   .product-category-container {
-    gap: poly-fluid-clamp(
-      (
-        768px: 15px,
-        1440px: 50px,
-      )
-    );
 
     @media (min-width: 640px) {
       grid-template-columns: repeat(
@@ -86,25 +80,22 @@ const categories = CMS.get("productCategories", locale);
     id="product-category-card-curve-sm"
     path="M0.547,0.01 c0.072,0.003,0.13,0,0.167,0 c0.315,0,0.282,0.03,0.282,0.467 s0.052,0.518,-0.264,0.518 c-0.105,0,-0.154,0,-0.174,-0.001 l-0.011,0.001 h-0.001 c-0.199,0.01,-0.401,0.008,-0.47,-0.037 C-0.013,0.898,0.003,0.642,0.003,0.487 c0,-0.216,-0.034,-0.411,0.14,-0.459 C0.305,-0.018,0.435,0.005,0.547,0.01"
   />
-  
+
   <div class="grid division-gap">
     {
       title && (
-          <h2
-            id={title.toLowerCase().replaceAll(" ", "-")}
-            class:list={[
-              "heading-secondary font-semibold",
-              "text-primary",
-            ]}
-          >
-            {title}
-          </h2>
+        <h2
+          id={title.toLowerCase().replaceAll(" ", "-")}
+          class="heading-secondary text-primary"
+        >
+          {title}
+        </h2>
       )
     }
 
     <div
       class:list={[
-        "product-category-container grid overflow-hidden",
+        "product-category-container grid card-gap overflow-hidden",
         categories.length > 3 && "sm:justify-between",
       ]}
     >
