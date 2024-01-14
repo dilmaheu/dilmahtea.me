@@ -587,21 +587,18 @@ const nutrition: Nutrition = {
           ))}
 
           {item.Instructions_part_step_tip && (
-            <div class="bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]">
-              <div class="flex flex-wrap items-center gap-2.5">
-                <div class="w-full flex items-center gap-[15px] sm:gap-5">
-                  <div class="recipe-tips-icon">
-                    <img class="w-full h-full object-contain" {...green_bulb} />
-                  </div>
+            <div class="tiled-div division-in-gap grid">
+              <div class="division-in-element-gap flex items-center">
+                <img
+                  class="w-[clamp(25px,calc(1.25vw+17px),35px)] object-contain !m-0"
+                  {...green_bulb}
+                />
 
-                  <h3 class="recipe-tips-title text-primary font-bold leading-[150%]">
-                    {recipe_tips}
-                  </h3>
-                </div>
+                <div class="text-b2 font-bold text-black">{recipe_tips}</div>
+              </div>
 
-                <div class="recipe-content prose max-w-none text-primary font-medium sm:font-bold leading-[150%]">
-                  {item.Instructions_part_step_tip}
-                </div>
+              <div class="font-bold no-pad-mar-first-last-child">
+                <Markdown>{item.Instructions_part_step_tip}</Markdown>
               </div>
             </div>
           )}
