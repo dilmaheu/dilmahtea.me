@@ -217,8 +217,10 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         Name,
         Language,
         Status: "C",
-        LeadSource: env.EXACT_GUID_COLLECTION.get("WEBSHOP_LEAD_SOURCE"),
-        Classification1: env.EXACT_GUID_COLLECTION.get("B2C_CUSTOMER_SEGMENT"),
+        LeadSource: await env.EXACT_GUID_COLLECTION.get("WEBSHOP_LEAD_SOURCE"),
+        Classification1: await env.EXACT_GUID_COLLECTION.get(
+          "B2C_CUSTOMER_SEGMENT",
+        ),
       });
 
       CustomerID = Customer.entry.content["m:properties"]["d:ID"];
