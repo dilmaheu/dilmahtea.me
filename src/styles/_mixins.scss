@@ -543,8 +543,52 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 
 // exceptions
 
+@mixin quick-common {
+  @apply flex items-center;
+}
+
 @mixin quick-info {
-  @apply flex items-center text-b7 gap-[clamp(4px,calc(0.5vw+0.8px),8px)] font-medium text-black-light;
+  @include quick-common;
+
+  @apply text-b7 gap-[clamp(4px,calc(0.5vw+0.8px),8px)] font-medium;
+
+  .author-name {
+    @apply text-b5 font-bold;
+  }
+}
+
+@mixin quick-info-sm {
+  @include quick-common;
+
+  @apply text-b8 gap-1;
+
+  .author-name {
+    @apply text-b6-sm font-medium;
+  }
+}
+
+@mixin quick-info-black-light {
+  @include quick-info;
+
+  @apply text-black-light;
+}
+
+@mixin quick-info-black-light-sm {
+  @include quick-info-sm;
+
+  @apply text-black-light;
+}
+
+@mixin quick-info-secondary {
+  @include quick-info-secondary;
+
+  @apply text-secondary;
+}
+
+@mixin quick-info-secondary-sm {
+  @include quick-info-sm;
+
+  @apply text-secondary;
 }
 
 // form & inputs
