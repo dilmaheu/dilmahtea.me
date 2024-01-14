@@ -11,6 +11,7 @@ export interface Token {
 export interface ENV {
   MAILS: KVNamespace;
   EXACT_TOKENS: KVNamespace;
+  EXACT_GUID_COLLECTION: KVNamespace;
   EMAIL: Fetcher;
   USERS: D1Database;
   TWILIO_ACCOUNT_SID: string;
