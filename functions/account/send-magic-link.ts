@@ -102,7 +102,9 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
         // throw error if account with email or phone already exists
         const DuplicateAccountError = new PublicError(
-          "An account with this email or phone already exists. Please contact support at hello@dilmahtea.me",
+          `The entered ${
+            email ? "email address" : "phone number"
+          } already exists. Please contact support at hello@dilmahtea.me`,
         );
 
         const Customer = await fetchExactAPI(
