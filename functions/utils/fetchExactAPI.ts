@@ -2,7 +2,7 @@ import type { ENV } from "./types";
 
 import { XMLParser as XMLParserConstructor } from "fast-xml-parser";
 
-const XMLParser = new XMLParserConstructor();
+const XMLParser = new XMLParserConstructor({ parseTagValue: false });
 
 const fetchExactAPI = async (
   method: string,
