@@ -12,8 +12,8 @@ import { removeToken, validateToken } from "../utils/token";
 import { getProviderId, createSessionCookie } from "../utils";
 
 const BodySchema = z.object({
-  first_name: z.string(),
-  last_name: z.string(),
+  first_name: z.string().trim(),
+  last_name: z.string().trim(),
   token: z.string(),
 });
 
