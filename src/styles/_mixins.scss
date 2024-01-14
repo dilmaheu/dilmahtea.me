@@ -56,8 +56,10 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 
 @mixin number-list-circle {
   @apply inline-flex items-center justify-center
-    text-b4 font-bold text-white bg-primary rounded-full
-    w-[clamp(30px,calc(1.875vw+18px),45px)] h-[clamp(30px,calc(1.875vw+18px),45px)];
+    text-b4 font-bold text-white bg-primary rounded-full;
+
+  width: clamp(30px,calc(1.875vw + 18px),45px)!important;
+  height: clamp(30px,calc(1.875vw + 18px),45px)!important;
 }
 
 @mixin prose-prose-text {
@@ -120,6 +122,7 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   ol {
     @apply grid division-gap list-none;
     counter-reset: my-counter;
+    padding-left: clamp(40px,calc(1.875vw + 28px),55px)!important;
 
     li {
       @apply my-0;
@@ -128,8 +131,9 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
     li::before {
       @include number-list-circle;
 
-      @apply -ml-[clamp(40px,calc(1.875vw+28px),55px)] mr-2.5;
+      @apply -ml-[clamp(40px,calc(1.875vw+28px),55px)];
 
+      margin-right: 10px!important;
       content: counter(my-counter);
       counter-increment: my-counter;
     }
