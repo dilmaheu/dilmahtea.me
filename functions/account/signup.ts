@@ -115,7 +115,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
       await fetchExactAPI(
         "GET",
-        `/CRM/Contacts?$filter=Account eq guid'${ExistingCustomer["d:ID"]}' and (${CustomerFilter})&select=ID,FirstName,LastName,Email,Phone`,
+        `/CRM/Contacts?$filter=Account eq guid'${ExistingCustomer["d:ID"]}' and (${CustomerFilter})&$select=ID,FirstName,LastName,Email,Phone`,
         env,
       ).then(async ({ feed }) => {
         const matchedContact = [feed.entry]
