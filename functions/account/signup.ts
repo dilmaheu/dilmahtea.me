@@ -175,16 +175,27 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         }
       });
 
+      const WEBSHOP_LEAD_SOURCE = await env.EXACT_GUID_COLLECTION.get(
+          "WEBSHOP_LEAD_SOURCE",
+        ),
+        B2C_CUSTOMER_SEGMENT = await env.EXACT_GUID_COLLECTION.get(
+          "B2C_CUSTOMER_SEGMENT",
+        );
+
       let UpdatedUserAttributes: Record<string, string> = {};
 
+      if (ExistingCustomer["d:Language"] !== Language) {
+        UpdatedUserAttributes.Language = Language;
+      }
+
       if (
-        ExistingCustomer["d:Name"] !== Name ||
-        ExistingCustomer["d:Language"] !== Language
+        ExistingCustomer["d:Name"] !== Name &&
+        ["", WEBSHOP_LEAD_SOURCE].includes(ExistingCustomer["d:LeadSource"]) &&
+        ["", B2C_CUSTOMER_SEGMENT].includes(
+          ExistingCustomer["d:Classification1"],
+        )
       ) {
-        UpdatedUserAttributes = {
-          Name,
-          Language,
-        };
+        UpdatedUserAttributes.Name = Name;
       }
 
       if (!ExistingCustomer["d:Classification1"]) {
