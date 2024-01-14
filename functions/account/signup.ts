@@ -60,6 +60,13 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
   await removeToken(env.USERS, token);
 
+  const WEBSHOP_LEAD_SOURCE = await env.EXACT_GUID_COLLECTION.get(
+      "WEBSHOP_LEAD_SOURCE",
+    ),
+    B2C_CUSTOMER_SEGMENT = await env.EXACT_GUID_COLLECTION.get(
+      "B2C_CUSTOMER_SEGMENT",
+    );
+
   const ContactIsEmail = providerId === "email";
 
   const FirstName = first_name,
@@ -170,13 +177,6 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         }
       });
 
-      const WEBSHOP_LEAD_SOURCE = await env.EXACT_GUID_COLLECTION.get(
-          "WEBSHOP_LEAD_SOURCE",
-        ),
-        B2C_CUSTOMER_SEGMENT = await env.EXACT_GUID_COLLECTION.get(
-          "B2C_CUSTOMER_SEGMENT",
-        );
-
       let UpdatedUserAttributes: Record<string, string> = {};
 
       if (ExistingCustomer["d:Language"] !== Language) {
@@ -194,8 +194,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
       }
 
       if (!ExistingCustomer["d:Classification1"]) {
-        UpdatedUserAttributes.Classification1 =
-          await env.EXACT_GUID_COLLECTION.get("B2C_CUSTOMER_SEGMENT");
+        UpdatedUserAttributes.Classification1 = B2C_CUSTOMER_SEGMENT;
       }
 
       if (Object.keys(UpdatedUserAttributes).length) {
@@ -216,10 +215,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         Name,
         Language,
         Status: "C",
-        LeadSource: await env.EXACT_GUID_COLLECTION.get("WEBSHOP_LEAD_SOURCE"),
-        Classification1: await env.EXACT_GUID_COLLECTION.get(
-          "B2C_CUSTOMER_SEGMENT",
-        ),
+        LeadSource: WEBSHOP_LEAD_SOURCE,
+        Classification1: B2C_CUSTOMER_SEGMENT,
       });
 
       CustomerID = Customer.entry.content["m:properties"]["d:ID"];
