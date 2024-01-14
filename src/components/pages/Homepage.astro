@@ -126,55 +126,58 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
     {
       page.Block3_visibility && (
         <section class="wrapper">
-          {page.Block3_title && (
-            <h2
-              id={page.Block3_title.toLowerCase().replaceAll(" ", "-")}
-              class="heading-secondary text-center text-primary"
-            >
-              {page.Block3_title}
-            </h2>
-          )}
+          <div class="grid division-gap">
+            {page.Block3_title && (
+              <h2
+                id={page.Block3_title.toLowerCase().replaceAll(" ", "-")}
+                class="heading-secondary text-center text-primary"
+              >
+                {page.Block3_title}
+              </h2>
+            )}
 
-          <div
-            aria-label={ariaLabelRecurData.Highlighted_post_text}
-            class="link-section flex flex-wrap items-center"
-          >
             <div
-              class:list={[
-                "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
-                "pr-0 sm:pr-5 md:pr-12 lg:pr-24",
-              ]}
+              aria-label={ariaLabelRecurData.Highlighted_post_text}
+              class="link-section flex flex-wrap items-center"
             >
-              <div class="post-img-curve-container mr-auto">
-                <Picture
-                  layout="fill"
-                  src={STRAPI_URL + randPost.Intro_blob?.data?.attributes.url}
-                  alt={randPost.Intro_blob?.data?.attributes.alternativeText}
-                  sizes={[
-                    "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
-                    "(min-width: 640px) min(600px, calc(45vw - 20px))",
-                    "90vw",
-                  ].join(", ")}
-                  attributes={{
-                    picture: { style: "clip-path: url(#post-img-curve);" },
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Text content */}
-            <div class="order-2 w-full sm:w-1/2 h-full flex flex-wrap items-center pr-0 sm:pr-5">
-              <div>
-                <h2 class="heading-secondary text-primary">
-                  <a
-                    class="main-link"
-                    href={`/` + randPost.Meta.URL_slug}
-                    set:text={randPost.Title}
+              <div
+                class:list={[
+                  "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
+                  "pr-0 sm:pr-5 md:pr-12 lg:pr-24",
+                ]}
+              >
+                <div class="post-img-curve-container mr-auto">
+                  <Picture
+                    layout="fill"
+                    src={STRAPI_URL + randPost.Intro_blob?.data?.attributes.url}
+                    alt={randPost.Intro_blob?.data?.attributes.alternativeText}
+                    sizes={[
+                      "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
+                      "(min-width: 640px) min(600px, calc(45vw - 20px))",
+                      "90vw",
+                    ].join(", ")}
+                    attributes={{
+                      picture: { style: "clip-path: url(#post-img-curve);" },
+                    }}
                   />
-                </h2>
+                </div>
+              </div>
 
-                <div class="post-intro pt-[15px] prose max-w-none">
-                  <Markdown>{randPost.Intro_text}</Markdown>
+              {/* Text content */}
+              <div class="order-2 w-full sm:w-1/2 h-full flex flex-wrap items-center pr-0 sm:pr-5">
+                
+                <div>
+                  <h2 class="heading-secondary text-primary">
+                    <a
+                      class="main-link"
+                      href={`/` + randPost.Meta.URL_slug}
+                      set:text={randPost.Title}
+                    />
+                  </h2>
+
+                  <div class="post-intro pt-[15px] prose max-w-none">
+                    <Markdown>{randPost.Intro_text}</Markdown>
+                  </div>
                 </div>
               </div>
             </div>
