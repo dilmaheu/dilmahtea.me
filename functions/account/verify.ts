@@ -58,11 +58,7 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
       contact,
     ];
 
-    var key: Key = await auth.useKey(
-      keyProviderId,
-      keyProviderUserId.toLowerCase(),
-      null,
-    );
+    var key: Key = await auth.useKey(keyProviderId, keyProviderUserId, null);
   } catch (error) {
     if (!previous_contact && error.message === "AUTH_INVALID_KEY_ID") {
       if (link_with) {
@@ -93,12 +89,12 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
     await auth.createKey({
       userId,
       providerId,
-      providerUserId: link_with.toLowerCase(),
+      providerUserId: link_with,
       password: null,
     });
 
     await auth.updateUserAttributes(userId, {
-      [providerId]: link_with.toLowerCase(),
+      [providerId]: link_with,
     });
   }
 
@@ -110,16 +106,16 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
     await auth.createKey({
       userId,
       providerId,
-      providerUserId: contact.toLowerCase(),
+      providerUserId: contact,
       password: null,
     });
 
     await auth.updateUserAttributes(userId, {
-      [providerId]: contact.toLowerCase(),
+      [providerId]: contact,
     });
 
     if (providerId === previousProviderId) {
-      await auth.deleteKey(previousProviderId, previousContact.toLowerCase());
+      await auth.deleteKey(previousProviderId, previousContact);
 
       await auth.invalidateAllUserSessions(userId);
     }
@@ -131,7 +127,7 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
       "/crm/Accounts(guid'" + user.exact_account_guid + "')",
       env,
       {
-        [ProviderId]: contact.toLowerCase(),
+        [ProviderId]: contact,
       },
     );
   }

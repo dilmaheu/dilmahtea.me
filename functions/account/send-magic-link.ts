@@ -12,7 +12,7 @@ import { getToken, removeToken, validateToken } from "../utils/token";
 import { PublicError, checkUpdatedContact, isMobilePhone } from "../utils";
 
 const BaseSchema = z.object({
-  email: z.string().email().optional(),
+  email: z.string().email().toLowerCase().optional(),
   phone: z.string().refine(isMobilePhone).optional(),
 });
 

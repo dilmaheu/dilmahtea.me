@@ -46,11 +46,11 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
   const user: User = await auth.createUser({
     key: {
       providerId,
-      providerUserId: contact.toLowerCase(),
+      providerUserId: contact,
       password: null,
     },
     attributes: {
-      [providerId]: contact.toLowerCase(),
+      [providerId]: contact,
       first_name,
       last_name,
       display_name: `${first_name} ${last_name}`,
@@ -99,7 +99,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         await auth.createKey({
           userId,
           providerId: alternateProviderId,
-          providerUserId: alternateProviderUserId.toLowerCase(),
+          providerUserId: alternateProviderUserId,
           password: null,
         });
 
@@ -129,8 +129,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
         if (matchedContact) {
           const matchContact = (contact: string, isEmail: boolean): boolean =>
-            matchedContact[`d:${isEmail ? "Email" : "Phone"}`].toLowerCase() ===
-            (isEmail ? contact.toLowerCase() : String(contact.slice(1)));
+            matchedContact[`d:${isEmail ? "Email" : "Phone"}`] ===
+            (isEmail ? contact : String(contact.slice(1)));
 
           if (
             matchedContact["d:FirstName"] !== FirstName ||
@@ -150,9 +150,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
                   ...(!alternateProviderUserId
                     ? {}
                     : {
-                        [ProviderId]: contact.toLowerCase(),
-                        [AlternateProviderId]:
-                          alternateProviderUserId.toLowerCase(),
+                        [ProviderId]: contact,
+                        [AlternateProviderId]: alternateProviderUserId,
                       }),
                 },
               ),
@@ -165,7 +164,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
               Account: ExistingCustomer["d:ID"],
               FirstName,
               LastName,
-              [ProviderId]: contact.toLowerCase(),
+              [ProviderId]: contact,
             }),
           );
         }
@@ -213,7 +212,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
       await Promise.all(promises);
     } else {
       const Customer = await fetchExactAPI("POST", "/crm/Accounts", env, {
-        [ProviderId]: contact.toLowerCase(),
+        [ProviderId]: contact,
         Name,
         Language,
         Status: "C",
@@ -229,7 +228,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         Account: CustomerID,
         FirstName,
         LastName,
-        [ProviderId]: contact.toLowerCase(),
+        [ProviderId]: contact,
       });
     }
   } catch (error) {
