@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import formatNumber from "../utils/formatNumber";
 import fetchExactAPI from "../utils/fetchExactAPI";
+import getCustomerFilter from "../utils/getCustomerFilter";
 
 import { initializeLucia } from "../utils/auth";
 import { removeToken, validateToken } from "../utils/token";
@@ -58,11 +59,6 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
   });
 
   await removeToken(env.USERS, token);
-
-  const getCustomerFilter = (contact: string, isEmail: boolean): string =>
-    isEmail
-      ? `Email eq '${contact.toLowerCase()}'`
-      : `substringof('${contact.slice(1)}', Phone)`;
 
   const ContactIsEmail = providerId === "email";
 
