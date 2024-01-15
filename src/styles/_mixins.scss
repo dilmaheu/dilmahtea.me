@@ -546,26 +546,34 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 // exceptions
 
 @mixin quick-common {
-  @apply flex items-center;
+  @apply grid items-center;
+
+  .quick-info-item {
+     @apply flex flex-wrap items-center;
+  }
 }
 
 @mixin quick-info {
   @include quick-common;
 
-  @apply text-b7 gap-[clamp(4px,calc(0.5vw+0.8px),8px)] font-medium;
-
   .author-name {
     @apply text-b5 font-bold;
+  }
+
+  .quick-info-item {
+     @apply gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-b7 font-medium;
   }
 }
 
 @mixin quick-info-sm {
   @include quick-common;
 
-  @apply text-b8 gap-1;
-
   .author-name {
     @apply text-b6-sm font-medium;
+  }
+
+  .quick-info-item {
+     @apply gap-1 text-b8;
   }
 }
 
