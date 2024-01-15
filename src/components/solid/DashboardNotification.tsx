@@ -24,9 +24,10 @@ export default function DashboardNotification({
                   {...recurringImages[`${type}_notification`]}
                 />
 
-                <div class="text-[clamp(14px,calc(0.25vw+12.4px),16px)] text-black">
-                  {message}
-                </div>
+                <div
+                  innerHTML={message}
+                  class="text-[clamp(14px,calc(0.25vw+12.4px),16px)] text-black"
+                />
               </div>
             </div>
           );
