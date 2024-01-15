@@ -68,6 +68,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
       "content-type": "application/json",
     },
     body: JSON.stringify({
+      userId: user.userId,
       [ProviderId]: contact,
       FirstName,
       LastName,
