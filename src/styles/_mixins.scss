@@ -434,7 +434,7 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   @apply flex items-center gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-primary;
 }
 
-// product-card(smallest-size-375px)
+// blob-card
 
 @mixin blob-card {
   @apply flex flex-col bg-primary;
@@ -445,6 +445,35 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
       pt-[clamp(10px,calc(0.94vw+6.4px),20px)] pb-[clamp(12px,calc(1.22vw+7.42px),25px)];
   }
 }
+
+// post-card
+
+@mixin post-card {
+  @include blob-card;
+  
+  clip-path: url(#blob-card-curve);
+
+  .card-content-container {
+    @apply pb-[clamp(12px,calc(2.16vw+3.9px),35px)];
+  }
+
+  @apply bg-primary;
+
+  .product-card-content {
+    @apply grid division-in-gap;
+
+    .post-title {
+      @apply text-h5-sm text-white;
+    }
+
+    .post-title-icon {
+      @apply inline align-middle h-[clamp(8px,calc(1vw+1.6px),16px)];
+    }
+  }
+}
+
+
+// product-card(smallest-size-375px)
 
 @mixin product-more-info {
   @apply space-x-[3px] sm:space-x-1 text-b7 italic;
