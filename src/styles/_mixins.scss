@@ -125,13 +125,15 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
     padding-left: clamp(40px,calc(1.875vw + 28px),55px)!important;
 
     li {
+      @include no-pad-mar-first-last-child;
+
       @apply my-0;
     }
 
     li::before {
       @include number-list-circle;
 
-      @apply -ml-[clamp(40px,calc(1.875vw+28px),55px)];
+      @apply absolute -ml-[clamp(40px,calc(1.875vw+28px),55px)];
 
       margin-right: 10px!important;
       content: counter(my-counter);
