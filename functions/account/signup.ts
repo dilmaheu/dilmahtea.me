@@ -62,20 +62,18 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
   const ProviderId = providerId === "email" ? "Email" : "Phone";
 
-  context.waitUntil(
-    env.EXACT_ACCOUNT.fetch(request.url, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        [ProviderId]: contact,
-        FirstName,
-        LastName,
-        Language,
-      }),
+  await env.EXACT_ACCOUNT.fetch(request.url, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      [ProviderId]: contact,
+      FirstName,
+      LastName,
+      Language,
     }),
-  );
+  });
 
   const sessionCookie = await createSessionCookie(auth, user);
 
