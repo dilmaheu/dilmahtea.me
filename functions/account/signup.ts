@@ -74,7 +74,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
       LastName,
       Language,
     }),
-  });
+  }).then((res) => res.json());
 
   const sessionCookie = await createSessionCookie(auth, user);
 
