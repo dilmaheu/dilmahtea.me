@@ -122,14 +122,20 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
 
     const ProviderId = providerId === "email" ? "Email" : "Phone";
 
-    await fetchExactAPI(
-      "PUT",
-      "/crm/Accounts(guid'" + user.exact_account_guid + "')",
-      env,
-      {
-        [ProviderId]: contact,
-      },
-    );
+    await Promise.all([
+      fetchExactAPI(
+        "PUT",
+        "/crm/Accounts(guid'" + user.exact_account_guid + "')",
+        env,
+        { [ProviderId]: contact },
+      ),
+      fetchExactAPI(
+        "PUT",
+        "/crm/Contacts(guid'" + user.exact_contact_guid + "')",
+        env,
+        { [ProviderId]: contact },
+      ),
+    ]);
   }
 
   const sessionCookie = await createSessionCookie(auth, user);
