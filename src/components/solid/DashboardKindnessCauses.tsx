@@ -1,10 +1,7 @@
 import { user } from "@signals/user";
-import { createEffect, createMemo, onMount } from "solid-js";
+import { createEffect, createSignal, onMount } from "solid-js";
 
-import DashboardNotification, {
-  notification,
-  setNotification,
-} from "@solid/DashboardNotification";
+import DashboardNotification from "@solid/DashboardNotification";
 
 let memoizedElements: {
   kindnessCauseContainer: HTMLElement;
@@ -18,6 +15,8 @@ export default function DashboardKindnessCauses({
   recurringImages,
   kindnessCausesHTML,
 }) {
+  const [notification, setNotification] = createSignal(null);
+
   const queryElements = () => {
     if (!memoizedElements) {
       const kindnessCauseContainer = document.getElementById(
@@ -142,7 +141,10 @@ export default function DashboardKindnessCauses({
       </h2>
 
       <div class="dashboard-sec">
-        <DashboardNotification recurringImages={recurringImages} />
+        <DashboardNotification
+          notification={notification}
+          recurringImages={recurringImages}
+        />
 
         {kindnessCausesHTML}
       </div>

@@ -3,10 +3,7 @@ import { createEffect, createSignal } from "solid-js";
 import { user } from "@signals/user";
 
 import InfoUnit from "@solid/InfoUnit";
-import DashboardNotification, {
-  notification,
-  setNotification,
-} from "@solid/DashboardNotification";
+import DashboardNotification from "@solid/DashboardNotification";
 
 export default function UserInfo({
   page,
@@ -14,6 +11,8 @@ export default function UserInfo({
   recurringImages,
   userAccountRecurData,
 }) {
+  const [notification, setNotification] = createSignal(null);
+
   const {
     Title,
     Personal_information: {
@@ -64,7 +63,10 @@ export default function UserInfo({
       </h2>
 
       <div class="dashboard-sec">
-        <DashboardNotification recurringImages={recurringImages} />
+        <DashboardNotification
+          notification={notification}
+          recurringImages={recurringImages}
+        />
 
         <InfoUnit
           label={Label_username}
