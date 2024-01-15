@@ -63,11 +63,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 <style lang="scss">
   @use "src/styles/colors";
 
-  .cart-adding-form {
-    margin-top: clamp(0.625rem, 1vw + 0.35rem, 1.25em);
-    row-gap: clamp(0.938rem, 3vw + 0.3rem, 3.125rem);
-  }
-
   form {
     *:focus {
       outline: none;
@@ -254,13 +249,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   <form
     slot="tea-details-header"
     class:list={[
-      "cart-adding-form flex flex-wrap items-center w-full",
+      "cart-adding-form division-gap flex flex-wrap items-center w-full",
       stockAmount > 0 && "xl:w-2/3",
     ]}
   >
     <input type="hidden" name="SKU" value={productSKU} />
 
-    <div class="flex flex-wrap gap-[15px] mt-[15px]">
+    <div class="flex flex-wrap gap-[15px]">
       {
         availableVariants.length > 0 && (
           <div class="grid sm:flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full">
@@ -285,12 +280,12 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   style="clip-path: url(#product-variant-curve);"
                 >
                   <div
-                    class="md:w-[188px] p-1 bg-primary"
+                    class="md:w-[188px] p-1 bg-primary-light"
                     style="clip-path: url(#product-variant-curve);"
                   >
                     <div
                       class:list={[
-                        "w-full py-3 px-5 bg-dark-green",
+                        "w-full py-3 px-5 bg-primary",
                         "flex items-center sm:justify-center gap-[15px] ",
                       ]}
                       style="clip-path: url(#product-variant-curve);"
@@ -318,10 +313,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
       {
         availableSizes.length > 0 && (
-          <div class="flex flex-wrap items-center gap-[5px] sm:gap-2.5">
-            <div class="text-base leading-[110%] p-2.5">
-              {checkoutRecurData.text_size}:
-            </div>
+          <div class="division-in-element-gap flex flex-wrap items-center">
+            <div class="text-b5">{checkoutRecurData.text_size}:</div>
 
             <div class="flex flex-wrap gap-2">
               {availableSizes.map(({ value, size, link }) => (
