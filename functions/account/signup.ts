@@ -62,10 +62,11 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
   const ProviderId = providerId === "email" ? "Email" : "Phone";
 
-  await env.EXACT_ACCOUNT.fetch(request.url, {
+  await fetch(env.EXACT_ACCOUNT_WORKER_URL, {
     method: "POST",
     headers: {
       "content-type": "application/json",
+      "x-secret": env.EXACT_ACCOUNT_WORKER_SECRET,
     },
     body: JSON.stringify({
       userId: user.userId,
