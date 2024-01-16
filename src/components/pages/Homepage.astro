@@ -55,9 +55,6 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
 
   .post-intro {
     @apply line-clamp-3 sm:line-clamp-4 md:line-clamp-5 lg:line-clamp-6;
-
-    font-size: clamp(1rem, 1.5vw + 0.15rem, 1.5rem);
-    line-height: 150%;
   }
 
   .post-img-curve-container {
@@ -164,11 +161,17 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
               </div>
 
               {/* Text content */}
-              <div class="order-2 w-full sm:w-1/2 h-full flex flex-wrap items-center pr-0 sm:pr-5">
+              <div class="order-2 w-full sm:w-1/2 h-full flex flex-wrap items-start sm:items-center pr-0 sm:pr-5">
                 
                 <div class="grid division-in-gap">
-                  <div class="text-b5 font-bold text-black-light">{randPost.authors.data[0].attributes.givenName}</div>
+                  <div class="quick-info-black-light">
+                    <div class="author-name">{randPost.authors.data[0].attributes.givenName}</div>
+                    <div class="quick-info-item">{new Date(randPost.createdAt).toLocaleString("en-US", {
+                      day: "numeric",
+                      month: "long"
+                    })}</div>
                   
+                  </div>
                   <div>
                     <h2 class="heading-secondary text-primary">
                       <a
@@ -178,8 +181,7 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
                       />
                     </h2>
                   </div>
-
-                  <div class="post-intro prose max-w-none">
+                  <div class="post-intro prose text-b3 font-normal max-w-none">
                     <Markdown>{randPost.Intro_text}</Markdown>
                   </div>
                 </div>
