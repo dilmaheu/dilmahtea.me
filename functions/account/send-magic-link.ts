@@ -196,7 +196,6 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         },
         body: JSON.stringify({
           to: [{ email }],
-
           subject: Subject,
           content: [{ type: "text/html", value: finalHTMLEmail }],
         }),
