@@ -147,12 +147,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
   let response: Response;
 
-  const debug = {};
-
   try {
     const mailData = JSON.parse(await env.MAILS.get("Magic Link Email"));
-
-    debug["fetchedMailData"] = true;
 
     const mail = mailData[locale],
       { Subject, From_email, SMS, htmlEmail } = mail;
@@ -166,8 +162,6 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     if (email) {
       const finalHTMLEmail = replacePlaceholders(htmlEmail);
 
-      debug["replacedPlaceholders"] = true;
-
       response = await context.env.EMAIL.fetch(request.url, {
         method: "POST",
         headers: {
@@ -180,14 +174,10 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
           content: [{ type: "text/html", value: finalHTMLEmail }],
         }),
       });
-
-      debug["sentEmail"] = true;
     } else {
       const basicAuthToken = btoa(
         env.TWILIO_ACCOUNT_SID + ":" + env.TWILIO_AUTH_TOKEN,
       );
-
-      debug["generatedBasicAuthToken"] = true;
 
       response = await fetch(
         `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`,
@@ -204,11 +194,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
           },
         },
       );
-
-      debug["sentSMS"] = true;
     }
-
-    debug["parsedResponse"] = await response.json();
 
     if (!response.ok) throw new Error();
 
@@ -221,11 +207,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     return Response.json(
       {
         success: false,
-        message:
-          "Something went wrong. Failed to send magic link. " +
-          JSON.stringify(debug) +
-          " " +
-          error.message,
+        message: "Something went wrong. Failed to send magic link.",
       },
       { status: 500 },
     );
