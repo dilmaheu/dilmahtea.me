@@ -12,8 +12,9 @@ export interface ENV {
   MAILS: KVNamespace;
   EXACT_TOKENS: KVNamespace;
   EXACT_GUID_COLLECTION: KVNamespace;
-  EMAIL: Fetcher;
   USERS: D1Database;
+  EMAIL_WORKER_URL: string;
+  EMAIL_WORKER_SECRET: string;
   EXACT_ACCOUNT_WORKER_URL: string;
   EXACT_ACCOUNT_WORKER_SECRET: string;
   TWILIO_ACCOUNT_SID: string;
