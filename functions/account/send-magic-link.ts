@@ -192,7 +192,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          "x-secret": env.CF_SECURE_WORKER_TOKEN,
+          "x-cf-secure-worker-token": env.CF_SECURE_WORKER_TOKEN,
         },
         body: JSON.stringify({
           to: [{ email }],
