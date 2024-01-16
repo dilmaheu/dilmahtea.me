@@ -12,6 +12,8 @@ export interface ENV {
   MAILS: KVNamespace;
   EXACT_TOKENS: KVNamespace;
   EXACT_GUID_COLLECTION: KVNamespace;
+  EMAIL: Fetcher;
+  EXACT_ACCOUNT: Fetcher;
   USERS: D1Database;
   EMAIL_WORKER_URL: string;
   EXACT_ACCOUNT_WORKER_URL: string;

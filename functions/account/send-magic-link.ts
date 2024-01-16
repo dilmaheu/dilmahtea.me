@@ -188,7 +188,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     if (email) {
       const finalHTMLEmail = replacePlaceholders(htmlEmail);
 
-      response = await fetch(env.EMAIL_WORKER_URL, {
+      response = await env.EMAIL.fetch(env.EMAIL_WORKER_URL, {
         method: "POST",
         headers: {
           "content-type": "application/json",
