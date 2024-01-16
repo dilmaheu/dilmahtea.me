@@ -166,16 +166,20 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
               {/* Text content */}
               <div class="order-2 w-full sm:w-1/2 h-full flex flex-wrap items-center pr-0 sm:pr-5">
                 
-                <div>
-                  <h2 class="heading-secondary text-primary">
-                    <a
-                      class="main-link"
-                      href={`/` + randPost.Meta.URL_slug}
-                      set:text={randPost.Title}
-                    />
-                  </h2>
+                <div class="grid division-in-gap">
+                  <div class="text-b5 font-bold text-black-light">{randPost.authors.data[0].attributes.givenName}</div>
+                  
+                  <div>
+                    <h2 class="heading-secondary text-primary">
+                      <a
+                        class="main-link"
+                        href={`/` + randPost.Meta.URL_slug}
+                        set:text={randPost.Title}
+                      />
+                    </h2>
+                  </div>
 
-                  <div class="post-intro pt-[15px] prose max-w-none">
+                  <div class="post-intro prose max-w-none">
                     <Markdown>{randPost.Intro_text}</Markdown>
                   </div>
                 </div>
