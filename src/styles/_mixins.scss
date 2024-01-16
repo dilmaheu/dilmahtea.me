@@ -445,10 +445,6 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 
 // blob-card
 
-@mixin blob-cards-container {
-  @apply flex flex-wrap card-gap overflow-hidden;;
-}
-
 @mixin blob-card {
   @apply flex flex-col bg-primary;
 
@@ -459,18 +455,11 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   }
 }
 
-// note: clamp calculation part should be as card-gap
-@mixin blob-card-width {
-  @apply w-[calc(50%-clamp(15px,calc(4.375vw-13px),50px)/2)]
-    lg:w-[calc(33.3333%-clamp(15px,calc(4.375vw-13px),50px)/1.5)]
-}
-
 // post-card
 
 @mixin post-card {
   @include blob-card;
-  @include blob-card-width;
-
+  
   clip-path: url(#blob-card-curve);
 
   .card-content-container {
