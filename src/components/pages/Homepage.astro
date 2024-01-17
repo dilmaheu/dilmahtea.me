@@ -223,23 +223,24 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
             />
 
             <div class="bg-primary pt-[60px] relative z-10">
-              <div class="wrapper pt-[50px] pb-6 text-white">
-                <div class="heading-secondary text-center">
-                  <h2>{page.Block5_title}</h2>
-                </div>
-
-                {page.Block5_text && (
-                  <div class="prose-text-dark-link text-white text-center mt-[15px]">
-                    <Markdown>{page.Block5_text}</Markdown>
+              <div class="wrapper grid division-gap section-in-v-pad-sm text-white">
+                <div class="grid division-in-gap">
+                  <div class="heading-secondary text-center">
+                    <h2>{page.Block5_title}</h2>
                   </div>
-                )}
+
+                  {page.Block5_text && (
+                    <div class="prose-text-dark-link text-center font-normal">
+                      <Markdown>{page.Block5_text}</Markdown>
+                    </div>
+                  )}
+                </div>
 
                 <div
                   role="list"
                   aria-label={ariaLabelRecurData.Kindness_Items_text}
                   class:list={[
-                    "wrapper grid justify-around",
-                    "gap-[25px] sm:gap-[50px] mt-[25px] sm:mt-[30px]",
+                    "wrapper grid justify-around card-gap",
                     "grid-cols-[repeat(auto-fit,minmax(0,400px))]",
                     "2xl:grid-cols-[repeat(auto-fit,minmax(0,480px))]",
                   ]}
@@ -268,16 +269,11 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
 
                       <div
                         class:list={[
-                          "relative z-50 flex items-end h-full  aspect-[6/5]",
+                          "relative z-50 flex items-end h-full aspect-[6/5]",
                           "bg-gradient-to-t from-black/70 p-[25px] sm:p-5",
                         ]}
                       >
-                        <div
-                          class:list={[
-                            "text-[clamp(1.5rem,1.8vw+0.1rem,1.75rem)]",
-                            "recoleta leading-[110%]",
-                          ]}
-                        >
+                        <div class="text-h4 font-bold recoleta text-white">
                           <a
                             class="main-link"
                             set:text={post.Estate_name}
