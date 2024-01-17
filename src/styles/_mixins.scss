@@ -58,8 +58,8 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   @apply inline-flex items-center justify-center
     text-b4 font-bold text-white bg-primary rounded-full;
 
-  width: clamp(30px,calc(1.875vw + 18px),45px)!important;
-  height: clamp(30px,calc(1.875vw + 18px),45px)!important;
+  width: clamp(30px, calc(1.875vw + 18px), 45px) !important;
+  height: clamp(30px, calc(1.875vw + 18px), 45px) !important;
 }
 
 @mixin prose-prose-text {
@@ -122,7 +122,7 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   ol {
     @apply grid division-gap list-none;
     counter-reset: my-counter;
-    padding-left: clamp(40px,calc(1.875vw + 28px),55px)!important;
+    padding-left: clamp(40px, calc(1.875vw + 28px), 55px) !important;
 
     li {
       @include no-pad-mar-first-last-child;
@@ -135,7 +135,7 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 
       @apply absolute -ml-[clamp(40px,calc(1.875vw+28px),55px)];
 
-      margin-right: 10px!important;
+      margin-right: 10px !important;
       content: counter(my-counter);
       counter-increment: my-counter;
     }
@@ -446,7 +446,7 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 // blob-card
 
 @mixin blob-cards-container {
-  @apply flex flex-wrap card-gap overflow-hidden;;
+  @apply flex flex-wrap card-gap overflow-hidden;
 }
 
 @mixin blob-card {
@@ -462,10 +462,26 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 // note: clamp calculation part should be as card-gap
 @mixin blob-card-width {
   @apply w-[calc(50%-clamp(15px,calc(4.375vw-13px),50px)/2)]
-    lg:w-[calc(33.3333%-clamp(15px,calc(4.375vw-13px),50px)/1.5)]
+    lg:w-[calc(100%/3-clamp(15px,calc(4.375vw-13px),50px)/1.5)];
 }
 
 // post-card
+
+@mixin post-card-default-colors {
+  @apply bg-primary;
+
+  .post-title {
+    @apply text-white;
+  }
+}
+
+@mixin post-card-secondary-light-colors {
+  @apply bg-secondary-light;
+
+  .post-title {
+    @apply text-primary;
+  }
+}
 
 @mixin post-card {
   @include blob-card;
@@ -477,21 +493,19 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
     @apply pb-[clamp(12px,calc(2.16vw+3.9px),35px)];
   }
 
-  @apply bg-primary;
-
   .product-card-content {
     @apply grid division-in-gap;
 
     .post-title {
-      @apply text-h5-sm text-white;
+      @apply text-h5-sm;
     }
 
     .post-title-icon {
-      @apply inline align-middle h-[clamp(8px,calc(1vw+1.6px),16px)];
+      @apply inline align-middle h-[clamp(8px,calc(1vw+1.6px),16px)] 
+        ml-[clamp(4px,calc(0.5vw+0.8px),8px)];
     }
   }
 }
-
 
 // product-card(smallest-size-375px)
 
@@ -598,7 +612,7 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   @apply grid items-center;
 
   .quick-info-item {
-     @apply flex flex-wrap items-center;
+    @apply flex flex-wrap items-center;
   }
 }
 
@@ -610,7 +624,7 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   }
 
   .quick-info-item {
-     @apply gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-b7 font-medium;
+    @apply gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-b7 font-medium;
   }
 }
 
@@ -622,7 +636,7 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   }
 
   .quick-info-item {
-     @apply gap-1 text-b8;
+    @apply gap-1 text-b8;
   }
 }
 
