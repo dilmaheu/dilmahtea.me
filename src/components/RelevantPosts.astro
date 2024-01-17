@@ -7,9 +7,9 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
-const { white_right_arrow } = RecurringImages;
+const { green_right_arrow, white_right_arrow } = RecurringImages;
 
-const { page, text, posts, heading, curved_bg } = Astro.props,
+const { page, text, posts, heading, curved_bg, product } = Astro.props,
   { locale } = page,
   { STRAPI_URL } = import.meta.env;
 
@@ -124,8 +124,8 @@ const allPosts = curved_bg ? posts : posts.slice(0, 3);
                     ariaLabelRecurData.Kindness_Item_text + (index + 1)
                   }
                   class:list={[
-                    "link-section post-card",
-                    curved_bg && "justify-center !bg-error",
+                    "link-section",
+                    curved_bg ? "post-card-secondary-light" : "post-card",
                   ]}
                 >
                   <Picture
@@ -178,82 +178,12 @@ const allPosts = curved_bg ? posts : posts.slice(0, 3);
                           href={`/` + post.Meta.URL_slug}
                         />
 
-                        {!page.related_products && (
+                        {!product && (
                           <img
-                            class="post-title-icon ml-2"
-                            {...white_right_arrow}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {allPosts.map((post, index) => (
-                <div
-                  role="listitem"
-                  aria-label={
-                    ariaLabelRecurData.Kindness_Item_text + (index + 1)
-                  }
-                  class:list={[
-                    "link-section post-card",
-                    curved_bg && "justify-center !bg-error",
-                  ]}
-                >
-                  <Picture
-                    layout="fullWidth"
-                    alt={post.Intro_blob.data.attributes.alternativeText}
-                    src={STRAPI_URL + post.Intro_blob.data.attributes.url}
-                    attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                    sizes={[
-                      "(min-width: 1024px) calc((100vw - min(200px, 10vw) - (clamp(24px, 3.125vw - 8px, 32px) * 2)) / 3)",
-                      "(min-width: 640px) calc(45vw - 16px)",
-                      "min(90vw, 380px)",
-                    ].join(", ")}
-                  />
-
-                  <div class="card-content-container">
-                    <div class="product-card-content">
-                      {post.authors && (
-                        <div class="quick-info-secondary-light-sm">
-                          <div
-                            role="presentation"
-                            aria-label={post.authors.data.map(
-                              ({ attributes }, i) =>
-                                ariaLabelRecurData.Wrote_by_text +
-                                (i > 0 ? ", " : " ") +
-                                attributes.givenName,
-                            )}
-                            class="author-name"
-                          >
-                            {post.authors.data.map(({ attributes }, index) => (
-                              <span>
-                                {`${index > 0 ? ", " : " "}` +
-                                  attributes.givenName}
-                              </span>
-                            ))}
-                          </div>
-
-                          <div class="quick-info-item">
-                            {new Date(post.createdAt).toLocaleString("en-US", {
-                              day: "numeric",
-                              month: "long",
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      <div>
-                        <a
-                          class="main-link post-title"
-                          set:text={post.Title}
-                          href={`/` + post.Meta.URL_slug}
-                        />
-
-                        {!page.related_products && (
-                          <img
-                            class="post-title-icon ml-2"
-                            {...white_right_arrow}
+                            class="post-title-icon"
+                            {...(curved_bg
+                              ? green_right_arrow
+                              : white_right_arrow)}
                           />
                         )}
                       </div>
