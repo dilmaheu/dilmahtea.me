@@ -4,9 +4,10 @@ import { Picture } from "astro-imagetools/components";
 
 import Markdown from "@components/Markdown.astro";
 import Chapterize from "@components/Chapterize.astro";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
-import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+import RelevantPosts from "@components/RelevantPosts.astro";
 import RecipesInfoSection from "@components/RecipesInfoSection.astro";
+
+import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 import renderMarkdown from "@utils/renderMarkdown";
 import RecurringImages from "@store/RecurringImages";
@@ -105,51 +106,10 @@ const nutrition: Nutrition = {
 };
 ---
 
-<style lang="scss" is:global>
-  .recipe-title {
-    @apply font-bold;
-
-    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
-    padding: 15px clamp(15px, 2.08vw + 0.01rem, 30px);
-  }
-
-  .chapter:nth-child(1) .recipe-title {
-    margin-top: 0;
-  }
-
-  .recipe-content {
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
-  }
-</style>
-
 <style lang="scss">
-  .related-products-top {
-    clip-path: url(#product-impact-top-curve-sm);
-
-    @media (min-width: 768px) {
-      clip-path: url(#product-impact-top-curve);
-    }
-  }
-
-  .related-products-bottom {
-    clip-path: url(#product-impact-bottom-curve-sm);
-
-    @media (min-width: 768px) {
-      clip-path: url(#product-impact-bottom-curve);
-    }
-  }
-
   .recipe-time-icon {
-    width: clamp(25px, calc(0.625vw + 21px), 30px);
-    height: clamp(25px, calc(0.625vw + 21px), 30px);
-  }
-
-  .recipe-content-border {
-    margin-right: clamp(0.938rem, 1.5vw + 0.3rem, 1.563rem);
-  }
-
-  .recipe-content-title {
-    font-size: clamp(1.125rem, 2.2vw + 0.4rem, 2rem);
+    @apply w-[clamp(25px,calc(0.625vw+21px),30px)]
+      h-[clamp(25px,calc(0.625vw+21px),30px)];
   }
 
   .recipe-nutritions-container {
@@ -158,85 +118,6 @@ const nutrition: Nutrition = {
     @media (min-width: 640px) {
       grid-template-columns: repeat(auto-fit, minmax(200px, 5fr));
     }
-  }
-
-  .recipe-serving-size-input-container {
-    gap: clamp(0.438rem, 1.1vw + 0.01rem, 0.938rem);
-  }
-
-  .recipe-serving-size-input {
-    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
-
-    &:focus {
-      @apply ring ring-emerald-800 ring-opacity-20 outline-none cursor-pointer;
-    }
-  }
-
-  .recipe-ingredients-checkbox-container {
-    .recipe-ingredients-checkbox {
-      font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
-
-      &::after {
-        content: "✓";
-        top: -0.68rem;
-        left: 1.2px;
-        font-size: 0.85rem;
-        font-weight: 1000;
-
-        @apply absolute opacity-0 rotate-6 text-white;
-      }
-    }
-
-    input:focus {
-      @apply outline-none opacity-100 w-6 h-6 -top-1 -left-1;
-    }
-
-    input:checked ~ .recipe-ingredients-checkbox {
-      @apply opacity-100 rounded-[3px] border-2 border-primary bg-primary;
-
-      &::after {
-        @apply opacity-100 rounded-none bg-transparent;
-      }
-    }
-  }
-
-  .recipe-cooking-title {
-    font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
-  }
-
-  .recipe-step-order {
-    @apply inline-flex items-center justify-center font-extrabold bg-primary rounded-full text-white;
-    width: clamp(30px, 3vw + 0.4rem, 45px);
-    height: clamp(30px, 3vw + 0.4rem, 45px);
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
-  }
-
-  .recipe-tips-icon {
-    width: clamp(1.75rem, 2.5vw + 0.15rem, 2.375rem);
-    height: clamp(1.75rem, 2.5vw + 0.15rem, 2.375rem);
-  }
-
-  .recipe-tips-title {
-    font-size: clamp(1.125rem, 1.5vw + 0.15rem, 1.5rem);
-  }
-
-  .related-post-card-content-container {
-    padding: clamp(20px, 6.4vw, 40px) clamp(24px, 3.8vw + 11.75px, 36px);
-
-    @media (min-width: 640px) {
-      padding: clamp(30px, 7.8125vw - 20px, 60px)
-        clamp(28px, 4.6875vw - 2px, 46px);
-    }
-
-    @media (min-width: 1024px) {
-      padding: clamp(30px, 8vw - 51.75px, 60px) clamp(28px, 4.8vw - 21px, 46px);
-    }
-  }
-
-  .related-post-card-title {
-    @apply md:font-bold leading-[130%] md:leading-[120%];
-
-    font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
   }
 
   .ingredients-grid {
@@ -609,97 +490,15 @@ const nutrition: Nutrition = {
 
   {
     relatedProducts.length > 0 && (
-      <section class="mb-[50px]" slot="product-kindness-impact">
-        <ClipPathSVG
-          id="product-impact-top-curve"
-          path="M1,0.582 V1 H0 V0.582 S0.073,0.358,0.136,0.295 c0.103,-0.103,0.245,0.128,0.348,0.173 C0.602,0.52,0.729,0.058,0.847,0.003 L0.861,0 C0.965,0,1,0.582,1,0.582"
+      <Fragment slot="product-kindness-impact">
+        <RelevantPosts
+          page={page}
+          posts={relatedProducts}
+          heading={Recipes_related_products_title_text}
+          curved_bg={true}
+          product={true}
         />
-
-        <ClipPathSVG
-          id="product-impact-top-curve-sm"
-          path="M1,0.892 V1 H0 V0.892 c0.059,-1.237,0.238,-0.517,0.321,-0.517 S0.499,0.133,0.639,0.033 a0.799,4,0,0,1,0.088,-0.033 C0.84,0,0.951,0.193,1,0.892"
-        />
-
-        <ClipPathSVG
-          id="product-impact-bottom-curve"
-          path="M1,0 c-0.005,0.158,-0.026,0.437,-0.104,0.633 c-0.115,0.288,-0.242,-0.102,-0.316,-0.102 c-0.07,0,-0.171,0.017,-0.231,0.185 c-0.057,0.16,-0.132,0.283,-0.193,0.283 C0.032,1,0,0.633,0,0.633 V0"
-        />
-
-        <ClipPathSVG
-          id="product-impact-bottom-curve-sm"
-          path="M1,0 V0.722 c-0.095,0.278,-0.193,0,-0.324,0 C0.504,0.722,0.369,1,0.22,1 C0.088,1,0,0.382,0,0.382 V0"
-        />
-
-        <ClipPathSVG
-          id="card-curve"
-          path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
-        />
-
-        <div>
-          <div class="related-products-top py-8 -mb-1 bg-primary" />
-          <div class="bg-primary">
-            <div class="wrapper py-2.5 md:py-[100px]">
-              <div class="recoleta font-semibold text-center text-[clamp(2rem,3vw+0.4rem,3rem)] leading-[130%]">
-                <h2>{Recipes_related_products_title_text}</h2>
-              </div>
-
-              <div
-                role="list"
-                aria-label={ariaLabelRecurData.Kindness_Items_text}
-                class:list={[
-                  "wrapper justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
-                  "grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]",
-                ]}
-              >
-                {relatedProducts.map(
-                  ({
-                    Title,
-                    Intro_text,
-                    Intro_blob: {
-                      data: { attributes: intro_blob },
-                    },
-                    Meta: { URL_slug },
-                  }) => (
-                    <div
-                      role="listitem"
-                      aria-label={ariaLabelRecurData.Product_tea_item_text}
-                      class="link-section bg-secondary"
-                      style="clip-path: url(#card-curve)"
-                    >
-                      <Picture
-                        layout="fullWidth"
-                        alt={intro_blob.alternativeText}
-                        src={STRAPI_URL + intro_blob.url}
-                        attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                        sizes="(min-width: 768px) min(580px, calc(40vw - 25px)), min(80vw, 420px)"
-                      />
-
-                      <div class="related-post-card-content-container text-primary">
-                        <div class="related-post-card-title recoleta mt-[15px]">
-                          <a
-                            class="main-link"
-                            set:text={Title}
-                            href={`/` + URL_slug}
-                          />
-                        </div>
-
-                        <div
-                          class:list={[
-                            "text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]",
-                          ]}
-                        >
-                          <Markdown>{Intro_text}</Markdown>
-                        </div>
-                      </div>
-                    </div>
-                  ),
-                )}
-              </div>
-            </div>
-          </div>
-          <div class="py-8 -mt-1 bg-primary related-products-bottom" />
-        </div>
-      </section>
+      </Fragment>
     )
   }
 
