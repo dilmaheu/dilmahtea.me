@@ -1,0 +1,943 @@
+---
+import CMS from "@store/CMS";
+import Markdown from "@components/Markdown.astro";
+import DynamicHTML from "@components/DynamicHTML.astro";
+import OrderSummary from "@components/OrderSummary.astro";
+
+const { page } = Astro.props,
+  { locale } = page,
+  checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
+  steps = checkoutFlowData.steps.split("\n"),
+  shortenedSteps = checkoutFlowData.shortened_steps.split("\n"),
+  checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug,
+  checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
+  checkoutInfo = CMS.get("checkoutInformation", locale),
+  checkoutInfoLink = `/${locale}/${checkoutInfo.Meta.URL_slug}/`,
+  userRecurr = CMS.get("userAccountRecurringElement", locale);
+---
+
+<style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
+  @mixin section-gap {
+    @apply gap-[50px];
+  }
+
+  @mixin division-gap {
+    @apply gap-[clamp(25px,calc(0.625vw+21px),30px)];
+  }
+
+  @mixin division-in-gap {
+    @apply gap-[clamp(10px,calc(0.625vw+6px),15px)];
+  }
+
+  @mixin division-in-element-gap {
+    @apply gap-[clamp(5px,calc(0.625vw+1px),10px)];
+  }
+
+  @mixin tiled-div-pad {
+    @apply p-[clamp(15px,calc(2.5vw-1px),35px)];
+  }
+
+  @mixin tiled-title-div-pad {
+    @apply py-[15px] px-[clamp(15px,calc(2.5vw-1px),35px)];
+  }
+
+  @mixin form-gap {
+    @apply gap-[clamp(15px,calc(1.25vw+7px),25px)];
+  }
+
+  @mixin tiled-form {
+    @apply p-[clamp(10px,calc(1.25vw+2px),20px)]
+      bg-primary-light/30 border border-primary rounded-[10px];
+  }
+
+  @mixin text-h2 {
+    @apply text-[clamp(28px,calc(1.75vw+16.8px),42px)] font-bold leading-[140%];
+  }
+
+  @mixin text-h3 {
+    @apply text-[clamp(24px,calc(1vw+17.6px),32px)] font-bold leading-[140%];
+  }
+
+  @mixin text-h4 {
+    @apply text-[clamp(24px,calc(0.5vw+20.8px),28px)] font-bold leading-[150%];
+  }
+
+  @mixin text-h5 {
+    @apply text-[clamp(20px,calc(0.5vw+16.8px),24px)] font-bold leading-[150%];
+  }
+
+  @mixin text-b3 {
+    @apply text-[clamp(18px,calc(0.75vw+13.2px),24px)] leading-[150%];
+  }
+
+  @mixin text-b5 {
+    @apply text-[clamp(16px,calc(0.25vw+14.4px),18px)] leading-[150%];
+  }
+
+  @mixin text-b6 {
+    @apply text-[clamp(14px,calc(0.25vw+12.4px),16px)] leading-[150%];
+  }
+
+  @mixin text-b7 {
+    @apply text-[clamp(12px,calc(0.25vw+10.4px),14px)] leading-[150%];
+  }
+
+  .text-h2 {
+    @include text-h2;
+  }
+
+  .text-b3 {
+    @include text-b3;
+  }
+
+  .text-b5 {
+    @include text-b5;
+  }
+
+  .tiled-div-pad {
+    @include tiled-div-pad;
+  }
+
+  .section-gap {
+    @include section-gap;
+  }
+
+  .division-gap {
+    @include division-gap;
+  }
+
+  .division-in-gap {
+    @include division-in-gap;
+  }
+
+  .division-in-element-gap {
+    @include division-in-element-gap;
+  }
+
+  @mixin button {
+    @apply flex items-center justify-center 
+      gap-2 py-2.5 px-5 cursor-pointer rounded-full select-none;
+  }
+
+  @mixin button-font {
+    @apply text-base font-bold;
+  }
+
+  @mixin button-font-sm {
+    @apply text-sm font-medium;
+  }
+
+  @mixin button-primary-colors {
+    @apply bg-primary text-white;
+  }
+
+  .button-primary {
+    @include button;
+    @include button-font;
+    @include button-primary-colors;
+  }
+
+  @mixin button-link {
+    @include button;
+    @include button-font;
+
+    @apply font-bold text-primary p-0;
+  }
+
+  @mixin button-link-large {
+    @include button;
+    @include text-b5;
+
+    @apply font-bold text-primary p-0;
+  }
+
+  .button-link {
+    @include button-link;
+  }
+
+  .button-link-large {
+    @include button-link-large;
+  }
+
+  // form & inputs
+
+  @mixin input-field-default {
+    @apply bg-transparent border border-primary rounded-full 
+      focus:ring focus:ring-primary-light focus:outline-none
+      py-[clamp(8px,calc(0.25vw+6.4px),10px)] px-[clamp(15px,calc(0.625vw+11px),20px)]
+      text-[clamp(16px,calc(0.25vw+14.4px),18px)] font-normal text-black placeholder:text-black-light;
+  }
+
+  @mixin selector-common {
+    @apply w-full cursor-pointer appearance-none rounded-full
+      focus:ring focus:ring-primary-light focus:outline-none;
+  }
+
+  @mixin selector-arrow-($type, $color) {
+    $space: if(
+      $type == "sm",
+      clamp(10px, calc(0.625vw + 6px), 15px),
+      clamp(15px, calc(0.625vw + 11px), 20px)
+    );
+    $bg-size: if(
+      $type == "sm",
+      clamp(12px, calc(0.25vw + 10.4px), 14px),
+      clamp(14px, calc(0.25vw + 12.4px), 16px)
+    );
+    $pr: if(
+      $type == "sm",
+      clamp(30px, calc(1.25vw + 22px), 40px),
+      clamp(40px, calc(1.25vw + 32px), 50px)
+    );
+
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath d='M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z' style='fill:%23#{$color}'/%3E%3C/svg%3E")
+      no-repeat right $space center;
+    background-size: $bg-size;
+    padding-right: $pr;
+  }
+
+  @mixin selector($color) {
+    @include selector-common;
+    @include selector-arrow-(normal, $color);
+    @include text-b5;
+
+    @apply py-[clamp(8px,calc(0.25vw+6.4px),10px)] px-[clamp(15px,calc(0.625vw+11px),20px)];
+  }
+
+  @mixin selector-sm($color) {
+    @include selector-common;
+    @include selector-arrow-(sm, $color);
+    @include text-b6;
+
+    @apply pr-[clamp(30px,calc(1.25vw+22px),40px)] 
+      py-[clamp(5px,calc(0.375vw+2.6px),8px)] px-[clamp(10px,calc(0.625vw+6px),15px)];
+  }
+
+  $white: ffffff;
+  $primary: 547B7D;
+
+  @mixin selector-primary {
+    @include selector($white);
+    @include button-primary-colors;
+  }
+
+  @mixin selector-sm-primary {
+    @include selector-sm($white);
+    @include button-primary-colors;
+  }
+
+  @mixin input-selector-default {
+    select {
+      @include input-field-default;
+      @include selector-arrow-(normal, $primary);
+
+      @apply w-full cursor-pointer appearance-none;
+    }
+  }
+
+  @mixin input-label {
+    @include text-b5;
+
+    @apply font-semibold text-black-light;
+  }
+
+  @mixin input-text-large-text {
+    @include text-b3;
+
+    @apply text-black;
+  }
+
+  @mixin input-text-large {
+    @include input-text-large-text;
+
+    @apply w-full bg-transparent outline-none;
+
+    &:not(:disabled) {
+      @apply border-b-2 border-primary;
+    }
+
+    &.errored {
+      @apply border-error;
+    }
+  }
+
+  @mixin form-grid {
+    @include form-gap;
+    @include input-selector-default;
+
+    input {
+      @include input-field-default;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    @apply w-full grid sm:grid-cols-2;
+
+    label {
+      @include division-in-element-gap;
+      @include input-label;
+
+      @apply flex flex-col;
+
+      span.tag-input-close-button {
+        @apply absolute inset-y-0 right-0 cursor-pointer
+          flex items-center pr-5 font-bold text-error-dark;
+      }
+    }
+  }
+
+  @mixin form-button-container {
+    @include division-gap;
+
+    @apply flex flex-wrap items-center justify-center sm:justify-start;
+  }
+
+  //checkbox
+
+  @mixin checkbox-primary {
+    @include division-in-element-gap;
+    @include text-b5;
+
+    @apply flex items-center text-black-light cursor-pointer select-none;
+
+    .checkbox-input-container {
+      @apply relative block w-5 h-5;
+
+      & input {
+        @apply absolute opacity-0;
+
+        &:checked ~ .checkbox-primary {
+          @apply bg-primary rounded;
+
+          &::after {
+            @apply bg-transparent opacity-100;
+          }
+        }
+
+        &:focus ~ .checkbox-primary {
+          @apply outline-none ring ring-primary-light;
+        }
+      }
+
+      & .checkbox-primary {
+        @apply absolute w-[18px] sm:w-5 h-[18px] sm:h-5 
+          bg-transparent rounded border-2 border-primary;
+
+        &::after {
+          @apply text-sm font-bold text-white content-['✓'] 
+            absolute -top-[3px] sm:-top-0.5 left-0.5 sm:left-[3px] opacity-0;
+        }
+      }
+    }
+  }
+
+  // form & inputs
+
+  .input-field-default {
+    input {
+      @include input-field-default;
+    }
+  }
+
+  .selector-primary {
+    @include selector-primary;
+  }
+
+  .selector-sm-primary {
+    @include selector-sm-primary;
+  }
+
+  .input-label {
+    @include input-label;
+  }
+
+  .input-text-large-static {
+    @include input-text-large-text;
+  }
+
+  .input-text-large {
+    @include input-text-large;
+  }
+
+  .form-grid {
+    @include form-grid;
+  }
+
+  .form-button-container {
+    @include form-button-container;
+  }
+
+  //checkbox
+
+  .checkbox-primary {
+    @include checkbox-primary;
+  }
+
+  //radio-button
+  @mixin radio-button {
+    @include button;
+    @include button-font-sm;
+
+    @apply text-primary border-2;
+  }
+
+  .radio-button-default {
+    @include radio-button;
+
+    @apply bg-secondary-light border-secondary-light
+      peer-checked:font-bold peer-checked:text-secondary-light peer-checked:bg-primary;
+  }
+
+  .radio-button-extended {
+    @include radio-button;
+
+    @apply font-bold bg-white border-white peer-checked:border-primary;
+  }
+
+  @mixin focus-primary-light {
+    @apply focus:outline-none focus:ring focus:ring-primary-light;
+  }
+
+  .radio-input {
+    @apply flex items-center cursor-pointer;
+
+    input {
+      @include focus-primary-light;
+
+      @apply flex items-center justify-center
+        border-2 border-primary rounded-full appearance-none checked:before:block
+        w-[clamp(18px,calc(0.25vw+16.4px),20px)] h-[clamp(18px,calc(0.25vw+16.4px),20px)];
+
+      &::before {
+        @apply hidden bg-primary rounded-full
+            w-[clamp(8px,calc(0.25vw+6.4px),10px)] h-[clamp(8px,calc(0.25vw+6.4px),10px)];
+      }
+    }
+
+    .radio-input-text {
+      @include text-b5;
+
+      @apply text-black-light;
+    }
+  }
+
+  .checkout-button-container {
+    @include division-gap;
+    @apply flex flex-col-reverse sm:flex-row items-center justify-center sm:justify-start;
+  }
+</style>
+
+<div class="wrapper flex flex-wrap my-[50px]">
+  <form class="section-gap grid w-full lg:w-2/3 lg:pr-[50px]">
+    <section
+      role="list"
+      aria-label={userRecurr.Input_label_email}
+      class="tiled-div-pad division-in-gap grid bg-secondary-light rounded-[10px]"
+    >
+      <div
+        role="listitem"
+        aria-label={page.Aria_label_email_address_text}
+        class="division-in-element-gap"
+      >
+        <div class="input-label text-black">
+          {userRecurr.Input_label_email}
+        </div>
+
+        <div class="division-in-element-gap flex flex-wrap items-center">
+          <div class="input-text-large-static grow">
+            <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
+          </div>
+
+          <a
+            aria-label={`${userRecurr.Button_change_text} ${userRecurr.Input_label_email}`}
+            href={checkoutInfoLink + "?change=email"}
+            class="button-link-large"
+          >
+            {userRecurr.Button_change_text}
+          </a>
+        </div>
+      </div>
+
+      <div class="w-full h-px bg-primary-light"></div>
+
+      <div
+        role="listitem"
+        aria-label={page.Aria_label_email_address_text}
+        class="division-in-element-gap"
+      >
+        <div class="input-label text-black">
+          {userRecurr.Label_delivery_address}
+        </div>
+
+        <div class="division-in-element-gap flex flex-wrap items-center">
+          <div class="input-text-large-static grow">
+            <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
+          </div>
+
+          <a
+            aria-label={`${userRecurr.Button_change_text} ${userRecurr.Label_delivery_address}`}
+            href={checkoutInfoLink + "?change=email"}
+            class="button-link-large"
+          >
+            {userRecurr.Button_change_text}
+          </a>
+        </div>
+      </div>
+
+      <div class="w-full h-px bg-primary-light"></div>
+
+      <div
+        role="listitem"
+        aria-label={page.Aria_label_email_address_text}
+        class="division-in-element-gap"
+      >
+        <div class="input-label text-black">
+          {userRecurr.Label_shipping_method}
+        </div>
+
+        <div class="division-in-element-gap flex flex-wrap items-center">
+          <div class="input-text-large-static grow">
+            <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
+          </div>
+
+          <a
+            aria-label={`${userRecurr.Button_change_text} ${userRecurr.Label_shipping_method}`}
+            href={checkoutInfoLink + "?change=email"}
+            class="button-link-large"
+          >
+            {userRecurr.Button_change_text}
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="division-gap grid">
+      <h2 class="recoleta text-h2 text-primary">{page.Block_title}</h2>
+
+      <div role="list" class="division-in-element-gap flex flex-col">
+        <div class="flex">
+          <label role="listitem" class="division-in-element-gap radio-input">
+            <input
+              type="radio"
+              name="billing_address"
+              value={`method`}
+              data-cost={`cost`}
+              checked
+              required
+            />
+
+            <div class="radio-input-text">
+              {page.Radio_button_text_same_as_shipping_address}
+            </div>
+          </label>
+        </div>
+
+        <div class="flex">
+          <label role="listitem" class="division-in-element-gap radio-input">
+            <input
+              type="radio"
+              name="billing_address"
+              value={`method`}
+              data-cost={`cost`}
+              required
+            />
+
+            <div class="text-b5 text-black-light flex">
+              {page.Radio_button_text_use_different_billing_address}
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="division-gap grid">
+        <div class="division-in-gap grid">
+          <div class="input-label">{userRecurr.Label_tag_text}</div>
+
+          <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
+            <div>
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address1`}
+                value={`value`}
+                checked
+                class="peer hidden"
+              />
+
+              <label
+                for={`address1`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+                class="radio-button-default"
+              >
+                Home
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address2`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address2`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Parents
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address3`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address3`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Family
+              </label>
+            </div>
+
+            <div class="more-address hidden">
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address4`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address4`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Address Line 1
+              </label>
+            </div>
+
+            <div class="more-address hidden">
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address5`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address5`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Address Line 2
+              </label>
+            </div>
+
+            <div class="more-address hidden">
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address6`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address6`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Address Line 3
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address-tag`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address-tag`}
+                class:list={[
+                  "radio-button-extended border-white",
+                  "peer-checked:border-primary",
+                ]}
+              >
+                Add +
+              </label>
+            </div>
+
+            <div
+              id="address-toggle-button"
+              class="flex items-center gap-1 text-primary font-bold cursor-pointer"
+            >
+              <svg
+                id="address-arrow-left"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 8 14"
+                class="hidden w-3 h-3 fill-primary"
+              >
+                <path
+                  d="M7.7,13.7a1.1,1.1,0,0,0,.3-.8,1.1,1.1,0,0,0-.3-.7L2.5,7,7.7,1.8A1.1,1.1,0,0,0,8,1,1.1,1.1,0,0,0,7.7.3,1.1,1.1,0,0,0,7,0a1.1,1.1,0,0,0-.8.3L.3,6.2A1.1,1.1,0,0,0,0,7a.9.9,0,0,0,.3.7l5.9,6A1.1,1.1,0,0,0,7,14a1.1,1.1,0,0,0,.7-.3Z"
+                ></path>
+              </svg>
+
+              <div>
+                <div id="hide-address-text" class="hidden">
+                  {userRecurr.text_hide_more_address.replace("<number>", "3")}
+                </div>
+                <div id="show-address-text">
+                  {userRecurr.text_more_address.replace("<number>", "3")}
+                </div>
+              </div>
+
+              <svg
+                id="address-arrow-right"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 8 14"
+                class="w-3 h-3 fill-primary"
+              >
+                <path
+                  d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+
+          <div id="tag-input" class="hidden">
+            <div class="form-grid">
+              <label class="relative">
+                <input
+                  type="text"
+                  name="new_tag"
+                  placeholder={`Enter your tag`}
+                  class="pr-[40px]"
+                />
+
+                <span class="tag-input-close-button"> &#10005;</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div
+          role="form"
+          aria-label={page.text_shipping_address}
+          class="form-grid-container"
+        >
+          <div class="form-grid">
+            <label>
+              <span>{userRecurr.Input_label_first_name}</span>
+
+              <input
+                type="text"
+                name="first_name"
+                placeholder={userRecurr.Input_placeholder_first_name}
+                required
+              />
+            </label>
+
+            <label>
+              <span>{userRecurr.Input_label_last_name}</span>
+
+              <input
+                type="text"
+                name="last_name"
+                placeholder={userRecurr.Input_placeholder_last_name}
+                required
+              />
+            </label>
+
+            <label>
+              <span>{userRecurr.Input_label_street}</span>
+
+              <input
+                type="text"
+                name="street"
+                placeholder={userRecurr.Input_placeholder_street}
+                required
+              />
+            </label>
+
+            <label>
+              <span>{userRecurr.Input_label_city}</span>
+
+              <input
+                type="text"
+                name="city"
+                placeholder={userRecurr.Input_placeholder_city}
+                required
+              />
+            </label>
+
+            <label>
+              <span>{userRecurr.Input_label_postal_code}</span>
+
+              <input
+                type="number"
+                name="postal_code"
+                placeholder={userRecurr.Input_placeholder_postal_code}
+                required
+              />
+            </label>
+
+            <label>
+              <span>{userRecurr.Input_label_country}</span>
+
+              <select name="country" required>
+                <option value="" selected disabled hidden>
+                  {userRecurr.Input_placeholder_country}
+                </option>
+
+                {
+                  checkoutInfo.countries.data.map(
+                    ({ attributes: { name, localizations } }) => (
+                      <option
+                        value={localizations?.data[0]?.attributes?.name || name}
+                      >
+                        {name}
+                      </option>
+                    ),
+                  )
+                }
+              </select>
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="division-gap grid">
+      <h2 class="recoleta text-h2 text-primary">{page.Block2_title}</h2>
+
+      <div id="card-info" class="division-gap">
+        <div class="division-in-gap">
+          <div class="text-b3 font-bold text-black">Card details</div>
+
+          <div class="text-b5 text-black-light">Accepted cards</div>
+        </div>
+      </div>
+
+      <div
+        role="form"
+        aria-label={page.Block2_title}
+        class="form-grid-container"
+      >
+        <div class="form-grid">
+          <label>
+            <span>{page.Card_label_name}</span>
+
+            <input
+              type="text"
+              name="card_name"
+              placeholder={page.Card_placeholder_name}
+              required
+            />
+          </label>
+
+          <label>
+            <span>{page.Card_label_number}</span>
+
+            <input
+              type="number"
+              name="card_number"
+              placeholder={page.Card_placeholder_number}
+              required
+            />
+          </label>
+
+          <label>
+            <span>{page.Card_label_date}</span>
+
+            <input
+              type="text"
+              name="card_exp_date"
+              placeholder={page.Card_placeholder_date}
+              required
+            />
+          </label>
+
+          <label>
+            <span>{page.Card_label_cvv}</span>
+
+            <input
+              type="number"
+              name="card_cvv"
+              placeholder={page.Card_placeholder_cvv}
+              required
+            />
+          </label>
+        </div>
+      </div>
+
+      <div class="checkout-button-container">
+        <a href={checkoutShippingLink} class="button-link">
+          <span class="sm:hidden">
+            {
+              `${
+                userRecurr.Button_return_to_text
+              } ${shortenedSteps[1]?.toLowerCase()}`
+            }
+          </span>
+          <span class="hidden sm:block">
+            {`${userRecurr.Button_return_to_text} ${steps[1]?.toLowerCase()}`}
+          </span>
+        </a>
+
+        <button class="w-full sm:w-1/3 button-primary">
+          {`${page.Button_text_pay_with} card`}
+        </button>
+      </div>
+    </section>
+  </form>
+
+  <section class="hidden lg:block lg:w-1/3 lg:border lg:border-l-primary-light">
+    <OrderSummary page={page} />
+  </section>
+</div>

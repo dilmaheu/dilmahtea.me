@@ -24,6 +24,7 @@ import CrowdfundingForm from "@pages/CrowdfundingForm.astro";
 import CheckoutSuccess from "@pages/CheckoutSuccess.astro";
 import CheckoutKindness from "@pages/CheckoutKindness.astro";
 import CheckoutShipping from "@pages/CheckoutShipping.astro";
+import CheckoutPayment from "@pages/CheckoutPayment.astro";
 import CheckoutInformation from "@pages/CheckoutInformation.astro";
 import UserAccount from "@pages/UserAccount.astro";
 import UserAccountDashboard from "@pages/UserAccountDashboard.astro";
@@ -60,6 +61,7 @@ export async function getStaticPaths() {
     checkoutKindness,
     checkoutInformation,
     checkoutShipping,
+    checkoutPayment,
     checkoutSuccess,
     kindnessCauses,
     userAccounts,
@@ -336,6 +338,10 @@ export async function getStaticPaths() {
     type: "checkoutShipping",
   }));
 
+  const checkoutPaymentPages = getRoutes(checkoutPayment, () => ({
+    type: "checkoutPayment",
+  }));
+
   const checkoutSuccessPages = getRoutes(checkoutSuccess, () => ({
     type: "checkoutSuccess",
   }));
@@ -386,6 +392,7 @@ export async function getStaticPaths() {
     ...checkoutKindnessPages,
     ...checkoutInformationPages,
     ...checkoutShippingPages,
+    ...checkoutPaymentPages,
     ...checkoutSuccessPages,
     ...userAccountPages,
     ...userAccountDashboardPages,
@@ -456,6 +463,7 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
         checkoutInformation: CheckoutInformation,
         checkoutKindness: CheckoutKindness,
         checkoutShipping: CheckoutShipping,
+        checkoutPayment: CheckoutPayment,
         kindness: Kindness,
         account: UserAccount,
         accountDashboard: UserAccountDashboard,

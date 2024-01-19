@@ -1,0 +1,48 @@
+fragment CheckoutPaymentAttributes on CheckoutPayment {
+  locale
+  updatedAt
+  checkout_step_order
+  Block_title
+  Radio_button_text_same_as_shipping_address
+  Radio_button_text_use_different_billing_address
+  Block2_title
+  text_card_details
+  text_accepted_cards
+  Card_label_name
+  Card_placeholder_name
+  Card_label_number
+  Card_placeholder_number
+  Card_label_date
+  Card_placeholder_date
+  Card_label_cvv
+  Card_placeholder_cvv
+  Ideal_label_select_bank
+  Ideal_placeholder_select_bank
+  Button_text_pay_with
+  Meta {
+    HTML_Title
+    Meta_description
+    noindex
+    nofollow
+    URL_slug
+    Canonical_link
+  }
+}
+
+query {
+  checkoutPayment {
+    data {
+      attributes {
+        ...CheckoutPaymentAttributes
+
+        localizations {
+          data {
+            attributes {
+              ...CheckoutPaymentAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}
