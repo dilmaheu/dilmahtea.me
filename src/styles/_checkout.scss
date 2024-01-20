@@ -1,0 +1,446 @@
+@mixin section-gap {
+  @apply gap-[50px];
+}
+
+@mixin division-gap {
+  @apply gap-[clamp(25px,calc(0.625vw+21px),30px)];
+}
+
+@mixin division-in-gap {
+  @apply gap-[clamp(10px,calc(0.625vw+6px),15px)];
+}
+
+@mixin division-in-element-gap {
+  @apply gap-[clamp(5px,calc(0.625vw+1px),10px)];
+}
+
+@mixin tiled-div-pad {
+  @apply p-[clamp(15px,calc(2.5vw-1px),35px)];
+}
+
+@mixin tiled-div-sm-pad {
+  @apply p-[15px];
+}
+
+@mixin tiled-title-div-pad {
+  @apply py-[15px] px-[clamp(15px,calc(2.5vw-1px),35px)];
+}
+
+@mixin form-gap {
+  @apply gap-[clamp(15px,calc(1.25vw+7px),25px)];
+}
+
+@mixin tiled-form {
+  @apply p-[clamp(10px,calc(1.25vw+2px),20px)]
+    bg-primary-light/30 border border-primary rounded-[10px];
+}
+
+@mixin text-h2 {
+  @apply text-[clamp(28px,calc(1.75vw+16.8px),42px)] font-bold leading-[140%];
+}
+
+@mixin text-h3 {
+  @apply text-[clamp(24px,calc(1vw+17.6px),32px)] font-bold leading-[140%];
+}
+
+@mixin text-h4 {
+  @apply text-[clamp(24px,calc(0.5vw+20.8px),28px)] font-bold leading-[150%];
+}
+
+@mixin text-h5 {
+  @apply text-[clamp(20px,calc(0.5vw+16.8px),24px)] font-bold leading-[150%];
+}
+
+@mixin text-b3 {
+  @apply text-[clamp(18px,calc(0.75vw+13.2px),24px)] leading-[150%];
+}
+
+@mixin text-b5 {
+  @apply text-[clamp(16px,calc(0.25vw+14.4px),18px)] leading-[150%];
+}
+
+@mixin text-b6 {
+  @apply text-[clamp(14px,calc(0.25vw+12.4px),16px)] leading-[150%];
+}
+
+@mixin text-b7 {
+  @apply text-[clamp(12px,calc(0.25vw+10.4px),14px)] leading-[150%];
+}
+
+.text-h2 {
+  @include text-h2;
+}
+
+.text-b3 {
+  @include text-b3;
+}
+
+.text-b5 {
+  @include text-b5;
+}
+
+.tiled-div-pad {
+  @include tiled-div-pad;
+}
+
+.tiled-div-sm-pad {
+  @include tiled-div-sm-pad;
+}
+
+.section-gap {
+  @include section-gap;
+}
+
+.division-gap {
+  @include division-gap;
+}
+
+.division-in-gap {
+  @include division-in-gap;
+}
+
+.division-in-element-gap {
+  @include division-in-element-gap;
+}
+
+.form-gap {
+  @include form-gap;
+}
+
+@mixin button {
+  @apply flex items-center justify-center 
+    gap-2 py-2.5 px-5 cursor-pointer rounded-full select-none;
+}
+
+@mixin button-font {
+  @apply text-base font-bold;
+}
+
+@mixin button-font-sm {
+  @apply text-sm font-medium;
+}
+
+@mixin button-primary-colors {
+  @apply bg-primary text-white;
+}
+
+.button-primary {
+  @include button;
+  @include button-font;
+  @include button-primary-colors;
+}
+
+@mixin button-link {
+  @include button;
+  @include button-font;
+
+  @apply font-bold text-primary p-0;
+}
+
+@mixin button-link-large {
+  @include button;
+  @include text-b5;
+
+  @apply font-bold text-primary p-0;
+}
+
+.button-link {
+  @include button-link;
+}
+
+.button-link-large {
+  @include button-link-large;
+}
+
+// form & inputs
+
+@mixin input-field-default {
+  @apply bg-transparent border border-primary rounded-full 
+    focus:ring focus:ring-primary-light focus:outline-none
+    py-[clamp(8px,calc(0.25vw+6.4px),10px)] px-[clamp(15px,calc(0.625vw+11px),20px)]
+    text-[clamp(16px,calc(0.25vw+14.4px),18px)] font-normal text-black placeholder:text-black-light;
+}
+
+@mixin selector-common {
+  @apply w-full cursor-pointer appearance-none rounded-full
+    focus:ring focus:ring-primary-light focus:outline-none;
+}
+
+@mixin selector-arrow-($type, $color) {
+  $space: if(
+    $type == "sm",
+    clamp(10px, calc(0.625vw + 6px), 15px),
+    clamp(15px, calc(0.625vw + 11px), 20px)
+  );
+  $bg-size: if(
+    $type == "sm",
+    clamp(12px, calc(0.25vw + 10.4px), 14px),
+    clamp(14px, calc(0.25vw + 12.4px), 16px)
+  );
+  $pr: if(
+    $type == "sm",
+    clamp(30px, calc(1.25vw + 22px), 40px),
+    clamp(40px, calc(1.25vw + 32px), 50px)
+  );
+
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath d='M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z' style='fill:%23#{$color}'/%3E%3C/svg%3E")
+    no-repeat right $space center;
+  background-size: $bg-size;
+  padding-right: $pr;
+}
+
+@mixin selector($color) {
+  @include selector-common;
+  @include selector-arrow-(normal, $color);
+  @include text-b5;
+
+  @apply py-[clamp(8px,calc(0.25vw+6.4px),10px)] px-[clamp(15px,calc(0.625vw+11px),20px)];
+}
+
+@mixin selector-sm($color) {
+  @include selector-common;
+  @include selector-arrow-(sm, $color);
+  @include text-b6;
+
+  @apply pr-[clamp(30px,calc(1.25vw+22px),40px)] 
+    py-[clamp(5px,calc(0.375vw+2.6px),8px)] px-[clamp(10px,calc(0.625vw+6px),15px)];
+}
+
+$white: ffffff;
+$primary: 547B7D;
+
+@mixin selector-primary {
+  @include selector($white);
+  @include button-primary-colors;
+}
+
+@mixin selector-sm-primary {
+  @include selector-sm($white);
+  @include button-primary-colors;
+}
+
+@mixin input-selector-default {
+  select {
+    @include input-field-default;
+    @include selector-arrow-(normal, $primary);
+
+    @apply w-full cursor-pointer appearance-none;
+  }
+}
+
+@mixin input-label {
+  @include text-b5;
+
+  @apply font-semibold text-black-light;
+}
+
+@mixin input-text-large-text {
+  @include text-b3;
+
+  @apply text-black;
+}
+
+@mixin input-text-large {
+  @include input-text-large-text;
+
+  @apply w-full bg-transparent outline-none;
+
+  &:not(:disabled) {
+    @apply border-b-2 border-primary;
+  }
+
+  &.errored {
+    @apply border-error;
+  }
+}
+
+@mixin form-grid {
+  @include form-gap;
+  @include input-selector-default;
+
+  input {
+    @include input-field-default;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  @apply w-full grid sm:grid-cols-2;
+
+  label {
+    @include division-in-element-gap;
+    @include input-label;
+
+    @apply flex flex-col;
+
+    span.tag-input-close-button {
+      @apply absolute inset-y-0 right-0 cursor-pointer
+        flex items-center pr-5 font-bold text-error-dark;
+    }
+  }
+}
+
+@mixin form-button-container {
+  @include division-gap;
+
+  @apply flex flex-wrap items-center justify-center sm:justify-start;
+}
+
+//checkbox
+
+@mixin checkbox-primary {
+  @include division-in-element-gap;
+  @include text-b5;
+
+  @apply flex items-center text-black-light cursor-pointer select-none;
+
+  .checkbox-input-container {
+    @apply relative block w-5 h-5;
+
+    & input {
+      @apply absolute opacity-0;
+
+      &:checked ~ .checkbox-primary {
+        @apply bg-primary rounded;
+
+        &::after {
+          @apply bg-transparent opacity-100;
+        }
+      }
+
+      &:focus ~ .checkbox-primary {
+        @apply outline-none ring ring-primary-light;
+      }
+    }
+
+    & .checkbox-primary {
+      @apply absolute w-[18px] sm:w-5 h-[18px] sm:h-5 
+        bg-transparent rounded border-2 border-primary;
+
+      &::after {
+        @apply text-sm font-bold text-white content-['✓'] 
+          absolute -top-[3px] sm:-top-0.5 left-0.5 sm:left-[3px] opacity-0;
+      }
+    }
+  }
+}
+
+// form & inputs
+
+.input-field-default {
+  input {
+    @include input-field-default;
+  }
+}
+
+.selector-primary {
+  @include selector-primary;
+}
+
+.selector-sm-primary {
+  @include selector-sm-primary;
+}
+
+.input-label {
+  @include input-label;
+}
+
+.input-text-large-static {
+  @include input-text-large-text;
+}
+
+.input-text-large {
+  @include input-text-large;
+}
+
+.form-grid {
+  @include form-grid;
+}
+
+.form-button-container {
+  @include form-button-container;
+}
+
+//checkbox
+
+.checkbox-primary {
+  @include checkbox-primary;
+}
+
+//radio-button
+@mixin radio-button {
+  @include button;
+  @include button-font-sm;
+
+  @apply text-primary border-2;
+}
+
+.radio-button-default {
+  @include radio-button;
+
+  @apply bg-secondary-light border-secondary-light
+    peer-checked:font-bold peer-checked:text-secondary-light peer-checked:bg-primary;
+}
+
+.radio-button-extended {
+  @include radio-button;
+
+  @apply font-bold bg-white border-white peer-checked:border-primary;
+}
+
+@mixin focus-primary-light {
+  @apply focus:outline-none focus:ring focus:ring-primary-light;
+}
+
+.radio-input {
+  @apply flex items-center cursor-pointer;
+
+  input {
+    @include focus-primary-light;
+
+    @apply flex items-center justify-center
+      border-2 border-primary rounded-full appearance-none checked:before:block
+      w-[clamp(18px,calc(0.25vw+16.4px),20px)] h-[clamp(18px,calc(0.25vw+16.4px),20px)];
+
+    &::before {
+      @apply hidden bg-primary rounded-full
+        w-[clamp(8px,calc(0.25vw+6.4px),10px)] h-[clamp(8px,calc(0.25vw+6.4px),10px)];
+    }
+  }
+
+  .radio-input-text {
+    @apply text-b5 text-black-light;
+  }
+}
+
+//New
+
+// @mixin focus-primary-light {
+//   @apply focus:outline-none focus:ring focus:ring-primary-light;
+// }
+
+.radio-button-card {
+  @apply tiled-div-sm-pad division-in-element-gap text-b5
+    grid items-center text-center text-black rounded-[10px]
+    bg-white border-2 border-white cursor-pointer select-none h-full
+    min-w-[clamp(100px,calc(6.25vw+60px),150px)] max-w-[150px] whitespace-pre-line
+    peer-checked:border-primary peer-checked:font-bold peer-checked:text-primary;
+
+  .payment-icon {
+    @apply w-full h-[clamp(30px,calc(1.25vw+22px),40px)] m-auto;
+  }
+}
+
+.checkout-button-container {
+  @include division-gap;
+
+  @apply flex flex-col-reverse sm:flex-row items-center justify-center sm:justify-start;
+}

@@ -8,6 +8,17 @@ fragment CheckoutPaymentAttributes on CheckoutPayment {
   Block2_title
   text_card_details
   text_accepted_cards
+  Accepted_cards_icon {
+    data {
+      id
+      attributes {
+        url
+        provider_metadata
+        formats
+        alternativeText
+      }
+    }
+  }
   Card_label_name
   Card_placeholder_name
   Card_label_number
@@ -19,6 +30,24 @@ fragment CheckoutPaymentAttributes on CheckoutPayment {
   Ideal_label_select_bank
   Ideal_placeholder_select_bank
   Button_text_pay_with
+  payment_methods {
+    data {
+      attributes {
+        method
+        icon {
+          ...Media
+        }
+        supported_countries {
+          data {
+            id 
+            attributes{
+              name
+            }
+          }
+        }
+      }
+    }
+  }
   Meta {
     HTML_Title
     Meta_description
