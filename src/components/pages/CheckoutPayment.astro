@@ -120,10 +120,9 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             <input
               type="radio"
               name="billing_address"
+              id="same-as-shipping"
               value={`method`}
-              data-cost={`cost`}
               checked
-              required
             />
 
             <div class="radio-input-text">
@@ -137,9 +136,8 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             <input
               type="radio"
               name="billing_address"
+              id="different-than-shipping"
               value={`method`}
-              data-cost={`cost`}
-              required
             />
 
             <div class="text-b5 text-black-light flex">
@@ -149,8 +147,8 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </div>
       </div>
 
-      <div class="division-gap grid">
-        <div class="division-in-gap grid">
+      <div id="shipping-address" class="division-gap grid hidden">
+        <!-- <div class="division-in-gap grid">
           <div class="input-label">{userRecurr.Label_tag_text}</div>
 
           <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
@@ -237,7 +235,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
               </label>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <div
           role="form"
@@ -303,7 +301,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             <label>
               <span>{userRecurr.Input_label_country}</span>
 
-              <select name="country" required>
+              <select id="country-select" name="country" required>
                 <option value="" selected disabled hidden>
                   {userRecurr.Input_placeholder_country}
                 </option>
@@ -331,31 +329,40 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
 
       <div role="list" class="flex flex-wrap form-gap">
         {
-          methods.map(({ method, icon, supported_countries }) => (
-            <div>
-              <input
-                type="radio"
-                name="payment_method"
-                id={method}
-                value={method}
-                class="peer hidden"
-              />
+          methods.map(({ method, icon, supported_countries }) => {
+            const country = supported_countries.data.map(
+              ({ attributes: { name } }) => name,
+            );
 
-              <label for={method} class="radio-button-card">
-                {async () => (
-                  <img
-                    class="payment-icon"
-                    alt={icon.data?.attributes.alternativeText}
-                    src={await localizeCMSImage(icon.data?.attributes.url)}
-                  />
-                )}
+            return (
+              <div
+                class:list={["payment-card", country.length > 0 && "hidden"]}
+              >
+                <input
+                  type="radio"
+                  name="payment_method"
+                  id={method}
+                  value={method}
+                  data-country={country}
+                  class="peer hidden"
+                />
 
-                <span>
-                  {method?.charAt(0)?.toUpperCase() + method?.slice(1)}
-                </span>
-              </label>
-            </div>
-          ))
+                <label for={method} class="radio-button-card">
+                  {async () => (
+                    <img
+                      class="payment-icon"
+                      alt={icon.data?.attributes.alternativeText}
+                      src={await localizeCMSImage(icon.data?.attributes.url)}
+                    />
+                  )}
+
+                  <span>
+                    {method?.charAt(0)?.toUpperCase() + method?.slice(1)}
+                  </span>
+                </label>
+              </div>
+            );
+          })
         }
       </div>
 
@@ -461,3 +468,45 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     <OrderSummary page={page} />
   </section>
 </div>
+
+<script is:inline>
+  const id = document.getElementById.bind(document),
+    sameAsShipping = id("same-as-shipping"),
+    differentThanShipping = id("different-than-shipping"),
+    shippingAddress = id("shipping-address"),
+    countrySelect = id("country-select"),
+    paymentCard = document.querySelectorAll(".payment-card");
+
+  sameAsShipping.addEventListener("change", toggleShippingAddress);
+  differentThanShipping.addEventListener("change", toggleShippingAddress);
+
+  function toggleShippingAddress() {
+    if (sameAsShipping.checked) {
+      shippingAddress.classList.add("hidden");
+    } else {
+      shippingAddress.classList.remove("hidden");
+    }
+  }
+
+  countrySelect.addEventListener("change", function () {
+    const selectedCountry = this.value.toLowerCase();
+
+    paymentCard.forEach((paymentCard) => {
+      const countryName = (
+        paymentCard
+          .querySelector('input[type="radio"]')
+          ?.getAttribute("data-country") || ""
+      ).toLowerCase();
+
+      if (!countryName) {
+        return;
+      }
+
+      if (countryName.includes(selectedCountry)) {
+        paymentCard.classList.remove("hidden");
+      } else {
+        paymentCard.classList.add("hidden");
+      }
+    });
+  });
+</script>
