@@ -123,7 +123,7 @@ export default function DashboardKindnessCauses({
         if (value === String(user().kindness_cause)) {
           input.checked = true;
 
-          if (value !== "null") mySelectedCauseInput.checked = true;
+          if (value !== "choice_of_dilmah") mySelectedCauseInput.checked = true;
 
           break;
         }
