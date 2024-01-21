@@ -240,86 +240,84 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         <div
           role="form"
           aria-label={page.text_shipping_address}
-          class="form-grid-container"
+          class="form-grid"
         >
-          <div class="form-grid">
-            <label>
-              <span>{userRecurr.Input_label_first_name}</span>
+          <label>
+            <span>{userRecurr.Input_label_first_name}</span>
 
-              <input
-                type="text"
-                name="first_name"
-                placeholder={userRecurr.Input_placeholder_first_name}
-                required
-              />
-            </label>
+            <input
+              type="text"
+              name="first_name"
+              placeholder={userRecurr.Input_placeholder_first_name}
+              required
+            />
+          </label>
 
-            <label>
-              <span>{userRecurr.Input_label_last_name}</span>
+          <label>
+            <span>{userRecurr.Input_label_last_name}</span>
 
-              <input
-                type="text"
-                name="last_name"
-                placeholder={userRecurr.Input_placeholder_last_name}
-                required
-              />
-            </label>
+            <input
+              type="text"
+              name="last_name"
+              placeholder={userRecurr.Input_placeholder_last_name}
+              required
+            />
+          </label>
 
-            <label>
-              <span>{userRecurr.Input_label_street}</span>
+          <label>
+            <span>{userRecurr.Input_label_street}</span>
 
-              <input
-                type="text"
-                name="street"
-                placeholder={userRecurr.Input_placeholder_street}
-                required
-              />
-            </label>
+            <input
+              type="text"
+              name="street"
+              placeholder={userRecurr.Input_placeholder_street}
+              required
+            />
+          </label>
 
-            <label>
-              <span>{userRecurr.Input_label_city}</span>
+          <label>
+            <span>{userRecurr.Input_label_city}</span>
 
-              <input
-                type="text"
-                name="city"
-                placeholder={userRecurr.Input_placeholder_city}
-                required
-              />
-            </label>
+            <input
+              type="text"
+              name="city"
+              placeholder={userRecurr.Input_placeholder_city}
+              required
+            />
+          </label>
 
-            <label>
-              <span>{userRecurr.Input_label_postal_code}</span>
+          <label>
+            <span>{userRecurr.Input_label_postal_code}</span>
 
-              <input
-                type="number"
-                name="postal_code"
-                placeholder={userRecurr.Input_placeholder_postal_code}
-                required
-              />
-            </label>
+            <input
+              type="number"
+              name="postal_code"
+              placeholder={userRecurr.Input_placeholder_postal_code}
+              required
+            />
+          </label>
 
-            <label>
-              <span>{userRecurr.Input_label_country}</span>
+          <label>
+            <span>{userRecurr.Input_label_country}</span>
 
-              <select id="country-select" name="country" required>
-                <option value="" selected disabled hidden>
-                  {userRecurr.Input_placeholder_country}
-                </option>
+            <select id="country-select" name="country" required>
+              <option value="" selected disabled hidden>
+                {userRecurr.Input_placeholder_country}
+              </option>
 
-                {
-                  checkoutInfo.countries.data.map(
-                    ({ attributes: { name, localizations } }) => (
-                      <option
-                        value={localizations?.data[0]?.attributes?.name || name}
-                      >
-                        {name}
-                      </option>
-                    ),
-                  )
-                }
-              </select>
-            </label>
-          </div>
+              {
+                checkoutInfo.countries.data.map(
+                  ({ attributes: { name, localizations } }) => (
+                    <option
+                      value={localizations?.data[0]?.attributes?.name || name}
+                    >
+                      {name}
+                    </option>
+                  ),
+                )
+              }
+            </select>
+          </label>
         </div>
       </div>
     </section>
@@ -327,7 +325,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     <section class="division-gap grid">
       <h2 class="recoleta text-h2 text-primary">{page.Block2_title}</h2>
 
-      <div role="list" class="flex flex-wrap form-gap">
+      <div role="list" class="payment-card-container flex flex-wrap form-gap">
         {
           methods.map(({ method, icon, supported_countries }) => {
             const country = supported_countries.data.map(
@@ -335,16 +333,14 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             );
 
             return (
-              <div
-                class:list={["payment-card", country.length > 0 && "hidden"]}
-              >
+              <div class:list={[country.length > 0 && "hidden"]}>
                 <input
                   type="radio"
                   name="payment_method"
                   id={method}
                   value={method}
                   data-country={country}
-                  class="peer hidden"
+                  class="payment-card-input-selector peer hidden"
                 />
 
                 <label for={method} class="radio-button-card">
@@ -366,7 +362,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         }
       </div>
 
-      <div id="card-info" class="division-gap">
+      <div data-name="card-info" class="payment-info division-gap grid !hidden">
         <div class="division-in-gap">
           <div class="text-b3 font-bold text-black">Card details</div>
 
@@ -389,14 +385,8 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             </div>
           </div>
         </div>
-      </div>
 
-      <div
-        role="form"
-        aria-label={page.Block2_title}
-        class="form-grid-container"
-      >
-        <div class="form-grid">
+        <div role="form" class="form-grid">
           <label>
             <span>{page.Card_label_name}</span>
 
@@ -437,6 +427,42 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
               type="number"
               name="card_cvv"
               placeholder={page.Card_placeholder_cvv}
+              required
+            />
+          </label>
+        </div>
+      </div>
+
+      <div
+        data-name="ideal-info"
+        class="payment-info division-gap grid !hidden"
+      >
+        <div role="form" class="form-grid">
+          <label>
+            <span>{page.Ideal_label_select_bank}</span>
+
+            <input
+              type="number"
+              name="card_cvv"
+              placeholder={page.Ideal_placeholder_select_bank}
+              required
+            />
+          </label>
+        </div>
+      </div>
+
+      <div
+        data-name="paypal-klarna-bancontact-sofort-info"
+        class="payment-info division-gap grid !hidden"
+      >
+        <div role="form" class="form-grid">
+          <label>
+            <span>{page.Label_name}</span>
+
+            <input
+              type="text"
+              name="payment_name"
+              placeholder={page.Placeholder_name}
               required
             />
           </label>
