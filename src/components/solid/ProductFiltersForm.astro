@@ -1,13 +1,12 @@
 ---
+import subset from "@utils/shared/subset";
 import ProductFiltersForm from "@solid/ProductFiltersForm";
 import Products, { teaBag, teaBagVariants } from "@store/Products";
 
-let { locale, productSizes, productVariants, recurData, type } = Astro.props;
+let { locale, productSizes, productVariants, recurData, type } =
+  structuredClone(Astro.props);
 
-recurData = {
-  text_all_tea_variants: recurData.text_all_tea_variants,
-  text_all_tea_sizes: recurData.text_all_tea_sizes,
-};
+recurData = subset(recurData, ["text_all_tea_variants", "text_all_tea_sizes"]);
 
 const teaBagVariant = productVariants.data.find(
   ({ attributes }) => attributes.is_tea_bag,

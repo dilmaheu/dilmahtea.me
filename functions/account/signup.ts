@@ -8,8 +8,8 @@ import { removeToken, validateToken } from "../utils/token";
 import { getProviderId, createSessionCookie } from "../utils";
 
 const BodySchema = z.object({
-  first_name: z.string(),
-  last_name: z.string(),
+  first_name: z.string().trim(),
+  last_name: z.string().trim(),
   token: z.string(),
 });
 
@@ -42,11 +42,11 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
   const user: User = await auth.createUser({
     key: {
       providerId,
-      providerUserId: contact.toLowerCase(),
+      providerUserId: contact,
       password: null,
     },
     attributes: {
-      [providerId]: contact.toLowerCase(),
+      [providerId]: contact,
       first_name,
       last_name,
       display_name: `${first_name} ${last_name}`,
@@ -55,6 +55,27 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
   });
 
   await removeToken(env.USERS, token);
+
+  const FirstName = first_name,
+    LastName = last_name,
+    Language = locale;
+
+  const ProviderId = providerId === "email" ? "Email" : "Phone";
+
+  await env.EXACT_ACCOUNT.fetch(env.EXACT_ACCOUNT_WORKER_URL, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-cf-secure-worker-token": env.CF_SECURE_WORKER_TOKEN,
+    },
+    body: JSON.stringify({
+      userId: user.userId,
+      [ProviderId]: contact,
+      FirstName,
+      LastName,
+      Language,
+    }),
+  }).then((res) => res.json());
 
   const sessionCookie = await createSessionCookie(auth, user);
 

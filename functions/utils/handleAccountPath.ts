@@ -31,10 +31,10 @@ export async function handleAccountPath(
   }
 
   if (session) {
-    if (!["", "verification", "congrats"].includes(pathID)) {
+    if (!["", "verification", "congrats", "orders"].includes(pathID)) {
       return redirectToReferrer();
     }
-  } else if ([""].includes(pathID)) {
+  } else if (["", "orders"].includes(pathID)) {
     return redirectToLogin();
   }
 

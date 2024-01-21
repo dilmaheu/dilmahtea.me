@@ -76,7 +76,7 @@ const checkoutSuccessLink = `/${locale}/${
   }
 </style>
 
-<script define:vars={{ checkoutShippingLink, checkoutSuccessLink, shopLink }}>
+<script define:vars={{ checkoutShippingLink, shopLink }}>
   const { paymentID } = Object.fromEntries(
     new URLSearchParams(location.search),
   );
@@ -88,7 +88,6 @@ const checkoutSuccessLink = `/${locale}/${
   }
 
   window.paymentID = paymentID;
-  window.checkoutSuccessLink = checkoutSuccessLink;
 </script>
 
 <ClipPathSVG
@@ -172,4 +171,4 @@ const checkoutSuccessLink = `/${locale}/${
   </div>
 </div>
 
-<CheckoutKindnessScript client:only />
+<CheckoutKindnessScript client:only checkoutSuccessLink={checkoutSuccessLink} />

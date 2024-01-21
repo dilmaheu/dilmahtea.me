@@ -1,0 +1,198 @@
+---
+import RecurringImages from "@store/RecurringImages";
+
+declare interface Notification {
+  Title: string;
+  Type: "Error" | "Warning" | "Info" | "Success" | "Default";
+  Closing_Enabled: boolean;
+  NotificationSm: boolean;
+  Bordered: boolean;
+  Rounded: boolean;
+}
+
+const { Title, Type, Closing_Enabled, NotificationSm, Bordered, Rounded } =
+  Astro.props as Notification;
+
+if (Type !== "Default") {
+  var icon = RecurringImages[`${Type.toLowerCase()}_notification`];
+}
+---
+
+<style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
+  .notification {
+    @apply text-black;
+
+    &.notification-default {
+      @apply bg-secondary-light;
+    }
+
+    &.notification-info {
+      @apply bg-info-light;
+    }
+
+    &.notification-warning {
+      @apply bg-warning-light;
+    }
+
+    &.notification-success {
+      @apply bg-success-light;
+    }
+
+    &.notification-error {
+      @apply bg-error-light;
+    }
+  }
+
+  .notification-normal {
+    padding: poly-fluid-clamp(
+        (
+          640px: 10px,
+          1440px: 15px,
+        )
+      )
+      poly-fluid-clamp(
+        (
+          640px: 15px,
+          1440px: 20px,
+        )
+      );
+
+    .notification-content-container {
+      gap: poly-fluid-clamp(
+        (
+          640px: 8px,
+          1440px: 10px,
+        )
+      );
+    }
+
+    .notification-icon {
+      width: poly-fluid-clamp(
+        (
+          640px: 22px,
+          1440px: 26px,
+        )
+      );
+      height: poly-fluid-clamp(
+        (
+          640px: 22px,
+          1440px: 26px,
+        )
+      );
+    }
+
+    .notification-content {
+      font-size: poly-fluid-clamp(
+        (
+          640px: 14px,
+          1440px: 16px,
+        )
+      );
+    }
+  }
+
+  .notification-sm {
+    padding: poly-fluid-clamp(
+        (
+          640px: 3px,
+          1440px: 5px,
+        )
+      )
+      poly-fluid-clamp(
+        (
+          640px: 5px,
+          1440px: 10px,
+        )
+      );
+
+    .notification-content-container {
+      gap: poly-fluid-clamp(
+        (
+          640px: 3px,
+          1440px: 5px,
+        )
+      );
+    }
+
+    .notification-icon {
+      width: poly-fluid-clamp(
+        (
+          640px: 14px,
+          1440px: 18px,
+        )
+      );
+      height: poly-fluid-clamp(
+        (
+          640px: 14px,
+          1440px: 18px,
+        )
+      );
+    }
+
+    .notification-content {
+      font-size: poly-fluid-clamp(
+        (
+          640px: 10px,
+          1440px: 12px,
+        )
+      );
+    }
+  }
+</style>
+
+<div
+  class:list={[
+    `notification notification-${Type.toLowerCase()}`,
+    NotificationSm ? "notification-sm" : "notification-normal",
+    Bordered &&
+      `border border-${Type === "Default" ? "black" : Type.toLowerCase()}`,
+    Rounded && "rounded-[10px]",
+  ]}
+>
+  <div class="flex">
+    <div
+      class:list={[
+        !NotificationSm && "justify-center",
+        "notification-content-container flex grow",
+      ]}
+    >
+      {icon && <img {...icon} class="notification-icon" />}
+
+      <div class="notification-content">
+        {Title}
+      </div>
+    </div>
+
+    {
+      Closing_Enabled && (
+        <div class="flex">
+          <button class="close-button mb-auto">
+            <svg
+              viewBox="0 0 19.2 19.2"
+              xmlns="http://www.w3.org/2000/svg"
+              class="notification-icon p-0.5"
+            >
+              <path d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z" />
+            </svg>
+          </button>
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<script>
+  const notificationCloseButtons = document.querySelectorAll(
+    ".notification .close-button",
+  );
+
+  notificationCloseButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      window.slideOutTopNotification(
+        button.parentElement.parentElement.parentElement,
+      );
+    });
+  });
+</script>
