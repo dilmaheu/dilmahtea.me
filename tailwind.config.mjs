@@ -14,6 +14,7 @@ export default {
         "black-bg": "#13110B",
         black: "#2F2F2F",
         "black-light": "#474747",
+        "black-lighter": "#595959",
         error: "#E06464",
         "error-dark": "#AB0504",
         "error-light": "#FFE2E2",
