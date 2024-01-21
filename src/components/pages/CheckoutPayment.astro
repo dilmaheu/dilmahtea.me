@@ -497,42 +497,55 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
 
 <script is:inline>
   const id = document.getElementById.bind(document),
-    sameAsShipping = id("same-as-shipping"),
+    query = document.querySelectorAll.bind(document),
+    addClass = (element, className) => element.classList.add(className),
+    removeClass = (element, className) => element.classList.remove(className);
+
+  const sameAsShipping = id("same-as-shipping"),
     differentThanShipping = id("different-than-shipping"),
     shippingAddress = id("shipping-address"),
     countrySelect = id("country-select"),
-    paymentCard = document.querySelectorAll(".payment-card");
+    paymentCardInputSelector = query(".payment-card-input-selector"),
+    paymentInfoElements = query(".payment-info");
 
   sameAsShipping.addEventListener("change", toggleShippingAddress);
   differentThanShipping.addEventListener("change", toggleShippingAddress);
+  countrySelect.addEventListener("change", togglePaymentCardVisibility);
+  document.addEventListener("change", handlePaymentCardInputChange);
 
   function toggleShippingAddress() {
-    if (sameAsShipping.checked) {
-      shippingAddress.classList.add("hidden");
-    } else {
-      shippingAddress.classList.remove("hidden");
-    }
+    sameAsShipping.checked
+      ? addClass(shippingAddress, "hidden")
+      : removeClass(shippingAddress, "hidden");
   }
 
-  countrySelect.addEventListener("change", function () {
-    const selectedCountry = this.value.toLowerCase();
+  function togglePaymentCardVisibility() {
+    const selectedCountry = countrySelect.value.toLowerCase();
 
-    paymentCard.forEach((paymentCard) => {
-      const countryName = (
-        paymentCard
-          .querySelector('input[type="radio"]')
-          ?.getAttribute("data-country") || ""
-      ).toLowerCase();
-
-      if (!countryName) {
-        return;
-      }
-
-      if (countryName.includes(selectedCountry)) {
-        paymentCard.classList.remove("hidden");
-      } else {
-        paymentCard.classList.add("hidden");
-      }
+    paymentCardInputSelector.forEach((cardSelector) => {
+      const countryName = cardSelector
+        ?.getAttribute("data-country")
+        ?.toLowerCase();
+      if (!countryName) return;
+      countryName.includes(selectedCountry)
+        ? removeClass(cardSelector.parentElement, "hidden")
+        : addClass(cardSelector.parentElement, "hidden");
     });
-  });
+  }
+
+  function handlePaymentCardInputChange(event) {
+    if (event.target.classList.contains("payment-card-input-selector")) {
+      const inputValue = event.target.value.toLowerCase();
+
+      paymentInfoElements.forEach((paymentInfo) => {
+        const includesValue = paymentInfo
+          .getAttribute("data-name")
+          .toLowerCase()
+          .includes(inputValue);
+        includesValue
+          ? removeClass(paymentInfo, "!hidden")
+          : addClass(paymentInfo, "!hidden");
+      });
+    }
+  }
 </script>
