@@ -509,11 +509,16 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     shippingAddress = id("shipping-address"),
     countrySelect = id("country-select"),
     paymentCardInputSelector = query(".payment-card-input-selector"),
-    paymentInfoElements = query(".payment-info");
+    paymentInfoElements = query(".payment-info"),
+    submitBtn = id("submit-btn"),
+    submitBtnPaymentType = submitBtn.querySelector(".payment-type");
 
   sameAsShipping.addEventListener("change", toggleShippingAddress);
   differentThanShipping.addEventListener("change", toggleShippingAddress);
-  countrySelect.addEventListener("change", togglePaymentCardVisibility);
+  countrySelect.addEventListener("change", () => {
+    togglePaymentCardVisibility();
+    hideAllPaymentInfo();
+  });
   document.addEventListener("change", handlePaymentCardInputChange);
 
   function toggleShippingAddress() {
@@ -522,10 +527,21 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
       : removeClass(shippingAddress, "hidden");
   }
 
+  function hideAllPaymentInfo() {
+    paymentInfoElements.forEach((paymentInfo) =>
+      addClass(paymentInfo, "!hidden"),
+    );
+
+    submitBtnPaymentType.innerHTML = "";
+    removeClass(submitBtn, "button-primary");
+    addClass(submitBtn, "button-disabled");
+  }
+
   function togglePaymentCardVisibility() {
     const selectedCountry = countrySelect.value.toLowerCase();
 
     paymentCardInputSelector.forEach((cardSelector) => {
+      cardSelector.checked = false;
       const countryName = cardSelector
         ?.getAttribute("data-country")
         ?.toLowerCase();
@@ -539,6 +555,10 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
   function handlePaymentCardInputChange(event) {
     if (event.target.classList.contains("payment-card-input-selector")) {
       const inputValue = event.target.value.toLowerCase();
+
+      submitBtnPaymentType.innerHTML = ` ${inputValue}`;
+      removeClass(submitBtn, "button-disabled");
+      addClass(submitBtn, "button-primary");
 
       paymentInfoElements.forEach((paymentInfo) => {
         const includesValue = paymentInfo
