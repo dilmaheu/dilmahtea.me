@@ -5,95 +5,21 @@ import DynamicHTML from "@components/DynamicHTML.astro";
 const { page } = Astro.props,
   { locale } = page,
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
+  isCheckoutInformation = page.type === "checkoutInformation",
+  isCheckoutPayment = page.type === "checkoutPayment",
   isCheckoutShipping = page.type === "checkoutShipping",
   checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug;
 ---
 
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
-
-  .order-summary {
-    @media (min-width: 1024px) {
-      padding: poly-fluid-clamp(
-        (
-          1024px: 28px 42px,
-          1440px: 32px 56px,
-        )
-      );
-    }
-
-    h2 {
-      font-size: poly-fluid-clamp(
-        (
-          375px: 24px,
-          1440px: 28px,
-        )
-      );
-
-      & + a {
-        font-size: poly-fluid-clamp(
-          (
-            375px: 18px,
-            1440px: 20px,
-          )
-        );
-      }
-    }
-  }
-
-  .order-charges {
-    & > div,
-    & + div {
-      @apply flex justify-between items-center;
-    }
-  }
-
-  .order-charges > div span {
-    &:first-of-type {
-      font-size: poly-fluid-clamp(
-        (
-          375px: 16px,
-          1440px: 18px,
-        )
-      );
-    }
-
-    &:last-of-type {
-      line-height: 110%;
-      font-size: poly-fluid-clamp(
-        (
-          375px: 28px,
-          1440px: 32px,
-        )
-      );
-    }
-  }
-
-  .order-total-container span {
-    &:first-of-type {
-      font-size: poly-fluid-clamp(
-        (
-          375px: 18px,
-          1440px: 24px,
-        )
-      );
-    }
-
-    &:last-of-type {
-      font-size: poly-fluid-clamp(
-        (
-          375px: 32px,
-          1440px: 42px,
-        )
-      );
-    }
-  }
+  @use "src/styles/checkout" as *;
 
   .product-image {
     $fluid-image-size: poly-fluid-clamp(
       (
-        375px: 68px,
-        1440px: 100px,
+        375px: 50px,
+        1440px: 85px,
       )
     );
 
@@ -101,71 +27,21 @@ const { page } = Astro.props,
     height: $fluid-image-size;
     min-width: $fluid-image-size;
   }
-
-  .product-name,
-  .subtotal-text {
-    font-size: poly-fluid-clamp(
-      (
-        375px: 18px,
-        1440px: 24px,
-      )
-    );
-  }
-
-  .subtotal,
-  .order-total {
-    font-size: poly-fluid-clamp(
-      (
-        375px: 32px,
-        1440px: 42px,
-      )
-    );
-  }
-
-  .order-subtotal,
-  .order-shipping-cost,
-  .order-tax {
-    @apply font-bold sm:font-normal;
-
-    font-size: poly-fluid-clamp(
-      (
-        375px: 28px,
-        1440px: 32px,
-      )
-    );
-  }
-
-  .shipping-charge-info {
-    font-size: poly-fluid-clamp(
-      (
-        375px: 16px,
-        1440px: 18px,
-      )
-    );
-  }
 </style>
 
-<div
-  class="order-summary text-black flex flex-col justify-between gap-[26px] lg:gap-32 lg:min-h-full"
->
+<div class="order-summary division-gap text-black flex flex-col lg:pl-[50px]">
   <div class="flex flex-col gap-5">
     <div class="flex justify-between items-center gap-2.5">
-      <h2
-        class="recoleta text-[1.5rem] sm:text-[1.75rem] font-semibold leading-[120%]"
-      >
+      <h2 class="recoleta text-h3">
         {checkoutRecurData.text_order_summary}
       </h2>
 
-      {
-        isCheckoutShipping && (
-          <a
-            href={checkoutCartLink}
-            class="text-primary font-medium leading-[120%] underline underline-offset-2"
-          >
-            {checkoutRecurData.text_edit_cart}
-          </a>
-        )
-      }
+      <a
+        href={checkoutCartLink}
+        class="text-b4 text-primary font-bold underline underline-offset-2"
+      >
+        {checkoutRecurData.text_edit_cart}
+      </a>
     </div>
 
     <DynamicHTML
@@ -195,14 +71,12 @@ const { page } = Astro.props,
         />
 
         <div class="flex flex-col flex-grow gap-2.5">
-          <h3 class="product-name recoleta leading-[130%]">
+          <h3 class="product-name recoleta text-h5">
             <placeholder name="name"></placeholder> (<placeholder
               name="quantity"></placeholder>)
           </h3>
 
-          <span
-            class="product-price recoleta text-[1.75rem] leading-[120%] text-right"
-          >
+          <span class="product-price recoleta text-h5 text-right">
             €<placeholder name="price"></placeholder>
           </span>
         </div>
@@ -210,65 +84,95 @@ const { page } = Astro.props,
     </DynamicHTML>
   </div>
 
-  {
-    page.type === "checkoutInformation" && (
-      <div>
-        <div class="flex justify-between items-center">
-          <span class="subtotal-text font-medium">
-            {checkoutRecurData.text_subtotal}
-          </span>
+  <div class="division-in-element-gap flex flex-col text-black-light">
+    <div
+      class="order-charges division-in-element-gap flex flex-col text-black-light"
+    >
+      <div
+        class:list={[
+          "flex justify-between items-center",
+          isCheckoutInformation && "font-bold text-black",
+        ]}
+      >
+        <span
+          class:list={[
+            "order-subtotal",
+            isCheckoutInformation ? "text-b2" : "text-b4",
+          ]}
+        >
+          {checkoutRecurData.text_subtotal}
+        </span>
 
-          <span class="subtotal recoleta font-semibold leading-[110%] sm:leading-[130%]">
-            €<DynamicHTML htmlFn={() => window.cart.subTotal} />
-          </span>
-        </div>
-
-        <div class="shipping-charge-info pb-2.5 lg:pb-0">
-          {checkoutRecurData.text_shipping_calculated_at_checkout}
-        </div>
+        <span
+          class:list={[
+            "recoleta",
+            isCheckoutInformation ? "text-h3" : "text-h5",
+          ]}
+        >
+          €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+        </span>
       </div>
-    )
-  }
 
-  {
-    page.type === "checkoutShipping" && (
-      <div class="flex flex-col gap-3">
-        <div class="order-charges flex flex-col gap-3">
-          <div>
-            <span>{checkoutRecurData.text_subtotal}</span>
-
-            <span class="order-subtotal recoleta">
-              €<DynamicHTML htmlFn={() => window.cart.subTotal} />
-            </span>
-          </div>
-
-          <div>
-            <span>{checkoutRecurData.text_shipping}</span>
-
-            <span class="order-shipping-cost recoleta">
+      {
+        (isCheckoutShipping || isCheckoutPayment) && (
+          <div class="flex justify-between items-center">
+            <span class="text-b4">{checkoutRecurData.text_shipping}</span>
+            <span class="order-shipping-cost recoleta text-h5">
               €<DynamicHTML htmlFn={() => window.cart.shippingCost} />
             </span>
           </div>
+        )
+      }
+    </div>
+
+    {
+      (isCheckoutShipping || isCheckoutPayment) && (
+        <>
+          <div class="w-full h-px bg-primary-light" />
+
+          <div class="flex justify-between items-center text-black">
+            <span class="text-b2 font-bold">
+              {checkoutRecurData.text_total}
+            </span>
+            <span class="order-total recoleta text-h3">
+              €<DynamicHTML htmlFn={() => window.cart.total} />
+            </span>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-b4">{checkoutRecurData.text_tax}</span>
+            <span class="order-tax recoleta text-h5">
+              €<DynamicHTML htmlFn={() => window.cart.tax} />
+            </span>
+          </div>
+        </>
+      )
+    }
+
+    {
+      isCheckoutInformation && (
+        <div class="text-b4">
+          {checkoutRecurData.text_shipping_calculated_at_checkout}
         </div>
-
-        <div class="order-total-container pt-3 border-t border-t-primary-light">
-          <span class="font-semibold leading-[130%]">
-            {checkoutRecurData.text_total}
-          </span>
-
-          <span class="order-total recoleta font-semibold leading-[110%]">
-            €<DynamicHTML htmlFn={() => window.cart.total} />
-          </span>
-        </div>
-
-        <div class="flex justify-between">
-          <span>{checkoutRecurData.text_tax}</span>
-
-          <span class="order-tax recoleta">
-            €<DynamicHTML htmlFn={() => window.cart.tax} />
-          </span>
-        </div>
-      </div>
-    )
-  }
+      )
+    }
+  </div>
 </div>
+
+<!-- <div class="order-charges flex flex-col gap-3">
+  <div>
+    <span>{checkoutRecurData.text_subtotal}</span>
+
+    <span class="order-subtotal recoleta">
+      €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+    </span>
+  </div>
+
+  <div>
+    <span>{checkoutRecurData.text_shipping}</span>
+
+    <span class="order-shipping-cost recoleta">
+      €<DynamicHTML htmlFn={() => window.cart.shippingCost} />
+    </span>
+  </div>
+</div> -->
