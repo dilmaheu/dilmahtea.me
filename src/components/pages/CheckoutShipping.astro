@@ -19,35 +19,6 @@ const checkoutInfoLink = `/${locale}/${
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
 
-  #shipping-details {
-    padding: poly-fluid-clamp(
-      (
-        375px: 50px 24px,
-        1024px: 50px 29px,
-      )
-    );
-
-    @media (min-width: 1024px) {
-      padding: poly-fluid-clamp(
-        (
-          1024px: 29px 42px,
-          1440px: 32px 56px,
-        )
-      );
-    }
-  }
-
-  h2 {
-    @apply font-bold text-primary leading-[110%];
-
-    font-size: poly-fluid-clamp(
-      (
-        375px: 28px,
-        1440px: 32px,
-      )
-    );
-  }
-
   .shipping-detail {
     @apply flex flex-col gap-1.5;
 
@@ -57,7 +28,7 @@ const checkoutInfoLink = `/${locale}/${
 
         font-size: poly-fluid-clamp(
           (
-            375px: 16px,
+            640px: 16px,
             1440px: 18px,
           )
         );
@@ -68,7 +39,7 @@ const checkoutInfoLink = `/${locale}/${
 
         gap: poly-fluid-clamp(
           (
-            375px: 20px,
+            640px: 20px,
             1440px: 68px,
           )
         );
@@ -78,7 +49,7 @@ const checkoutInfoLink = `/${locale}/${
 
           font-size: poly-fluid-clamp(
             (
-              375px: 18px,
+              640px: 18px,
               1440px: 24px,
             )
           );
@@ -89,32 +60,13 @@ const checkoutInfoLink = `/${locale}/${
 
           font-size: poly-fluid-clamp(
             (
-              375px: 18px,
+              640px: 18px,
               1440px: 24px,
             )
           );
         }
       }
     }
-  }
-
-  .shipping-method,
-  .shipping-cost {
-    font-size: poly-fluid-clamp(
-      (
-        375px: 18px,
-        1440px: 24px,
-      )
-    );
-  }
-
-  .shipping-description {
-    font-size: poly-fluid-clamp(
-      (
-        375px: 16px,
-        1440px: 18px,
-      )
-    );
   }
 </style>
 
@@ -131,11 +83,11 @@ const checkoutInfoLink = `/${locale}/${
   window.checkoutKindnessLink = checkoutKindnessLink;
 </script>
 
-<section class="w-full lg:w-[66.67%]">
+<section class="w-full xl:w-2/3">
   <form
     method="POST"
     id="shipping-details"
-    class="flex flex-col gap-12"
+    class="section-gap flex flex-col"
     action={shouldDisplayExperimentals
       ? "https://dev.pay.scripts.dilmahtea.me"
       : "https://pay.scripts.dilmahtea.me"}
@@ -232,7 +184,7 @@ const checkoutInfoLink = `/${locale}/${
       aria-label={page.text_shipping_method}
       class="flex flex-col gap-4"
     >
-      <h2 class="recoleta text-black">{page.text_shipping_method}</h2>
+      <h2 class="recoleta text-h2 text-primary">{page.text_shipping_method}</h2>
 
       {
         page.shipping_methods.data.map(
@@ -257,20 +209,16 @@ const checkoutInfoLink = `/${locale}/${
                 />
               </div>
 
-              <div class="grid gap-[5px]">
-                <span class="gap-3 flex items-center">
-                  <span class="shipping-method font-semibold text-black leading-[130%]">
-                    {method}
-                  </span>
-                  <span class="w-1 h-1 bg-black rounded-full" />
-                  <span class="shipping-cost font-semibold text-black leading-[130%]">
-                    € {cost.toFixed(2).toString().replace(".", ",")}
+              <div class="division-in-element-gap grid">
+                <span class="flex items-center gap-2 text-b3 font-bold text-black">
+                  <span class="shipping-method">{method}</span>
+                  <span>&#x2022;</span>
+                  <span class="shipping-cost recoleta text-h5">
+                    €{cost.toFixed(2).toString().replace(".", ",")}
                   </span>
                 </span>
 
-                <span class="shipping-description text-black-light leading-[130%]">
-                  {description}
-                </span>
+                <span class="text-b5 text-black-light">{description}</span>
               </div>
             </label>
           ),
@@ -278,7 +226,7 @@ const checkoutInfoLink = `/${locale}/${
       }
     </div>
 
-    <div class="block lg:hidden -mb-6">
+    <div class="block lg:hidden">
       <OrderSummary page={page} />
     </div>
 
@@ -302,7 +250,7 @@ const checkoutInfoLink = `/${locale}/${
 <section
   role="complementary"
   aria-label={checkoutRecurData.text_order_summary}
-  class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-primary-light"
+  class="hidden xl:block xl:w-1/3 xl:border xl:border-l-primary-light"
 >
   <OrderSummary page={page} />
 </section>
