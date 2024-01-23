@@ -4,6 +4,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import RecurringImages from "@store/RecurringImages";
 import { Picture } from "astro-imagetools/components";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import Footer from "@components/Footer.astro";
 
 const { logo, nav_background, nav_background_sm } = RecurringImages;
 
@@ -17,13 +18,25 @@ interface Props {
   isCheckoutKindness: boolean;
 }
 
-const { page, meta, locale, alternateURLs, metaImageSrc, isCheckoutKindness } =
-  Astro.props as Props;
+const {
+  page,
+  meta,
+  locale,
+  recurData,
+  alternateURLs,
+  metaImageSrc,
+  isCheckoutKindness,
+} = Astro.props as Props;
 
 const checkoutStepOrder = page.checkout_step_order,
   checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
   steps = checkoutFlowData.steps.split("\n"),
   shortenedSteps = checkoutFlowData.shortened_steps.split("\n");
+
+const footerText = recurData.Footer_text.replaceAll(
+  "<current_year>",
+  `${new Date().getFullYear()}`,
+);
 ---
 
 <style lang="scss">
@@ -91,101 +104,111 @@ const checkoutStepOrder = page.checkout_step_order,
     }
   </script>
 
-  <div id="checkout" class="bg-secondary">
-    <header
-      class="checkout-flow-container z-10 fixed md:relative w-full bg-primary"
-      style="clip-path: url(#checkout-header-curve);"
-    >
-      <ClipPathSVG
-        id="checkout-header-curve"
-        path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
-      />
+  <div class="flex flex-wrap w-full h-full">
+    <div id="checkout" class="block w-full bg-secondary">
+      <header
+        class="checkout-flow-container z-10 fixed md:relative w-full bg-primary"
+        style="clip-path: url(#checkout-header-curve);"
+      >
+        <ClipPathSVG
+          id="checkout-header-curve"
+          path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
+        />
 
-      {
-        nav_background && (
-          <Picture
-            alt=""
-            layout="fill"
-            preload="avif"
-            src={nav_background_sm?.src || nav_background.src}
-            artDirectives={[
-              {
-                media: "(min-width: 640px)",
-                breakpoints: { minWidth: 640 },
-                src: nav_background.src,
-              },
-            ]}
-            attributes={{
-              picture: {
-                style: "position: absolute; top: 0; left: 0;",
-              },
-            }}
-          />
-        )
-      }
-
-      <div class="wrapper relative flex gap-[clamp(15px,calc(2.5vw-1px),35px)]">
-        <a href="/" class="h-[clamp(35px,calc(1.40vw+29.72px),50px)]">
-          <img {...logo} class="h-full" />
-        </a>
+        {
+          nav_background && (
+            <Picture
+              alt=""
+              layout="fill"
+              preload="avif"
+              src={nav_background_sm?.src || nav_background.src}
+              artDirectives={[
+                {
+                  media: "(min-width: 640px)",
+                  breakpoints: { minWidth: 640 },
+                  src: nav_background.src,
+                },
+              ]}
+              attributes={{
+                picture: {
+                  style: "position: absolute; top: 0; left: 0;",
+                },
+              }}
+            />
+          )
+        }
 
         <div
-          class="flow flex-grow grid gap-[clamp(5px,calc(2.5vw-11px),25px)] text-white"
-          style={`grid-template-columns: ${Array.from({ length: steps.length })
-            .map(() => "1fr")
-            .join(" ")}`}
+          class="wrapper relative flex gap-[clamp(15px,calc(2.5vw-1px),35px)]"
         >
-          {
-            steps.map((step, i) => {
-              const shortenedStep = shortenedSteps[i],
-                StepTitleTag = i + 1 === checkoutStepOrder ? "h1" : "span";
+          <a href="/" class="h-[clamp(35px,calc(1.40vw+29.72px),50px)]">
+            <img {...logo} class="h-full" />
+          </a>
 
-              return (
-                <div>
-                  <StepTitleTag
-                    class:list={[
-                      shortenedStep !== step && "hidden sm:inline",
-                      i + 1 === checkoutStepOrder ? "font-bold" : "font-normal",
-                    ]}
-                  >
-                    {step}
-                  </StepTitleTag>
+          <div
+            class="flow flex-grow grid gap-[clamp(5px,calc(2.5vw-11px),25px)] text-white"
+            style={`grid-template-columns: ${Array.from({
+              length: steps.length,
+            })
+              .map(() => "1fr")
+              .join(" ")}`}
+          >
+            {
+              steps.map((step, i) => {
+                const shortenedStep = shortenedSteps[i],
+                  StepTitleTag = i + 1 === checkoutStepOrder ? "h1" : "span";
 
-                  {shortenedStep !== step && (
+                return (
+                  <div>
                     <StepTitleTag
                       class:list={[
-                        "inline sm:hidden",
-                        i + 1 === checkoutStepOrder && "font-bold",
+                        shortenedStep !== step && "hidden sm:inline",
+                        i + 1 === checkoutStepOrder
+                          ? "font-bold"
+                          : "font-normal",
                       ]}
                     >
-                      {shortenedStep}
+                      {step}
                     </StepTitleTag>
-                  )}
 
-                  {i + 1 === checkoutStepOrder ? (
-                    <div class="grid grid-cols-2 bg-white/30">
+                    {shortenedStep !== step && (
+                      <StepTitleTag
+                        class:list={[
+                          "inline sm:hidden",
+                          i + 1 === checkoutStepOrder && "font-bold",
+                        ]}
+                      >
+                        {shortenedStep}
+                      </StepTitleTag>
+                    )}
+
+                    {i + 1 === checkoutStepOrder ? (
+                      <div class="grid grid-cols-2 bg-white/30">
+                        <div class="bg-white" />
+                      </div>
+                    ) : i + 1 > checkoutStepOrder ? (
+                      <div class="bg-white/30" />
+                    ) : (
                       <div class="bg-white" />
-                    </div>
-                  ) : i + 1 > checkoutStepOrder ? (
-                    <div class="bg-white/30" />
-                  ) : (
-                    <div class="bg-white" />
-                  )}
-                </div>
-              );
-            })
-          }
+                    )}
+                  </div>
+                );
+              })
+            }
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
 
-    <ClipPathSVG
-      id="product-image-curve"
-      path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
-    />
+      <ClipPathSVG
+        id="product-image-curve"
+        path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
+      />
 
-    <main id="checkout-main" class="wrapper section-gap main-container">
-      <slot />
-    </main>
+      <main id="checkout-main" class="wrapper section-gap main-container">
+        <slot />
+      </main>
+    </div>
+
+    <Footer footerText={footerText} recurData={recurData} type={page?.type} />
   </div>
 </BaseLayout>
