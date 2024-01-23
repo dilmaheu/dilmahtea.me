@@ -12,26 +12,6 @@ const { page } = Astro.props,
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
 
-  h2 {
-    @apply font-bold text-primary leading-[110%];
-
-    font-size: poly-fluid-clamp(
-      (
-        375px: 28px,
-        1440px: 32px,
-      )
-    );
-  }
-
-  form {
-    padding: poly-fluid-clamp(
-      (
-        375px: 25px 25px,
-        1440px: 32px 56px,
-      )
-    );
-  }
-
   .form-grid-container {
     @apply flex flex-col;
 
@@ -82,12 +62,12 @@ const { page } = Astro.props,
   }
 </style>
 
-<section class="w-full lg:w-[66.67%]">
+<section class="w-full xl:w-2/3">
   <form
     role="main"
     aria-label={page.Aria_label_form_text}
     id="checkout-info-form"
-    class="flex flex-col gap-[25px]"
+    class="section-gap flex flex-col"
     action={"/" + locale + "/" + checkoutShippingLink + "/"}
   >
     <div
@@ -95,7 +75,7 @@ const { page } = Astro.props,
       aria-label={page.text_contact_info}
       class="form-grid-container"
     >
-      <h2 class="recoleta">{page.text_customer}</h2>
+      <h2 class="recoleta text-h2 text-primary">{page.text_customer}</h2>
 
       <div
         id="guest-intro-text"
@@ -132,7 +112,9 @@ const { page } = Astro.props,
       aria-label={page.text_shipping_address}
       class="form-grid-container"
     >
-      <h2 class="recoleta">{page.text_shipping_address}</h2>
+      <h2 class="recoleta text-h2 text-primary">
+        {page.text_shipping_address}
+      </h2>
 
       <div class="form-grid">
         <label>
@@ -214,7 +196,7 @@ const { page } = Astro.props,
       </div>
     </div>
 
-    <div class="block lg:hidden -mb-6">
+    <div class="block lg:hidden">
       <OrderSummary page={page} />
     </div>
 
@@ -234,9 +216,7 @@ const { page } = Astro.props,
   </form>
 </section>
 
-<section
-  class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-primary-light"
->
+<section class="hidden xl:block xl:w-1/3 xl:border xl:border-l-primary-light">
   <OrderSummary page={page} />
 </section>
 

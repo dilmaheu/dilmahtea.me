@@ -23,469 +23,460 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
   );
 ---
 
-<style lang="scss">
-  @use "src/styles/checkout" as *;
-</style>
-
-<div class="wrapper flex flex-wrap my-[50px]">
-  <form class="section-gap grid w-full lg:w-2/3 lg:pr-[50px]">
-    <section
-      role="list"
-      aria-label={userRecurr.Input_label_email}
-      class="tiled-div-pad division-in-gap grid bg-secondary-light rounded-[10px]"
+<form class="section-gap grid w-full xl:w-2/3">
+  <section
+    role="list"
+    aria-label={userRecurr.Input_label_email}
+    class="tiled-div-pad division-in-gap grid bg-secondary-light rounded-[10px]"
+  >
+    <div
+      role="listitem"
+      aria-label={page.Aria_label_email_address_text}
+      class="division-in-element-gap"
     >
-      <div
-        role="listitem"
-        aria-label={page.Aria_label_email_address_text}
-        class="division-in-element-gap"
-      >
-        <div class="input-label text-black">
-          {userRecurr.Input_label_email}
-        </div>
-
-        <div class="division-in-element-gap flex flex-wrap items-center">
-          <div class="input-text-large-static grow">
-            <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
-          </div>
-
-          <a
-            aria-label={`${userRecurr.Button_change_text} ${userRecurr.Input_label_email}`}
-            href={checkoutInfoLink + "?change=email"}
-            class="button-link-large"
-          >
-            {userRecurr.Button_change_text}
-          </a>
-        </div>
+      <div class="input-label text-black">
+        {userRecurr.Input_label_email}
       </div>
 
-      <div class="w-full h-px bg-primary-light"></div>
-
-      <div
-        role="listitem"
-        aria-label={page.Aria_label_email_address_text}
-        class="division-in-element-gap"
-      >
-        <div class="input-label text-black">
-          {userRecurr.Label_delivery_address}
+      <div class="division-in-element-gap flex flex-wrap items-center">
+        <div class="input-text-large-static grow">
+          <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
         </div>
 
-        <div class="division-in-element-gap flex flex-wrap items-center">
-          <div class="input-text-large-static grow">
-            <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
-          </div>
-
-          <a
-            aria-label={`${userRecurr.Button_change_text} ${userRecurr.Label_delivery_address}`}
-            href={checkoutInfoLink + "?change=email"}
-            class="button-link-large"
-          >
-            {userRecurr.Button_change_text}
-          </a>
-        </div>
-      </div>
-
-      <div class="w-full h-px bg-primary-light"></div>
-
-      <div
-        role="listitem"
-        aria-label={page.Aria_label_email_address_text}
-        class="division-in-element-gap"
-      >
-        <div class="input-label text-black">
-          {userRecurr.Label_shipping_method}
-        </div>
-
-        <div class="division-in-element-gap flex flex-wrap items-center">
-          <div class="input-text-large-static grow">
-            <DynamicHTML htmlFn={() => window.checkoutInfo.shipping_method} />
-          </div>
-
-          <a
-            aria-label={`${userRecurr.Button_change_text} ${userRecurr.Label_shipping_method}`}
-            href={checkoutShippingLink}
-            class="button-link-large"
-          >
-            {userRecurr.Button_change_text}
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="division-gap grid">
-      <h2 class="recoleta text-h2 text-primary">{page.Block_title}</h2>
-
-      <div role="list" class="division-in-element-gap flex flex-col">
-        <div class="flex">
-          <label role="listitem" class="division-in-element-gap radio-input">
-            <input
-              type="radio"
-              name="billing_address"
-              id="same-as-shipping"
-              value={`method`}
-              checked
-            />
-
-            <div class="radio-input-text">
-              {page.Radio_button_text_same_as_shipping_address}
-            </div>
-          </label>
-        </div>
-
-        <div class="flex">
-          <label role="listitem" class="division-in-element-gap radio-input">
-            <input
-              type="radio"
-              name="billing_address"
-              id="different-than-shipping"
-              value={`method`}
-            />
-
-            <div class="text-b5 text-black-light flex">
-              {page.Radio_button_text_use_different_billing_address}
-            </div>
-          </label>
-        </div>
-      </div>
-
-      <div id="shipping-address" class="division-gap grid hidden">
-        <!-- <div class="division-in-gap grid">
-          <div class="input-label">{userRecurr.Label_tag_text}</div>
-
-          <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
-            {
-              userRecurr.Address_tag.map(({ Title }, i) => (
-                <div class:list={[i > 2 && "more-address hidden"]}>
-                  <input
-                    type="radio"
-                    name="shipping_address"
-                    id={Title.toLowerCase()}
-                    value={Title.toLowerCase()}
-                    class="peer hidden"
-                  />
-
-                  <label for={Title.toLowerCase()} class="radio-button-default">
-                    {Title}
-                  </label>
-                </div>
-              ))
-            }
-
-            <div>
-              <input
-                type="radio"
-                name="shipping_address"
-                id={`address-tag`}
-                value={`value`}
-                class="peer hidden"
-              />
-
-              <label for={`address-tag`} class="radio-button-extended">
-                Add +
-              </label>
-            </div>
-
-            <div
-              id="address-toggle-button"
-              class="flex items-center gap-1 text-primary font-bold cursor-pointer"
-            >
-              <svg
-                id="address-arrow-left"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 8 14"
-                class="hidden w-3 h-3 fill-primary"
-              >
-                <path
-                  d="M7.7,13.7a1.1,1.1,0,0,0,.3-.8,1.1,1.1,0,0,0-.3-.7L2.5,7,7.7,1.8A1.1,1.1,0,0,0,8,1,1.1,1.1,0,0,0,7.7.3,1.1,1.1,0,0,0,7,0a1.1,1.1,0,0,0-.8.3L.3,6.2A1.1,1.1,0,0,0,0,7a.9.9,0,0,0,.3.7l5.9,6A1.1,1.1,0,0,0,7,14a1.1,1.1,0,0,0,.7-.3Z"
-                ></path>
-              </svg>
-
-              <div>
-                <div id="hide-address-text" class="hidden">
-                  {userRecurr.text_hide_more_address.replace("<number>", "3")}
-                </div>
-                <div id="show-address-text">
-                  {userRecurr.text_more_address.replace("<number>", "3")}
-                </div>
-              </div>
-
-              <svg
-                id="address-arrow-right"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 8 14"
-                class="w-3 h-3 fill-primary"
-              >
-                <path
-                  d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"
-                ></path>
-              </svg>
-            </div>
-          </div>
-
-          <div id="tag-input" class="hidden">
-            <div class="form-grid">
-              <label class="relative">
-                <input
-                  type="text"
-                  name="new_tag"
-                  placeholder={`Enter your tag`}
-                  class="pr-[40px]"
-                />
-
-                <span class="tag-input-close-button"> &#10005;</span>
-              </label>
-            </div>
-          </div>
-        </div> -->
-
-        <div
-          role="form"
-          aria-label={page.text_shipping_address}
-          class="form-grid"
+        <a
+          aria-label={`${userRecurr.Button_change_text} ${userRecurr.Input_label_email}`}
+          href={checkoutInfoLink + "?change=email"}
+          class="button-link-large"
         >
-          <label>
-            <span>{userRecurr.Input_label_first_name}</span>
-
-            <input
-              type="text"
-              name="billing_first_name"
-              placeholder={userRecurr.Input_placeholder_first_name}
-            />
-          </label>
-
-          <label>
-            <span>{userRecurr.Input_label_last_name}</span>
-
-            <input
-              type="text"
-              name="billing_last_name"
-              placeholder={userRecurr.Input_placeholder_last_name}
-            />
-          </label>
-
-          <label>
-            <span>{userRecurr.Input_label_street}</span>
-
-            <input
-              type="text"
-              name="billing_street"
-              placeholder={userRecurr.Input_placeholder_street}
-            />
-          </label>
-
-          <label>
-            <span>{userRecurr.Input_label_city}</span>
-
-            <input
-              type="text"
-              name="billing_city"
-              placeholder={userRecurr.Input_placeholder_city}
-            />
-          </label>
-
-          <label>
-            <span>{userRecurr.Input_label_postal_code}</span>
-
-            <input
-              type="number"
-              name="billing_postal_code"
-              placeholder={userRecurr.Input_placeholder_postal_code}
-            />
-          </label>
-
-          <label>
-            <span>{userRecurr.Input_label_country}</span>
-
-            <select id="country-select" name="billing_country">
-              <option value="" selected disabled hidden>
-                {userRecurr.Input_placeholder_country}
-              </option>
-
-              {
-                checkoutInfo.countries.data.map(
-                  ({ attributes: { name, localizations } }) => (
-                    <option
-                      value={localizations?.data[0]?.attributes?.name || name}
-                    >
-                      {name}
-                    </option>
-                  ),
-                )
-              }
-            </select>
-          </label>
-        </div>
+          {userRecurr.Button_change_text}
+        </a>
       </div>
-    </section>
+    </div>
 
-    <section class="division-gap grid">
-      <h2 class="recoleta text-h2 text-primary">{page.Block2_title}</h2>
+    <div class="w-full h-px bg-primary-light"></div>
 
-      <div role="list" class="payment-card-container flex flex-wrap form-gap">
-        {
-          methods.map(({ method, icon, supported_countries }) => {
-            const country = supported_countries.data.map(
-              ({ attributes: { name } }) => name,
-            );
+    <div
+      role="listitem"
+      aria-label={page.Aria_label_email_address_text}
+      class="division-in-element-gap"
+    >
+      <div class="input-label text-black">
+        {userRecurr.Label_delivery_address}
+      </div>
 
-            return (
-              <div class:list={[country.length > 0 && "hidden"]}>
+      <div class="division-in-element-gap flex flex-wrap items-center">
+        <div class="input-text-large-static grow">
+          <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
+        </div>
+
+        <a
+          aria-label={`${userRecurr.Button_change_text} ${userRecurr.Label_delivery_address}`}
+          href={checkoutInfoLink + "?change=email"}
+          class="button-link-large"
+        >
+          {userRecurr.Button_change_text}
+        </a>
+      </div>
+    </div>
+
+    <div class="w-full h-px bg-primary-light"></div>
+
+    <div
+      role="listitem"
+      aria-label={page.Aria_label_email_address_text}
+      class="division-in-element-gap"
+    >
+      <div class="input-label text-black">
+        {userRecurr.Label_shipping_method}
+      </div>
+
+      <div class="division-in-element-gap flex flex-wrap items-center">
+        <div class="input-text-large-static grow">
+          <DynamicHTML htmlFn={() => window.checkoutInfo.shipping_method} />
+        </div>
+
+        <a
+          aria-label={`${userRecurr.Button_change_text} ${userRecurr.Label_shipping_method}`}
+          href={checkoutShippingLink}
+          class="button-link-large"
+        >
+          {userRecurr.Button_change_text}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="division-gap grid">
+    <h2 class="recoleta text-h2 text-primary">{page.Block_title}</h2>
+
+    <div role="list" class="division-in-element-gap flex flex-col">
+      <div class="flex">
+        <label role="listitem" class="division-in-element-gap radio-input">
+          <input
+            type="radio"
+            name="billing_address"
+            id="same-as-shipping"
+            value={`method`}
+            checked
+          />
+
+          <div class="radio-input-text">
+            {page.Radio_button_text_same_as_shipping_address}
+          </div>
+        </label>
+      </div>
+
+      <div class="flex">
+        <label role="listitem" class="division-in-element-gap radio-input">
+          <input
+            type="radio"
+            name="billing_address"
+            id="different-than-shipping"
+            value={`method`}
+          />
+
+          <div class="text-b5 text-black-light flex">
+            {page.Radio_button_text_use_different_billing_address}
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div id="shipping-address" class="division-gap grid hidden">
+      <!-- <div class="division-in-gap grid">
+        <div class="input-label">{userRecurr.Label_tag_text}</div>
+
+        <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
+          {
+            userRecurr.Address_tag.map(({ Title }, i) => (
+              <div class:list={[i > 2 && "more-address hidden"]}>
                 <input
                   type="radio"
-                  name="payment_method"
-                  id={method}
-                  value={method}
-                  data-country={country}
-                  class="payment-card-input-selector peer hidden"
+                  name="shipping_address"
+                  id={Title.toLowerCase()}
+                  value={Title.toLowerCase()}
+                  class="peer hidden"
                 />
 
-                <label for={method} class="radio-button-card">
-                  {async () => (
-                    <img
-                      class="payment-icon"
-                      alt={icon.data?.attributes.alternativeText}
-                      src={await localizeCMSImage(icon.data?.attributes.url)}
-                    />
-                  )}
-
-                  <span>
-                    {method?.charAt(0)?.toUpperCase() + method?.slice(1)}
-                  </span>
+                <label for={Title.toLowerCase()} class="radio-button-default">
+                  {Title}
                 </label>
               </div>
-            );
-          })
-        }
-      </div>
+            ))
+          }
 
-      <div data-name="card-info" class="payment-info division-gap grid !hidden">
-        <div class="division-in-gap">
-          <div class="text-b3 font-bold text-black">Card details</div>
+          <div>
+            <input
+              type="radio"
+              name="shipping_address"
+              id={`address-tag`}
+              value={`value`}
+              class="peer hidden"
+            />
 
-          <div class="division-in-gap flex flex-wrap">
-            <div class="text-b5 text-black-light">Accepted cards</div>
+            <label for={`address-tag`} class="radio-button-extended">
+              Add +
+            </label>
+          </div>
 
-            <div class="division-in-element-gap flex flex-wrap items-center">
-              {
-                accepted_cards_icon?.map(
-                  ({ url, alternativeText }) =>
-                    async () => (
-                      <img
-                        class="h-[20px] bg-white rounded"
-                        alt={alternativeText}
-                        src={await localizeCMSImage(url)}
-                      />
-                    ),
-                )
-              }
+          <div
+            id="address-toggle-button"
+            class="flex items-center gap-1 text-primary font-bold cursor-pointer"
+          >
+            <svg
+              id="address-arrow-left"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 8 14"
+              class="hidden w-3 h-3 fill-primary"
+            >
+              <path
+                d="M7.7,13.7a1.1,1.1,0,0,0,.3-.8,1.1,1.1,0,0,0-.3-.7L2.5,7,7.7,1.8A1.1,1.1,0,0,0,8,1,1.1,1.1,0,0,0,7.7.3,1.1,1.1,0,0,0,7,0a1.1,1.1,0,0,0-.8.3L.3,6.2A1.1,1.1,0,0,0,0,7a.9.9,0,0,0,.3.7l5.9,6A1.1,1.1,0,0,0,7,14a1.1,1.1,0,0,0,.7-.3Z"
+              ></path>
+            </svg>
+
+            <div>
+              <div id="hide-address-text" class="hidden">
+                {userRecurr.text_hide_more_address.replace("<number>", "3")}
+              </div>
+              <div id="show-address-text">
+                {userRecurr.text_more_address.replace("<number>", "3")}
+              </div>
             </div>
+
+            <svg
+              id="address-arrow-right"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 8 14"
+              class="w-3 h-3 fill-primary"
+            >
+              <path
+                d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"
+              ></path>
+            </svg>
           </div>
         </div>
 
-        <div role="form" class="form-grid">
-          <label>
-            <span>{page.Card_label_name}</span>
+        <div id="tag-input" class="hidden">
+          <div class="form-grid">
+            <label class="relative">
+              <input
+                type="text"
+                name="new_tag"
+                placeholder={`Enter your tag`}
+                class="pr-[40px]"
+              />
 
-            <input
-              type="text"
-              name="card_name"
-              placeholder={page.Card_placeholder_name}
-            />
-          </label>
-
-          <label>
-            <span>{page.Card_label_number}</span>
-
-            <input
-              type="number"
-              name="card_number"
-              placeholder={page.Card_placeholder_number}
-            />
-          </label>
-
-          <label>
-            <span>{page.Card_label_date}</span>
-
-            <input
-              type="text"
-              name="card_exp_date"
-              placeholder={page.Card_placeholder_date}
-            />
-          </label>
-
-          <label>
-            <span>{page.Card_label_cvv}</span>
-
-            <input
-              type="number"
-              name="card_cvv"
-              placeholder={page.Card_placeholder_cvv}
-            />
-          </label>
+              <span class="tag-input-close-button"> &#10005;</span>
+            </label>
+          </div>
         </div>
-      </div>
+      </div> -->
 
       <div
-        data-name="ideal-info"
-        class="payment-info division-gap grid !hidden"
+        role="form"
+        aria-label={page.text_shipping_address}
+        class="form-grid"
       >
-        <div role="form" class="form-grid">
-          <label>
-            <span>{page.Ideal_label_select_bank}</span>
+        <label>
+          <span>{userRecurr.Input_label_first_name}</span>
 
-            <input
-              type="number"
-              name="card_cvv"
-              placeholder={page.Ideal_placeholder_select_bank}
-            />
-          </label>
-        </div>
-      </div>
+          <input
+            type="text"
+            name="billing_first_name"
+            placeholder={userRecurr.Input_placeholder_first_name}
+          />
+        </label>
 
-      <div
-        data-name="paypal-klarna-bancontact-sofort-info"
-        class="payment-info division-gap grid !hidden"
-      >
-        <div role="form" class="form-grid">
-          <label>
-            <span>{page.Label_name}</span>
+        <label>
+          <span>{userRecurr.Input_label_last_name}</span>
 
-            <input
-              type="text"
-              name="payment_name"
-              placeholder={page.Placeholder_name}
-            />
-          </label>
-        </div>
-      </div>
+          <input
+            type="text"
+            name="billing_last_name"
+            placeholder={userRecurr.Input_placeholder_last_name}
+          />
+        </label>
 
-      <div class="checkout-button-container">
-        <a href={checkoutShippingLink} class="button-link">
-          <span class="sm:hidden">
+        <label>
+          <span>{userRecurr.Input_label_street}</span>
+
+          <input
+            type="text"
+            name="billing_street"
+            placeholder={userRecurr.Input_placeholder_street}
+          />
+        </label>
+
+        <label>
+          <span>{userRecurr.Input_label_city}</span>
+
+          <input
+            type="text"
+            name="billing_city"
+            placeholder={userRecurr.Input_placeholder_city}
+          />
+        </label>
+
+        <label>
+          <span>{userRecurr.Input_label_postal_code}</span>
+
+          <input
+            type="number"
+            name="billing_postal_code"
+            placeholder={userRecurr.Input_placeholder_postal_code}
+          />
+        </label>
+
+        <label>
+          <span>{userRecurr.Input_label_country}</span>
+
+          <select id="country-select" name="billing_country">
+            <option value="" selected disabled hidden>
+              {userRecurr.Input_placeholder_country}
+            </option>
+
             {
-              `${
-                userRecurr.Button_return_to_text
-              } ${shortenedSteps[1]?.toLowerCase()}`
+              checkoutInfo.countries.data.map(
+                ({ attributes: { name, localizations } }) => (
+                  <option
+                    value={localizations?.data[0]?.attributes?.name || name}
+                  >
+                    {name}
+                  </option>
+                ),
+              )
             }
-          </span>
-          <span class="hidden sm:block">
-            {`${userRecurr.Button_return_to_text} ${steps[1]?.toLowerCase()}`}
-          </span>
-        </a>
-
-        <button id="submit-btn" class="w-full sm:w-1/3 button-disabled">
-          <span>
-            {page.Button_text_pay_with}
-            <span class="payment-type"></span>
-          </span>
-        </button>
+          </select>
+        </label>
       </div>
-    </section>
-  </form>
-
-  <section class="hidden lg:block lg:w-1/3 lg:border lg:border-l-primary-light">
-    <OrderSummary page={page} />
+    </div>
   </section>
-</div>
+
+  <section class="division-gap grid">
+    <h2 class="recoleta text-h2 text-primary">{page.Block2_title}</h2>
+
+    <div role="list" class="payment-card-container flex flex-wrap form-gap">
+      {
+        methods.map(({ method, icon, supported_countries }) => {
+          const country = supported_countries.data.map(
+            ({ attributes: { name } }) => name,
+          );
+
+          return (
+            <div class:list={[country.length > 0 && "hidden"]}>
+              <input
+                type="radio"
+                name="payment_method"
+                id={method}
+                value={method}
+                data-country={country}
+                class="payment-card-input-selector peer hidden"
+              />
+
+              <label for={method} class="radio-button-card">
+                {async () => (
+                  <img
+                    class="payment-icon"
+                    alt={icon.data?.attributes.alternativeText}
+                    src={await localizeCMSImage(icon.data?.attributes.url)}
+                  />
+                )}
+
+                <span>
+                  {method?.charAt(0)?.toUpperCase() + method?.slice(1)}
+                </span>
+              </label>
+            </div>
+          );
+        })
+      }
+    </div>
+
+    <div data-name="card-info" class="payment-info division-gap grid !hidden">
+      <div class="division-in-gap">
+        <div class="text-b3 font-bold text-black">Card details</div>
+
+        <div class="division-in-gap flex flex-wrap">
+          <div class="text-b5 text-black-light">Accepted cards</div>
+
+          <div class="division-in-element-gap flex flex-wrap items-center">
+            {
+              accepted_cards_icon?.map(
+                ({ url, alternativeText }) =>
+                  async () => (
+                    <img
+                      class="h-[20px] bg-white rounded"
+                      alt={alternativeText}
+                      src={await localizeCMSImage(url)}
+                    />
+                  ),
+              )
+            }
+          </div>
+        </div>
+      </div>
+
+      <div role="form" class="form-grid">
+        <label>
+          <span>{page.Card_label_name}</span>
+
+          <input
+            type="text"
+            name="card_name"
+            placeholder={page.Card_placeholder_name}
+          />
+        </label>
+
+        <label>
+          <span>{page.Card_label_number}</span>
+
+          <input
+            type="number"
+            name="card_number"
+            placeholder={page.Card_placeholder_number}
+          />
+        </label>
+
+        <label>
+          <span>{page.Card_label_date}</span>
+
+          <input
+            type="text"
+            name="card_exp_date"
+            placeholder={page.Card_placeholder_date}
+          />
+        </label>
+
+        <label>
+          <span>{page.Card_label_cvv}</span>
+
+          <input
+            type="number"
+            name="card_cvv"
+            placeholder={page.Card_placeholder_cvv}
+          />
+        </label>
+      </div>
+    </div>
+
+    <div data-name="ideal-info" class="payment-info division-gap grid !hidden">
+      <div role="form" class="form-grid">
+        <label>
+          <span>{page.Ideal_label_select_bank}</span>
+
+          <input
+            type="number"
+            name="card_cvv"
+            placeholder={page.Ideal_placeholder_select_bank}
+          />
+        </label>
+      </div>
+    </div>
+
+    <div
+      data-name="paypal-klarna-bancontact-sofort-info"
+      class="payment-info division-gap grid !hidden"
+    >
+      <div role="form" class="form-grid">
+        <label>
+          <span>{page.Label_name}</span>
+
+          <input
+            type="text"
+            name="payment_name"
+            placeholder={page.Placeholder_name}
+          />
+        </label>
+      </div>
+    </div>
+
+    <div class="checkout-button-container">
+      <a href={checkoutShippingLink} class="button-link">
+        <span class="sm:hidden">
+          {
+            `${
+              userRecurr.Button_return_to_text
+            } ${shortenedSteps[1]?.toLowerCase()}`
+          }
+        </span>
+        <span class="hidden sm:block">
+          {`${userRecurr.Button_return_to_text} ${steps[1]?.toLowerCase()}`}
+        </span>
+      </a>
+
+      <button id="submit-btn" class="w-full sm:w-1/3 button-disabled">
+        <span>
+          {page.Button_text_pay_with}
+          <span class="payment-type"></span>
+        </span>
+      </button>
+    </div>
+  </section>
+</form>
+
+<section class="hidden xl:block xl:w-1/3 xl:border xl:xlborder-l-primary-light">
+  <OrderSummary page={page} />
+</section>
 
 <script is:inline>
   const id = document.getElementById.bind(document),
