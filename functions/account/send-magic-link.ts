@@ -20,9 +20,19 @@ const BaseSchema = z.object({
     .optional(),
   phone: z
     .string()
-    .refine(isMobilePhone, { message: "Invalid phone number" })
-    .refine((str) => isMobilePhone(str, true), {
-      message: "Phone number must include a country code",
+
+    .superRefine((val, ctx) => {
+      if (!isMobilePhone(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Invalid phone number",
+        });
+      } else if (!isMobilePhone(val, true)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Phone number must include a country code",
+        });
+      }
     })
     .optional(),
 });
