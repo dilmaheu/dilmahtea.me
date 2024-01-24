@@ -1,8 +1,9 @@
+import type { Session } from "lucia";
 import type { ENV } from "../utils/types";
 
 import { z } from "zod";
 import validator from "validator";
-import type { Session } from "lucia";
+import { fromZodError } from "zod-validation-error";
 
 import fetchExactAPI from "../utils/fetchExactAPI";
 import getCustomerFilter from "../utils/getCustomerFilter";
@@ -12,8 +13,18 @@ import { getToken, removeToken, validateToken } from "../utils/token";
 import { PublicError, checkUpdatedContact, isMobilePhone } from "../utils";
 
 const BaseSchema = z.object({
-  email: z.string().email().toLowerCase().optional(),
-  phone: z.string().refine(isMobilePhone).optional(),
+  email: z
+    .string()
+    .email({ message: "Invalid email address" })
+    .toLowerCase()
+    .optional(),
+  phone: z
+    .string()
+    .refine(isMobilePhone, { message: "Invalid phone number" })
+    .refine((str) => isMobilePhone(str, true), {
+      message: "Phone number must include a country code",
+    })
+    .optional(),
 });
 
 const BodySchema = BaseSchema.extend({
@@ -51,7 +62,11 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     previous_contact: string;
 
   try {
-    const bodyData = BodySchema.parse(body);
+    try {
+      var bodyData = BodySchema.parse(body);
+    } catch (error) {
+      throw new PublicError(fromZodError(error).toString().slice(18));
+    }
 
     switch (bodyData.action) {
       case "login":
@@ -133,9 +148,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     return Response.json(
       {
         success: false,
-        message: isPublicError
-          ? error.message
-          : "Invalid email or phone number",
+        message: isPublicError ? error.message : "Something went wrong",
       },
       { status: 400 },
     );
