@@ -65,7 +65,11 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     try {
       var bodyData = BodySchema.parse(body);
     } catch (error) {
-      throw new PublicError(fromZodError(error).toString().slice(18));
+      throw new PublicError(
+        fromZodError(error)
+          .toString()
+          .replace(/^Validation error: | at "[\w]+"$/g, ""),
+      );
     }
 
     switch (bodyData.action) {
