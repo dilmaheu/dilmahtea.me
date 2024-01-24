@@ -67,9 +67,6 @@ const [firstPost] = posts;
 
   .post-intro {
     @apply line-clamp-3 sm:line-clamp-4 md:line-clamp-5 lg:line-clamp-6;
-
-    font-size: clamp(1rem, 1.5vw + 0.15rem, 1.5rem);
-    line-height: 150%;
   }
 
   .post-img-curve-container {
@@ -121,14 +118,14 @@ const [firstPost] = posts;
                     (i > 0 ? ", " : " ") +
                     attributes.givenName,
                 )}
-                class="post-author flex flex-wrap font-bold"
+                class="post-author flex flex-wrap font-medium sm:font-bold text-b5"
               >
                 {firstPost.authors.data.map(({ attributes }, i) => (
                   <div>{`${i > 0 ? ", " : " "}` + attributes.givenName}</div>
                 ))}
               </div>
 
-              <div class="post-publish-date">
+              <div class="post-publish-date text-b7 font-medium">
                 {new Date(firstPost.createdAt).toLocaleString("en-US", {
                   day: "numeric",
                   month: "long",
@@ -139,7 +136,7 @@ const [firstPost] = posts;
         }
 
         <div class="link-section">
-          <div class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
+          <div class="hero-title recoleta font-bold pt-2.5 md:pt-3 lg:pt-[15px]">
             <a
               class="main-link"
               set:text={firstPost.Title}
@@ -151,7 +148,7 @@ const [firstPost] = posts;
             </span>
           </div>
 
-          <div class="hero-text pt-2.5 prose text-white max-w-none">
+          <div class="hero-text font-normal pt-2.5 prose text-white max-w-none">
             <Markdown>{firstPost.Intro_text}</Markdown>
           </div>
         </div>
@@ -267,7 +264,7 @@ const [firstPost] = posts;
                 isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
               ]}
             >
-              <div>
+              <div class="grid division-in-gap">
                 {post.authors && (
                   <div>
                     <div
@@ -278,7 +275,7 @@ const [firstPost] = posts;
                           (i > 0 ? ", " : " ") +
                           attributes.givenName,
                       )}
-                      class="post-author flex flex-wrap font-bold text-black-light"
+                      class="post-author flex flex-wrap font-bold text-black-light text-b5"
                     >
                       {post.authors.data.map(({ attributes }, i) => (
                         <div>
@@ -287,7 +284,7 @@ const [firstPost] = posts;
                       ))}
                     </div>
 
-                    <div class="post-publish-date text-black-light">
+                    <div class="post-publish-date text-black-light text-b7 font-medium">
                       {new Date(post.createdAt).toLocaleString("en-US", {
                         day: "numeric",
                         month: "long",
@@ -296,19 +293,21 @@ const [firstPost] = posts;
                   </div>
                 )}
 
-                <h2 class="post-title recoleta text-primary pt-[15px]">
-                  <a
-                    class="main-link"
-                    href={`/` + post.Meta.URL_slug}
-                    set:text={post.Title || post.Estate_name}
-                  />
+                <div>
+                  <h2 class="post-title recoleta">
+                    <a
+                      class="main-link heading-secondary font-bold text-primary"
+                      href={`/` + post.Meta.URL_slug}
+                      set:text={post.Title || post.Estate_name}
+                    />
 
-                  <span class="icon heading-inline-icon ml-2">
-                    <img class="w-full h-full" {...green_cup} />
-                  </span>
-                </h2>
+                    <span class="icon heading-inline-icon ml-2">
+                      <img class="w-full h-full" {...green_cup} />
+                    </span>
+                  </h2>
+                </div>
 
-                <div class="post-intro pt-[15px] prose max-w-none">
+                <div class="post-intro prose max-w-none text-b3 font-normal">
                   <Markdown>{post.Intro_text}</Markdown>
                 </div>
               </div>
