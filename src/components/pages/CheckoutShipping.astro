@@ -6,7 +6,8 @@ import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { page } = Astro.props,
   { locale } = page,
-  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
+  userRecurr = CMS.get("userAccountRecurringElement", locale);
 
 const checkoutInfoLink = `/${locale}/${
     CMS.get("checkoutInformation", locale).Meta.URL_slug
@@ -15,60 +16,6 @@ const checkoutInfoLink = `/${locale}/${
     CMS.get("checkoutKindness", locale).Meta.URL_slug
   }/`;
 ---
-
-<style lang="scss">
-  @use "src/styles/poly-fluid" as *;
-
-  .shipping-detail {
-    @apply flex flex-col gap-1.5;
-
-    div {
-      &:first-of-type {
-        @apply font-bold text-black-light;
-
-        font-size: poly-fluid-clamp(
-          (
-            640px: 16px,
-            1440px: 18px,
-          )
-        );
-      }
-
-      &:last-of-type {
-        @apply flex justify-between;
-
-        gap: poly-fluid-clamp(
-          (
-            640px: 20px,
-            1440px: 68px,
-          )
-        );
-
-        p {
-          @apply text-primary grow;
-
-          font-size: poly-fluid-clamp(
-            (
-              640px: 18px,
-              1440px: 24px,
-            )
-          );
-        }
-
-        a {
-          @apply font-semibold text-primary leading-[130%];
-
-          font-size: poly-fluid-clamp(
-            (
-              640px: 18px,
-              1440px: 24px,
-            )
-          );
-        }
-      }
-    }
-  }
-</style>
 
 <script
   define:vars={{
@@ -132,48 +79,54 @@ const checkoutInfoLink = `/${locale}/${
     <div
       role="list"
       aria-label={page.Aria_label_kindness_delivery_address_section_text}
-      class="p-4 gap-6 flex flex-col bg-secondary-light rounded-2xl"
+      class="tiled-div-pad division-in-gap grid bg-secondary-light rounded-[10px]"
     >
       <div
         role="listitem"
         aria-label={page.Aria_label_email_address_text}
-        class="shipping-detail"
+        class="division-in-element-gap"
       >
-        <div>{page.text_contact}</div>
+        <div class="input-label text-black">
+          {userRecurr.Input_label_email}
+        </div>
 
-        <div>
-          <p>
+        <div class="division-in-element-gap flex flex-wrap items-center">
+          <div class="input-text-large-static grow">
             <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
-          </p>
+          </div>
 
           <a
-            aria-label={`${page.Aria_label_change_text} ${page.Aria_label_email_address_text}`}
+            aria-label={`${userRecurr.Button_change_text} ${userRecurr.Aria_label_email}`}
             href={checkoutInfoLink + "?change=email"}
+            class="button-link-large"
           >
-            {page.text_change}
+            {userRecurr.Button_change_text}
           </a>
         </div>
       </div>
 
-      <div class="border border-black-light opacity-80"></div>
+      <div class="w-full h-px bg-primary-light"></div>
 
       <div
         role="listitem"
-        aria-label={page.Aria_label_delivery_address_text}
-        class="shipping-detail"
+        aria-label={page.Aria_label_email_address_text}
+        class="division-in-element-gap"
       >
-        <div>{page.text_delivery_address}</div>
+        <div class="input-label text-black">
+          {userRecurr.Label_delivery_address}
+        </div>
 
-        <div>
-          <p>
+        <div class="division-in-element-gap flex flex-wrap items-center">
+          <div class="input-text-large-static grow">
             <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
-          </p>
+          </div>
 
           <a
-            aria-label={`${page.Aria_label_change_text} ${page.Aria_label_delivery_address_text}`}
-            href={checkoutInfoLink + "?change=street"}
+            aria-label={`${userRecurr.Button_change_text} ${userRecurr.Aria_label_delivery_address}`}
+            href={checkoutInfoLink + "?change=email"}
+            class="button-link-large"
           >
-            {page.text_change}
+            {userRecurr.Button_change_text}
           </a>
         </div>
       </div>
