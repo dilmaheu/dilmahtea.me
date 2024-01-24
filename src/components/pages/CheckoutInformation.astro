@@ -9,59 +9,6 @@ const { page } = Astro.props,
   checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug;
 ---
 
-<style lang="scss">
-  @use "src/styles/poly-fluid" as *;
-
-  .form-grid-container {
-    @apply flex flex-col;
-
-    gap: poly-fluid-clamp(
-      (
-        375px: 10px,
-        1440px: 25px,
-      )
-    );
-
-    .prose-text {
-      font-size: poly-fluid-clamp(
-        (
-          375px: 16px,
-          1440px: 20px,
-        )
-      );
-    }
-
-    .form-grid {
-      @apply w-full grid gap-y-2.5;
-
-      @media (min-width: 640px) {
-        @apply grid-cols-2;
-
-        gap: poly-fluid-clamp(
-          (
-            480px: 10px 40px,
-            1440px: 25px 50px,
-          )
-        );
-      }
-
-      label {
-        @apply flex flex-col gap-1.5;
-
-        span {
-          @apply font-bold text-black-light sm:text-[1.125rem];
-        }
-
-        input,
-        select {
-          @apply focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none;
-          @apply h-12 bg-secondary py-3 px-4 border border-primary rounded-full text-black sm:text-[1.125rem];
-        }
-      }
-    }
-  }
-</style>
-
 <section class="w-full xl:w-2/3">
   <form
     role="main"
@@ -73,13 +20,13 @@ const { page } = Astro.props,
     <div
       role="form"
       aria-label={page.text_contact_info}
-      class="form-grid-container"
+      class="division-gap grid"
     >
       <h2 class="recoleta text-h2 text-primary">{page.text_customer}</h2>
 
       <div
         id="guest-intro-text"
-        class="prose-text prose max-w-none leading-[150%] text-black-light"
+        class="prose-text prose max-w-none text-b5 text-black-light"
       >
         <Markdown>{page.Guest_intro_text}</Markdown>
       </div>
@@ -99,7 +46,7 @@ const { page } = Astro.props,
 
       <div
         id="sign-in-text"
-        class="prose-text prose max-w-none leading-[150%] text-black-light"
+        class="prose-text prose max-w-none text-b5 text-black-light"
       >
         <Markdown>{page.Sign_in_text}</Markdown>
       </div>
@@ -110,7 +57,7 @@ const { page } = Astro.props,
     <div
       role="form"
       aria-label={page.text_shipping_address}
-      class="form-grid-container"
+      class="division-gap grid"
     >
       <h2 class="recoleta text-h2 text-primary">
         {page.text_shipping_address}
