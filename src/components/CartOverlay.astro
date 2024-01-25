@@ -20,20 +20,30 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+  @use "src/styles/checkout" as *;
+
+  .product-image {
+    $fluid-image-size: poly-fluid-clamp(
+      (
+        375px: 50px,
+        1440px: 85px,
+      )
+    );
+
+    width: $fluid-image-size;
+    height: $fluid-image-size;
+    min-width: $fluid-image-size;
+  }
+</style>
+
+<style lang="scss">
   #cart-overlay-products-container {
     @apply max-w-full w-[375px] sm:w-[528.96px];
   }
 
   .cart-overlay-heading {
     @apply text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[110%];
-  }
-
-  .cart-overlay-product-details {
-    @apply max-w-full w-[272px];
-  }
-
-  .cart-overlay-product-name {
-    @apply text-[1.125rem] sm:text-[1.5rem] md:font-bold leading-[120%];
   }
 
   .cart-overlay-product-amount-tweak-btn:disabled {
@@ -131,6 +141,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       const productData = window.cart[id],
                         names = JSON.parse(productData.names),
                         name = names[window.preferredLocale] || names["en"],
+                        infos = JSON.parse(productData.infos),
+                        info = infos[window.preferredLocale] || infos["en"],
                         price = Number(productData.price)
                           .toFixed(2)
                           .replace(".", ",");
@@ -141,6 +153,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           ...productData,
                           id,
                           name,
+                          info,
                           price,
                         }),
                       );
@@ -177,24 +190,21 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     <div
                       id={`<placeholder name="id"></placeholder>`}
                       class:list={[
-                        "cart-product bg-secondary-light p-4",
-                        "flex justify-between items-center gap-3.5 w-full rounded-[10px]",
+                        "cart-product tiled-div-sm-pad division-in-gap",
+                        "flex w-full bg-secondary-light rounded-[10px]",
                       ]}
                     >
                       <img
-                        alt=""
+                        class="product-image"
                         src={`<placeholder name="image"></placeholder>`}
-                        style={[
-                          "clip-path: url(#cart-overlay-product-image);",
-                          "min-width: 100px; width: 100px; height: 100px;",
-                        ].join(" ")}
+                        style="clip-path: url(#cart-overlay-product-image)"
                       />
 
-                      <div
-                        class="cart-overlay-product-details flex flex-col gap-1.5"
-                      >
-                        <div class="flex justify-between items-center gap-1.5">
-                          <h3 class="recoleta cart-overlay-product-name">
+                      <div class="division-in-element-gap flex flex-col">
+                        <div
+                          class="division-in-element-gap flex justify-between"
+                        >
+                          <h3 class="recoleta text-h5">
                             <placeholder name="name"></placeholder>
                           </h3>
 
@@ -205,6 +215,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           >
                             <Icon name="akar-icons:trash-can" class="w-6 h-6" />
                           </button>
+                        </div>
+
+                        <div class="text-b6 text-black-light">
+                          <placeholder name="info"></placeholder>
                         </div>
 
                         <div
