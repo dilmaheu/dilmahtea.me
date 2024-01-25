@@ -6,6 +6,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import UpdateTopMargin from "@scripts/UpdateTopMargin.astro";
 
 import Navbar from "@components/Navbar.astro";
+import Footer from "@components/Footer.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import EmptyCartNotification from "@components/EmptyCartNotification.astro";
@@ -43,51 +44,39 @@ const footerText = recurData.Footer_text.replaceAll(
 
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
+  @use "src/styles/checkout" as *;
 
   #checkout-cart-container {
     @include poly-fluid-sizing(
       "padding-top",
       (
-        639px: 90px,
-        640px: 95px,
-        768px: 100px,
-        960px: 110px,
-        1024px: 120px,
-        1280px: 130px,
-        1536px: 145px,
-        2050px: 165px,
+        639.98px: 131px,
+        640px: 70px,
+        767px: 77px,
+        768px: 135px,
+        1024px: 162px,
+        1280px: 175px,
       )
     );
   }
 
-  #cart {
-    padding: poly-fluid-clamp(
+  .product-image {
+    $fluid-image-size: poly-fluid-clamp(
       (
-        375px: 13px 24px 24px,
-        1440px: 29px 56px 56px,
+        375px: 50px,
+        1440px: 85px,
       )
     );
-  }
 
-  h1,
-  #cart-subtotal,
-  .text-total {
-    @apply leading-[115%];
-  }
-
-  h1 {
-    font-size: poly-fluid-clamp(
-      (
-        375px: 32px,
-        1440px: 48px,
-      )
-    );
+    width: $fluid-image-size;
+    height: $fluid-image-size;
+    min-width: $fluid-image-size;
   }
 
   .cart-products {
     > div {
       @media (min-width: 768px) {
-        @apply grid gap-4;
+        @apply grid;
 
         grid-template-columns: 3fr 1fr 1fr;
 
@@ -108,59 +97,8 @@ const footerText = recurData.Footer_text.replaceAll(
     }
 
     hr {
-      @apply border border-primary-light opacity-50;
+      @apply border border-primary-light;
     }
-
-    .details-headings {
-      @apply font-semibold text-primary text-[1.5rem] leading-[130%];
-    }
-  }
-
-  .cart-product-details {
-    gap: poly-fluid-clamp(
-      (
-        375px: 14px,
-        1440px: 35px,
-      )
-    );
-  }
-
-  .cart-product-name {
-    line-height: 110%;
-    font-size: poly-fluid-clamp(
-      (
-        375px: 24px,
-        1440px: 32px,
-      )
-    );
-  }
-
-  .cart-product-price {
-    line-height: 110%;
-    font-size: poly-fluid-clamp(
-      (
-        375px: 28px,
-        1440px: 32px,
-      )
-    );
-  }
-
-  .text-shipping-charge-info {
-    font-size: poly-fluid-clamp(
-      (
-        375px: 14px,
-        1440px: 18px,
-      )
-    );
-  }
-
-  .text-total {
-    font-size: poly-fluid-clamp(
-      (
-        375px: 28px,
-        1440px: 48px,
-      )
-    );
   }
 </style>
 
@@ -171,92 +109,132 @@ const footerText = recurData.Footer_text.replaceAll(
   alternateURLs={alternateURLs}
   metaImageSrc={metaImageSrc}
 >
-  <Navbar
-    docLocale={locale}
-    footerText={footerText}
-    isCartNavbar={true}
-    availableLocales={availableLocales}
-  />
-
-  <div id="checkout-cart-container" class="min-h-screen flex flex-col">
-    <UpdateTopMargin />
-
-    <EmptyCartNotification locale={locale} />
-
-    <div id="cart" class="grow flex flex-col text-primary">
-      <h1 class="recoleta font-semibold leading-[130%] mb-4 md:mb-6">
-        {page.text_cart}
-      </h1>
-
-      <ClipPathSVG
-        id="cart-product-image"
-        path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
+  <div class="flex flex-wrap w-full h-full">
+    <div class="block w-full bg-secondary">
+      <Navbar
+        docLocale={locale}
+        footerText={footerText}
+        isCartNavbar={true}
+        availableLocales={availableLocales}
       />
 
-      <div class="cart-products flex flex-col gap-6 md:gap-4 mb-9">
-        <div class="!hidden md:!grid details-headings">
-          <div>{page.text_product}</div>
-          <div>{checkoutRecurData.text_quantity}</div>
-          <div>{checkoutRecurData.text_subtotal}</div>
-        </div>
+      <div id="checkout-cart-container" class="wrapper flex flex-col">
+        <UpdateTopMargin />
 
-        <hr />
+        <EmptyCartNotification locale={locale} />
 
-        <DynamicHTML
-          voidFn={(content, currentScript) => {
-            const cart = document.getElementById("cart"),
-              emptyCartNotification = document.getElementById(
-                "empty-cart-notification",
-              );
+        <ClipPathSVG
+          id="cart-product-image"
+          path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
+        />
 
-            if (Object.keys(window.cart).length === 0) {
-              cart.classList.add("hidden");
-            } else {
-              emptyCartNotification.classList.add("hidden");
-            }
+        <div id="cart" class="division-gap grow flex flex-col py-[50px]">
+          <h1 class="recoleta text-h2 text-primary">
+            {page.text_cart}
+          </h1>
 
-            currentScript.insertAdjacentHTML(
-              "beforebegin",
-              Object.keys(window.cart)
-                .map((id) => {
-                  const productData = window.cart[id],
-                    names = JSON.parse(productData.names),
-                    name = names[window.preferredLocale] || names["en"],
-                    price = Number(productData.price)
-                      .toFixed(2)
-                      .replace(".", ",");
+          <div class="cart-products division-in-gap flex flex-col">
+            <div class="!hidden md:!grid text-b3 font-semibold text-black">
+              <div>{page.text_product}</div>
+              <div>{checkoutRecurData.text_quantity}</div>
+              <div>{checkoutRecurData.text_subtotal}</div>
+            </div>
 
-                  return window.replacePlaceholders(content, {
-                    ...productData,
-                    id,
-                    name,
-                    price,
-                  });
-                })
-                .join(""),
-            );
-          }}
-        >
-          <div
-            id={`<placeholder name="id"></placeholder>`}
-            class="cart-product items-center bg-secondary-light p-[15px] rounded-[19px]"
-          >
-            <div class="cart-product-details flex items-center">
-              <img
-                alt=""
-                src={`<placeholder name="image"></placeholder>`}
-                style="min-width: 85px; width: 85px; height: 85px; clip-path: url(#cart-product-image);"
-              />
+            <hr />
 
-              <div class="grow flex flex-col gap-2">
-                <div class="flex justify-between items-center gap-2.5">
-                  <h2 class="cart-product-name recoleta sm:font-semibold">
-                    <placeholder name="name"></placeholder>
-                  </h2>
+            <DynamicHTML
+              voidFn={(content, currentScript) => {
+                const cart = document.getElementById("cart"),
+                  emptyCartNotification = document.getElementById(
+                    "empty-cart-notification",
+                  );
+
+                if (Object.keys(window.cart).length === 0) {
+                  cart.classList.add("hidden");
+                } else {
+                  emptyCartNotification.classList.add("hidden");
+                }
+
+                currentScript.insertAdjacentHTML(
+                  "beforebegin",
+                  Object.keys(window.cart)
+                    .map((id) => {
+                      const productData = window.cart[id],
+                        names = JSON.parse(productData.names),
+                        name = names[window.preferredLocale] || names["en"],
+                        infos = JSON.parse(productData.infos),
+                        info = infos[window.preferredLocale] || infos["en"],
+                        price = Number(productData.price)
+                          .toFixed(2)
+                          .replace(".", ",");
+
+                      return window.replacePlaceholders(content, {
+                        ...productData,
+                        id,
+                        name,
+                        info,
+                        price,
+                      });
+                    })
+                    .join(""),
+                );
+              }}
+            >
+              <div
+                id={`<placeholder name="id"></placeholder>`}
+                class:list={[
+                  "cart-product tiled-div-sm-pad division-in-gap",
+                  "flex items-center bg-secondary-light rounded-[10px]",
+                ]}
+              >
+                <div class="division-in-gap w-full flex text-black-light">
+                  <img
+                    class="product-image"
+                    src={`<placeholder name="image"></placeholder>`}
+                    style="clip-path: url(#cart-product-image)"
+                  />
+
+                  <div class="division-in-element-gap grow flex flex-col">
+                    <div class="division-in-element-gap flex justify-between">
+                      <h2 class="recoleta text-h5 text-black">
+                        <placeholder name="name"></placeholder>
+                      </h2>
+
+                      <button
+                        aria-label={checkoutRecurData.Aria_label_remove_item_button_text}
+                        class="remove-item-btn md:hidden text-black-light"
+                      >
+                        <Icon
+                          name="akar-icons:trash-can"
+                          class="w-[29px] h-[29px]"
+                        />
+                      </button>
+                    </div>
+
+                    <div class="text-b6">
+                      <placeholder name="info"></placeholder>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <div class="block md:hidden">
+                        <CartProductQuantityInput {ariaLabelRecurData} />
+                      </div>
+
+                      <div
+                        class="cart-product-price recoleta text-h5 text-black block md:hidden"
+                      >
+                        €<placeholder name="price"></placeholder>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="hidden md:flex gap-7">
+                  <CartProductQuantityInput {ariaLabelRecurData} />
 
                   <button
-                    aria-label={checkoutRecurData.Aria_label_remove_item_button_text}
-                    class="remove-item-btn md:hidden"
+                    class="remove-item-btn text-black-light"
+                    aria-label={page.Aria_label_remove_item_button_text}
                   >
                     <Icon
                       name="akar-icons:trash-can"
@@ -265,67 +243,46 @@ const footerText = recurData.Footer_text.replaceAll(
                   </button>
                 </div>
 
-                <div class="flex justify-between items-center">
-                  <div class="block md:hidden">
-                    <CartProductQuantityInput {ariaLabelRecurData} />
-                  </div>
-
-                  <div class="cart-product-price recoleta block md:hidden">
-                    €<placeholder name="price"></placeholder>
-                  </div>
+                <div
+                  class="cart-product-price recoleta text-h5 text-black hidden md:block"
+                >
+                  €<placeholder name="price"></placeholder>
                 </div>
+              </div>
+            </DynamicHTML>
+
+            <hr />
+          </div>
+
+          <div class="division-in-gap flex flex-col text-black-light">
+            <div class="division-in-element-gap flex justify-between">
+              <div class="division-in-element-gap flex flex-col">
+                <div class="text-b2 font-bold text-black">
+                  {checkoutRecurData.text_subtotal}
+                </div>
+
+                <div class="text-b5">
+                  {checkoutRecurData.text_shipping_calculated_at_checkout}
+                </div>
+              </div>
+
+              <div id="cart-subtotal" class="recoleta text-h3 text-black">
+                €<DynamicHTML htmlFn={() => window.cart.subTotal} />
               </div>
             </div>
 
-            <div class="hidden md:flex gap-7">
-              <CartProductQuantityInput {ariaLabelRecurData} />
-
-              <button
-                class="remove-item-btn"
-                aria-label={page.Aria_label_remove_item_button_text}
-              >
-                <Icon name="akar-icons:trash-can" class="w-[29px] h-[29px]" />
-              </button>
-            </div>
-
-            <div class="cart-product-price recoleta hidden md:block">
-              €<placeholder name="price"></placeholder>
-            </div>
-          </div>
-        </DynamicHTML>
-
-        <hr />
-      </div>
-
-      <div class="flex flex-col mt-auto">
-        <div class="mb-3 md:mb-4 flex justify-between items-center">
-          <div class="flex flex-col gap-4">
-            <div class="recoleta font-semibold text-total">
-              {checkoutRecurData.text_total}
-            </div>
-
-            <div class="hidden md:block text-shipping-charge-info">
-              {checkoutRecurData.text_shipping_calculated_at_checkout}
-            </div>
-          </div>
-
-          <div id="cart-subtotal" class="recoleta font-semibold text-[32px]">
-            €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+            <a
+              href={checkoutInfoLink}
+              class="self-end w-full sm:w-fit sm:min-w-[400px] button-primary-large"
+            >
+              {page.text_go_to_checkout}
+            </a>
           </div>
         </div>
-
-        <div class="md:hidden mb-5 text-shipping-charge-info">
-          {checkoutRecurData.text_shipping_calculated_at_checkout}
-        </div>
-
-        <a
-          href={checkoutInfoLink}
-          class="self-end px-32 py-3 bg-primary font-bold text-secondary rounded-full"
-        >
-          {page.text_go_to_checkout}
-        </a>
       </div>
     </div>
+
+    <Footer footerText={footerText} recurData={recurData} type={page?.type} />
   </div>
 </BaseLayout>
 
