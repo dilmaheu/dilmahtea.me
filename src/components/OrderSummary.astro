@@ -5,6 +5,7 @@ import DynamicHTML from "@components/DynamicHTML.astro";
 const { page } = Astro.props,
   { locale } = page,
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
+  userRecurData = CMS.get("userAccountRecurringElement", locale),
   isCheckoutInformation = page.type === "checkoutInformation",
   isCheckoutPayment = page.type === "checkoutPayment",
   isCheckoutShipping = page.type === "checkoutShipping",
@@ -29,7 +30,7 @@ const { page } = Astro.props,
   }
 </style>
 
-<div 
+<div
   class:list={[
     "order-summary division-gap text-black flex flex-col",
     "h-full xl:pl-[50px] xl:border-l xl:border-l-primary-light",
@@ -56,18 +57,24 @@ const { page } = Astro.props,
             const productData = window.cart[id],
               names = JSON.parse(productData.names),
               name = names[window.preferredLocale] || names["en"],
+              infos = JSON.parse(productData.infos),
+              info = infos[window.preferredLocale] || infos["en"],
               price = productData.price.toFixed(2).replace(".", ",");
 
             return window.replacePlaceholders(content, {
               ...productData,
               name,
+              info,
               price,
             });
           })
           .join("")}
     >
       <div
-        class="product p-4 gap-3.5 flex items-center bg-secondary-light rounded-[10px]"
+        class:list={[
+          "product tiled-div-sm-pad division-in-gap",
+          "flex bg-secondary-light rounded-[10px]",
+        ]}
       >
         <img
           class="product-image"
@@ -75,15 +82,24 @@ const { page } = Astro.props,
           style="clip-path: url(#product-image-curve)"
         />
 
-        <div class="flex flex-col flex-grow gap-2.5">
+        <div class="division-in-element-gap flex flex-col flex-grow">
           <h3 class="product-name recoleta text-h5">
-            <placeholder name="name"></placeholder> (<placeholder
-              name="quantity"></placeholder>)
+            <placeholder name="name"></placeholder>
           </h3>
 
-          <span class="product-price recoleta text-h5 text-right">
-            €<placeholder name="price"></placeholder>
-          </span>
+          <div class="text-b6 text-black-light">
+            <placeholder name="info"></placeholder>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <span class="text-b6 font-medium text-black-light">
+              <span>{userRecurData.text_quantity}:</span>
+              <placeholder name="quantity"></placeholder>
+            </span>
+            <span class="product-price recoleta text-h5 text-right">
+              €<placeholder name="price"></placeholder>
+            </span>
+          </div>
         </div>
       </div>
     </DynamicHTML>
@@ -163,21 +179,3 @@ const { page } = Astro.props,
     }
   </div>
 </div>
-
-<!-- <div class="order-charges flex flex-col gap-3">
-  <div>
-    <span>{checkoutRecurData.text_subtotal}</span>
-
-    <span class="order-subtotal recoleta">
-      €<DynamicHTML htmlFn={() => window.cart.subTotal} />
-    </span>
-  </div>
-
-  <div>
-    <span>{checkoutRecurData.text_shipping}</span>
-
-    <span class="order-shipping-cost recoleta">
-      €<DynamicHTML htmlFn={() => window.cart.shippingCost} />
-    </span>
-  </div>
-</div> -->
