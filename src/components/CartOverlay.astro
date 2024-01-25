@@ -35,15 +35,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     height: $fluid-image-size;
     min-width: $fluid-image-size;
   }
-</style>
 
-<style lang="scss">
   #cart-overlay-products-container {
     @apply max-w-full w-[375px] sm:w-[528.96px];
-  }
-
-  .cart-overlay-heading {
-    @apply text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[110%];
   }
 
   .cart-overlay-product-amount-tweak-btn:disabled {
@@ -58,22 +52,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       -webkit-appearance: none;
       margin: 0;
     }
-  }
-
-  .subtotal-text {
-    @apply text-base sm:text-[1.125rem];
-  }
-
-  .cart-overlay-product-price {
-    @apply text-[1.75rem] font-bold leading-[120%] sm:leading-[110%];
-  }
-
-  #cart-subtotal {
-    @apply text-[1.75rem] sm:text-[2rem] font-bold leading-[120%] sm:leading-[110%];
-  }
-
-  .shipping-charge-info {
-    @apply text-[0.875rem] sm:text-base;
   }
 </style>
 
@@ -101,7 +79,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         <div class="flex flex-col gap-5 h-full">
           <div class="flex flex-col gap-5">
             <div class="flex justify-between items-center">
-              <h2 class="cart-overlay-heading recoleta font-bold">
+              <h2 class="recoleta text-h3 font-bold">
                 {checkoutRecurData.text_cart}
               </h2>
 
@@ -109,7 +87,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 aria-label={checkoutRecurData.Aria_label_cart_close_button_text}
                 class="close-cart-btn"
               >
-                <Icon name="heroicons-solid:x" class="w-14" />
+                <Icon name="heroicons-solid:x" class="w-10" />
               </button>
             </div>
 
@@ -209,7 +187,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           </h3>
 
                           <button
-                            class="remove-item-btn"
+                            class="remove-item-btn h-fit"
                             aria-label={checkoutRecurData.Aria_label_remove_cart_item_button_text +
                               ` <placeholder name="name"></placeholder>`}
                           >
@@ -267,7 +245,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           </div>
 
                           <span
-                            class="cart-overlay-product-price recoleta text-black"
+                            class="cart-overlay-product-price recoleta text-h5 text-black"
                           >
                             €<placeholder name="price"></placeholder>
                           </span>
@@ -279,19 +257,19 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               </div>
             </div>
 
-            <div class="flex flex-col gap-5">
-              <div>
+            <div class="division-in-gap flex flex-col">
+              <div class="division-in-element-gap flex flex-col">
                 <div class="flex justify-between items-center">
-                  <span class="subtotal-text font-medium">
+                  <span class="text-b2 font-bold text-black">
                     {checkoutRecurData.text_subtotal}
                   </span>
 
-                  <span id="cart-subtotal" class="recoleta">
+                  <span id="cart-subtotal" class="recoleta text-h3">
                     €<DynamicHTML htmlFn={() => window.cart.subTotal} />
                   </span>
                 </div>
 
-                <div class="shipping-charge-info">
+                <div class="text-b5">
                   {checkoutRecurData.text_shipping_calculated_at_checkout}
                 </div>
               </div>
@@ -299,7 +277,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               <a
                 id="checkout-info-link"
                 href={checkoutInfoPageLink}
-                class="capitalize py-4 bg-primary text-white font-bold text-center rounded-[9999px]"
+                class="button-primary-large"
               >
                 {checkoutRecurData.text_proceed_to_checkout}
               </a>
@@ -307,7 +285,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               <div class="flex justify-center items-center">
                 <button
                   aria-label={checkoutRecurData.Aria_label_cart_close_button_text}
-                  class="close-cart-btn text-primary font-bold"
+                  class="close-cart-btn button-link-large"
                 >
                   {checkoutRecurData.text_continue_shopping}
                 </button>
