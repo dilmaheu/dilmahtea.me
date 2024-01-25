@@ -22,7 +22,6 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
         "Content-Type": "application/json",
         "X-Master-Key":
           "$2a$10$NzPqJzqi53uUEtvHJ5vlVuDSa0vhPZn7VMm0eyecaA0GN.o/zPwcu",
-        "X-Collection-Id": "65b168801f5677401f249adb",
       },
       body: JSON.stringify({
         url: clonedRequest.url,
