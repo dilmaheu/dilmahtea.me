@@ -1,8 +1,6 @@
 fragment UserAccountAddressAttributes on UserAccountAddress {
   locale
   Title
-  Block_name_delivery_address
-  Block2_name_billing_address
   Breadcrumb {
     Steps {
       Name
@@ -24,10 +22,31 @@ query {
     data {
       attributes {
         ...UserAccountAddressAttributes
+        countries {
+          data {
+            attributes {
+              name
+            }
+          }
+        }
         localizations {
           data {
             attributes {
               ...UserAccountAddressAttributes
+              countries {
+                data {
+                  attributes {
+                    name
+                    localizations(filters: { locale: { eq: "en" } }) {
+                      data {
+                        attributes {
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }

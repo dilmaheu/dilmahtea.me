@@ -2,7 +2,6 @@
 import { Icon } from "astro-icon";
 
 import CMS from "@store/CMS";
-import RecurringImages from "@store/RecurringImages";
 
 import SavedAddresses from "@solid/SavedAddresses.astro";
 
@@ -10,17 +9,9 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 import UserAccountLayout from "@layouts/UserAccountLayout.astro";
 
 const { page } = Astro.props,
-  {
-    Title,
-    Block_name_delivery_address,
-    Block2_name_billing_address,
-    locale,
-    countries,
-  } = page;
+  { Title, locale, countries } = page;
 
 const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
-
-const userName = `Sara Jones`;
 ---
 
 <style lang="scss">
@@ -69,10 +60,7 @@ const userName = `Sara Jones`;
       {Title}
     </h2>
 
-    <SavedAddresses
-      recurringImages={RecurringImages}
-      userAccountRecurData={userAccountRecurData}
-    >
+    <SavedAddresses {countries} {userAccountRecurData}>
       <Icon
         slot="plusIcon"
         name="akar-icons:plus"

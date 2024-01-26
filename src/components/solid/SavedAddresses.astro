@@ -4,7 +4,7 @@ import subset from "@utils/shared/subset";
 import SavedAddresses from "@solid/SavedAddresses";
 import RecurringImages from "@store/RecurringImages";
 
-let { userAccountRecurData } = Astro.props;
+let { countries, userAccountRecurData } = Astro.props;
 
 const { success_notification, warning_notification, error_notification } =
   RecurringImages;
@@ -52,7 +52,12 @@ userAccountRecurData = subset(userAccountRecurData, [
 ]);
 ---
 
-<SavedAddresses client:load {recurringImages} {userAccountRecurData}>
+<SavedAddresses
+  client:load
+  {countries}
+  {recurringImages}
+  {userAccountRecurData}
+>
   <Icon slot="plusIcon" name="akar-icons:plus" class="w-[18px] select-none" />
 
   <Icon

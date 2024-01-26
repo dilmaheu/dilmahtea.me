@@ -3,6 +3,7 @@ import DashboardNotification from "@solid/DashboardNotification";
 export default function SavedAddresses({
   plusIcon,
   trashCanIcon,
+  countries,
   recurringImages,
   userAccountRecurData,
 }) {
@@ -301,7 +302,7 @@ export default function SavedAddresses({
                     {`page.country_placeholder`}
                   </option>
 
-                  {/* {page.countries.data.map(
+                  {countries.data.map(
                     ({ attributes: { name, localizations } }) => (
                       <option
                         value={localizations?.data[0]?.attributes?.name || name}
@@ -309,7 +310,7 @@ export default function SavedAddresses({
                         {name}
                       </option>
                     ),
-                  )} */}
+                  )}
                 </select>
               </label>
             </div>
