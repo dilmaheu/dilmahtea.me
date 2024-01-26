@@ -29,7 +29,7 @@ export default function SavedAddresses({
     Tag_default_text: tag_default,
     Tag_others_text: tag_others,
     Tag_others_placeholder_text: tag_placeholder_others,
-    Address_tag: address_tag,
+    Tag_suggestions,
     Button_add_text,
     Button_edit_text,
     Button_update_text,
@@ -62,9 +62,6 @@ export default function SavedAddresses({
     text_default_billing_address,
   } = userAccountRecurData;
 
-  const address_primary = address_tag.slice(0, 3),
-    address_all = address_tag.slice(3);
-
   return (
     <div class="dashboard-sec">
       <div class="grid division-gap">
@@ -81,302 +78,196 @@ export default function SavedAddresses({
           </a>
         </div>
 
-        <div class="tiled-form">
-          <div
-            role="form"
-            aria-label={`page.text_shipping_address`}
-            class="division-gap grid"
-          >
-            <div class="division-in-gap grid">
-              <div class="text-b5 font-bold text-black-light">
-                Tag to recognize
-              </div>
+        <form
+          class="tiled-form division-gap grid"
+          aria-label={`page.text_shipping_address`}
+        >
+          <div class="division-in-gap grid">
+            <div class="text-b5 font-bold text-black-light">
+              Tag to recognize
+            </div>
 
-              <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
-                <div>
-                  <input
-                    type="radio"
-                    name="shipping_address"
-                    id={`address1`}
-                    value={`value`}
-                    checked
-                    class="peer hidden"
-                  />
-
-                  <label
-                    for={`address1`}
-                    class={[
-                      "radio-button-default text-primary",
-                      "bg-secondary-light border-secondary-light font-medium",
-                      "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
-                    ].join(" ")}
-                  >
-                    Home
-                  </label>
-                </div>
-
-                <div>
-                  <input
-                    type="radio"
-                    name="shipping_address"
-                    id={`address2`}
-                    value={`value`}
-                    class="peer hidden"
-                  />
-
-                  <label
-                    for={`address2`}
-                    class={[
-                      "radio-button-default text-primary",
-                      "bg-secondary-light border-secondary-light font-medium",
-                      "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
-                    ].join(" ")}
-                  >
-                    Parents
-                  </label>
-                </div>
-
-                <div>
-                  <input
-                    type="radio"
-                    name="shipping_address"
-                    id={`address3`}
-                    value={`value`}
-                    class="peer hidden"
-                  />
-
-                  <label
-                    for={`address3`}
-                    class={[
-                      "radio-button-default text-primary",
-                      "bg-secondary-light border-secondary-light font-medium",
-                      "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
-                    ].join(" ")}
-                  >
-                    Family
-                  </label>
-                </div>
-
-                <div class="more-address hidden">
-                  <input
-                    type="radio"
-                    name="shipping_address"
-                    id={`address4`}
-                    value={`value`}
-                    class="peer hidden"
-                  />
-
-                  <label
-                    for={`address4`}
-                    class={[
-                      "radio-button-default text-primary",
-                      "bg-secondary-light border-secondary-light font-medium",
-                      "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
-                    ].join(" ")}
-                  >
-                    Address Line 1
-                  </label>
-                </div>
-
-                <div class="more-address hidden">
-                  <input
-                    type="radio"
-                    name="shipping_address"
-                    id={`address5`}
-                    value={`value`}
-                    class="peer hidden"
-                  />
-
-                  <label
-                    for={`address5`}
-                    class={[
-                      "radio-button-default text-primary",
-                      "bg-secondary-light border-secondary-light font-medium",
-                      "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
-                    ].join(" ")}
-                  >
-                    Address Line 2
-                  </label>
-                </div>
-
-                <div class="more-address hidden">
-                  <input
-                    type="radio"
-                    name="shipping_address"
-                    id={`address6`}
-                    value={`value`}
-                    class="peer hidden"
-                  />
-
-                  <label
-                    for={`address6`}
-                    class={[
-                      "radio-button-default text-primary",
-                      "bg-secondary-light border-secondary-light font-medium",
-                      "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
-                    ].join(" ")}
-                  >
-                    Address Line 3
-                  </label>
-                </div>
-
-                <div>
-                  <input
-                    type="radio"
-                    name="shipping_address"
-                    id={`address-tag`}
-                    value={`value`}
-                    class="peer hidden"
-                  />
-
-                  <label
-                    for={`address-tag`}
-                    class={[
-                      "radio-button-extended border-white",
-                      "peer-checked:border-primary",
-                    ].join(" ")}
-                  >
-                    Add +
-                  </label>
-                </div>
-              </div>
-
-              <div id="tag-input" class="hidden">
-                <div class="form-grid">
-                  <label class="relative">
+            <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
+              {Tag_suggestions.split("\n")
+                .filter(Boolean)
+                .map((tag) => (
+                  <div>
                     <input
-                      type="text"
-                      name="new_tag"
-                      placeholder={`Enter your tag`}
-                      class="pr-[40px]"
+                      type="radio"
+                      name="address_tag"
+                      id={`address-tag-${tag.toLowerCase()}`}
+                      value={tag.toLowerCase()}
+                      class="peer hidden"
                     />
 
-                    <span class="tag-input-close-button"> &#10005;</span>
-                  </label>
-                </div>
-              </div>
-            </div>
+                    <label
+                      for={`address-tag-${tag.toLowerCase()}`}
+                      class={[
+                        "radio-button-default text-primary",
+                        "bg-secondary-light border-secondary-light font-medium",
+                        "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                      ].join(" ")}
+                    >
+                      {tag}
+                    </label>
+                  </div>
+                ))}
 
-            <div class="form-grid">
-              <label>
-                <span class="input-label">{`page.text_first_name`}</span>
-
+              <div>
                 <input
-                  type="text"
-                  name="first_name"
-                  placeholder={`page.first_name_placeholder`}
-                  required
+                  type="radio"
+                  name="address_tag"
+                  id="add-new-address-tag"
+                  value=""
+                  class="peer hidden"
                 />
-              </label>
 
-              <label>
-                <span class="input-label">{`page.text_last_name`}</span>
-
-                <input
-                  type="text"
-                  name="last_name"
-                  placeholder={`page.last_name_placeholder`}
-                  required
-                />
-              </label>
-
-              <label>
-                <span class="input-label">{`page.text_street`}</span>
-
-                <input
-                  type="text"
-                  name="street"
-                  placeholder={`page.street_placeholder`}
-                  required
-                />
-              </label>
-
-              <label>
-                <span class="input-label">{`page.text_city`}</span>
-
-                <input
-                  type="text"
-                  name="city"
-                  placeholder={`page.city_placeholder`}
-                  required
-                />
-              </label>
-
-              <label>
-                <span class="input-label">{`page.text_postal_code`}</span>
-
-                <input
-                  type="text"
-                  name="postal_code"
-                  placeholder={`page.postal_code_placeholder`}
-                  required
-                />
-              </label>
-
-              <label>
-                <span class="input-label">{`page.text_country`}</span>
-
-                <select name="country" required>
-                  <option value="" selected disabled hidden>
-                    {`page.country_placeholder`}
-                  </option>
-
-                  {countries.data.map(
-                    ({ attributes: { name, localizations } }) => (
-                      <option
-                        value={localizations?.data[0]?.attributes?.name || name}
-                      >
-                        {name}
-                      </option>
-                    ),
-                  )}
-                </select>
-              </label>
-            </div>
-
-            <div class="division-in-element-gap grid">
-              <div class="flex">
-                <label class="checkbox-primary">
-                  <span class="checkbox-input-container">
-                    <input type="checkbox" />
-                    <span class="checkbox-primary"></span>
-                  </span>
-                  {Checkbox_set_default_delivery_address_text}
-                </label>
-              </div>
-
-              <div class="flex">
-                <label class="checkbox-primary">
-                  <span class="checkbox-input-container">
-                    <input type="checkbox" />
-                    <span class="checkbox-primary"></span>
-                  </span>
-                  {Checkbox_add_billing_address_text}
-                </label>
-              </div>
-
-              <div class="flex">
-                <label class="checkbox-primary">
-                  <span class="checkbox-input-container">
-                    <input type="checkbox" />
-                    <span class="checkbox-primary"></span>
-                  </span>
-                  {Checkbox_set_default_billing_address_text}
+                <label
+                  for="add-new-address-tag"
+                  class={[
+                    "radio-button-extended border-white",
+                    "peer-checked:border-primary",
+                  ].join(" ")}
+                >
+                  Add +
                 </label>
               </div>
             </div>
 
-            <div class="form-button-container">
-              <div class="flex w-full sm:w-1/2 sm:order-2">
-                <div class="button-primary w-full">{Button_save_text}</div>
-              </div>
-
-              <div class="flex">
-                <div class="button-link-error-dark">{Button_cancel_text}</div>
+            <div id="tag-input">
+              <div class="form-grid">
+                <label class="relative">
+                  <input
+                    type="text"
+                    placeholder={`Enter your tag`}
+                    class="pr-[40px]"
+                  />
+                </label>
               </div>
             </div>
           </div>
-        </div>
+
+          <div class="form-grid">
+            <label>
+              <span class="input-label">{`page.text_first_name`}</span>
+
+              <input
+                type="text"
+                name="first_name"
+                placeholder={`page.first_name_placeholder`}
+                required
+              />
+            </label>
+
+            <label>
+              <span class="input-label">{`page.text_last_name`}</span>
+
+              <input
+                type="text"
+                name="last_name"
+                placeholder={`page.last_name_placeholder`}
+                required
+              />
+            </label>
+
+            <label>
+              <span class="input-label">{`page.text_street`}</span>
+
+              <input
+                type="text"
+                name="street"
+                placeholder={`page.street_placeholder`}
+                required
+              />
+            </label>
+
+            <label>
+              <span class="input-label">{`page.text_city`}</span>
+
+              <input
+                type="text"
+                name="city"
+                placeholder={`page.city_placeholder`}
+                required
+              />
+            </label>
+
+            <label>
+              <span class="input-label">{`page.text_postal_code`}</span>
+
+              <input
+                type="text"
+                name="postal_code"
+                placeholder={`page.postal_code_placeholder`}
+                required
+              />
+            </label>
+
+            <label>
+              <span class="input-label">{`page.text_country`}</span>
+
+              <select name="country" required>
+                <option value="" selected disabled hidden>
+                  {`page.country_placeholder`}
+                </option>
+
+                {countries.data.map(
+                  ({ attributes: { name, localizations } }) => (
+                    <option
+                      value={localizations?.data[0]?.attributes?.name || name}
+                    >
+                      {name}
+                    </option>
+                  ),
+                )}
+              </select>
+            </label>
+          </div>
+
+          <div class="division-in-element-gap grid">
+            <div class="flex">
+              <label class="checkbox-primary">
+                <span class="checkbox-input-container">
+                  <input
+                    type="checkbox"
+                    name="set_as_default_delivery_address"
+                    value="true"
+                  />
+                  <span class="checkbox-primary"></span>
+                </span>
+                {Checkbox_set_default_delivery_address_text}
+              </label>
+            </div>
+
+            <div class="flex">
+              <label class="checkbox-primary">
+                <span class="checkbox-input-container">
+                  <input
+                    type="checkbox"
+                    name="set_as_default_billing_address"
+                    value="true"
+                  />
+                  <span class="checkbox-primary"></span>
+                </span>
+                {Checkbox_set_default_billing_address_text}
+              </label>
+            </div>
+          </div>
+
+          <div class="form-button-container">
+            <div class="flex w-full sm:w-1/2 sm:order-2">
+              <button type="submit" class="button-primary w-full">
+                {Button_save_text}
+              </button>
+            </div>
+
+            <div class="flex">
+              <button type="button" class="button-link-error-dark">
+                {Button_cancel_text}
+              </button>
+            </div>
+          </div>
+        </form>
 
         {isLoading() ? (
           <Loading />
