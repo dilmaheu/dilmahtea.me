@@ -10,96 +10,27 @@ const { page } = Astro.props,
 ---
 
 <style lang="scss">
-  @use "src/styles/poly-fluid" as *;
-
-  h2 {
-    @apply font-bold text-primary leading-[110%];
-
-    font-size: poly-fluid-clamp(
-      (
-        375px: 28px,
-        1440px: 32px,
-      )
-    );
-  }
-
-  form {
-    padding: poly-fluid-clamp(
-      (
-        375px: 25px 25px,
-        1440px: 32px 56px,
-      )
-    );
-  }
-
-  .form-grid-container {
-    @apply flex flex-col;
-
-    gap: poly-fluid-clamp(
-      (
-        375px: 10px,
-        1440px: 25px,
-      )
-    );
-
-    .prose-text {
-      font-size: poly-fluid-clamp(
-        (
-          375px: 16px,
-          1440px: 20px,
-        )
-      );
-    }
-
-    .form-grid {
-      @apply w-full grid gap-y-2.5;
-
-      @media (min-width: 640px) {
-        @apply grid-cols-2;
-
-        gap: poly-fluid-clamp(
-          (
-            480px: 10px 40px,
-            1440px: 25px 50px,
-          )
-        );
-      }
-
-      label {
-        @apply flex flex-col gap-1.5;
-
-        span {
-          @apply font-bold text-black-light sm:text-[1.125rem];
-        }
-
-        input,
-        select {
-          @apply focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none;
-          @apply h-12 bg-secondary py-3 px-4 border border-primary rounded-full text-black sm:text-[1.125rem];
-        }
-      }
-    }
-  }
+  @use "src/styles/checkout" as *;
 </style>
 
-<section class="w-full lg:w-[66.67%]">
+<section class="w-full xl:w-2/3">
   <form
     role="main"
     aria-label={page.Aria_label_form_text}
     id="checkout-info-form"
-    class="flex flex-col gap-[25px]"
+    class="section-gap flex flex-col"
     action={"/" + locale + "/" + checkoutShippingLink + "/"}
   >
     <div
       role="form"
       aria-label={page.text_contact_info}
-      class="form-grid-container"
+      class="division-gap grid"
     >
-      <h2 class="recoleta">{page.text_customer}</h2>
+      <h2 class="recoleta text-h2 text-primary">{page.text_customer}</h2>
 
       <div
         id="guest-intro-text"
-        class="prose-text prose max-w-none leading-[150%] text-black-light"
+        class="prose-text prose max-w-none text-b5 text-black-light"
       >
         <Markdown>{page.Guest_intro_text}</Markdown>
       </div>
@@ -119,7 +50,7 @@ const { page } = Astro.props,
 
       <div
         id="sign-in-text"
-        class="prose-text prose max-w-none leading-[150%] text-black-light"
+        class="prose-text prose max-w-none text-b5 text-black-light"
       >
         <Markdown>{page.Sign_in_text}</Markdown>
       </div>
@@ -130,9 +61,11 @@ const { page } = Astro.props,
     <div
       role="form"
       aria-label={page.text_shipping_address}
-      class="form-grid-container"
+      class="division-gap grid"
     >
-      <h2 class="recoleta">{page.text_shipping_address}</h2>
+      <h2 class="recoleta text-h2 text-primary">
+        {page.text_shipping_address}
+      </h2>
 
       <div class="form-grid">
         <label>
@@ -214,29 +147,23 @@ const { page } = Astro.props,
       </div>
     </div>
 
-    <div class="block lg:hidden -mb-6">
+    <div class="block lg:hidden">
       <OrderSummary page={page} />
     </div>
 
-    <div
-      class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-9 sm:gap-12"
-    >
-      <button
-        class="w-full sm:w-auto py-4 px-8 sm:px-20 bg-primary text-white font-bold rounded-full"
-      >
-        {page.text_continue_to_shipping}
-      </button>
-
-      <a href={checkoutCartLink} class="text-primary font-bold">
+    <div class="checkout-button-container">
+      <a href={checkoutCartLink} class="button-link-large">
         {page.text_return_to_cart}
       </a>
+
+      <button class="w-full sm:w-1/3 button-primary-large">
+        {page.text_continue_to_shipping}
+      </button>
     </div>
   </form>
 </section>
 
-<section
-  class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-primary-light"
->
+<section class="hidden xl:block xl:w-1/3">
   <OrderSummary page={page} />
 </section>
 
@@ -288,3 +215,4 @@ const { page } = Astro.props,
     inputElement.focus();
   }
 </script>
+
