@@ -190,6 +190,10 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   @apply p-[clamp(15px,calc(2.5vw-1px),35px)];
 }
 
+@mixin tiled-div-sm-pad {
+  @apply p-[15px];
+}
+
 @mixin tiled-title-div-pad {
   @apply py-[15px] px-[clamp(15px,calc(2.5vw-1px),35px)];
 }
@@ -217,6 +221,10 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 
 // buttons
 
+@mixin focus-primary-lightest {
+  @apply focus:outline-none focus:ring focus:ring-primary-lightest;
+}
+
 @mixin button {
   @apply flex items-center justify-center 
     gap-2 py-2.5 px-5 cursor-pointer rounded-full select-none;
@@ -234,22 +242,32 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   @apply text-sm font-medium;
 }
 
+@mixin button-font-large {
+  @apply text-b5 font-bold;
+}
+
 @mixin button-large {
   @include button;
-  @include button-font;
+  @include button-font-large;
 
   @apply py-[15px] px-[25px];
 }
 
 @mixin button-default-colors {
+  @include focus-primary-lightest;
+
   @apply bg-white text-primary;
 }
 
 @mixin button-secondary-colors {
+  @include focus-primary-lightest;
+
   @apply bg-secondary text-primary;
 }
 
 @mixin button-primary-colors {
+  @include focus-primary-lightest;
+
   @apply bg-primary text-white;
 }
 
@@ -260,14 +278,16 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 @mixin button-link {
   @include button;
   @include button-font;
+  @include focus-primary-lightest;
 
-  @apply text-primary;
+  @apply focus:rounded-sm;
 }
 
 @mixin button-link-large {
   @include button;
+  @include button-font-large;
 
-  @apply text-b5;
+  @apply focus:rounded-sm;
 }
 
 @mixin button-link-primary {
@@ -294,7 +314,7 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   @apply text-error-dark;
 }
 
-@mixin button-link-light {
+@mixin button-link-primary-lightest {
   a {
     @include bg-img-($link-light);
 
@@ -433,6 +453,39 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   @include button-font-sm;
 
   @apply text-primary border-2;
+}
+
+@mixin radio-button-card {
+  @apply tiled-div-sm-pad division-in-element-gap text-b5
+    grid items-center text-center text-black rounded-[10px]
+    bg-white border-2 border-white cursor-pointer select-none h-full
+    min-w-[clamp(100px,calc(6.25vw+60px),150px)] max-w-[150px] whitespace-pre-line
+    peer-checked:border-primary peer-checked:font-bold peer-checked:text-primary;
+
+  .payment-icon {
+    @apply w-full h-[clamp(30px,calc(1.25vw+22px),40px)] m-auto;
+  }
+}
+
+@mixin radio-input {
+  @apply flex items-center cursor-pointer;
+
+  input {
+    @include focus-primary-lightest;
+
+    @apply flex items-center justify-center
+      border-2 border-primary rounded-full appearance-none checked:before:block
+      w-[clamp(18px,calc(0.25vw+16.4px),20px)] h-[clamp(18px,calc(0.25vw+16.4px),20px)];
+
+    &::before {
+      @apply hidden bg-primary rounded-full
+        w-[clamp(8px,calc(0.25vw+6.4px),10px)] h-[clamp(8px,calc(0.25vw+6.4px),10px)];
+    }
+  }
+
+  .radio-input-text {
+    @apply text-b5 text-black-light;
+  }
 }
 
 // toggle-buttons
@@ -606,7 +659,7 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   }
 }
 
-// exceptions
+// quick-info
 
 @mixin quick-common {
   @apply grid items-center;
@@ -667,15 +720,17 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 // form & inputs
 
 @mixin input-field-default {
-  @apply bg-transparent border border-primary rounded-full 
-    focus:ring focus:ring-primary-light focus:outline-none
+  @include focus-primary-lightest;
+
+  @apply font-normal bg-transparent border border-primary rounded-full
     py-[clamp(8px,calc(0.25vw+6.4px),10px)] px-[clamp(15px,calc(0.625vw+11px),20px)]
-    text-[clamp(16px,calc(0.25vw+14.4px),18px)] text-black placeholder:text-black-light;
+    text-[clamp(16px,calc(0.25vw+14.4px),18px)] text-black placeholder:text-black-lighter;
 }
 
 @mixin selector-common {
-  @apply w-full cursor-pointer appearance-none rounded-full
-    focus:ring focus:ring-primary-light focus:outline-none;
+  @include focus-primary-lightest;
+
+  @apply w-full cursor-pointer appearance-none rounded-full;
 }
 
 @mixin selector-arrow-($type, $color) {
@@ -766,10 +821,22 @@ $primary: str-slice(meta.inspect(colors.$primary), 2);
     @include input-field-default;
   }
 
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
   @apply w-full grid sm:grid-cols-2;
 
   label {
     @include division-in-element-gap;
+    @include input-label;
 
     @apply flex flex-col;
 
