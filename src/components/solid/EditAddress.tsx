@@ -1,4 +1,4 @@
-export default function AddUpdateAddress({ recurData, userAccountRecurData }) {
+export default function EditAddress({ recurData, userAccountRecurData }) {
   const {
     text_first_name,
     first_name_placeholder,

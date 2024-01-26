@@ -2,8 +2,8 @@ import { For, createEffect, createSignal } from "solid-js";
 
 import Loading from "@solid/Loading";
 import Address from "@solid/Address";
+import EditAddress from "@solid/EditAddress";
 import DashboardNotification from "@solid/DashboardNotification";
-import AddUpdateAddress from "./AddUpdateAddress";
 
 export default function SavedAddresses({
   plusIcon,
@@ -79,7 +79,7 @@ export default function SavedAddresses({
           </a>
         </div>
 
-        <AddUpdateAddress
+        <EditAddress
           recurData={recurData}
           userAccountRecurData={userAccountRecurData}
         />
