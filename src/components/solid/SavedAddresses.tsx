@@ -12,7 +12,8 @@ export default function SavedAddresses({
   userAccountRecurData,
 }) {
   const [addresses, setAddresses] = createSignal([]),
-    [isLoading, setIsLoading] = createSignal(true);
+    [isLoading, setIsLoading] = createSignal(true),
+    [showingMoreAddresses, setShowingMoreAddresses] = createSignal(false);
 
   createEffect(() => {
     fetch("/api/addresses")
@@ -380,73 +381,69 @@ export default function SavedAddresses({
         {isLoading() ? (
           <Loading />
         ) : (
-          <div class="grid division-in-gap">
-            <For each={addresses()}>
-              {(address, i) => (
-                <>
-                  <Address
-                    address={address}
-                    trashCanIcon={trashCanIcon}
-                    text_default_delivery_address={
-                      text_default_delivery_address
-                    }
-                    text_default_billing_address={text_default_billing_address}
-                    Button_edit_text={Button_edit_text}
-                  />
-
-                  {i() < addresses().length - 1 && (
-                    <div class="h-px bg-primary-light"></div>
-                  )}
-                </>
-              )}
-            </For>
-          </div>
-        )}
-
-        {address_tag.length > 3 && (
-          <div class="w-full flex justify-center">
-            <div id="toggle-more-address">
-              <div
-                id="show-more-address"
-                class="horizontal-toggle-button-primary"
+          <>
+            <div class="grid division-in-gap">
+              <For
+                each={addresses().slice(
+                  0,
+                  showingMoreAddresses() ? addresses().length : 3,
+                )}
               >
-                <span>
-                  {text_more_address.replaceAll(
-                    "<number>",
-                    address_tag.length - 3,
-                  )}
-                </span>
+                {(address, i) => (
+                  <>
+                    <Address
+                      address={address}
+                      trashCanIcon={trashCanIcon}
+                      text_default_delivery_address={
+                        text_default_delivery_address
+                      }
+                      text_default_billing_address={
+                        text_default_billing_address
+                      }
+                      Button_edit_text={Button_edit_text}
+                    />
 
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 14 8"
-                  class="toggle-button-arrow fill-primary"
-                >
-                  <path d="M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z" />
-                </svg>
-              </div>
-
-              <div
-                id="hide-more-address"
-                class="horizontal-toggle-button-primary hidden"
-              >
-                <span>
-                  {text_hide_more_address.replaceAll(
-                    "<number>",
-                    address_tag.length - 3,
-                  )}
-                </span>
-
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 14 8"
-                  class="toggle-button-arrow fill-primary"
-                >
-                  <path d="M13.7,7.7a1.1,1.1,0,0,1-.8.3.9.9,0,0,1-.7-.3L7,2.5,1.8,7.7A1.1,1.1,0,0,1,1,8a.9.9,0,0,1-.7-.3A.9.9,0,0,1,0,7a1.1,1.1,0,0,1,.3-.8L6.2.3A1.1,1.1,0,0,1,7,0a.9.9,0,0,1,.7.3l6,5.9A1.1,1.1,0,0,1,14,7,.9.9,0,0,1,13.7,7.7Z" />
-                </svg>
-              </div>
+                    {i() <
+                      (showingMoreAddresses() ? addresses().length : 3) - 1 && (
+                      <div class="h-px bg-primary-light"></div>
+                    )}
+                  </>
+                )}
+              </For>
             </div>
-          </div>
+
+            {addresses().length > 3 && (
+              <button
+                onclick={() => setShowingMoreAddresses(!showingMoreAddresses())}
+                class="horizontal-toggle-button-primary w-full flex justify-center"
+              >
+                <span>
+                  {(!showingMoreAddresses()
+                    ? text_more_address
+                    : text_hide_more_address
+                  ).replaceAll("<number>", addresses().length - 3)}
+                </span>
+
+                {!showingMoreAddresses() ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 14 8"
+                    class="toggle-button-arrow fill-primary"
+                  >
+                    <path d="M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z" />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 14 8"
+                    class="toggle-button-arrow fill-primary"
+                  >
+                    <path d="M13.7,7.7a1.1,1.1,0,0,1-.8.3.9.9,0,0,1-.7-.3L7,2.5,1.8,7.7A1.1,1.1,0,0,1,1,8a.9.9,0,0,1-.7-.3A.9.9,0,0,1,0,7a1.1,1.1,0,0,1,.3-.8L6.2.3A1.1,1.1,0,0,1,7,0a.9.9,0,0,1,.7.3l6,5.9A1.1,1.1,0,0,1,14,7,.9.9,0,0,1,13.7,7.7Z" />
+                  </svg>
+                )}
+              </button>
+            )}
+          </>
         )}
       </div>
     </div>
