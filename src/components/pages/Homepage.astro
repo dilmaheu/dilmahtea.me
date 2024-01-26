@@ -83,7 +83,7 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
 />
 
 <SecondaryPageLayout {page} plainTitle={true} headerBackground={true}>
-  <div role="main" class="grid section-gap my-[50px]"> 
+  <div role="main" class="grid section-gap my-[50px]">
     {/* latest Products Section */}
     {
       page.Block_visibility && (
@@ -101,7 +101,7 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
             <ProductCards {locale} products={latestProducts} />
 
             {page.Block_button_text && (
-              <div class="button-link-light text-center">
+              <div class="button-link-primary-lightest text-center">
                 <a href={page?.Block_button_link || "#"}>
                   {page.Block_button_text}
                 </a>
@@ -162,15 +162,17 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
 
               {/* Text content */}
               <div class="order-2 w-full sm:w-1/2 h-full flex flex-wrap items-start sm:items-center pr-0 sm:pr-5">
-                
                 <div class="grid division-in-gap">
                   <div class="quick-info-black-light">
-                    <div class="author-name">{randPost.authors.data[0].attributes.givenName}</div>
-                    <div class="quick-info-item">{new Date(randPost.createdAt).toLocaleString("en-US", {
-                      day: "numeric",
-                      month: "long"
-                    })}</div>
-                  
+                    <div class="author-name">
+                      {randPost.authors.data[0].attributes.givenName}
+                    </div>
+                    <div class="quick-info-item">
+                      {new Date(randPost.createdAt).toLocaleString("en-US", {
+                        day: "numeric",
+                        month: "long",
+                      })}
+                    </div>
                   </div>
                   <div>
                     <h2 class="heading-secondary text-primary">
@@ -308,7 +310,7 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
             <ProductCards {locale} products={block6FilteredProducts} />
 
             {page.Block6_button_text && (
-              <div class="button-link-light text-center">
+              <div class="button-link-primary-lightest text-center">
                 <a href={page?.Block6_button_link || "#"}>
                   {page.Block6_button_text}
                 </a>
