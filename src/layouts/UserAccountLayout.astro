@@ -25,7 +25,7 @@ const headingName =
   @use "src/styles/poly-fluid" as *;
 
   @mixin division-gap {
-    @apply gap-[clamp(25px,calc(0.625vw+21px),30px)];
+    gap: poly-fluid-clamp-base(18px, 30px);
   }
 
   @mixin division-in-gap {
@@ -49,8 +49,9 @@ const headingName =
   }
 
   @mixin tiled-form {
-    @apply p-[clamp(10px,calc(1.25vw+2px),20px)]
-      bg-primary-light/30 border border-primary rounded-[10px];
+    @apply bg-primary-light/30 border border-primary rounded-[10px];
+
+    padding: poly-fluid-clamp-base(15px, 20px);
   }
 
   @mixin text-h2 {
@@ -415,12 +416,7 @@ const headingName =
       }
 
       .order-img {
-        width: poly-fluid-clamp(
-          (
-            640px: 50px,
-            1440px: 65px,
-          )
-        );
+        width: poly-fluid-clamp-base(50px, 65px);
       }
 
       .order-item-label {
