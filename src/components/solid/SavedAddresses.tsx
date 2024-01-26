@@ -8,7 +8,7 @@ import AddUpdateAddress from "./AddUpdateAddress";
 export default function SavedAddresses({
   plusIcon,
   trashCanIcon,
-  countries,
+  recurData,
   recurringImages,
   userAccountRecurData,
 }) {
@@ -80,7 +80,7 @@ export default function SavedAddresses({
         </div>
 
         <AddUpdateAddress
-          countries={countries}
+          recurData={recurData}
           userAccountRecurData={userAccountRecurData}
         />
 

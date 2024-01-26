@@ -5,7 +5,7 @@ import getLocalizedLink from "@utils/getLocalizedLink";
 import Markdown from "@components/Markdown.astro";
 import OrderSummary from "@components/OrderSummary.astro";
 
-const { page } = Astro.props,
+const { page, recurData } = Astro.props,
   { locale } = page,
   checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug,
   checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
@@ -168,12 +168,12 @@ const { page } = Astro.props,
 
       <div class="form-grid">
         <label>
-          <span class="input-label">{page.text_email_address}</span>
+          <span class="input-label">{recurData.text_email_address}</span>
 
           <input
             type="email"
             name="email"
-            placeholder={page.email_address_placeholder}
+            placeholder={recurData.email_address_placeholder}
             required
           />
         </label>
@@ -413,66 +413,66 @@ const { page } = Astro.props,
 
       <div class="form-grid">
         <label>
-          <span class="input-label">{page.text_first_name}</span>
+          <span class="input-label">{recurData.text_first_name}</span>
 
           <input
             type="text"
             name="first_name"
-            placeholder={page.first_name_placeholder}
+            placeholder={recurData.first_name_placeholder}
             required
           />
         </label>
 
         <label>
-          <span class="input-label">{page.text_last_name}</span>
+          <span class="input-label">{recurData.text_last_name}</span>
 
           <input
             type="text"
             name="last_name"
-            placeholder={page.last_name_placeholder}
+            placeholder={recurData.last_name_placeholder}
             required
           />
         </label>
 
         <label>
-          <span class="input-label">{page.text_street}</span>
+          <span class="input-label">{recurData.text_street}</span>
 
           <input
             type="text"
             name="street"
-            placeholder={page.street_placeholder}
+            placeholder={recurData.street_placeholder}
             required
           />
         </label>
 
         <label>
-          <span class="input-label">{page.text_city}</span>
+          <span class="input-label">{recurData.text_city}</span>
 
           <input
             type="text"
             name="city"
-            placeholder={page.city_placeholder}
+            placeholder={recurData.city_placeholder}
             required
           />
         </label>
 
         <label>
-          <span class="input-label">{page.text_postal_code}</span>
+          <span class="input-label">{recurData.text_postal_code}</span>
 
           <input
             type="text"
             name="postal_code"
-            placeholder={page.postal_code_placeholder}
+            placeholder={recurData.postal_code_placeholder}
             required
           />
         </label>
 
         <label>
-          <span class="input-label">{page.text_country}</span>
+          <span class="input-label">{recurData.text_country}</span>
 
           <select name="country" required>
             <option value="" selected disabled hidden>
-              {page.country_placeholder}
+              {recurData.country_placeholder}
             </option>
 
             {

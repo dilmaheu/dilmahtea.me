@@ -1,9 +1,25 @@
-export default function AddUpdateAddress({ countries, userAccountRecurData }) {
+export default function AddUpdateAddress({ recurData, userAccountRecurData }) {
+  const {
+    text_first_name,
+    first_name_placeholder,
+    text_last_name,
+    last_name_placeholder,
+    text_country,
+    country_placeholder,
+    text_city,
+    city_placeholder,
+    text_street,
+    street_placeholder,
+    text_postal_code,
+    postal_code_placeholder,
+    countries,
+  } = recurData;
+
   const {
     Label_tag_text,
-    Tag_default_text: tag_default,
-    Tag_others_text: tag_others,
-    Tag_others_placeholder_text: tag_placeholder_others,
+    Tag_default_text,
+    Tag_others_text,
+    Tag_others_placeholder_text,
     Tag_suggestions,
     Button_add_text,
     Button_edit_text,
@@ -12,7 +28,6 @@ export default function AddUpdateAddress({ countries, userAccountRecurData }) {
     Button_make_default_text,
     Button_save_text,
     Button_cancel_text,
-    Tag_default_text,
     text_saved_Addresses,
     text_more_address,
     text_hide_more_address,
@@ -38,12 +53,9 @@ export default function AddUpdateAddress({ countries, userAccountRecurData }) {
   } = userAccountRecurData;
 
   return (
-    <form
-      class="tiled-form division-gap grid"
-      aria-label={`page.text_shipping_address`}
-    >
+    <form class="tiled-form division-gap grid">
       <div class="division-in-gap grid">
-        <div class="text-b5 font-bold text-black-light">Tag to recognize</div>
+        <div class="text-b5 font-bold text-black-light">{Label_tag_text}</div>
 
         <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
           {Tag_suggestions.split("\n")
@@ -87,7 +99,7 @@ export default function AddUpdateAddress({ countries, userAccountRecurData }) {
                 "peer-checked:border-primary",
               ].join(" ")}
             >
-              Add +
+              {Tag_others_text}
             </label>
           </div>
         </div>
@@ -97,7 +109,7 @@ export default function AddUpdateAddress({ countries, userAccountRecurData }) {
             <label class="relative">
               <input
                 type="text"
-                placeholder={`Enter your tag`}
+                placeholder={Tag_others_placeholder_text}
                 class="pr-[40px]"
               />
             </label>
@@ -107,66 +119,66 @@ export default function AddUpdateAddress({ countries, userAccountRecurData }) {
 
       <div class="form-grid">
         <label>
-          <span class="input-label">{`page.text_first_name`}</span>
+          <span class="input-label">{text_first_name}</span>
 
           <input
             type="text"
             name="first_name"
-            placeholder={`page.first_name_placeholder`}
+            placeholder={first_name_placeholder}
             required
           />
         </label>
 
         <label>
-          <span class="input-label">{`page.text_last_name`}</span>
+          <span class="input-label">{text_last_name}</span>
 
           <input
             type="text"
             name="last_name"
-            placeholder={`page.last_name_placeholder`}
+            placeholder={last_name_placeholder}
             required
           />
         </label>
 
         <label>
-          <span class="input-label">{`page.text_street`}</span>
+          <span class="input-label">{text_street}</span>
 
           <input
             type="text"
             name="street"
-            placeholder={`page.street_placeholder`}
+            placeholder={street_placeholder}
             required
           />
         </label>
 
         <label>
-          <span class="input-label">{`page.text_city`}</span>
+          <span class="input-label">{text_city}</span>
 
           <input
             type="text"
             name="city"
-            placeholder={`page.city_placeholder`}
+            placeholder={city_placeholder}
             required
           />
         </label>
 
         <label>
-          <span class="input-label">{`page.text_postal_code`}</span>
+          <span class="input-label">{text_postal_code}</span>
 
           <input
             type="text"
             name="postal_code"
-            placeholder={`page.postal_code_placeholder`}
+            placeholder={postal_code_placeholder}
             required
           />
         </label>
 
         <label>
-          <span class="input-label">{`page.text_country`}</span>
+          <span class="input-label">{text_country}</span>
 
           <select name="country" required>
             <option value="" selected disabled hidden>
-              {`page.country_placeholder`}
+              {country_placeholder}
             </option>
 
             {countries.data.map(({ attributes: { name, localizations } }) => (

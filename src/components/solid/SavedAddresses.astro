@@ -4,7 +4,7 @@ import subset from "@utils/shared/subset";
 import SavedAddresses from "@solid/SavedAddresses";
 import RecurringImages from "@store/RecurringImages";
 
-let { countries, userAccountRecurData } = Astro.props;
+let { recurData, userAccountRecurData } = Astro.props;
 
 const { success_notification, warning_notification, error_notification } =
   RecurringImages;
@@ -14,6 +14,22 @@ const recurringImages = {
   warning_notification,
   error_notification,
 };
+
+recurData = subset(recurData, [
+  "text_first_name",
+  "first_name_placeholder",
+  "text_last_name",
+  "last_name_placeholder",
+  "text_country",
+  "country_placeholder",
+  "text_city",
+  "city_placeholder",
+  "text_street",
+  "street_placeholder",
+  "text_postal_code",
+  "postal_code_placeholder",
+  "countries",
+]);
 
 userAccountRecurData = subset(userAccountRecurData, [
   "Label_tag_text",
@@ -56,7 +72,7 @@ userAccountRecurData = subset(userAccountRecurData, [
 
 <SavedAddresses
   client:load
-  {countries}
+  {recurData}
   {recurringImages}
   {userAccountRecurData}
 >

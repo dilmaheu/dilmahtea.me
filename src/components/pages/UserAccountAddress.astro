@@ -8,8 +8,8 @@ import SavedAddresses from "@solid/SavedAddresses.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import UserAccountLayout from "@layouts/UserAccountLayout.astro";
 
-const { page } = Astro.props,
-  { Title, locale, countries } = page;
+const { page, recurData } = Astro.props,
+  { Title, locale } = page;
 
 const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
 ---
@@ -60,7 +60,7 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
       {Title}
     </h2>
 
-    <SavedAddresses {countries} {userAccountRecurData}>
+    <SavedAddresses {recurData} {userAccountRecurData}>
       <Icon
         slot="plusIcon"
         name="akar-icons:plus"
