@@ -1,3 +1,6 @@
+import { For, createEffect, createSignal } from "solid-js";
+
+import Address from "@solid/Address";
 import DashboardNotification from "@solid/DashboardNotification";
 
 export default function SavedAddresses({
@@ -7,6 +10,16 @@ export default function SavedAddresses({
   recurringImages,
   userAccountRecurData,
 }) {
+  const [addresses, setAddresses] = createSignal([]);
+
+  createEffect(() => {
+    fetch("/api/addresses")
+      .then((res) => res.json<any[]>())
+      .then((addresses) => {
+        setAddresses(addresses);
+      });
+  });
+
   const {
     Label_tag_text,
     Tag_default_text: tag_default,
@@ -41,6 +54,8 @@ export default function SavedAddresses({
     Checkbox_add_delivery_address_text,
     Checkbox_add_billing_address_text,
     text_content,
+    text_default_delivery_address,
+    text_default_billing_address,
   } = userAccountRecurData;
 
   const address_primary = address_tag.slice(0, 3),
@@ -360,134 +375,23 @@ export default function SavedAddresses({
         </div>
 
         <div class="grid division-in-gap">
-          <div class="grid division-in-element-gap">
-            <div class="quick-info">
-              <div class="info-tag-button-primary">
-                {Tag_default_text} delivery address
-              </div>
-              <div>&#x2022;</div>
-              <div>Sara Jones</div>
-              <div>&#x2022;</div>
-              <div class="info-tag-button">Home</div>
-            </div>
+          <For each={addresses()}>
+            {(address, i) => (
+              <>
+                <Address
+                  address={address}
+                  trashCanIcon={trashCanIcon}
+                  text_default_delivery_address={text_default_delivery_address}
+                  text_default_billing_address={text_default_billing_address}
+                  Button_edit_text={Button_edit_text}
+                />
 
-            <div class="flex items-center division-in-element-gap justify-between">
-              <div class="input-text-large-static">
-                Beethovenplatz 4, Sektor Gamma, Einheit 12A, 70174 Stuttgart,
-                Germany
-              </div>
-
-              <div class="flex division-gap">
-                <button class="button-link-primary-big">
-                  {Button_edit_text}
-                </button>
-
-                <div class="button-link-error-dark-big">{trashCanIcon}</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="h-px bg-primary-light"></div>
-
-          <div class="grid division-in-element-gap">
-            <div class="quick-info">
-              <div class="info-tag-button-primary">
-                {Tag_default_text} billing address
-              </div>
-              <div>&#x2022;</div>
-              <div>Sara Jones</div>
-              <div>&#x2022;</div>
-              <div class="info-tag-button">Home</div>
-            </div>
-
-            <div class="flex items-center division-in-element-gap justify-between">
-              <div class="input-text-large-static">
-                Mozartallee 33, 50674 Köln, Germany
-              </div>
-
-              <div class="flex division-gap">
-                <button class="button-link-primary-big">
-                  {Button_edit_text}
-                </button>
-
-                <div class="button-link-error-dark-big">{trashCanIcon}</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="h-px bg-primary-light"></div>
-
-          <div class="grid division-in-element-gap">
-            <div class="quick-info">
-              <div>Sara Jones</div>
-              <div>&#x2022;</div>
-              <div class="info-tag-button">Home</div>
-            </div>
-
-            <div class="flex items-center division-in-element-gap justify-between">
-              <div class="input-text-large-static">
-                Schillerweg 8, Hinterhof, Durchgang links, 04109 Leipzig,
-                Germany
-              </div>
-
-              <div class="flex division-gap">
-                <button class="button-link-primary-big">
-                  {Button_edit_text}
-                </button>
-
-                <div class="button-link-error-dark-big">{trashCanIcon}</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="h-px bg-primary-light"></div>
-
-          <div class="grid division-in-element-gap">
-            <div class="quick-info">
-              <div>Sara Jones</div>
-              <div>&#x2022;</div>
-              <div class="info-tag-button">Home</div>
-            </div>
-
-            <div class="flex items-center division-in-element-gap justify-between">
-              <div class="input-text-large-static">
-                Goethestraße 15, Gebäude C, 4. Stockwerk, 60313 Frankfurt am
-                Main, Germany
-              </div>
-
-              <div class="flex division-gap">
-                <button class="button-link-primary-big">
-                  {Button_edit_text}
-                </button>
-
-                <div class="button">{trashCanIcon}</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="h-px bg-primary-light"></div>
-
-          <div class="grid division-in-element-gap">
-            <div class="quick-info">
-              <div>Sara Jones</div>
-              <div>&#x2022;</div>
-              <div class="info-tag-button">Home</div>
-            </div>
-
-            <div class="flex items-center division-in-element-gap justify-between">
-              <div class="input-text-large-static">
-                Heinrich-Heine-Straße 22, Apartment 3B, 10179 Berlin, Germany
-              </div>
-
-              <div class="flex division-gap">
-                <button class="button-link-primary-big">
-                  {Button_edit_text}
-                </button>
-
-                <div class="button">{trashCanIcon}</div>
-              </div>
-            </div>
-          </div>
+                {i() < addresses().length - 1 && (
+                  <div class="h-px bg-primary-light"></div>
+                )}
+              </>
+            )}
+          </For>
         </div>
 
         {address_tag.length > 3 && (
