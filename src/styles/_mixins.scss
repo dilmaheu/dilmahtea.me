@@ -225,7 +225,7 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   @apply focus:outline-none focus:ring focus:ring-primary-lightest;
 }
 
-@mixin button {
+@mixin button-common {
   @apply flex items-center justify-center 
     gap-2 py-2.5 px-5 cursor-pointer rounded-full select-none;
 
@@ -246,8 +246,13 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   @apply text-b5 font-bold;
 }
 
+@mixin button {
+  @include button-common;
+  @include button-font;
+}
+
 @mixin button-large {
-  @include button;
+  @include button-common;
   @include button-font-large;
 
   @apply py-[15px] px-[25px];
@@ -277,14 +282,13 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 
 @mixin button-link {
   @include button;
-  @include button-font;
   @include focus-primary-lightest;
 
   @apply focus:rounded-sm;
 }
 
 @mixin button-link-large {
-  @include button;
+  @include button-common;
   @include button-font-large;
 
   @apply focus:rounded-sm;
@@ -353,7 +357,6 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 
 @mixin button-cart-normal {
   @include button;
-  @include button-font;
   @include text-container;
 
   .cart-icon {
@@ -449,7 +452,7 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 // radio-buttons
 
 @mixin radio-button {
-  @include button;
+  @include button-common;
   @include button-font-sm;
 
   @apply text-primary border-2;
