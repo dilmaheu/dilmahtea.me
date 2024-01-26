@@ -1,5 +1,6 @@
 import { For, createEffect, createSignal } from "solid-js";
 
+import Loading from "@solid/Loading";
 import Address from "@solid/Address";
 import DashboardNotification from "@solid/DashboardNotification";
 
@@ -10,12 +11,14 @@ export default function SavedAddresses({
   recurringImages,
   userAccountRecurData,
 }) {
-  const [addresses, setAddresses] = createSignal([]);
+  const [addresses, setAddresses] = createSignal([]),
+    [isLoading, setIsLoading] = createSignal(true);
 
   createEffect(() => {
     fetch("/api/addresses")
       .then((res) => res.json<any[]>())
       .then((addresses) => {
+        setIsLoading(false);
         setAddresses(addresses);
       });
   });
@@ -374,25 +377,31 @@ export default function SavedAddresses({
           </div>
         </div>
 
-        <div class="grid division-in-gap">
-          <For each={addresses()}>
-            {(address, i) => (
-              <>
-                <Address
-                  address={address}
-                  trashCanIcon={trashCanIcon}
-                  text_default_delivery_address={text_default_delivery_address}
-                  text_default_billing_address={text_default_billing_address}
-                  Button_edit_text={Button_edit_text}
-                />
+        {isLoading() ? (
+          <Loading />
+        ) : (
+          <div class="grid division-in-gap">
+            <For each={addresses()}>
+              {(address, i) => (
+                <>
+                  <Address
+                    address={address}
+                    trashCanIcon={trashCanIcon}
+                    text_default_delivery_address={
+                      text_default_delivery_address
+                    }
+                    text_default_billing_address={text_default_billing_address}
+                    Button_edit_text={Button_edit_text}
+                  />
 
-                {i() < addresses().length - 1 && (
-                  <div class="h-px bg-primary-light"></div>
-                )}
-              </>
-            )}
-          </For>
-        </div>
+                  {i() < addresses().length - 1 && (
+                    <div class="h-px bg-primary-light"></div>
+                  )}
+                </>
+              )}
+            </For>
+          </div>
+        )}
 
         {address_tag.length > 3 && (
           <div class="w-full flex justify-center">
