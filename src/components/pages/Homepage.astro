@@ -163,17 +163,34 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
               {/* Text content */}
               <div class="order-2 w-full sm:w-1/2 h-full flex flex-wrap items-start sm:items-center pr-0 sm:pr-5">
                 <div class="grid division-in-gap">
-                  <div class="quick-info-black-light">
-                    <div class="author-name">
-                      {randPost.authors.data[0].attributes.givenName}
+                  {randPost.authors && (
+                    <div class="quick-info-black-light">
+                      <div
+                        role="presentation"
+                        aria-label={randPost.authors.data.map(
+                          ({ attributes }, i) =>
+                            ariaLabelRecurData.Wrote_by_text +
+                            (i > 0 ? ", " : " ") +
+                            attributes.givenName,
+                        )}
+                        class="author-name"
+                      >
+                        {randPost.authors.data.map(({ attributes }, index) => (
+                          <span>
+                            {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div class="quick-info-item">
+                        {new Date(randPost.createdAt).toLocaleString("en-US", {
+                          day: "numeric",
+                          month: "long",
+                        })}
+                      </div>
                     </div>
-                    <div class="quick-info-item">
-                      {new Date(randPost.createdAt).toLocaleString("en-US", {
-                        day: "numeric",
-                        month: "long",
-                      })}
-                    </div>
-                  </div>
+                  )}
+
                   <div>
                     <h2 class="heading-secondary text-primary">
                       <a
