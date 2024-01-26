@@ -661,6 +661,11 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 
 // quick-info
 
+@mixin quick-info-author-img {
+  @apply w-[clamp(40px,calc(1.25vw+32px),50px)] 
+    h-[clamp(40px,calc(1.25vw+32px),50px)] rounded-full overflow-hidden;
+}
+
 @mixin quick-common {
   @apply grid items-center;
 
@@ -691,6 +696,18 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   .quick-info-item {
     @apply gap-1 text-b8;
   }
+}
+
+@mixin quick-info-default {
+  @include quick-info;
+
+  @apply text-white;
+}
+
+@mixin quick-info-default-sm {
+  @include quick-info-sm;
+
+  @apply text-white;
 }
 
 @mixin quick-info-black-light {

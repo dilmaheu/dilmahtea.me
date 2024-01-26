@@ -39,19 +39,20 @@ const recurData = CMS.get("recurringElement", locale),
       <div class="flex flex-col my-[30px] gap-[10px]">
         {
           page.authors && (
-            <div class="flex flex-wrap gap-x-2.5 mb-2.5">
+            <div class="division-in-element-gap flex items-center">
               {page.authors.data.map(
                 (author, index) =>
                   author.attributes.Profile_picture.data && (
                     <div
                       class:list={[
-                        index > 0 && "relative -ml-5",
-                        "w-12 h-12 rounded-full overflow-hidden",
+                        "quick-info-author-img",
+                        index > 0 &&
+                          "relative -ml-[clamp(15px,calc(2.5vw-1px),35px)]",
                       ]}
                     >
                       <Picture
-                        width={48}
-                        height={48}
+                        width={50}
+                        height={50}
                         loading="eager"
                         alt={
                           author.attributes.Profile_picture.data.attributes
@@ -66,7 +67,7 @@ const recurData = CMS.get("recurringElement", locale),
                   ),
               )}
 
-              <div class="grid content-between">
+              <div class="quick-info-default">
                 <div
                   role="presentation"
                   aria-label={page.authors.data.map(
@@ -75,16 +76,16 @@ const recurData = CMS.get("recurringElement", locale),
                       (i > 0 ? ", " : " ") +
                       attributes.givenName,
                   )}
-                  class="post-author flex flex-wrap font-bold"
+                  class="author-name"
                 >
-                  {page.authors.data.map((author, index) => (
+                  {page.authors.data.map(({ attributes }, index) => (
                     <span>
-                      {(index > 0 ? ", " : " ") + author.attributes.givenName}
+                      {`${index > 0 ? ", " : " "}` + attributes.givenName}
                     </span>
                   ))}
                 </div>
 
-                <div class="post-publish-date font-medium">
+                <div class="quick-info-item">
                   {new Date(page.createdAt).toLocaleString("en-US", {
                     day: "numeric",
                     month: "long",
