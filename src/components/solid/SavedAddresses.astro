@@ -1,0 +1,63 @@
+---
+import Icon from "astro-icon";
+import subset from "@utils/shared/subset";
+import SavedAddresses from "@solid/SavedAddresses";
+import RecurringImages from "@store/RecurringImages";
+
+let { userAccountRecurData } = Astro.props;
+
+const { success_notification, warning_notification, error_notification } =
+  RecurringImages;
+
+const recurringImages = {
+  success_notification,
+  warning_notification,
+  error_notification,
+};
+
+userAccountRecurData = subset(userAccountRecurData, [
+  "Label_tag_text",
+  "Tag_default_text",
+  "Tag_others_text",
+  "Tag_others_placeholder_text",
+  "Address_tag",
+  "Button_add_text",
+  "Button_edit_text",
+  "Button_update_text",
+  "Button_add_new_address_text",
+  "Button_make_default_text",
+  "Button_save_text",
+  "Button_cancel_text",
+  "Tag_default_text",
+  "text_saved_Addresses",
+  "text_more_address",
+  "text_hide_more_address",
+  "Input_label_first_name",
+  "Input_placeholder_first_name",
+  "Input_label_last_name",
+  "Input_placeholder_last_name",
+  "Input_label_country",
+  "Input_placeholder_country",
+  "Input_label_city",
+  "Input_placeholder_city",
+  "Input_label_street",
+  "Input_placeholder_street",
+  "Input_label_postal_code",
+  "Input_placeholder_postal_code",
+  "Checkbox_set_default_delivery_address_text",
+  "Checkbox_set_default_billing_address_text",
+  "Checkbox_add_delivery_address_text",
+  "Checkbox_add_billing_address_text",
+  "text_content",
+]);
+---
+
+<SavedAddresses client:load {recurringImages} {userAccountRecurData}>
+  <Icon slot="plusIcon" name="akar-icons:plus" class="w-[18px] select-none" />
+
+  <Icon
+    slot="trashCanIcon"
+    name="mdi:trash-can-outline"
+    class="w-6 text-error-dark"
+  />
+</SavedAddresses>
