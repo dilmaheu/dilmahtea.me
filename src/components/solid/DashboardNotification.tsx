@@ -6,7 +6,7 @@ export { notification, setNotification };
 
 export default function DashboardNotification({
   recurringImages,
-  staticNotification,
+  staticNotification = undefined,
 }) {
   if (!(staticNotification || notification())) {
     return <></>;
