@@ -15,7 +15,7 @@ export default function SavedAddresses({
   const [addresses, setAddresses] = createSignal([]),
     [isLoading, setIsLoading] = createSignal(true),
     [notification, setNotification] = createSignal(null),
-    [showingMoreAddresses, setShowingMoreAddresses] = createSignal(false);
+    [showMoreAddresses, setShowMoreAddresses] = createSignal(false);
 
   createEffect(() => {
     fetch("/api/addresses")
@@ -96,7 +96,7 @@ export default function SavedAddresses({
               <For
                 each={addresses().slice(
                   0,
-                  showingMoreAddresses() ? addresses().length : 3,
+                  showMoreAddresses() ? addresses().length : 3,
                 )}
               >
                 {(address, i) => (
@@ -114,7 +114,7 @@ export default function SavedAddresses({
                     />
 
                     {i() <
-                      (showingMoreAddresses() ? addresses().length : 3) - 1 && (
+                      (showMoreAddresses() ? addresses().length : 3) - 1 && (
                       <div class="h-px bg-primary-light"></div>
                     )}
                   </>
@@ -124,17 +124,17 @@ export default function SavedAddresses({
 
             {addresses().length > 3 && (
               <button
-                onclick={() => setShowingMoreAddresses(!showingMoreAddresses())}
+                onclick={() => setShowMoreAddresses(!showMoreAddresses())}
                 class="horizontal-toggle-button-primary w-full flex justify-center"
               >
                 <span>
-                  {(!showingMoreAddresses()
+                  {(!showMoreAddresses()
                     ? text_more_address
                     : text_hide_more_address
                   ).replaceAll("<number>", addresses().length - 3)}
                 </span>
 
-                {!showingMoreAddresses() ? (
+                {!showMoreAddresses() ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 14 8"
