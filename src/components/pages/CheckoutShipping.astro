@@ -6,7 +6,11 @@ import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { page } = Astro.props,
   { locale } = page,
-  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+  checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
+  steps = checkoutFlowData.steps.split("\n"),
+  shortenedSteps = checkoutFlowData.shortened_steps.split("\n"),
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
+  userRecurr = CMS.get("userAccountRecurringElement", locale);
 
 const checkoutInfoLink = `/${locale}/${
     CMS.get("checkoutInformation", locale).Meta.URL_slug
@@ -17,121 +21,7 @@ const checkoutInfoLink = `/${locale}/${
 ---
 
 <style lang="scss">
-  @use "src/styles/poly-fluid" as *;
-
-  .tiled-div-pad {
-    @apply p-[clamp(15px,calc(2.5vw-1px),35px)];
-  }
-
-  .division-gap {
-    @apply gap-[clamp(25px,calc(0.625vw+21px),30px)];
-  }
-
-  .division-in-gap {
-    @apply gap-[clamp(10px,calc(0.625vw+6px),15px)];
-  }
-
-  @mixin division-in-element-gap {
-    @apply gap-[clamp(5px,calc(0.625vw+1px),10px)];
-  }
-
-  .division-in-element-gap {
-    @include division-in-element-gap;
-  }
-
-  #shipping-details {
-    padding: poly-fluid-clamp(
-      (
-        640px: 50px 24px,
-        1024px: 50px 29px,
-      )
-    );
-
-    @media (min-width: 1024px) {
-      padding: poly-fluid-clamp(
-        (
-          1024px: 29px 42px,
-          1440px: 32px 56px,
-        )
-      );
-    }
-  }
-
-  h2 {
-    @apply font-bold text-primary leading-[110%];
-
-    font-size: poly-fluid-clamp(
-      (
-        640px: 28px,
-        1440px: 42px,
-      )
-    );
-  }
-
-  .shipping-detail {
-    @include division-in-element-gap;
-
-    @apply flex flex-col;
-
-    div {
-      &:first-of-type {
-        @apply font-bold text-black-light;
-
-        font-size: poly-fluid-clamp(
-          (
-            640px: 16px,
-            1440px: 18px,
-          )
-        );
-      }
-
-      &:last-of-type {
-        @include division-in-element-gap;
-        @apply flex justify-between;
-
-        p {
-          @apply text-black grow;
-
-          font-size: poly-fluid-clamp(
-            (
-              640px: 18px,
-              1440px: 24px,
-            )
-          );
-        }
-
-        a {
-          @apply font-semibold text-primary leading-[130%];
-
-          font-size: poly-fluid-clamp(
-            (
-              640px: 18px,
-              1440px: 24px,
-            )
-          );
-        }
-      }
-    }
-  }
-
-  .shipping-method,
-  .shipping-cost {
-    font-size: poly-fluid-clamp(
-      (
-        640px: 18px,
-        1440px: 24px,
-      )
-    );
-  }
-
-  .shipping-description {
-    font-size: poly-fluid-clamp(
-      (
-        640px: 16px,
-        1440px: 18px,
-      )
-    );
-  }
+  @use "src/styles/checkout" as *;
 </style>
 
 <script
@@ -147,11 +37,11 @@ const checkoutInfoLink = `/${locale}/${
   window.checkoutKindnessLink = checkoutKindnessLink;
 </script>
 
-<section class="w-full lg:w-[66.67%]">
+<section class="w-full xl:w-2/3">
   <form
     method="POST"
     id="shipping-details"
-    class="flex flex-col gap-12"
+    class="section-gap flex flex-col"
     action={shouldDisplayExperimentals
       ? "https://dev.pay.scripts.dilmahtea.me"
       : "https://pay.scripts.dilmahtea.me"}
@@ -201,43 +91,49 @@ const checkoutInfoLink = `/${locale}/${
       <div
         role="listitem"
         aria-label={page.Aria_label_email_address_text}
-        class="shipping-detail"
+        class="division-in-element-gap"
       >
-        <div>{page.text_contact}</div>
+        <div class="input-label text-black">
+          {userRecurr.Input_label_email}
+        </div>
 
-        <div>
-          <p>
+        <div class="division-in-element-gap flex flex-wrap items-center">
+          <div class="input-text-large-static grow">
             <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
-          </p>
+          </div>
 
           <a
-            aria-label={`${page.Aria_label_change_text} ${page.Aria_label_email_address_text}`}
+            aria-label={`${userRecurr.Button_change_text} ${userRecurr.Aria_label_email}`}
             href={checkoutInfoLink + "?change=email"}
+            class="button-link-large"
           >
-            {page.text_change}
+            {userRecurr.Button_change_text}
           </a>
         </div>
       </div>
 
-      <div class="border border-primary-light"></div>
+      <div class="w-full h-px bg-primary-light"></div>
 
       <div
         role="listitem"
-        aria-label={page.Aria_label_delivery_address_text}
-        class="shipping-detail"
+        aria-label={page.Aria_label_email_address_text}
+        class="division-in-element-gap"
       >
-        <div>{page.text_delivery_address}</div>
+        <div class="input-label text-black">
+          {userRecurr.Label_delivery_address}
+        </div>
 
-        <div>
-          <p>
+        <div class="division-in-element-gap flex flex-wrap items-center">
+          <div class="input-text-large-static grow">
             <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
-          </p>
+          </div>
 
           <a
-            aria-label={`${page.Aria_label_change_text} ${page.Aria_label_delivery_address_text}`}
-            href={checkoutInfoLink + "?change=street"}
+            aria-label={`${userRecurr.Button_change_text} ${userRecurr.Aria_label_delivery_address}`}
+            href={checkoutInfoLink + "?change=email"}
+            class="button-link-large"
           >
-            {page.text_change}
+            {userRecurr.Button_change_text}
           </a>
         </div>
       </div>
@@ -246,9 +142,9 @@ const checkoutInfoLink = `/${locale}/${
     <div
       role="list"
       aria-label={page.text_shipping_method}
-      class="division-gap flex flex-col"
+      class="flex flex-col gap-4"
     >
-      <h2 class="recoleta text-black">{page.text_shipping_method}</h2>
+      <h2 class="recoleta text-h2 text-primary">{page.text_shipping_method}</h2>
 
       {
         page.shipping_methods.data.map(
@@ -264,31 +160,25 @@ const checkoutInfoLink = `/${locale}/${
                   value={localizations?.data[0]?.attributes?.method || method}
                   data-cost={cost}
                   class:list={[
-                    "active:brightness-150 block appearance-none w-5 h-5",
-                    "flex items-center justify-center border-2 rounded-full",
-                    "checked:before:block before:hidden before:w-2 before:h-2 before:rounded-full",
-                    i > 0
-                      ? "hover:brightness-50 border-primary before:bg-primary"
-                      : "border-black-light before:bg-black-light",
+                    "hover:brightness-50 active:brightness-150 block",
+                    "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
+                    "checked:before:block before:hidden before:w-2 before:h-2 before:bg-primary before:rounded-full",
                   ]}
                   checked={i === 0 ? "" : undefined}
                   required
                 />
               </div>
 
-              <div class="grid division-in-element-gap">
-                <span class="gap-1.5 flex items-center">
-                  <span class="shipping-method font-semibold text-black leading-[130%]">
-                    {method}
-                  </span>
-                  <span class="recoleta shipping-cost font-semibold text-black leading-[130%]">
-                    &#x2022; €{cost.toFixed(2).toString().replace(".", ",")}
+              <div class="division-in-element-gap grid">
+                <span class="flex items-center gap-2 text-b3 font-bold text-black">
+                  <span class="shipping-method">{method}</span>
+                  <span>&#x2022;</span>
+                  <span class="shipping-cost recoleta text-h5">
+                    €{cost.toFixed(2).toString().replace(".", ",")}
                   </span>
                 </span>
 
-                <span class="shipping-description text-black-light leading-[130%]">
-                  {description}
-                </span>
+                <span class="text-b5 text-black-light">{description}</span>
               </div>
             </label>
           ),
@@ -296,23 +186,27 @@ const checkoutInfoLink = `/${locale}/${
       }
     </div>
 
-    <div class="block lg:hidden -mb-6">
+    <div class="block lg:hidden">
       <OrderSummary page={page} />
     </div>
 
-    <div
-      class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-9 sm:gap-12"
-    >
-      <button
-        type="submit"
-        class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-white font-bold rounded-full"
-      >
+    <div class="checkout-button-container">
+      <a href={checkoutInfoLink} class="button-link-large">
+        <span class="sm:hidden">
+          {
+            `${
+              userRecurr.Button_return_to_text
+            } ${shortenedSteps[0]?.toLowerCase()}`
+          }
+        </span>
+        <span class="hidden sm:block">
+          {`${userRecurr.Button_return_to_text} ${steps[0]?.toLowerCase()}`}
+        </span>
+      </a>
+
+      <button type="submit" class="w-full sm:w-1/3 button-primary-large">
         {checkoutRecurData.text_continue_to_payment}
       </button>
-
-      <a href={checkoutInfoLink} class="text-primary font-bold">
-        {checkoutRecurData.text_return_to_information}
-      </a>
     </div>
   </form>
 </section>
@@ -320,7 +214,7 @@ const checkoutInfoLink = `/${locale}/${
 <section
   role="complementary"
   aria-label={checkoutRecurData.text_order_summary}
-  class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-primary-light"
+  class="hidden xl:block xl:w-1/3"
 >
   <OrderSummary page={page} />
 </section>

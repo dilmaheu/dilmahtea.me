@@ -24,8 +24,12 @@ export const getToken: GetToken = async (
   previous_contact = null,
 ) => {
   const { results: storedTokens } = await db
-    .prepare(`SELECT * FROM verification_tokens WHERE contact = ?`)
-    .bind(contact)
+    .prepare(
+      `SELECT * FROM verification_tokens WHERE locale = ? AND contact = ? AND referrer = ? AND link_with ${
+        linkWith ? "=" : "IS"
+      } ? AND previous_contact ${previous_contact ? "=" : "IS"} ?`,
+    )
+    .bind(locale, contact, referrer, linkWith, previous_contact)
     .all<Token>();
 
   const reusableToken = storedTokens.find(({ expires }) =>

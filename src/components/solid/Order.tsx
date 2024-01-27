@@ -156,14 +156,14 @@ export default function Order({
 
                 {in_stock_date && (
                   <DashboardNotification
-                    recurringImages={recurringImages}
-                    staticNotification={{
+                    notification={() => ({
                       type: "warning",
                       message: text_in_stock_date.replace(
                         "<in_stock_date>",
                         in_stock_date,
                       ),
-                    }}
+                    })}
+                    recurringImages={recurringImages}
                   />
                 )}
               </div>

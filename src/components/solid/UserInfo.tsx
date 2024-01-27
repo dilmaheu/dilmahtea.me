@@ -3,10 +3,7 @@ import { createEffect, createSignal } from "solid-js";
 import { user } from "@signals/user";
 
 import InfoUnit from "@solid/InfoUnit";
-import DashboardNotification, {
-  notification,
-  setNotification,
-} from "@solid/DashboardNotification";
+import DashboardNotification from "@solid/DashboardNotification";
 
 export default function UserInfo({
   plusIcon,
@@ -16,6 +13,8 @@ export default function UserInfo({
   recurringImages,
   userAccountRecurData,
 }) {
+  const [notification, setNotification] = createSignal(null);
+
   const {
     Title,
     Personal_information: {
@@ -81,7 +80,10 @@ export default function UserInfo({
       <div class="dashboard-sec">
         <div class="grid division-gap">
           <div class="grid division-in-gap">
-            <DashboardNotification recurringImages={recurringImages} />
+            <DashboardNotification
+              notification={notification}
+              recurringImages={recurringImages}
+            />
 
             <InfoUnit
               label={Label_username}
@@ -122,19 +124,15 @@ export default function UserInfo({
               <div class="quick-info">
                 <div>Sara jones</div>
                 <div>&#x2022;</div>
-                <div class="info-tag-button">
-                  Home
-                </div>  
+                <div class="info-tag-button">Home</div>
               </div>
 
               <div class="flex items-center division-in-element-gap justify-between">
+                <div class="input-text-large-static">
+                  456B, Oakwoods, Germany
+                </div>
 
-                <div class="input-text-large-static">456B, Oakwoods, Germany</div>
-
-                <a 
-                  href={`#`}
-                  class="button-link-primary-big"
-                >
+                <a href={`#`} class="button-link-primary-big">
                   {/*if there is no single address then we will show add
                   {Button_add_text}*/}
 
@@ -152,19 +150,13 @@ export default function UserInfo({
               <div class="quick-info">
                 <div>Sara jones</div>
                 <div>&#x2022;</div>
-                <div class="info-tag-button">
-                  Home
-                </div>  
+                <div class="info-tag-button">Home</div>
               </div>
 
               <div class="flex items-center division-in-element-gap justify-between">
-
                 <div class="input-text-large-static">N/A</div>
 
-                <a 
-                  href={`#`}
-                  class="button-link-primary-big"
-                >
+                <a href={`#`} class="button-link-primary-big">
                   {/*if there is no single address then we will show add*/}
                   {Button_add_text}
 

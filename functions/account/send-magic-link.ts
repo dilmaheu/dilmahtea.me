@@ -1,16 +1,41 @@
+import type { Session } from "lucia";
 import type { ENV } from "../utils/types";
 
 import { z } from "zod";
 import validator from "validator";
+import { fromZodError } from "zod-validation-error";
 
+import fetchExactAPI from "../utils/fetchExactAPI";
+import getCustomerFilter from "../utils/getCustomerFilter";
+
+import { initializeLucia } from "../utils/auth";
 import { getToken, removeToken, validateToken } from "../utils/token";
 import { PublicError, checkUpdatedContact, isMobilePhone } from "../utils";
-import type { Session } from "lucia";
-import { initializeLucia } from "functions/utils/auth";
 
 const BaseSchema = z.object({
-  email: z.string().email().optional(),
-  phone: z.string().refine(isMobilePhone).optional(),
+  email: z
+    .string()
+    .email({ message: "Invalid email address" })
+    .toLowerCase()
+    .optional(),
+  phone: z
+    .string()
+
+    .superRefine((val, ctx) => {
+      if (!isMobilePhone(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Invalid phone number",
+        });
+      } else if (!isMobilePhone(val, true)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "Phone number must be in an international format with country code and without spaces/dividers. E.g. +31851309242",
+        });
+      }
+    })
+    .optional(),
 });
 
 const BodySchema = BaseSchema.extend({
@@ -48,7 +73,15 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     previous_contact: string;
 
   try {
-    const bodyData = BodySchema.parse(body);
+    try {
+      var bodyData = BodySchema.parse(body);
+    } catch (error) {
+      throw new PublicError(
+        fromZodError(error)
+          .toString()
+          .replace(/^Validation error: | at "[\w]+"$/g, ""),
+      );
+    }
 
     switch (bodyData.action) {
       case "login":
@@ -85,20 +118,41 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
         }
         break;
 
-      case "update":
-        {
-          const auth = initializeLucia(env.USERS),
-            authRequest = auth.handleRequest(request);
+      case "update": {
+        const auth = initializeLucia(env.USERS),
+          authRequest = auth.handleRequest(request);
 
-          const session: Session = await authRequest.validate();
+        const session: Session = await authRequest.validate();
 
-          if (!session) throw new PublicError("Unauthorized");
+        if (!session) throw new PublicError("Unauthorized");
 
-          ({ email, phone, referrer, previous_contact } = bodyData);
+        ({ email, phone, referrer, previous_contact } = bodyData);
 
-          ({ locale } = session.user);
+        ({ locale } = session.user);
+
+        // throw error if account with email or phone already exists
+        const DuplicateAccountError = new PublicError(
+          `The entered ${
+            email ? "email address" : "phone number"
+          } already exists. Please contact support at <a href="mailto:hello@dilmahtea.me">hello@dilmahtea.me</a>`,
+        );
+
+        const Customer = await fetchExactAPI(
+          "GET",
+          "/crm/Accounts?$filter=" + getCustomerFilter(email || phone, !!email),
+          env,
+        ).then(({ feed }) => feed.entry);
+
+        if (Customer) throw DuplicateAccountError;
+
+        try {
+          await auth.getKey(email ? "email" : "phone", email || phone);
+        } catch (error) {
+          break;
         }
-        break;
+
+        throw DuplicateAccountError;
+      }
 
       default:
         break;
@@ -109,9 +163,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     return Response.json(
       {
         success: false,
-        message: isPublicError
-          ? error.message
-          : "Invalid email or phone number",
+        message: isPublicError ? error.message : "Something went wrong",
       },
       { status: 400 },
     );
@@ -131,6 +183,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
     var magicLink =
       new URL(request.url).origin + "/account/verify/" + "?token=" + token;
+
+    console.log(magicLink);
   } catch (error) {
     const isPublicError = error instanceof PublicError;
 
@@ -162,14 +216,14 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     if (email) {
       const finalHTMLEmail = replacePlaceholders(htmlEmail);
 
-      response = await context.env.EMAIL.fetch(request.url, {
+      response = await env.EMAIL.fetch(env.EMAIL_WORKER_URL, {
         method: "POST",
         headers: {
           "content-type": "application/json",
+          "x-cf-secure-worker-token": env.CF_SECURE_WORKER_TOKEN,
         },
         body: JSON.stringify({
           to: [{ email }],
-
           subject: Subject,
           content: [{ type: "text/html", value: finalHTMLEmail }],
         }),

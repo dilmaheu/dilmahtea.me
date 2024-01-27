@@ -13,138 +13,10 @@ const { page, recurData } = Astro.props,
 ---
 
 <style lang="scss">
-  @use "src/styles/poly-fluid" as *;
-
-  h2 {
-    @apply font-bold text-primary leading-[140%];
-
-    font-size: poly-fluid-clamp(
-      (
-        640px: 28px,
-        1440px: 42px,
-      )
-    );
-  }
-
-  form {
-    padding: poly-fluid-clamp(
-      (
-        640px: 25px 25px,
-        1440px: 32px 56px,
-      )
-    );
-  }
-
-  .form-grid-container {
-    @apply flex flex-col;
-
-    gap: poly-fluid-clamp(
-      (
-        640px: 10px,
-        1440px: 25px,
-      )
-    );
-
-    .prose-text {
-      font-size: poly-fluid-clamp(
-        (
-          640px: 18px,
-          1440px: 24px,
-        )
-      );
-
-      p {
-        margin: 0;
-      }
-    }
-
-    .form-grid {
-      @apply w-full grid gap-[clamp(15px,calc(1.25vw+7px),25px)];
-
-      @media (min-width: 640px) {
-        @apply grid-cols-2;
-
-        gap: poly-fluid-clamp(
-          (
-            480px: 10px 40px,
-            1440px: 25px 50px,
-          )
-        );
-      }
-
-      .input-label {
-        @apply font-semibold text-black-light text-[clamp(16px,calc(0.25vw+14.4px),18px)];
-      }
-
-      @mixin input {
-        @apply bg-transparent border border-primary rounded-full 
-          focus:ring focus:ring-primary-light focus:outline-none
-          py-[clamp(8px,calc(0.25vw+6.4px),10px)] px-[clamp(15px,calc(0.625vw+11px),20px)]
-          text-[clamp(16px,calc(0.25vw+14.4px),18px)] text-black placeholder:text-black-light;
-      }
-
-      input {
-        @include input;
-      }
-
-      select {
-        @include input;
-
-        @apply w-full pr-[clamp(40px,calc(1.25vw+32px),50px)] cursor-pointer appearance-none;
-
-        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath d='M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z' style='fill:%231e4848'/%3E%3C/svg%3E")
-          no-repeat right 20px center;
-        background-size: clamp(14px, calc(0.25vw + 12.4px), 16px);
-      }
-
-      label {
-        @apply flex flex-col gap-[clamp(5px,calc(0.625vw+1px),10px)];
-
-        span.tag-input-close-button {
-          @apply absolute inset-y-0 right-0 cursor-pointer
-            flex items-center pr-5 font-bold text-error-dark;
-        }
-      }
-    }
-  }
-
-  .section-gap {
-    @apply gap-[50px];
-  }
-
-  .division-gap {
-    @apply gap-[clamp(25px,calc(0.625vw+21px),30px)];
-  }
-
-  .division-in-gap {
-    @apply gap-[clamp(10px,calc(0.625vw+6px),15px)];
-  }
-
-  .division-in-element-gap {
-    @apply gap-[clamp(5px,calc(0.625vw+1px),10px)];
-  }
-
-  .text-b5 {
-    @apply text-[clamp(16px,calc(0.25vw+14.4px),18px)] leading-[150%];
-  }
-
-  @mixin radio-button {
-    @apply inline-block py-2.5 px-5 text-sm 
-      border-2 rounded-full cursor-pointer select-none;
-  }
-
-  .radio-button-default {
-    @include radio-button;
-  }
-
-  .radio-button-extended {
-    @include radio-button;
-
-    @apply font-bold text-primary bg-white;
-  }
+  @use "src/styles/checkout" as *;
 </style>
 
-<section class="w-full lg:w-[66.67%]">
+<section class="w-full xl:w-2/3">
   <form
     role="main"
     aria-label={page.Aria_label_form_text}
@@ -155,13 +27,13 @@ const { page, recurData } = Astro.props,
     <div
       role="form"
       aria-label={page.text_contact_info}
-      class="division-gap form-grid-container"
+      class="division-gap grid"
     >
-      <h2 class="recoleta">{page.text_customer}</h2>
+      <h2 class="recoleta text-h2 text-primary">{page.text_customer}</h2>
 
       <div
         id="guest-intro-text"
-        class="prose-text prose max-w-none leading-[150%] text-black-light"
+        class="prose-text prose max-w-none text-b5 text-black-light"
       >
         <Markdown>{page.Guest_intro_text}</Markdown>
       </div>
@@ -181,7 +53,7 @@ const { page, recurData } = Astro.props,
 
       <div
         id="sign-in-text"
-        class="prose-text prose max-w-none leading-[150%] text-black-light"
+        class="prose-text prose max-w-none text-b5 text-black-light"
       >
         <Markdown>{page.Sign_in_text}</Markdown>
       </div>
@@ -190,9 +62,11 @@ const { page, recurData } = Astro.props,
     <div
       role="form"
       aria-label={page.text_shipping_address}
-      class="division-gap form-grid-container"
+      class="division-gap grid"
     >
-      <h2 class="recoleta">{page.text_shipping_address}</h2>
+      <h2 class="recoleta text-h2 text-primary">
+        {page.text_shipping_address}
+      </h2>
 
       <div>
         <div class="division-in-gap grid">
@@ -491,29 +365,23 @@ const { page, recurData } = Astro.props,
       </div>
     </div>
 
-    <div class="block lg:hidden -mb-6">
+    <div class="block lg:hidden">
       <OrderSummary page={page} />
     </div>
 
-    <div
-      class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-9 sm:gap-12"
-    >
-      <button
-        class="w-full sm:w-auto py-4 px-8 sm:px-20 bg-primary text-white font-bold rounded-full"
-      >
-        {page.text_continue_to_shipping}
-      </button>
-
-      <a href={checkoutCartLink} class="text-primary font-bold">
+    <div class="checkout-button-container">
+      <a href={checkoutCartLink} class="button-link-large">
         {page.text_return_to_cart}
       </a>
+
+      <button class="w-full sm:w-1/3 button-primary-large">
+        {page.text_continue_to_shipping}
+      </button>
     </div>
   </form>
 </section>
 
-<section
-  class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-primary-light"
->
+<section class="hidden xl:block xl:w-1/3">
   <OrderSummary page={page} />
 </section>
 
@@ -590,3 +458,4 @@ const { page, recurData } = Astro.props,
     inputElement.focus();
   }
 </script>
+
