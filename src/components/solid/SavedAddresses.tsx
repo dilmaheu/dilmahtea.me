@@ -15,7 +15,8 @@ export default function SavedAddresses({
   const [addresses, setAddresses] = createSignal([]),
     [isLoading, setIsLoading] = createSignal(true),
     [notification, setNotification] = createSignal(null),
-    [showMoreAddresses, setShowMoreAddresses] = createSignal(false);
+    [showMoreAddresses, setShowMoreAddresses] = createSignal(false),
+    [displayNewAddressForm, setShowNewAddressForm] = createSignal(false);
 
   createEffect(() => {
     fetch("/api/addresses")
@@ -77,16 +78,25 @@ export default function SavedAddresses({
             {text_saved_Addresses}
           </div>
 
-          <a href={`#`} class="button-primary">
+          <button
+            class="button-primary"
+            onclick={() => setShowNewAddressForm(true)}
+          >
             {plusIcon}
             {Button_add_new_address_text}
-          </a>
+          </button>
         </div>
 
-        <EditAddress
-          recurData={recurData}
-          userAccountRecurData={userAccountRecurData}
-        />
+        {displayNewAddressForm() && (
+          <EditAddress
+            action="add"
+            recurData={recurData}
+            userAccountRecurData={userAccountRecurData}
+            showForm={setShowNewAddressForm}
+            notification={notification}
+            setNotification={setNotification}
+          />
+        )}
 
         {isLoading() ? (
           <Loading />
