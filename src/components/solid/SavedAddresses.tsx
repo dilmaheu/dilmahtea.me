@@ -113,26 +113,42 @@ export default function SavedAddresses({
                   showMoreAddresses() ? addresses().length : 3,
                 )}
               >
-                {(address, i) => (
-                  <>
-                    <Address
-                      address={address}
-                      trashCanIcon={trashCanIcon}
-                      text_default_delivery_address={
-                        text_default_delivery_address
-                      }
-                      text_default_billing_address={
-                        text_default_billing_address
-                      }
-                      Button_edit_text={Button_edit_text}
-                    />
+                {(address, i) => {
+                  const [editAddress, setEditAddress] = createSignal(false);
 
-                    {i() <
-                      (showMoreAddresses() ? addresses().length : 3) - 1 && (
-                      <div class="h-px bg-primary-light"></div>
-                    )}
-                  </>
-                )}
+                  return (
+                    <>
+                      {editAddress() ? (
+                        <EditAddress
+                          action="update"
+                          address={address}
+                          recurData={recurData}
+                          userAccountRecurData={userAccountRecurData}
+                          showForm={setEditAddress}
+                          handleAPIResponse={handleAPIResponse}
+                        />
+                      ) : (
+                        <Address
+                          address={address}
+                          trashCanIcon={trashCanIcon}
+                          text_default_delivery_address={
+                            text_default_delivery_address
+                          }
+                          text_default_billing_address={
+                            text_default_billing_address
+                          }
+                          Button_edit_text={Button_edit_text}
+                          setEditAddress={setEditAddress}
+                        />
+                      )}
+
+                      {i() <
+                        (showMoreAddresses() ? addresses().length : 3) - 1 && (
+                        <div class="h-px bg-primary-light"></div>
+                      )}
+                    </>
+                  );
+                }}
               </For>
             </div>
 

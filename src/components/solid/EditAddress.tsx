@@ -1,9 +1,11 @@
-import type { Accessor, Setter } from "solid-js";
+import type { Setter } from "solid-js";
+import type { Address } from "@solid/Address";
 
 import { createSignal } from "solid-js";
 
 declare interface Props {
-  action: string;
+  action: "add" | "update";
+  address?: Address;
   recurData: any;
   userAccountRecurData: any;
   showForm: Setter<boolean>;
@@ -12,6 +14,7 @@ declare interface Props {
 
 export default function EditAddress({
   action,
+  address,
   recurData,
   userAccountRecurData,
   showForm,
@@ -81,8 +84,8 @@ export default function EditAddress({
       new FormData(event.currentTarget as HTMLFormElement).entries(),
     );
 
-    if (action.startsWith("update:")) {
-      formData.id = action.slice(7);
+    if (action === "update") {
+      formData.id = address.id;
     }
 
     fetch("/api/addresses", {
@@ -188,6 +191,7 @@ export default function EditAddress({
           <input
             type="text"
             name="first_name"
+            value={address?.first_name || null}
             placeholder={first_name_placeholder}
             required
           />
@@ -199,6 +203,7 @@ export default function EditAddress({
           <input
             type="text"
             name="last_name"
+            value={address?.last_name || null}
             placeholder={last_name_placeholder}
             required
           />
@@ -210,6 +215,7 @@ export default function EditAddress({
           <input
             type="text"
             name="street"
+            value={address?.street || null}
             placeholder={street_placeholder}
             required
           />
@@ -221,6 +227,7 @@ export default function EditAddress({
           <input
             type="text"
             name="city"
+            value={address?.city || null}
             placeholder={city_placeholder}
             required
           />
@@ -232,6 +239,7 @@ export default function EditAddress({
           <input
             type="text"
             name="postal_code"
+            value={address?.postal_code || null}
             placeholder={postal_code_placeholder}
             required
           />
@@ -246,7 +254,14 @@ export default function EditAddress({
             </option>
 
             {countries.data.map(({ attributes: { name, localizations } }) => (
-              <option value={localizations?.data[0]?.attributes?.name || name}>
+              <option
+                value={localizations?.data[0]?.attributes?.name || name}
+                selected={
+                  address &&
+                  address.country ===
+                    (localizations?.data[0]?.attributes?.name || name)
+                }
+              >
                 {name}
               </option>
             ))}

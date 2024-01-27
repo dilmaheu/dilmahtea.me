@@ -1,6 +1,8 @@
+import type { Setter } from "solid-js";
+
 import { user } from "@signals/user";
 
-declare interface Address {
+export interface Address {
   id: string;
   email: string;
   tag: string;
@@ -18,6 +20,7 @@ declare interface Props {
   text_default_delivery_address: string;
   text_default_billing_address: string;
   Button_edit_text: string;
+  setEditAddress: Setter<boolean>;
 }
 
 export default function Address({
@@ -26,6 +29,7 @@ export default function Address({
   text_default_delivery_address,
   text_default_billing_address,
   Button_edit_text,
+  setEditAddress,
 }: Props) {
   const { id, tag, first_name, last_name, street, city, postal_code, country } =
     address;
@@ -60,7 +64,12 @@ export default function Address({
         <div class="input-text-large-static">{fullAddress}</div>
 
         <div class="flex division-gap">
-          <button class="button-link-primary-big">{Button_edit_text}</button>
+          <button
+            class="button-link-primary-big"
+            onclick={() => setEditAddress(true)}
+          >
+            {Button_edit_text}
+          </button>
 
           <div
             class="button-link-error-dark-big"
