@@ -6,6 +6,7 @@ declare interface Props {
   action: string;
   recurData: any;
   userAccountRecurData: any;
+  showForm: Setter<boolean>;
   notification: Accessor<any>;
   setNotification: Setter<any>;
 }
@@ -14,6 +15,7 @@ export default function EditAddress({
   action,
   recurData,
   userAccountRecurData,
+  showForm,
   notification,
   setNotification,
 }: Props) {
@@ -313,7 +315,11 @@ export default function EditAddress({
         </div>
 
         <div class="flex">
-          <button type="button" class="button-link-error-dark">
+          <button
+            type="button"
+            class="button-link-error-dark"
+            onclick={() => showForm(false)}
+          >
             {Button_cancel_text}
           </button>
         </div>
