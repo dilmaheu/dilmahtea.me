@@ -62,7 +62,10 @@ export default function Address({
         <div class="flex division-gap">
           <button class="button-link-primary-big">{Button_edit_text}</button>
 
-          <div class="button-link-error-dark-big">{trashCanIcon}</div>
+          <div
+            class="button-link-error-dark-big"
+            innerHTML={trashCanIcon.innerHTML}
+          />
         </div>
       </div>
     </div>
