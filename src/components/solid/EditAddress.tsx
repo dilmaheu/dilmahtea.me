@@ -7,8 +7,7 @@ declare interface Props {
   recurData: any;
   userAccountRecurData: any;
   showForm: Setter<boolean>;
-  notification: Accessor<any>;
-  setNotification: Setter<any>;
+  handleAPIResponse: (response: Response) => void;
 }
 
 export default function EditAddress({
@@ -16,8 +15,7 @@ export default function EditAddress({
   recurData,
   userAccountRecurData,
   showForm,
-  notification,
-  setNotification,
+  handleAPIResponse,
 }: Props) {
   const [customAddressTag, setCustomAddressTag] = createSignal(""),
     [showCustomTagInput, setShowCustomTagInput] = createSignal(false);
@@ -90,28 +88,7 @@ export default function EditAddress({
     fetch("/api/addresses", {
       method: action === "add" ? "POST" : "PUT",
       body: JSON.stringify(formData),
-    })
-      .then((res) => res.json<any>())
-      .then((response) => {
-        if (response.success) {
-          setNotification({
-            type: "success",
-            message: response.message,
-          });
-
-          setTimeout(() => {
-            // skip if an error notification is set within 7 seconds
-            if (notification().type === "success") {
-              setNotification(null);
-            }
-          }, 7000);
-        } else {
-          setNotification({
-            type: "error",
-            message: response.message,
-          });
-        }
-      });
+    }).then(handleAPIResponse);
   }
 
   function hideCustomTagInput() {

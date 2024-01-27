@@ -5,6 +5,8 @@ import Address from "@solid/Address";
 import EditAddress from "@solid/EditAddress";
 import DashboardNotification from "@solid/DashboardNotification";
 
+import handleAPIResponseBase from "@utils/handleAPIResponseBase";
+
 export default function SavedAddresses({
   plusIcon,
   trashCanIcon,
@@ -26,6 +28,9 @@ export default function SavedAddresses({
         setAddresses(addresses);
       });
   });
+
+  const handleAPIResponse = (response: Response) =>
+    handleAPIResponseBase(response, notification, setNotification);
 
   const {
     Label_tag_text,
@@ -93,8 +98,7 @@ export default function SavedAddresses({
             recurData={recurData}
             userAccountRecurData={userAccountRecurData}
             showForm={setShowNewAddressForm}
-            notification={notification}
-            setNotification={setNotification}
+            handleAPIResponse={handleAPIResponse}
           />
         )}
 
