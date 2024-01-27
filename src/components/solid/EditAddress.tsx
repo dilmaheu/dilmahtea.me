@@ -1,6 +1,22 @@
+import type { Accessor, Setter } from "solid-js";
+
 import { createSignal } from "solid-js";
 
-export default function EditAddress({ recurData, userAccountRecurData }) {
+declare interface Props {
+  action: string;
+  recurData: any;
+  userAccountRecurData: any;
+  notification: Accessor<any>;
+  setNotification: Setter<any>;
+}
+
+export default function EditAddress({
+  action,
+  recurData,
+  userAccountRecurData,
+  notification,
+  setNotification,
+}: Props) {
   const [customAddressTag, setCustomAddressTag] = createSignal(""),
     [showCustomTagInput, setShowCustomTagInput] = createSignal(false);
 
@@ -57,6 +73,45 @@ export default function EditAddress({ recurData, userAccountRecurData }) {
     text_default_billing_address,
   } = userAccountRecurData;
 
+  function handleSubmit(event: SubmitEvent) {
+    event.preventDefault();
+
+    const formData = Object.fromEntries(
+      // @ts-ignore
+      new FormData(event.currentTarget as HTMLFormElement).entries(),
+    );
+
+    if (action.startsWith("update:")) {
+      formData.id = action.slice(7);
+    }
+
+    fetch("/api/addresses", {
+      method: action === "add" ? "POST" : "PUT",
+      body: JSON.stringify(formData),
+    })
+      .then((res) => res.json<any>())
+      .then((response) => {
+        if (response.success) {
+          setNotification({
+            type: "success",
+            message: response.message,
+          });
+
+          setTimeout(() => {
+            // skip if an error notification is set within 7 seconds
+            if (notification().type === "success") {
+              setNotification(null);
+            }
+          }, 7000);
+        } else {
+          setNotification({
+            type: "error",
+            message: response.message,
+          });
+        }
+      });
+  }
+
   function hideCustomTagInput() {
     setCustomAddressTag("");
 
@@ -64,7 +119,7 @@ export default function EditAddress({ recurData, userAccountRecurData }) {
   }
 
   return (
-    <form class="tiled-form division-gap grid">
+    <form class="tiled-form division-gap grid" onsubmit={handleSubmit}>
       <div class="division-in-gap grid">
         <div class="text-b5 font-bold text-black-light">{Label_tag_text}</div>
 
@@ -253,7 +308,7 @@ export default function EditAddress({ recurData, userAccountRecurData }) {
       <div class="form-button-container">
         <div class="flex w-full sm:w-1/2 sm:order-2">
           <button type="submit" class="button-primary w-full">
-            {Button_save_text}
+            {action === "add" ? Button_add_text : Button_update_text}
           </button>
         </div>
 
