@@ -30,8 +30,8 @@ export default function Address({
   const { id, tag, first_name, last_name, street, city, postal_code, country } =
     address;
 
-  const fullName = `${first_name} ${last_name}`,
-    fullAddress = `${street}, ${city}, ${postal_code}, ${country}`;
+  const fullName = first_name + " " + last_name,
+    fullAddress = [street, city, postal_code, country].join(", ");
 
   const isDefaultDeliveryAddress = user().default_delivery_address?.id === id,
     isDefaultBillingAddress = user().default_billing_address?.id === id;
