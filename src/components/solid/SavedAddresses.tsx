@@ -98,9 +98,9 @@ export default function SavedAddresses({
           />
         )}
 
-        {isLoading() ? (
-          <Loading />
-        ) : (
+        {isLoading() && <Loading />}
+
+        {addresses().length > 0 && (
           <>
             <div class="grid division-in-gap">
               <For
