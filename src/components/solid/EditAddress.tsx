@@ -3,6 +3,8 @@ import type { Address } from "@solid/Address";
 
 import { createSignal } from "solid-js";
 
+import { user } from "@signals/user";
+
 declare interface Props {
   action: "add" | "update";
   address?: Address;
@@ -191,7 +193,13 @@ export default function EditAddress({
           <input
             type="text"
             name="first_name"
-            value={address?.first_name || null}
+            value={
+              action === "add"
+                ? ["…", "N/A"].includes(user().first_name)
+                  ? null
+                  : user().first_name
+                : address?.first_name || null
+            }
             placeholder={first_name_placeholder}
             required
           />
@@ -203,7 +211,13 @@ export default function EditAddress({
           <input
             type="text"
             name="last_name"
-            value={address?.last_name || null}
+            value={
+              action === "add"
+                ? ["…", "N/A"].includes(user().last_name)
+                  ? null
+                  : user().last_name
+                : address?.last_name || null
+            }
             placeholder={last_name_placeholder}
             required
           />
