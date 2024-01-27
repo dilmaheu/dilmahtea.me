@@ -28,15 +28,16 @@ const [, , , cid] = Object.keys(Astro.props);
   loginLink={loginLink}
   cid={cid}
 >
-  {
-    async () => (
-      <img
-        slot="profileIcon"
-        class="nav-icon w-full h-full"
-        src={await localizeCMSImage(profileIcon.data.attributes.url)}
-        alt={profileIcon.data.attributes.alternativeText}
-        {...{ [cid]: true }}
-      />
-    )
-  }
+  <Fragment slot="profileIcon">
+    {
+      async () => (
+        <img
+          class="nav-icon w-full h-full"
+          src={await localizeCMSImage(profileIcon.data.attributes.url)}
+          alt={profileIcon.data.attributes.alternativeText}
+          {...{ [cid]: true }}
+        />
+      )
+    }
+  </Fragment>
 </ProfileMenu>
