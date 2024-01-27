@@ -67,7 +67,8 @@ export default function EditAddress({ recurData, userAccountRecurData }) {
                   name="address_tag"
                   id={`address-tag-${tag.toLowerCase()}`}
                   value={tag.toLowerCase()}
-                  class="peer hidden"
+                  class="peer w-px opacity-0"
+                  required
                 />
 
                 <label
@@ -89,7 +90,7 @@ export default function EditAddress({ recurData, userAccountRecurData }) {
               name="address_tag"
               id="add-new-address-tag"
               value=""
-              class="peer hidden"
+              class="peer w-px opacity-0"
             />
 
             <label
