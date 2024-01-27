@@ -14,6 +14,7 @@ export default function SavedAddresses({
 }) {
   const [addresses, setAddresses] = createSignal([]),
     [isLoading, setIsLoading] = createSignal(true),
+    [notification, setNotification] = createSignal(null),
     [showingMoreAddresses, setShowingMoreAddresses] = createSignal(false);
 
   createEffect(() => {
@@ -66,7 +67,10 @@ export default function SavedAddresses({
   return (
     <div class="dashboard-sec">
       <div class="grid division-gap">
-        <DashboardNotification recurringImages={recurringImages} />
+        <DashboardNotification
+          notification={notification}
+          recurringImages={recurringImages}
+        />
 
         <div class="flex flex-wrap items-center justify-between w-full">
           <div class="recoleta text-h5 font-bold text-black">
