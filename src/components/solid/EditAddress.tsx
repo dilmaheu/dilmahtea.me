@@ -1,4 +1,9 @@
+import { createSignal } from "solid-js";
+
 export default function EditAddress({ recurData, userAccountRecurData }) {
+  const [customAddressTag, setCustomAddressTag] = createSignal(""),
+    [showCustomTagInput, setShowCustomTagInput] = createSignal(false);
+
   const {
     text_first_name,
     first_name_placeholder,
@@ -52,6 +57,12 @@ export default function EditAddress({ recurData, userAccountRecurData }) {
     text_default_billing_address,
   } = userAccountRecurData;
 
+  function hideCustomTagInput() {
+    setCustomAddressTag("");
+
+    setShowCustomTagInput(false);
+  }
+
   return (
     <form class="tiled-form division-gap grid">
       <div class="division-in-gap grid">
@@ -66,8 +77,9 @@ export default function EditAddress({ recurData, userAccountRecurData }) {
                   type="radio"
                   name="address_tag"
                   id={`address-tag-${tag.toLowerCase()}`}
-                  value={tag.toLowerCase()}
                   class="peer w-px opacity-0"
+                  value={tag.toLowerCase()}
+                  onchange={hideCustomTagInput}
                   required
                 />
 
@@ -89,8 +101,11 @@ export default function EditAddress({ recurData, userAccountRecurData }) {
               type="radio"
               name="address_tag"
               id="add-new-address-tag"
-              value=""
               class="peer w-px opacity-0"
+              value={customAddressTag()}
+              checked={!!showCustomTagInput()}
+              onchange={() => setShowCustomTagInput(true)}
+              required
             />
 
             <label
@@ -105,17 +120,31 @@ export default function EditAddress({ recurData, userAccountRecurData }) {
           </div>
         </div>
 
-        <div id="tag-input">
-          <div class="form-grid">
-            <label class="relative">
-              <input
-                type="text"
-                placeholder={Tag_others_placeholder_text}
-                class="pr-[40px]"
-              />
-            </label>
+        {showCustomTagInput() && (
+          <div id="tag-input">
+            <div class="form-grid">
+              <label class="relative">
+                <input
+                  type="text"
+                  class="pr-[40px]"
+                  placeholder={Tag_others_placeholder_text}
+                  oninput={(event) =>
+                    setCustomAddressTag(event.currentTarget.value)
+                  }
+                  required
+                />
+
+                <span
+                  tabIndex="0"
+                  onclick={hideCustomTagInput}
+                  class="tag-input-close-button text-2xl"
+                >
+                  <b>&#10005;</b>
+                </span>
+              </label>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div class="form-grid">
