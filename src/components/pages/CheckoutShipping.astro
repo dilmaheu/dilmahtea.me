@@ -17,6 +17,9 @@ const checkoutInfoLink = `/${locale}/${
   }/`,
   checkoutKindnessLink = `/${locale}/${
     CMS.get("checkoutKindness", locale).Meta.URL_slug
+  }/`,
+  checkoutPaymentLink = `/${locale}/${
+    CMS.get("checkoutPayment", locale).Meta.URL_slug
   }/`;
 ---
 
@@ -24,7 +27,7 @@ const checkoutInfoLink = `/${locale}/${
   @use "src/styles/checkout" as *;
 </style>
 
-<script
+<!-- <script
   define:vars={{
     checkoutInfoLink,
     checkoutKindnessLink,
@@ -35,18 +38,16 @@ const checkoutInfoLink = `/${locale}/${
   }
 
   window.checkoutKindnessLink = checkoutKindnessLink;
-</script>
+</script> -->
 
 <section class="w-full xl:w-2/3">
   <form
     method="POST"
     id="shipping-details"
     class="section-gap flex flex-col"
-    action={shouldDisplayExperimentals
-      ? "https://dev.pay.scripts.dilmahtea.me"
-      : "https://pay.scripts.dilmahtea.me"}
+    action={checkoutPaymentLink}
   >
-    <DynamicHTML
+    <!-- <DynamicHTML
       htmlFn={() => {
         const { origin, pathname } = location;
 
@@ -81,7 +82,7 @@ const checkoutInfoLink = `/${locale}/${
           )
           .join("");
       }}
-    />
+    /> -->
 
     <div
       role="list"
@@ -130,7 +131,7 @@ const checkoutInfoLink = `/${locale}/${
 
           <a
             aria-label={`${userRecurr.Button_change_text} ${userRecurr.Aria_label_delivery_address}`}
-            href={checkoutInfoLink + "?change=email"}
+            href={checkoutInfoLink + "?change=street"}
             class="button-link-large"
           >
             {userRecurr.Button_change_text}
