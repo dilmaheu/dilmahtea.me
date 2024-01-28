@@ -56,6 +56,22 @@ export default function UserInfo({
     text_default_billing_address,
   } = userAccountRecurData;
 
+  function scrollToAddNewAddress(after: boolean = true) {
+    const header = document.querySelector("header"),
+      addNewAddressBtn = document.querySelector("#add-new-address-btn");
+
+    const headerRect = header.getBoundingClientRect(),
+      addNewAddressBtnRect = addNewAddressBtn.getBoundingClientRect();
+
+    window.scrollTo({
+      top:
+        window.scrollY +
+        addNewAddressBtnRect.top +
+        (after ? addNewAddressBtnRect.height : -20) -
+        headerRect.height,
+    });
+  }
+
   createEffect(() => {
     const searchParams = new URLSearchParams(location.search);
 
@@ -147,6 +163,7 @@ export default function UserInfo({
                   userAccountRecurData={userAccountRecurData}
                   setEditAddress={setEditAddress}
                   isMyProfile={true}
+                  scroll={scrollToAddNewAddress}
                 />
               )}
             </div>
@@ -175,7 +192,11 @@ export default function UserInfo({
             <button
               id="add-new-address-btn"
               class="button-primary"
-              onclick={() => setEditAddress({ action: "add" })}
+              onclick={() => {
+                scrollToAddNewAddress();
+
+                setEditAddress({ action: "add" });
+              }}
             >
               {plusIcon}
               {Button_add_new_address_text}
@@ -194,6 +215,7 @@ export default function UserInfo({
                   userAccountRecurData={userAccountRecurData}
                   showForm={setEditAddress}
                   handleAPIResponse={handleAPIResponse}
+                  scroll={() => scrollToAddNewAddress(false)}
                 />
               )
             );

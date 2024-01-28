@@ -12,6 +12,7 @@ declare interface Props {
   userAccountRecurData: any;
   showForm: Setter<any>;
   handleAPIResponse: (response: Response) => void;
+  scroll?: () => void;
 }
 
 export default function EditAddress({
@@ -21,6 +22,7 @@ export default function EditAddress({
   userAccountRecurData,
   showForm,
   handleAPIResponse,
+  scroll,
 }: Props) {
   const [customAddressTag, setCustomAddressTag] = createSignal(""),
     [showCustomTagInput, setShowCustomTagInput] = createSignal(false);
@@ -309,7 +311,10 @@ export default function EditAddress({
           <button
             type="button"
             class="button-link-error-dark"
-            onclick={() => showForm(false)}
+            onclick={() => {
+              scroll();
+              showForm(false);
+            }}
           >
             {Button_cancel_text}
           </button>

@@ -21,6 +21,7 @@ declare interface Props {
   address: Address;
   userAccountRecurData: Record<string, any>;
   setEditAddress: Setter<any>;
+  scroll?: () => void;
   isMyProfile?: boolean;
   trashCanIcon?: HTMLElement;
   handleAPIResponse?: (response: Response, callback?: () => void) => void;
@@ -30,6 +31,7 @@ export default function Address({
   address,
   userAccountRecurData,
   setEditAddress,
+  scroll,
   isMyProfile,
   trashCanIcon,
   handleAPIResponse,
@@ -101,6 +103,8 @@ export default function Address({
                   if (!isMyProfile) {
                     setEditAddress(true);
                   } else {
+                    scroll();
+
                     setEditAddress({
                       action: "update",
                       address,
