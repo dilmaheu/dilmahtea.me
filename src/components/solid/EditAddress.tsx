@@ -115,7 +115,7 @@ export default function EditAddress({
                   value={tag}
                   onchange={hideCustomTagInput}
                   checked={address?.tag === tag}
-                  required
+                  required={action === "update"}
                 />
 
                 <label
@@ -140,7 +140,7 @@ export default function EditAddress({
               value={customAddressTag()}
               checked={!!showCustomTagInput()}
               onchange={() => setShowCustomTagInput(true)}
-              required
+              required={action === "update"}
             />
 
             <label
@@ -166,7 +166,7 @@ export default function EditAddress({
                   oninput={(event) =>
                     setCustomAddressTag(event.currentTarget.value)
                   }
-                  required
+                  required={action === "update"}
                 />
 
                 <span
