@@ -102,6 +102,8 @@ export default function SavedAddresses({
           />
         )}
 
+        <div class="h-px bg-primary-light"></div>
+
         {isLoading() && <Loading />}
 
         {addresses().length > 0 && (
