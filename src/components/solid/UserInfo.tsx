@@ -1,21 +1,32 @@
+import type { Address as AddressType } from "@solid/Address";
+
 import { createEffect, createSignal } from "solid-js";
 
 import { user } from "@signals/user";
 
 import Address from "@solid/Address";
 import InfoUnit from "@solid/InfoUnit";
+import EditAddress from "@solid/EditAddress";
 import DashboardNotification from "@solid/DashboardNotification";
+
+import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 
 export default function UserInfo({
   plusIcon,
   page,
   verificationHref,
-  userAccountAddressURL,
   recurringImages,
+  recurData,
   userAccountRecurData,
 }) {
   const [notification, setNotification] = createSignal(null),
-    [editAddress, setEditAddress] = createSignal(false);
+    [editAddress, setEditAddress] = createSignal<{
+      action: "add" | "update";
+      address?: AddressType;
+    }>();
+
+  const handleAPIResponse = (response: Response) =>
+    handleAPIResponseBase(response, notification, setNotification);
 
   const {
     Title,
@@ -161,11 +172,32 @@ export default function UserInfo({
           </div>
 
           <div class="flex w-full">
-            <a href={userAccountAddressURL} class="button-primary">
+            <button
+              id="add-new-address-btn"
+              class="button-primary"
+              onclick={() => setEditAddress({ action: "add" })}
+            >
               {plusIcon}
               {Button_add_new_address_text}
-            </a>
+            </button>
           </div>
+
+          {() => {
+            const editAddressInfo = editAddress();
+
+            return (
+              editAddressInfo && (
+                <EditAddress
+                  action={editAddress().action}
+                  address={editAddress().address}
+                  recurData={recurData}
+                  userAccountRecurData={userAccountRecurData}
+                  showForm={setEditAddress}
+                  handleAPIResponse={handleAPIResponse}
+                />
+              )
+            );
+          }}
 
           {/* {Address_tag.length > 2 && (
             <div class="w-full flex justify-center">

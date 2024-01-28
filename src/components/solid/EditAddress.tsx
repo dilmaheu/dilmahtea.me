@@ -10,7 +10,7 @@ declare interface Props {
   address?: Address;
   recurData: any;
   userAccountRecurData: any;
-  showForm: Setter<boolean>;
+  showForm: Setter<any>;
   handleAPIResponse: (response: Response) => void;
 }
 
@@ -43,39 +43,14 @@ export default function EditAddress({
 
   const {
     Label_tag_text,
-    Tag_default_text,
     Tag_others_text,
     Tag_others_placeholder_text,
     Tag_suggestions,
     Button_add_text,
-    Button_edit_text,
     Button_update_text,
-    Button_add_new_address_text,
-    Button_make_default_text,
-    Button_save_text,
     Button_cancel_text,
-    text_saved_Addresses,
-    text_more_address,
-    text_hide_more_address,
-    Input_label_first_name,
-    Input_placeholder_first_name,
-    Input_label_last_name,
-    Input_placeholder_last_name,
-    Input_label_country,
-    Input_placeholder_country,
-    Input_label_city,
-    Input_placeholder_city,
-    Input_label_street,
-    Input_placeholder_street,
-    Input_label_postal_code,
-    Input_placeholder_postal_code,
     Checkbox_set_default_delivery_address_text,
     Checkbox_set_default_billing_address_text,
-    Checkbox_add_delivery_address_text,
-    Checkbox_add_billing_address_text,
-    text_content,
-    text_default_delivery_address,
-    text_default_billing_address,
   } = userAccountRecurData;
 
   function handleSubmit(event: SubmitEvent) {

@@ -8,7 +8,7 @@ export default function Dashboard({
   noOrdersHTML,
   page,
   verificationHref,
-  userAccountAddressURL,
+  recurData,
   userAccountRecurData,
   recurringImages,
 }) {
@@ -20,8 +20,8 @@ export default function Dashboard({
         plusIcon={plusIcon}
         page={page}
         verificationHref={verificationHref}
-        userAccountAddressURL={userAccountAddressURL}
         recurringImages={recurringImages}
+        recurData={recurData}
         userAccountRecurData={userAccountRecurData}
       />
 

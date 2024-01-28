@@ -20,7 +20,7 @@ export interface Address {
 declare interface Props {
   address: Address;
   userAccountRecurData: Record<string, any>;
-  setEditAddress: Setter<boolean>;
+  setEditAddress: Setter<any>;
   isMyProfile?: boolean;
   trashCanIcon?: HTMLElement;
   handleAPIResponse?: (response: Response, callback?: () => void) => void;
@@ -97,7 +97,16 @@ export default function Address({
             <div class="flex division-gap">
               <button
                 class="button-link-primary-big"
-                onclick={() => setEditAddress(true)}
+                onclick={() => {
+                  if (!isMyProfile) {
+                    setEditAddress(true);
+                  } else {
+                    setEditAddress({
+                      action: "update",
+                      address,
+                    });
+                  }
+                }}
               >
                 {isMyProfile ? Button_update_text : Button_edit_text}
               </button>
