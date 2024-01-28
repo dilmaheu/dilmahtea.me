@@ -7,6 +7,7 @@ export default function CheckoutInformationAddress({
     <div
       role="form"
       aria-label={page.text_shipping_address}
+      id="shipping-address"
       class="division-gap grid"
     >
       <h2 class="recoleta text-h2 text-primary">

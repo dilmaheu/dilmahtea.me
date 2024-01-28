@@ -94,8 +94,7 @@ const { page, recurData } = Astro.props,
 </section>
 
 <script>
-  const inputToBeChanged = new URLSearchParams(location.search).get("change"),
-    returnToCartBtn = document.getElementById("return-to-cart-btn"),
+  const returnToCartBtn = document.getElementById("return-to-cart-btn"),
     checkoutInfoForm = document.getElementById(
       "checkout-info-form",
     ) as HTMLFormElement;
@@ -122,12 +121,16 @@ const { page, recurData } = Astro.props,
     window.openCart();
   });
 
-  if (inputToBeChanged) {
-    const inputElement = document.querySelector(
-      `input[name=${inputToBeChanged}]`,
-    ) as HTMLInputElement;
+  const change = new URLSearchParams(location.search).get("change");
 
-    inputElement.scrollIntoView({ block: "center" });
-    inputElement.focus();
+  if (["email", "address"].includes(change)) {
+    const elementToScrollTo = document.querySelector(
+      change === "email" ? "input[name=email]" : "#shipping-address",
+    ) as HTMLElement;
+
+    elementToScrollTo.scrollIntoView({
+      block: change === "email" ? "center" : "start",
+    });
+    elementToScrollTo.focus();
   }
 </script>
