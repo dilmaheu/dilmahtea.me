@@ -291,6 +291,9 @@ export default function EditAddress({
                 type="checkbox"
                 name="set_as_default_delivery_address"
                 value="true"
+                checked={
+                  user().default_delivery_address?.id === address?.id || false
+                }
               />
               <span class="checkbox-primary"></span>
             </span>
@@ -305,6 +308,9 @@ export default function EditAddress({
                 type="checkbox"
                 name="set_as_default_billing_address"
                 value="true"
+                checked={
+                  user().default_billing_address?.id === address?.id || false
+                }
               />
               <span class="checkbox-primary"></span>
             </span>
