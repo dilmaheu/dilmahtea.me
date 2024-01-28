@@ -13,6 +13,10 @@ declare interface Props {
   showForm: Setter<any>;
   handleAPIResponse: (response: Response) => void;
   scroll?: () => void;
+  tickCheckboxes?: {
+    default_billing_address?: boolean;
+    default_delivery_address?: boolean;
+  };
 }
 
 export default function EditAddress({
@@ -23,6 +27,7 @@ export default function EditAddress({
   showForm,
   handleAPIResponse,
   scroll,
+  tickCheckboxes,
 }: Props) {
   const [customAddressTag, setCustomAddressTag] = createSignal(""),
     [showCustomTagInput, setShowCustomTagInput] = createSignal(false);
@@ -269,6 +274,7 @@ export default function EditAddress({
                 name="set_as_default_delivery_address"
                 value="true"
                 checked={
+                  tickCheckboxes?.default_delivery_address ||
                   (address &&
                     address.id === user().default_delivery_address?.id) ||
                   false
@@ -288,6 +294,7 @@ export default function EditAddress({
                 name="set_as_default_billing_address"
                 value="true"
                 checked={
+                  tickCheckboxes?.default_billing_address ||
                   (address &&
                     address.id === user().default_billing_address?.id) ||
                   false

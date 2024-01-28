@@ -4,12 +4,12 @@ import { createEffect, createSignal } from "solid-js";
 
 import { user } from "@signals/user";
 
-import Address from "@solid/Address";
 import InfoUnit from "@solid/InfoUnit";
 import EditAddress from "@solid/EditAddress";
 import DashboardNotification from "@solid/DashboardNotification";
 
 import handleAPIResponseBase from "@utils/handleAPIResponseBase";
+import DefaultAddress from "./DefaultAddress";
 
 export default function UserInfo({
   plusIcon,
@@ -23,6 +23,10 @@ export default function UserInfo({
     [editAddress, setEditAddress] = createSignal<{
       action: "add" | "update";
       address?: AddressType;
+      tickCheckboxes?: {
+        default_delivery_address?: boolean;
+        default_billing_address?: boolean;
+      };
     }>();
 
   const handleAPIResponse = (response: Response) =>
@@ -149,43 +153,32 @@ export default function UserInfo({
 
             <div class="h-px bg-primary-light" />
 
-            <div class="grid division-in-element-gap">
-              <div class="input-label">{Label_delivery_address}</div>
+            {() => {
+              const { default_delivery_address, default_billing_address } =
+                user();
 
-              {user().default_delivery_address === "…" ||
-              user().default_delivery_address === "N/A" ? (
-                <div class="input-text-large-static">
-                  {user().default_delivery_address}
-                </div>
-              ) : (
-                <Address
-                  address={user().default_delivery_address}
-                  userAccountRecurData={userAccountRecurData}
-                  setEditAddress={setEditAddress}
-                  isMyProfile={true}
-                  scroll={scrollToAddNewAddress}
-                />
-              )}
-            </div>
+              return (
+                <>
+                  <DefaultAddress
+                    label={Label_delivery_address}
+                    address={default_delivery_address}
+                    userAccountRecurData={userAccountRecurData}
+                    setEditAddress={setEditAddress}
+                    scrollToAddNewAddress={scrollToAddNewAddress}
+                  />
 
-            <div class="h-px bg-primary-light" />
+                  <div class="h-px bg-primary-light" />
 
-            <div class="grid division-in-element-gap">
-              <div class="input-label">{Label_billing_address}</div>
-
-              {["…", "N/A"].includes(user().default_billing_address) ? (
-                <div class="input-text-large-static">
-                  {user().default_billing_address}
-                </div>
-              ) : (
-                <Address
-                  address={user().default_billing_address}
-                  userAccountRecurData={userAccountRecurData}
-                  setEditAddress={setEditAddress}
-                  isMyProfile={true}
-                />
-              )}
-            </div>
+                  <DefaultAddress
+                    label={Label_billing_address}
+                    address={default_billing_address}
+                    userAccountRecurData={userAccountRecurData}
+                    setEditAddress={setEditAddress}
+                    scrollToAddNewAddress={scrollToAddNewAddress}
+                  />
+                </>
+              );
+            }}
           </div>
 
           <div class="flex w-full">
@@ -216,6 +209,7 @@ export default function UserInfo({
                   showForm={setEditAddress}
                   handleAPIResponse={handleAPIResponse}
                   scroll={() => scrollToAddNewAddress(false)}
+                  tickCheckboxes={editAddress().tickCheckboxes}
                 />
               )
             );
