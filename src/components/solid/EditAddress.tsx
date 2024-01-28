@@ -292,7 +292,9 @@ export default function EditAddress({
                 name="set_as_default_delivery_address"
                 value="true"
                 checked={
-                  user().default_delivery_address?.id === address?.id || false
+                  (address &&
+                    address.id === user().default_delivery_address?.id) ||
+                  false
                 }
               />
               <span class="checkbox-primary"></span>
@@ -309,7 +311,9 @@ export default function EditAddress({
                 name="set_as_default_billing_address"
                 value="true"
                 checked={
-                  user().default_billing_address?.id === address?.id || false
+                  (address &&
+                    address.id === user().default_billing_address?.id) ||
+                  false
                 }
               />
               <span class="checkbox-primary"></span>
