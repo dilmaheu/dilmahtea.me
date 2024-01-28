@@ -2,6 +2,7 @@ import { createEffect, createSignal } from "solid-js";
 
 import { user } from "@signals/user";
 
+import Address from "@solid/Address";
 import InfoUnit from "@solid/InfoUnit";
 import DashboardNotification from "@solid/DashboardNotification";
 
@@ -13,7 +14,8 @@ export default function UserInfo({
   recurringImages,
   userAccountRecurData,
 }) {
-  const [notification, setNotification] = createSignal(null);
+  const [notification, setNotification] = createSignal(null),
+    [editAddress, setEditAddress] = createSignal(false);
 
   const {
     Title,
@@ -39,6 +41,8 @@ export default function UserInfo({
     Button_add_new_address_text,
     Address_tag,
     text_more_address,
+    text_default_delivery_address,
+    text_default_billing_address,
   } = userAccountRecurData;
 
   createEffect(() => {
@@ -121,25 +125,19 @@ export default function UserInfo({
             <div class="grid division-in-element-gap">
               <div class="input-label">{Label_delivery_address}</div>
 
-              <div class="quick-info">
-                <div>Sara jones</div>
-                <div>&#x2022;</div>
-                <div class="info-tag-button">Home</div>
-              </div>
-
-              <div class="flex items-center division-in-element-gap justify-between">
+              {user().default_delivery_address === "…" ||
+              user().default_delivery_address === "N/A" ? (
                 <div class="input-text-large-static">
-                  456B, Oakwoods, Germany
+                  {user().default_delivery_address}
                 </div>
-
-                <a href={`#`} class="button-link-primary-big">
-                  {/*if there is no single address then we will show add
-                  {Button_add_text}*/}
-
-                  {/*if there is default address set then we will show update*/}
-                  {Button_update_text}
-                </a>
-              </div>
+              ) : (
+                <Address
+                  address={user().default_delivery_address}
+                  userAccountRecurData={userAccountRecurData}
+                  setEditAddress={setEditAddress}
+                  isMyProfile={true}
+                />
+              )}
             </div>
 
             <div class="h-px bg-primary-light" />
@@ -147,27 +145,20 @@ export default function UserInfo({
             <div class="grid division-in-element-gap">
               <div class="input-label">{Label_billing_address}</div>
 
-              <div class="quick-info">
-                <div>Sara jones</div>
-                <div>&#x2022;</div>
-                <div class="info-tag-button">Home</div>
-              </div>
-
-              <div class="flex items-center division-in-element-gap justify-between">
-                <div class="input-text-large-static">N/A</div>
-
-                <a href={`#`} class="button-link-primary-big">
-                  {/*if there is no single address then we will show add*/}
-                  {Button_add_text}
-
-                  {/*if there is default address set then we will show update*
-                  {Button_update_text}*/}
-                </a>
-              </div>
+              {["…", "N/A"].includes(user().default_billing_address) ? (
+                <div class="input-text-large-static">
+                  {user().default_billing_address}
+                </div>
+              ) : (
+                <Address
+                  address={user().default_billing_address}
+                  userAccountRecurData={userAccountRecurData}
+                  setEditAddress={setEditAddress}
+                  isMyProfile={true}
+                />
+              )}
             </div>
           </div>
-
-          {/*if there is not default address set then hide button*/}
 
           <div class="flex w-full">
             <a href={userAccountAddressURL} class="button-primary">

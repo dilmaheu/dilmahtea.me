@@ -19,27 +19,32 @@ export interface Address {
 
 declare interface Props {
   address: Address;
-  trashCanIcon: HTMLElement;
-  text_default_delivery_address: string;
-  text_default_billing_address: string;
-  Button_edit_text: string;
+  userAccountRecurData: Record<string, any>;
   setEditAddress: Setter<boolean>;
-  handleAPIResponse: (response: Response, callback?: () => void) => void;
+  isMyProfile?: boolean;
+  trashCanIcon?: HTMLElement;
+  handleAPIResponse?: (response: Response, callback?: () => void) => void;
 }
 
 export default function Address({
   address,
-  trashCanIcon,
-  text_default_delivery_address,
-  text_default_billing_address,
-  Button_edit_text,
+  userAccountRecurData,
   setEditAddress,
+  isMyProfile,
+  trashCanIcon,
   handleAPIResponse,
 }: Props) {
   const [isDeleting, setIsDeleting] = createSignal(false);
 
   const { id, tag, first_name, last_name, street, city, postal_code, country } =
     address;
+
+  const {
+    Button_update_text,
+    text_default_delivery_address,
+    text_default_billing_address,
+    Button_edit_text,
+  } = userAccountRecurData;
 
   const fullName = first_name + " " + last_name,
     fullAddress = [street, city, postal_code, country].join(", ");
@@ -68,17 +73,18 @@ export default function Address({
       ) : (
         <>
           <div class="quick-info">
-            {(isDefaultDeliveryAddress || isDefaultBillingAddress) && (
-              <>
-                <div class="info-tag-button-primary">
-                  {isDefaultDeliveryAddress
-                    ? text_default_delivery_address
-                    : text_default_billing_address}
-                </div>
+            {!isMyProfile &&
+              (isDefaultDeliveryAddress || isDefaultBillingAddress) && (
+                <>
+                  <div class="info-tag-button-primary">
+                    {isDefaultDeliveryAddress
+                      ? text_default_delivery_address
+                      : text_default_billing_address}
+                  </div>
 
-                <div>&#x2022;</div>
-              </>
-            )}
+                  <div>&#x2022;</div>
+                </>
+              )}
 
             <div>{fullName}</div>
             <div>&#x2022;</div>
@@ -93,14 +99,16 @@ export default function Address({
                 class="button-link-primary-big"
                 onclick={() => setEditAddress(true)}
               >
-                {Button_edit_text}
+                {isMyProfile ? Button_update_text : Button_edit_text}
               </button>
 
-              <button
-                class="button-link-error-dark-big"
-                innerHTML={trashCanIcon.innerHTML}
-                onclick={deleteAddress}
-              />
+              {!isMyProfile && (
+                <button
+                  class="button-link-error-dark-big"
+                  innerHTML={trashCanIcon.innerHTML}
+                  onclick={deleteAddress}
+                />
+              )}
             </div>
           </div>
         </>

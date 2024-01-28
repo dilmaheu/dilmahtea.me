@@ -130,15 +130,9 @@ export default function SavedAddresses({
                       ) : (
                         <Address
                           address={address}
-                          trashCanIcon={trashCanIcon}
-                          text_default_delivery_address={
-                            text_default_delivery_address
-                          }
-                          text_default_billing_address={
-                            text_default_billing_address
-                          }
-                          Button_edit_text={Button_edit_text}
+                          userAccountRecurData={userAccountRecurData}
                           setEditAddress={setEditAddress}
+                          trashCanIcon={trashCanIcon}
                           handleAPIResponse={handleAPIResponse}
                         />
                       )}
