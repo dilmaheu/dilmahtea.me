@@ -3,6 +3,7 @@ import CMS from "@store/CMS";
 import Markdown from "@components/Markdown.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import OrderSummary from "@components/OrderSummary.astro";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 import localizeCMSImage from "@utils/localizeCMSImage";
 
@@ -15,6 +16,9 @@ const { page } = Astro.props,
   checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
   checkoutInfo = CMS.get("checkoutInformation", locale),
   checkoutInfoLink = `/${locale}/${checkoutInfo.Meta.URL_slug}/`,
+  checkoutKindnessLink = `/${locale}/${
+    CMS.get("checkoutKindness", locale).Meta.URL_slug
+  }/`,
   userRecurr = CMS.get("userAccountRecurringElement", locale);
 
 const methods = payment_methods.data?.map(({ attributes }) => attributes),
@@ -27,7 +31,65 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
   @use "src/styles/checkout" as *;
 </style>
 
-<form class="section-gap grid w-full xl:w-2/3">
+<script
+  define:vars={{
+    checkoutInfoLink,
+    checkoutKindnessLink,
+  }}
+>
+  if (Object.keys(window.checkoutInfo).length === 0) {
+    location.href = checkoutInfoLink;
+  }
+
+  window.checkoutKindnessLink = checkoutKindnessLink;
+</script>
+
+<form 
+  method="POST"
+  id="payment-info-form"
+  class="section-gap grid w-full xl:w-2/3"
+  action={checkoutKindnessLink}
+>
+  <!-- action={shouldDisplayExperimentals
+      ? "https://dev.pay.scripts.dilmahtea.me"
+      : "https://pay.scripts.dilmahtea.me"} -->
+  <DynamicHTML
+    htmlFn={() => {
+      const { origin, pathname } = location;
+
+      const product_desc = Object.keys(window.cart)
+        .map((id) => {
+          const productData = window.cart[id],
+            names = JSON.parse(productData.names),
+            name = names[window.preferredLocale] || names["en"];
+
+          return `${productData.quantity}x ${name}`;
+        })
+        .join(", ");
+
+      const paymentInfo = {
+        ...window.checkoutInfo,
+        product_desc,
+        cart: JSON.stringify(window.cart),
+        tax: window.cart.tax.split(",").join("."),
+        price: window.cart.total.split(",").join("."),
+        payment_type: "ecommerce",
+        locale: window.preferredLocale,
+        origin_url: origin + pathname,
+        success_url: `${origin}${window.checkoutKindnessLink}?clear=cart`,
+      };
+
+      // delete paymentInfo.delivery_address;
+
+      return Object.keys(paymentInfo)
+        .map(
+          (name) =>
+            `<input type="hidden" name="${name}" value='${paymentInfo[name]}' />`,
+        )
+        .join("");
+    }}
+  />
+
   <section
     role="list"
     aria-label={userRecurr.Input_label_email}
@@ -120,7 +182,6 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             type="radio"
             name="billing_address"
             id="same-as-shipping"
-            value={`method`}
             checked
           />
 
@@ -136,7 +197,6 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             type="radio"
             name="billing_address"
             id="different-than-shipping"
-            value={`method`}
           />
 
           <div class="text-b5 text-black-light flex">
@@ -160,6 +220,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
           <input
             type="text"
             name="billing_first_name"
+            value=""
             placeholder={userRecurr.Input_placeholder_first_name}
           />
         </label>
@@ -208,7 +269,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
           <span>{userRecurr.Input_label_country}</span>
 
           <select id="country-select" name="billing_country">
-            <option value="" selected disabled-large hidden>
+            <option value="" selected disabled hidden>
               {userRecurr.Input_placeholder_country}
             </option>
 
@@ -381,7 +442,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </span>
       </a>
 
-      <button id="submit-btn" class="w-full sm:w-1/3 button-disabled-large">
+      <button id="submit-btn" type="submit" class="w-full sm:w-1/3 button-disabled-large">
         <span>
           {page.Button_text_pay_with}
           <span class="payment-type"></span>
@@ -498,4 +559,36 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         : addClass(paymentInfo, "!hidden");
     });
   }
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const id = document.getElementById.bind(document);
+    const sameAsShippingAddress = id("same-as-shipping");
+    const shippingAddress = id("shipping-address");
+    const contactInfo = JSON.parse(localStorage.getItem("checkout-info"));
+
+    const setInputValue = (name, setValue) => {
+      const inputElement = shippingAddress.querySelector(`input[name="${name}"]`);
+      if (inputElement) {
+        inputElement.value = setValue;
+      }
+    };
+
+    const setBillingInfo = () => {
+      const isSameShipping = sameAsShippingAddress.checked;
+
+
+      setInputValue("billing_first_name", isSameShipping ? contactInfo.first_name : "");
+      setInputValue("billing_last_name", isSameShipping ? contactInfo.last_name : "");
+      setInputValue("billing_street", isSameShipping ? contactInfo.street : "");
+      setInputValue("billing_city", isSameShipping ? contactInfo.city : "");
+      setInputValue("billing_postal_code", isSameShipping ? contactInfo.postal_code : "");
+      setInputValue("billing_country", isSameShipping ? contactInfo.country : "");
+    };
+
+    setBillingInfo();
+
+    sameAsShippingAddress.addEventListener("change", setBillingInfo);
+  });
 </script>
