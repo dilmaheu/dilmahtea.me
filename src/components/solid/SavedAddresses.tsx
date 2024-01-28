@@ -5,6 +5,7 @@ import Address from "@solid/Address";
 import EditAddress from "@solid/EditAddress";
 import DashboardNotification from "@solid/DashboardNotification";
 
+import { addresses } from "@signals/addresses";
 import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 
 export default function SavedAddresses({
@@ -14,23 +15,19 @@ export default function SavedAddresses({
   recurringImages,
   userAccountRecurData,
 }) {
-  const [addresses, setAddresses] = createSignal([]),
-    [isLoading, setIsLoading] = createSignal(true),
+  const [isLoading, setIsLoading] = createSignal(true),
     [notification, setNotification] = createSignal(null),
     [showMoreAddresses, setShowMoreAddresses] = createSignal(false),
     [displayNewAddressForm, setShowNewAddressForm] = createSignal(false);
 
-  createEffect(() => {
-    fetch("/api/addresses")
-      .then((res) => res.json<any[]>())
-      .then((addresses) => {
-        setIsLoading(false);
-        setAddresses(addresses);
-      });
-  });
-
   const handleAPIResponse = (response: Response, callback?: () => void) =>
     handleAPIResponseBase(response, notification, setNotification, callback);
+
+  createEffect(() => {
+    if (Array.isArray(addresses())) {
+      setIsLoading(false);
+    }
+  });
 
   const {
     Label_tag_text,
@@ -106,7 +103,7 @@ export default function SavedAddresses({
 
         {isLoading() && <Loading />}
 
-        {addresses().length > 0 && (
+        {addresses()?.length > 0 && (
           <>
             <div class="grid division-in-gap">
               <For
