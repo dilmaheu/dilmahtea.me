@@ -319,7 +319,8 @@ export default function EditAddress({
             type="button"
             class="button-link-error-dark"
             onclick={() => {
-              scroll();
+              if (scroll) scroll();
+
               showForm(false);
             }}
           >
