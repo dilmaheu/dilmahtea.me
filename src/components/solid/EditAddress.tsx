@@ -1,9 +1,10 @@
 import type { Setter } from "solid-js";
 import type { Address } from "@solid/Address";
 
-import { createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 
 import { user } from "@signals/user";
+import { addresses } from "@signals/addresses";
 
 declare interface Props {
   action: "add" | "update";
@@ -30,7 +31,18 @@ export default function EditAddress({
   tickCheckboxes,
 }: Props) {
   const [customAddressTag, setCustomAddressTag] = createSignal(""),
-    [showCustomTagInput, setShowCustomTagInput] = createSignal(false);
+    [showCustomTagInput, setShowCustomTagInput] = createSignal(false),
+    [usedTags, setUsedTags] = createSignal([]);
+
+  createEffect(() => {
+    if (Array.isArray(addresses())) {
+      setUsedTags(
+        addresses()
+          .map(({ tag }) => tag)
+          .filter((tag) => tag !== address?.tag),
+      );
+    }
+  });
 
   const {
     text_first_name,
@@ -92,20 +104,22 @@ export default function EditAddress({
         <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
           {Tag_suggestions.split("\n")
             .filter(Boolean)
+            .filter((tag) => !usedTags().includes(tag))
             .map((tag) => (
               <div>
                 <input
                   type="radio"
                   name="address_tag"
-                  id={`address-tag-${tag.toLowerCase()}`}
+                  id={`address-tag-${tag}`}
                   class="peer w-px opacity-0"
-                  value={tag.toLowerCase()}
+                  value={tag}
                   onchange={hideCustomTagInput}
+                  checked={address?.tag === tag}
                   required
                 />
 
                 <label
-                  for={`address-tag-${tag.toLowerCase()}`}
+                  for={`address-tag-${tag}`}
                   class={[
                     "radio-button-default text-primary",
                     "bg-secondary-light border-secondary-light font-medium",
