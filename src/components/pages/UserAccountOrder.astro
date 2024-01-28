@@ -2,14 +2,14 @@
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
-import Orders from "@solid/Orders";
+import MyOrders from "@solid/MyOrders.astro";
 import OrdersTimeline from "@solid/OrdersTimeline";
+import MyOrdersInYearTitle from "@solid/MyOrdersInYearTitle";
 
 import NoOrders from "@components/NoOrders.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 
 import UserAccountLayout from "@layouts/UserAccountLayout.astro";
-import MyOrdersInYearTitle from "@components/solid/MyOrdersInYearTitle";
 
 const { green_right_arrow } = RecurringImages;
 
@@ -47,14 +47,9 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
     <MyOrdersInYearTitle client:load {Title} text_in={recurData.text_in} />
 
     <section class="grid gap-[25px] sm:gap-[30px]">
-      <Orders
-        client:load
-        recurringImages={RecurringImages}
-        {userAccountRecurData}
-        isOrdersPage={true}
-      >
+      <MyOrders {userAccountRecurData}>
         <NoOrders slot="noOrdersHTML" {userAccountRecurData} />
-      </Orders>
+      </MyOrders>
     </section>
   </Fragment>
 

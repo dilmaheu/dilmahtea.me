@@ -157,6 +157,21 @@
   @return $value;
 }
 
+/// poly-fluid-clamp-primary
+/// Generate linear interpolated size values through 640px and 1440px
+/// @param $value1 - The value at 640px
+/// @param $value2 - The value at 1440px
+/// @example
+///   font-size: poly-fluid-clamp-primary(22px, 34px);
+@function poly-fluid-clamp-primary($value1, $value2) {
+  $map: (
+    640px: $value1,
+    1440px: $value2,
+  );
+
+  @return poly-fluid-clamp($map);
+}
+
 /// poly-fluid-sizing
 /// Generate linear interpolated size values through multiple break points
 /// @param $property - A string CSS property name

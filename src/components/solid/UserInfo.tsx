@@ -6,8 +6,10 @@ import InfoUnit from "@solid/InfoUnit";
 import DashboardNotification from "@solid/DashboardNotification";
 
 export default function UserInfo({
+  plusIcon,
   page,
   verificationHref,
+  userAccountAddressURL,
   recurringImages,
   userAccountRecurData,
 }) {
@@ -19,12 +21,25 @@ export default function UserInfo({
       Label_username,
       Label_phone,
       Label_email,
+      Label_delivery_address,
+      Label_billing_address,
       user_info_update_success_notification,
       display_name_update_success_notification_label,
       email_update_success_notification_label,
       phone_number_update_success_notification_label,
     },
   } = page;
+
+  const {
+    Button_add_text,
+    Button_edit_text,
+    Button_update_text,
+    Button_view_more_address_text_singular,
+    Button_view_more_address_text,
+    Button_add_new_address_text,
+    Address_tag,
+    text_more_address,
+  } = userAccountRecurData;
 
   createEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -63,91 +78,121 @@ export default function UserInfo({
       </h2>
 
       <div class="dashboard-sec">
-        <DashboardNotification
-          notification={notification}
-          recurringImages={recurringImages}
-        />
+        <div class="grid division-gap">
+          <div class="grid division-in-gap">
+            <DashboardNotification
+              notification={notification}
+              recurringImages={recurringImages}
+            />
 
-        <InfoUnit
-          label={Label_username}
-          type="text"
-          property="display_name"
-          verificationHref={verificationHref}
-          userAccountRecurData={userAccountRecurData}
-          setNotification={setNotification}
-        />
+            <InfoUnit
+              label={Label_username}
+              type="text"
+              property="display_name"
+              verificationHref={verificationHref}
+              userAccountRecurData={userAccountRecurData}
+              setNotification={setNotification}
+            />
 
-        <InfoUnit
-          label={Label_phone}
-          type="tel"
-          property="phone"
-          verificationHref={verificationHref}
-          userAccountRecurData={userAccountRecurData}
-          setNotification={setNotification}
-        />
+            <div class="h-px bg-primary-light" />
 
-        <InfoUnit
-          label={Label_email}
-          type="email"
-          property="email"
-          verificationHref={verificationHref}
-          userAccountRecurData={userAccountRecurData}
-          setNotification={setNotification}
-        />
+            <InfoUnit
+              label={Label_phone}
+              type="tel"
+              property="phone"
+              verificationHref={verificationHref}
+              userAccountRecurData={userAccountRecurData}
+              setNotification={setNotification}
+            />
 
-        {/* <div class="grid gap-[25px]">
-          <div class="grid gap-1">
-            <div class="information-label">{Label_delivery_address}</div>
+            <div class="h-px bg-primary-light" />
 
-            <div class="flex flex-wrap items-center gap-[15px] justify-between">
-              <div class="information-text">456B, Oakwoods, Germany</div>
-              <div class="information-btn cursor-pointer">
-                {Button_edit_text}
+            <InfoUnit
+              label={Label_email}
+              type="email"
+              property="email"
+              verificationHref={verificationHref}
+              userAccountRecurData={userAccountRecurData}
+              setNotification={setNotification}
+            />
+
+            <div class="h-px bg-primary-light" />
+
+            <div class="grid division-in-element-gap">
+              <div class="input-label">{Label_delivery_address}</div>
+
+              <div class="quick-info">
+                <div>Sara jones</div>
+                <div>&#x2022;</div>
+                <div class="info-tag-button">Home</div>
+              </div>
+
+              <div class="flex items-center division-in-element-gap justify-between">
+                <div class="input-text-large-static">
+                  456B, Oakwoods, Germany
+                </div>
+
+                <a href={`#`} class="button-link-primary-big">
+                  {/*if there is no single address then we will show add
+                  {Button_add_text}*/}
+
+                  {/*if there is default address set then we will show update*/}
+                  {Button_update_text}
+                </a>
+              </div>
+            </div>
+
+            <div class="h-px bg-primary-light" />
+
+            <div class="grid division-in-element-gap">
+              <div class="input-label">{Label_billing_address}</div>
+
+              <div class="quick-info">
+                <div>Sara jones</div>
+                <div>&#x2022;</div>
+                <div class="info-tag-button">Home</div>
+              </div>
+
+              <div class="flex items-center division-in-element-gap justify-between">
+                <div class="input-text-large-static">N/A</div>
+
+                <a href={`#`} class="button-link-primary-big">
+                  {/*if there is no single address then we will show add*/}
+                  {Button_add_text}
+
+                  {/*if there is default address set then we will show update*
+                  {Button_update_text}*/}
+                </a>
               </div>
             </div>
           </div>
 
-          <div class="grid gap-1">
-            <div class="information-label">{Label_billing_address}</div>
-
-            <div class="flex flex-wrap items-center gap-[15px] justify-between">
-              <div class="information-text">456B, Oakwoods, Germany</div>
-              <div class="information-btn cursor-pointer">
-                {Button_edit_text}
-              </div>
-            </div>
-          </div>
+          {/*if there is not default address set then hide button*/}
 
           <div class="flex w-full">
-            <a
-              href={userAccountAddress_url}
-              class:list={[
-                "flex gap-3 py-[15px] px-10 mt-[15px] md:min-w-[250px] font-bold",
-                "text-white leading-[150%] bg-primary rounded-full cursor-pointer",
-              ]}
-            >
-              <Icon name="akar-icons:plus" class="w-5 select-none" />
+            <a href={userAccountAddressURL} class="button-primary">
+              {plusIcon}
               {Button_add_new_address_text}
             </a>
           </div>
 
-          {address_tag.length > 2 && (
-            <div class="mt-[25px] w-full flex justify-center">
+          {/* {Address_tag.length > 2 && (
+            <div class="w-full flex justify-center">
               <a
-                href={userAccountAddress_url}
-                id="toggle-more-address"
-                class="font-bold leading-[150%] text-primary cursor-pointer"
+                href={userAccountAddressURL}
+                id="more-address"
+                class="button-link-primary"
               >
-                <span id="show-more-address" class="flex items-center">
-                  {text_more_address.replaceAll(
-                    "<number>",
-                    address_tag.length - 2,
-                  )}
-                </span>
+                {Address_tag.length === 3
+                  ? Button_view_more_address_text_singular
+                  : Button_view_more_address_text.replace(
+                      "<number>",
+                      Address_tag.length - 2,
+                    )}
               </a>
             </div>
-          )}
-        </div> */}
+          )} */}
+        </div>
       </div>
 
       {/* {Social_media && (

@@ -1,9 +1,10 @@
 ---
+import { Icon } from "astro-icon";
 import { Picture } from "astro-imagetools/components";
 
 import CMS from "@store/CMS";
-import RecurringImages from "@store/RecurringImages";
 
+import getLocalizedLink from "@utils/getLocalizedLink";
 import getUserAccountPagesLink from "@utils/getUserAccountPagesLink";
 
 import Dashboard from "@solid/Dashboard.astro";
@@ -12,9 +13,6 @@ import Markdown from "@components/Markdown.astro";
 import NoOrders from "@components/NoOrders.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import UserAccountLayout from "@layouts/UserAccountLayout.astro";
-
-const { success_notification, warning_notification, error_notification } =
-  RecurringImages;
 
 const { page } = Astro.props;
 
@@ -31,9 +29,10 @@ const {
 const userAccountRecurData = CMS.get("userAccountRecurringElement", locale),
   userAccountAddress = CMS.get("userAccountAddress", locale);
 
-const {
-  Meta: { URL_slug: userAccountAddress_url },
-} = userAccountAddress;
+const userAccountAddressURL = getLocalizedLink(
+  locale,
+  userAccountAddress.Meta.URL_slug,
+);
 
 const verificationHref = getUserAccountPagesLink("verification", locale);
 
@@ -121,13 +120,11 @@ const headings = new Array(
   <Dashboard
     {page}
     {verificationHref}
+    {userAccountAddressURL}
     {userAccountRecurData}
-    recurringImages={{
-      success_notification,
-      warning_notification,
-      error_notification,
-    }}
   >
+    <Icon slot="plusIcon" name="akar-icons:plus" class="w-[18px] select-none" />
+
     <Fragment slot="kindnessCausesHTML">
       {
         Block2?.Block2_text && (
@@ -182,24 +179,46 @@ const headings = new Array(
                                 "grid md:grid-cols-[140px_1fr] lg:grid-cols-[180px_1fr] items-center sm:justify-center",
                               ]}
                             >
-                              <div class="kindness-cause-img-container">
-                                <Picture
-                                  layout="fullWidth"
-                                  sizes="(min-width: 640px) 320px, 90vw)"
-                                  alt={
-                                    featured_blob.data.attributes
-                                      .alternativeText
-                                  }
-                                  attributes={{
-                                    img: {
-                                      style: "aspect-ratio: 6 / 5;",
-                                    },
-                                  }}
-                                  src={
-                                    STRAPI_URL +
-                                    featured_blob.data.attributes.url
-                                  }
-                                />
+                              <div class="w-full h-full">
+                                <div class="kindness-cause-img-container hidden md:block">
+                                  <Picture
+                                    layout="fill"
+                                    sizes="(min-width: 640px) 320px, 90vw)"
+                                    alt={
+                                      featured_blob.data.attributes
+                                        .alternativeText
+                                    }
+                                    attributes={{
+                                      img: {
+                                        style: "aspect-ratio: 6 / 5;",
+                                      },
+                                    }}
+                                    src={
+                                      STRAPI_URL +
+                                      featured_blob.data.attributes.url
+                                    }
+                                  />
+                                </div>
+
+                                <div class="kindness-cause-img-container block md:hidden">
+                                  <Picture
+                                    layout="fullWidth"
+                                    sizes="(min-width: 640px) 320px, 90vw)"
+                                    alt={
+                                      featured_blob.data.attributes
+                                        .alternativeText
+                                    }
+                                    attributes={{
+                                      img: {
+                                        style: "aspect-ratio: 6 / 5;",
+                                      },
+                                    }}
+                                    src={
+                                      STRAPI_URL +
+                                      featured_blob.data.attributes.url
+                                    }
+                                  />
+                                </div>
                               </div>
 
                               <div
