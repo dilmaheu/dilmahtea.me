@@ -9,8 +9,11 @@ export default function handleAPIResponseBase(
   response: Response,
   notification: Accessor<any>,
   setNotification: Setter<any>,
+  callback?: () => void,
 ) {
   response.json<APIResponse>().then((response) => {
+    if (callback) callback();
+
     if (notification && setNotification) {
       if (response.success) {
         setNotification({

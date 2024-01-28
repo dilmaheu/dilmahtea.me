@@ -29,8 +29,8 @@ export default function SavedAddresses({
       });
   });
 
-  const handleAPIResponse = (response: Response) =>
-    handleAPIResponseBase(response, notification, setNotification);
+  const handleAPIResponse = (response: Response, callback?: () => void) =>
+    handleAPIResponseBase(response, notification, setNotification, callback);
 
   const {
     Label_tag_text,
@@ -139,6 +139,7 @@ export default function SavedAddresses({
                           }
                           Button_edit_text={Button_edit_text}
                           setEditAddress={setEditAddress}
+                          handleAPIResponse={handleAPIResponse}
                         />
                       )}
 
