@@ -1,4 +1,5 @@
 import CMS from "@store/CMS";
+import getLocalizedLink from "@utils/getLocalizedLink";
 
 export default function getUserAccountPagesLink(
   uid: string,
@@ -8,5 +9,5 @@ export default function getUserAccountPagesLink(
     ({ attributes: { UID } }) => UID === uid,
   ).attributes.Meta.URL_slug;
 
-  return "/" + locale + "/" + link + "/";
+  return getLocalizedLink(locale, link);
 }

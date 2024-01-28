@@ -129,14 +129,14 @@ export default function InfoUnit({
   }
 
   return (
-    <div class="grid gap-1 pb-[25px] mb-[25px] border-b border-lightgray">
-      <div class="information-label">{label}</div>
+    <div class="grid division-in-element-gap">
+      <div class="input-label">{label}</div>
 
       <div class="flex items-center gap-[15px] justify-between">
         <input
           type={type}
           name={property}
-          class="information-text"
+          class="input-text-large"
           value={user()[property]}
           disabled
           data-no-fill-up
@@ -144,20 +144,21 @@ export default function InfoUnit({
 
         {isEditing() ? (
           <>
-            <button
-              class="information-btn !text-error-dark"
-              onclick={handleCancel}
-            >
+            <button class="button-link-error-dark-big" onclick={handleCancel}>
               {Button_cancel_text}
             </button>
 
-            <button class="information-btn" onclick={handleSave} type="submit">
+            <button
+              class="button-link-primary-big"
+              onclick={handleSave}
+              type="submit"
+            >
               {Button_save_text}
             </button>
           </>
         ) : (
-          <button class="information-btn" onclick={handleEdit}>
-            {property === "display_name"
+          <button class="button-link-primary-big" onclick={handleEdit}>
+            {["display_name", "address"].includes(property)
               ? Button_edit_text
               : Button_update_text}
           </button>

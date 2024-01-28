@@ -24,44 +24,29 @@ const headingName =
 <style lang="scss" is:global>
   @use "src/styles/poly-fluid" as *;
 
+  @mixin tiled-div-pad {
+    @apply p-[clamp(15px,calc(2.5vw-1px),35px)];
+  }
+
+  @mixin tiled-title-div-pad {
+    @apply py-[15px] px-[clamp(15px,calc(2.5vw-1px),35px)];
+  }
+
+  @mixin text-h2 {
+    @apply text-[clamp(28px,calc(1.75vw+16.8px),42px)] leading-[140%];
+  }
+  
   .dashboard-sec-title {
-    @apply bg-primary leading-[110%] text-secondary-light rounded-[10px];
+    @include text-h2;
+    @include tiled-title-div-pad;
 
-    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
-    padding: 10px clamp(15px, 2.08vw + 0.01rem, 30px);
-
-    @media (max-width: 767.98px) {
-      padding: 15px;
-    }
+    @apply bg-primary text-white rounded-[10px];
   }
 
   .dashboard-sec {
-    @apply bg-secondary-light rounded-[10px] mt-[25px] text-black;
+    @include tiled-div-pad;
 
-    padding: clamp(15px, 2.08vw + 0.01rem, 25px)
-      clamp(15px, 2.2vw + 0.1rem, 35px);
-
-    @media (max-width: 767.98px) {
-      padding: 15px;
-    }
-
-    .information-label {
-      @apply text-sm md:text-base font-medium leading-[150%] text-black-light;
-    }
-
-    .information-text {
-      @apply w-full pl-1.5 leading-[150%] text-black opacity-100 sm:font-medium bg-secondary-light outline-none;
-
-      &:not(:disabled) {
-        @apply mb-[-2px] border-b-2 border-primary-light;
-      }
-
-      &.errored {
-        @apply border-error;
-      }
-
-      font-size: clamp(1.125rem, 1.5vw + 0.3rem, 1.5rem);
-    }
+    @apply bg-secondary-light rounded-[10px] text-black;
 
     .information-btn {
       @apply leading-[150%] font-semibold text-primary;
@@ -70,7 +55,9 @@ const headingName =
     }
 
     h2 {
-      @apply text-[clamp(1.25rem,1.5vw+0.15rem,1.5rem)] font-bold text-primary;
+      @include text-h2;
+
+      @apply font-bold text-primary;
     }
 
     > a {
@@ -85,12 +72,7 @@ const headingName =
       }
 
       .order-img {
-        width: poly-fluid-clamp(
-          (
-            640px: 50px,
-            1440px: 65px,
-          )
-        );
+        width: poly-fluid-clamp-primary(50px, 65px);
       }
 
       .order-item-label {
@@ -192,7 +174,7 @@ const headingName =
     class="wrapper w-full flex flex-col-reverse md:flex-row justify-between gap-[30px]"
   >
     <div class="md:w-2/3 2xl:w-1/2 md:min-w-[400px]">
-      <div class="xl:w-5/6 2xl:w-full">
+      <div class="xl:w-5/6 2xl:w-full grid division-gap">
         <slot />
       </div>
     </div>

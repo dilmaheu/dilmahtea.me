@@ -358,13 +358,13 @@ export async function getStaticPaths() {
     }),
   );
 
-  // const userAccountAddressPages = getRoutes(
-  //   userAccountAddress,
-  //   (_, { locale }) => ({
-  //     type: "accountAddress",
-  //     countries: locale && getPosts(countries, locale),
-  //   }),
-  // );
+  const userAccountAddressPages = getRoutes(
+    userAccountAddress,
+    (_, { locale }) => ({
+      type: "accountAddress",
+      countries: locale && getPosts(countries, locale),
+    }),
+  );
 
   const userAccountOrderPages = getRoutes(userAccountOrder, () => ({
     type: "accountOrders",
@@ -392,12 +392,12 @@ export async function getStaticPaths() {
     ...checkoutKindnessPages,
     ...checkoutInformationPages,
     ...checkoutShippingPages,
-    ...checkoutPaymentPages,
+    // ...checkoutPaymentPages,
     ...checkoutSuccessPages,
     ...userAccountPages,
     ...userAccountDashboardPages,
     ...userAccountOrderPages,
-    // ...userAccountAddressPages,
+    ...userAccountAddressPages,
   ];
 }
 

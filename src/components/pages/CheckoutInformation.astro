@@ -1,12 +1,15 @@
 ---
 import CMS from "@store/CMS";
+import getLocalizedLink from "@utils/getLocalizedLink";
+
 import Markdown from "@components/Markdown.astro";
 import OrderSummary from "@components/OrderSummary.astro";
 
-const { page } = Astro.props,
+const { page, recurData } = Astro.props,
   { locale } = page,
   checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug,
-  checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug;
+  checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
+  userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
 ---
 
 <section class="w-full xl:w-2/3">
@@ -15,7 +18,7 @@ const { page } = Astro.props,
     aria-label={page.Aria_label_form_text}
     id="checkout-info-form"
     class="section-gap flex flex-col"
-    action={"/" + locale + "/" + checkoutShippingLink + "/"}
+    action={getLocalizedLink(locale, checkoutShippingLink)}
   >
     <div
       role="form"
@@ -33,12 +36,12 @@ const { page } = Astro.props,
 
       <div class="form-grid">
         <label>
-          <span>{page.text_email_address}</span>
+          <span>{recurData.text_email_address}</span>
 
           <input
             type="email"
             name="email"
-            placeholder={page.email_address_placeholder}
+            placeholder={recurData.email_address_placeholder}
             required
           />
         </label>
@@ -63,72 +66,289 @@ const { page } = Astro.props,
         {page.text_shipping_address}
       </h2>
 
+      <div>
+        <div class="division-in-gap grid">
+          <div class="text-b5 font-bold text-black-light">Tag to recognize</div>
+
+          <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
+            <div>
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address1`}
+                value={`value`}
+                checked
+                class="peer hidden"
+              />
+
+              <label
+                for={`address1`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+                class="radio-button-default"
+              >
+                Home
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address2`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address2`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Parents
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address3`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address3`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Family
+              </label>
+            </div>
+
+            <div class="more-address hidden">
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address4`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address4`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Address Line 1
+              </label>
+            </div>
+
+            <div class="more-address hidden">
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address5`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address5`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Address Line 2
+              </label>
+            </div>
+
+            <div class="more-address hidden">
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address6`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address6`}
+                class:list={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ]}
+              >
+                Address Line 3
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                name="shipping_address"
+                id={`address-tag`}
+                value={`value`}
+                class="peer hidden"
+              />
+
+              <label
+                for={`address-tag`}
+                class:list={[
+                  "radio-button-extended border-white",
+                  "peer-checked:border-primary",
+                ]}
+              >
+                Add +
+              </label>
+            </div>
+
+            <div
+              id="address-toggle-button"
+              class="flex items-center gap-1 text-primary font-bold cursor-pointer"
+            >
+              <svg
+                id="address-arrow-left"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 8 14"
+                class="hidden w-3 h-3 fill-primary"
+              >
+                <path
+                  d="M7.7,13.7a1.1,1.1,0,0,0,.3-.8,1.1,1.1,0,0,0-.3-.7L2.5,7,7.7,1.8A1.1,1.1,0,0,0,8,1,1.1,1.1,0,0,0,7.7.3,1.1,1.1,0,0,0,7,0a1.1,1.1,0,0,0-.8.3L.3,6.2A1.1,1.1,0,0,0,0,7a.9.9,0,0,0,.3.7l5.9,6A1.1,1.1,0,0,0,7,14a1.1,1.1,0,0,0,.7-.3Z"
+                ></path>
+              </svg>
+
+              <div>
+                <div id="hide-address-text" class="hidden">
+                  {
+                    userAccountRecurData.text_hide_more_address.replace(
+                      "<number>",
+                      "3",
+                    )
+                  }
+                </div>
+                <div id="show-address-text">
+                  {
+                    userAccountRecurData.text_more_address.replace(
+                      "<number>",
+                      "3",
+                    )
+                  }
+                </div>
+              </div>
+
+              <svg
+                id="address-arrow-right"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 8 14"
+                class="w-3 h-3 fill-primary"
+              >
+                <path
+                  d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+
+          <div id="tag-input" class="hidden">
+            <div class="form-grid">
+              <label class="relative">
+                <input
+                  type="text"
+                  name="new_tag"
+                  placeholder={`Enter your tag`}
+                  class="pr-[40px]"
+                />
+
+                <span class="tag-input-close-button"> &#10005;</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="form-grid">
         <label>
-          <span>{page.text_first_name}</span>
+          <span>{recurData.text_first_name}</span>
 
           <input
             type="text"
             name="first_name"
-            placeholder={page.first_name_placeholder}
+            placeholder={recurData.first_name_placeholder}
             required
           />
         </label>
 
         <label>
-          <span>{page.text_last_name}</span>
+          <span>{recurData.text_last_name}</span>
 
           <input
             type="text"
             name="last_name"
-            placeholder={page.last_name_placeholder}
+            placeholder={recurData.last_name_placeholder}
             required
           />
         </label>
 
         <label>
-          <span>{page.text_street}</span>
+          <span>{recurData.text_street}</span>
 
           <input
             type="text"
             name="street"
-            placeholder={page.street_placeholder}
+            placeholder={recurData.street_placeholder}
             required
           />
         </label>
 
         <label>
-          <span>{page.text_city}</span>
+          <span>{recurData.text_city}</span>
 
           <input
             type="text"
             name="city"
-            placeholder={page.city_placeholder}
+            placeholder={recurData.city_placeholder}
             required
           />
         </label>
 
         <label>
-          <span>{page.text_postal_code}</span>
+          <span>{recurData.text_postal_code}</span>
 
           <input
             type="text"
             name="postal_code"
-            placeholder={page.postal_code_placeholder}
+            placeholder={recurData.postal_code_placeholder}
             required
           />
         </label>
 
         <label>
-          <span>{page.text_country}</span>
+          <span>{recurData.text_country}</span>
 
           <select name="country" required>
             <option value="" selected disabled hidden>
-              {page.country_placeholder}
+              {recurData.country_placeholder}
             </option>
 
             {
-              page.countries.data.map(
+              recurData.countries.data.map(
                 ({ attributes: { name, localizations } }) => (
                   <option
                     value={localizations?.data[0]?.attributes?.name || name}
@@ -162,6 +382,31 @@ const { page } = Astro.props,
 <section class="hidden xl:block xl:w-1/3">
   <OrderSummary page={page} />
 </section>
+
+<script is:inline>
+  const id = document.getElementById.bind(document);
+
+  const addressToggleBtn = id("address-toggle-button"),
+    hideAddressTxt = id("hide-address-text"),
+    showAddressTxt = id("show-address-text"),
+    addressArrowLeft = id("address-arrow-left"),
+    addressArrowRight = id("address-arrow-right"),
+    selectorsMoreAddress = document.getElementsByClassName("more-address");
+
+  function toggleAddress() {
+    const moreAddressArray = Array.from(selectorsMoreAddress);
+
+    moreAddressArray.forEach((item) => {
+      item.classList.toggle("hidden");
+    });
+    hideAddressTxt.classList.toggle("hidden");
+    showAddressTxt.classList.toggle("hidden");
+    addressArrowLeft.classList.toggle("hidden");
+    addressArrowRight.classList.toggle("hidden");
+  }
+
+  addressToggleBtn?.addEventListener("click", toggleAddress);
+</script>
 
 <script is:inline>
   const guestIntroText = document.getElementById("guest-intro-text"),
