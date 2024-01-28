@@ -30,7 +30,8 @@ const BaseSchema = z.object({
       } else if (!isMobilePhone(val, true)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Phone number must include a country code",
+          message:
+            "Phone number must be in an international format with country code and without spaces/dividers. E.g. +31851309242",
         });
       }
     })
