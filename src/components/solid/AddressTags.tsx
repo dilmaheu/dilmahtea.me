@@ -1,4 +1,4 @@
-import type { Setter } from "solid-js";
+import type { Accessor, Setter } from "solid-js";
 import type { Address } from "@solid/Address";
 
 import { createEffect, createSignal } from "solid-js";
@@ -10,6 +10,8 @@ declare interface Props {
   address: Address;
   userAccountRecurData: any;
   setSelectedTag?: Setter<string>;
+  showMoreAddresses?: Accessor<boolean>;
+  setShowMoreAddresses?: Setter<boolean>;
   text_select_or_create_tag?: string;
 }
 
@@ -18,12 +20,11 @@ export default function AddressTags({
   address,
   userAccountRecurData,
   setSelectedTag,
+  showMoreAddresses,
+  setShowMoreAddresses,
   text_select_or_create_tag,
 }: Props) {
   const [usedTags, setUsedTags] = createSignal([]),
-    [showMoreAddresses, setShowMoreAddresses] = createSignal(
-      action === "checkout" ? false : true,
-    ),
     [customAddressTag, setCustomAddressTag] = createSignal(""),
     [showCustomTagInput, setShowCustomTagInput] = createSignal(false);
 
@@ -65,7 +66,7 @@ export default function AddressTags({
                 (tag) => !usedTags().includes(tag) || tag === address?.tag,
               )
         )
-          .slice(0, showMoreAddresses() ? Infinity : 3)
+          .slice(0, showMoreAddresses && showMoreAddresses() ? Infinity : 3)
           .map((tag) => (
             <div>
               <input

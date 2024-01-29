@@ -12,7 +12,8 @@ export default function CheckoutInformationForm({
   text_select_or_create_tag,
 }) {
   const [displayTags, setDisplayTags] = createSignal(false),
-    [selectedTag, setSelectedTag] = createSignal<string>();
+    [selectedTag, setSelectedTag] = createSignal<string>(),
+    [showMoreAddresses, setShowMoreAddresses] = createSignal(false);
 
   onMount(() => {
     if (window.cookies.isAuthenticated === "true") {
@@ -44,6 +45,8 @@ export default function CheckoutInformationForm({
                 address={selectedAddress}
                 userAccountRecurData={userAccountRecurData}
                 setSelectedTag={setSelectedTag}
+                showMoreAddresses={showMoreAddresses}
+                setShowMoreAddresses={setShowMoreAddresses}
                 text_select_or_create_tag={text_select_or_create_tag}
               />
             )}
