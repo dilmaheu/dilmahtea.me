@@ -20,15 +20,6 @@ const { document: infoBlocksDocument } = parseHTML(infoBlocksHTML),
     max-width: 600px;
     max-height: 500px;
   }
-
-  .info-block-title {
-    font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
-  }
-
-  .info-block-text {
-    line-height: 150%;
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem);
-  }
 </style>
 
 <section role="list" class="wrapper grid gap-[50px] items-center">
@@ -81,15 +72,15 @@ const { document: infoBlocksDocument } = parseHTML(infoBlocksHTML),
           {/* Text content */}
           <div
             class:list={[
-              "order-2 w-full sm:w-1/2",
-              isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
+              "order-2 w-full sm:w-1/2 grid division-in-gap",
+              isEven ? "pr-0" : "sm:order-1 pl-0",
             ]}
           >
-            <h2 class="info-block-title recoleta text-black font-bold leading-[130%]">
+            <h2 class="estate-info-block-title">
               {titleText}
             </h2>
 
-            <div class="info-block-text text-black-light block pt-[15px] prose max-w-none">
+            <div class="estate-info-block-text prose">
               <Markdown>{textContent}</Markdown>
             </div>
           </div>

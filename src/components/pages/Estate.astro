@@ -41,11 +41,6 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
     transform: translateX(100%);
   }
 
-  .estate-block-text {
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
-    line-height: 150%;
-  }
-
   .estate-category-item {
     font-size: clamp(0.625rem, 1.5vw + 0.01rem, 0.75rem);
     line-height: 150%;
@@ -59,17 +54,8 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
     max-height: 500px;
   }
 
-  .post-title {
-    @apply font-semibold leading-[130%];
-
-    font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
-  }
-
   .post-intro {
     @apply line-clamp-3 sm:line-clamp-4 md:line-clamp-5 lg:line-clamp-6;
-
-    font-size: clamp(1rem, 1.5vw + 0.15rem, 1.5rem);
-    line-height: 150%;
   }
 
   .estate-quote-container {
@@ -90,10 +76,8 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
   }
 
   .estate-quote {
-    @apply leading-[175%] sm:leading-[150%];
-
-    font-size: clamp(1rem, 1.5vw + 0.3rem, 1.5rem);
-    padding: 13px clamp(2.188rem, 3.3vw + 0.8rem, 3.75rem) 0;
+   
+    padding: 0 clamp(2.188rem, 3.3vw + 0.8rem, 3.75rem);
   }
 
   .estate-quote-icon {
@@ -102,14 +86,14 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
 </style>
 
 <SecondaryPageLayout {page} {relatedPosts} plainTitle={true}>
-  <div role="main" class="grid gap-[50px] my-[50px]">
+  <div role="main" class="grid section-gap my-[50px]">
     <div
-      class="wrapper flex flex-wrap justify-between items-center gap-y-[15px]"
+      class="wrapper flex flex-wrap justify-between items-center division-gap"
     >
       <div
-        class="flex flex-wrap items-center justify-between gap-x-6 gap-y-[15px]"
+        class="flex flex-wrap items-center justify-between"
       >
-        <h2 class="post-title recoleta text-black">
+        <h2 class="estate-title">
           {page.Heading_block}
         </h2>
 
@@ -160,7 +144,7 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
         ) */
       }
 
-      <div class="estate-block-text prose max-w-none w-full text-black-light">
+      <div class="estate-block-text prose">
         <Markdown>{page.Block_text}</Markdown>
       </div>
     </div>
@@ -175,7 +159,7 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
       <div
         role="list"
         aria-label={page.Aria_label_all_estates_text}
-        class="flex flex-wrap items-center gap-y-[50px]"
+        class="flex flex-wrap items-center section-gap"
       >
         {
           posts.map((estate, index) => {
@@ -217,10 +201,10 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
                 <div
                   class:list={[
                     "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
-                    isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
+                    isEven ? "pr-0" : "sm:order-1 pl-0",
                   ]}
                 >
-                  <div>
+                  <div class="grid division-in-gap">
                     {/* <ul class="flex flex-wrap items-center gap-y-1 gap-x-2.5 md:gap-x-[15px] md:pb-[5px] lg:pb-2.5">
                         <li class="text-black estate-category-item">
                           <a
@@ -241,7 +225,7 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
                         </li>
                       </ul> */}
 
-                    <h2 class="post-title recoleta text-primary pt-[15px]">
+                    <h2 class="estate-title">
                       <a
                         class="main-link"
                         set:text={estate.Estate_name}
@@ -249,7 +233,7 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
                       />
                     </h2>
 
-                    <div class="post-intro text-black-light pt-[15px] prose max-w-none">
+                    <div class="post-intro estate-block-text prose">
                       <Markdown>{estate.Intro_text}</Markdown>
                     </div>
                   </div>
@@ -301,7 +285,7 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
               </div>
 
               <div
-                class="estate-quote prose max-w-none font-bold text-secondary"
+                class="estate-quote estate-quote-text prose "
               >
                 {page.Block2_text}
               </div>
