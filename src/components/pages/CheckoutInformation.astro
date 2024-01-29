@@ -5,7 +5,7 @@ import getLocalizedLink from "@utils/getLocalizedLink";
 import Markdown from "@components/Markdown.astro";
 import OrderSummary from "@components/OrderSummary.astro";
 
-import CheckoutInformationAddress from "@solid/CheckoutInformationAddress";
+import CheckoutInformationForm from "@solid/CheckoutInformationForm.astro";
 
 const { page, recurData } = Astro.props,
   { locale } = page,
@@ -71,12 +71,22 @@ const { page, recurData } = Astro.props,
       }
     </script>
 
-    <CheckoutInformationAddress
-      client:load
-      {page}
-      {recurData}
-      {userAccountRecurData}
-    />
+    <div
+      role="form"
+      aria-label={page.text_shipping_address}
+      id="shipping-address"
+      class="division-gap grid"
+    >
+      <h2 class="recoleta text-h2 text-primary">
+        {page.text_shipping_address}
+      </h2>
+
+      <CheckoutInformationForm
+        {recurData}
+        {userAccountRecurData}
+        text_select_or_create_tag={page.text_select_or_create_tag}
+      />
+    </div>
 
     <div class="block lg:hidden">
       <OrderSummary page={page} />

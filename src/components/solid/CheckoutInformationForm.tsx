@@ -6,10 +6,10 @@ import { addresses } from "@signals/addresses";
 import AddressTags from "@solid/AddressTags";
 import EditAddressForm from "@solid/EditAddressForm";
 
-export default function CheckoutInformationAddress({
-  page,
+export default function CheckoutInformationForm({
   recurData,
   userAccountRecurData,
+  text_select_or_create_tag,
 }) {
   const [displayTags, setDisplayTags] = createSignal(false),
     [selectedTag, setSelectedTag] = createSignal<string>();
@@ -29,16 +29,7 @@ export default function CheckoutInformationAddress({
   });
 
   return (
-    <div
-      role="form"
-      aria-label={page.text_shipping_address}
-      id="shipping-address"
-      class="division-gap grid"
-    >
-      <h2 class="recoleta text-h2 text-primary">
-        {page.text_shipping_address}
-      </h2>
-
+    <>
       {() => {
         const shouldDisplayTags = displayTags(),
           selectedAddress = addresses()?.find(
@@ -53,7 +44,7 @@ export default function CheckoutInformationAddress({
                 address={selectedAddress}
                 userAccountRecurData={userAccountRecurData}
                 setSelectedTag={setSelectedTag}
-                text_select_or_create_tag={page.text_select_or_create_tag}
+                text_select_or_create_tag={text_select_or_create_tag}
               />
             )}
 
@@ -65,6 +56,6 @@ export default function CheckoutInformationAddress({
           </>
         );
       }}
-    </div>
+    </>
   );
 }
