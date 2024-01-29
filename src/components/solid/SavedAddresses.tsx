@@ -99,6 +99,7 @@ export default function SavedAddresses({
             userAccountRecurData={userAccountRecurData}
             showForm={setShowNewAddressForm}
             handleAPIResponse={handleAPIResponse}
+            setNotification={setNotification}
           />
         )}
 
@@ -125,6 +126,7 @@ export default function SavedAddresses({
                           userAccountRecurData={userAccountRecurData}
                           showForm={setEditAddress}
                           handleAPIResponse={handleAPIResponse}
+                          setNotification={setNotification}
                         />
                       ) : (
                         <Address

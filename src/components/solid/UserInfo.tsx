@@ -209,6 +209,7 @@ export default function UserInfo({
                   userAccountRecurData={userAccountRecurData}
                   showForm={setEditAddress}
                   handleAPIResponse={handleAPIResponse}
+                  setNotification={setNotification}
                   scroll={() => scrollToAddNewAddress(false)}
                   tickCheckboxes={editAddress().tickCheckboxes}
                 />

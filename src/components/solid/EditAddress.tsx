@@ -12,6 +12,7 @@ declare interface Props {
   userAccountRecurData: any;
   showForm: Setter<any>;
   handleAPIResponse: (response: Response) => void;
+  setNotification: Setter<any>;
   scroll?: () => void;
   tickCheckboxes?: {
     default_billing_address?: boolean;
@@ -26,6 +27,7 @@ export default function EditAddress({
   userAccountRecurData,
   showForm,
   handleAPIResponse,
+  setNotification,
   scroll,
   tickCheckboxes,
 }: Props) {
@@ -39,6 +41,8 @@ export default function EditAddress({
 
   function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
+
+    setNotification(null);
 
     const formData = Object.fromEntries(
       // @ts-ignore
@@ -123,6 +127,8 @@ export default function EditAddress({
             type="button"
             class="button-link-error-dark"
             onclick={() => {
+              setNotification(null);
+
               if (scroll) scroll();
 
               showForm(false);
