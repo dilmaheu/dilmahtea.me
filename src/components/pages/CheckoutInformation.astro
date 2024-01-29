@@ -109,10 +109,9 @@ const { page, recurData } = Astro.props,
 </section>
 
 <script>
-  const returnToCartBtn = document.getElementById("return-to-cart-btn"),
-    checkoutInfoForm = document.getElementById(
-      "checkout-info-form",
-    ) as HTMLFormElement;
+  const checkoutInfoForm = document.getElementById(
+    "checkout-info-form",
+  ) as HTMLFormElement;
 
   checkoutInfoForm?.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -128,12 +127,6 @@ const { page, recurData } = Astro.props,
     localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
 
     location.href = checkoutInfoForm.action;
-  });
-
-  returnToCartBtn?.addEventListener("click", (event) => {
-    event.preventDefault();
-
-    window.openCart();
   });
 
   const change = new URLSearchParams(location.search).get("change");
