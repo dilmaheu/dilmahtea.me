@@ -155,8 +155,8 @@ export default function UserInfo({
             <div class="h-px bg-primary-light" />
 
             {() => {
-              const { default_delivery_address, default_billing_address } =
-                user();
+              const default_delivery_address = user().default_delivery_address,
+                default_billing_address = user().default_billing_address;
 
               return (
                 <>
