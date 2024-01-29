@@ -50,7 +50,7 @@ export default function EditAddressForm({ action, address, recurData }) {
           value={
             action === "add"
               ? getUserAttribute("last_name")
-              : address?.first_name ||
+              : address?.last_name ||
                 (action === "checkout" && getUserAttribute("last_name")) ||
                 null
           }
