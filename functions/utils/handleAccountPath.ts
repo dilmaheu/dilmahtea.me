@@ -31,7 +31,9 @@ export async function handleAccountPath(
   }
 
   if (session) {
-    if (!["", "verification", "congrats", "orders"].includes(pathID)) {
+    if (
+      !["", "verification", "congrats", "orders", "address"].includes(pathID)
+    ) {
       return redirectToReferrer();
     }
   } else if (["", "orders"].includes(pathID)) {
