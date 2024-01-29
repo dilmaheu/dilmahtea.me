@@ -9,6 +9,7 @@ declare interface Props {
   action: "add" | "update" | "checkout";
   address: Address;
   userAccountRecurData: any;
+  shouldShowCustomTagInput?: boolean;
   setSelectedTag?: Setter<string>;
   showMoreAddresses?: Accessor<boolean>;
   setShowMoreAddresses?: Setter<boolean>;
@@ -19,6 +20,7 @@ export default function AddressTags({
   action,
   address,
   userAccountRecurData,
+  shouldShowCustomTagInput = false,
   setSelectedTag,
   showMoreAddresses,
   setShowMoreAddresses,
@@ -26,7 +28,9 @@ export default function AddressTags({
 }: Props) {
   const [usedTags, setUsedTags] = createSignal([]),
     [customAddressTag, setCustomAddressTag] = createSignal(""),
-    [showCustomTagInput, setShowCustomTagInput] = createSignal(false);
+    [showCustomTagInput, setShowCustomTagInput] = createSignal(
+      shouldShowCustomTagInput,
+    );
 
   createEffect(() => {
     if (Array.isArray(addresses())) {
@@ -102,9 +106,12 @@ export default function AddressTags({
             class="peer w-px opacity-0"
             value={customAddressTag()}
             checked={!!showCustomTagInput()}
-            onchange={() => setShowCustomTagInput(true)}
+            onchange={() => {
+              setShowCustomTagInput(true);
+
+              if (action === "checkout") setSelectedTag(null);
+            }}
             required={action === "update"}
-            onChange={() => action === "checkout" && setSelectedTag()}
           />
 
           <label

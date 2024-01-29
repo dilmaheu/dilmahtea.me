@@ -85,6 +85,8 @@ export default function CheckoutInformationForm({
             ({ tag }) => tag === selectedTag(),
           );
 
+        const shouldShowCustomTagInput = selectedTag() === null;
+
         return (
           <>
             <SolidNotification
@@ -102,6 +104,7 @@ export default function CheckoutInformationForm({
                 showMoreAddresses={showMoreAddresses}
                 setShowMoreAddresses={setShowMoreAddresses}
                 text_select_or_create_tag={text_select_or_create_tag}
+                shouldShowCustomTagInput={shouldShowCustomTagInput}
               />
             )}
 
