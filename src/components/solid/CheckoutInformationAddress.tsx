@@ -1,11 +1,10 @@
-import type { Address } from "@solid/Address";
-
 import { createEffect, createSignal, onMount } from "solid-js";
 
 import { user } from "@signals/user";
+import { addresses } from "@signals/addresses";
+
 import AddressTags from "@solid/AddressTags";
 import EditAddressForm from "@solid/EditAddressForm";
-import { addresses } from "@store/signals/addresses";
 
 export default function CheckoutInformationAddress({
   page,

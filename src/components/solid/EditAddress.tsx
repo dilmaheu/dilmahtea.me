@@ -2,8 +2,8 @@ import type { Setter } from "solid-js";
 import type { Address } from "@solid/Address";
 
 import { user } from "@signals/user";
+import AddressTags from "@solid/AddressTags";
 import EditAddressForm from "@solid/EditAddressForm";
-import AddressTags from "./AddressTags";
 
 declare interface Props {
   action: "add" | "update";
