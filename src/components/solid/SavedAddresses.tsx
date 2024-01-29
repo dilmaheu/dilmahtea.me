@@ -3,7 +3,7 @@ import { For, createEffect, createSignal } from "solid-js";
 import Loading from "@solid/Loading";
 import Address from "@solid/Address";
 import EditAddress from "@solid/EditAddress";
-import DashboardNotification from "@solid/DashboardNotification";
+import SolidNotification from "@solid/SolidNotification";
 
 import { addresses } from "@signals/addresses";
 import handleAPIResponseBase from "@utils/handleAPIResponseBase";
@@ -12,7 +12,7 @@ export default function SavedAddresses({
   plusIcon,
   trashCanIcon,
   recurData,
-  recurringImages,
+  notificationIcons,
   userAccountRecurData,
 }) {
   const [isLoading, setIsLoading] = createSignal(true),
@@ -70,9 +70,10 @@ export default function SavedAddresses({
   return (
     <div class="dashboard-sec">
       <div class="grid division-gap">
-        <DashboardNotification
+        <SolidNotification
           notification={notification}
-          recurringImages={recurringImages}
+          notificationIcons={notificationIcons}
+          bottomMargin={true}
         />
 
         <div class="flex flex-wrap items-center justify-between w-full">

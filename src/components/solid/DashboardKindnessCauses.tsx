@@ -1,7 +1,7 @@
 import { user } from "@signals/user";
 import { createEffect, createSignal, onMount } from "solid-js";
 
-import DashboardNotification from "@solid/DashboardNotification";
+import SolidNotification from "@solid/SolidNotification";
 
 let memoizedElements: {
   kindnessCauseContainer: HTMLElement;
@@ -12,7 +12,7 @@ let memoizedElements: {
 export default function DashboardKindnessCauses({
   title,
   successNotificationText,
-  recurringImages,
+  notificationIcons,
   kindnessCausesHTML,
 }) {
   const [notification, setNotification] = createSignal(null);
@@ -141,9 +141,10 @@ export default function DashboardKindnessCauses({
       </h2>
 
       <div class="dashboard-sec">
-        <DashboardNotification
+        <SolidNotification
           notification={notification}
-          recurringImages={recurringImages}
+          notificationIcons={notificationIcons}
+          bottomMargin={true}
         />
 
         {kindnessCausesHTML}

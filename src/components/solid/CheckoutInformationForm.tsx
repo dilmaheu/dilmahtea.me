@@ -5,13 +5,16 @@ import { addresses } from "@signals/addresses";
 
 import AddressTags from "@solid/AddressTags";
 import EditAddressForm from "@solid/EditAddressForm";
+import SolidNotification from "@solid/SolidNotification";
 
 export default function CheckoutInformationForm({
   recurData,
   userAccountRecurData,
   text_select_or_create_tag,
+  notificationIcons,
 }) {
-  const [displayTags, setDisplayTags] = createSignal(false),
+  const [notification, setNotification] = createSignal(null),
+    [displayTags, setDisplayTags] = createSignal(false),
     [selectedTag, setSelectedTag] = createSignal<string>(),
     [showMoreAddresses, setShowMoreAddresses] = createSignal(false);
 
@@ -39,6 +42,12 @@ export default function CheckoutInformationForm({
 
         return (
           <>
+            <SolidNotification
+              notification={notification}
+              notificationIcons={notificationIcons}
+              bordered={false}
+            />
+
             {shouldDisplayTags && (
               <AddressTags
                 action="checkout"

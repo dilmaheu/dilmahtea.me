@@ -1,13 +1,13 @@
 import { Match, Switch, createSignal } from "solid-js";
 
-import DashboardNotification from "@solid/DashboardNotification";
+import SolidNotification from "@solid/SolidNotification";
 
 import handleEmptyFields from "@utils/shared/handleEmptyFields";
 import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
 
 export default function Order({
   order,
-  recurringImages,
+  notificationIcons,
   userAccountRecurData,
 }) {
   order = handleEmptyFields(order);
@@ -153,7 +153,7 @@ export default function Order({
               </div>
 
               {in_stock_date && (
-                <DashboardNotification
+                <SolidNotification
                   notification={() => ({
                     type: "warning",
                     message: text_in_stock_date.replace(
@@ -161,7 +161,8 @@ export default function Order({
                       in_stock_date,
                     ),
                   })}
-                  recurringImages={recurringImages}
+                  notificationIcons={notificationIcons}
+                  bottomMargin={true}
                 />
               )}
             </div>

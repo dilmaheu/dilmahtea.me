@@ -6,7 +6,7 @@ import { user } from "@signals/user";
 
 import InfoUnit from "@solid/InfoUnit";
 import EditAddress from "@solid/EditAddress";
-import DashboardNotification from "@solid/DashboardNotification";
+import SolidNotification from "@solid/SolidNotification";
 
 import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 import DefaultAddress from "./DefaultAddress";
@@ -15,7 +15,7 @@ export default function UserInfo({
   plusIcon,
   page,
   verificationHref,
-  recurringImages,
+  notificationIcons,
   recurData,
   userAccountRecurData,
 }) {
@@ -115,9 +115,10 @@ export default function UserInfo({
       <div class="dashboard-sec">
         <div class="grid division-gap">
           <div class="grid division-in-gap">
-            <DashboardNotification
+            <SolidNotification
               notification={notification}
-              recurringImages={recurringImages}
+              notificationIcons={notificationIcons}
+              bottomMargin={true}
             />
 
             <InfoUnit

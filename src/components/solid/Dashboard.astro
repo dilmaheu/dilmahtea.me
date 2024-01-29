@@ -1,19 +1,10 @@
 ---
 import subset from "@utils/shared/subset";
 import Dashboard from "@solid/Dashboard";
-import RecurringImages from "@store/RecurringImages";
+import notificationIcons from "@utils/notificationIcons";
 
 let { page, verificationHref, recurData, userAccountRecurData } =
   structuredClone(Astro.props);
-
-const { success_notification, warning_notification, error_notification } =
-  RecurringImages;
-
-const recurringImages = {
-  success_notification,
-  warning_notification,
-  error_notification,
-};
 
 page.kindnessCauses.forEach((kindnessCause) => {
   delete kindnessCause.locale;
@@ -86,7 +77,7 @@ userAccountRecurData = subset(userAccountRecurData, [
   {verificationHref}
   {recurData}
   {userAccountRecurData}
-  {recurringImages}
+  {notificationIcons}
 >
   <slot name="plusIcon" slot="plusIcon" />
   <slot name="kindnessCausesHTML" slot="kindnessCausesHTML" />

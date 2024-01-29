@@ -10,7 +10,7 @@ export default function Dashboard({
   verificationHref,
   recurData,
   userAccountRecurData,
-  recurringImages,
+  notificationIcons,
 }) {
   const { Block2 } = page;
 
@@ -20,7 +20,7 @@ export default function Dashboard({
         plusIcon={plusIcon}
         page={page}
         verificationHref={verificationHref}
-        recurringImages={recurringImages}
+        notificationIcons={notificationIcons}
         recurData={recurData}
         userAccountRecurData={userAccountRecurData}
       />
@@ -29,7 +29,7 @@ export default function Dashboard({
         kindnessCausesHTML={kindnessCausesHTML}
         title={Block2.Block2_title}
         successNotificationText={Block2.Notification_cause_update_text}
-        recurringImages={recurringImages}
+        notificationIcons={notificationIcons}
       />
 
       <h2
@@ -41,7 +41,7 @@ export default function Dashboard({
 
       <Orders
         noOrdersHTML={noOrdersHTML}
-        recurringImages={recurringImages}
+        notificationIcons={notificationIcons}
         userAccountRecurData={userAccountRecurData}
         isOrdersPage={false}
       />
