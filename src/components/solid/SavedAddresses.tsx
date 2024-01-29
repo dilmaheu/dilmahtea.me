@@ -107,10 +107,7 @@ export default function SavedAddresses({
           <>
             <div class="grid division-in-gap">
               <For
-                each={addresses().slice(
-                  0,
-                  showMoreAddresses() ? addresses().length : 3,
-                )}
+                each={addresses().slice(0, showMoreAddresses() ? Infinity : 3)}
               >
                 {(address, i) => {
                   const [editAddress, setEditAddress] = createSignal(false);

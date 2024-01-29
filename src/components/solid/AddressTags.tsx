@@ -4,6 +4,9 @@ import { addresses } from "@signals/addresses";
 
 export default function AddressTags({ action, address, userAccountRecurData }) {
   const [usedTags, setUsedTags] = createSignal([]),
+    [showMoreAddresses, setShowMoreAddresses] = createSignal(
+      action === "checkout" ? false : true,
+    ),
     [customAddressTag, setCustomAddressTag] = createSignal(""),
     [showCustomTagInput, setShowCustomTagInput] = createSignal(false);
 
@@ -18,6 +21,8 @@ export default function AddressTags({ action, address, userAccountRecurData }) {
     Tag_others_text,
     Tag_others_placeholder_text,
     Tag_suggestions,
+    text_more_address,
+    text_hide_more_address,
   } = userAccountRecurData;
 
   function hideCustomTagInput() {
@@ -38,31 +43,33 @@ export default function AddressTags({ action, address, userAccountRecurData }) {
               .filter(
                 (tag) => !usedTags().includes(tag) || tag === address?.tag,
               )
-        ).map((tag) => (
-          <div>
-            <input
-              type="radio"
-              name="address_tag"
-              id={`address-tag-${tag}`}
-              class="peer w-px opacity-0"
-              value={tag}
-              onchange={hideCustomTagInput}
-              checked={address?.tag === tag}
-              required={action === "update"}
-            />
+        )
+          .slice(0, showMoreAddresses() ? Infinity : 3)
+          .map((tag) => (
+            <div>
+              <input
+                type="radio"
+                name="address_tag"
+                id={`address-tag-${tag}`}
+                class="peer w-px opacity-0"
+                value={tag}
+                onchange={hideCustomTagInput}
+                checked={address?.tag === tag}
+                required={action === "update"}
+              />
 
-            <label
-              for={`address-tag-${tag}`}
-              class={[
-                "radio-button-default text-primary",
-                "bg-secondary-light border-secondary-light font-medium",
-                "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
-              ].join(" ")}
-            >
-              {tag}
-            </label>
-          </div>
-        ))}
+              <label
+                for={`address-tag-${tag}`}
+                class={[
+                  "radio-button-default text-primary",
+                  "bg-secondary-light border-secondary-light font-medium",
+                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
+                ].join(" ")}
+              >
+                {tag}
+              </label>
+            </div>
+          ))}
 
         <div>
           <input
@@ -86,6 +93,41 @@ export default function AddressTags({ action, address, userAccountRecurData }) {
             {Tag_others_text}
           </label>
         </div>
+
+        {action === "checkout" && addresses()?.length > 0 && (
+          <button
+            type="button"
+            class="flex items-center gap-1 text-primary font-bold cursor-pointer"
+            onclick={() => setShowMoreAddresses(!showMoreAddresses())}
+          >
+            {showMoreAddresses() && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 8 14"
+                class="w-3 h-3 fill-primary"
+              >
+                <path d="M7.7,13.7a1.1,1.1,0,0,0,.3-.8,1.1,1.1,0,0,0-.3-.7L2.5,7,7.7,1.8A1.1,1.1,0,0,0,8,1,1.1,1.1,0,0,0,7.7.3,1.1,1.1,0,0,0,7,0a1.1,1.1,0,0,0-.8.3L.3,6.2A1.1,1.1,0,0,0,0,7a.9.9,0,0,0,.3.7l5.9,6A1.1,1.1,0,0,0,7,14a1.1,1.1,0,0,0,.7-.3Z"></path>
+              </svg>
+            )}
+
+            <span>
+              {(!showMoreAddresses()
+                ? text_more_address
+                : text_hide_more_address
+              ).replace("<number>", addresses()?.length - 3)}
+            </span>
+
+            {!showMoreAddresses() && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 8 14"
+                class="w-3 h-3 fill-primary"
+              >
+                <path d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"></path>
+              </svg>
+            )}
+          </button>
+        )}
       </div>
 
       {showCustomTagInput() && (
