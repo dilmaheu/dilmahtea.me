@@ -9,13 +9,19 @@ export default function handleAPIResponseBase(
   response: Response,
   notification: Accessor<any>,
   setNotification: Setter<any>,
-  callback?: () => void,
+  callbacks?: {
+    onParse?: () => void;
+    onSuccess?: () => void;
+    onError?: () => void;
+  },
 ) {
   response.json<APIResponse>().then((response) => {
-    if (callback) callback();
+    if (callbacks.onParse) callbacks.onParse();
 
     if (notification && setNotification) {
       if (response.success) {
+        if (callbacks.onSuccess) callbacks.onSuccess();
+
         setNotification({
           type: "success",
           message: response.message,
@@ -28,6 +34,8 @@ export default function handleAPIResponseBase(
           }
         }, 7000);
       } else {
+        if (callbacks.onError) callbacks.onError();
+
         setNotification({
           type: "error",
           message: response.message,

@@ -56,8 +56,7 @@ type CheckoutInfoField =
   | "street"
   | "delivery_address"
   | "shipping_method"
-  | "shipping_cost"
-  | "kindness_cause";
+  | "shipping_cost";
 
 type CheckoutInfo = Partial<Record<CheckoutInfoField, string>> &
   Record<string, string>;

@@ -7,6 +7,8 @@ import AddressTags from "@solid/AddressTags";
 import EditAddressForm from "@solid/EditAddressForm";
 import SolidNotification from "@solid/SolidNotification";
 
+import handleAPIResponseBase from "@utils/handleAPIResponseBase";
+
 export default function CheckoutInformationForm({
   recurData,
   userAccountRecurData,
@@ -30,6 +32,49 @@ export default function CheckoutInformationForm({
     if (default_delivery_address.constructor === Object) {
       setSelectedTag(default_delivery_address.tag);
     }
+  });
+
+  createEffect(() => {
+    setNotification(null);
+
+    const checkoutInfoForm = document.getElementById(
+      "checkout-info-form",
+    ) as HTMLFormElement;
+
+    checkoutInfoForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const formData = Object.fromEntries(new FormData(checkoutInfoForm)),
+        { street, city, country } = formData,
+        contactInfo = {
+          ...formData,
+          delivery_address: [street, city, country].join(", "),
+        };
+
+      localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
+
+      const updatedAddress = addresses()?.find(
+        ({ tag }) => tag === selectedTag(),
+      );
+
+      if (updatedAddress) {
+        formData.id = updatedAddress;
+      }
+
+      fetch("/api/addresses", {
+        method: updatedAddress ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }).then((response) =>
+        handleAPIResponseBase(response, notification, setNotification, {
+          onSuccess: () => {
+            location.href = checkoutInfoForm.action;
+          },
+        }),
+      );
+    });
   });
 
   return (

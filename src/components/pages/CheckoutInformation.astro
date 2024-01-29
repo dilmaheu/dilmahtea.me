@@ -109,26 +109,6 @@ const { page, recurData } = Astro.props,
 </section>
 
 <script>
-  const checkoutInfoForm = document.getElementById(
-    "checkout-info-form",
-  ) as HTMLFormElement;
-
-  checkoutInfoForm?.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const formData = Object.fromEntries(new FormData(checkoutInfoForm)),
-      { street, city, country } = formData,
-      contactInfo = {
-        ...formData,
-        delivery_address: [street, city, country].join(", "),
-        kindness_cause: window.checkoutInfo.kindness_cause,
-      };
-
-    localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
-
-    location.href = checkoutInfoForm.action;
-  });
-
   const change = new URLSearchParams(location.search).get("change");
 
   if (["email", "address"].includes(change)) {
@@ -139,6 +119,7 @@ const { page, recurData } = Astro.props,
     elementToScrollTo.scrollIntoView({
       block: change === "email" ? "center" : "start",
     });
+
     elementToScrollTo.focus();
   }
 </script>

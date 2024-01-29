@@ -21,7 +21,9 @@ export default function SavedAddresses({
     [displayNewAddressForm, setShowNewAddressForm] = createSignal(false);
 
   const handleAPIResponse = (response: Response, callback?: () => void) =>
-    handleAPIResponseBase(response, notification, setNotification, callback);
+    handleAPIResponseBase(response, notification, setNotification, {
+      onParse: callback,
+    });
 
   createEffect(() => {
     if (Array.isArray(addresses())) {
