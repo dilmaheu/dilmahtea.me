@@ -5,6 +5,7 @@ import { createEffect, createSignal, onMount } from "solid-js";
 import { user } from "@signals/user";
 import AddressTags from "@solid/AddressTags";
 import EditAddressForm from "@solid/EditAddressForm";
+import { addresses } from "@store/signals/addresses";
 
 export default function CheckoutInformationAddress({
   page,
@@ -12,10 +13,10 @@ export default function CheckoutInformationAddress({
   userAccountRecurData,
 }) {
   const [displayTags, setDisplayTags] = createSignal(false),
-    [address, setAddress] = createSignal<Address>();
+    [selectedTag, setSelectedTag] = createSignal<string>();
 
   onMount(() => {
-    if (window.cookies.isAuthenticated !== "true") {
+    if (window.cookies.isAuthenticated === "true") {
       setDisplayTags(true);
     }
   });
@@ -24,7 +25,7 @@ export default function CheckoutInformationAddress({
     const { default_delivery_address } = user();
 
     if (default_delivery_address.constructor === Object) {
-      setAddress(default_delivery_address);
+      setSelectedTag(default_delivery_address.tag);
     }
   });
 
@@ -41,7 +42,9 @@ export default function CheckoutInformationAddress({
 
       {() => {
         const shouldDisplayTags = displayTags(),
-          selectedAddress = address();
+          selectedAddress = addresses()?.find(
+            ({ tag }) => tag === selectedTag(),
+          );
 
         return (
           <>
@@ -50,6 +53,7 @@ export default function CheckoutInformationAddress({
                 action="checkout"
                 address={selectedAddress}
                 userAccountRecurData={userAccountRecurData}
+                setSelectedTag={setSelectedTag}
               />
             )}
 

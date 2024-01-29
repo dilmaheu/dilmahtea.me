@@ -17,6 +17,10 @@ export default function EditAddressForm({ action, address, recurData }) {
     countries,
   } = recurData;
 
+  function getUserAttribute(attribute) {
+    return ["…", "N/A"].includes(user()[attribute]) ? null : user()[attribute];
+  }
+
   return (
     <div class="form-grid">
       <label>
@@ -27,10 +31,10 @@ export default function EditAddressForm({ action, address, recurData }) {
           name="first_name"
           value={
             action === "add"
-              ? ["…", "N/A"].includes(user().first_name)
-                ? null
-                : user().first_name
-              : address?.first_name || null
+              ? getUserAttribute("first_name")
+              : address?.first_name ||
+                (action === "checkout" && getUserAttribute("first_name")) ||
+                null
           }
           placeholder={first_name_placeholder}
           required
@@ -45,10 +49,10 @@ export default function EditAddressForm({ action, address, recurData }) {
           name="last_name"
           value={
             action === "add"
-              ? ["…", "N/A"].includes(user().last_name)
-                ? null
-                : user().last_name
-              : address?.last_name || null
+              ? getUserAttribute("last_name")
+              : address?.first_name ||
+                (action === "checkout" && getUserAttribute("last_name")) ||
+                null
           }
           placeholder={last_name_placeholder}
           required

@@ -1,8 +1,23 @@
+import type { Setter } from "solid-js";
+import type { Address } from "@solid/Address";
+
 import { createEffect, createSignal } from "solid-js";
 
 import { addresses } from "@signals/addresses";
 
-export default function AddressTags({ action, address, userAccountRecurData }) {
+declare interface Props {
+  action: "add" | "update" | "checkout";
+  address: Address;
+  userAccountRecurData: any;
+  setSelectedTag?: Setter<string>;
+}
+
+export default function AddressTags({
+  action,
+  address,
+  userAccountRecurData,
+  setSelectedTag,
+}: Props) {
   const [usedTags, setUsedTags] = createSignal([]),
     [showMoreAddresses, setShowMoreAddresses] = createSignal(
       action === "checkout" ? false : true,
@@ -56,6 +71,7 @@ export default function AddressTags({ action, address, userAccountRecurData }) {
                 onchange={hideCustomTagInput}
                 checked={address?.tag === tag}
                 required={action === "update"}
+                onChange={() => action === "checkout" && setSelectedTag(tag)}
               />
 
               <label
@@ -81,6 +97,7 @@ export default function AddressTags({ action, address, userAccountRecurData }) {
             checked={!!showCustomTagInput()}
             onchange={() => setShowCustomTagInput(true)}
             required={action === "update"}
+            onChange={() => action === "checkout" && setSelectedTag()}
           />
 
           <label
