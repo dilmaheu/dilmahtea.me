@@ -10,6 +10,7 @@ declare interface Props {
   address: Address;
   userAccountRecurData: any;
   setSelectedTag?: Setter<string>;
+  text_select_or_create_tag?: string;
 }
 
 export default function AddressTags({
@@ -17,6 +18,7 @@ export default function AddressTags({
   address,
   userAccountRecurData,
   setSelectedTag,
+  text_select_or_create_tag,
 }: Props) {
   const [usedTags, setUsedTags] = createSignal([]),
     [showMoreAddresses, setShowMoreAddresses] = createSignal(
@@ -48,7 +50,11 @@ export default function AddressTags({
 
   return (
     <div class="division-in-gap grid">
-      <div class="text-b5 font-bold text-black-light">{Label_tag_text}</div>
+      <div class="text-b5 font-bold text-black-light">
+        {action === "checkout" && addresses()?.length > 0
+          ? text_select_or_create_tag
+          : Label_tag_text}
+      </div>
 
       <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
         {(action === "checkout" && addresses()?.length > 0

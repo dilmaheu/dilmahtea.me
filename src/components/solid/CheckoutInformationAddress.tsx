@@ -54,6 +54,7 @@ export default function CheckoutInformationAddress({
                 address={selectedAddress}
                 userAccountRecurData={userAccountRecurData}
                 setSelectedTag={setSelectedTag}
+                text_select_or_create_tag={page.text_select_or_create_tag}
               />
             )}
 
