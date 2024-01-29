@@ -1,9 +1,19 @@
 ---
 import subset from "@utils/shared/subset";
 import Dashboard from "@solid/Dashboard";
+import RecurringImages from "@store/RecurringImages";
 
-let { page, verificationHref, userAccountRecurData, recurringImages } =
+let { page, verificationHref, userAccountAddressURL, userAccountRecurData } =
   structuredClone(Astro.props);
+
+const { success_notification, warning_notification, error_notification } =
+  RecurringImages;
+
+const recurringImages = {
+  success_notification,
+  warning_notification,
+  error_notification,
+};
 
 page.kindnessCauses.forEach((kindnessCause) => {
   delete kindnessCause.locale;
@@ -20,21 +30,27 @@ page = subset(page, [
 ]);
 
 userAccountRecurData = subset(userAccountRecurData, [
+  "Button_add_text",
   "Button_edit_text",
   "Button_update_text",
   "Button_save_text",
   "Button_cancel_text",
+  "Button_view_more_address_text_singular",
+  "Button_view_more_address_text",
   "Button_track_package",
   "Button_track_package_text",
   "Button_buy_again_text",
   "Button_sold_out_text",
   "Button_go_to_my_orders_text",
+  "Button_add_new_address_text",
+  "Address_tag",
   "Label_order",
   "text_quantity",
   "text_estimated_delivery",
   "text_estimated_shipment",
   "text_delivered",
   "text_in_stock_date",
+  "text_more_address",
   "text_show_more_product_in_this_order_singular",
   "text_hide_more_product_in_this_order_singular",
   "text_show_more_products_in_this_order",
@@ -46,9 +62,11 @@ userAccountRecurData = subset(userAccountRecurData, [
   client:load
   {page}
   {verificationHref}
+  {userAccountAddressURL}
   {userAccountRecurData}
   {recurringImages}
 >
+  <slot name="plusIcon" slot="plusIcon" />
   <slot name="kindnessCausesHTML" slot="kindnessCausesHTML" />
   <slot name="noOrdersHTML" slot="noOrdersHTML" />
 </Dashboard>

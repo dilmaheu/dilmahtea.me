@@ -1,9 +1,12 @@
 ---
+import { Icon } from "astro-icon/components";
+
 import CMS from "@store/CMS";
-import { Icon } from "astro-icon";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
+import getLocalizedLink from "@utils/getLocalizedLink";
+
 import DynamicHTML from "@components/DynamicHTML.astro";
-import EmptyCartNotification from "./EmptyCartNotification.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import EmptyCartNotification from "@components/EmptyCartNotification.astro";
 
 declare interface Props {
   page: Record<string, any>;
@@ -14,7 +17,7 @@ const { page } = Astro.props as Props;
 const { locale } = page,
   { data: checkoutInformationData } = CMS.get("checkoutInformation"),
   { URL_slug: checkoutInfoPageSlug } = checkoutInformationData.attributes.Meta,
-  checkoutInfoPageLink = "/" + locale + "/" + checkoutInfoPageSlug;
+  checkoutInfoPageLink = getLocalizedLink(locale, checkoutInfoPageSlug);
 
 const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---

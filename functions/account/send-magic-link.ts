@@ -1,8 +1,9 @@
+import type { Session } from "lucia";
 import type { ENV } from "../utils/types";
 
 import { z } from "zod";
 import validator from "validator";
-import type { Session } from "lucia";
+import { fromZodError } from "zod-validation-error";
 
 import fetchExactAPI from "../utils/fetchExactAPI";
 import getCustomerFilter from "../utils/getCustomerFilter";
@@ -12,8 +13,29 @@ import { getToken, removeToken, validateToken } from "../utils/token";
 import { PublicError, checkUpdatedContact, isMobilePhone } from "../utils";
 
 const BaseSchema = z.object({
-  email: z.string().email().toLowerCase().optional(),
-  phone: z.string().refine(isMobilePhone).optional(),
+  email: z
+    .string()
+    .email({ message: "Invalid email address" })
+    .toLowerCase()
+    .optional(),
+  phone: z
+    .string()
+
+    .superRefine((val, ctx) => {
+      if (!isMobilePhone(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Invalid phone number",
+        });
+      } else if (!isMobilePhone(val, true)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "Phone number must be in an international format with country code and without spaces/dividers. E.g. +31851309242",
+        });
+      }
+    })
+    .optional(),
 });
 
 const BodySchema = BaseSchema.extend({
@@ -51,7 +73,15 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     previous_contact: string;
 
   try {
-    const bodyData = BodySchema.parse(body);
+    try {
+      var bodyData = BodySchema.parse(body);
+    } catch (error) {
+      throw new PublicError(
+        fromZodError(error)
+          .toString()
+          .replace(/^Validation error: | at "[\w]+"$/g, ""),
+      );
+    }
 
     switch (bodyData.action) {
       case "login":
@@ -133,9 +163,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     return Response.json(
       {
         success: false,
-        message: isPublicError
-          ? error.message
-          : "Invalid email or phone number",
+        message: isPublicError ? error.message : "Something went wrong",
       },
       { status: 400 },
     );

@@ -7,7 +7,7 @@ import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 import localizeCMSImage from "@utils/localizeCMSImage";
 
-const { page } = Astro.props,
+const { page, recurData } = Astro.props,
   { locale, payment_methods, Accepted_cards_icon } = page,
   checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
   steps = checkoutFlowData.steps.split("\n"),
@@ -215,28 +215,28 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         class="form-grid"
       >
         <label>
-          <span>{userRecurr.Input_label_first_name}</span>
+          <span>{recurData.Input_label_first_name}</span>
 
           <input
             type="text"
             name="billing_first_name"
             value=""
-            placeholder={userRecurr.Input_placeholder_first_name}
+            placeholder={recurData.Input_placeholder_first_name}
           />
         </label>
 
         <label>
-          <span>{userRecurr.Input_label_last_name}</span>
+          <span>{recurData.Input_label_last_name}</span>
 
           <input
             type="text"
             name="billing_last_name"
-            placeholder={userRecurr.Input_placeholder_last_name}
+            placeholder={recurData.Input_placeholder_last_name}
           />
         </label>
 
         <label>
-          <span>{userRecurr.Input_label_street}</span>
+          <span>{recurData.Input_label_street}</span>
 
           <input
             type="text"
@@ -246,7 +246,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </label>
 
         <label>
-          <span>{userRecurr.Input_label_city}</span>
+          <span>{recurData.Input_label_city}</span>
 
           <input
             type="text"
@@ -256,25 +256,25 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </label>
 
         <label>
-          <span>{userRecurr.Input_label_postal_code}</span>
+          <span>{recurData.Input_label_postal_code}</span>
 
           <input
             type="number"
             name="billing_postal_code"
-            placeholder={userRecurr.Input_placeholder_postal_code}
+            placeholder={recurData.Input_placeholder_postal_code}
           />
         </label>
 
         <label>
-          <span>{userRecurr.Input_label_country}</span>
+          <span>{recurData.Input_label_country}</span>
 
           <select id="country-select" name="billing_country">
             <option value="" selected disabled hidden>
-              {userRecurr.Input_placeholder_country}
+              {recurData.Input_placeholder_country}
             </option>
 
             {
-              checkoutInfo.countries.data.map(
+              recurData.countries.data.map(
                 ({ attributes: { name, localizations } }) => (
                   <option
                     value={localizations?.data[0]?.attributes?.name || name}
@@ -472,6 +472,14 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     submitBtnPaymentType = submitBtn.querySelector(".payment-type");
 
   const addOrRemoveRequired = (elements, condition) =>
+    elements.forEach((element) =>
+      element[condition ? "setAttribute" : "removeAttribute"](
+        "required",
+        "true",
+      ),
+    );
+
+  const addOrRemoveValue = (elements, condition) =>
     elements.forEach((element) =>
       element[condition ? "setAttribute" : "removeAttribute"](
         "required",

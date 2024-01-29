@@ -34,8 +34,11 @@ export async function createSessionCookie(
   return sessionCookie;
 }
 
-export function isMobilePhone(str: string): boolean {
-  return validator.isMobilePhone(str, undefined, { strictMode: true });
+export function isMobilePhone(
+  val: string,
+  strictMode: boolean = false,
+): boolean {
+  return validator.isMobilePhone(val, undefined, { strictMode });
 }
 
 export function checkUpdatedContact(str: string): boolean {

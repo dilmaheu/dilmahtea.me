@@ -3,10 +3,12 @@ import UserInfo from "@solid/UserInfo";
 import DashboardKindnessCauses from "@solid/DashboardKindnessCauses";
 
 export default function Dashboard({
+  plusIcon,
   kindnessCausesHTML,
   noOrdersHTML,
   page,
   verificationHref,
+  userAccountAddressURL,
   userAccountRecurData,
   recurringImages,
 }) {
@@ -15,8 +17,10 @@ export default function Dashboard({
   return (
     <>
       <UserInfo
+        plusIcon={plusIcon}
         page={page}
         verificationHref={verificationHref}
+        userAccountAddressURL={userAccountAddressURL}
         recurringImages={recurringImages}
         userAccountRecurData={userAccountRecurData}
       />
