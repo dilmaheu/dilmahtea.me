@@ -44,7 +44,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
   window.checkoutKindnessLink = checkoutKindnessLink;
 </script>
 
-<form 
+<form
   method="POST"
   id="payment-info-form"
   class="section-gap grid w-full xl:w-2/3"
@@ -215,62 +215,67 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         class="form-grid"
       >
         <label>
-          <span>{recurData.Input_label_first_name}</span>
+          <span>{recurData.text_first_name}</span>
 
           <input
             type="text"
             name="billing_first_name"
             value=""
-            placeholder={recurData.Input_placeholder_first_name}
+            placeholder={recurData.first_name_placeholder}
+            required
           />
         </label>
 
         <label>
-          <span>{recurData.Input_label_last_name}</span>
+          <span>{recurData.text_last_name}</span>
 
           <input
             type="text"
             name="billing_last_name"
-            placeholder={recurData.Input_placeholder_last_name}
+            placeholder={recurData.last_name_placeholder}
+            required
           />
         </label>
 
         <label>
-          <span>{recurData.Input_label_street}</span>
+          <span>{recurData.text_street}</span>
 
           <input
             type="text"
             name="billing_street"
-            placeholder={userRecurr.Input_placeholder_street}
+            placeholder={recurData.street_placeholder}
+            required
           />
         </label>
 
         <label>
-          <span>{recurData.Input_label_city}</span>
+          <span>{recurData.text_city}</span>
 
           <input
             type="text"
             name="billing_city"
-            placeholder={userRecurr.Input_placeholder_city}
+            placeholder={recurData.city_placeholder}
+            required
           />
         </label>
 
         <label>
-          <span>{recurData.Input_label_postal_code}</span>
+          <span>{recurData.text_postal_code}</span>
 
           <input
             type="number"
             name="billing_postal_code"
-            placeholder={recurData.Input_placeholder_postal_code}
+            placeholder={recurData.postal_code_placeholder}
+            required
           />
         </label>
 
         <label>
-          <span>{recurData.Input_label_country}</span>
+          <span>{recurData.text_country}</span>
 
-          <select id="country-select" name="billing_country">
+          <select id="country-select" name="billing_country" required>
             <option value="" selected disabled hidden>
-              {recurData.Input_placeholder_country}
+              {recurData.country_placeholder}
             </option>
 
             {
@@ -362,6 +367,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             type="text"
             name="card_name"
             placeholder={page.Card_placeholder_name}
+            required
           />
         </label>
 
@@ -372,6 +378,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             type="number"
             name="card_number"
             placeholder={page.Card_placeholder_number}
+            required
           />
         </label>
 
@@ -382,6 +389,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             type="text"
             name="card_exp_date"
             placeholder={page.Card_placeholder_date}
+            required
           />
         </label>
 
@@ -392,6 +400,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             type="number"
             name="card_cvv"
             placeholder={page.Card_placeholder_cvv}
+            required
           />
         </label>
       </div>
@@ -404,8 +413,9 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
 
           <input
             type="number"
-            name="card_cvv"
+            name="bank"
             placeholder={page.Ideal_placeholder_select_bank}
+            required
           />
         </label>
       </div>
@@ -423,6 +433,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             type="text"
             name="payment_name"
             placeholder={page.Placeholder_name}
+            required
           />
         </label>
       </div>
@@ -442,7 +453,12 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </span>
       </a>
 
-      <button id="submit-btn" type="submit" class="w-full sm:w-1/3 button-disabled-large">
+      <button
+        id="submit-btn"
+        type="submit"
+        class="w-full sm:w-1/3 button-disabled-large"
+        disabled
+      >
         <span>
           {page.Button_text_pay_with}
           <span class="payment-type"></span>
@@ -460,7 +476,9 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
   const id = document.getElementById.bind(document),
     queryAll = document.querySelectorAll.bind(document),
     addClass = (element, className) => element.classList.add(className),
-    removeClass = (element, className) => element.classList.remove(className);
+    removeClass = (element, className) => element.classList.remove(className),
+    getInputValue = (parent, name) =>
+      parent.querySelector(`input[name=${name}]`).value;
 
   const sameAsShipping = id("same-as-shipping"),
     differentThanShipping = id("different-than-shipping"),
@@ -471,20 +489,9 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     submitBtn = id("submit-btn"),
     submitBtnPaymentType = submitBtn.querySelector(".payment-type");
 
-  const addOrRemoveRequired = (elements, condition) =>
+  const toggleDisabled = (elements, condition) =>
     elements.forEach((element) =>
-      element[condition ? "setAttribute" : "removeAttribute"](
-        "required",
-        "true",
-      ),
-    );
-
-  const addOrRemoveValue = (elements, condition) =>
-    elements.forEach((element) =>
-      element[condition ? "setAttribute" : "removeAttribute"](
-        "required",
-        "true",
-      ),
+      element[condition ? "setAttribute" : "removeAttribute"]("disabled", true),
     );
 
   const selectTextAndNumberInputs = (parent) =>
@@ -500,14 +507,10 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
 
   function toggleShippingAddress() {
     const isSameShipping = sameAsShipping.checked;
+
     isSameShipping
       ? addClass(shippingAddress, "hidden")
       : removeClass(shippingAddress, "hidden");
-
-    addOrRemoveRequired(
-      selectTextAndNumberInputs(shippingAddress),
-      !isSameShipping,
-    );
   }
 
   function hideAllPaymentInfo() {
@@ -518,6 +521,15 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     submitBtnPaymentType.innerHTML = "";
     removeClass(submitBtn, "button-primary-large");
     addClass(submitBtn, "button-disabled-large");
+    toggleSubmitBtnDisabled();
+  }
+
+  function toggleSubmitBtnDisabled() {
+    if (submitBtn.disabled) {
+      submitBtn.removeAttribute("disabled", true);
+    } else {
+      submitBtn.setAttribute("disabled", true);
+    }
   }
 
   function togglePaymentCardVisibility() {
@@ -550,6 +562,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     submitBtnPaymentType.innerHTML = ` ${inputValue}`;
     removeClass(submitBtn, "button-disabled-large");
     addClass(submitBtn, "button-primary-large");
+    toggleSubmitBtnDisabled();
 
     paymentInfoElements.forEach((paymentInfo) => {
       const includesValue = paymentInfo
@@ -557,46 +570,54 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         .toLowerCase()
         .includes(inputValue);
 
-      addOrRemoveRequired(
-        selectTextAndNumberInputs(paymentInfo),
-        includesValue,
-      );
+      toggleDisabled(selectTextAndNumberInputs(paymentInfo), !includesValue);
 
       includesValue
         ? removeClass(paymentInfo, "!hidden")
         : addClass(paymentInfo, "!hidden");
+
+      const paymentInputName =
+        includesValue && paymentInfo.querySelector("input[name*=name]");
+
+      if (paymentInputName && paymentInputName.value !== null) {
+        const fullName = `${getInputValue(
+          shippingAddress,
+          "billing_first_name",
+        )} ${getInputValue(shippingAddress, "billing_last_name")}`;
+
+        paymentInputName.setAttribute("value", trim(fullName));
+      }
     });
   }
-</script>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const id = document.getElementById.bind(document);
-    const sameAsShippingAddress = id("same-as-shipping");
-    const shippingAddress = id("shipping-address");
-    const contactInfo = JSON.parse(localStorage.getItem("checkout-info"));
+  const contactInfo = JSON.parse(localStorage.getItem("checkout-info"));
 
-    const setInputValue = (name, setValue) => {
-      const inputElement = shippingAddress.querySelector(`input[name="${name}"]`);
-      if (inputElement) {
-        inputElement.value = setValue;
-      }
-    };
+  const setInputValue = (name, setValue) =>
+    shippingAddress
+      ?.querySelector(`input[name="${name}"]`)
+      ?.setAttribute("value", setValue);
 
-    const setBillingInfo = () => {
-      const isSameShipping = sameAsShippingAddress.checked;
+  const setBillingInfo = () => {
+    const isSameShipping = sameAsShipping.checked;
+    [
+      "first_name",
+      "last_name",
+      "street",
+      "city",
+      "postal_code",
+      "country",
+    ].forEach((field) =>
+      setInputValue(
+        `billing_${field}`,
+        isSameShipping ? contactInfo[field] : "",
+      ),
+    );
+  };
 
+  const addChangeListener = (element) =>
+    element.addEventListener("change", setBillingInfo);
 
-      setInputValue("billing_first_name", isSameShipping ? contactInfo.first_name : "");
-      setInputValue("billing_last_name", isSameShipping ? contactInfo.last_name : "");
-      setInputValue("billing_street", isSameShipping ? contactInfo.street : "");
-      setInputValue("billing_city", isSameShipping ? contactInfo.city : "");
-      setInputValue("billing_postal_code", isSameShipping ? contactInfo.postal_code : "");
-      setInputValue("billing_country", isSameShipping ? contactInfo.country : "");
-    };
-
-    setBillingInfo();
-
-    sameAsShippingAddress.addEventListener("change", setBillingInfo);
-  });
+  setBillingInfo();
+  addChangeListener(sameAsShipping);
+  addChangeListener(differentThanShipping);
 </script>
