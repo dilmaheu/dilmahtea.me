@@ -4,6 +4,7 @@ import { Picture } from "astro-imagetools/components";
 
 import CMS from "@store/CMS";
 
+import getLocalizedLink from "@utils/getLocalizedLink";
 import getUserAccountPagesLink from "@utils/getUserAccountPagesLink";
 
 import Dashboard from "@solid/Dashboard.astro";
@@ -25,7 +26,13 @@ const {
   } = page,
   { STRAPI_URL } = import.meta.env;
 
-const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
+const userAccountRecurData = CMS.get("userAccountRecurringElement", locale),
+  userAccountAddress = CMS.get("userAccountAddress", locale);
+
+const userAccountAddressURL = getLocalizedLink(
+  locale,
+  userAccountAddress.Meta.URL_slug,
+);
 
 const verificationHref = getUserAccountPagesLink("verification", locale);
 
@@ -110,7 +117,13 @@ const headings = new Array(
 />
 
 <UserAccountLayout page={page} headings={headings}>
-  <Dashboard {page} {verificationHref} {recurData} {userAccountRecurData}>
+  <Dashboard
+    {page}
+    {verificationHref}
+    {userAccountAddressURL}
+    {recurData}
+    {userAccountRecurData}
+  >
     <Icon slot="plusIcon" name="akar-icons:plus" class="w-[18px] select-none" />
 
     <Fragment slot="kindnessCausesHTML">

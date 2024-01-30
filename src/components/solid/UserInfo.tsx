@@ -10,11 +10,13 @@ import SolidNotification from "@solid/SolidNotification";
 
 import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 import DefaultAddress from "./DefaultAddress";
+import { addresses } from "@store/signals/addresses";
 
 export default function UserInfo({
   plusIcon,
   page,
   verificationHref,
+  userAccountAddressURL,
   notificationIcons,
   recurData,
   userAccountRecurData,
@@ -53,8 +55,8 @@ export default function UserInfo({
     Button_update_text,
     Button_view_more_address_text_singular,
     Button_view_more_address_text,
+    Button_view_all_addresses_text,
     Button_add_new_address_text,
-    Address_tag,
     text_more_address,
     text_default_delivery_address,
     text_default_billing_address,
@@ -219,22 +221,32 @@ export default function UserInfo({
             );
           }}
 
-          {/* {Address_tag.length > 2 && (
-            <div class="w-full flex justify-center">
-              <a
-                href={userAccountAddressURL}
-                id="more-address"
-                class="button-link-primary"
-              >
-                {Address_tag.length === 3
-                  ? Button_view_more_address_text_singular
-                  : Button_view_more_address_text.replace(
-                      "<number>",
-                      Address_tag.length - 2,
-                    )}
-              </a>
-            </div>
-          )} */}
+          {() => {
+            const { default_delivery_address, default_billing_address } =
+              user();
+
+            const shouldDisplayLink =
+              default_delivery_address?.id &&
+              addresses()?.length -
+                (default_delivery_address.id === default_billing_address.id
+                  ? 1
+                  : 2) >
+                0;
+
+            if (shouldDisplayLink) {
+              return (
+                <div class="w-full flex justify-center">
+                  <a
+                    href={userAccountAddressURL}
+                    id="more-address"
+                    class="button-link-primary"
+                  >
+                    {Button_view_all_addresses_text}
+                  </a>
+                </div>
+              );
+            }
+          }}
         </div>
       </div>
 

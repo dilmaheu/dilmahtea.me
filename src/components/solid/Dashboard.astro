@@ -3,8 +3,13 @@ import subset from "@utils/shared/subset";
 import Dashboard from "@solid/Dashboard";
 import notificationIcons from "@utils/notificationIcons";
 
-let { page, verificationHref, recurData, userAccountRecurData } =
-  structuredClone(Astro.props);
+let {
+  page,
+  verificationHref,
+  userAccountAddressURL,
+  recurData,
+  userAccountRecurData,
+} = structuredClone(Astro.props);
 
 page.kindnessCauses.forEach((kindnessCause) => {
   delete kindnessCause.locale;
@@ -44,13 +49,13 @@ userAccountRecurData = subset(userAccountRecurData, [
   "Button_cancel_text",
   "Button_view_more_address_text_singular",
   "Button_view_more_address_text",
+  "Button_view_all_addresses_text",
   "Button_track_package",
   "Button_track_package_text",
   "Button_buy_again_text",
   "Button_sold_out_text",
   "Button_go_to_my_orders_text",
   "Button_add_new_address_text",
-  "Address_tag",
   "Label_order",
   "text_quantity",
   "text_estimated_delivery",
@@ -75,6 +80,7 @@ userAccountRecurData = subset(userAccountRecurData, [
   client:load
   {page}
   {verificationHref}
+  {userAccountAddressURL}
   {recurData}
   {userAccountRecurData}
   {notificationIcons}
