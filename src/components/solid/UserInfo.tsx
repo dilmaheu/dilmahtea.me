@@ -180,21 +180,23 @@ export default function UserInfo({
                 </>
               );
             }}
-          </div>
 
-          <div class="flex w-full">
-            <button
-              id="add-new-address-btn"
-              class="button-primary"
-              onclick={() => {
-                scrollToAddNewAddress();
+            <div class="h-px bg-primary-light" />
 
-                setEditAddress({ action: "add" });
-              }}
-            >
-              {plusIcon}
-              {Button_add_new_address_text}
-            </button>
+            <div class="flex w-full">
+              <button
+                id="add-new-address-btn"
+                class="button-primary"
+                onclick={() => {
+                  scrollToAddNewAddress();
+
+                  setEditAddress({ action: "add" });
+                }}
+              >
+                {plusIcon}
+                {Button_add_new_address_text}
+              </button>
+            </div>
           </div>
 
           {() => {
