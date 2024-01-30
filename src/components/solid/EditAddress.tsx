@@ -2,6 +2,8 @@ import type { Setter } from "solid-js";
 import type { Address } from "@solid/Address";
 
 import { user } from "@signals/user";
+import { addresses } from "@signals/addresses";
+
 import AddressTags from "@solid/AddressTags";
 import EditAddressForm from "@solid/EditAddressForm";
 
@@ -73,47 +75,56 @@ export default function EditAddress({
         recurData={recurData}
       />
 
-      <div class="division-in-element-gap grid">
-        <div class="flex">
-          <label class="checkbox-primary">
-            <span class="checkbox-input-container">
-              <input
-                type="checkbox"
-                name="set_as_default_delivery_address"
-                value="true"
-                checked={
-                  tickCheckboxes?.default_delivery_address ||
-                  (address &&
-                    address.id === user().default_delivery_address?.id) ||
-                  false
-                }
-              />
-              <span class="checkbox-primary"></span>
-            </span>
-            {Checkbox_set_default_delivery_address_text}
-          </label>
-        </div>
+      {() => {
+        const shouldShowCheckboxes =
+          addresses()?.length > (action === "add" ? 0 : 1);
 
-        <div class="flex">
-          <label class="checkbox-primary">
-            <span class="checkbox-input-container">
-              <input
-                type="checkbox"
-                name="set_as_default_billing_address"
-                value="true"
-                checked={
-                  tickCheckboxes?.default_billing_address ||
-                  (address &&
-                    address.id === user().default_billing_address?.id) ||
-                  false
-                }
-              />
-              <span class="checkbox-primary"></span>
-            </span>
-            {Checkbox_set_default_billing_address_text}
-          </label>
-        </div>
-      </div>
+        if (shouldShowCheckboxes) {
+          return (
+            <div class="division-in-element-gap grid">
+              <div class="flex">
+                <label class="checkbox-primary">
+                  <span class="checkbox-input-container">
+                    <input
+                      type="checkbox"
+                      name="set_as_default_delivery_address"
+                      value="true"
+                      checked={
+                        tickCheckboxes?.default_delivery_address ||
+                        (address &&
+                          address.id === user().default_delivery_address?.id) ||
+                        false
+                      }
+                    />
+                    <span class="checkbox-primary"></span>
+                  </span>
+                  {Checkbox_set_default_delivery_address_text}
+                </label>
+              </div>
+
+              <div class="flex">
+                <label class="checkbox-primary">
+                  <span class="checkbox-input-container">
+                    <input
+                      type="checkbox"
+                      name="set_as_default_billing_address"
+                      value="true"
+                      checked={
+                        tickCheckboxes?.default_billing_address ||
+                        (address &&
+                          address.id === user().default_billing_address?.id) ||
+                        false
+                      }
+                    />
+                    <span class="checkbox-primary"></span>
+                  </span>
+                  {Checkbox_set_default_billing_address_text}
+                </label>
+              </div>
+            </div>
+          );
+        }
+      }}
 
       <div class="form-button-container">
         <div class="flex w-full sm:w-1/2 sm:order-2">
