@@ -53,12 +53,25 @@ export default function CheckoutInformationForm({
 
       localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
 
-      const updatedAddress = addresses()?.find(
+      const selectedAddress = addresses()?.find(
         ({ tag }) => tag === selectedTag(),
       );
 
-      if (updatedAddress) {
-        formData.id = updatedAddress;
+      if (selectedAddress) {
+        formData.id = selectedAddress.id;
+
+        if (
+          formData.first_name === selectedAddress.first_name &&
+          formData.last_name === selectedAddress.last_name &&
+          formData.street === selectedAddress.street &&
+          formData.city === selectedAddress.city &&
+          formData.country === selectedAddress.country &&
+          formData.postal_code === selectedAddress.postal_code
+        ) {
+          location.href = checkoutInfoForm.action;
+
+          return;
+        }
       }
 
       fetch("/api/addresses", {
