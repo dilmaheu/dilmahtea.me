@@ -478,7 +478,9 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     addClass = (element, className) => element.classList.add(className),
     removeClass = (element, className) => element.classList.remove(className),
     getInputValue = (parent, name) =>
-      parent.querySelector(`input[name=${name}]`).value;
+      parent.querySelector(`input[name=${name}]`).value,
+    addChangeListener = (element, functionName) =>
+      element.addEventListener("change", functionName);
 
   const sameAsShipping = id("same-as-shipping"),
     differentThanShipping = id("different-than-shipping"),
@@ -497,14 +499,6 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
   const selectTextAndNumberInputs = (parent) =>
     parent.querySelectorAll("input[type='text'], input[type='number']");
 
-  sameAsShipping.addEventListener("change", toggleShippingAddress);
-  differentThanShipping.addEventListener("change", toggleShippingAddress);
-  countrySelect.addEventListener("change", () => {
-    togglePaymentCardVisibility();
-    hideAllPaymentInfo();
-  });
-  document.addEventListener("change", handlePaymentCardInputChange);
-
   function toggleShippingAddress() {
     const isSameShipping = sameAsShipping.checked;
 
@@ -521,15 +515,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     submitBtnPaymentType.innerHTML = "";
     removeClass(submitBtn, "button-primary-large");
     addClass(submitBtn, "button-disabled-large");
-    toggleSubmitBtnDisabled();
-  }
-
-  function toggleSubmitBtnDisabled() {
-    if (submitBtn.disabled) {
-      submitBtn.removeAttribute("disabled", true);
-    } else {
-      submitBtn.setAttribute("disabled", true);
-    }
+    submitBtn.setAttribute("disabled", true);
   }
 
   function togglePaymentCardVisibility() {
@@ -562,7 +548,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     submitBtnPaymentType.innerHTML = ` ${inputValue}`;
     removeClass(submitBtn, "button-disabled-large");
     addClass(submitBtn, "button-primary-large");
-    toggleSubmitBtnDisabled();
+    submitBtn.removeAttribute("disabled", true);
 
     paymentInfoElements.forEach((paymentInfo) => {
       const includesValue = paymentInfo
@@ -599,25 +585,41 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
 
   const setBillingInfo = () => {
     const isSameShipping = sameAsShipping.checked;
-    [
-      "first_name",
-      "last_name",
-      "street",
-      "city",
-      "postal_code",
-      "country",
-    ].forEach((field) =>
-      setInputValue(
-        `billing_${field}`,
-        isSameShipping ? contactInfo[field] : "",
-      ),
+    ["first_name", "last_name", "street", "city", "postal_code"].forEach(
+      (field) =>
+        setInputValue(
+          `billing_${field}`,
+          isSameShipping ? contactInfo[field] : "",
+        ),
     );
+
+    countrySelect.querySelectorAll("option").forEach((option) => {
+      const isOptionSame =
+        option.value.toLowerCase() === contactInfo.country.toLowerCase();
+
+      isOptionSame &&
+        option[isSameShipping ? "setAttribute" : "removeAttribute"](
+          "selected",
+          true,
+        );
+    });
+
+    togglePaymentCardVisibility();
+    hideAllPaymentInfo();
   };
 
-  const addChangeListener = (element) =>
-    element.addEventListener("change", setBillingInfo);
-
   setBillingInfo();
-  addChangeListener(sameAsShipping);
-  addChangeListener(differentThanShipping);
+  addChangeListener(sameAsShipping, () => {
+    toggleShippingAddress();
+    setBillingInfo();
+  });
+  addChangeListener(differentThanShipping, () => {
+    toggleShippingAddress();
+    setBillingInfo();
+  });
+  addChangeListener(countrySelect, () => {
+    togglePaymentCardVisibility();
+    hideAllPaymentInfo();
+  });
+  document.addEventListener("change", handlePaymentCardInputChange);
 </script>
