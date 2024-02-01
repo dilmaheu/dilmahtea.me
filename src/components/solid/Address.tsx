@@ -46,13 +46,17 @@ export default function Address({
     text_default_delivery_address,
     text_default_billing_address,
     Button_edit_text,
+    Tag_default_text,
   } = userAccountRecurData;
 
   const fullName = first_name + " " + last_name,
     fullAddress = [street, city, postal_code, country].join(", ");
 
   const isDefaultDeliveryAddress = user().default_delivery_address?.id === id,
-    isDefaultBillingAddress = user().default_billing_address?.id === id;
+    isDefaultBillingAddress = user().default_billing_address?.id === id,
+    areDefaultAddressesSame =
+      user().default_delivery_address?.id ===
+      user().default_billing_address?.id;
 
   function deleteAddress() {
     setIsDeleting(true);
@@ -79,9 +83,11 @@ export default function Address({
               (isDefaultDeliveryAddress || isDefaultBillingAddress) && (
                 <>
                   <div class="info-tag-button-primary">
-                    {isDefaultDeliveryAddress
-                      ? text_default_delivery_address
-                      : text_default_billing_address}
+                    {areDefaultAddressesSame
+                      ? Tag_default_text
+                      : isDefaultDeliveryAddress
+                        ? text_default_delivery_address
+                        : text_default_billing_address}
                   </div>
 
                   <div>&#x2022;</div>
