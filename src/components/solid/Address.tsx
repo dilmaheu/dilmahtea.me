@@ -1,4 +1,5 @@
 import type { Setter } from "solid-js";
+import type { handleAPIResponseType } from "@utils/handleAPIResponseBase";
 
 import { createSignal } from "solid-js";
 
@@ -24,7 +25,7 @@ declare interface Props {
   scroll?: () => void;
   isMyProfile?: boolean;
   trashCanIcon?: HTMLElement;
-  handleAPIResponse?: (response: Response, callback?: () => void) => void;
+  handleAPIResponse: handleAPIResponseType;
 }
 
 export default function Address({
@@ -68,7 +69,9 @@ export default function Address({
       },
       body: JSON.stringify({ id }),
     }).then((response) =>
-      handleAPIResponse(response, () => setIsDeleting(false)),
+      handleAPIResponse(response, {
+        onError: () => setIsDeleting(false),
+      }),
     );
   }
 

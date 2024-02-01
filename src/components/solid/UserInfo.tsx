@@ -1,16 +1,17 @@
 import type { Address as AddressType } from "@solid/Address";
+import type { handleAPIResponseType } from "@utils/handleAPIResponseBase";
 
 import { createEffect, createSignal } from "solid-js";
 
 import { user } from "@signals/user";
+import { addresses } from "@signals/addresses";
 
 import InfoUnit from "@solid/InfoUnit";
 import EditAddress from "@solid/EditAddress";
+import DefaultAddress from "@solid/DefaultAddress";
 import SolidNotification from "@solid/SolidNotification";
 
 import handleAPIResponseBase from "@utils/handleAPIResponseBase";
-import DefaultAddress from "./DefaultAddress";
-import { addresses } from "@store/signals/addresses";
 
 export default function UserInfo({
   plusIcon,
@@ -31,7 +32,7 @@ export default function UserInfo({
       };
     }>();
 
-  const handleAPIResponse = (response: Response) =>
+  const handleAPIResponse: handleAPIResponseType = (response) =>
     handleAPIResponseBase(response, notification, setNotification);
 
   const {

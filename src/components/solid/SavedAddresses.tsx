@@ -1,3 +1,5 @@
+import type { handleAPIResponseType } from "@utils/handleAPIResponseBase";
+
 import { For, createEffect, createSignal } from "solid-js";
 
 import Loading from "@solid/Loading";
@@ -20,10 +22,8 @@ export default function SavedAddresses({
     [showMoreAddresses, setShowMoreAddresses] = createSignal(false),
     [displayNewAddressForm, setShowNewAddressForm] = createSignal(false);
 
-  const handleAPIResponse = (response: Response, callback?: () => void) =>
-    handleAPIResponseBase(response, notification, setNotification, {
-      onParse: callback,
-    });
+  const handleAPIResponse: handleAPIResponseType = (response, callbacks) =>
+    handleAPIResponseBase(response, notification, setNotification, callbacks);
 
   createEffect(() => {
     if (Array.isArray(addresses())) {

@@ -1,5 +1,6 @@
 import type { Setter } from "solid-js";
 import type { Address } from "@solid/Address";
+import type { handleAPIResponseType } from "@utils/handleAPIResponseBase";
 
 import { user } from "@signals/user";
 import { addresses } from "@signals/addresses";
@@ -13,7 +14,7 @@ declare interface Props {
   recurData: any;
   userAccountRecurData: any;
   showForm: Setter<any>;
-  handleAPIResponse: (response: Response) => void;
+  handleAPIResponse: handleAPIResponseType;
   setNotification: Setter<any>;
   scroll?: () => void;
   tickCheckboxes?: {
