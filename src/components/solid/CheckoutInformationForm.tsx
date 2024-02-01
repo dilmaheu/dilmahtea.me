@@ -61,12 +61,13 @@ export default function CheckoutInformationForm({
         formData.id = selectedAddress.id;
 
         if (
-          formData.first_name === selectedAddress.first_name &&
-          formData.last_name === selectedAddress.last_name &&
-          formData.street === selectedAddress.street &&
-          formData.city === selectedAddress.city &&
-          formData.country === selectedAddress.country &&
-          formData.postal_code === selectedAddress.postal_code
+          window.cookies.isAuthenticated !== "true" ||
+          (formData.first_name === selectedAddress.first_name &&
+            formData.last_name === selectedAddress.last_name &&
+            formData.street === selectedAddress.street &&
+            formData.city === selectedAddress.city &&
+            formData.country === selectedAddress.country &&
+            formData.postal_code === selectedAddress.postal_code)
         ) {
           location.href = checkoutInfoForm.action;
 
