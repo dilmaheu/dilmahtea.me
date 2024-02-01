@@ -6,6 +6,7 @@ export default function DefaultAddress({
   userAccountRecurData,
   setEditAddress,
   scrollToAddNewAddress,
+  handleAPIResponse,
 }) {
   const { Button_add_text } = userAccountRecurData;
 
@@ -40,6 +41,7 @@ export default function DefaultAddress({
           setEditAddress={setEditAddress}
           isMyProfile={true}
           scroll={scrollToAddNewAddress}
+          handleAPIResponse={handleAPIResponse}
         />
       )}
     </div>
