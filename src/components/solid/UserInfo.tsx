@@ -32,8 +32,8 @@ export default function UserInfo({
       };
     }>();
 
-  const handleAPIResponse: handleAPIResponseType = (response) =>
-    handleAPIResponseBase(response, notification, setNotification);
+  const handleAPIResponse: handleAPIResponseType = (response, callbacks) =>
+    handleAPIResponseBase(response, notification, setNotification, callbacks);
 
   const {
     Title,
@@ -169,6 +169,7 @@ export default function UserInfo({
                     userAccountRecurData={userAccountRecurData}
                     setEditAddress={setEditAddress}
                     scrollToAddNewAddress={scrollToAddNewAddress}
+                    handleAPIResponse={handleAPIResponse}
                   />
 
                   <div class="h-px bg-primary-light" />
@@ -179,6 +180,7 @@ export default function UserInfo({
                     userAccountRecurData={userAccountRecurData}
                     setEditAddress={setEditAddress}
                     scrollToAddNewAddress={scrollToAddNewAddress}
+                    handleAPIResponse={handleAPIResponse}
                   />
                 </>
               );
