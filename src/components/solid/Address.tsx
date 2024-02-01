@@ -54,10 +54,7 @@ export default function Address({
     fullAddress = [street, city, postal_code, country].join(", ");
 
   const isDefaultDeliveryAddress = user().default_delivery_address?.id === id,
-    isDefaultBillingAddress = user().default_billing_address?.id === id,
-    areDefaultAddressesSame =
-      user().default_delivery_address?.id ===
-      user().default_billing_address?.id;
+    isDefaultBillingAddress = user().default_billing_address?.id === id;
 
   function deleteAddress() {
     setIsDeleting(true);
@@ -86,7 +83,7 @@ export default function Address({
               (isDefaultDeliveryAddress || isDefaultBillingAddress) && (
                 <>
                   <div class="info-tag-button-primary">
-                    {areDefaultAddressesSame
+                    {isDefaultDeliveryAddress === isDefaultDeliveryAddress
                       ? Tag_default_text
                       : isDefaultDeliveryAddress
                         ? text_default_delivery_address
