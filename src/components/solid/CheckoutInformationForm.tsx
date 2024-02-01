@@ -75,7 +75,7 @@ export default function CheckoutInformationForm({
       }
 
       fetch("/api/addresses", {
-        method: updatedAddress ? "PUT" : "POST",
+        method: selectedAddress ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
         },
