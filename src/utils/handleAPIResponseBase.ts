@@ -28,18 +28,6 @@ export default function handleAPIResponseBase(
     if (notification && setNotification) {
       if (response.success) {
         if (callbacks.onSuccess) callbacks.onSuccess();
-
-        setNotification({
-          type: "success",
-          message: response.message,
-        });
-
-        setTimeout(() => {
-          // skip if an error notification is set within 7 seconds
-          if (notification().type === "success") {
-            setNotification(null);
-          }
-        }, 7000);
       } else {
         if (callbacks.onError) callbacks.onError();
 

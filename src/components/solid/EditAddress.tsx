@@ -65,7 +65,19 @@ export default function EditAddress({
     fetch("/api/addresses", {
       method: action === "add" ? "POST" : "PUT",
       body: JSON.stringify(formData),
-    }).then(handleAPIResponse);
+    }).then((response) =>
+      handleAPIResponse(response, {
+        onSuccess: () => {
+          const redirectURL = new URL(location.href);
+
+          redirectURL.searchParams.set("updated_user_info", "true");
+          redirectURL.searchParams.set("info", "address");
+          redirectURL.searchParams.set("action", action);
+
+          location.href = redirectURL.toString();
+        },
+      }),
+    );
   }
 
   return (

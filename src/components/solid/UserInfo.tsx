@@ -61,6 +61,8 @@ export default function UserInfo({
     text_more_address,
     text_default_delivery_address,
     text_default_billing_address,
+    Notification_added_address,
+    Notification_updated_address,
   } = userAccountRecurData;
 
   function scrollToAddNewAddress(after: boolean = true) {
@@ -84,19 +86,31 @@ export default function UserInfo({
 
     if (searchParams.get("updated_user_info") === "true") {
       const info = searchParams.get("info"),
+        action = searchParams.get("action"),
         InfoLabels = {
           display_name: display_name_update_success_notification_label,
           email: email_update_success_notification_label,
           phone: phone_number_update_success_notification_label,
         };
 
-      if (InfoLabels[info]) {
+      const notificationMessage =
+        info === "address"
+          ? action === "add"
+            ? Notification_added_address
+            : action === "update"
+              ? Notification_updated_address
+              : null
+          : InfoLabels[info]
+            ? user_info_update_success_notification.replace(
+                "<info_label>",
+                InfoLabels[info],
+              )
+            : null;
+
+      if (notificationMessage) {
         setNotification({
           type: "success",
-          message: user_info_update_success_notification.replace(
-            "<info_label>",
-            InfoLabels[info],
-          ),
+          message: notificationMessage,
         });
       }
 

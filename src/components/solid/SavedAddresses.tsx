@@ -67,7 +67,40 @@ export default function SavedAddresses({
     text_content,
     text_default_delivery_address,
     text_default_billing_address,
+    Notification_added_address,
+    Notification_updated_address,
   } = userAccountRecurData;
+
+  createEffect(() => {
+    const { updated_user_info, info, action } = Object.fromEntries(
+      new URLSearchParams(location.search),
+    );
+
+    console.log(updated_user_info, info, action);
+
+    if (
+      updated_user_info === "true" &&
+      info === "address" &&
+      ["add", "update"].includes(action)
+    ) {
+      const notificationMessage =
+        action === "add"
+          ? Notification_added_address
+          : Notification_updated_address;
+
+      setNotification({
+        type: "success",
+        message: notificationMessage,
+      });
+
+      setTimeout(() => {
+        // skip if an error notification is set within 7 seconds
+        if (notification().type === "success") {
+          setNotification(null);
+        }
+      }, 7000);
+    }
+  });
 
   return (
     <div class="dashboard-sec">
