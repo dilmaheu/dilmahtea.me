@@ -241,7 +241,10 @@ export default function UserInfo({
                     id="more-address"
                     class="button-link-primary"
                   >
-                    {Button_view_all_addresses_text}
+                    {Button_view_all_addresses_text.replace(
+                      "<number>",
+                      addresses().length,
+                    )}
                   </a>
                 </div>
               );
