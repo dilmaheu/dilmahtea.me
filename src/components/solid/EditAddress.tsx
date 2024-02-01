@@ -52,6 +52,12 @@ export default function EditAddress({
       new FormData(event.currentTarget as HTMLFormElement).entries(),
     );
 
+    for (const key in formData) {
+      if (formData[key] === "true") {
+        formData[key] = true;
+      }
+    }
+
     if (action === "update") {
       formData.id = address.id;
     }
