@@ -24,6 +24,9 @@ const { page, recurData } = Astro.props,
 const methods = payment_methods.data?.map(({ attributes }) => attributes),
   accepted_cards_icon = Accepted_cards_icon.data?.map(
     ({ attributes }) => attributes,
+  ),
+  isIdeal = methods.map(({ method }) =>
+    method?.toLowerCase()?.includes("ideal"),
   );
 ---
 
@@ -406,20 +409,30 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
       </div>
     </div>
 
-    <div data-name="ideal-info" class="payment-info division-gap grid !hidden">
-      <div role="form" class="form-grid">
-        <label>
-          <span>{page.Ideal_label_select_bank}</span>
+    {
+      isIdeal && (
+        <div
+          data-name="ideal-info"
+          class="payment-info division-gap grid !hidden"
+        >
+          <div role="form" class="form-grid">
+            <label>
+              <span>{page.Ideal_label_select_bank}</span>
 
-          <input
-            type="number"
-            name="bank"
-            placeholder={page.Ideal_placeholder_select_bank}
-            required
-          />
-        </label>
-      </div>
-    </div>
+              <select id="ideal-bank-select" name="ideal_bank" required>
+                <option value="" selected disabled hidden>
+                  {page.Ideal_placeholder_select_bank}
+                </option>
+
+                {page.Ideal_bank_list.map(({ Bank_name, Value }) => (
+                  <option value={Value}>{Bank_name}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </div>
+      )
+    }
 
     <div
       data-name="paypal-klarna-bancontact-sofort-info"
