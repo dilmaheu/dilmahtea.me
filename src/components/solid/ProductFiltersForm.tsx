@@ -69,7 +69,7 @@ export default function ProductFiltersForm({
   return (
     <form
       id="product-filters"
-      class="flex flex-wrap items-center gap-6"
+      class="flex flex-wrap items-center division-in-element-gap"
       onchange={updateProductFilters}
     >
       <select

@@ -27,22 +27,6 @@ const productSizes = CMS.get("productSizes"),
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
-<style lang="scss">
-  @use "src/styles/typography";
-
-  .heading-title {
-    @apply font-semibold leading-[130%] text-black;
-
-    font-family: typography.$recoleta;
-    font-size: clamp(2.625rem, 3vw + 0.3rem, 3rem);
-  }
-
-  .block-text {
-    line-height: 150%;
-    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
-  }
-</style>
-
 <PostDetailsLayout
   {page}
   {recurData}
@@ -57,17 +41,17 @@ const productSizes = CMS.get("productSizes"),
       path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
     />
 
-    <div class="grid gap-y-[50px]">
+    <div class="grid section-gap">
       {/* Categories Section */}
       <ProductCategories {locale} title={page.Category_title} />
 
-      <section role="main">
-        <div class="wrapper grid gap-5 mb-[30px]">
+      <section role="main" class="grid division-gap">
+        <div class="wrapper grid division-in-gap">
           <div class="flex flex-wrap items-center gap-6 overflow-hidden">
-            <div class="flex flex-wrap items-center gap-6">
+            <div class="flex flex-wrap items-center division-in-gap">
               <h2
                 id={page.Block_title.toLowerCase().replaceAll(" ", "-")}
-                class="heading-title"
+                class="recoleta text-h2 font-bold text-primary"
               >
                 {page.Block_title}
               </h2>
@@ -81,7 +65,7 @@ const productSizes = CMS.get("productSizes"),
             </div>
           </div>
 
-          <div class="prose max-w-none block-text text-black prose-text">
+          <div class="text-black-light prose-text">
             <Markdown>{page.Block_text}</Markdown>
           </div>
         </div>
@@ -107,7 +91,7 @@ const productSizes = CMS.get("productSizes"),
 
   {
     page.Block3_text && (
-      <div slot="post-details" class="prose prose-text">
+      <div slot="post-details" class="prose-text">
         <Chapterize>
           <OptimizeContentImages>
             <Markdown>{page.Block3_text}</Markdown>
