@@ -3,6 +3,7 @@ import taiwlind from "@astrojs/tailwind";
 import { defineConfig } from "astro/config";
 import { astroImageTools } from "astro-imagetools";
 
+import AstroIcon from "astro-icon";
 import AstroFavicons from "astro-favicons";
 import AutoImport from "unplugin-auto-import/vite";
 
@@ -38,6 +39,7 @@ export default defineConfig({
     taiwlind(),
     astroImageTools,
     postbuildIntegration,
+    AstroIcon(),
     AstroFavicons({
       appName: "Dilmahtea.me",
       masterPicture: "./public/favicon.svg",
