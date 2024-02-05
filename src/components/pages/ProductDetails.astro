@@ -204,10 +204,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   >
     <input type="hidden" name="SKU" value={productSKU} />
 
-    <div class="flex flex-wrap gap-[15px]">
+    <div class="flex flex-wrap division-in-gap">
       {
         availableVariants.length > 0 && (
-          <div class="grid sm:flex flex-wrap items-center gap-2.5 md:gap-[25px] w-full">
+          <div class="grid sm:flex flex-wrap items-center division-in-element-gap w-full">
             {availableVariants.map(({ value, variant, variantIcon, link }) => (
               <div>
                 <input
@@ -223,8 +223,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 <label
                   for={variant}
                   class:list={[
-                    "inline-block p-[3px] text-secondary w-full",
-                    "peer-checked:bg-secondary select-none cursor-pointer",
+                    "inline-block p-[3px] text-white w-full",
+                    "peer-checked:bg-white select-none cursor-pointer",
                   ]}
                   style="clip-path: url(#product-variant-curve);"
                 >
@@ -234,8 +234,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   >
                     <div
                       class:list={[
-                        "w-full py-3 px-5 bg-primary",
-                        "flex items-center sm:justify-center gap-[15px] ",
+                        "w-full py-[5px] px-[10px] bg-primary",
+                        "flex items-center sm:justify-center division-in-element-gap",
                       ]}
                       style="clip-path: url(#product-variant-curve);"
                     >
@@ -244,7 +244,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           <img
                             src={await localizeCMSImage(variantIcon.src)}
                             alt={variantIcon.alt}
-                            class="w-7 h-7"
+                            class="w-[25px] h-[15px]"
                           />
                         ))}
 
@@ -265,7 +265,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <div class="division-in-element-gap flex flex-wrap items-center">
             <div class="text-b5">{checkoutRecurData.text_size}:</div>
 
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap division-in-element-gap">
               {availableSizes.map(({ value, size, link }) => (
                 <div>
                   <input
@@ -281,9 +281,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   <label
                     for={size}
                     class:list={[
-                      "peer-checked:bg-dark-green peer-checked:text-secondary",
-                      "inline-block py-2 px-[25px] text-dark-green rounded-full",
-                      "select-none cursor-pointer border-2 border-secondary/80 bg-secondary",
+                      "peer-checked:bg-primary peer-checked:text-white",
+                      "peer-checked:font-bold inline-block py-[10px] px-[20px] text-primary",
+                      "rounded-full select-none cursor-pointer border-2 border-white bg-white text-sm font-normal",
                     ]}
                   >
                     {size}
@@ -296,14 +296,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       }
     </div>
 
-    <div class="flex flex-wrap gap-5 items-center w-full justify-between">
+    <div class="flex flex-wrap division-in-element-gap items-center w-full justify-between">
       {
         stockAmount < 1 && (
           <div class="grid gap-4 w-full">
             <div
               class:list={[
-                "flex items-center gap-2.5 w-full",
-                "text-sm sm:text-base font-medium text-white2",
+                "flex items-center gap-2 sm:gap-2.5 w-full lg:w-3/5",
+                "text-b6 text-black bg-warning-light px:[15px] py:[10px] sm:px-[20px]",
+                " sm:py-[15px] border-1 rounded-[10px]",
               ]}
             >
               <Icon
