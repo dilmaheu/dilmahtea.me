@@ -31,59 +31,6 @@ const subCategories = page.Sub_categories.data.filter(
 page.Heading_button_link = "#content";
 ---
 
-<style lang="scss">
-  @use "src/styles/typography";
-
-
-  .category-container {
-    @apply grid sm:grid-cols-[repeat(auto-fill,minmax(300px,2fr))] 
-      md:grid-cols-2 gap-y-[30px] gap-x-[30px] mt-[30px] overflow-hidden;
-  }
-
-  .post-card {
-    @apply w-full max-w-[380px] sm:max-w-none;
-  }
-
-  .product-card-title-icon {
-    height: clamp(0.625rem, 1.5vw + 0.1rem, 1rem);
-  }
-
-  .product-card-title {
-    font-size: clamp(1.75rem, 2vw + 0.3rem, 2rem);
-  }
-
-  .product-card-inline-icon {
-    height: clamp(27px, 3.5vw + 6px, 42px);
-  }
-
-  .product-card-info {
-    height: clamp(27px, 3.5vw + 6px, 42px);
-  }
-
-  .product-impact-container {
-    width: 100%;
-    height: 100%;
-    max-height: 500px;
-    aspect-ratio: 1 / 1;
-    clip-path: url(#product-impact-bg-curve-sm);
-
-    @media (min-width: 768px) {
-      aspect-ratio: 2 / 1;
-      clip-path: url(#product-impact-bg-curve);
-    }
-  }
-
-  .product-impact-text {
-    font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
-  }
-
-  .product-impact-btn {
-    font-size: clamp(1rem, 2.2vw + 0.13rem, 2rem);
-    margin-top: clamp(25px, 3.5vw + 6px, 50px);
-    padding: clamp(10px, 1.3vw + 1px, 19px) clamp(16px, 2.2vw + 1px, 31px);
-  }
-</style>
-
 <PostDetailsLayout
   {page}
   {recurData}
@@ -163,7 +110,7 @@ page.Heading_button_link = "#content";
 
   {
     page.Block_text && (
-      <div slot="post-details" id="content" class="prose prose-text">
+      <div slot="post-details" id="content" class="prose-text">
         <Chapterize>
           <OptimizeContentImages>
             <Markdown>{page.Block_text}</Markdown>
