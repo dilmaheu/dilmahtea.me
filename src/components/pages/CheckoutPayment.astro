@@ -51,11 +51,10 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
   method="POST"
   id="payment-info-form"
   class="section-gap grid w-full xl:w-2/3"
-  action={checkoutKindnessLink}
+  action={shouldDisplayExperimentals
+    ? "https://dev.pay.scripts.dilmahtea.me"
+    : "https://pay.scripts.dilmahtea.me"}
 >
-  <!-- action={shouldDisplayExperimentals
-      ? "https://dev.pay.scripts.dilmahtea.me"
-      : "https://pay.scripts.dilmahtea.me"} -->
   <DynamicHTML
     htmlFn={() => {
       const { origin, pathname } = location;
@@ -82,7 +81,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         success_url: `${origin}${window.checkoutKindnessLink}?clear=cart`,
       };
 
-      // delete paymentInfo.delivery_address;
+      delete paymentInfo.delivery_address;
 
       return Object.keys(paymentInfo)
         .map(
@@ -184,6 +183,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
           <input
             type="radio"
             name="billing_address"
+            value=""
             id="same-as-shipping"
             checked
           />
@@ -199,6 +199,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
           <input
             type="radio"
             name="billing_address"
+            value=""
             id="different-than-shipping"
           />
 
@@ -510,7 +511,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     );
 
   const selectTextAndNumberInputs = (parent) =>
-    parent.querySelectorAll("input[type='text'], input[type='number']");
+    parent.querySelectorAll("input[type='text'], input[type='number'], select");
 
   function toggleShippingAddress() {
     const isSameShipping = sameAsShipping.checked;
@@ -545,12 +546,6 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
       countryName.includes(selectedCountry)
         ? removeClass(cardSelector.parentElement, "hidden")
         : addClass(cardSelector.parentElement, "hidden");
-    });
-
-    paymentInfoElements.forEach((paymentInfo) => {
-      const paymentInfoInputs = selectTextAndNumberInputs(paymentInfo);
-
-      paymentInfoInputs.forEach((input) => input.removeAttribute("required"));
     });
   }
 
