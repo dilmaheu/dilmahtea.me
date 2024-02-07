@@ -339,20 +339,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       }
 
       {stockAmount > 0 && ( 
-        <div class:list={[
-          "button-cart-quantity-secondary-large",
-          "",
-        ]}
-        >
+        <div class="button-cart-quantity-default-large">
           <button
             data-action="decrement"
             aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
-            class:list={[
-              "product-amount-tweak-btn w-7 h-10 py-2.5 pl-2 pr-1 select-none",
-            ]}
+            class="product-amount-tweak-btn button-cart-quantity-item-large"
             disabled
           >
-            <Icon name="akar-icons:minus" class="w-[14px] h-[14px] select-none" />
+            <Icon name="akar-icons:minus" class="button-cart-quantity-icon-large" />
           </button>
 
           <input
@@ -362,23 +356,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             min={1}
             max={stockAmount}
             value={1}
-            class:list={[
-              "product-amount-input outline-none w-7",
-              "h-10 text-primary text-center text-b5 bg-white",
-            ]}
-            disabled={stockAmount === 0 && "disabled"}
+            class="product-amount-input"
             required
           />
 
           <button
             data-action="increment"
             aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
-            class:list={[
-              "product-amount-tweak-btn w-7 h-10 py-2.5 pl-1 pr-2",
-            ]}
-            disabled={stockAmount === 0 && "disabled"}
+            class="product-amount-tweak-btn button-cart-quantity-item-large"
           >
-            <Icon name="akar-icons:plus" class="w-[14px] h-[14px] select-none" />
+            <Icon name="akar-icons:plus" class="button-cart-quantity-icon-large" />
           </button>
         </div>
       )
@@ -391,10 +378,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               class="button-cart-default-normal w-fit md:w-full font-bold">
               <Icon
                 name="mi:shopping-cart"
-                class="w-[18px] h-[18px]"
+                class="cart-icon"
               />
 
-              <span class="flex flex-wrap items-center gap-[4px]">
+              <span class="text-container">
                 {checkoutRecurData.text_add_to_cart}
                 <span class="w-2 h-2 bg-primary rounded-full" />€
                 <output class="product-amount-price">
@@ -410,9 +397,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             <button
               disabled
               class="button-cart-disabled-normal font-bold mt-auto w-full xl:w-2/3">
-              <Icon name="tabler:shopping-cart-x" class="w-[26px] h-[26px]" />
+              <Icon name="tabler:shopping-cart-x" class="cart-icon" />
 
-              <span class="flex flex-wrap items-center gap-[4px]">
+              <span class="text-container">
                 {recurData.Product_sold_out_text}
                 <span class="w-2 h-2 bg-secondary-light rounded-full" />€
                 <output class="product-amount-price">
@@ -501,14 +488,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     <div class="w-full flex flex-wrap justify-between items-center division-in-element-gap">
       {
         stockAmount > 0 && (
-          <div class="w-fit flex items-center text-white p-1 bg-primary rounded-full">
+          <div class="button-cart-quantity-primary-large">
             <button
               data-action="decrement"
               aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
-              class="product-amount-tweak-btn w-10 h-12 py-2.5 pl-3 pr-1"
+              class="product-amount-tweak-btn button-cart-quantity-item-large"
               disabled
             >
-              <Icon name="akar-icons:minus" class="w-[26px] h-[26px] select-none" />
+              <Icon name="akar-icons:minus" class="button-cart-quantity-icon-large" />
             </button>
 
             <input
@@ -518,16 +505,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               min={1}
               max={stockAmount}
               value={1}
-              class="product-amount-input w-12 h-full bg-transparent text-center text-b5 outline-none"
+              class="product-amount-input"
               required
             />
 
             <button
               data-action="increment"
               aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
-              class="product-amount-tweak-btn w-10 h-12 py-2.5 pl-1 pr-3"
+              class="product-amount-tweak-btn button-cart-quantity-item-large"
             >
-              <Icon name="akar-icons:plus" class="w-[26px] h-[26px] select-none" />
+              <Icon name="akar-icons:plus" class="button-cart-quantity-icon-large" />
             </button>
           </div>
         )
@@ -537,9 +524,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         {
           stockAmount > 0 && (
             <button class="button-cart-primary-normal w-full mt-auto font-bold">
-              <Icon name="mi:shopping-cart" class="h-[18px] w-[18px]" />
+              <Icon name="mi:shopping-cart" class="cart-icon" />
               
-              <span class="flex flex-wrap items-center gap-[4px]">
+              <span class="text-container">
                 {checkoutRecurData.text_add}
                 <span class="w-2 h-2 bg-white rounded-full" />€
                 <output class="product-amount-price">
@@ -553,10 +540,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         {
           stockAmount === 0 && (
             <div
-              class="w-full button-cart-disabled-normal mt-[30px] font-bold">
-              <Icon name="mi:shopping-cart" class="w-[26px] h-[26px]" />
+              class="button-cart-disabled-normal w-full mt-[30px] font-bold">
+              <Icon name="mi:shopping-cart" class="cart-icon" />
               
-              <span class="flex flex-wrap items-center gap-[4px]">
+              <span class="text-container">
                 {recurData.Product_sold_out_text}
                 <span class="w-2 h-2 bg-secondary-light rounded-full" />€
                 <output class="product-amount-price">
@@ -583,14 +570,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         <input type="hidden" name="SKU" value={productSKU} />
 
         <div class="wrapper flex items-center division-in-gap justify-between">
-          <div class="w-fit flex items-center text-white p-1 bg-primary rounded-full">
+          <div class="button-cart-quantity-primary-large">
             <button
               data-action="decrement"
               aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
-              class="product-amount-tweak-btn w-10 h-12 py-2.5 pl-3 pr-1"
+              class="product-amount-tweak-btn button-cart-quantity-item-large"
               disabled
             >
-              <Icon name="akar-icons:minus" class="w-[26px] h-[26px] select-none" />
+              <Icon name="akar-icons:minus" class="button-cart-quantity-icon-large" />
             </button>
 
             <input
@@ -600,16 +587,16 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               min={1}
               max={stockAmount}
               value={1}
-              class="product-amount-input w-12 h-full bg-transparent text-center text-b5 outline-none"
+              class="product-amount-input"
               required
             />
 
             <button
               data-action="increment"
               aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
-              class="product-amount-tweak-btn w-10 h-12 py-2.5 pl-1 pr-3"
+              class="product-amount-tweak-btn button-cart-quantity-item-large"
             >
-              <Icon name="akar-icons:plus" class="w-[26px] h-[26px] select-none" />
+              <Icon name="akar-icons:plus" class="button-cart-quantity-icon-large" />
             </button>
           </div>
 
