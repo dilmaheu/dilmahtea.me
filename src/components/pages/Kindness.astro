@@ -21,17 +21,8 @@ const { page, ariaLabelRecurData } = Astro.props,
     max-height: 500px;
   }
 
-  .post-title {
-    @apply font-bold leading-[130%];
-
-    font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
-  }
-
   .post-intro {
     @apply line-clamp-3 sm:line-clamp-4 md:line-clamp-5 lg:line-clamp-6;
-
-    font-size: clamp(1rem, 1.5vw + 0.15rem, 1.5rem);
-    line-height: 150%;
   }
 
   .impact-chart-line {
@@ -96,33 +87,15 @@ const { page, ariaLabelRecurData } = Astro.props,
     .impact-chart-heading {
       @apply pt-[5px] text-white;
 
-      font-size: poly-fluid-clamp(
-        (
-          768px: 18px,
-          1440px: 24px,
-        )
-      );
-
       .icon {
         @apply ml-[3px] relative;
         height: poly-fluid-clamp(
           (
-            768px: 16px,
+            768px: 20px,
             1440px: 24px,
           )
         );
       }
-    }
-
-    .impact-chart-text {
-      @apply font-normal text-secondary;
-
-      font-size: poly-fluid-clamp(
-        (
-          768px: 14px,
-          1440px: 18px,
-        )
-      );
     }
 
     .impact-chart-1 {
@@ -333,7 +306,7 @@ const { page, ariaLabelRecurData } = Astro.props,
   >
   </div>
 
-  <div class="wrapper relative z-10 pt-[60px] pb-[100px] -mt-2.5">
+  <div class="wrapper relative z-10 section-in-v-pad">
     <h1 class="recoleta hero-title text-center text-white pb-[50px] md:pb-5">
       {page.Title}
     </h1>
@@ -375,12 +348,12 @@ const { page, ariaLabelRecurData } = Astro.props,
                     `impact-chart-${index + 1}`,
                   ]}
                 >
-                  <div class={`impact-chart-${index + 1}-content`}>
+                  <div class:list={`impact-chart-${index + 1}-content`}>
                     <div class="link-section">
                       <div class="relative">
                         {async () => (
                           <img
-                            class="impact-chart-img mx-auto mb-[20px] md:mb-0"
+                            class="impact-chart-img mx-auto"
                             src={await localizeCMSImage(blob.attributes.url)}
                             alt={blob?.attributes.alternativeText}
                           />
@@ -444,7 +417,7 @@ const { page, ariaLabelRecurData } = Astro.props,
                           ))}
                       </div>
 
-                      <h2 class="impact-chart-heading recoleta line-clamp-2">
+                      <h2 class="impact-chart-heading recoleta text-h5 font-bold line-clamp-2">
                         <a
                           class="main-link"
                           href={Link || "#"}
@@ -471,7 +444,7 @@ const { page, ariaLabelRecurData } = Astro.props,
                         </span>
                       </h2>
 
-                      <div class="impact-chart-text line-clamp-3 prose max-w-none">
+                      <div class="text-b5-sm text-secondary line-clamp-3 prose max-w-none">
                         <Markdown>{Intro_text}</Markdown>
                       </div>
                     </div>
@@ -492,66 +465,60 @@ const { page, ariaLabelRecurData } = Astro.props,
     path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
   />
 
-  {
-    page.Block2_heading && (
-      <h2
+  <div class="grid division-gap">
+    {
+      page.Block2_heading && (
+        <h2
+          class="heading-secondary text-primary text-center">
+          {page.Block2_heading}
+        </h2>
+      )
+    }
+
+    <div class="link-section flex flex-wrap items-center">
+      <div
         class:list={[
-          "heading-secondary font-semibold leading-[130%]",
-          "text-primary text-center mb-[30px]",
+          "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
+          "pr-0 sm:pr-5 md:pr-12 lg:pr-24",
         ]}
       >
-        {page.Block2_heading}
-      </h2>
-    )
-  }
-
-  <div class="link-section flex flex-wrap items-center">
-    <div
-      class:list={[
-        "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
-        "pr-0 sm:pr-5 md:pr-12 lg:pr-24",
-      ]}
-    >
-      <div class="post-img-curve-container mr-auto">
-        <Picture
-          layout="fill"
-          src={STRAPI_URL + page.Block2_blob?.data?.attributes.url}
-          alt={page.Block2_blob?.data?.attributes.alternativeText}
-          sizes={[
-            "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
-            "(min-width: 640px) min(600px, calc(45vw - 20px))",
-            "90vw",
-          ].join(", ")}
-          attributes={{
-            picture: { style: "clip-path: url(#post-img-curve);" },
-          }}
-        />
-      </div>
-    </div>
-
-    {/* Text content */}
-    <div class="order-2 w-full sm:w-1/2 h-full flex flex-wrap pr-0 sm:pr-5">
-      <h2 class="post-title recoleta text-primary pt-[15px]">
-        {page.Block2_title}
-      </h2>
-
-      <div class="post-intro pt-[15px] prose max-w-none">
-        <Markdown>{page.Block2_text}</Markdown>
+        <div class="post-img-curve-container mr-auto">
+          <Picture
+            layout="fill"
+            src={STRAPI_URL + page.Block2_blob?.data?.attributes.url}
+            alt={page.Block2_blob?.data?.attributes.alternativeText}
+            sizes={[
+              "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
+              "(min-width: 640px) min(600px, calc(45vw - 20px))",
+              "90vw",
+            ].join(", ")}
+            attributes={{
+              picture: { style: "clip-path: url(#post-img-curve);" },
+            }}
+          />
+        </div>
       </div>
 
-      {
-        page?.Block2_button_text && (
-          <a
-            href={page.Block2_button_link ?? "#"}
-            class:list={[
-              "text-primary font-bold leading-[120%] bg-white rounded-full",
-              "flex w-fit py-[13px] px-[23px] mt-[clamp(15px,1.45vw+4px,25px)]",
-            ]}
-          >
-            {page.Block2_button_text}
-          </a>
-        )
-      }
+      {/* Text content */}
+      <div class="order-2 w-full sm:w-1/2 flex flex-wrap division-in-gap">
+        <h2 class="heading-secondary text-primary">
+          {page.Block2_title}
+        </h2>
+
+        <div class="post-intro text-b3 prose max-w-none">
+          <Markdown>{page.Block2_text}</Markdown>
+        </div>
+
+        {
+          page?.Block2_button_text && (
+            <a
+              href={page.Block2_button_link ?? "#"}
+              class="button-default w-fit">
+              {page.Block2_button_text}
+            </a>
+          )
+        }
+      </div>
     </div>
   </div>
 </section>
