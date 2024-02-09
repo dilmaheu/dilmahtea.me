@@ -601,7 +601,9 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     ideal = id("ideal"),
     cardError = id("card-error");
 
-  const stripe = Stripe(STRIPE_PUBLISHABLE_KEY),
+  window.STRIPE_PUBLISHABLE_KEY = STRIPE_PUBLISHABLE_KEY;
+
+  const stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY),
     elements = stripe.elements({ locale: window.preferredLocale });
 
   const elementStyles = {

@@ -1,6 +1,5 @@
 ---
 import CMS from "@store/CMS";
-import getLocalizedLink from "@utils/getLocalizedLink";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import OrderSummary from "@components/OrderSummary.astro";
 
@@ -24,7 +23,7 @@ const { page } = Astro.props,
     method="POST"
     id="shipping-details"
     class="section-gap flex flex-col"
-    action={getLocalizedLink(locale, checkoutPaymentLink)}
+    action={`/${checkoutPaymentLink}`}
   >
     <DynamicHTML htmlFn={() => window.cart.total.split(",").join(".")} />
 
