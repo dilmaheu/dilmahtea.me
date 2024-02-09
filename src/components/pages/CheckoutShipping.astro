@@ -1,5 +1,6 @@
 ---
 import CMS from "@store/CMS";
+import getLocalizedLink from "@utils/getLocalizedLink";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import OrderSummary from "@components/OrderSummary.astro";
 
@@ -9,14 +10,9 @@ const { page } = Astro.props,
   steps = checkoutFlowData.steps.split("\n"),
   shortenedSteps = checkoutFlowData.shortened_steps.split("\n"),
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
-  userRecurr = CMS.get("userAccountRecurringElement", locale);
-
-const checkoutInfoLink = `/${locale}/${
-    CMS.get("checkoutInformation", locale).Meta.URL_slug
-  }/`,
-  checkoutPaymentLink = `/${locale}/${
-    CMS.get("checkoutPayment", locale).Meta.URL_slug
-  }/`;
+  userRecurr = CMS.get("userAccountRecurringElement", locale),
+  checkoutInfoLink = CMS.get("checkoutInformation", locale).Meta.URL_slug,
+  checkoutPaymentLink = CMS.get("checkoutPayment", locale).Meta.URL_slug;
 ---
 
 <style lang="scss">
@@ -28,7 +24,7 @@ const checkoutInfoLink = `/${locale}/${
     method="POST"
     id="shipping-details"
     class="section-gap flex flex-col"
-    action={checkoutPaymentLink}
+    action={getLocalizedLink(locale, checkoutPaymentLink)}
   >
     <DynamicHTML htmlFn={() => window.cart.total.split(",").join(".")} />
 
