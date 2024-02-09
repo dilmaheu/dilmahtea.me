@@ -9,28 +9,21 @@ const { title, introText, locale } = Astro.props;
 ---
 
 <style lang="scss">
+
   .hero-icon {
     height: clamp(40px, 6vw + 15px, 100px);
   }
 
-  .hero-text {
-    &,
-    a {
-      @apply text-white;
-
-      font-size: clamp(1rem, 1.5vw + 0.1rem, 1.5rem) !important;
-    }
-  }
 </style>
 
 <Hero {locale}>
   <div
     role="banner"
     aria-label="Intro"
-    class="wrapper hero-text-container relative h-full flex flex-wrap justify-center z-30"
+    class="wrapper section-in-v-pad-sm hero-text-container relative h-full flex flex-wrap justify-center z-30"
   >
     <div
-      class="hero-text-content w-full md:w-9/12 lg:w-7/12 text-center mt-[30px]"
+      class="hero-text-content grid division-in-gap w-full md:w-9/12 lg:w-7/12 text-center"
     >
       <img
         class="hero-icon hidden sm:block w-full h-full mx-auto object-contain"
@@ -42,11 +35,11 @@ const { title, introText, locale } = Astro.props;
         {...white_love_ribbon}
       />
 
-      <h1 class="hero-title leading-tight tracking-tight text-white">
+      <h1 class="hero-title recoleta font-bold leading-tight tracking-tight text-white">
         {title}
       </h1>
 
-      <div class="hero-text prose max-w-none pt-7 mt-0.5">
+      <div class="hero-text prose max-w-none text-white">
         <Markdown>{introText}</Markdown>
       </div>
     </div>
