@@ -77,11 +77,13 @@ const checkoutSuccessLink = `/${locale}/${
 </style>
 
 <script define:vars={{ checkoutShippingLink, shopLink }}>
-  const { paymentID } = Object.fromEntries(
+  const { paymentID, redirect_status } = Object.fromEntries(
     new URLSearchParams(location.search),
   );
 
-  if (!paymentID) {
+  if (redirect_status === "failed") {
+    location.href = "/";
+  } else if (!paymentID) {
     const cartLength = Object.keys(window.cart).length;
 
     location.href = cartLength === 0 ? shopLink : checkoutShippingLink;
