@@ -20,7 +20,7 @@ const { STRAPI_URL } = import.meta.env;
   {
     contentDescription.length > 1 && (
       // Intro description
-      <div class="wrapper block prose-text prose line-clamp-5 pt-[100px]">
+      <div class="wrapper block prose-text line-clamp-5 pt-[50px]">
         <Markdown>{contentDescription}</Markdown>
       </div>
     )
@@ -29,7 +29,7 @@ const { STRAPI_URL } = import.meta.env;
   {
     page.Block_text && !page.Block_blob.data && (
       <BasicPagePostDetails page={page} {recurData} {ariaLabelRecurData}>
-        <div slot="post-details" class="prose prose-text">
+        <div slot="post-details" class="prose-text">
           <Chapterize>
             <OptimizeContentImages>
               <Markdown>{page.Block_text}</Markdown>
@@ -44,9 +44,9 @@ const { STRAPI_URL } = import.meta.env;
     page.Block_blob.data && (
       <Fragment>
         {/* Information Section */}
-        <section class="relative overflow-hidden h-full sm:min-h-[clamp(550px,22vw+420px,820px)]">
+        <section class="relative overflow-hidden h-full my-[50px] sm:min-h-[510px] 2xl:min-h-[630px]">
           {/* Blob Image - Desktop view */}
-          <div class="hidden sm:block absolute left-0 z-20 w-1/2 h-full py-[50px] pr-6 lg:pr-24">
+          <div class="hidden h-full sm:block absolute left-0 z-20 w-1/2 pr-6 lg:pr-24">
             <div class="aspect-[6/5] my-auto">
               <ClippedPicture
                 id="info-section-curve"
@@ -64,13 +64,13 @@ const { STRAPI_URL } = import.meta.env;
           </div>
 
           {/* Text content */}
-          <div class="wrapper h-full flex flex-wrap justify-end p-6 sm:px-0 sm:py-12">
-            <div class="w-full sm:w-1/2 h-full flex flex-col sm:justify-center px-0">
-              <h2 class="heading-primary text-primary leading-[115%] font-bold">
+          <div class="wrapper h-full flex flex-wrap justify-end items-center">
+            <div class="w-full sm:w-1/2 h-full flex division-in-gap flex-col sm:justify-center">
+              <h2 class="heading-secondary text-primary">
                 {page.Heading_block}
               </h2>
 
-              <div class="prose-text prose-text prose pt-0.5 mt-7">
+              <div class="prose-text">
                 <Markdown>{page.Block_text}</Markdown>
               </div>
             </div>
@@ -78,7 +78,7 @@ const { STRAPI_URL } = import.meta.env;
         </section>
 
         {/* Blob Image - Mobile view */}
-        <div class="block sm:hidden w-screen">
+        <div class="block sm:hidden w-screen pb-[50px]">
           <ClippedPicture
             id="info-section-curve-sm"
             alt={page.Block_blob.data.attributes.alternativeText}
