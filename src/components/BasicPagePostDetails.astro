@@ -17,39 +17,41 @@ const contentHTML = await Astro.slots.render("post-details"),
   path="M.516.008C.36.008.1-.008.04.082S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1.005.624 1.021.395.945.128.897-.045.734.008.516.008"
 />
 
-<h2
-  class="wrapper heading-primary text-primary text-center leading-[115%] font-bold mt-[50px]"
->
-  {page.Heading_block}
-</h2>
-
-<section class="mt-[50px]" aria-label={ariaLabelRecurData.Post_details_text}>
-  {
-    headings.length > 0 && (
-      <Chapters
-        fixedTop={true}
-        headingName={recurData.text_chapter}
-        headings={headings}
-      />
-    )
-  }
-
-  <div
-    class="wrapper w-full flex flex-col-reverse md:flex-row justify-between gap-[50px]"
+<div class="grid section-gap">
+  <h2
+    class="wrapper heading-secondary text-primary text-center mt-[50px]"
   >
-    <div id="post-details" class="md:w-2/3 2xl:w-1/2">
-      <div class="prose-text xl:w-5/6 2xl:w-full">
-        {/* post content */}
-        <slot name="post-details" />
-      </div>
-    </div>
+    {page.Heading_block}
+  </h2>
 
+  <section aria-label={ariaLabelRecurData.Post_details_text}>
     {
       headings.length > 0 && (
-        <Chapters headingName={recurData.text_chapter} headings={headings} />
+        <Chapters
+          fixedTop={true}
+          headingName={recurData.text_chapter}
+          headings={headings}
+        />
       )
     }
-  </div>
-</section>
+
+    <div
+      class="wrapper w-full flex flex-col-reverse md:flex-row justify-between"
+    >
+      <div id="post-details" class="md:w-2/3 2xl:w-1/2 pt-[50px] sm:pt-0">
+        <div class="prose-text xl:w-5/6 2xl:w-full">
+          {/* post content */}
+          <slot name="post-details" />
+        </div>
+      </div>
+
+      {
+        headings.length > 0 && (
+          <Chapters headingName={recurData.text_chapter} headings={headings} />
+        )
+      }
+    </div>
+  </section>
+</div>
 
 {headings.length > 0 && <ChaptersFunctionality />}
