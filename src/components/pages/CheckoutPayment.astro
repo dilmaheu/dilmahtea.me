@@ -12,21 +12,17 @@ const { page, recurData } = Astro.props,
   checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
   steps = checkoutFlowData.steps.split("\n"),
   shortenedSteps = checkoutFlowData.shortened_steps.split("\n"),
-  checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug,
   checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
   checkoutInfo = CMS.get("checkoutInformation", locale),
   checkoutInfoLink = `/${locale}/${checkoutInfo.Meta.URL_slug}/`,
   checkoutKindnessLink = `/${locale}/${
     CMS.get("checkoutKindness", locale).Meta.URL_slug
   }/`,
-  userRecurr = CMS.get("userAccountRecurringElement", locale);
+  userRecurData = CMS.get("userAccountRecurringElement", locale);
 
 const methods = payment_methods.data?.map(({ attributes }) => attributes),
   accepted_cards_icon = Accepted_cards_icon.data?.map(
     ({ attributes }) => attributes,
-  ),
-  isIdeal = methods.map(({ method }) =>
-    method?.toLowerCase()?.includes("ideal"),
   );
 ---
 
@@ -94,7 +90,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
 
   <section
     role="list"
-    aria-label={userRecurr.Input_label_email}
+    aria-label={userRecurData.Input_label_email}
     class="tiled-div-pad division-in-gap grid bg-secondary-light rounded-[10px]"
   >
     <div
@@ -103,7 +99,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
       class="division-in-element-gap"
     >
       <div class="input-label text-black">
-        {userRecurr.Input_label_email}
+        {userRecurData.Input_label_email}
       </div>
 
       <div class="division-in-element-gap flex flex-wrap items-center">
@@ -112,11 +108,11 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </div>
 
         <a
-          aria-label={`${userRecurr.Button_change_text} ${userRecurr.Input_label_email}`}
+          aria-label={`${userRecurData.Button_change_text} ${userRecurData.Input_label_email}`}
           href={checkoutInfoLink + "?change=email"}
           class="button-link-large"
         >
-          {userRecurr.Button_change_text}
+          {userRecurData.Button_change_text}
         </a>
       </div>
     </div>
@@ -129,7 +125,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
       class="division-in-element-gap"
     >
       <div class="input-label text-black">
-        {userRecurr.Label_delivery_address}
+        {userRecurData.Label_delivery_address}
       </div>
 
       <div class="division-in-element-gap flex flex-wrap items-center">
@@ -138,11 +134,11 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </div>
 
         <a
-          aria-label={`${userRecurr.Button_change_text} ${userRecurr.Label_delivery_address}`}
+          aria-label={`${userRecurData.Button_change_text} ${userRecurData.Label_delivery_address}`}
           href={checkoutInfoLink + "?change=email"}
           class="button-link-large"
         >
-          {userRecurr.Button_change_text}
+          {userRecurData.Button_change_text}
         </a>
       </div>
     </div>
@@ -155,7 +151,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
       class="division-in-element-gap"
     >
       <div class="input-label text-black">
-        {userRecurr.Label_shipping_method}
+        {userRecurData.Label_shipping_method}
       </div>
 
       <div class="division-in-element-gap flex flex-wrap items-center">
@@ -164,11 +160,11 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </div>
 
         <a
-          aria-label={`${userRecurr.Button_change_text} ${userRecurr.Label_shipping_method}`}
+          aria-label={`${userRecurData.Button_change_text} ${userRecurData.Label_shipping_method}`}
           href={checkoutShippingLink}
           class="button-link-large"
         >
-          {userRecurr.Button_change_text}
+          {userRecurData.Button_change_text}
         </a>
       </div>
     </div>
@@ -313,7 +309,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             <div class:list={[country.length > 0 && "hidden"]}>
               <input
                 type="radio"
-                name="payment_method"
+                name="payment_method_name"
                 id={method}
                 value={method}
                 data-country={country}
@@ -363,93 +359,42 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </div>
       </div>
 
-      <div role="form" class="form-grid">
-        <label>
-          <span>{page.Card_label_name}</span>
+      <div role="form" class="form-grid" id="card-info">
+        <div class="grid division-in-element-gap">
+          <div class="input-label">{page.Card_label_number}</div>
 
-          <input
-            type="text"
-            name="card_name"
-            placeholder={page.Card_placeholder_name}
-            required
-          />
-        </label>
+          <div id="card-number"></div>
+        </div>
 
-        <label>
-          <span>{page.Card_label_number}</span>
+        <div class="hidden sm:block h-0 select-none"></div>
 
-          <input
-            type="number"
-            name="card_number"
-            placeholder={page.Card_placeholder_number}
-            required
-          />
-        </label>
+        <div class="grid division-in-element-gap">
+          <div class="input-label">{page.Card_label_date}</div>
 
-        <label>
-          <span>{page.Card_label_date}</span>
+          <div id="card-expiry"></div>
+        </div>
 
-          <input
-            type="text"
-            name="card_exp_date"
-            placeholder={page.Card_placeholder_date}
-            required
-          />
-        </label>
+        <div class="grid division-in-element-gap">
+          <div class="input-label">{page.Card_label_cvv}</div>
 
-        <label>
-          <span>{page.Card_label_cvv}</span>
+          <div id="card-cvc"></div>
+        </div>
 
-          <input
-            type="number"
-            name="card_cvv"
-            placeholder={page.Card_placeholder_cvv}
-            required
-          />
-        </label>
+        <input type="hidden" id="stripeToken" name="stripeToken" />
+      </div>
+
+      <div class="text-b5 text-error hidden" id="card-error">
+        Please input correct information
       </div>
     </div>
 
-    {
-      isIdeal && (
-        <div
-          data-name="ideal-info"
-          class="payment-info division-gap grid !hidden"
-        >
-          <div role="form" class="form-grid">
-            <label>
-              <span>{page.Ideal_label_select_bank}</span>
-
-              <select id="ideal-bank-select" name="ideal_bank" required>
-                <option value="" selected disabled hidden>
-                  {page.Ideal_placeholder_select_bank}
-                </option>
-
-                {page.Ideal_bank_list.map(({ Bank_name, Value }) => (
-                  <option value={Value}>{Bank_name}</option>
-                ))}
-              </select>
-            </label>
-          </div>
-        </div>
-      )
-    }
-
-    <div
-      data-name="paypal-klarna-bancontact-sofort-info"
-      class="payment-info division-gap grid !hidden"
-    >
+    <div data-name="ideal-info" class="payment-info division-gap grid !hidden">
       <div role="form" class="form-grid">
-        <label>
-          <span>{page.Label_name}</span>
+        <div class="grid division-in-element-gap">
+          <div class="input-label">{page.Ideal_label_select_bank}</div>
 
-          <input
-            type="text"
-            name="payment_name"
-            placeholder={page.Placeholder_name}
-            required
-          />
-        </label>
+          <div id="ideal-bank"></div>
+        </div>
       </div>
     </div>
 
@@ -458,12 +403,12 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         <span class="sm:hidden">
           {
             `${
-              userRecurr.Button_return_to_text
+              userRecurData.Button_return_to_text
             } ${shortenedSteps[1]?.toLowerCase()}`
           }
         </span>
         <span class="hidden sm:block">
-          {`${userRecurr.Button_return_to_text} ${steps[1]?.toLowerCase()}`}
+          {`${userRecurData.Button_return_to_text} ${steps[1]?.toLowerCase()}`}
         </span>
       </a>
 
