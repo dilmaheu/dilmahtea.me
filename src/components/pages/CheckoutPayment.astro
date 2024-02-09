@@ -8,6 +8,7 @@ import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 import localizeCMSImage from "@utils/localizeCMSImage";
 
 const { page, recurData } = Astro.props,
+  { STRIPE_PUBLISHABLE_KEY } = import.meta.env,
   { locale, payment_methods, Accepted_cards_icon } = page,
   checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
   steps = checkoutFlowData.steps.split("\n"),
@@ -28,6 +29,15 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
 
 <style lang="scss">
   @use "src/styles/checkout" as *;
+
+  .input-field-api {
+    @apply border border-primary rounded-full text-black
+      py-[clamp(8px,calc(0.25vw+6.4px),10px)] px-[clamp(15px,calc(0.625vw+11px),20px)];
+  }
+
+  .input-field-api-focus {
+    @apply ring ring-primary-light outline-none;
+  }
 </style>
 
 <script
@@ -575,4 +585,115 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     hideAllPaymentInfo();
   });
   document.addEventListener("change", handlePaymentCardInputChange);
+</script>
+
+<!-- for stripe payments -->
+<script src="https://js.stripe.com/v3/" module></script>
+<script
+  define:vars={{
+    STRIPE_PUBLISHABLE_KEY,
+  }}
+>
+  const id = document.getElementById.bind(document),
+    queryAll = document.querySelectorAll.bind(document),
+    form = id("payment-info-form"),
+    card = id("card"),
+    ideal = id("ideal"),
+    cardError = id("card-error");
+
+  const stripe = Stripe(STRIPE_PUBLISHABLE_KEY),
+    elements = stripe.elements({ locale: window.preferredLocale });
+
+  const elementStyles = {
+    style: {
+      base: {
+        fontSize: `${Math.min(Math.max(16, 0.25 * window.innerWidth + 14.4), 18)}px`, //text-b5
+      },
+    },
+    classes: {
+      base: "input-field-api",
+      focus: "input-field-api-focus",
+    },
+  };
+
+  // Variables for Stripe Elements
+  let cardNumberElement = null;
+  let cardExpiryElement = null;
+  let cardCvcElement = null;
+  let idealBankElement = null;
+
+  document.addEventListener("change", () => {
+    const isCard = card.checked,
+      isIdeal = ideal.checked;
+
+    // Clear existing Stripe Elements
+    clearStripeElements();
+
+    if (isCard) {
+      // Create Stripe Elements for card number, expiry, and CVC if they don't exist
+      if (!cardNumberElement) {
+        cardNumberElement = elements.create("cardNumber", elementStyles);
+        cardNumberElement.mount("#card-number");
+      }
+      if (!cardExpiryElement) {
+        cardExpiryElement = elements.create("cardExpiry", elementStyles);
+        cardExpiryElement.mount("#card-expiry");
+      }
+      if (!cardCvcElement) {
+        cardCvcElement = elements.create("cardCvc", elementStyles);
+        cardCvcElement.mount("#card-cvc");
+      }
+    } else if (isIdeal) {
+      // Create idealBank Element if it doesn't exist
+      if (!idealBankElement) {
+        idealBankElement = elements.create("idealBank", elementStyles);
+        idealBankElement.mount("#ideal-bank");
+      }
+    }
+
+    if (isCard) {
+      // Attach form submission event listener for card payments
+      form.addEventListener("submit", onSubmitCard);
+    } else {
+      form.removeEventListener("submit", onSubmitCard);
+    }
+  });
+
+  function onSubmitCard(event) {
+    event.preventDefault();
+    createToken(cardNumberElement);
+  }
+
+  async function createToken(element) {
+    try {
+      const { token, error } = await stripe.createToken(element);
+      if (error) {
+        cardError.classList.remove("hidden");
+      } else {
+        id("stripeToken").value = token.id;
+        form.submit();
+      }
+    } catch (err) {
+      cardError.classList.remove("hidden");
+    }
+  }
+
+  function clearStripeElements() {
+    if (cardNumberElement) {
+      cardNumberElement.destroy();
+      cardNumberElement = null;
+    }
+    if (cardExpiryElement) {
+      cardExpiryElement.destroy();
+      cardExpiryElement = null;
+    }
+    if (cardCvcElement) {
+      cardCvcElement.destroy();
+      cardCvcElement = null;
+    }
+    if (idealBankElement) {
+      idealBankElement.destroy();
+      idealBankElement = null;
+    }
+  }
 </script>
