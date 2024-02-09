@@ -2,7 +2,6 @@
 import CMS from "@store/CMS";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import OrderSummary from "@components/OrderSummary.astro";
-import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { page } = Astro.props,
   { locale } = page,
@@ -15,9 +14,6 @@ const { page } = Astro.props,
 const checkoutInfoLink = `/${locale}/${
     CMS.get("checkoutInformation", locale).Meta.URL_slug
   }/`,
-  checkoutKindnessLink = `/${locale}/${
-    CMS.get("checkoutKindness", locale).Meta.URL_slug
-  }/`,
   checkoutPaymentLink = `/${locale}/${
     CMS.get("checkoutPayment", locale).Meta.URL_slug
   }/`;
@@ -27,19 +23,6 @@ const checkoutInfoLink = `/${locale}/${
   @use "src/styles/checkout" as *;
 </style>
 
-<!-- <script
-  define:vars={{
-    checkoutInfoLink,
-    checkoutKindnessLink,
-  }}
->
-  if (Object.keys(window.checkoutInfo).length === 0) {
-    location.href = checkoutInfoLink;
-  }
-
-  window.checkoutKindnessLink = checkoutKindnessLink;
-</script> -->
-
 <section class="w-full xl:w-2/3">
   <form
     method="POST"
@@ -47,42 +30,7 @@ const checkoutInfoLink = `/${locale}/${
     class="section-gap flex flex-col"
     action={checkoutPaymentLink}
   >
-    <!-- <DynamicHTML
-      htmlFn={() => {
-        const { origin, pathname } = location;
-
-        const product_desc = Object.keys(window.cart)
-          .map((id) => {
-            const productData = window.cart[id],
-              names = JSON.parse(productData.names),
-              name = names[window.preferredLocale] || names["en"];
-
-            return `${productData.quantity}x ${name}`;
-          })
-          .join(", ");
-
-        const paymentInfo = {
-          ...window.checkoutInfo,
-          product_desc,
-          cart: JSON.stringify(window.cart),
-          tax: window.cart.tax.split(",").join("."),
-          price: window.cart.total.split(",").join("."),
-          payment_type: "ecommerce",
-          locale: window.preferredLocale,
-          origin_url: origin + pathname,
-          success_url: `${origin}${window.checkoutKindnessLink}?clear=cart`,
-        };
-
-        delete paymentInfo.delivery_address;
-
-        return Object.keys(paymentInfo)
-          .map(
-            (name) =>
-              `<input type="hidden" name="${name}" value='${paymentInfo[name]}' />`,
-          )
-          .join("");
-      }}
-    /> -->
+    <DynamicHTML htmlFn={() => window.cart.total.split(",").join(".")} />
 
     <div
       role="list"
