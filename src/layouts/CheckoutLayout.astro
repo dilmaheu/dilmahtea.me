@@ -1,7 +1,6 @@
 ---
 import CMS from "@store/CMS";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import StripeScript from "@scripts/StripeScript.astro";
 import RecurringImages from "@store/RecurringImages";
 import { Picture } from "astro-imagetools/components";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
@@ -216,4 +215,8 @@ const footerText = recurData.Footer_text.replaceAll(
 </BaseLayout>
 
 <!-- for stripe payments -->
-{page.Meta.URL_slug === checkoutPaymentLink && <StripeScript />}
+{
+  page.Meta.URL_slug === checkoutPaymentLink && (
+    <script src="https://js.stripe.com/v3/" module preload/>
+  )
+}
