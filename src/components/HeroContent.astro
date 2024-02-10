@@ -32,169 +32,173 @@ const recurData = CMS.get("recurringElement", locale),
   >
     <div
       class:list={[
-        "flex flex-wrap items-center h-full text-white",
+        "flex flex-wrap items-center h-full text-white mb-10 sm:mb-0",
         headerBackground ? "md:w-10/12 lg:w-7/12" : "sm:w-7/12",
       ]}
     >
-      <div class="flex flex-col my-[30px] division-gap">
-        {
-          page.authors && (
-            <div class="division-in-element-gap flex items-center">
-              {page.authors.data.map(
-                (author, index) =>
-                  author.attributes.Profile_picture.data && (
-                    <div
-                      class:list={[
-                        "quick-info-author-img",
-                        index > 0 &&
-                          "relative -ml-[clamp(15px,calc(2.5vw-1px),35px)]",
-                      ]}
-                    >
-                      <Picture
-                        width={50}
-                        height={50}
-                        loading="eager"
-                        alt={
-                          author.attributes.Profile_picture.data.attributes
-                            .alternativeText
-                        }
-                        src={
-                          STRAPI_URL +
-                          author.attributes.Profile_picture.data.attributes.url
-                        }
-                      />
-                    </div>
-                  ),
-              )}
-
-              <div class="quick-info-default">
-                <div
-                  role="presentation"
-                  aria-label={page.authors.data.map(
-                    ({ attributes }, i) =>
-                      ariaLabelRecurData.Wrote_by_text +
-                      (i > 0 ? ", " : " ") +
-                      attributes.givenName,
-                  )}
-                  class="author-name"
-                >
-                  {page.authors.data.map(({ attributes }, index) => (
-                    <span>
-                      {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                    </span>
-                  ))}
-                </div>
-
-                <div class="quick-info-item">
-                  {new Date(page.createdAt).toLocaleString("en-US", {
-                    day: "numeric",
-                    month: "long",
-                  })}
-                </div>
-              </div>
-            </div>
-          )
-        }
-
-        {
-          page.estate_name?.data.length > 0 && (
-            <div class="flex flex-wrap items-center mb-[5px]">
-              <div class="flex flex-wrap items-center text-lg lg:text-xl leading-[150%]">
-                {recurData.product_made_love_from + `\xa0`}
-
-                <div class="flex flex-wrap gap-x-1.5">
-                  {page.estate_name.data.map((estate, index) => (
-                    <a
-                      href={estate.attributes.Meta.URL_slug}
-                      class="flex flex-wrap font-bold underline decoration-1 underline-offset-[2px]"
-                    >
-                      {estate.attributes.Estate_name +
-                        (index === page.estate_name.data.length - 1 ? "" : ",")}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )
-        }
-
-        <h1 class="hero-title recoleta font-bold">
-          {page.Title || page.Estate_name}
-
-          {" "}
-
+      <div class="flex flex-col division-gap">
+        <div class="flex flex-col division-in-gap">
           {
-            !plainTitle && page.Title && (
-              <span class="icon heading-inline-icon">
-                <img class="w-full h-full" alt="" {...white_cup} />
-              </span>
+            page.authors && (
+              <div class="division-in-element-gap flex items-center">
+                {page.authors.data.map(
+                  (author, index) =>
+                    author.attributes.Profile_picture.data && (
+                      <div
+                        class:list={[
+                          "quick-info-author-img",
+                          index > 0 &&
+                            "relative -ml-[clamp(15px,calc(2.5vw-1px),35px)]",
+                        ]}
+                      >
+                        <Picture
+                          width={50}
+                          height={50}
+                          loading="eager"
+                          alt={
+                            author.attributes.Profile_picture.data.attributes
+                              .alternativeText
+                          }
+                          src={
+                            STRAPI_URL +
+                            author.attributes.Profile_picture.data.attributes.url
+                          }
+                        />
+                      </div>
+                    ),
+                )}
+
+                <div class="quick-info-default">
+                  <div
+                    role="presentation"
+                    aria-label={page.authors.data.map(
+                      ({ attributes }, i) =>
+                        ariaLabelRecurData.Wrote_by_text +
+                        (i > 0 ? ", " : " ") +
+                        attributes.givenName,
+                    )}
+                    class="author-name"
+                  >
+                    {page.authors.data.map(({ attributes }, index) => (
+                      <span>
+                        {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div class="quick-info-item">
+                    {new Date(page.createdAt).toLocaleString("en-US", {
+                      day: "numeric",
+                      month: "long",
+                    })}
+                  </div>
+                </div>
+              </div>
             )
           }
-        </h1>
+          
+          {
+            page.estate_name?.data.length > 0 && (
+              <div class="flex flex-wrap items-center">
+                <div class="flex flex-wrap items-center text-b5">
+                  {recurData.product_made_love_from + `\xa0`}
 
-        {
-          !page.estate_name && (
-            <div class="hero-text">
-              <Markdown>{page.Intro_text}</Markdown>
-            </div>
-          )
-        }
-
-        {
-          page.Weight_tea && (
-            <div class="flex flex-wrap items-center division-in-element-gap">
-              <div class="text-b6 font-medium">
-                {page.Weight_tea + page.Weight_tea_unit}
+                  <div class="flex flex-wrap gap-x-1.5">
+                    {page.estate_name.data.map((estate, index) => (
+                      <a
+                        href={estate.attributes.Meta.URL_slug}
+                        class="flex flex-wrap font-bold underline decoration-1 underline-offset-[2px]"
+                      >
+                        {estate.attributes.Estate_name +
+                          (index === page.estate_name.data.length - 1 ? "" : ",")}
+                      </a>
+                    ))}
+                  </div>
+                </div>
               </div>
+            )
+          }
 
-              {page.category_tea_range?.data && (
-                <Fragment>
-                  <div class="w-1.5 h-1.5 bg-secondary rounded-full" />
+          <h1 class="hero-title recoleta font-bold">
+            {page.Title || page.Estate_name}
+
+            {" "}
+
+            {
+              !plainTitle && page.Title && (
+                <span class="icon heading-inline-icon">
+                  <img class="w-full h-full" alt="" {...white_cup} />
+                </span>
+              )
+            }
+          </h1>
+
+          {
+            !page.estate_name && (
+              <div class="hero-text">
+                <Markdown>{page.Intro_text}</Markdown>
+              </div>
+            )
+          }
+
+          {
+            page.Weight_tea && (
+              <div class="flex flex-wrap items-center division-in-element-gap">
+                <div class="text-b6 font-medium">
+                  {page.Weight_tea + page.Weight_tea_unit}
+                </div>
+
+                {page.category_tea_range?.data && (
+                  <Fragment>
+                    <div class="w-1.5 h-1.5 bg-secondary rounded-full" />
+
+                    <a
+                      href={
+                        page.category_tea_range.data?.attributes.Meta.URL_slug
+                      }
+                      class="link-text text-sm md:text-base font-medium"
+                    >
+                      {page.category_tea_range.data?.attributes.Title}
+                    </a>
+                  </Fragment>
+                )}
+              </div>
+            )
+          }
+        </div>
+
+        <div class="flex flex-col division-in-gap">
+          {
+            page?.Heading_button_text && (
+              <a
+                href={page.Heading_button_link ?? "#"}
+                class="button-default w-fit"
+              >
+                {page.Heading_button_text}
+              </a>
+            )
+          }
+
+          {/* Recipe Header, tea variant & tea-details header section */}
+          <slot />
+
+          {
+            page.Price_breakdown?.length > 0 && (
+              <div class="flex items-center">
+                <div class="text-b5">
+                  {recurData.product_each_penny_you_spend + `\xa0`}
 
                   <a
-                    href={
-                      page.category_tea_range.data?.attributes.Meta.URL_slug
-                    }
-                    class="link-text text-sm md:text-base font-medium"
+                    href="#price-breakdown"
+                    class="underline decoration-1 underline-offset-[2px] font-semibold"
                   >
-                    {page.category_tea_range.data?.attributes.Title}
+                    {recurData.product_check_where_going}
                   </a>
-                </Fragment>
-              )}
-            </div>
-          )
-        }
-
-        {
-          page?.Heading_button_text && (
-            <a
-              href={page.Heading_button_link ?? "#"}
-              class="button-default w-fit"
-            >
-              {page.Heading_button_text}
-            </a>
-          )
-        }
-
-        {/* Recipe Header, tea variant & tea-details header section */}
-        <slot />
-
-        {
-          page.Price_breakdown?.length > 0 && (
-            <div class="flex items-center">
-              <div class="text-base lg:text-lg leading-[150%]">
-                {recurData.product_each_penny_you_spend + `\xa0`}
-
-                <a
-                  href="#price-breakdown"
-                  class="underline decoration-1 underline-offset-[2px] font-semibold"
-                >
-                  {recurData.product_check_where_going}
-                </a>
+                </div>
               </div>
-            </div>
-          )
-        }
+            )
+          }
+        </div>
       </div>
     </div>
   </div>
