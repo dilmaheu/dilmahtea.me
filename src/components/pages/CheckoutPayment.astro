@@ -369,38 +369,41 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </div>
       </div>
 
-      <div role="form" class="form-grid" id="card-info">
-        <div class="grid division-in-element-gap">
-          <div class="input-label">{page.Card_label_number}</div>
+      <div>
+        <div role="form" class="form-grid" id="card-info">
+          <div class="grid division-in-element-gap">
+            <div class="input-label">{page.Card_label_number}</div>
 
-          <div id="card-number"></div>
+            <div id="card-number"></div>
+          </div>
+
+          <div class="hidden sm:block h-0 select-none"></div>
+
+          <div class="grid division-in-element-gap">
+            <div class="input-label">{page.Card_label_date}</div>
+
+            <div id="card-expiry"></div>
+          </div>
+
+          <div class="grid division-in-element-gap">
+            <div class="input-label">{page.Card_label_cvv}</div>
+
+            <div id="card-cvc"></div>
+          </div>
+
+          <input type="hidden" id="stripeToken" name="stripeToken" />
+
+          <div class="text-b5 text-error hidden" id="card-error">
+            {page.text_card_error_message}
+          </div>
         </div>
 
-        <div class="hidden sm:block h-0 select-none"></div>
-
-        <div class="grid division-in-element-gap">
-          <div class="input-label">{page.Card_label_date}</div>
-
-          <div id="card-expiry"></div>
-        </div>
-
-        <div class="grid division-in-element-gap">
-          <div class="input-label">{page.Card_label_cvv}</div>
-
-          <div id="card-cvc"></div>
-        </div>
-
-        <input type="hidden" id="stripeToken" name="stripeToken" />
         <div
           type="hidden"
           id="stripe-publishable-key"
           data-key={STRIPE_PUBLISHABLE_KEY}
         >
         </div>
-      </div>
-
-      <div class="text-b5 text-error hidden" id="card-error">
-        Please input correct information
       </div>
     </div>
 
