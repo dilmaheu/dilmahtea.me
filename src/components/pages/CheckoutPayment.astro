@@ -8,7 +8,6 @@ import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 import localizeCMSImage from "@utils/localizeCMSImage";
 
 const { page, recurData } = Astro.props,
-  { STRIPE_PUBLISHABLE_KEY } = import.meta.env,
   { locale, payment_methods, Accepted_cards_icon } = page,
   checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
   steps = checkoutFlowData.steps.split("\n"),
@@ -26,7 +25,9 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     ({ attributes }) => attributes,
   );
 
-console.log(STRIPE_PUBLISHABLE_KEY);
+const STRIPE_PUBLISHABLE_KEY = shouldDisplayExperimentals
+  ? "pk_test_51L5P0uFkZIhoESDNaT5ehYNQmhtAtFWuV7nZAyavga1x9BTYOpkRaRYzMVPzwRxooxKyoMIN4MLnB4P6yeENrvMp00jw25zPVV"
+  : "pk_live_51L5P0uFkZIhoESDNqe4zIQ79WujaSi7UALnwcpZrmdXiCkWcKvvmyC2e4hhKegR4tExdjiipgt2mj48UaL3y42so00eMUIBuUU";
 ---
 
 <style lang="scss">
@@ -612,7 +613,7 @@ console.log(STRIPE_PUBLISHABLE_KEY);
     const STRIPE_PUBLISHABLE_KEY =
       stripePublishableKey?.getAttribute("data-key");
 
-    const stripe = Stripe ? Stripe(STRIPE_PUBLISHABLE_KEY) : null,
+    const stripe = Stripe(STRIPE_PUBLISHABLE_KEY),
       elements = stripe.elements({ locale: window.preferredLocale });
 
     const elementStyles = {
