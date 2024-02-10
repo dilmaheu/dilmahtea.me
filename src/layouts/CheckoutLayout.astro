@@ -31,7 +31,8 @@ const {
 const checkoutStepOrder = page.checkout_step_order,
   checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
   steps = checkoutFlowData.steps.split("\n"),
-  shortenedSteps = checkoutFlowData.shortened_steps.split("\n");
+  shortenedSteps = checkoutFlowData.shortened_steps.split("\n"),
+  checkoutPaymentLink = CMS.get("checkoutPayment", locale).Meta.URL_slug;
 
 const footerText = recurData.Footer_text.replaceAll(
   "<current_year>",
@@ -212,3 +213,10 @@ const footerText = recurData.Footer_text.replaceAll(
     <Footer footerText={footerText} recurData={recurData} type={page?.type} />
   </div>
 </BaseLayout>
+
+<!-- for stripe payments -->
+{
+  page.Meta.URL_slug === checkoutPaymentLink && (
+    <script src="https://js.stripe.com/v3/" module />
+  )
+}
