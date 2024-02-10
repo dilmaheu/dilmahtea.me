@@ -44,7 +44,6 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
   define:vars={{
     checkoutInfoLink,
     checkoutKindnessLink,
-    STRIPE_PUBLISHABLE_KEY
   }}
 >
   if (Object.keys(window.checkoutInfo).length === 0) {
@@ -52,7 +51,6 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
   }
 
   window.checkoutKindnessLink = checkoutKindnessLink;
-  window.STRIPE_PUBLISHABLE_KEY = STRIPE_PUBLISHABLE_KEY;
 </script>
 
 <form
@@ -393,6 +391,12 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </div>
 
         <input type="hidden" id="stripeToken" name="stripeToken" />
+        <div
+          type="hidden"
+          id="stripe-publishable-key"
+          data-key={STRIPE_PUBLISHABLE_KEY}
+        >
+        </div>
       </div>
 
       <div class="text-b5 text-error hidden" id="card-error">
@@ -597,11 +601,12 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     form = id("payment-info-form"),
     card = id("card"),
     ideal = id("ideal"),
-    cardError = id("card-error");
+    cardError = id("card-error"),
+    stripePublishableKey = id("stripe-publishable-key");
 
-  console.log(window.STRIPE_PUBLISHABLE_KEY)
+  const STRIPE_PUBLISHABLE_KEY = stripePublishableKey?.getAttribute("data-key");
 
-  const stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY),
+  const stripe = Stripe(STRIPE_PUBLISHABLE_KEY),
     elements = stripe.elements({ locale: window.preferredLocale });
 
   const elementStyles = {
