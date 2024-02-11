@@ -206,3 +206,22 @@ export const onRequestPut: PagesFunction<Env> = getAPIHandler(
     return Response.json({ success: true });
   },
 );
+
+export const onRequestDelete: PagesFunction<Env> = getAPIHandler(
+  async (env, _, validatedData: DeleteAddressBody) => {
+    const { id } = validatedData;
+
+    try {
+      await env.USERS.prepare("DELETE FROM addresses WHERE id = ?")
+        .bind(id)
+        .run();
+    } catch (error) {
+      return Response.json(
+        { success: false, error: "Address does not exist" },
+        { status: 400 },
+      );
+    }
+
+    return Response.json({ success: true });
+  },
+);
