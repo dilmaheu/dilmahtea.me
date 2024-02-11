@@ -24,17 +24,17 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   const session: Session = await authRequest.validate();
 
-  const { email, phone } = session.user;
+  const { exact_account_guid } = session.user;
 
   const shouldLimit = !!new URL(request.url).searchParams.get("limit");
 
   const { results: orders } = await env.USERS.prepare(
-    "SELECT * FROM orders WHERE customer_email = COALESCE(?, customer_email) OR customer_phone = COALESCE(?, customer_phone) ORDER BY order_date DESC" +
+    "SELECT * FROM orders WHERE customer_exact_account_guid = ? ORDER BY order_date DESC" +
       (shouldLimit
         ? " LIMIT 4" // the 4th order is just for enabling the "View all orders" link
         : ""),
   )
-    .bind(email, phone)
+    .bind(exact_account_guid)
     .all();
 
   orders.forEach((order) => {
