@@ -6,13 +6,14 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 
 import localizeCMSImage from "@utils/localizeCMSImage";
 
-const { locale, heading, impacts } = Astro.props,
-  { STRAPI_URL } = import.meta.env;
+const { locale, heading, impacts } = Astro.props;
 
 const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 ---
 
 <style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
   .kindness-impact-container {
     clip-path: url(#kindness-impact-bg-curve-sm);
 
@@ -21,8 +22,8 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
     }
   }
 
-  .kindness-impacts-container {
-    @apply w-full flex flex-wrap justify-around mx-auto;
+  .kindness-impacts-icon {
+    height: poly-fluid-clamp-primary(35px, 45px);
   }
 
   .kindness-impacts-text {
@@ -52,7 +53,7 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
       <div
         role="list"
         aria-label={ariaLabelRecurData.Kindness_impact_items}
-        class="kindness-impacts-container division-gap"
+        class="w-full flex flex-wrap justify-around mx-auto division-gap"
       >
         {
           impacts.map(
@@ -62,7 +63,7 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
                 aria-label={Value + Description}
                 class="grid justify-items-center division-in-element-gap"
               >
-                <div class="h-[43px]">
+                <div class="kindness-impacts-icon">
                   {async () => (
                     <img
                       class="w-full h-full"
@@ -71,14 +72,17 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
                     />
                   )}
                 </div>
-                <div class="grid justify-items-center">
-                  <div class="text-heading-big recoleta font-bold text-primary whitespace-nowrap">
-                    {Value}
-                    <span class="kindness-impacts-text text-b5 font-normal text-black-light">
+                <div class="grid justify-items-center text-center">
+                  <div class="flex items-center">
+                    <span class="text-heading-big text-primary whitespace-nowrap">
+                      {Value}
+                    </span>
+                    <span class="kindness-impacts-text text-b1 text-black-light">
                       {Value_unit}
                     </span>
                   </div>
-                  <div class="kindness-impacts-text text-b5 font-normal text-black-light">
+
+                  <div class="kindness-impacts-text text-b5 text-black-light">
                     <Markdown>{Description}</Markdown>
                   </div>
                 </div>
