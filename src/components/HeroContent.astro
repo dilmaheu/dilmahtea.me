@@ -10,8 +10,15 @@ import RecurringImages from "@store/RecurringImages";
 
 const { white_cup } = RecurringImages;
 
-const { page, plainTitle, basicHeader, headerBackground, headerBackgroundSm } =
-    Astro.props,
+const {
+    page,
+    plainTitle,
+    basicHeader,
+    headerBackground,
+    headerBackgroundSm,
+    link,
+    noAuthorImg,
+  } = Astro.props,
   { locale } = page,
   { STRAPI_URL } = import.meta.env;
 
@@ -54,7 +61,7 @@ const recurData = CMS.get("recurringElement", locale),
           {
             page.authors && (
               <div class="division-in-element-gap flex items-center">
-                {page.authors.data.map(
+                {!noAuthorImg && page.authors.data.map(
                   (author, index) =>
                     author.attributes.Profile_picture.data && (
                       <div
@@ -135,26 +142,43 @@ const recurData = CMS.get("recurringElement", locale),
             )
           }
 
-          <h1 class="hero-title recoleta font-bold">
-            {page.Title || page.Estate_name}
-
-            {" "}
-
-            {
-              !basicHeader && !plainTitle && page.Title && (
-                <span class="icon heading-inline-icon">
-                  <img class="w-full h-full" alt="" {...white_cup} />
-                </span>
-              )
-            }
-          </h1>
-
           {
-            !page.estate_name && (
-              <div class="hero-text">
-                <Markdown>{page.Intro_text}</Markdown>
-              </div>
-            )
+            () => {
+              const heroTitle = (
+                <h1 class="text-h1">
+                  {page.Title || page.Estate_name}{" "}
+                  
+                  {!basicHeader && !plainTitle && page.Title && (
+                    <span class="icon heading-inline-icon">
+                      <img class="w-full h-full" alt="" {...white_cup} />
+                    </span>
+                  )}
+                </h1>
+              );
+
+              return (
+                <div
+                  class:list={[
+                    "flex flex-col division-in-gap",
+                    link && "link-section",
+                  ]}
+                >
+                  {link ? (
+                    <a class="main-link" href={`/${link}`}>
+                      {heroTitle}
+                    </a>
+                  ) : (
+                    <>{heroTitle}</>
+                  )}
+
+                  {!page.estate_name && (
+                    <div class="hero-text">
+                      <Markdown>{page.Intro_text}</Markdown>
+                    </div>
+                  )}
+                </div>
+              );
+            }
           }
 
           {
