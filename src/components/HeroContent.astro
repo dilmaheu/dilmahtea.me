@@ -61,33 +61,34 @@ const recurData = CMS.get("recurringElement", locale),
           {
             page.authors && (
               <div class="division-in-element-gap flex items-center">
-                {!noAuthorImg && page.authors.data.map(
-                  (author, index) =>
-                    author.attributes.Profile_picture.data && (
-                      <div
-                        class:list={[
-                          "quick-info-author-img",
-                          index > 0 &&
-                            "relative -ml-[clamp(15px,calc(2.5vw-1px),35px)]",
-                        ]}
-                      >
-                        <Picture
-                          width={50}
-                          height={50}
-                          loading="eager"
-                          alt={
-                            author.attributes.Profile_picture.data.attributes
-                              .alternativeText
-                          }
-                          src={
-                            STRAPI_URL +
-                            author.attributes.Profile_picture.data.attributes
-                              .url
-                          }
-                        />
-                      </div>
-                    ),
-                )}
+                {!noAuthorImg &&
+                  page.authors.data.map(
+                    (author, index) =>
+                      author.attributes.Profile_picture.data && (
+                        <div
+                          class:list={[
+                            "quick-info-author-img",
+                            index > 0 &&
+                              "relative -ml-[clamp(15px,calc(2.5vw-1px),35px)]",
+                          ]}
+                        >
+                          <Picture
+                            width={50}
+                            height={50}
+                            loading="eager"
+                            alt={
+                              author.attributes.Profile_picture.data.attributes
+                                .alternativeText
+                            }
+                            src={
+                              STRAPI_URL +
+                              author.attributes.Profile_picture.data.attributes
+                                .url
+                            }
+                          />
+                        </div>
+                      ),
+                  )}
 
                 <div class="quick-info-default">
                   <div
@@ -147,7 +148,6 @@ const recurData = CMS.get("recurringElement", locale),
               const heroTitle = (
                 <h1 class="text-h1">
                   {page.Title || page.Estate_name}{" "}
-                  
                   {!basicHeader && !plainTitle && page.Title && (
                     <span class="icon heading-inline-icon">
                       <img class="w-full h-full" alt="" {...white_cup} />
@@ -210,12 +210,18 @@ const recurData = CMS.get("recurringElement", locale),
         <div class="flex flex-col division-in-gap">
           {
             page?.Heading_button_text && (
-              <a
-                href={page.Heading_button_link ?? "#"}
-                class="button-default w-fit"
+              <div
+                class:list={[
+                  page.type === "productCategory" && "hidden sm:flex",
+                ]}
               >
-                {page.Heading_button_text}
-              </a>
+                <a
+                  href={page.Heading_button_link ?? "#"}
+                  class="button-default"
+                >
+                  {page.Heading_button_text}
+                </a>
+              </div>
             )
           }
 
