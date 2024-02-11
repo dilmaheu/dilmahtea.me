@@ -1,6 +1,7 @@
 import type { Session } from "lucia";
+import type { Address } from "@solid/Address";
 
-import { initializeLucia } from "functions/utils/auth";
+import { initializeLucia } from "../utils/auth";
 
 declare interface Env {
   USERS: D1Database;
@@ -14,8 +15,26 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   const session: Session = await authRequest.validate();
 
-  delete session.user.id;
-  delete session.user.userId;
+  const { user } = session;
 
-  return Response.json(session.user);
+  delete user.id;
+  delete user.userId;
+
+  if (user.default_delivery_address) {
+    user.default_delivery_address = await env.USERS.prepare(
+      "SELECT * FROM addresses WHERE id = ?",
+    )
+      .bind(user.default_delivery_address)
+      .run<Address>();
+  }
+
+  if (user.default_billing_address) {
+    user.default_billing_address = await env.USERS.prepare(
+      "SELECT * FROM addresses WHERE id = ?",
+    )
+      .bind(user.default_billing_address)
+      .run<Address>();
+  }
+
+  return Response.json(user);
 };
