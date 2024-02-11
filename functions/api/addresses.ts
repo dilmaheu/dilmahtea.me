@@ -173,3 +173,36 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
     return Response.json({ id });
   },
 );
+
+export const onRequestPut: PagesFunction<Env> = getAPIHandler(
+  async (env, session, validatedData: UpdateAddressBody) => {
+    const { exact_account_guid } = session.user;
+
+    const { results: addresses } = await env.USERS.prepare(
+      "SELECT * FROM addresses WHERE exact_account_guid = ?",
+    )
+      .bind(exact_account_guid)
+      .all<Address>();
+
+    const usedTags = addresses.map((address) => address.tag);
+
+    if (!usedTags.includes(validatedData.tag))
+      return Response.json(
+        { success: false, error: "Address tag does not exist" },
+        { status: 400 },
+      );
+
+    if (usedTags.length === 1) {
+      validatedData.set_as_default_delivery_address = true;
+      validatedData.set_as_default_billing_address = true;
+    }
+
+    await env.USERS.prepare(
+      "UPDATE addresses SET first_name = ?, last_name = ?, street = ?, city = ?, postal_code = ?, country = ?, set_as_default_delivery_address = ?, set_as_default_billing_address = ? WHERE id = ?",
+    )
+      .bind(...Object.values(validatedData), validatedData.tag)
+      .run();
+
+    return Response.json({ success: true });
+  },
+);
