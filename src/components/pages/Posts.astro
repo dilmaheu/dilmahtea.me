@@ -5,7 +5,6 @@ import Markdown from "@components/Markdown.astro";
 import Pagination from "@components/Pagination.astro";
 import HeroContent from "@components/HeroContent.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
@@ -41,14 +40,13 @@ interface Props {
 }
 
 const {
-  white_cup,
   green_cup,
   left_post_leaf,
   green_leaf: right_post_leaf,
 } = RecurringImages;
 
 const { page, ariaLabelRecurData } = Astro.props,
-  { posts, locale, pagination } = page,
+  { posts, pagination } = page,
   { STRAPI_URL } = import.meta.env;
 
 posts.sort((a, b) => {
@@ -97,8 +95,8 @@ const [firstPost] = posts;
   }
 </style>
 
-<HeroContent 
-  page={{ 
+<HeroContent
+  page={{
     ...page,
     Title: firstPost.Title,
     Intro_text: firstPost.Intro_text,
@@ -120,7 +118,7 @@ const [firstPost] = posts;
   <div
     role="list"
     aria-label={ariaLabelRecurData.All_posts_text}
-    class=" wrapper flex flex-wrap items-center section-gap"
+    class="wrapper flex flex-wrap items-center section-gap"
   >
     {
       posts.slice(1).map((post, index) => {
@@ -134,109 +132,90 @@ const [firstPost] = posts;
             aria-label={`${ariaLabelRecurData.Post_text + (index + 2)} ${
               ariaLabelRecurData.Product_post_of_text
             } ${posts.length}`}
-            class="link-section flex flex-wrap items-center"
+            class="link-section grid sm:grid-cols-2 items-center division-gap"
           >
             <div
               class:list={[
-                "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
-                isEven
-                  ? "pr-0 sm:pr-5 md:pr-12 lg:pr-24"
-                  : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
+                "relative post-img-curve-container",
+                !isEven && "sm:order-2 ml-auto",
               ]}
             >
+              <Picture
+                layout="fill"
+                src={postImgURL}
+                alt={post.Intro_blob.data.attributes.alternativeText}
+                sizes={[
+                  "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
+                  "(min-width: 640px) min(600px, calc(45vw - 20px))",
+                  "90vw",
+                ].join(", ")}
+                attributes={{
+                  picture: { style: "clip-path: url(#post-img-curve);" },
+                }}
+              />
+
               <div
                 class:list={[
-                  "post-img-curve-container",
-                  isEven ? "mr-auto" : "ml-auto",
+                  "post-leaf",
+                  isEven ? "post-leaf-left" : "post-leaf-right",
                 ]}
               >
                 <Picture
+                  alt=""
                   layout="fill"
-                  src={postImgURL}
-                  alt={post.Intro_blob.data.attributes.alternativeText}
+                  placeholder="blurred"
+                  src={(isEven ? left_post_leaf : right_post_leaf).src}
                   sizes={[
-                    "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
-                    "(min-width: 640px) min(600px, calc(45vw - 20px))",
-                    "90vw",
+                    `(min-width: 640px) min(600px, calc((50vw - min(100px, 5vw)) * ${postLeafWidthMultiplier}))`,
+                    `calc(90vw * ${postLeafWidthMultiplier})`,
                   ].join(", ")}
-                  attributes={{
-                    picture: { style: "clip-path: url(#post-img-curve);" },
-                  }}
                 />
-
-                <div
-                  class:list={[
-                    "post-leaf",
-                    isEven ? "post-leaf-left" : "post-leaf-right",
-                  ]}
-                >
-                  <Picture
-                    alt=""
-                    layout="fill"
-                    placeholder="blurred"
-                    src={(isEven ? left_post_leaf : right_post_leaf).src}
-                    sizes={[
-                      `(min-width: 640px) min(600px, calc((50vw - min(100px, 5vw)) * ${postLeafWidthMultiplier}))`,
-                      `calc(90vw * ${postLeafWidthMultiplier})`,
-                    ].join(", ")}
-                  />
-                </div>
               </div>
             </div>
 
             {/* Text content */}
-            <div
-              class:list={[
-                "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
-                isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
-              ]}
-            >
-              <div class="grid division-in-gap">
-                {post.authors && (
-                  <div>
-                    <div
-                      role="presentation"
-                      aria-label={post.authors.data.map(
-                        ({ attributes }, i) =>
-                          ariaLabelRecurData.Wrote_by_text +
-                          (i > 0 ? ", " : " ") +
-                          attributes.givenName,
-                      )}
-                      class="post-author flex flex-wrap font-bold text-black-light"
-                    >
-                      {post.authors.data.map(({ attributes }, i) => (
-                        <div>
-                          {`${i > 0 ? ", " : " "}` + attributes.givenName}
-                        </div>
-                      ))}
-                    </div>
-
-                    <div class="post-publish-date text-black-light font-medium">
-                      {new Date(post.createdAt).toLocaleString("en-US", {
-                        day: "numeric",
-                        month: "long",
-                      })}
-                    </div>
+            <div class:list={["grid division-in-gap", !isEven & "sm:order-1"]}>
+              {post.authors && (
+                <div class="quick-info-black-light">
+                  <div
+                    role="presentation"
+                    aria-label={post.authors.data.map(
+                      ({ attributes }, i) =>
+                        ariaLabelRecurData.Wrote_by_text +
+                        (i > 0 ? ", " : " ") +
+                        attributes.givenName,
+                    )}
+                    class="author-name"
+                  >
+                    {post.authors.data.map(({ attributes }, index) => (
+                      <span>
+                        {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                      </span>
+                    ))}
                   </div>
-                )}
 
-                <div>
-                  <h2 class="post-title recoleta">
-                    <a
-                      class="main-link heading-secondary font-bold text-primary"
-                      href={`/` + post.Meta.URL_slug}
-                      set:text={post.Title || post.Estate_name}
-                    />
-
-                    <span class="icon heading-inline-icon ml-2">
-                      <img class="w-full h-full" {...green_cup} />
-                    </span>
-                  </h2>
+                  <div class="quick-info-item">
+                    {new Date(post.createdAt).toLocaleString("en-US", {
+                      day: "numeric",
+                      month: "long",
+                    })}
+                  </div>
                 </div>
+              )}
 
-                <div class="post-intro prose max-w-none text-b3">
-                  <Markdown>{post.Intro_text}</Markdown>
-                </div>
+              <h2 class="heading-secondary text-primary">
+                <a
+                  class="main-link"
+                  href={`/` + post.Meta.URL_slug}
+                  set:text={post.Title}
+                />
+
+                <span class="icon heading-inline-icon ml-2">
+                  <img class="w-full h-full" {...green_cup} />
+                </span>
+              </h2>
+              <div class="post-intro intro-text">
+                <Markdown>{post.Intro_text}</Markdown>
               </div>
             </div>
           </div>
