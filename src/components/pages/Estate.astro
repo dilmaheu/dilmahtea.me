@@ -21,43 +21,6 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
 ---
 
 <style lang="scss">
-  .estate-types-selector {
-    font-size: clamp(0.75rem, 1.5vw + 0.1rem, 1.25rem);
-    border-right: 20px solid transparent;
-  }
-
-  .estates-toggle-label {
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
-    line-height: 150%;
-  }
-
-  .estate-mode-toggle-dot {
-    @apply border border-secondary-light;
-  }
-
-  input[type="checkbox"].estate-mode-toggle:checked ~ .estate-mode-toggle-dot {
-    @apply bg-primary;
-
-    transform: translateX(100%);
-  }
-
-  .estate-category-item {
-    font-size: clamp(0.625rem, 1.5vw + 0.01rem, 0.75rem);
-    line-height: 150%;
-  }
-
-  .post-img-curve-container {
-    aspect-ratio: 6 / 5;
-    width: 100%;
-    height: 100%;
-    max-width: 600px;
-    max-height: 500px;
-  }
-
-  .post-intro {
-    @apply line-clamp-3 sm:line-clamp-4 md:line-clamp-5 lg:line-clamp-6;
-  }
-
   .estate-quote-container {
     clip-path: url(#quote-bg-curve);
 
@@ -75,7 +38,6 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
   }
 
   .estate-quote {
-   
     padding: 0 clamp(2.188rem, 3.3vw + 0.8rem, 3.75rem);
   }
 
@@ -85,65 +47,17 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
 </style>
 
 <SecondaryPageLayout {page} {relatedPosts} plainTitle={true}>
-  <div role="main" class="grid section-gap my-[50px]">
+  <div role="main" class="grid section-gap section-in-v-pad">
     <div
       class="wrapper flex flex-wrap justify-between items-center division-gap"
     >
-      <div
-        class="flex flex-wrap items-center justify-between"
-      >
-        <h2 class="font-bold text-primary recoleta text-h2">
+      <div class="flex flex-wrap items-center justify-between">
+        <h2 class="text-h2 text-primary">
           {page.Heading_block}
         </h2>
-
-        {
-          /* (
-            <div>
-              <select
-                id="estateType"
-                name="estateType"
-                class:list={[
-                  "focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring cursor-pointer",
-                  "bg-primary text-secondary-light py-[5px] pl-5 rounded-[34px] estate-types-selector",
-                ]}
-              >
-                <option value="1">Kindness Project Type 1</option>
-
-                <option value="2">Kindness Project Type 2</option>
-              </select>
-            </div>
-          ) */
-        }
       </div>
 
-      {
-        /* (
-          <div class="inline-flex">
-            <div class="text-black estates-toggle-label">
-              View Carbon Neutral estates
-            </div>
-
-            <div class="flex items-center justify-center ml-2.5">
-              <label
-                for="estatesToggle"
-                class="relative flex items-center cursor-pointer"
-              >
-                <div class="relative">
-                  <input
-                    id="estatesToggle"
-                    type="checkbox"
-                    class="sr-only estate-mode-toggle"
-                  />
-                  <div class="bg-secondary-light rounded-full shadow-inner w-11 sm:w-[49px] lg:w-[54px] h-5 sm:h-[22px] lg:h-6" />
-                  <div class="absolute z-10 bg-secondary-light w-[30px] h-[30px] rounded-full shadow top-[-3px] -left-1 transition estate-mode-toggle-dot" />
-                </div>
-              </label>
-            </div>
-          </div>
-        ) */
-      }
-
-      <div class="text-b3 max-w-none w-full text-black-light prose">
+      <div class="intro-text">
         <Markdown>{page.Block_text}</Markdown>
       </div>
     </div>
@@ -158,7 +72,7 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
       <div
         role="list"
         aria-label={page.Aria_label_all_estates_text}
-        class="flex flex-wrap items-center section-gap"
+        class="grid section-gap"
       >
         {
           posts.map((estate, index) => {
@@ -167,74 +81,45 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
             return (
               <div
                 role="listitem"
-                class="link-section flex flex-wrap items-center"
+                class="link-section grid sm:grid-cols-2 items-center division-gap"
               >
                 <div
                   class:list={[
-                    "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
-                    isEven
-                      ? "pr-0 sm:pr-5 md:pr-12"
-                      : "sm:order-2 pl-0 sm:pl-5 md:pl-12",
+                    "post-img-curve-container",
+                    !isEven && "sm:order-2 ml-auto",
                   ]}
                 >
-                  <div class="post-img-curve-container">
-                    <Picture
-                      layout="fill"
-                      alt={estate.Intro_blob.data.attributes.alternativeText}
-                      src={STRAPI_URL + estate.Intro_blob.data.attributes.url}
-                      attributes={{
-                        picture: {
-                          style: "clip-path: url(#estate-img-curve);",
-                        },
-                      }}
-                      sizes={[
-                        "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
-                        "(min-width: 640px) min(600px, calc(45vw - 20px))",
-                        "90vw",
-                      ].join(", ")}
-                    />
-                  </div>
+                  <Picture
+                    layout="fill"
+                    alt={estate.Intro_blob.data.attributes.alternativeText}
+                    src={STRAPI_URL + estate.Intro_blob.data.attributes.url}
+                    attributes={{
+                      picture: {
+                        style: "clip-path: url(#estate-img-curve);",
+                      },
+                    }}
+                    sizes={[
+                      "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
+                      "(min-width: 640px) min(600px, calc(45vw - 20px))",
+                      "90vw",
+                    ].join(", ")}
+                  />
                 </div>
 
                 {/* Text content */}
                 <div
-                  class:list={[
-                    "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
-                    isEven ? "pr-0" : "sm:order-1 pl-0",
-                  ]}
+                  class:list={["grid division-in-gap", !isEven & "sm:order-1"]}
                 >
-                  <div class="grid division-in-gap">
-                    {/* <ul class="flex flex-wrap items-center gap-y-1 gap-x-2.5 md:gap-x-[15px] md:pb-[5px] lg:pb-2.5">
-                        <li class="text-black estate-category-item">
-                          <a
-                            href=""
-                            class="bg-pale-rose text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
-                          >
-                            Green Tea
-                          </a>
-                        </li>
-                        
-                        <li class="text-black estate-category-item">
-                          <a
-                            href=""
-                            class="bg-pale-rose text-xs sm:text-sm leading-[17px] sm:leading-[14px] text-primary py-[5px] px-3 rounded-[28px]"
-                          >
-                            Sustainable
-                          </a>
-                        </li>
-                      </ul> */}
+                  <h2 class="text-h2 text-primary">
+                    <a
+                      class="main-link"
+                      href={`/` + estate.Meta.URL_slug}
+                      set:text={estate.Estate_name}
+                    />
+                  </h2>
 
-                    <h2 class="font-bold text-primary recoleta text-h2">
-                      <a
-                        class="main-link"
-                        set:text={estate.Estate_name}
-                        href={`/` + estate.Meta.URL_slug}
-                      />
-                    </h2>
-
-                    <div class="post-intro text-b3 max-w-none w-full text-black-light prose">
-                      <Markdown>{estate.Intro_text}</Markdown>
-                    </div>
+                  <div class="post-intro intro-text">
+                    <Markdown>{estate.Intro_text}</Markdown>
                   </div>
                 </div>
               </div>
@@ -284,7 +169,7 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
               </div>
 
               <div
-                class="estate-quote text-b3 max-w-none font-bold text-secondary prose "
+                class="estate-quote text-b3 max-w-none font-bold text-secondary prose"
               >
                 {page.Block2_text}
               </div>
