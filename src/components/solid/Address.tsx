@@ -8,7 +8,7 @@ import { user } from "@signals/user";
 
 export interface Address {
   id: string;
-  email: string;
+  exact_account_guid: string;
   tag: string;
   first_name: string;
   last_name: string;
