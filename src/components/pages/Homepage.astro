@@ -47,24 +47,6 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
 ---
 
 <style lang="scss">
-  .post-title {
-    @apply font-bold leading-[130%];
-
-    font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
-  }
-
-  .post-intro {
-    @apply line-clamp-3 sm:line-clamp-4 md:line-clamp-5 lg:line-clamp-6;
-  }
-
-  .post-img-curve-container {
-    aspect-ratio: 6 / 5;
-    width: 100%;
-    height: 100%;
-    max-width: 600px;
-    max-height: 500px;
-  }
-
   .estates-banner-bottom {
     clip-path: url(#estates-banner-curve-sm);
 
@@ -83,7 +65,7 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
 />
 
 <SecondaryPageLayout {page} plainTitle={true} headerBackground={true}>
-  <div role="main" class="grid section-gap my-[50px]">
+  <div role="main" class="grid section-gap section-in-v-pad">
     {/* latest Products Section */}
     {
       page.Block_visibility && (
@@ -135,74 +117,64 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
 
             <div
               aria-label={ariaLabelRecurData.Highlighted_post_text}
-              class="link-section flex flex-wrap items-center"
+              class="link-section grid sm:grid-cols-2 items-center division-gap"
             >
-              <div
-                class:list={[
-                  "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
-                  "pr-0 sm:pr-5 md:pr-12 lg:pr-24",
-                ]}
-              >
-                <div class="post-img-curve-container mr-auto">
-                  <Picture
-                    layout="fill"
-                    src={STRAPI_URL + randPost.Intro_blob?.data?.attributes.url}
-                    alt={randPost.Intro_blob?.data?.attributes.alternativeText}
-                    sizes={[
-                      "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
-                      "(min-width: 640px) min(600px, calc(45vw - 20px))",
-                      "90vw",
-                    ].join(", ")}
-                    attributes={{
-                      picture: { style: "clip-path: url(#post-img-curve);" },
-                    }}
-                  />
-                </div>
+              <div class="post-img-curve-container">
+                <Picture
+                  layout="fill"
+                  src={STRAPI_URL + randPost.Intro_blob?.data?.attributes.url}
+                  alt={randPost.Intro_blob?.data?.attributes.alternativeText}
+                  sizes={[
+                    "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
+                    "(min-width: 640px) min(600px, calc(45vw - 20px))",
+                    "90vw",
+                  ].join(", ")}
+                  attributes={{
+                    picture: { style: "clip-path: url(#post-img-curve);" },
+                  }}
+                />
               </div>
 
               {/* Text content */}
-              <div class="order-2 w-full sm:w-1/2 h-full flex flex-wrap items-start sm:items-center pr-0 sm:pr-5">
-                <div class="grid division-in-gap">
-                  {randPost.authors && (
-                    <div class="quick-info-black-light">
-                      <div
-                        role="presentation"
-                        aria-label={randPost.authors.data.map(
-                          ({ attributes }, i) =>
-                            ariaLabelRecurData.Wrote_by_text +
-                            (i > 0 ? ", " : " ") +
-                            attributes.givenName,
-                        )}
-                        class="author-name"
-                      >
-                        {randPost.authors.data.map(({ attributes }, index) => (
-                          <span>
-                            {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                          </span>
-                        ))}
-                      </div>
-
-                      <div class="quick-info-item">
-                        {new Date(randPost.createdAt).toLocaleString("en-US", {
-                          day: "numeric",
-                          month: "long",
-                        })}
-                      </div>
+              <div class="grid division-in-gap">
+                {randPost.authors && (
+                  <div class="quick-info-black-light">
+                    <div
+                      role="presentation"
+                      aria-label={randPost.authors.data.map(
+                        ({ attributes }, i) =>
+                          ariaLabelRecurData.Wrote_by_text +
+                          (i > 0 ? ", " : " ") +
+                          attributes.givenName,
+                      )}
+                      class="author-name"
+                    >
+                      {randPost.authors.data.map(({ attributes }, index) => (
+                        <span>
+                          {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                        </span>
+                      ))}
                     </div>
-                  )}
 
-                  <div>
-                    <h2 class="heading-secondary text-primary">
-                      <a
-                        class="main-link"
-                        href={`/` + randPost.Meta.URL_slug}
-                        set:text={randPost.Title}
-                      />
-                    </h2>
+                    <div class="quick-info-item">
+                      {new Date(randPost.createdAt).toLocaleString("en-US", {
+                        day: "numeric",
+                        month: "long",
+                      })}
+                    </div>
                   </div>
-                  <div class="post-intro prose intro-text max-w-none">
-                    <Markdown>{randPost.Intro_text}</Markdown>
-                  </div>
+                )}
+
+
+                <h2 class="heading-secondary text-primary">
+                  <a
+                    class="main-link"
+                    href={`/` + randPost.Meta.URL_slug}
+                    set:text={randPost.Title}
+                  />
+                </h2>
+                <div class="post-intro intro-text">
+                  <Markdown>{randPost.Intro_text}</Markdown>
                 </div>
               </div>
             </div>
