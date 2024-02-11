@@ -222,6 +222,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
       );
     }
 
+    await response.json();
+
     if (!response.ok) throw new Error();
 
     if ("token" in body) {
