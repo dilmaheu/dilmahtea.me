@@ -138,7 +138,7 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
 
     if (usedTags.includes(validatedData.tag))
       return Response.json(
-        { success: false, error: "Address tag already exists" },
+        { success: false, error: "Address tag has been used already" },
         { status: 400 },
       );
 
