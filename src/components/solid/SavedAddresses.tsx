@@ -69,6 +69,7 @@ export default function SavedAddresses({
     text_default_billing_address,
     Notification_added_address,
     Notification_updated_address,
+    Notification_deleted_address,
   } = userAccountRecurData;
 
   createEffect(() => {
@@ -81,12 +82,14 @@ export default function SavedAddresses({
     if (
       updated_user_info === "true" &&
       info === "address" &&
-      ["add", "update"].includes(action)
+      ["add", "update", "delete"].includes(action)
     ) {
       const notificationMessage =
         action === "add"
           ? Notification_added_address
-          : Notification_updated_address;
+          : action === "update"
+            ? Notification_updated_address
+            : Notification_deleted_address;
 
       setNotification({
         type: "success",

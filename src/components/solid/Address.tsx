@@ -64,7 +64,16 @@ export default function Address({
       body: JSON.stringify({ id }),
     }).then((response) =>
       handleAPIResponse(response, {
-        onError: () => setIsDeleting(false),
+        onParse: () => setIsDeleting(false),
+        onSuccess: () => {
+          const redirectURL = new URL(location.href);
+
+          redirectURL.searchParams.set("updated_user_info", "true");
+          redirectURL.searchParams.set("info", "address");
+          redirectURL.searchParams.set("action", "delete");
+
+          location.href = redirectURL.toString();
+        },
       }),
     );
   }

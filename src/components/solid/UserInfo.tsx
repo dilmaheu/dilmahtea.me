@@ -63,6 +63,7 @@ export default function UserInfo({
     text_default_billing_address,
     Notification_added_address,
     Notification_updated_address,
+    Notification_deleted_address,
   } = userAccountRecurData;
 
   function scrollToAddNewAddress(after: boolean = true) {
@@ -99,7 +100,9 @@ export default function UserInfo({
             ? Notification_added_address
             : action === "update"
               ? Notification_updated_address
-              : null
+              : action === "delete"
+                ? Notification_deleted_address
+                : null
           : InfoLabels[info]
             ? user_info_update_success_notification.replace(
                 "<info_label>",
