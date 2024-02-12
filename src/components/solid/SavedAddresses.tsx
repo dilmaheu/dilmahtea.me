@@ -77,8 +77,6 @@ export default function SavedAddresses({
       new URLSearchParams(location.search),
     );
 
-    console.log(updated_user_info, info, action);
-
     if (
       updated_user_info === "true" &&
       info === "address" &&
