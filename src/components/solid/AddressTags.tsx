@@ -79,7 +79,7 @@ export default function AddressTags({
               ),
             ]
         )
-          .slice(0, showMoreAddresses && showMoreAddresses() ? Infinity : 3)
+          .slice(0, !showMoreAddresses || showMoreAddresses() ? Infinity : 3)
           .map((tag) => (
             <div>
               <input
