@@ -64,7 +64,7 @@ export default function Address({
       body: JSON.stringify({ id }),
     }).then((response) =>
       handleAPIResponse(response, {
-        onParse: () => setIsDeleting(false),
+        onError: () => setIsDeleting(false),
         onSuccess: () => {
           const redirectURL = new URL(location.href);
 
