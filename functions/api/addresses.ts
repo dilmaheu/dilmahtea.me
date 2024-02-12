@@ -109,29 +109,23 @@ export const onRequestGet: PagesFunction<Env> = getAPIHandler(
       .bind(exact_account_guid)
       .all<Address>();
 
+    const defaultDeliveryAddressIndex = addresses.findIndex(
+        (address) => address.id === default_delivery_address,
+      ),
+      defaultBillingAddressIndex = addresses.findIndex(
+        (address) => address.id === default_billing_address,
+      );
+
     return Response.json(
       [
-        addresses.find((address, i) => {
-          const isDefaultDeliveryAddress =
-            default_delivery_address === address.id;
-
-          if (isDefaultDeliveryAddress) {
-            delete addresses[i];
-
-            return isDefaultDeliveryAddress;
-          }
-        }),
-        addresses.find((address, i) => {
-          const isDefaultBillingAddress =
-            default_billing_address === address?.id;
-
-          if (isDefaultBillingAddress) {
-            delete addresses[i];
-
-            return isDefaultBillingAddress;
-          }
-        }),
-        ...addresses.map((address) => address?.id),
+        addresses[defaultDeliveryAddressIndex],
+        defaultBillingAddressIndex && addresses[defaultBillingAddressIndex],
+        ...addresses.filter(
+          (_, i) =>
+            ![defaultDeliveryAddressIndex, defaultBillingAddressIndex].includes(
+              i,
+            ),
+        ),
       ].filter(Boolean),
     );
   },
