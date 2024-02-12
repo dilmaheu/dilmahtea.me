@@ -27,6 +27,7 @@ const AddAddressBodySchema = EditAddressBodySchema.extend({
 });
 
 const UpdateAddressBodySchema = EditAddressBodySchema.extend({
+  id: z.string(),
   tag: z.string(),
 });
 
@@ -43,6 +44,15 @@ declare type HandlerBody = (
   session: Session,
   bodyData: any,
 ) => Promise<Response>;
+
+const addressDetailsKeys = [
+  "first_name",
+  "last_name",
+  "street",
+  "city",
+  "postal_code",
+  "country",
+];
 
 function getAPIHandler(handlerBody: HandlerBody) {
   const handler: PagesFunction<Env> = async (context) => {
@@ -151,15 +161,6 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
         { status: 400 },
       );
 
-    const addressDetailsKeys = [
-      "first_name",
-      "last_name",
-      "street",
-      "city",
-      "postal_code",
-      "country",
-    ];
-
     const addressHashes = structuredClone(addresses).map((address) => {
       return objectHash(subset(address, addressDetailsKeys));
     });
@@ -220,7 +221,15 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
 
 export const onRequestPut: PagesFunction<Env> = getAPIHandler(
   async (env, session, validatedData: UpdateAddressBody) => {
-    const { exact_account_guid } = session.user;
+    const { id, tag } = validatedData,
+      {
+        exact_account_guid,
+        default_delivery_address,
+        default_billing_address,
+      } = session.user;
+
+    let { set_as_default_delivery_address, set_as_default_billing_address } =
+      validatedData;
 
     const { results: addresses } = await env.USERS.prepare(
       "SELECT * FROM addresses WHERE exact_account_guid = ?",
@@ -228,24 +237,49 @@ export const onRequestPut: PagesFunction<Env> = getAPIHandler(
       .bind(exact_account_guid)
       .all<Address>();
 
-    const usedTags = addresses.map((address) => address.tag);
+    const existingAddress = addresses.find((address) => address.id === id);
 
-    if (!usedTags.includes(validatedData.tag))
+    if (!existingAddress)
       return Response.json(
-        { success: false, error: "Address tag does not exist" },
+        { success: false, error: "Address does not exist" },
         { status: 400 },
       );
 
-    if (usedTags.length === 1) {
-      validatedData.set_as_default_delivery_address = true;
-      validatedData.set_as_default_billing_address = true;
+    if (tag !== existingAddress.tag) {
+      const usedTags = addresses.map((address) => address.tag);
+
+      if (usedTags.includes(tag))
+        return Response.json(
+          { success: false, error: "Address tag has been used already" },
+          { status: 400 },
+        );
     }
 
     await env.USERS.prepare(
-      "UPDATE addresses SET first_name = ?, last_name = ?, street = ?, city = ?, postal_code = ?, country = ?, set_as_default_delivery_address = ?, set_as_default_billing_address = ? WHERE id = ?",
+      "UPDATE addresses SET tag = ?, first_name = ?, last_name = ?, street = ?, city = ?, postal_code = ?, country = ? WHERE id = ?",
     )
-      .bind(...Object.values(validatedData), validatedData.tag)
+      .bind(
+        tag,
+        ...Object.values(subset(validatedData, addressDetailsKeys)),
+        id,
+      )
       .run();
+
+    if (set_as_default_delivery_address && id !== default_delivery_address) {
+      await env.USERS.prepare(
+        "UPDATE user SET default_delivery_address = ? WHERE exact_account_guid = ?",
+      )
+        .bind(id, exact_account_guid)
+        .run();
+    }
+
+    if (set_as_default_billing_address && id !== default_billing_address) {
+      await env.USERS.prepare(
+        "UPDATE user SET default_billing_address = ? WHERE exact_account_guid = ?",
+      )
+        .bind(id, exact_account_guid)
+        .run();
+    }
 
     return Response.json({ success: true });
   },
