@@ -296,7 +296,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       }
     </div>
 
-    <div class="flex flex-wrap division-in-gap items-center w-full justify-between">
+    <div
+      class="flex flex-wrap division-in-gap items-center w-full justify-between"
+    >
       {
         stockAmount < 1 && (
           <div class="grid gap-4 w-full">
@@ -309,8 +311,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             >
               <Icon
                 name="mdi:alert-circle"
-                class:list=
-                {[
+                class:list={[
                   "inline-flex p-0.5 min-w-[22px] min-h-[22px]",
                   "sm:w-[26px] sm:h-[26px] text-warning-light bg-warning rounded-full select-none",
                 ]}
@@ -338,48 +339,51 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         )
       }
 
-      {stockAmount > 0 && ( 
-        <div class="button-cart-quantity-default-large">
-          <button
-            data-action="decrement"
-            aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
-            class="product-amount-tweak-btn button-cart-quantity-item-large"
-            disabled
-          >
-            <Icon name="akar-icons:minus" class="button-cart-quantity-icon-large" />
-          </button>
+      {
+        stockAmount > 0 && (
+          <div class="button-cart-quantity-default-large">
+            <button
+              data-action="decrement"
+              aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
+              class="product-amount-tweak-btn button-cart-quantity-item-large"
+              disabled
+            >
+              <Icon
+                name="akar-icons:minus"
+                class="button-cart-quantity-icon-large"
+              />
+            </button>
 
-          <input
-            type="number"
-            name="quantity"
-            aria-label={ariaLabelRecurData.Product_quantity_text}
-            min={1}
-            max={stockAmount}
-            value={1}
-            class="product-amount-input"
-            required
-          />
+            <input
+              type="number"
+              name="quantity"
+              aria-label={ariaLabelRecurData.Product_quantity_text}
+              min={1}
+              max={stockAmount}
+              value={1}
+              class="product-amount-input"
+              required
+            />
 
-          <button
-            data-action="increment"
-            aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
-            class="product-amount-tweak-btn button-cart-quantity-item-large"
-          >
-            <Icon name="akar-icons:plus" class="button-cart-quantity-icon-large" />
-          </button>
-        </div>
-      )
+            <button
+              data-action="increment"
+              aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
+              class="product-amount-tweak-btn button-cart-quantity-item-large"
+            >
+              <Icon
+                name="akar-icons:plus"
+                class="button-cart-quantity-icon-large"
+              />
+            </button>
+          </div>
+        )
       }
 
       <div class="grow">
         {
           stockAmount > 0 && (
-            <button
-              class="button-cart-default-normal w-fit md:w-full font-bold">
-              <Icon
-                name="mi:shopping-cart"
-                class="cart-icon"
-              />
+            <button class="button-cart-default-normal w-fit md:w-full font-bold">
+              <Icon name="mi:shopping-cart" class="cart-icon" />
 
               <span class="text-container">
                 {checkoutRecurData.text_add_to_cart}
@@ -396,7 +400,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           stockAmount === 0 && (
             <button
               disabled
-              class="button-cart-disabled-normal font-bold mt-auto w-full xl:w-2/3">
+              class="button-cart-disabled-normal font-bold mt-auto w-full xl:w-2/3"
+            >
               <Icon name="tabler:shopping-cart-x" class="cart-icon" />
 
               <span class="text-container">
@@ -421,71 +426,52 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
     {
       stockAmount > 0 && (
-        <div class="w-full flex flex-wrap division-in-element-gap items-center justify-between">
+        <div class="w-full flex flex-wrap division-in-element-gap items-center">
           {availableVariants.length > 0 && (
-            <fieldset class="grow">
-              <div class="grid division-in-element-gap">
-                <legend class="text-b5 text-black-light outline-none">
-                  {checkoutRecurData.text_variant}:
-                </legend>
+            <label class="grid division-in-element-gap grow">
+              <span class="input-label">{checkoutRecurData.text_variant}:</span>
 
-                <div class="border-2 border-primary overflow-hidden rounded-full">
-                  <select
-                    name="tea_variant"
-                    class:list={[
-                      "w-full inline-block text-primary text-b5",
-                      "py-2.5 pl-2.5 bg-white border-r-[10px] border-transparent",
-                    ]}
+              <select
+                name="tea_variant"
+                class="selector-default-bordered !w-full"
+              >
+                {availableVariants.map(({ value, variant, link }) => (
+                  <option
+                    value={value}
+                    data-href={link}
+                    selected={value === productVariant}
                   >
-                    {availableVariants.map(({ value, variant, link }) => (
-                      <option
-                        value={value}
-                        data-href={link}
-                        selected={value === productVariant}
-                      >
-                        {variant}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </fieldset>
+                    {variant}
+                  </option>
+                ))}
+              </select>
+            </label>
           )}
 
           {availableSizes.length > 0 && (
-            <fieldset class="grow">
-              <div class="grid division-in-element-gap">
-                <legend class="text-b5 text-black-light outline-none">
-                  {checkoutRecurData.text_size}:
-                </legend>
+            <label class="grid division-in-element-gap grow">
+              <span class="input-label">{checkoutRecurData.text_size}:</span>
 
-                <div class="border-2 border-primary overflow-hidden rounded-full">
-                  <select
-                    name="tea_size"
-                    class:list={[
-                      "w-full inline-block text-primary text-b5",
-                      "py-2.5 pl-2.5 bg-white border-r-[10px] border-transparent",
-                    ]}
+              <select name="tea_size" class="selector-default-bordered !w-full">
+                {availableSizes.map(({ value, size, link }) => (
+                  <option
+                    value={value}
+                    data-href={link}
+                    selected={value === productSize}
                   >
-                    {availableSizes.map(({ value, size, link }) => (
-                      <option
-                        value={value}
-                        data-href={link}
-                        selected={value === productSize}
-                      >
-                        {size}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </fieldset>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </label>
           )}
         </div>
       )
     }
 
-    <div class="w-full flex flex-wrap justify-between items-center division-in-element-gap">
+    <div
+      class="w-full flex flex-wrap justify-between items-center division-in-element-gap"
+    >
       {
         stockAmount > 0 && (
           <div class="button-cart-quantity-primary-large">
@@ -495,7 +481,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               class="product-amount-tweak-btn button-cart-quantity-item-large"
               disabled
             >
-              <Icon name="akar-icons:minus" class="button-cart-quantity-icon-large" />
+              <Icon
+                name="akar-icons:minus"
+                class="button-cart-quantity-icon-large"
+              />
             </button>
 
             <input
@@ -514,7 +503,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
               class="product-amount-tweak-btn button-cart-quantity-item-large"
             >
-              <Icon name="akar-icons:plus" class="button-cart-quantity-icon-large" />
+              <Icon
+                name="akar-icons:plus"
+                class="button-cart-quantity-icon-large"
+              />
             </button>
           </div>
         )
@@ -525,7 +517,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           stockAmount > 0 && (
             <button class="button-cart-primary-normal w-full mt-auto font-bold">
               <Icon name="mi:shopping-cart" class="cart-icon" />
-              
+
               <span class="text-container">
                 {checkoutRecurData.text_add}
                 <span class="w-2 h-2 bg-white rounded-full" />€
@@ -539,10 +531,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
         {
           stockAmount === 0 && (
-            <div
-              class="button-cart-disabled-normal w-full mt-[30px] font-bold">
+            <div class="button-cart-disabled-normal w-full mt-[30px] font-bold">
               <Icon name="mi:shopping-cart" class="cart-icon" />
-              
+
               <span class="text-container">
                 {recurData.Product_sold_out_text}
                 <span class="w-2 h-2 bg-secondary-light rounded-full" />€
@@ -577,7 +568,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               class="product-amount-tweak-btn button-cart-quantity-item-large"
               disabled
             >
-              <Icon name="akar-icons:minus" class="button-cart-quantity-icon-large" />
+              <Icon
+                name="akar-icons:minus"
+                class="button-cart-quantity-icon-large"
+              />
             </button>
 
             <input
@@ -596,13 +590,15 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
               class="product-amount-tweak-btn button-cart-quantity-item-large"
             >
-              <Icon name="akar-icons:plus" class="button-cart-quantity-icon-large" />
+              <Icon
+                name="akar-icons:plus"
+                class="button-cart-quantity-icon-large"
+              />
             </button>
           </div>
 
           <div class="grow">
-            <button
-              class="button-cart-primary-normal w-full mt-auto font-bold">
+            <button class="button-cart-primary-normal w-full mt-auto font-bold">
               <Icon name="mi:shopping-cart" class="w-[18px] h-[18px]" />
               {checkoutRecurData.text_add}
             </button>

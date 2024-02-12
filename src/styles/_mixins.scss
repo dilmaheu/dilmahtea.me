@@ -1,6 +1,7 @@
 @use "sass:meta";
 @use "sass:string";
 @use "src/styles/colors";
+@use "src/styles/poly-fluid" as *;
 
 // markdown/prose-links
 
@@ -774,26 +775,38 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   @include selector-common;
   @include selector-arrow-(normal, $color);
 
-  @apply text-b5 py-[clamp(8px,calc(0.25vw+6.4px),10px)] px-[clamp(15px,calc(0.625vw+11px),20px)];
+  @apply w-fit text-b5;
+
+  padding: poly-fluid-clamp-primary(8px, 10px)
+    poly-fluid-clamp-primary(15px, 20px);
+  padding-right: poly-fluid-clamp-primary(35px, 45px);
 }
 
 @mixin selector-sm($color) {
   @include selector-common;
   @include selector-arrow-(sm, $color);
 
-  @apply text-b6 pr-[clamp(30px,calc(1.25vw+22px),40px)] py-[clamp(5px,calc(0.375vw+2.6px),8px)] px-[clamp(10px,calc(0.625vw+6px),15px)];
+  @apply w-fit text-b6 pr-[clamp(30px,calc(1.25vw+22px),40px)]
+    py-[clamp(5px,calc(0.375vw+2.6px),8px)] px-[clamp(10px,calc(0.625vw+6px),15px)];
 }
 
 $white: str-slice(meta.inspect(colors.$white), 2);
 $primary: str-slice(meta.inspect(colors.$primary), 2);
 
-@mixin selector-primary {
-  @include selector($white);
-  @include button-primary-colors;
+@mixin selector-default {
+  @include selector($primary);
+  @include button-default-colors;
 }
 
-@mixin selector-sm-primary {
-  @include selector-sm($white);
+@mixin selector-default-bordered {
+  @include selector-sm($primary);
+  @include button-default-colors;
+
+  @apply border-2 border-primary;
+}
+
+@mixin selector-primary {
+  @include selector($white);
   @include button-primary-colors;
 }
 

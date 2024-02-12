@@ -76,12 +76,8 @@ export default function ProductFiltersForm({
         id="tea_variant"
         name="tea_variant"
         class={[
-          type === "header"
-            ? "text-primary bg-white border-white"
-            : "text-secondary-light border-primary bg-primary",
-          "text-lg leading-[150%] max-w-[90vw]",
-          "py-[9px] pl-5 border-r-[20px] rounded-full cursor-pointer",
-          "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
+          type === "header" ? "selector-default" : "selector-primary",
+          "max-w-[90vw]",
         ].join(" ")}
       >
         <option value="" selected>
@@ -100,12 +96,8 @@ export default function ProductFiltersForm({
         id="tea_size"
         name="tea_size"
         class={[
-          type === "header"
-            ? "text-primary bg-white border-white"
-            : "text-secondary-light border-primary bg-primary",
-          "text-lg leading-[150%] max-w-[90vw]",
-          "py-[9px] pl-5 border-r-[20px] rounded-full cursor-pointer",
-          "focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none",
+          type === "header" ? "selector-default" : "selector-primary",
+          "max-w-[90vw]",
         ].join(" ")}
       >
         <option value="" selected>
