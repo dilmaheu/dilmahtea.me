@@ -98,6 +98,11 @@ export default function EditAddress({
         const shouldShowCheckboxes =
           addresses()?.length > (action === "add" ? 0 : 1);
 
+        const isDefaultDeliveryAddress =
+            address && user().default_delivery_address?.id === address.id,
+          isDefaultBillingAddress =
+            address && user().default_billing_address?.id === address.id;
+
         if (shouldShowCheckboxes) {
           return (
             <div class="division-in-element-gap grid">
@@ -110,10 +115,10 @@ export default function EditAddress({
                       value="true"
                       checked={
                         tickCheckboxes?.default_delivery_address ||
-                        (address &&
-                          address.id === user().default_delivery_address?.id) ||
+                        isDefaultDeliveryAddress ||
                         false
                       }
+                      disabled={isDefaultDeliveryAddress || false}
                     />
                     <span class="checkbox-primary"></span>
                   </span>
@@ -130,10 +135,10 @@ export default function EditAddress({
                       value="true"
                       checked={
                         tickCheckboxes?.default_billing_address ||
-                        (address &&
-                          address.id === user().default_billing_address?.id) ||
+                        isDefaultBillingAddress ||
                         false
                       }
+                      disabled={isDefaultBillingAddress || false}
                     />
                     <span class="checkbox-primary"></span>
                   </span>
