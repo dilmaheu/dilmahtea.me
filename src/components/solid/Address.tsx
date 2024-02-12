@@ -92,6 +92,7 @@ export default function Address({
                   user().default_billing_address?.id === id;
 
               return (
+                !isMyProfile &&
                 (isDefaultDeliveryAddress || isDefaultBillingAddress) && (
                   <>
                     <div class="info-tag-button-primary">
