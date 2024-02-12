@@ -64,11 +64,20 @@ export default function AddressTags({
       <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
         {(action === "checkout" && addresses()?.length > 0
           ? usedTags()
-          : Tag_suggestions.split("\n")
-              .filter(Boolean)
-              .filter(
-                (tag) => !usedTags().includes(tag) || tag === address?.tag,
-              )
+          : [
+              ...new Set(
+                [
+                  ...Tag_suggestions.split("\n")
+                    .filter(Boolean)
+                    .filter(
+                      (tag) =>
+                        !usedTags().includes(tag) || tag === address?.tag,
+                    ),
+                  // add the current tag to the list of suggestions (for Address #N tags)
+                  address?.tag,
+                ].filter(Boolean),
+              ),
+            ]
         )
           .slice(0, showMoreAddresses && showMoreAddresses() ? Infinity : 3)
           .map((tag) => (
