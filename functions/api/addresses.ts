@@ -131,6 +131,12 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
   async (env, session, validatedData: AddAddressBody) => {
     const { exact_account_guid } = session.user;
 
+    let {
+      tag,
+      set_as_default_delivery_address,
+      set_as_default_billing_address,
+    } = validatedData;
+
     const { results: addresses } = await env.USERS.prepare(
       "SELECT * FROM addresses WHERE exact_account_guid = ?",
     )
@@ -139,7 +145,7 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
 
     const usedTags = addresses.map((address) => address.tag);
 
-    if (usedTags.includes(validatedData.tag))
+    if (usedTags.includes(tag))
       return Response.json(
         { success: false, error: "Address tag has been used already" },
         { status: 400 },
@@ -158,9 +164,9 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
       return objectHash(subset(address, addressDetailsKeys));
     });
 
-    const providedAddressHash = objectHash(
-      subset(validatedData, addressDetailsKeys),
-    );
+    const providedAddress = subset(validatedData, addressDetailsKeys);
+
+    const providedAddressHash = objectHash(providedAddress);
 
     if (addressHashes.includes(providedAddressHash))
       return Response.json(
@@ -168,26 +174,16 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
         { status: 400 },
       );
 
-    if (!validatedData.tag) {
-      let latestCustomAddressTag = 0;
+    if (!tag) {
+      let latestCustomAddressTag = Math.max(
+        0,
+        ...usedTags
+          .filter((usedTag) => usedTag.startsWith("Address #"))
+          .map((usedTag) => Number(usedTag.slice(9))),
+      );
 
-      for (const tag of usedTags) {
-        if (tag.startsWith("Address #")) {
-          const tagNumber = Number(tag.slice(9));
-
-          if (tagNumber > latestCustomAddressTag)
-            latestCustomAddressTag = tagNumber;
-        }
-      }
-
-      validatedData.tag = `Address #${latestCustomAddressTag + 1}`;
+      tag = `Address #${latestCustomAddressTag + 1}`;
     }
-
-    let { set_as_default_delivery_address, set_as_default_billing_address } =
-      validatedData;
-
-    delete validatedData.set_as_default_delivery_address;
-    delete validatedData.set_as_default_billing_address;
 
     if (usedTags.length === 0) {
       set_as_default_delivery_address = true;
@@ -197,9 +193,9 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
     const id = crypto.randomUUID();
 
     await env.USERS.prepare(
-      "INSERT INTO addresses (id, exact_account_guid, tag, first_name, last_name, street, city, postal_code, country, set_as_default_delivery_address, set_as_default_billing_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO addresses (id, exact_account_guid, tag, first_name, last_name, street, city, postal_code, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
-      .bind(id, exact_account_guid, ...Object.values(validatedData))
+      .bind(id, exact_account_guid, tag, ...Object.values(providedAddress))
       .run();
 
     if (set_as_default_delivery_address) {
