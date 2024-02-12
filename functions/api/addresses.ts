@@ -183,9 +183,15 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
       validatedData.tag = `Address #${latestCustomAddressTag + 1}`;
     }
 
+    let { set_as_default_delivery_address, set_as_default_billing_address } =
+      validatedData;
+
+    delete validatedData.set_as_default_delivery_address;
+    delete validatedData.set_as_default_billing_address;
+
     if (usedTags.length === 0) {
-      validatedData.set_as_default_delivery_address = true;
-      validatedData.set_as_default_billing_address = true;
+      set_as_default_delivery_address = true;
+      set_as_default_billing_address = true;
     }
 
     const id = crypto.randomUUID();
