@@ -202,6 +202,22 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
       .bind(id, exact_account_guid, ...Object.values(validatedData))
       .run();
 
+    if (set_as_default_delivery_address) {
+      await env.USERS.prepare(
+        "UPDATE user SET default_delivery_address = ? WHERE exact_account_guid = ?",
+      )
+        .bind(id, exact_account_guid)
+        .run();
+    }
+
+    if (set_as_default_billing_address) {
+      await env.USERS.prepare(
+        "UPDATE user SET default_billing_address = ? WHERE exact_account_guid = ?",
+      )
+        .bind(id, exact_account_guid)
+        .run();
+    }
+
     return Response.json({ id });
   },
 );
