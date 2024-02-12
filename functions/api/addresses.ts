@@ -280,8 +280,19 @@ export const onRequestPut: PagesFunction<Env> = getAPIHandler(
 );
 
 export const onRequestDelete: PagesFunction<Env> = getAPIHandler(
-  async (env, _, validatedData: DeleteAddressBody) => {
-    const { id } = validatedData;
+  async (env, session, validatedData: DeleteAddressBody) => {
+    const { id } = validatedData,
+      {
+        exact_account_guid,
+        default_delivery_address,
+        default_billing_address,
+      } = session.user;
+
+    if (id === default_delivery_address)
+      return Response.json(
+        { success: false, error: "Cannot delete default delivery address" },
+        { status: 400 },
+      );
 
     try {
       await env.USERS.prepare("DELETE FROM addresses WHERE id = ?")
@@ -292,6 +303,12 @@ export const onRequestDelete: PagesFunction<Env> = getAPIHandler(
         { success: false, error: "Address does not exist" },
         { status: 400 },
       );
+    }
+
+    if (id === default_billing_address) {
+      await env.USERS.prepare(
+        "UPDATE user SET default_billing_address = ? WHERE exact_account_guid = ?",
+      ).bind(default_delivery_address, exact_account_guid);
     }
 
     return Response.json({ success: true });

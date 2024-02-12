@@ -92,7 +92,6 @@ export default function Address({
                   user().default_billing_address?.id === id;
 
               return (
-                !isMyProfile &&
                 (isDefaultDeliveryAddress || isDefaultBillingAddress) && (
                   <>
                     <div class="info-tag-button-primary">
@@ -136,13 +135,21 @@ export default function Address({
                 {isMyProfile ? Button_update_text : Button_edit_text}
               </button>
 
-              {!isMyProfile && (
-                <button
-                  class="button-link-error-dark-big"
-                  innerHTML={trashCanIcon.innerHTML}
-                  onclick={deleteAddress}
-                />
-              )}
+              {() => {
+                const isDefaultDeliveryAddress =
+                  user().default_delivery_address?.id === id;
+
+                return (
+                  !isMyProfile &&
+                  !isDefaultDeliveryAddress && (
+                    <button
+                      class="button-link-error-dark-big"
+                      innerHTML={trashCanIcon.innerHTML}
+                      onclick={deleteAddress}
+                    />
+                  )
+                );
+              }}
             </div>
           </div>
         </>
