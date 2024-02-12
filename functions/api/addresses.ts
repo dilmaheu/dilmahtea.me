@@ -209,7 +209,7 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
         .run();
     }
 
-    return Response.json({ id });
+    return Response.json({ success: true });
   },
 );
 
