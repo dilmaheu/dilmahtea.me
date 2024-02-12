@@ -2,6 +2,9 @@ import type { Session } from "lucia";
 import type { Address } from "@solid/Address";
 
 import { z } from "zod";
+import objectHash from "object-hash";
+
+import subset from "@utils/shared/subset";
 
 import { initializeLucia } from "../utils/auth";
 
@@ -139,6 +142,29 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
     if (usedTags.includes(validatedData.tag))
       return Response.json(
         { success: false, error: "Address tag has been used already" },
+        { status: 400 },
+      );
+
+    const addressDetailsKeys = [
+      "first_name",
+      "last_name",
+      "street",
+      "city",
+      "postal_code",
+      "country",
+    ];
+
+    const addressHashes = structuredClone(addresses).map((address) => {
+      return objectHash(subset(address, addressDetailsKeys));
+    });
+
+    const providedAddressHash = objectHash(
+      subset(validatedData, addressDetailsKeys),
+    );
+
+    if (addressHashes.includes(providedAddressHash))
+      return Response.json(
+        { success: false, error: "Duplicate address provided" },
         { status: 400 },
       );
 
