@@ -75,7 +75,7 @@ export default function AddressTags({
             <div>
               <input
                 type="radio"
-                name="address_tag"
+                name="tag"
                 id={`address-tag-${tag}`}
                 class="peer w-px opacity-0"
                 value={tag}
@@ -101,7 +101,7 @@ export default function AddressTags({
         <div>
           <input
             type="radio"
-            name="address_tag"
+            name="tag"
             id="add-new-address-tag"
             class="peer w-px opacity-0"
             value={customAddressTag()}
