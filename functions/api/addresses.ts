@@ -113,7 +113,7 @@ export const onRequestGet: PagesFunction<Env> = getAPIHandler(
         }),
         addresses.find((address, i) => {
           const isDefaultBillingAddress =
-            default_billing_address === address.id;
+            default_billing_address === address?.id;
 
           if (isDefaultBillingAddress) {
             delete addresses[i];
@@ -121,7 +121,7 @@ export const onRequestGet: PagesFunction<Env> = getAPIHandler(
             return isDefaultBillingAddress;
           }
         }),
-        ...addresses.map((address) => address.id),
+        ...addresses.map((address) => address?.id),
       ].filter(Boolean),
     );
   },
