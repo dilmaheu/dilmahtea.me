@@ -145,16 +145,7 @@ const recurData = CMS.get("recurringElement", locale),
 
           {
             () => {
-              const heroTitle = (
-                <h1 class="text-h1">
-                  {page.Title || page.Estate_name}{" "}
-                  {!basicHeader && !plainTitle && page.Title && (
-                    <span class="icon heading-inline-icon">
-                      <img class="w-full h-full" alt="" {...white_cup} />
-                    </span>
-                  )}
-                </h1>
-              );
+              const heroTitle = page.Title || page.Estate_name + " ";
 
               return (
                 <div
@@ -163,13 +154,13 @@ const recurData = CMS.get("recurringElement", locale),
                     link && "link-section",
                   ]}
                 >
-                  {link ? (
-                    <a class="main-link" href={`/${link}`}>
-                      {heroTitle}
-                    </a>
-                  ) : (
-                    <>{heroTitle}</>
-                  )}
+                  <h1 class="text-h1">
+                    {link ? (
+                      <a class="main-link" href={link} set:text={heroTitle} />
+                    ) : (
+                      <>{heroTitle}</>
+                    )}
+                  </h1>
 
                   {!page.estate_name && (
                     <div class="hero-text">
@@ -205,6 +196,8 @@ const recurData = CMS.get("recurringElement", locale),
               </div>
             )
           }
+
+          <slot name="top-slot" />
         </div>
 
         <div class="flex flex-col division-in-gap">
