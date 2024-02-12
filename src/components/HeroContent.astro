@@ -210,18 +210,15 @@ const recurData = CMS.get("recurringElement", locale),
         <div class="flex flex-col division-in-gap">
           {
             page?.Heading_button_text && (
-              <div
+              <a
+                href={page.Heading_button_link ?? "#"}
                 class:list={[
-                  page.type === "productCategory" && "hidden sm:flex",
+                  "button-default w-fit",
+                  page.type === "productCategory" && "!hidden sm:!flex",
                 ]}
               >
-                <a
-                  href={page.Heading_button_link ?? "#"}
-                  class="button-default"
-                >
-                  {page.Heading_button_text}
-                </a>
-              </div>
+                {page.Heading_button_text}
+              </a>
             )
           }
 
