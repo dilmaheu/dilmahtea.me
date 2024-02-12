@@ -53,9 +53,6 @@ export default function Address({
   const fullName = first_name + " " + last_name,
     fullAddress = [street, city, postal_code, country].join(", ");
 
-  const isDefaultDeliveryAddress = user().default_delivery_address?.id === id,
-    isDefaultBillingAddress = user().default_billing_address?.id === id;
-
   function deleteAddress() {
     setIsDeleting(true);
 
@@ -79,20 +76,29 @@ export default function Address({
       ) : (
         <>
           <div class="quick-info">
-            {!isMyProfile &&
-              (isDefaultDeliveryAddress || isDefaultBillingAddress) && (
-                <>
-                  <div class="info-tag-button-primary">
-                    {isDefaultDeliveryAddress === isDefaultDeliveryAddress
-                      ? Tag_default_text
-                      : isDefaultDeliveryAddress
-                        ? text_default_delivery_address
-                        : text_default_billing_address}
-                  </div>
+            {() => {
+              const isDefaultDeliveryAddress =
+                  user().default_delivery_address?.id === id,
+                isDefaultBillingAddress =
+                  user().default_billing_address?.id === id;
 
-                  <div>&#x2022;</div>
-                </>
-              )}
+              return (
+                !isMyProfile &&
+                (isDefaultDeliveryAddress || isDefaultBillingAddress) && (
+                  <>
+                    <div class="info-tag-button-primary">
+                      {isDefaultDeliveryAddress === isDefaultDeliveryAddress
+                        ? Tag_default_text
+                        : isDefaultDeliveryAddress
+                          ? text_default_delivery_address
+                          : text_default_billing_address}
+                    </div>
+
+                    <div>&#x2022;</div>
+                  </>
+                )
+              );
+            }}
 
             <div>{fullName}</div>
             <div>&#x2022;</div>
