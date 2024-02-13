@@ -7,10 +7,8 @@ import objectHash from "object-hash";
 import subset from "@utils/shared/subset";
 
 import { initializeLucia } from "../utils/auth";
+import type { ENV } from "functions/utils/types";
 
-declare interface Env {
-  USERS: D1Database;
-}
 const EditAddressBodySchema = z.object({
   first_name: z.string(),
   last_name: z.string(),
@@ -40,7 +38,7 @@ type UpdateAddressBody = z.infer<typeof UpdateAddressBodySchema>;
 type DeleteAddressBody = z.infer<typeof DeleteAddressBodySchema>;
 
 declare type HandlerBody = (
-  env: Env,
+  env: ENV,
   session: Session,
   bodyData: any,
 ) => Promise<Response>;
@@ -55,7 +53,7 @@ const addressDetailsKeys = [
 ];
 
 function getAPIHandler(handlerBody: HandlerBody) {
-  const handler: PagesFunction<Env> = async (context) => {
+  const handler: PagesFunction<ENV> = async (context) => {
     const { request, env } = context;
 
     const auth = initializeLucia(env.USERS),
@@ -95,43 +93,41 @@ function getAPIHandler(handlerBody: HandlerBody) {
   return handler;
 }
 
-export const onRequestGet: PagesFunction<Env> = getAPIHandler(
-  async (env, session) => {
-    const {
-      exact_account_guid,
-      default_delivery_address,
-      default_billing_address,
-    } = session.user;
+export const onRequestGet = getAPIHandler(async (env, session) => {
+  const {
+    exact_account_guid,
+    default_delivery_address,
+    default_billing_address,
+  } = session.user;
 
-    const { results: addresses } = await env.USERS.prepare(
-      "SELECT * FROM addresses WHERE exact_account_guid = ?",
-    )
-      .bind(exact_account_guid)
-      .all<Address>();
+  const { results: addresses } = await env.USERS.prepare(
+    "SELECT * FROM addresses WHERE exact_account_guid = ?",
+  )
+    .bind(exact_account_guid)
+    .all<Address>();
 
-    const defaultDeliveryAddressIndex = addresses.findIndex(
-        (address) => address.id === default_delivery_address,
-      ),
-      defaultBillingAddressIndex = addresses.findIndex(
-        (address) => address.id === default_billing_address,
-      );
-
-    return Response.json(
-      [
-        addresses[defaultDeliveryAddressIndex],
-        defaultBillingAddressIndex && addresses[defaultBillingAddressIndex],
-        ...addresses.filter(
-          (_, i) =>
-            ![defaultDeliveryAddressIndex, defaultBillingAddressIndex].includes(
-              i,
-            ),
-        ),
-      ].filter(Boolean),
+  const defaultDeliveryAddressIndex = addresses.findIndex(
+      (address) => address.id === default_delivery_address,
+    ),
+    defaultBillingAddressIndex = addresses.findIndex(
+      (address) => address.id === default_billing_address,
     );
-  },
-);
 
-export const onRequestPost: PagesFunction<Env> = getAPIHandler(
+  return Response.json(
+    [
+      addresses[defaultDeliveryAddressIndex],
+      defaultBillingAddressIndex && addresses[defaultBillingAddressIndex],
+      ...addresses.filter(
+        (_, i) =>
+          ![defaultDeliveryAddressIndex, defaultBillingAddressIndex].includes(
+            i,
+          ),
+      ),
+    ].filter(Boolean),
+  );
+});
+
+export const onRequestPost = getAPIHandler(
   async (env, session, validatedData: AddAddressBody) => {
     const { exact_account_guid } = session.user;
 
@@ -213,7 +209,7 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
   },
 );
 
-export const onRequestPut: PagesFunction<Env> = getAPIHandler(
+export const onRequestPut = getAPIHandler(
   async (env, session, validatedData: UpdateAddressBody) => {
     const { id, tag } = validatedData,
       {
@@ -279,7 +275,7 @@ export const onRequestPut: PagesFunction<Env> = getAPIHandler(
   },
 );
 
-export const onRequestDelete: PagesFunction<Env> = getAPIHandler(
+export const onRequestDelete = getAPIHandler(
   async (env, session, validatedData: DeleteAddressBody) => {
     const { id } = validatedData,
       {
