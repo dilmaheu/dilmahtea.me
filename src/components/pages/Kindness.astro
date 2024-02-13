@@ -13,18 +13,6 @@ const { page, ariaLabelRecurData } = Astro.props,
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
 
-  .post-img-curve-container {
-    aspect-ratio: 6 / 5;
-    width: 100%;
-    height: 100%;
-    max-width: 600px;
-    max-height: 500px;
-  }
-
-  .post-intro {
-    @apply line-clamp-3 sm:line-clamp-4 md:line-clamp-5 lg:line-clamp-6;
-  }
-
   .impact-chart-line {
     @include poly-fluid-sizing(
       "padding",
@@ -85,7 +73,7 @@ const { page, ariaLabelRecurData } = Astro.props,
     }
 
     .impact-chart-heading {
-      @apply pt-[5px] text-white;
+      @apply text-white;
 
       .icon {
         @apply ml-[3px] relative;
@@ -286,7 +274,7 @@ const { page, ariaLabelRecurData } = Astro.props,
   <div class="hero-sub-menu-shadow nav-bg hidden"></div>
 </div>
 
-<div class="grid section-gap">
+<div class="grid">
   <section
     class="bg-primary relative"
     style="clip-path: url(#hero-background-curve);"
@@ -307,8 +295,8 @@ const { page, ariaLabelRecurData } = Astro.props,
     >
     </div>
 
-    <div class="wrapper relative z-10 section-in-v-pad">
-      <h1 class="recoleta hero-title text-center text-white pb-[50px] md:pb-5">
+    <div class="wrapper section-in-v-pad section-gap grid relative z-10">
+      <h1 class="text-h1 text-white text-center">
         {page.Title}
       </h1>
 
@@ -418,7 +406,7 @@ const { page, ariaLabelRecurData } = Astro.props,
                             ))}
                         </div>
 
-                        <h2 class="impact-chart-heading recoleta text-h5 font-bold line-clamp-2">
+                        <h2 class="impact-chart-heading text-h5">
                           <a
                             class="main-link"
                             href={Link || "#"}
@@ -435,17 +423,18 @@ const { page, ariaLabelRecurData } = Astro.props,
                                 cx="24.5"
                                 cy="24.5"
                                 r="24.5"
-                                style="fill:#fff"
+                                class="fill-white"
                               />
                               <path
                                 d="M10.6,24.3a1.5,1.5,0,0,1,.9-.7,2,2,0,0,1,1.1.2c4.4,2.9,8.3,1.3,11.6-.4l7.3-3.9-5.6-1.8-.5-.2-.3-.4a1.4,1.4,0,0,1-.2-.6A.7.7,0,0,1,25,16a.5.5,0,0,1,.3-.5.8.8,0,0,1,.4-.4h1.1l8.8,2.7a2.2,2.2,0,0,1,.9.7,1.4,1.4,0,0,1,0,1.1l-2.7,8.9a2.7,2.7,0,0,1-.7.8H32a1.6,1.6,0,0,1-.8-.6,1.4,1.4,0,0,1-.1-1.1L32.8,22l-7.3,3.8c-3.4,1.8-8.7,4.1-14.4.4a1.3,1.3,0,0,1-.7-.9A1.8,1.8,0,0,1,10.6,24.3Z"
                                 style="fill:#547b7d"
+                                class="fill-primary"
                               />
                             </svg>
                           </span>
                         </h2>
 
-                        <div class="text-b5-sm text-secondary line-clamp-3 prose max-w-none">
+                        <div class="text-b5-sm text-secondary line-clamp-3 prose-text">
                           <Markdown>{Intro_text}</Markdown>
                         </div>
                       </div>
@@ -460,7 +449,7 @@ const { page, ariaLabelRecurData } = Astro.props,
     </div>
   </section>
 
-  <section class="wrapper">
+  <section class="wrapper section-in-v-pad">
     <ClipPathSVG
       id="post-img-curve"
       path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
@@ -469,44 +458,35 @@ const { page, ariaLabelRecurData } = Astro.props,
     <div class="grid division-gap">
       {
         page.Block2_heading && (
-          <h2
-            class="heading-secondary text-primary text-center">
+          <h2 class="text-h2 text-center text-primary">
             {page.Block2_heading}
           </h2>
         )
       }
 
-      <div class="link-section flex flex-wrap items-center mb-[50px] sm:mb-[25px]">
-        <div
-          class:list={[
-            "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
-            "pr-0 sm:pr-5 md:pr-12 lg:pr-24",
-          ]}
-        >
-          <div class="post-img-curve-container mr-auto">
-            <Picture
-              layout="fill"
-              src={STRAPI_URL + page.Block2_blob?.data?.attributes.url}
-              alt={page.Block2_blob?.data?.attributes.alternativeText}
-              sizes={[
-                "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
-                "(min-width: 640px) min(600px, calc(45vw - 20px))",
-                "90vw",
-              ].join(", ")}
-              attributes={{
-                picture: { style: "clip-path: url(#post-img-curve);" },
-              }}
-            />
-          </div>
+      <div class="grid sm:grid-cols-2 items-center division-gap">
+        <div class="post-img-curve-container">
+          <Picture
+            layout="fill"
+            src={STRAPI_URL + page.Block2_blob?.data?.attributes.url}
+            alt={page.Block2_blob?.data?.attributes.alternativeText}
+            sizes={[
+              "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
+              "(min-width: 640px) min(600px, calc(45vw - 20px))",
+              "90vw",
+            ].join(", ")}
+            attributes={{
+              picture: { style: "clip-path: url(#post-img-curve);" },
+            }}
+          />
         </div>
 
         {/* Text content */}
-        <div class="order-2 w-full sm:w-1/2 flex flex-wrap division-in-gap">
-          <h2 class="heading-secondary text-primary">
+        <div class="grid division-in-gap">
+          <h2 class="text-h2 text-primary">
             {page.Block2_title}
           </h2>
-
-          <div class="post-intro text-b3 prose max-w-none">
+          <div class="post-intro intro-text">
             <Markdown>{page.Block2_text}</Markdown>
           </div>
 
@@ -514,7 +494,8 @@ const { page, ariaLabelRecurData } = Astro.props,
             page?.Block2_button_text && (
               <a
                 href={page.Block2_button_link ?? "#"}
-                class="button-default w-fit">
+                class="button-default w-fit"
+              >
                 {page.Block2_button_text}
               </a>
             )
