@@ -228,11 +228,11 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
   #sidebar nav {
     .menu-title {
-      @apply text-[28px] leading-[150%];
+      @apply text-b1 font-semibold;
     }
 
     .sub-menu-title {
-      @apply text-2xl font-medium leading-[150%];
+      @apply text-b2 font-medium;
     }
   }
 
@@ -596,9 +596,9 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
         )
       }
 
-      <div class="grid content-between h-full px-[30px] pt-[26px] pb-9 z-10">
-        <div class="z-10 grid gap-9 overflow-y-auto">
-          <nav class="flex flex-col gap-[25px] text-white">
+      <div class="wrapper section-in-v-pad-sm grid content-between h-full z-10">
+        <div class="z-10 division-gap grid overflow-y-auto">
+          <nav class="division-gap flex flex-col text-white">
             {
               menu.map(({ Visibility, Title, Link, Sub_menu }, index) => {
                 const currentPageUrl = trimLink(page?.Meta?.URL_slug),
@@ -612,9 +612,9 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
                 return (
                   Visibility && (
-                    <div>
+                    <div class="division-gap flex flex-col">
                       {index > 0 && (
-                        <div class="w-full h-0.5 mb-[25px] bg-white rounded" />
+                        <div class="w-full h-px bg-white rounded" />
                       )}
 
                       {hasSubMenu && (
@@ -622,6 +622,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
                           type="checkbox"
                           id={"open-sub-menu-" + index}
                           class="open-sub-menu-checkbox hidden"
+                          checked={isActive}
                         />
                       )}
 
@@ -694,7 +695,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
         </div>
 
         <div
-          class="text-xs font-normal leading-[150%] z-10"
+          class="text-b7 z-10"
           set:html={footerText}
         />
       </div>
