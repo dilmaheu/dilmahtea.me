@@ -10,7 +10,15 @@ import RecurringImages from "@store/RecurringImages";
 
 const { white_cup } = RecurringImages;
 
-const { page, plainTitle, headerBackground, headerBackgroundSm } = Astro.props,
+const {
+    page,
+    plainTitle,
+    basicHeader,
+    headerBackground,
+    headerBackgroundSm,
+    link,
+    noAuthorImg,
+  } = Astro.props,
   { locale } = page,
   { STRAPI_URL } = import.meta.env;
 
@@ -25,185 +33,213 @@ const recurData = CMS.get("recurringElement", locale),
     role="banner"
     aria-label={ariaLabelRecurData.Post_intro_text}
     class:list={[
-      "wrapper relative z-30 h-full",
+      "wrapper relative z-30 h-full section-in-v-pad-sm",
       !headerBackground &&
         (headerBackgroundSm ? "hero-text-container-sm" : "hero-text-container"),
     ]}
   >
     <div
       class:list={[
-        "flex flex-wrap items-center h-full text-white",
-        headerBackground ? "md:w-10/12 lg:w-7/12" : "sm:w-7/12",
+        "flex flex-wrap items-center h-full text-white mb-10 sm:mb-0",
+        basicHeader
+          ? "w-full md:w-2/3 mx-auto justify-center text-center"
+          : headerBackground
+            ? "md:w-10/12 lg:w-7/12"
+            : "sm:w-7/12",
       ]}
     >
-      <div class="my-[30px]">
-        {
-          page.authors && (
-            <div class="flex flex-wrap gap-x-2.5 mb-2.5">
-              {page.authors.data.map(
-                (author, index) =>
-                  author.attributes.Profile_picture.data && (
-                    <div
-                      class:list={[
-                        index > 0 && "relative -ml-5",
-                        "w-12 h-12 rounded-full overflow-hidden",
-                      ]}
-                    >
-                      <Picture
-                        width={48}
-                        height={48}
-                        loading="eager"
-                        alt={
-                          author.attributes.Profile_picture.data.attributes
-                            .alternativeText
-                        }
-                        src={
-                          STRAPI_URL +
-                          author.attributes.Profile_picture.data.attributes.url
-                        }
-                      />
-                    </div>
-                  ),
-              )}
-
-              <div class="grid content-between">
-                <div
-                  role="presentation"
-                  aria-label={page.authors.data.map(
-                    ({ attributes }, i) =>
-                      ariaLabelRecurData.Wrote_by_text +
-                      (i > 0 ? ", " : " ") +
-                      attributes.givenName,
-                  )}
-                  class="post-author flex flex-wrap font-bold"
-                >
-                  {page.authors.data.map((author, index) => (
-                    <span>
-                      {(index > 0 ? ", " : " ") + author.attributes.givenName}
-                    </span>
-                  ))}
-                </div>
-
-                <div class="post-publish-date">
-                  {new Date(page.createdAt).toLocaleString("en-US", {
-                    day: "numeric",
-                    month: "long",
-                  })}
-                </div>
-              </div>
-            </div>
-          )
-        }
-
-        {
-          page.estate_name?.data.length > 0 && (
-            <div class="flex flex-wrap items-center mb-[5px]">
-              <div class="flex flex-wrap items-center text-lg lg:text-xl leading-[150%]">
-                {recurData.product_made_love_from + `\xa0`}
-
-                <div class="flex flex-wrap gap-x-1.5">
-                  {page.estate_name.data.map((estate, index) => (
-                    <a
-                      href={estate.attributes.Meta.URL_slug}
-                      class="flex flex-wrap font-bold underline decoration-1 underline-offset-[2px]"
-                    >
-                      {estate.attributes.Estate_name +
-                        (index === page.estate_name.data.length - 1 ? "" : ",")}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )
-        }
-
-        <h1 class="hero-title">
-          {page.Title || page.Estate_name}
-
-          {" "}
-
+      <div class="flex flex-col division-gap">
+        <div class="flex flex-col division-in-gap">
           {
-            !plainTitle && page.Title && (
-              <span class="icon heading-inline-icon">
+            basicHeader && (
+              <span class="basic-header-icon">
                 <img class="w-full h-full" alt="" {...white_cup} />
               </span>
             )
           }
-        </h1>
 
-        {
-          !page.estate_name && (
-            <div class="hero-text prose max-w-none pt-2.5 block text-white">
-              <Markdown>{page.Intro_text}</Markdown>
-            </div>
-          )
-        }
+          {
+            page.authors && (
+              <div class="division-in-element-gap flex items-center">
+                {!noAuthorImg &&
+                  page.authors.data.map(
+                    (author, index) =>
+                      author.attributes.Profile_picture.data && (
+                        <div
+                          class:list={[
+                            "quick-info-author-img",
+                            index > 0 &&
+                              "relative -ml-[clamp(15px,calc(2.5vw-1px),35px)]",
+                          ]}
+                        >
+                          <Picture
+                            width={50}
+                            height={50}
+                            loading="eager"
+                            alt={
+                              author.attributes.Profile_picture.data.attributes
+                                .alternativeText
+                            }
+                            src={
+                              STRAPI_URL +
+                              author.attributes.Profile_picture.data.attributes
+                                .url
+                            }
+                          />
+                        </div>
+                      ),
+                  )}
 
-        {
-          page.Weight_tea && (
-            <div class="flex flex-wrap items-center gap-[5px] md:gap-2 mt-[15px]">
-              <div class="text-sm md:text-base font-medium">
-                {page.Weight_tea + page.Weight_tea_unit}
+                <div class="quick-info-default">
+                  <div
+                    role="presentation"
+                    aria-label={page.authors.data.map(
+                      ({ attributes }, i) =>
+                        ariaLabelRecurData.Wrote_by_text +
+                        (i > 0 ? ", " : " ") +
+                        attributes.givenName,
+                    )}
+                    class="author-name"
+                  >
+                    {page.authors.data.map(({ attributes }, index) => (
+                      <span>
+                        {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div class="quick-info-item">
+                    {new Date(page.createdAt).toLocaleString("en-US", {
+                      day: "numeric",
+                      month: "long",
+                    })}
+                  </div>
+                </div>
               </div>
+            )
+          }
 
-              {page.category_tea_range?.data && (
-                <Fragment>
-                  <div class="w-1.5 h-1.5 bg-secondary rounded-full" />
+          {
+            page.estate_name?.data.length > 0 && (
+              <div class="flex flex-wrap items-center">
+                <div class="flex flex-wrap items-center text-b5">
+                  {recurData.product_made_love_from + `\xa0`}
+
+                  <div class="flex flex-wrap gap-x-1.5">
+                    {page.estate_name.data.map((estate, index) => (
+                      <a
+                        href={estate.attributes.Meta.URL_slug}
+                        class="flex flex-wrap font-bold underline decoration-1 underline-offset-[2px]"
+                      >
+                        {estate.attributes.Estate_name +
+                          (index === page.estate_name.data.length - 1
+                            ? ""
+                            : ",")}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )
+          }
+
+          {
+            () => {
+              const heroTitle = page.Title || page.Estate_name + " ";
+
+              return (
+                <div
+                  class:list={[
+                    "flex flex-col division-in-gap",
+                    link && "link-section",
+                  ]}
+                >
+                  <h1 class="text-h1">
+                    {link ? (
+                      <a class="main-link" href={link} set:text={heroTitle} />
+                    ) : (
+                      <>{heroTitle}</>
+                    )}
+                  </h1>
+
+                  {!page.estate_name && (
+                    <div class="hero-text">
+                      <Markdown>{page.Intro_text}</Markdown>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+          }
+
+          {
+            page.Weight_tea && (
+              <div class="flex flex-wrap items-center division-in-element-gap">
+                <div class="text-b6 font-medium">
+                  {page.Weight_tea + page.Weight_tea_unit}
+                </div>
+
+                {page.category_tea_range?.data && (
+                  <Fragment>
+                    <div class="w-1.5 h-1.5 bg-secondary rounded-full" />
+
+                    <a
+                      href={
+                        page.category_tea_range.data?.attributes.Meta.URL_slug
+                      }
+                      class="link-text text-sm md:text-base font-medium"
+                    >
+                      {page.category_tea_range.data?.attributes.Title}
+                    </a>
+                  </Fragment>
+                )}
+              </div>
+            )
+          }
+        </div>
+
+        <div class="flex flex-col division-in-gap">
+          {
+            page?.Heading_button_text && (
+              <a
+                href={page.Heading_button_link ?? "#"}
+                class:list={[
+                  "button-default w-fit",
+                  page.type === "productCategory" && "!hidden sm:!flex",
+                ]}
+              >
+                {page.Heading_button_text}
+              </a>
+            )
+          }
+
+          {/* Recipe Header, tea variant & tea-details header section */}
+          <slot />
+
+          {
+            page.Price_breakdown?.length > 0 && (
+              <div class="flex items-center">
+                <div class="text-b5">
+                  {recurData.product_each_penny_you_spend + `\xa0`}
 
                   <a
-                    href={
-                      page.category_tea_range.data?.attributes.Meta.URL_slug
-                    }
-                    class="link-text-white text-sm md:text-base font-medium"
+                    href="#price-breakdown"
+                    class="underline decoration-1 underline-offset-[2px] font-semibold"
                   >
-                    {page.category_tea_range.data?.attributes.Title}
+                    {recurData.product_check_where_going}
                   </a>
-                </Fragment>
-              )}
-            </div>
-          )
-        }
-
-        {
-          page?.Heading_button_text && (
-            <a
-              href={page.Heading_button_link ?? "#"}
-              class:list={[
-                "text-primary font-bold leading-[120%] bg-white rounded-full",
-                "flex w-fit py-[13px] px-[23px] mt-[clamp(15px,1.45vw+4px,25px)]",
-              ]}
-            >
-              {page.Heading_button_text}
-            </a>
-          )
-        }
-
-        {/* Recipe Header, tea variant & tea-details header section */}
-        <slot />
-
-        {
-          page.Price_breakdown?.length > 0 && (
-            <div class="flex items-center mt-[20px] md:mt-[10px]">
-              <div class="text-base lg:text-lg leading-[150%]">
-                {recurData.product_each_penny_you_spend + `\xa0`}
-
-                <a
-                  href="#price-breakdown"
-                  class="underline decoration-1 underline-offset-[2px] font-semibold"
-                >
-                  {recurData.product_check_where_going}
-                </a>
+                </div>
               </div>
-            </div>
-          )
-        }
+            )
+          }
+        </div>
       </div>
     </div>
   </div>
 
   {/* Blob Image - Desktop View */}
   {
-    !headerBackground && (
+    !basicHeader && !headerBackground && (
       <div class="hero-img-curve-container h-full hidden sm:block absolute z-30">
         <ClippedPicture
           preload="avif"
@@ -221,7 +257,7 @@ const recurData = CMS.get("recurringElement", locale),
 
 {/* Blob Image - Mobile View */}
 {
-  !headerBackground && !headerBackgroundSm && (
+  !basicHeader && !headerBackground && !headerBackgroundSm && (
     <div class="hero-img-sm-container block sm:hidden w-full relative z-20 -mt-20">
       <ClippedPicture
         preload="avif"

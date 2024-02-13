@@ -56,73 +56,74 @@ const contentHTML = await Astro.slots.render("post-details"),
   <slot name="tea-variants-header" />
 </HeroContent>
 
-{/* howto header section */}
-<slot name="howto-header" />
+<div class="grid section-gap section-in-v-pad">
+  {/* howto header section */}
+  <slot name="howto-header" />
 
-{/* product page sections */}
-<slot name="product-page-sections" />
+  {/* product page sections */}
+  <slot name="product-page-sections" />
 
-{/* Blog Section */}
-<section
-  class="py-[50px]"
-  role={type || "main"}
-  aria-label={ariaLabelRecurData.Post_details_text}
->
-  {
-    headings.length > 0 && (
-      <Chapters fixedTop={true} headingName={headingName} headings={headings}>
-        <slot name="jump-to-recipe-sm" slot="top-slot" />
-      </Chapters>
-    )
-  }
-
-  <div
-    class="wrapper w-full flex flex-col-reverse md:flex-row justify-between gap-[50px]"
+  {/* Blog Section */}
+  <section
+    role={type || "main"}
+    aria-label={ariaLabelRecurData.Post_details_text}
   >
-    <div id="post-details" class="md:w-2/3 2xl:w-1/2 md:min-w-[400px]">
-      <div class="prose-text xl:w-5/6 2xl:w-full">
-        {/* post content */}
-        <slot name="post-details" />
-      </div>
-    </div>
-
     {
       headings.length > 0 && (
-        <Chapters
-          headingName={headingName}
-          headings={headings}
-          desktopOnly={page.type === "howToDetails" && true}
-        >
-          {/* Jump to Recipe Button */}
-          <slot name="jump-to-recipe" slot="top-slot" />
-
-          {/* Cart Adding Form (Sm) */}
-          <slot name="cart-adding-form-sm" />
-
-          {/* Cart Adding Form Fixed (Sm) */}
-          <slot name="cart-adding-form-fixed-sm" />
+        <Chapters fixedTop={true} headingName={headingName} headings={headings}>
+          <slot name="jump-to-recipe-sm" slot="top-slot" />
         </Chapters>
       )
     }
-  </div>
-</section>
 
-{/* product infos */}
-<slot name="product-info" />
+    <div
+      class="wrapper w-full flex flex-col-reverse md:flex-row justify-between gap-[50px]"
+    >
+      <div id="post-details" class="md:w-2/3 2xl:w-1/2 md:min-w-[400px]">
+        <div class="prose-text xl:w-5/6 2xl:w-full">
+          {/* post content */}
+          <slot name="post-details" />
+        </div>
+      </div>
 
-{/* estate map */}
-<slot name="estate-map" />
+      {
+        headings.length > 0 && (
+          <Chapters
+            headingName={headingName}
+            headings={headings}
+            desktopOnly={page.type === "howToDetails" && true}
+          >
+            {/* Jump to Recipe Button */}
+            <slot name="jump-to-recipe" slot="top-slot" />
 
-{/* product kindness impact  */}
-<slot name="product-kindness-impact" />
+            {/* Cart Adding Form (Sm) */}
+            <slot name="cart-adding-form-sm" />
 
-{/* Relevant Posts Section */}
-<RelevantPosts
-  {page}
-  posts={relatedPosts}
-  text={relatedPostsText}
-  heading={relatedPostsHeading}
-/>
+            {/* Cart Adding Form Fixed (Sm) */}
+            <slot name="cart-adding-form-fixed-sm" />
+          </Chapters>
+        )
+      }
+    </div>
+  </section>
+
+  {/* product infos */}
+  <slot name="product-info" />
+
+  {/* estate map */}
+  <slot name="estate-map" />
+
+  {/* product kindness impact  */}
+  <slot name="product-kindness-impact" />
+
+  {/* Relevant Posts Section */}
+  <RelevantPosts
+    {page}
+    posts={relatedPosts}
+    text={relatedPostsText}
+    heading={relatedPostsHeading}
+  />
+</div>
 
 <slot name="wake-lock-script" />
 

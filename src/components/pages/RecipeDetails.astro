@@ -4,9 +4,10 @@ import { Picture } from "astro-imagetools/components";
 
 import Markdown from "@components/Markdown.astro";
 import Chapterize from "@components/Chapterize.astro";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
-import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
+import RelevantPosts from "@components/RelevantPosts.astro";
 import RecipesInfoSection from "@components/RecipesInfoSection.astro";
+
+import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 import renderMarkdown from "@utils/renderMarkdown";
 import RecurringImages from "@store/RecurringImages";
@@ -105,88 +106,10 @@ const nutrition: Nutrition = {
 };
 ---
 
-<style lang="scss" is:global>
-  .recipe-title {
-    @apply font-bold;
-
-    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
-    padding: 15px clamp(15px, 2.08vw + 0.01rem, 30px);
-  }
-
-  .chapter:nth-child(1) .recipe-title {
-    margin-top: 0;
-  }
-
-  .recipe-content {
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
-  }
-</style>
-
 <style lang="scss">
-  .related-products-top {
-    clip-path: url(#product-impact-top-curve-sm);
-
-    @media (min-width: 768px) {
-      clip-path: url(#product-impact-top-curve);
-    }
-  }
-
-  .related-products-bottom {
-    clip-path: url(#product-impact-bottom-curve-sm);
-
-    @media (min-width: 768px) {
-      clip-path: url(#product-impact-bottom-curve);
-    }
-  }
-
-  .time-container {
-    margin-top: clamp(1.25rem, 2vw + 0.2rem, 2rem);
-    column-gap: clamp(25px, 3vw + 1px, 60px);
-    row-gap: clamp(0.75rem, 1.5vw + 0.1rem, 1.25rem);
-  }
-
-  .time-icon {
-    width: clamp(1rem, 1.5vw + 0.55rem, 1.875rem);
-  }
-
-  .time-tag {
-    @apply leading-[12px] md:leading-[180%];
-
-    font-size: clamp(0.625rem, 1.3vw + 0.01rem, 0.75rem);
-  }
-
-  .time {
-    @apply leading-[16px] md:leading-[150%];
-
-    font-size: clamp(0.875rem, 1.3vw + 0.1rem, 1rem);
-  }
-
-  .similar-recipies {
-    li {
-      font-size: clamp(1rem, 1.5vw + 0.15rem, 1.5rem);
-    }
-
-    a {
-      background-size: 100% 45%;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23b3cccc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
-    }
-  }
-
-  .recipe-time-container {
-    column-gap: clamp(40px, 6vw + 10px, 80px);
-  }
-
   .recipe-time-icon {
-    width: clamp(1.25rem, 1.5vw + 0.55rem, 1.875rem);
-    height: clamp(1.25rem, 1.5vw + 0.55rem, 1.875rem);
-  }
-
-  .recipe-content-border {
-    margin-right: clamp(0.938rem, 1.5vw + 0.3rem, 1.563rem);
-  }
-
-  .recipe-content-title {
-    font-size: clamp(1.125rem, 2.2vw + 0.4rem, 2rem);
+    @apply w-[clamp(25px,calc(0.625vw+21px),30px)]
+      h-[clamp(25px,calc(0.625vw+21px),30px)];
   }
 
   .recipe-nutritions-container {
@@ -197,82 +120,10 @@ const nutrition: Nutrition = {
     }
   }
 
-  .recipe-serving-size-input-container {
-    gap: clamp(0.438rem, 1.1vw + 0.01rem, 0.938rem);
-  }
-
-  .recipe-serving-size-input {
-    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
-
-    &:focus {
-      @apply ring ring-emerald-800 ring-opacity-20 outline-none cursor-pointer;
-    }
-  }
-
-  .recipe-ingredients-checkbox-container {
-    .recipe-ingredients-checkbox {
-      font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
-
-      &::after {
-        content: "✓";
-        top: -0.68rem;
-        left: 1.2px;
-        font-size: 0.85rem;
-        font-weight: 1000;
-
-        @apply absolute opacity-0 rotate-6 text-white;
-      }
-    }
-
-    input:focus {
-      @apply outline-none opacity-100 w-6 h-6 -top-1 -left-1;
-    }
-
-    input:checked ~ .recipe-ingredients-checkbox {
-      @apply opacity-100 rounded-[3px] border-2 border-primary bg-primary;
-
-      &::after {
-        @apply opacity-100 rounded-none bg-transparent;
-      }
-    }
-  }
-
-  .recipe-cooking-title {
-    font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
-  }
-
-  .recipe-step-order {
-    width: clamp(30px, 3vw + 0.4rem, 45px);
-    height: clamp(30px, 3vw + 0.4rem, 45px);
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
-  }
-
-  .recipe-tips-icon {
-    width: clamp(1.75rem, 2.5vw + 0.15rem, 2.375rem);
-    height: clamp(1.75rem, 2.5vw + 0.15rem, 2.375rem);
-  }
-
-  .recipe-tips-title {
-    font-size: clamp(1.125rem, 1.5vw + 0.15rem, 1.5rem);
-  }
-
-  .related-post-card-content-container {
-    padding: clamp(20px, 6.4vw, 40px) clamp(24px, 3.8vw + 11.75px, 36px);
-
+  .ingredients-grid {
     @media (min-width: 640px) {
-      padding: clamp(30px, 7.8125vw - 20px, 60px)
-        clamp(28px, 4.6875vw - 2px, 46px);
+      grid-template-columns: repeat(auto-fit, minmax(250px, 2fr));
     }
-
-    @media (min-width: 1024px) {
-      padding: clamp(30px, 8vw - 51.75px, 60px) clamp(28px, 4.8vw - 21px, 46px);
-    }
-  }
-
-  .related-post-card-title {
-    @apply md:font-bold leading-[130%] md:leading-[120%];
-
-    font-size: clamp(1.5rem, 1.8vw + 0.1rem, 1.75rem);
   }
 </style>
 
@@ -281,7 +132,7 @@ const nutrition: Nutrition = {
     <div
       role="complementary"
       aria-label={recipe_recipe + ariaLabelRecurData.Recipe_timing_text}
-      class="time-container flex flex-wrap items-center"
+      class="grid-gap flex flex-wrap items-center"
     >
       {
         [
@@ -295,14 +146,17 @@ const nutrition: Nutrition = {
           }
 
           return (
-            <div class="inline-flex items-center gap-2 md:gap-2.5">
-              <img class="time-icon w-full h-full" {...white_clock} />
+            <div class="inline-flex items-center division-in-element-gap text-white">
+              <img class="recipe-time-icon !m-0" {...white_clock} />
 
-              <div class="w-auto">
-                <div class="time-tag">{timeTag} :</div>
+              <div>
+                <div class="text-b7">{timeTag} :</div>
 
-                <div class="time hidden sm:block font-bold">{timeString}</div>
-                <div class="time block sm:hidden font-bold">{timeStringSm}</div>
+                <div class="text-b6 font-bold">
+                  <span class="hidden sm:block">{timeString}</span>
+
+                  <span class="block sm:hidden">{timeStringSm}</span>
+                </div>
               </div>
             </div>
           );
@@ -310,25 +164,15 @@ const nutrition: Nutrition = {
       }
     </div>
 
-    <div class="inline-flex sm:hidden gap-2 md:gap-2.5 mt-[30px] w-auto">
-      <a
-        href={`#${page.Title} ${recipe_recipe}`
-          ?.toLowerCase()
-          ?.replaceAll(" ", "-")}
-      >
-        <div
-          class:list={[
-            "flex items-center justify-center py-[13px] px-[23px] rounded-[40px]",
-            "bg-secondary text-primary text-center text-base font-bold leading-[19px]",
-          ]}
-        >
-          {recipe_jump_to_recipe}
-          <span class="icon ml-5 h-5">
-            <img class="w-full h-full" {...green_down_arrow} />
-          </span>
-        </div>
-      </a>
-    </div>
+    <a
+      href={`#${page.Title} ${recipe_recipe}`
+        ?.toLowerCase()
+        ?.replaceAll(" ", "-")}
+      class="button-default sm:!hidden w-fit"
+    >
+      <span>{recipe_jump_to_recipe}</span>
+      <img class="button-icon" {...green_down_arrow} />
+    </a>
   </Fragment>
 
   <a
@@ -336,35 +180,23 @@ const nutrition: Nutrition = {
       ?.toLowerCase()
       ?.replaceAll(" ", "-")}
     slot="jump-to-recipe-sm"
-    class:list={[
-      "w-full bg-primary flex items-center justify-center gap-5 rounded-full",
-      "py-[15px] px-[20px] text-white text-center text-sm font-bold",
-    ]}
+    class="button-primary"
   >
-    {recipe_jump_to_recipe}
-
-    <span class="icon">
-      <img class="h-3" {...white_down_arrow} />
-    </span>
+    <span>{recipe_jump_to_recipe}</span>
+    <img class="button-icon" {...white_down_arrow} />
   </a>
 
-  <a
-    href={`#${page.Title} ${recipe_recipe}`
-      ?.toLowerCase()
-      ?.replaceAll(" ", "-")}
-    slot="jump-to-recipe"
-    class:list={[
-      "hidden md:block py-5 rounded-[40px]",
-      "bg-primary text-white text-center text-base font-bold leading-[19px]",
-    ]}
-  >
-    <div class="flex justify-center items-center gap-5">
-      {recipe_jump_to_recipe}
-      <span class="icon">
-        <img class="h-5" {...white_down_arrow} />
-      </span>
-    </div>
-  </a>
+  <div slot="jump-to-recipe" class="hidden md:block">
+    <a
+      href={`#${page.Title} ${recipe_recipe}`
+        ?.toLowerCase()
+        ?.replaceAll(" ", "-")}
+      class="button-primary-large"
+    >
+      <span>{recipe_jump_to_recipe}</span>
+      <img class="button-icon" {...white_down_arrow} />
+    </a>
+  </div>
 
   <Chapterize slot="post-details">
     <RecipesInfoSection page={page} />
@@ -376,24 +208,16 @@ const nutrition: Nutrition = {
             id={`${recipe_similar} ${page.Title}`
               ?.toLowerCase()
               ?.replaceAll(" ", "-")}
-            class="recipe-title recoleta bg-primary mt-[50px] text-secondary-light leading-[110%] rounded-[10px]"
+            class="tiled-title"
           >
-            {`${recipe_similar} ${page.Title}`}
+            {`${recipe_similar} ${page.Title?.toLowerCase()}`}
           </h2>
 
-          <div class="bg-secondary-light rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]">
-            <ul class="similar-recipies list-disc list-inside">
+          <div class="tiled-div">
+            <ul>
               {page.Recipe_variations.data.map(({ attributes }) => (
-                <li class="text-primary font-bold sm:font-semibold leading-[175%] sm:leading-[180%]">
-                  <a
-                    href={attributes.Meta.URL_slug}
-                    class:list={[
-                      "hover:brightness-95 transition-all",
-                      "bg-bottom bg-no-repeat px-1 font-bold sm:font-semibold no-underline",
-                    ]}
-                  >
-                    {attributes.Title}
-                  </a>
+                <li>
+                  <a href={attributes.Meta.URL_slug}>{attributes.Title}</a>
                 </li>
               ))}
             </ul>
@@ -404,24 +228,18 @@ const nutrition: Nutrition = {
 
     <h2
       id={`${page.Title} ${recipe_recipe}`?.toLowerCase()?.replaceAll(" ", "-")}
-      class="recipe-title recoleta bg-primary text-secondary-light leading-[110%] rounded-[10px] mt-[50px]"
+      class="tiled-title"
     >
-      {page.Title}
-      {" "}
-      {recipe_recipe}
+      {`${page.Title} ${recipe_recipe?.toLowerCase()}`}
     </h2>
 
-    <div
-      class="bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]"
-    >
-      <div class="recipe-content prose max-w-none mb-[15px] leading-[150%]">
-        <Markdown>{page.Time_text}</Markdown>
-      </div>
+    <div class="tiled-div">
+      <Markdown>{page.Time_text}</Markdown>
 
       <div
         role="complementary"
         aria-label={recipe_recipe + ariaLabelRecurData.Recipe_timing_text}
-        class="recipe-time-container flex flex-wrap mt-5 gap-y-5"
+        class="grid-gap flex flex-wrap items-center"
       >
         {
           [
@@ -435,20 +253,16 @@ const nutrition: Nutrition = {
             }
 
             return (
-              <div class="inline-flex items-center gap-2.5">
-                <div class="recipe-time-icon">
-                  <img class="w-full h-full" {...light_green_clock} />
-                </div>
+              <div class="inline-flex items-center division-in-element-gap">
+                <img class="recipe-time-icon !m-0" {...light_green_clock} />
 
-                <div class="w-auto text-black-light leading-[150%]">
-                  <div class="text-[10px] md:text-xs">{timeTag} :</div>
+                <div>
+                  <div class="text-b7 text-black-light">{timeTag} :</div>
 
-                  <div class="hidden sm:block text-base font-medium">
-                    {timeString}
-                  </div>
+                  <div class="text-b6 font-bold text-black">
+                    <span class="hidden sm:block">{timeString}</span>
 
-                  <div class="block sm:hidden text-base font-medium">
-                    {timeStringSm}
+                    <span class="block sm:hidden">{timeStringSm}</span>
                   </div>
                 </div>
               </div>
@@ -463,50 +277,38 @@ const nutrition: Nutrition = {
         <div
           role="complementary"
           aria-label={recipe_nutrition_information}
-          class="flex bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]"
+          class="tiled-div division-in-gap flex w-full"
         >
-          <div class="recipe-content-border w-auto border-l-[3px] border-primary rounded-full" />
+          <div class="border-l-[3px] border-primary rounded-full" />
 
-          <div class="grid w-full items-center gap-[15px]">
-            <h3
-              class:list={[
-                "recipe-content-title leading-[150%]",
-                "text-black sm:text-black font-bold sm:font-semibold",
-              ]}
-            >
-              {recipe_nutrition_information}
-            </h3>
+          <div class="division-gap grid grow">
+            <div class="division-in-gap grid">
+              <h3 class="!m-0">{recipe_nutrition_information}</h3>
 
-            <div class="flex items-center gap-2.5 w-full font-bold leading-[150%]">
-              <div class="text-black text-xs">{recipe_yield}:</div>
-
-              <div class="text-primary text-lg">{page.Nutrition_yield}</div>
-            </div>
-
-            <div class="text-black text-base md:text-lg font-bold">
-              {recipe_amount_per_serving}:
-            </div>
-
-            <div
-              role="list"
-              aria-label={recipe_amount_per_serving}
-              class="recipe-nutritions-container grid grid-flow-row gap-[5px]"
-            >
-              {page.Nutrition.map((item) => (
-                <div
-                  role="list"
-                  class="flex items-center text-black-light text-base lg:text-lg leading-[150%]"
-                >
-                  <div>{item.Nutrition_name}</div>
-
-                  <span class="mr-1">:</span>
-
-                  <div>
-                    {item.Nutrition_amount ? item.Nutrition_amount : "0"}
-                    {item.Nutrition_measurements_unit}
-                  </div>
+              {page.Nutrition_yield && (
+                <div class="division-in-element-gap flex items-center font-bold">
+                  <div class="text-b6">{recipe_yield}:</div>
+                  <div class="text-b5 text-primary">{page.Nutrition_yield}</div>
                 </div>
-              ))}
+              )}
+            </div>
+
+            <div class="division-in-gap grid">
+              <div class="text-b5 font-bold">{recipe_amount_per_serving}:</div>
+
+              <div
+                role="list"
+                aria-label={recipe_amount_per_serving}
+                class="division-in-element-gap recipe-nutritions-container grid grid-flow-row"
+              >
+                {page.Nutrition.map((item) => (
+                  <div role="list" class="text-b5" key={item.id}>
+                    {`${item.Nutrition_name}: ${item.Nutrition_amount || "0"}${
+                      item.Nutrition_measurements_unit || ""
+                    }`}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -515,89 +317,60 @@ const nutrition: Nutrition = {
 
     <div
       aria-label={recipe_ingredients}
-      class="bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]"
+      class="tiled-div division-gap grid w-full"
     >
-      <div class="flex flex-wrap justify-between">
-        <h3
-          class="recipe-content-title font-bold sm:font-semibold text-primary sm:text-black leading-[150%]"
-        >
-          {recipe_ingredients}
-        </h3>
+      <div class="division-in-gap flex flex-wrap justify-between">
+        <h3 class="!m-0">{recipe_ingredients}</h3>
 
-        <label
-          class="recipe-serving-size-input-container relative inline-grid grid-flow-col items-center"
-        >
-          <span class="text-black text-xs leading-[150%] font-bold">
+        <div class="division-in-element-gap flex items-center">
+          <div class="text-b6-sm font-bold whitespace-nowrap">
             {recipe_serving_size}:
-          </span>
+          </div>
 
-          <select
-            id="recipe-serving-size"
-            class:list={[
-              "recipe-serving-size-input text-white py-[5px] pl-[11px] bg-primary",
-              "max-w-[65px] md:max-w-[83px] border-r-[11px] border-transparent rounded-[7px]",
-            ]}
-          >
+          <select id="recipe-serving-size" class="selector-sm-primary">
             <option value="1">1x</option>
             <option value="2">2x</option>
             <option value="3">3x</option>
             <option value="5">5x</option>
             <option value="10">10x</option>
           </select>
-        </label>
+        </div>
       </div>
 
-      <div
-        role="list"
-        class="mt-5 md:mt-[25px] flex flex-wrap sm:flex-nowrap gap-2"
-      >
+      <div role="list" class="ingredients-grid division-in-gap grid">
         {
           page.Instructions_part.map((item) => (
             <div
               role="listitem"
               aria-label={item.Instructions_part_name}
-              class="w-full sm:w-1/2 grid gap-2.5"
+              class="division-in-element-gap flex flex-col text-b5"
             >
-              <h4 class="mb-[5px] text-black text-base md:text-lg font-bold leading-[150%]">
-                {item.Instructions_part_name}
-              </h4>
+              <div class="font-bold">{item.Instructions_part_name}</div>
 
               {item.Instructions_part_ingredients.map((item) => (
-                <label class="inline-flex items-center w-full text-black-light">
-                  <div class="flex">
-                    <div
-                      class:list={[
-                        "recipe-ingredients-checkbox-container",
-                        "relative w-4 h-4 m-auto cursor-pointer clear-both",
-                      ]}
-                    >
-                      <input
-                        type="checkbox"
-                        tabindex="0"
-                        class="absolute opacity-0 cursor-pointer"
-                      />
-                      <span
-                        class:list={[
-                          "recipe-ingredients-checkbox absolute w-4 h-4 bg-transparent",
-                          "border-2 border-black leading-[175%] rounded-[3px]",
-                        ]}
-                      />
-                    </div>
-                  </div>
-
-                  <div class="ml-2.5 text-base md:text-lg leading-[150%]">
-                    <span
-                      class="ingredient-amount mr-[3px]"
-                      data-amount={item.Instructions_part_ingredient_amount}
-                    >
-                      {item.Instructions_part_ingredient_amount}
+                <div class="flex">
+                  <label class="checkbox-primary">
+                    <span class="checkbox-input-container">
+                      <input type="checkbox" />
+                      <span class="checkbox-primary" />
                     </span>
-                    {`${
-                      item.Instructions_part_ingredient_measurements_unit ?? ""
-                    }
-                      ${item.Instructions_part_ingredient_name}`}
-                  </div>
-                </label>
+
+                    <span>
+                      <span
+                        class="ingredient-amount"
+                        data-amount={item.Instructions_part_ingredient_amount}
+                      >
+                        {item.Instructions_part_ingredient_amount}
+                      </span>
+                      {`
+                        ${
+                          item.Instructions_part_ingredient_measurements_unit ??
+                          ""
+                        }
+                        ${item.Instructions_part_ingredient_name}`}
+                    </span>
+                  </label>
+                </div>
               ))}
             </div>
           ))
@@ -631,7 +404,7 @@ const nutrition: Nutrition = {
     <h2
       aria-label={recipe_cooking_instructions}
       id={recipe_cooking_instructions?.toLowerCase()?.replaceAll(" ", "-")}
-      class="recipe-title recoleta bg-primary mt-[50px] text-secondary-light leading-[110%] rounded-[10px]"
+      class="tiled-title"
     >
       {recipe_cooking_instructions}
     </h2>
@@ -639,19 +412,17 @@ const nutrition: Nutrition = {
     {
       page.Instructions_part.map((item) => (
         <div role="list">
-          <div class="flex bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]">
-            <div class="recipe-content-border w-auto border-l-[3px] border-primary rounded-full" />
+          <div class="tiled-div flex division-in-gap">
+            <div class="border-l-[3px] border-primary rounded-full" />
 
-            <div class="w-full gap-[15px]">
-              <h3
-                class="recipe-cooking-title recoleta md:font-semibold text-black leading-[120%]"
-                id={item.Instructions_part_name.replaceAll(" ", "-")
-                  .replace(/\s+/g, "")
-                  .trim()}
-              >
-                {item.Instructions_part_name}
-              </h3>
-            </div>
+            <h3
+              id={item.Instructions_part_name?.replaceAll(" ", "-")
+                ?.replace(/\s+/g, "")
+                .trim()}
+              class="grow !my-0"
+            >
+              {item.Instructions_part_name}
+            </h3>
           </div>
 
           {item.Instructions_part_steps.map((step, index) => (
@@ -665,22 +436,15 @@ const nutrition: Nutrition = {
                 `-step-` +
                 (index + 1)
               }
-              class="bg-secondary-light rounded-[10px] p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px]"
+              class="tiled-div"
             >
               <div class="flex gap-[15px]">
                 <div>
-                  <div
-                    class:list={[
-                      "recipe-step-order bg-primary rounded-full text-white",
-                      "flex items-center justify-center font-extrabold",
-                    ]}
-                  >
-                    {index + 1}
-                  </div>
+                  <div class="number-list-circle">{index + 1}</div>
                 </div>
 
-                <div class="recipe-content prose max-w-none leading-[150%] w-auto">
-                  {step.Instructions_part_steps_text}
+                <div class="no-pad-mar-first-last-child">
+                  <Markdown>{step.Instructions_part_steps_text}</Markdown>
                 </div>
               </div>
 
@@ -704,21 +468,18 @@ const nutrition: Nutrition = {
           ))}
 
           {item.Instructions_part_step_tip && (
-            <div class="bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] my-[30px] rounded-[10px]">
-              <div class="flex flex-wrap items-center gap-2.5">
-                <div class="w-full flex items-center gap-[15px] sm:gap-5">
-                  <div class="recipe-tips-icon">
-                    <img class="w-full h-full object-contain" {...green_bulb} />
-                  </div>
+            <div class="tiled-div division-in-gap grid">
+              <div class="division-in-element-gap flex items-center">
+                <img
+                  class="w-[clamp(25px,calc(1.25vw+17px),35px)] object-contain !m-0"
+                  {...green_bulb}
+                />
 
-                  <h3 class="recipe-tips-title text-primary font-bold leading-[150%]">
-                    {recipe_tips}
-                  </h3>
-                </div>
+                <div class="text-b2 font-bold text-black">{recipe_tips}</div>
+              </div>
 
-                <div class="recipe-content prose max-w-none text-primary font-medium sm:font-bold leading-[150%]">
-                  {item.Instructions_part_step_tip}
-                </div>
+              <div class="font-bold no-pad-mar-first-last-child">
+                <Markdown>{item.Instructions_part_step_tip}</Markdown>
               </div>
             </div>
           )}
@@ -729,97 +490,15 @@ const nutrition: Nutrition = {
 
   {
     relatedProducts.length > 0 && (
-      <section class="mb-[50px]" slot="product-kindness-impact">
-        <ClipPathSVG
-          id="product-impact-top-curve"
-          path="M1,0.582 V1 H0 V0.582 S0.073,0.358,0.136,0.295 c0.103,-0.103,0.245,0.128,0.348,0.173 C0.602,0.52,0.729,0.058,0.847,0.003 L0.861,0 C0.965,0,1,0.582,1,0.582"
+      <Fragment slot="product-kindness-impact">
+        <RelevantPosts
+          page={page}
+          posts={relatedProducts}
+          heading={Recipes_related_products_title_text}
+          curved_bg={true}
+          product={true}
         />
-
-        <ClipPathSVG
-          id="product-impact-top-curve-sm"
-          path="M1,0.892 V1 H0 V0.892 c0.059,-1.237,0.238,-0.517,0.321,-0.517 S0.499,0.133,0.639,0.033 a0.799,4,0,0,1,0.088,-0.033 C0.84,0,0.951,0.193,1,0.892"
-        />
-
-        <ClipPathSVG
-          id="product-impact-bottom-curve"
-          path="M1,0 c-0.005,0.158,-0.026,0.437,-0.104,0.633 c-0.115,0.288,-0.242,-0.102,-0.316,-0.102 c-0.07,0,-0.171,0.017,-0.231,0.185 c-0.057,0.16,-0.132,0.283,-0.193,0.283 C0.032,1,0,0.633,0,0.633 V0"
-        />
-
-        <ClipPathSVG
-          id="product-impact-bottom-curve-sm"
-          path="M1,0 V0.722 c-0.095,0.278,-0.193,0,-0.324,0 C0.504,0.722,0.369,1,0.22,1 C0.088,1,0,0.382,0,0.382 V0"
-        />
-
-        <ClipPathSVG
-          id="card-curve"
-          path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
-        />
-
-        <div>
-          <div class="related-products-top py-8 -mb-1 bg-primary" />
-          <div class="bg-primary">
-            <div class="wrapper py-2.5 md:py-[100px]">
-              <div class="recoleta font-semibold text-center text-[clamp(2rem,3vw+0.4rem,3rem)] leading-[130%]">
-                <h2>{Recipes_related_products_title_text}</h2>
-              </div>
-
-              <div
-                role="list"
-                aria-label={ariaLabelRecurData.Kindness_Items_text}
-                class:list={[
-                  "wrapper justify-center gap-[50px] mt-[25px] sm:mt-[27px] md:mt-[27px] lg:mt-[32px]",
-                  "grid grid-cols-[repeat(1,minmax(0,420px))] md:grid-cols-[repeat(2,minmax(0,580px))]",
-                ]}
-              >
-                {relatedProducts.map(
-                  ({
-                    Title,
-                    Intro_text,
-                    Intro_blob: {
-                      data: { attributes: intro_blob },
-                    },
-                    Meta: { URL_slug },
-                  }) => (
-                    <div
-                      role="listitem"
-                      aria-label={ariaLabelRecurData.Product_tea_item_text}
-                      class="link-section bg-secondary"
-                      style="clip-path: url(#card-curve)"
-                    >
-                      <Picture
-                        layout="fullWidth"
-                        alt={intro_blob.alternativeText}
-                        src={STRAPI_URL + intro_blob.url}
-                        attributes={{ img: { style: "aspect-ratio: 6 / 5;" } }}
-                        sizes="(min-width: 768px) min(580px, calc(40vw - 25px)), min(80vw, 420px)"
-                      />
-
-                      <div class="related-post-card-content-container text-primary">
-                        <div class="related-post-card-title recoleta mt-[15px]">
-                          <a
-                            class="main-link"
-                            set:text={Title}
-                            href={`/` + URL_slug}
-                          />
-                        </div>
-
-                        <div
-                          class:list={[
-                            "text-base md:text-lg leading-[150%] line-clamp-3 mt-[5px] md:mt-[7px] lg:mt-[15px]",
-                          ]}
-                        >
-                          <Markdown>{Intro_text}</Markdown>
-                        </div>
-                      </div>
-                    </div>
-                  ),
-                )}
-              </div>
-            </div>
-          </div>
-          <div class="py-8 -mt-1 bg-primary related-products-bottom" />
-        </div>
-      </section>
+      </Fragment>
     )
   }
 
