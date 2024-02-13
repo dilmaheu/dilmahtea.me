@@ -86,17 +86,18 @@ export default function Address({
         <>
           <div class="quick-info">
             {() => {
-              const isDefaultDeliveryAddress =
-                  user().default_delivery_address?.id === id,
-                isDefaultBillingAddress =
-                  user().default_billing_address?.id === id;
+              const defaultDeliveryAddressId =
+                  user().default_delivery_address?.id,
+                defaultBillingAddressId = user().default_billing_address?.id,
+                isDefaultDeliveryAddress = defaultDeliveryAddressId === id,
+                isDefaultBillingAddress = defaultBillingAddressId === id;
 
               return (
                 !isMyProfile &&
                 (isDefaultDeliveryAddress || isDefaultBillingAddress) && (
                   <>
                     <div class="info-tag-button-primary">
-                      {isDefaultDeliveryAddress === isDefaultDeliveryAddress
+                      {defaultDeliveryAddressId === defaultBillingAddressId
                         ? Tag_default_text
                         : isDefaultDeliveryAddress
                           ? text_default_delivery_address
