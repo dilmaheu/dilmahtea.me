@@ -151,7 +151,7 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
 
     if (usedTags.includes(tag))
       return Response.json(
-        { success: false, error: "Address tag has been used already" },
+        { success: false, message: "Address tag has been used already" },
         { status: 400 },
       );
 
@@ -165,7 +165,7 @@ export const onRequestPost: PagesFunction<Env> = getAPIHandler(
 
     if (addressHashes.includes(providedAddressHash))
       return Response.json(
-        { success: false, error: "Duplicate address provided" },
+        { success: false, message: "Duplicate address provided" },
         { status: 400 },
       );
 
@@ -235,7 +235,7 @@ export const onRequestPut: PagesFunction<Env> = getAPIHandler(
 
     if (!existingAddress)
       return Response.json(
-        { success: false, error: "Address does not exist" },
+        { success: false, message: "Address does not exist" },
         { status: 400 },
       );
 
@@ -244,7 +244,7 @@ export const onRequestPut: PagesFunction<Env> = getAPIHandler(
 
       if (usedTags.includes(tag))
         return Response.json(
-          { success: false, error: "Address tag has been used already" },
+          { success: false, message: "Address tag has been used already" },
           { status: 400 },
         );
     }
@@ -290,7 +290,7 @@ export const onRequestDelete: PagesFunction<Env> = getAPIHandler(
 
     if (id === default_delivery_address)
       return Response.json(
-        { success: false, error: "Cannot delete default delivery address" },
+        { success: false, message: "Cannot delete default delivery address" },
         { status: 400 },
       );
 
@@ -300,7 +300,7 @@ export const onRequestDelete: PagesFunction<Env> = getAPIHandler(
         .run();
     } catch (error) {
       return Response.json(
-        { success: false, error: "Address does not exist" },
+        { success: false, message: "Address does not exist" },
         { status: 400 },
       );
     }
