@@ -1,7 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
 import { Schema } from "astro-seo-schema";
-import { Picture } from "astro-imagetools/components";
 
 import Markdown from "@components/Markdown.astro";
 import Chapterize from "@components/Chapterize.astro";
@@ -18,8 +17,6 @@ import localizeCMSImage from "@utils/localizeCMSImage";
 
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
-
-const { green_right_arrow } = RecurringImages;
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
@@ -64,6 +61,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
 <style lang="scss">
   @use "src/styles/colors";
+  @use "src/styles/poly-fluid";
 
   form {
     *:focus {
@@ -85,33 +83,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     }
   }
 
-  .variant-container {
-    @apply grid lg:grid-cols-[repeat(auto-fill,minmax(215px,3fr))] 
-      gap-[15px] sm:gap-[30px] mt-4 overflow-hidden;
-
-    .variant-content-container {
-      @apply relative flex flex-nowrap cursor-pointer w-full h-[70px];
-
-      @media (max-width: 320px) {
-        @apply h-full;
-      }
-    }
-
-    .variant-txt-container {
-      @apply flex grow justify-center items-center px-[18px] py-[12px];
-
-      @media (max-width: 320px) {
-        @apply w-3/5;
-      }
-    }
-
-    .variant-img-container {
-      @media (max-width: 320px) {
-        @apply w-2/5;
-      }
-    }
-  }
-
   .product-variant-blob-button-clip {
     clip-path: url(#product-variant-curve);
   }
@@ -123,28 +94,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
     @media (min-width: 640px) {
       aspect-ratio: 8 / 5.17 !important;
-    }
-  }
-
-  .product-details {
-    ul,
-    ol {
-      padding: 0;
-    }
-
-    ol {
-      list-style: none;
-      counter-reset: counter;
-    }
-
-    li {
-      counter-increment: counter;
-
-      &::before {
-        content: counter(counter);
-
-        @apply bg-primary inline-flex items-center justify-center w-[45px] h-[45px] mr-5 text-white rounded-full;
-      }
     }
   }
 
@@ -164,7 +113,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   }
 
   .accordion-button {
-    font-size: clamp(1.125rem, 1.5vw + 0.15rem, 1.5rem);
     transition: all 150ms ease-out 0ms;
 
     &.is-active {
@@ -181,11 +129,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
   }
 
   .product-info-container {
-    border-color: colors.$primary-light;
     grid-template-columns: repeat(
       auto-fit,
       minmax(0, clamp(100px, 18vw + 20px, 280px))
     );
+
+    .product-info-icon-container {
+      height: poly-fluid-clamp-primary(25px, 60px);
+    }
   }
 </style>
 
@@ -601,65 +552,59 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     {
       page.Price_breakdown.length > 0 && (
         <div class="chapter">
-          <h2
-            id="price-breakdown"
-            class="recoleta text-[clamp(2rem,3vw+0.55rem,2.625rem)] font-semibold leading-[130%]"
-          >
+          <h2 id="price-breakdown">
             {recurData.product_price_breakdown_title}
           </h2>
 
-          <div>
-            <Markdown>
-              {page.Price_breakdown_text.split("<")[0]}
-              <span class="recoleta text-[clamp(2rem,3vw+0.55rem,2.625rem)] text-primary">
-                {page.Price_breakdown_text.match("<total_spent>") &&
-                  `€${totalSpentAmount.toFixed(2).replace(".", ",")}`}
-              </span>
-              {page.Price_breakdown_text.split(">")[1]}
-            </Markdown>
-          </div>
+          <div class="grid division-in-gap">
+            <div>
+              <Markdown>
+                {page.Price_breakdown_text.split("<")[0]}
+                <span class="text-h3 text-primary">
+                  {page.Price_breakdown_text.match("<total_spent>") &&
+                    ` €${totalSpentAmount.toFixed(2).replace(".", ",")} `}
+                </span>
+                {page.Price_breakdown_text.split(">")[1]}
+              </Markdown>
+            </div>
 
-          <div class="flex overflow-hidden w-full my-2.5 md:my-[15px] h-[80px] rounded-[25px]">
-            {page.Price_breakdown.map((item) => (
-              <div
-                class="h-full"
-                style={`background-color: ${item.Item_color_code}; width:${
-                  (item.Spent_amount * 100) / totalSpentAmount
-                }%`}
-              />
-            ))}
-          </div>
-
-          <div
-            role="list"
-            class="grid grid-cols-[repeat(auto-fit,minmax(0,250px))] gap-2.5 justify-between"
-          >
-            {page.Price_breakdown.map((item) => (
-              <div role="listitem" class="flex items-center gap-x-2.5">
+            <div class="flex overflow-hidden w-full h-[80px] rounded-[25px]">
+              {page.Price_breakdown.map((item) => (
                 <div
-                  style={`background-color: ${item.Item_color_code}; clip-path: url(#price-breakdown-curve)`}
-                  class:list={[
-                    "w-[62px] h-[62px] flex justify-center items-center",
-                    "text-sm lg:text-base font-medium lg:font-normal",
-                  ]}
-                >
-                  {((item.Spent_amount * 100) / totalSpentAmount)
-                    .toFixed(2)
-                    .replace(".", ",")}
-                  %
-                </div>
+                  class="h-full"
+                  style={`background-color: ${item.Item_color_code}; width:${
+                    (item.Spent_amount * 100) / totalSpentAmount
+                  }%`}
+                />
+              ))}
+            </div>
 
-                <div class="grid">
-                  <div class="recoleta text-primary text-[clamp(1.75rem,2.2vw+0.15rem,2rem)]">
-                    €{item.Spent_amount.toFixed(2).replace(".", ",")}
+            <div
+              role="list"
+              class="grid grid-gap grid-cols-[repeat(auto-fit,minmax(0,250px))] justify-between"
+            >
+              {page.Price_breakdown.map((item) => (
+                <div role="listitem" class="flex items-center gap-x-2.5">
+                  <div
+                    style={`background-color: ${item.Item_color_code}; clip-path: url(#price-breakdown-curve)`}
+                    class="size-[60px] flex justify-center items-center text-b6"
+                  >
+                    {((item.Spent_amount * 100) / totalSpentAmount)
+                      .toFixed(2)
+                      .replace(".", ",")}
+                    %
                   </div>
 
-                  <div class="text-[clamp(0.875rem,1vw+0.25rem,1.125rem)]">
-                    {item.Item_name}
+                  <div class="grid">
+                    <div class="text-h3 !font-normal text-primary">
+                      €{item.Spent_amount.toFixed(2).replace(".", ",")}
+                    </div>
+
+                    <div class="text-b5-sm">{item.Item_name}</div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       )
@@ -668,12 +613,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     {
       page.Transparency.length > 0 && (
         <div class="chapter">
-          <h2
-            id="transparency"
-            class="recoleta text-[clamp(2rem,3vw+0.55rem,2.625rem)] font-semibold leading-[130%]"
-          >
-            {recurData.product_transparency_title}
-          </h2>
+          <h2 id="transparency">{recurData.product_transparency_title}</h2>
           <p>{page.Transparency_text}</p>
 
           <div class="grid gap-5">
@@ -693,7 +633,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                   <div class="w-full">
                     <button
                       class:list={[
-                        "accordion-button w-full cursor-pointer text-left leading-[150%]",
+                        "accordion-button w-full cursor-pointer text-b3 text-left",
                         index === 0 ? "is-active" : "",
                       ]}
                     >
@@ -703,7 +643,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     <div
                       class:list={[
                         index === 0 ? "is-open" : "",
-                        "accordion-content text-lg lg:text-xl leading-[150%] m-0",
+                        "accordion-content text-b4 m-0",
                       ]}
                     >
                       <Markdown>{item.Transparency_item_text}</Markdown>
@@ -720,12 +660,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     {
       page.Impact.length > 0 && (
         <div class="chapter">
-          <h2
-            id="impact"
-            class="recoleta text-[clamp(2rem,3vw+0.55rem,2.625rem)] font-semibold leading-[130%]"
-          >
-            {recurData.product_impact_title}
-          </h2>
+          <h2 id="impact">{recurData.product_impact_title}</h2>
           <p>{page.Impact_text}</p>
 
           <div class="grid gap-5">
@@ -746,7 +681,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     <button
                       class:list={[
                         index === 0 && "is-active",
-                        "accordion-button w-full cursor-pointer text-left leading-[150%]",
+                        "accordion-button w-full cursor-pointer text-b3",
                       ]}
                     >
                       {item.Impact_item_title}
@@ -755,7 +690,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     <div
                       class:list={[
                         index === 0 && "is-open",
-                        "accordion-content text-lg lg:text-xl leading-[150%] m-0",
+                        "accordion-content b4 m-0",
                       ]}
                     >
                       <Markdown>{item.Impact_item_text}</Markdown>
@@ -777,16 +712,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           role="list"
           aria-label={ariaLabelRecurData.Product_related_kindness_info_text}
           class:list={[
-            "grid justify-between md:justify-center gap-[14px] lg:gap-[21px]",
-            "product-info-container py-[50px] my-[50px] border-y border-solid",
+            "product-info-container section-in-v-pad-sm grid-gap grid",
+            "justify-between md:justify-center border-y border-primary-lightest",
           ]}
         >
           {infos.map((info) => (
-            <div
-              role="listitem"
-              class="grid gap-[7px] md:gap-3.5 lg:gap-[20px]"
-            >
-              <div class="h-[clamp(1.125rem,4vw+0.4rem,4rem)] mx-auto">
+            <div role="listitem" class="division-in-element-gap grid">
+              <div class="product-info-icon-container mx-auto">
                 <img
                   class="w-full h-full"
                   alt=""
@@ -794,14 +726,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 />
               </div>
 
-              <div
-                class:list={[
-                  "text-[clamp(0.625rem,2vw+0.1rem,1.5em)]",
-                  "font-medium leading-[150%] text-primary text-center",
-                ]}
-              >
-                {info.Product_info_title}
-              </div>
+              <div class="text-b3">{info.Product_info_title}</div>
             </div>
           ))}
         </div>
