@@ -22,17 +22,17 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   if (user.default_delivery_address) {
     user.default_delivery_address = await env.USERS.prepare(
-      "SELECT * FROM addresses WHERE exact_account_guid = ?",
+      "SELECT * FROM addresses WHERE id = ?",
     )
-      .bind(user.exact_account_guid)
+      .bind(user.default_delivery_address)
       .first<Address>();
   }
 
   if (user.default_billing_address) {
     user.default_billing_address = await env.USERS.prepare(
-      "SELECT * FROM addresses WHERE exact_account_guid = ?",
+      "SELECT * FROM addresses WHERE id = ?",
     )
-      .bind(user.exact_account_guid)
+      .bind(user.default_billing_address)
       .first<Address>();
   }
 
