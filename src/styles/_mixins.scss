@@ -373,65 +373,64 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 
 // cart-plus/minus-buttons
 
-@mixin button-cart-quantity-item-layout {
-  @apply flex items-center justify-center text-center;
+@mixin button-cart-quantity-item-common {
+  @apply flex rounded-full;
 }
 
-@mixin button-cart-quantity-item-large {
-  @include button-cart-quantity-item-layout;
-
-  @apply w-10 h-10;
+@mixin button-cart-quantity-item-layout {
+  @apply flex items-center justify-center text-center;
 }
 
 @mixin button-cart-quantity-item {
   @include button-cart-quantity-item-layout;
 
-  @apply w-[clamp(34px,calc(0.37vw+32.6px),38px)] 
-    h-[clamp(34px,calc(0.37vw+32.6px),38px)];
+  width: poly-fluid-clamp-primary(30px, 38px);
+  height: poly-fluid-clamp-primary(31px, 44px);
 }
 
-@mixin button-cart-quantity-icon-large {
-  @apply w-[18px] h-[18px];
+@mixin button-cart-quantity-item-sm {
+  @include button-cart-quantity-item-layout;
+
+  width: poly-fluid-clamp-primary(30px, 38px);
+  height: poly-fluid-clamp-primary(31px, 38px);
 }
 
 @mixin button-cart-quantity-icon {
-  @apply w-[clamp(15px,calc(0.375vw+12.6px),18px)] 
-    h-[clamp(15px,calc(0.375vw+12.6px),18px)];
+  width: poly-fluid-clamp-primary(15px, 18px);
+  height: poly-fluid-clamp-primary(15px, 18px);
 }
 
-@mixin button-cart-quantity {
-  @apply flex rounded-full;
-
-  .button-cart-quantity-item {
-    @include button-cart-quantity-item;
-  }
-
+@mixin button-cart-quantity-item-input {
   input {
     @include button-cart-quantity-item;
 
     @apply text-b5;
   }
+}
+
+@mixin button-cart-quantity {
+  @include button-cart-quantity-item-common;
+  @include button-cart-quantity-item-input;
+
+  .button-cart-quantity-item {
+    @include button-cart-quantity-item;
+  }
 
   .button-cart-quantity-icon {
-    @include button-cart-quantity-icon-large;
+    @include button-cart-quantity-icon;
   }
 }
 
-@mixin button-cart-quantity-large {
-  @apply flex rounded-full;
+@mixin button-cart-quantity-sm {
+  @include button-cart-quantity-item-common;
+  @include button-cart-quantity-item-input;
 
-  .button-cart-quantity-item-large {
-    @include button-cart-quantity-item-large;
+  .button-cart-quantity-item-sm {
+    @include button-cart-quantity-item-sm;
   }
 
-  input {
-    @include button-cart-quantity-item-large;
-
-    @apply text-lg;
-  }
-
-  .button-cart-quantity-icon-large {
-    @include button-cart-quantity-icon-large;
+  .button-cart-quantity-icon {
+    @include button-cart-quantity-icon;
   }
 }
 
