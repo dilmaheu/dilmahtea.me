@@ -83,9 +83,13 @@ const checkoutSuccessLink = `/${locale}/${
 
   if (redirect_status === "failed") {
     location.href = "/";
+  } else if (
+    redirect_status === "succeeded" &&
+    !location.search.includes("clear=cart")
+  ) {
+    location.href = `${location.href}&clear=cart`;
   } else if (!paymentID) {
     const cartLength = Object.keys(window.cart).length;
-
     location.href = cartLength === 0 ? shopLink : checkoutShippingLink;
   }
 
