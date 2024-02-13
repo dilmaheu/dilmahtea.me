@@ -7,6 +7,7 @@ import Markdown from "@components/Markdown.astro";
 import Chapterize from "@components/Chapterize.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import RelevantPosts from "@components/RelevantPosts.astro";
+import AdvancedNotification from "@components/AdvancedNotification.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 import CMS from "@store/CMS";
@@ -197,224 +198,205 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 <PostDetailsLayout {page} {recurData} {ariaLabelRecurData} {headingName}>
   <form
     slot="tea-details-header"
-    class:list={[
-      "cart-adding-form division-gap flex flex-wrap items-center w-full",
-      stockAmount > 0 && "xl:w-2/3",
-    ]}
+    class:list={["cart-adding-form grid division-gap"]}
   >
-    <input type="hidden" name="SKU" value={productSKU} />
+    <div>
+      <input type="hidden" name="SKU" value={productSKU} />
 
-    <div class="flex flex-wrap division-in-gap">
-      {
-        availableVariants.length > 0 && (
-          <div class="grid sm:flex flex-wrap items-center division-in-element-gap w-full">
-            {availableVariants.map(({ value, variant, variantIcon, link }) => (
-              <div>
-                <input
-                  type="radio"
-                  name="tea_variant"
-                  id={variant}
-                  value={value}
-                  data-href={link}
-                  checked={value === productVariant}
-                  class="peer hidden"
-                />
+      <div class="flex flex-wrap division-in-gap">
+        {
+          availableVariants.length > 0 && (
+            <div class="grid sm:flex flex-wrap items-center division-in-element-gap w-full">
+              {availableVariants.map(
+                ({ value, variant, variantIcon, link }) => (
+                  <div>
+                    <input
+                      type="radio"
+                      name="tea_variant"
+                      id={variant}
+                      value={value}
+                      data-href={link}
+                      checked={value === productVariant}
+                      class="peer hidden"
+                    />
 
-                <label
-                  for={variant}
-                  class:list={[
-                    "inline-block p-[3px] text-white w-full",
-                    "peer-checked:bg-white select-none cursor-pointer",
-                  ]}
-                  style="clip-path: url(#product-variant-curve);"
-                >
-                  <div
-                    class="md:w-[188px] p-1 bg-primary-light"
-                    style="clip-path: url(#product-variant-curve);"
-                  >
-                    <div
+                    <label
+                      for={variant}
                       class:list={[
-                        "w-full py-[5px] px-[10px] bg-primary",
-                        "flex items-center sm:justify-center division-in-element-gap",
+                        "inline-block p-[3px] text-white w-full",
+                        "peer-checked:bg-white select-none cursor-pointer",
                       ]}
                       style="clip-path: url(#product-variant-curve);"
                     >
-                      {variantIcon?.src &&
-                        (async () => (
-                          <img
-                            src={await localizeCMSImage(variantIcon.src)}
-                            alt={variantIcon.alt}
-                            class="w-[25px] h-[15px]"
-                          />
-                        ))}
+                      <div
+                        class="md:w-[188px] p-1 bg-primary-light"
+                        style="clip-path: url(#product-variant-curve);"
+                      >
+                        <div
+                          class:list={[
+                            "w-full py-[5px] px-2.5 bg-primary",
+                            "flex items-center sm:justify-center division-in-element-gap",
+                          ]}
+                          style="clip-path: url(#product-variant-curve);"
+                        >
+                          {variantIcon?.src &&
+                            (async () => (
+                              <img
+                                src={await localizeCMSImage(variantIcon.src)}
+                                alt={variantIcon.alt}
+                                class="w-[25px] h-[15px]"
+                              />
+                            ))}
 
-                      <span class="text-sm font-bold leading-[110%]">
-                        {variant}
-                      </span>
-                    </div>
+                          <span class="text-sm font-bold leading-[110%]">
+                            {variant}
+                          </span>
+                        </div>
+                      </div>
+                    </label>
                   </div>
-                </label>
-              </div>
-            ))}
-          </div>
-        )
-      }
-
-      {
-        availableSizes.length > 0 && (
-          <div class="division-in-element-gap flex flex-wrap items-center">
-            <div class="text-b5">{checkoutRecurData.text_size}:</div>
-
-            <div class="flex flex-wrap division-in-element-gap">
-              {availableSizes.map(({ value, size, link }) => (
-                <div>
-                  <input
-                    type="radio"
-                    name="tea_size"
-                    id={size}
-                    value={value}
-                    data-href={link}
-                    checked={value === productSize}
-                    class="peer hidden"
-                  />
-
-                  <label
-                    for={size}
-                    class:list={[
-                      "peer-checked:bg-primary peer-checked:text-white",
-                      "peer-checked:font-bold inline-block py-[10px] px-[20px] text-primary",
-                      "rounded-full select-none cursor-pointer border-2 border-white bg-white text-sm font-normal",
-                    ]}
-                  >
-                    {size}
-                  </label>
-                </div>
-              ))}
+                ),
+              )}
             </div>
-          </div>
-        )
-      }
+          )
+        }
+
+        {
+          availableSizes.length > 0 && (
+            <div class="division-in-element-gap flex flex-wrap items-center">
+              <div class="input-label !text-white">
+                {checkoutRecurData.text_size}:
+              </div>
+
+              <div class="flex flex-wrap division-in-element-gap">
+                {availableSizes.map(({ value, size, link }) => (
+                  <div>
+                    <input
+                      type="radio"
+                      name="tea_size"
+                      id={size}
+                      value={value}
+                      data-href={link}
+                      checked={value === productSize}
+                      class="peer hidden"
+                    />
+
+                    <label for={size} class="radio-button-default">
+                      {size}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        }
+      </div>
     </div>
 
-    <div
-      class="flex flex-wrap division-in-gap items-center w-full justify-between"
-    >
-      {
-        stockAmount < 1 && (
-          <div class="grid gap-4 w-full">
-            <div
-              class:list={[
-                "flex items-center gap-2 sm:gap-2.5 w-full xl:w-2/3",
-                "text-b6 text-black bg-warning-light px-[15px] py-[10px] sm:px-[20px]",
-                "sm:py-[15px] rounded-[10px] min-h-[42px] sm:min-h-[56px] border border-warning",
-              ]}
-            >
-              <Icon
-                name="mdi:alert-circle"
-                class:list={[
-                  "inline-flex p-0.5 min-w-[22px] min-h-[22px]",
-                  "sm:w-[26px] sm:h-[26px] text-warning-light bg-warning rounded-full select-none",
-                ]}
+    <div class="division-in-gap grid w-full max-w-[600px]">
+      <div class="division-in-gap flex flex-wrap items-center">
+        {
+          stockAmount > 0 && (
+            <div class="button-cart-quantity-default-large">
+              <button
+                data-action="decrement"
+                aria-label={
+                  ariaLabelRecurData.Product_quantity_minus_button_text
+                }
+                class="product-amount-tweak-btn button-cart-quantity-item-large"
+                disabled
+              >
+                <Icon
+                  name="akar-icons:minus"
+                  class="button-cart-quantity-icon-large"
+                />
+              </button>
+
+              <input
+                type="number"
+                name="quantity"
+                aria-label={ariaLabelRecurData.Product_quantity_text}
+                min={1}
+                max={stockAmount}
+                value={1}
+                class="product-amount-input"
+                required
               />
-              {
-                // hide label if in-stock date is in the past or undefined
+
+              <button
+                data-action="increment"
+                aria-label={
+                  ariaLabelRecurData.Product_quantity_plus_button_text
+                }
+                class="product-amount-tweak-btn button-cart-quantity-item-large"
+              >
+                <Icon
+                  name="akar-icons:plus"
+                  class="button-cart-quantity-icon-large"
+                />
+              </button>
+            </div>
+          )
+        }
+
+        <button
+          class:list={[
+            "justify-center grow",
+            stockAmount > 0 ? "button-cart-default" : "button-cart-disabled",
+          ]}
+          disabled={stockAmount < 1}
+        >
+          <Icon name="mi:shopping-cart" class="cart-icon" />
+
+          <span class="text-container">
+            {
+              stockAmount > 0
+                ? checkoutRecurData.text_add_to_cart_for
+                : recurData.Product_sold_out_text
+            }
+            <span>&#x2022;</span>€
+            <output class="product-amount-price">
+              {productPriceIncludingTax.toFixed(2).replace(".", ",")}
+            </output>
+          </span>
+        </button>
+      </div>
+
+      {
+        stockAmount < 1 &&
+          (() => {
+            let stockText = "";
+            if (page.In_stock_date) {
+              stockText =
                 new Date(page.In_stock_date).getTime() > new Date().getTime() &&
-                  recurData.Item_stock_text.replace(
-                    "<in_stock_date>",
-                    new Date(page.In_stock_date).toLocaleString("en-GB", {
-                      year: "2-digit",
-                      month: "short",
-                      day: "numeric",
-                    }),
-                  ) + "."
-              }
-              {availableFormats.length === 1
+                recurData.Item_stock_text.replace(
+                  "<in_stock_date>",
+                  new Date(page.In_stock_date).toLocaleString("en-GB", {
+                    year: "2-digit",
+                    month: "short",
+                    day: "numeric",
+                  }),
+                ) + ".";
+            }
+
+            const availableFormatsText =
+              availableFormats.length === 1
                 ? recurData.Product_stock_other_formats_text_singular
                 : recurData.Product_stock_other_formats_text.replace(
                     "<count>",
                     availableFormats.length,
-                  )}
-            </div>
-          </div>
-        )
-      }
+                  );
 
-      {
-        stockAmount > 0 && (
-          <div class="button-cart-quantity-default-large">
-            <button
-              data-action="decrement"
-              aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
-              class="product-amount-tweak-btn button-cart-quantity-item-large"
-              disabled
-            >
-              <Icon
-                name="akar-icons:minus"
-                class="button-cart-quantity-icon-large"
+            return (
+              <AdvancedNotification
+                Title={stockText + availableFormatsText}
+                Type="Warning"
+                Bordered={true}
+                Rounded={true}
               />
-            </button>
-
-            <input
-              type="number"
-              name="quantity"
-              aria-label={ariaLabelRecurData.Product_quantity_text}
-              min={1}
-              max={stockAmount}
-              value={1}
-              class="product-amount-input"
-              required
-            />
-
-            <button
-              data-action="increment"
-              aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
-              class="product-amount-tweak-btn button-cart-quantity-item-large"
-            >
-              <Icon
-                name="akar-icons:plus"
-                class="button-cart-quantity-icon-large"
-              />
-            </button>
-          </div>
-        )
+            );
+          })
       }
-
-      <div class="grow">
-        {
-          stockAmount > 0 && (
-            <button class="button-cart-default-normal w-fit md:w-full font-bold">
-              <Icon name="mi:shopping-cart" class="cart-icon" />
-
-              <span class="text-container">
-                {checkoutRecurData.text_add_to_cart}
-                <span class="w-2 h-2 bg-primary rounded-full" />€
-                <output class="product-amount-price">
-                  {productPriceIncludingTax.toFixed(2).replace(".", ",")}
-                </output>
-              </span>
-            </button>
-          )
-        }
-
-        {
-          stockAmount === 0 && (
-            <button
-              disabled
-              class="button-cart-disabled-normal font-bold mt-auto w-full xl:w-2/3"
-            >
-              <Icon name="tabler:shopping-cart-x" class="cart-icon" />
-
-              <span class="text-container">
-                {recurData.Product_sold_out_text}
-                <span class="w-2 h-2 bg-secondary-light rounded-full" />€
-                <output class="product-amount-price">
-                  {productPriceIncludingTax.toFixed(2).replace(".", ",")}
-                </output>
-              </span>
-            </button>
-          )
-        }
-      </div>
     </div>
   </form>
 
@@ -512,39 +494,36 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         )
       }
 
-      <div class="ml-auto grow">
-        {
-          stockAmount > 0 && (
-            <button class="button-cart-primary-normal w-full mt-auto font-bold">
-              <Icon name="mi:shopping-cart" class="cart-icon" />
+      <button
+        class:list={[
+          "justify-center grow",
+          stockAmount > 0 ? "button-cart-primary" : "button-cart-disabled",
+        ]}
+        disabled={stockAmount < 1}
+      >
+        <Icon name="mi:shopping-cart" class="cart-icon" />
 
-              <span class="text-container">
-                {checkoutRecurData.text_add}
-                <span class="w-2 h-2 bg-white rounded-full" />€
-                <output class="product-amount-price">
-                  {productPriceIncludingTax.toFixed(2).replace(".", ",")}
-                </output>
-              </span>
-            </button>
-          )
-        }
-
-        {
-          stockAmount === 0 && (
-            <div class="button-cart-disabled-normal w-full mt-[30px] font-bold">
-              <Icon name="mi:shopping-cart" class="cart-icon" />
-
-              <span class="text-container">
-                {recurData.Product_sold_out_text}
-                <span class="w-2 h-2 bg-secondary-light rounded-full" />€
-                <output class="product-amount-price">
-                  {productPriceIncludingTax.toFixed(2).replace(".", ",")}
-                </output>
-              </span>
-            </div>
-          )
-        }
-      </div>
+        <span class="text-container">
+          <span class="hidden xl:block"
+            >{
+              stockAmount > 0
+                ? checkoutRecurData.text_add_to_cart
+                : recurData.Product_sold_out_text
+            }</span
+          >
+          <span class="block xl:hidden"
+            >{
+              stockAmount > 0
+                ? checkoutRecurData.text_add
+                : recurData.Product_sold_out_text
+            }</span
+          >
+          <span>&#x2022;</span>€
+          <output class="product-amount-price-sm">
+            {productPriceIncludingTax.toFixed(2).replace(".", ",")}
+          </output>
+        </span>
+      </button>
     </div>
   </form>
 
@@ -891,8 +870,11 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       'input:is([name="tea_variant"], [name="tea_size"])',
     ),
     productAmountPriceOutput = query(".product-amount-price"),
+    productAmountPriceOutputSm = query(".product-amount-price-sm"),
     productAmountInputs = queryAll(".product-amount-input"),
     productAmountTweakBtns = queryAll(".product-amount-tweak-btn");
+
+  const formatPrice = (price) => price?.toFixed(2)?.replace(".", ",");
 
   accordions.forEach((accordion) => {
     accordion.addEventListener("click", () => {
@@ -948,9 +930,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         quantity: 1,
       });
 
-      productAmountPriceOutput.textContent = productPriceIncludingTax
-        .toFixed(2)
-        .replace(".", ",");
+      productAmountPriceOutput.textContent = formatPrice(priceIncludingTax);
+
+      productAmountPriceOutputSm.textContent = formatPrice(priceIncludingTax);
 
       window.openCart();
     });
@@ -975,9 +957,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         quantity,
       });
 
-    productAmountPriceOutput.textContent = priceIncludingTax
-      .toFixed(2)
-      .replace(".", ",");
+    productAmountPriceOutput.textContent = formatPrice(priceIncludingTax);
+
+    productAmountPriceOutputSm.textContent = formatPrice(priceIncludingTax);
   }
 
   tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
