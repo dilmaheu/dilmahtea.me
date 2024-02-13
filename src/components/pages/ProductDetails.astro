@@ -112,6 +112,10 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     }
   }
 
+  .product-variant-blob-button-clip {
+    clip-path: url(#product-variant-curve);
+  }
+
   .product-details img {
     width: 100%;
     max-height: 530px;
@@ -209,7 +213,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             <div class="grid sm:flex flex-wrap items-center division-in-element-gap w-full">
               {availableVariants.map(
                 ({ value, variant, variantIcon, link }) => (
-                  <div>
+                  <div class="h-[62px]">
                     <input
                       type="radio"
                       name="tea_variant"
@@ -223,21 +227,23 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     <label
                       for={variant}
                       class:list={[
-                        "inline-block p-[3px] text-white w-full",
+                        "product-variant-blob-button-clip",
+                        "inline-block p-[3px] text-white w-full h-full",
                         "peer-checked:bg-white select-none cursor-pointer",
                       ]}
-                      style="clip-path: url(#product-variant-curve);"
                     >
-                      <div
-                        class="md:w-[188px] p-1 bg-primary-light"
-                        style="clip-path: url(#product-variant-curve);"
+                      <span
+                        class:list={[
+                          "product-variant-blob-button-clip",
+                          "block md:w-[200px] p-0.5 bg-primary-light h-full",
+                        ]}
                       >
-                        <div
+                        <span
                           class:list={[
-                            "w-full py-[5px] px-2.5 bg-primary",
-                            "flex items-center sm:justify-center division-in-element-gap",
+                            "product-variant-blob-button-clip",
+                            "division-in-element-gap w-full h-full",
+                            "flex items-center py-[5px] px-2.5 bg-primary",
                           ]}
-                          style="clip-path: url(#product-variant-curve);"
                         >
                           {variantIcon?.src &&
                             (async () => (
@@ -248,11 +254,9 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                               />
                             ))}
 
-                          <span class="text-sm font-bold leading-[110%]">
-                            {variant}
-                          </span>
-                        </div>
-                      </div>
+                          <span class="text-sm font-bold">{variant}</span>
+                        </span>
+                      </span>
                     </label>
                   </div>
                 ),
