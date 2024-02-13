@@ -101,12 +101,10 @@ const headingTexts = dynamicHeadings || staticHeadings?.filter(Boolean);
 
     <div
       class:list={[
-        "overflow-y-auto",
+        "overflow-y-auto flex flex-col division-gap",
         fixedTop && "hidden py-[25px] border-t border-primary-light",
       ]}
     >
-    
-
       <div
         role="list"
         id={fixedTop ? "sticky-chapter-links" : "chapter-links"}
@@ -121,9 +119,8 @@ const headingTexts = dynamicHeadings || staticHeadings?.filter(Boolean);
               href={`#${title?.toLowerCase()?.replaceAll(" ", "-")}`}
               role="listitem"
               class:list={[
-                "chapter-link inline-flex items-center",
-                "gap-[clamp(10px,calc(0.625vw+6px),15px)]",
-                "text-b3 text-black-light",
+                "chapter-link division-in-gap",
+                "inline-flex items-center text-b3 text-black-light",
                 fixedTop && "chapter-link-sm",
                 i === 0 && "active",
               ]}
