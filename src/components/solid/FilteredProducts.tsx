@@ -67,8 +67,8 @@ export default function FilteredProducts({
           productA.rank === null
             ? 1
             : productB.rank === null
-            ? -1
-            : productA.rank - productB.rank,
+              ? -1
+              : productA.rank - productB.rank,
         ),
     );
   });
@@ -89,7 +89,7 @@ export default function FilteredProducts({
     <div
       role="list"
       aria-label={page.Aria_label_all_teas_text}
-      class="wrapper grid grid-cols-2 lg:grid-cols-3 gap-[clamp(15px,calc(5vw-25px),50px)] overflow-hidden"
+      class="wrapper grid grid-cols-2 lg:grid-cols-3 card-gap overflow-hidden"
     >
       <For each={filteredProducts()}>
         {(product, iSignal) => (
@@ -97,19 +97,14 @@ export default function FilteredProducts({
             role="listitem"
             aria-label={page.Aria_label_tea_item_text + (iSignal() + 1)}
             style="clip-path: url(#product-card-curve)"
-            class="product-card link-section flex flex-wrap w-full mx-auto bg-primary"
+            class="product-card link-section"
           >
-            <div class="relative block w-full">
+            <div class="product-card-image-container">
               <div innerHTML={product.Intro_blob_HTML} />
 
               {product.Stock_amount < 1 && (
                 <>
-                  <div
-                    class={[
-                      "absolute top-[12%] right-[12%] flex items-center px-5 sm:px-[37px] py-[5px] sm:py-[7px]",
-                      "bg-warning/80 text-black sm:text-xl font-semibold border-2 border-warning rounded-full",
-                    ].join(" ")}
-                  >
+                  <div class="stock-out-label-top">
                     {recurData.Product_sold_out_text}
                   </div>
 
@@ -135,188 +130,153 @@ export default function FilteredProducts({
               )}
             </div>
 
-            <div class="w-full pt-2.5 lg:pt-5 pb-[15px] lg:pb-[25px] px-[clamp(15px,calc(4vw-9px),36px)] grid gap-[5px] text-white">
-              <div
-                class="product-card-title recoleta font-semibold leading-[120%] md:leading-[110%]"
-                style={{
-                  "font-size": "clamp(0.875rem, 1.5vw + 0.15rem, 1.5rem)",
-                }}
-              >
-                <a
-                  aria-label={
-                    (product.Stock_amount < 1
-                      ? `${recurData.Product_sold_out_text}, `
-                      : "") + product.Title
-                  }
-                  class="main-link"
-                  href={product.Meta.URL_slug}
-                >
-                  {product.Title}
-                </a>
-              </div>
+            <div class="card-content-container">
+              <div class="product-card-content">
+                <div class="product-title">
+                  <a
+                    aria-label={
+                      (product.Stock_amount < 1
+                        ? `${recurData.Product_sold_out_text}, `
+                        : "") + product.Title
+                    }
+                    class="main-link"
+                    href={product.Meta.URL_slug}
+                  >
+                    {product.Title}
+                  </a>
+                </div>
 
-              <div
-                class="text-white"
-                style={{ "font-size": "clamp(0.75rem, 1.5vw + 0.1rem, 1rem)" }}
-              >
-                {(product.tea_size || product.Weight_tea) &&
-                  (product.tea_size?.toLowerCase().includes("bag")
-                    ? product.productLocalizedSize
-                    : product.Weight_tea + product.Weight_tea_unit)}
+                <div class="product-info">
+                  {(product.tea_size || product.Weight_tea) &&
+                    (product.tea_size?.toLowerCase().includes("bag")
+                      ? product.productLocalizedSize
+                      : product.Weight_tea + product.Weight_tea_unit)}
 
-                {product.variant.data?.attributes.Title && (
-                  <>
-                    <span class="inline-block w-1 h-1 mx-[5px] mb-0.5 rounded-full bg-secondary" />
-                    {product.variant.data?.attributes.Title}
-                  </>
+                  {product.variant.data?.attributes.Title && (
+                    <div>
+                      <span class="mr-1">&#x025CF;</span>
+                      {product.variant.data?.attributes.Title}
+                    </div>
+                  )}
+                </div>
+
+                {product.availableFormatsCount > 0 && (
+                  <div class="product-format">
+                    <span class="icon-container">
+                      {product.availableFormatThumbnails.map(({ src, alt }) => (
+                        <img src={src} alt={alt} class="icon" />
+                      ))}
+
+                      {product.availableFormatsCount > 2 && (
+                        <span class="number">
+                          +{product.availableFormatsCount - 2}
+                        </span>
+                      )}
+                    </span>
+
+                    <span class="desktop-only-text">
+                      {product.Stock_amount === 0
+                        ? recurData.Product_stock_available_text
+                        : recurData.Product_available_text}
+                    </span>
+
+                    <span
+                      class={[
+                        "desktop-only-text format-link-text",
+                        product.Stock_amount === 0 && "text-white",
+                      ].join(" ")}
+                    >
+                      {product.availableFormatsCount === 1
+                        ? recurData.Product_other_formats_singular_text
+                        : recurData.Product_other_formats_text.replaceAll(
+                            "<count>",
+                            product.availableFormatsCount,
+                          )}
+                    </span>
+
+                    <span
+                      class={[
+                        "mobile-only-text format-link-text",
+                        product.Stock_amount === 0 && "text-white",
+                      ].join(" ")}
+                    >
+                      {product.availableFormatsCount === 1
+                        ? recurData.Product_other_formats_singular_text_sm
+                        : recurData.Product_other_formats_text_sm.replaceAll(
+                            "<count>",
+                            product.availableFormatsCount,
+                          )}
+                    </span>
+                  </div>
+                )}
+
+                {product.estate_name.data.length > 0 && (
+                  <div class="product-estate">
+                    <img class="icon" {...white_love} />
+
+                    <div class="hidden sm:inline">
+                      {recurData.product_made_love_from}
+                    </div>
+
+                    <div class="inline sm:hidden">{recurData.product_from}</div>
+
+                    {product.estate_name?.data.map(
+                      (
+                        {
+                          attributes: {
+                            Estate_name,
+                            Meta: { URL_slug },
+                          },
+                        },
+                        index,
+                      ) => (
+                        <a href={URL_slug}>
+                          {Estate_name +
+                            (index === product.estate_name.data.length - 1
+                              ? ""
+                              : ",")}
+                        </a>
+                      ),
+                    )}
+                  </div>
                 )}
               </div>
 
-              {product.estate_name?.data.length > 0 && (
-                <div class="flex flex-wrap items-center">
-                  <div class="flex flex-wrap items-center text-base leading-[150%]">
-                    <span>
-                      <img
-                        class="p-[3px] mr-1 icon"
-                        style={{
-                          width: "clamp(1.125rem, 2vw + 0.15rem, 2rem)",
-                          height: "clamp(1.125rem, 2vw + 0.15rem, 2rem)",
-                        }}
-                        {...white_love}
-                      />
-
-                      {recurData.product_made_love_from + `\xa0`}
-                    </span>
-
-                    <div class="flex flex-wrap gap-x-1.5">
-                      {product.estate_name.data.map(
-                        (
-                          {
-                            attributes: {
-                              Estate_name,
-                              Meta: { URL_slug },
-                            },
-                          },
-                          index,
-                        ) => (
-                          <a
-                            href={URL_slug}
-                            class="flex flex-wrap font-bold underline decoration-1 underline-offset-[2px]"
-                          >
-                            {Estate_name +
-                              (index === product.estate_name.data.length - 1
-                                ? ""
-                                : ",")}
-                          </a>
-                        ),
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {product.availableFormatsCount > 0 && (
-                <div class="inline-flex items-center gap-[3px] md:gap-x-2">
-                  <span class="flex">
-                    {product.availableFormatThumbnails.map(({ src, alt }) => (
-                      <img
-                        src={src}
-                        alt={alt}
-                        class={[
-                          "rounded-full border-2 border-primary",
-                          "w-[clamp(14px,calc(1.5vw+2.5px),24px)] aspect-square",
-                          "-ml-[clamp(7px,calc(1.19vw-2.14px),15px)] first:ml-0",
-                        ].join(" ")}
-                      />
-                    ))}
-
-                    {product.availableFormatsCount > 2 && (
-                      <span
-                        class={[
-                          "flex items-center justify-center rounded-full bg-secondary-light",
-                          "text-[clamp(6px,calc(0.6vw+1.4px),10px)] md:font-semibold text-primary",
-                          "leading-[110%] -ml-[clamp(7px,calc(1.19vw-2.14px),15px)] border-2 border-primary",
-                          "h-[clamp(14px,calc(1.5vw+2.5px),24px)] min-w-[clamp(14px,calc(1.5vw+2.5px),24px)]",
-                        ].join(" ")}
-                      >
-                        +{product.availableFormatsCount - 2}
-                      </span>
-                    )}
-                  </span>
-
-                  <div class="text-xs md:text-sm text-white">
-                    <em>
-                      <span class="hidden sm:block">
-                        {product.Stock_amount === 0
-                          ? recurData.Product_stock_available_text
-                          : recurData.Product_available_text}
-
-                        <span class="font-bold underline underline-offset-2 pl-1">
-                          {product.availableFormatsCount === 1
-                            ? recurData.Product_other_formats_singular_text
-                            : recurData.Product_other_formats_text.replaceAll(
-                                "<count>",
-                                product.availableFormatsCount,
-                              )}
-                        </span>
-                      </span>
-
-                      <span class="block sm:hidden font-bold underline underline-offset-2">
-                        {product.availableFormatsCount === 1
-                          ? recurData.Product_other_formats_singular_text_sm
-                          : recurData.Product_other_formats_text_sm.replaceAll(
-                              "<count>",
-                              product.availableFormatsCount,
-                            )}
-                      </span>
-                    </em>
-                  </div>
-                </div>
-              )}
-
-              {product.Stock_amount > 0 ? (
-                <button
-                  onClick={() => addProductToCart(product)}
-                  class="unlink product-card-btn text-primary bg-secondary-light"
+              <button
+                onClick={() => {
+                  if (product.Stock_amount > 0) {
+                    addProductToCart(product);
+                  }
+                }}
+                class={[
+                  "unlink product-card-btn",
+                  product.Stock_amount > 0
+                    ? "card-button-cart-default"
+                    : "card-button-cart-disabled",
+                ].join(" ")}
+                disabled={product.Stock_amount === 0}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  class={[
+                    "cart-icon",
+                    product.Stock_amount > 0 ? "fill-primary" : "fill-white",
+                  ].join(" ")}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    class="hidden sm:inline-flex w-5 h-5"
-                  >
-                    <path
-                      d="M6.01 16.136L4.141 4H3a1 1 0 0 1 0-2h1.985a.993.993 0 0 1 .66.235a.997.997 0 0 1 .346.627L6.319 5H14v2H6.627l1.23 8h9.399l1.5-5h2.088l-1.886 6.287A1 1 0 0 1 18 17H7.016a.993.993 0 0 1-.675-.248a.998.998 0 0 1-.332-.616zM10 20a2 2 0 1 1-4 0a2 2 0 0 1 4 0zm9 0a2 2 0 1 1-4 0a2 2 0 0 1 4 0zm0-18a1 1 0 0 1 1 1v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0V6h-1a1 1 0 1 1 0-2h1V3a1 1 0 0 1 1-1z"
-                      style="fill:#547b7d"
-                    />
-                  </svg>
-                  {checkoutRecurData.text_add}
-                  <span class="w-1 h-1 bg-primary rounded-full" />
-                  <span class="recoleta">
-                    {`€` +
-                      product.PriceIncludingTax.toFixed(2).replace(".", ",")}
-                  </span>
-                </button>
-              ) : (
-                <div class="unlink product-card-btn cursor-not-allowed text-white bg-slate">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    class="hidden sm:inline-flex w-5 h-5"
-                  >
-                    <path
-                      d="M6.01 16.136L4.141 4H3a1 1 0 0 1 0-2h1.985a.993.993 0 0 1 .66.235a.997.997 0 0 1 .346.627L6.319 5H14v2H6.627l1.23 8h9.399l1.5-5h2.088l-1.886 6.287A1 1 0 0 1 18 17H7.016a.993.993 0 0 1-.675-.248a.998.998 0 0 1-.332-.616zM10 20a2 2 0 1 1-4 0a2 2 0 0 1 4 0zm9 0a2 2 0 1 1-4 0a2 2 0 0 1 4 0zm0-18a1 1 0 0 1 1 1v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0V6h-1a1 1 0 1 1 0-2h1V3a1 1 0 0 1 1-1z"
-                      style="fill:#fff"
-                    />
-                  </svg>
-
-                  {recurData.Product_sold_out_text}
-                  <span class="w-1 h-1 bg-white rounded-full" />
-                  <span class="recoleta">
-                    {`€` +
+                  <path d="M6.01 16.136L4.141 4H3a1 1 0 0 1 0-2h1.985a.993.993 0 0 1 .66.235a.997.997 0 0 1 .346.627L6.319 5H14v2H6.627l1.23 8h9.399l1.5-5h2.088l-1.886 6.287A1 1 0 0 1 18 17H7.016a.993.993 0 0 1-.675-.248a.998.998 0 0 1-.332-.616zM10 20a2 2 0 1 1-4 0a2 2 0 0 1 4 0zm9 0a2 2 0 1 1-4 0a2 2 0 0 1 4 0zm0-18a1 1 0 0 1 1 1v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0V6h-1a1 1 0 1 1 0-2h1V3a1 1 0 0 1 1-1z" />
+                </svg>
+                <div class="text-container">
+                  {product.Stock_amount > 0
+                    ? checkoutRecurData.text_add
+                    : recurData.Product_sold_out_text}
+                  <span>&#x025CF;</span>
+                  <span>
+                    {"€" +
                       product.PriceIncludingTax.toFixed(2).replace(".", ",")}
                   </span>
                 </div>
-              )}
+              </button>
             </div>
           </div>
         )}

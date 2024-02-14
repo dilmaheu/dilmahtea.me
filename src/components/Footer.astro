@@ -16,8 +16,7 @@ declare interface Props {
 }
 
 const { footerText, recurData, type } = Astro.props as Props,
-  { Footer_menu: menu } = recurData,
-  { STRAPI_URL } = import.meta.env;
+  { Footer_menu: menu } = recurData;
 ---
 
 <style lang="scss">
@@ -45,13 +44,15 @@ const { footerText, recurData, type } = Astro.props as Props,
 
     nav {
       h2 {
-        @apply text-[clamp(0.875rem,1.5vw+0.1rem,1.125rem)]
-          font-bold leading-[130%] sm:leading-[150%];
+        @apply text-b5-sm font-bold;
       }
 
       ul li {
-        @apply text-[clamp(0.75rem,1.5vw+0.1rem,1rem)] 
-          md:font-medium sm:leading-[150%] py-[15px] sm:py-0;
+        @apply text-b6-sm md:font-medium py-[15px] sm:py-0;
+      }
+
+      .heading-line {
+        width: poly-fluid-clamp-primary(85px, 150px);
       }
 
       .footer-icon-container {
@@ -65,11 +66,7 @@ const { footerText, recurData, type } = Astro.props as Props,
     }
 
     .brand-logo {
-      height: clamp(40px, 6vw + 6px, 56px);
-    }
-
-    .copyright {
-      @apply text-[clamp(0.75rem,1.5vw+0.1rem,1rem)];
+      height: poly-fluid-clamp-primary(40px, 56px);
     }
   }
 </style>
@@ -111,20 +108,15 @@ const { footerText, recurData, type } = Astro.props as Props,
       </div>
     </div>
 
-    <div
-      class="wrapper relative z-20 grid gap-[25px] py-[clamp(24px,3vw+6.4px,36px)]"
-    >
+    <div class="wrapper section-in-v-pad-sm division-gap grid relative z-20">
       <nav
-        class:list={[
-          "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
-          "xl:grid-cols-5 gap-[30px]",
-        ]}
+        class="grid-gap grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
       >
         {
           menu.map(({ Heading_name, Menu }) => (
-            <div class="flex flex-col gap-2 sm:gap-3">
+            <div class="division-in-gap flex flex-col">
               <h2>{Heading_name}</h2>
-              <span class="block sm:hidden w-[85px] h-[1px] bg-secondary/60" />
+              <span class="heading-line block h-px bg-secondary/50" />
 
               <ul class="grid sm:gap-[15px]">
                 {Menu.map(
@@ -162,7 +154,7 @@ const { footerText, recurData, type } = Astro.props as Props,
 
       <div
         class:list={[
-          "grid gap-2.5 justify-start",
+          "division-in-element-gap grid justify-start",
           type === "productDetails" && "pb-20 md:pb-0",
         ]}
       >
@@ -171,7 +163,7 @@ const { footerText, recurData, type } = Astro.props as Props,
         </a>
 
         <p
-          class="copyright text-center sm:font-medium leading-[150%]"
+          class="text-b6-sm sm:font-medium text-secondary"
           set:html={footerText}
         />
       </div>
