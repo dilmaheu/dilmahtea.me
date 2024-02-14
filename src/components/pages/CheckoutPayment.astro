@@ -3,9 +3,10 @@ import CMS from "@store/CMS";
 import Markdown from "@components/Markdown.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import OrderSummary from "@components/OrderSummary.astro";
-import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+import AdvancedNotification from "@components/AdvancedNotification.astro";
 
 import localizeCMSImage from "@utils/localizeCMSImage";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { page, recurData } = Astro.props,
   { locale, payment_methods, Accepted_cards_icon } = page,
@@ -99,7 +100,15 @@ const STRIPE_PUBLISHABLE_KEY = shouldDisplayExperimentals
     }}
   />
 
-<form class="section-gap grid w-full xl:w-2/3">
+  <div id="payment-error" class="hidden">
+    <AdvancedNotification
+      Title={page.text_payment_error}
+      Type="Error"
+      Bordered={true}
+      Rounded={true}
+    />
+  </div>
+
   <section
     role="list"
     aria-label={userRecurData.Input_label_email}
@@ -469,7 +478,14 @@ const STRIPE_PUBLISHABLE_KEY = shouldDisplayExperimentals
     paymentCardInputSelector = queryAll(".payment-card-input-selector"),
     paymentInfoElements = queryAll(".payment-info"),
     submitBtn = id("submit-btn"),
-    submitBtnPaymentType = submitBtn.querySelector(".payment-type");
+    submitBtnPaymentType = submitBtn.querySelector(".payment-type"),
+    paymentError = id("payment-error");
+
+  const { redirect_status } = Object.fromEntries(
+    new URLSearchParams(location.search),
+  );
+
+  redirect_status === "failed" && paymentError.classList.remove("hidden");
 
   const toggleDisabled = (elements, condition) =>
     elements.forEach((element) =>
@@ -523,6 +539,8 @@ const STRIPE_PUBLISHABLE_KEY = shouldDisplayExperimentals
     removeClass(submitBtn, "button-disabled-large");
     addClass(submitBtn, "button-primary-large");
     submitBtn.removeAttribute("disabled", true);
+
+    redirect_status === "failed" && paymentError.classList.add("hidden");
 
     paymentInfoElements.forEach((paymentInfo) => {
       const includesValue = paymentInfo
