@@ -27,6 +27,20 @@ const { page } = Astro.props,
     height: $fluid-image-size;
     min-width: $fluid-image-size;
   }
+
+  .order-summary {
+    .summery-text-container {
+      @apply flex justify-between items-center;
+    }
+
+    .summery-base-text {
+      @apply text-b4 font-medium;
+    }
+
+    .summery-highlighted-text {
+      @apply text-b2 font-bold text-black;
+    }
+  }
 </style>
 
 <div
@@ -36,7 +50,7 @@ const { page } = Astro.props,
   ]}
 >
   <div class="flex flex-col gap-5">
-    <div class="flex justify-between items-center gap-2.5">
+    <div class="summery-text-container flex-wrap gap-2.5">
       <h2 class="text-h3">
         {checkoutRecurData.text_order_summary}
       </h2>
@@ -110,8 +124,8 @@ const { page } = Astro.props,
     >
       <div
         class:list={[
-          "flex justify-between items-center",
-          isCheckoutInformation ? "text-b2 font-bold text-black" : "text-b4",
+          "summery-text-container",
+          isCheckoutInformation ? "summery-highlighted-text" : "summery-base-text",
         ]}
       >
         <span class="order-subtotal">
@@ -125,9 +139,9 @@ const { page } = Astro.props,
 
       {
         (isCheckoutShipping || isCheckoutPayment) && (
-          <div class="flex justify-between items-center">
-            <span class="text-b4">{checkoutRecurData.text_shipping}</span>
-            <span class="order-shipping-cost recoleta text-h5">
+          <div class="summery-text-container summery-base-text">
+            <span>{checkoutRecurData.text_shipping}</span>
+            <span class="order-shipping-cost">
               €<DynamicHTML htmlFn={() => window.cart.shippingCost} />
             </span>
           </div>
@@ -138,16 +152,16 @@ const { page } = Astro.props,
     {
       (isCheckoutShipping || isCheckoutPayment) && (
         <>
-          <div class="w-full h-px bg-primary-light" />
+          <div class="w-full h-px bg-primary-lightest" />
 
-          <div class="flex justify-between items-center text-b2 font-bold text-black">
+          <div class="summery-text-container summery-highlighted-text">
             <span>{checkoutRecurData.text_total}</span>
             <span class="order-total">
               €<DynamicHTML htmlFn={() => window.cart.total} />
             </span>
           </div>
 
-          <div class="flex justify-between items-center text-b4">
+          <div class="summery-text-container summery-base-text">
             <span>{checkoutRecurData.text_tax}</span>
             <span class="order-tax">
               €<DynamicHTML htmlFn={() => window.cart.tax} />
