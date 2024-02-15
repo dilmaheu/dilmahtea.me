@@ -1,9 +1,11 @@
 import type { Key, User } from "lucia";
 import type { ENV } from "../utils/types";
 
-import { initializeLucia } from "../utils/auth";
 import { removeToken, validateToken } from "../utils/token";
 import { getProviderId, createSessionCookie } from "../utils";
+
+import { initializeLucia } from "../utils/auth";
+import fetchExactAccountWorker from "../utils/fetchExactAccountWorker";
 
 export const onRequestGet: PagesFunction<ENV> = async (context) => {
   const { request, env } = context;
@@ -96,19 +98,17 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
 
     const ProviderId = providerId === "email" ? "Email" : "Phone";
 
-    await env.EXACT_ACCOUNT.fetch(env.EXACT_ACCOUNT_WORKER_URL, {
-      method: "PUT",
-      headers: {
-        "content-type": "application/json",
-        "x-cf-secure-worker-token": env.CF_SECURE_WORKER_TOKEN,
-      },
-      body: JSON.stringify({
+    await fetchExactAccountWorker(
+      "/account",
+      "PUT",
+      {
         ProviderId,
         contact,
         exact_account_guid: user.exact_account_guid,
         exact_contact_guid: user.exact_contact_guid,
-      }),
-    }).then((res) => res.json());
+      },
+      env,
+    );
   }
 
   const sessionCookie = await createSessionCookie(auth, user);
