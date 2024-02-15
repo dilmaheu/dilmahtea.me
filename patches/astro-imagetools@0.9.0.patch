@@ -1,8 +1,8 @@
 diff --git a/api/utils/getImage.js b/api/utils/getImage.js
-index 12bc1a8fe664f77614d46df0619724239c07af60..7a8ba8d13b37de1738ca3e299f36df80ea46fba7 100644
+index 12bc1a8fe664f77614d46df0619724239c07af60..d41cae204a70dbe8069f02affc0c94f816ee2711 100644
 --- a/api/utils/getImage.js
 +++ b/api/utils/getImage.js
-@@ -20,11 +20,23 @@ export default async function ({
+@@ -20,6 +20,18 @@ export default async function ({
    artDirectives,
    transformConfigs,
  }) {
@@ -15,15 +15,9 @@ index 12bc1a8fe664f77614d46df0619724239c07af60..7a8ba8d13b37de1738ca3e299f36df80
 +          "$2a$10$NzPqJzqi53uUEtvHJ5vlVuDSa0vhPZn7VMm0eyecaA0GN.o/zPwcu",
 +      },
 +      body: JSON.stringify({ src }),
-+    });
++    }).then((res) => res.json());
 +  }
 +
    const args = Array.from(arguments);
  
    const hash = objectHash(args);
- 
--  if (imagesData.has(hash)) {
-+  if (imagesData.has(hash)) {+
-     return imagesData.get(hash);
-   }
- 
