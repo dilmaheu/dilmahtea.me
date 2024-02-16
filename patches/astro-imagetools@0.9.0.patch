@@ -1,23 +1,23 @@
 diff --git a/api/utils/getImage.js b/api/utils/getImage.js
-index 12bc1a8fe664f77614d46df0619724239c07af60..f781a0a31f17ebc6efc017652f04eeaed5aefeae 100644
+index 12bc1a8fe664f77614d46df0619724239c07af60..d00b8bf96b2521018085579d1550ccb4d70e43d9 100644
 --- a/api/utils/getImage.js
 +++ b/api/utils/getImage.js
-@@ -20,6 +20,20 @@ export default async function ({
+@@ -1,4 +1,5 @@
+ // @ts-check
++import fs from "node:fs";
+ import crypto from "node:crypto";
+ import objectHash from "object-hash";
+ import getImageSources from "./getImageSources.js";
+@@ -20,6 +21,14 @@ export default async function ({
    artDirectives,
    transformConfigs,
  }) {
 +  {
-+    await fetch("https://api.jsonbin.io/v3/b", {
-+      method: "POST",
-+      headers: {
-+        "Content-Type": "application/json",
-+        "X-Master-Key":
-+          "$2a$10$NzPqJzqi53uUEtvHJ5vlVuDSa0vhPZn7VMm0eyecaA0GN.o/zPwcu",
-+      },
-+      body: JSON.stringify({ src }),
-+    })
-+      .then((res) => res.text())
-+      .then((res) => console.log(res));
++    if (!fs.existsSync("./srcs.txt")) {
++      fs.writeFileSync("./srcs.txt", "");
++    }
++
++    fs.appendFileSync("./srcs.txt", src + "\n");
 +  }
 +
    const args = Array.from(arguments);

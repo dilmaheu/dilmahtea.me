@@ -59,6 +59,20 @@ const postbuildIntegration = {
       const end = performance.now();
 
       console.log(`PostBuild Integration took ${end - start}ms`);
+
+      const srcs = await fs.readFile("./srcs.txt", "utf8");
+
+      await fetch("https://api.jsonbin.io/v3/b", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Master-Key":
+            "$2a$10$NzPqJzqi53uUEtvHJ5vlVuDSa0vhPZn7VMm0eyecaA0GN.o/zPwcu",
+        },
+        body: JSON.stringify(srcs.split("\n").slice(0, -1)),
+      })
+        .then((res) => res.text())
+        .then((res) => console.log(res));
     },
   },
 };
