@@ -79,12 +79,14 @@ jobs:
 
       - name: Generate astro-imagetools cache key
         id: astro-imagetools-cache-key
+        if: always()
         run: |
           echo "key=astro-imagetools-cache-${{ github.ref_name }}-${{ hashFiles('node_modules/.cache/astro-imagetools/**') }}" >> $GITHUB_OUTPUT
 
       - name: Save astro-imagetools cache
         uses: actions/cache/save@v3
         id: save-astro-imagetools-cache
+        if: always()
         with:
           path: node_modules/.cache/astro-imagetools
           key: ${{ steps.astro-imagetools-cache-key.outputs.key }}
