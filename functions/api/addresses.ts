@@ -74,10 +74,10 @@ function getAPIHandler(handlerBody: HandlerBody) {
         request.method === "POST"
           ? AddAddressBodySchema
           : request.method === "PUT"
-            ? UpdateAddressBodySchema
-            : request.method === "DELETE"
-              ? DeleteAddressBodySchema
-              : null;
+          ? UpdateAddressBodySchema
+          : request.method === "DELETE"
+          ? DeleteAddressBodySchema
+          : null;
 
       var validatedData = Schema?.parse(bodyData) || null;
     } catch (error) {
@@ -116,7 +116,8 @@ export const onRequestGet = getAPIHandler(async (env, session) => {
   return Response.json(
     [
       addresses[defaultDeliveryAddressIndex],
-      defaultBillingAddressIndex && addresses[defaultBillingAddressIndex],
+      defaultDeliveryAddressIndex !== defaultBillingAddressIndex &&
+        addresses[defaultBillingAddressIndex],
       ...addresses.filter(
         (_, i) =>
           ![defaultDeliveryAddressIndex, defaultBillingAddressIndex].includes(
