@@ -67,8 +67,8 @@ export default function FilteredProducts({
           productA.rank === null
             ? 1
             : productB.rank === null
-            ? -1
-            : productA.rank - productB.rank,
+              ? -1
+              : productA.rank - productB.rank,
         ),
     );
   });

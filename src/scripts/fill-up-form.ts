@@ -4,8 +4,8 @@ const contactInfo =
   Object.keys(window.checkoutInfo).length > 0
     ? window.checkoutInfo
     : window.userRegion
-    ? { country: window.regions[window.userRegion] }
-    : {};
+      ? { country: window.regions[window.userRegion] }
+      : {};
 
 const queryParams = Object.fromEntries(new URLSearchParams(location.search));
 
