@@ -227,6 +227,20 @@ export const onRequestPut = getAPIHandler(
       .bind(exact_account_guid)
       .all<Address>();
 
+    const addressHashes = structuredClone(addresses).map((address) => {
+      return objectHash(subset(address, addressDetailsKeys));
+    });
+
+    const providedAddress = subset(validatedData, addressDetailsKeys);
+
+    const providedAddressHash = objectHash(providedAddress);
+
+    if (addressHashes.includes(providedAddressHash))
+      return Response.json(
+        { success: false, message: "Duplicate address provided" },
+        { status: 400 },
+      );
+
     const existingAddress = addresses.find((address) => address.id === id);
 
     if (!existingAddress)
