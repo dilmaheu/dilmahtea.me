@@ -9,10 +9,11 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ProductCards from "@components/ProductCards.astro";
 import KindnessImpact from "@components/KindnessImpact.astro";
 import ProductCategories from "@components/ProductCategories.astro";
+import AuthorSection from "@components/AuthorSection.astro";
 
 import SecondaryPageLayout from "@layouts/SecondaryPageLayout.astro";
 
-const { page, ariaLabelRecurData } = Astro.props,
+const { page, ariaLabelRecurData, noAuthorImg } = Astro.props,
   { locale, posts } = page,
   { STRAPI_URL } = import.meta.env;
 
@@ -138,31 +139,32 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
               {/* Text content */}
               <div class="grid division-in-gap">
                 {randPost.authors && (
-                  <div class="quick-info-black-light">
-                    <div
-                      role="presentation"
-                      aria-label={randPost.authors.data.map(
-                        ({ attributes }, i) =>
-                          ariaLabelRecurData.Wrote_by_text +
-                          (i > 0 ? ", " : " ") +
-                          attributes.givenName,
-                      )}
-                      class="author-name"
-                    >
-                      {randPost.authors.data.map(({ attributes }, index) => (
-                        <span>
-                          {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                        </span>
-                      ))}
-                    </div>
+                  <AuthorSection page={page} authors={randPost.authors} createdAt={randPost.createdAt} noAuthorImg={!noAuthorImg} isTextBlackLight={true} />
+                  // <div class="quick-info-black-light">
+                  //   <div
+                  //     role="presentation"
+                  //     aria-label={randPost.authors.data.map(
+                  //       ({ attributes }, i) =>
+                  //         ariaLabelRecurData.Wrote_by_text +
+                  //         (i > 0 ? ", " : " ") +
+                  //         attributes.givenName,
+                  //     )}
+                  //     class="author-name"
+                  //   >
+                  //     {randPost.authors.data.map(({ attributes }, index) => (
+                  //       <span>
+                  //         {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                  //       </span>
+                  //     ))}
+                  //   </div>
 
-                    <div class="quick-info-item">
-                      {new Date(randPost.createdAt).toLocaleString("en-US", {
-                        day: "numeric",
-                        month: "long",
-                      })}
-                    </div>
-                  </div>
+                  //   <div class="quick-info-item">
+                  //     {new Date(randPost.createdAt).toLocaleString("en-US", {
+                  //       day: "numeric",
+                  //       month: "long",
+                  //     })}
+                  //   </div>
+                  // </div>
                 )}
 
                 <h2 class="heading-secondary text-primary">

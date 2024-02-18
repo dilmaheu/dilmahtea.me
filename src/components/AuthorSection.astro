@@ -1,0 +1,66 @@
+---
+import { Picture } from "astro-imagetools/components";
+
+import CMS from "@store/CMS";
+
+const {
+    page,
+    noAuthorImg,
+    authors,
+    createdAt,
+    isTextBlackLight,
+} = Astro.props,
+    { locale } = page,
+   { STRAPI_URL } = import.meta.env;
+
+const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
+
+---
+
+{authors && (
+    <div class="division-in-element-gap flex items-center">
+      {!noAuthorImg &&
+        authors.data.map((author, index) => (
+          <div
+            class:list={[
+              "quick-info-author-img",
+              index > 0 && "relative -ml-[clamp(15px,calc(2.5vw-1px),35px)]",
+            ]}
+          >
+            <Picture
+              width={50}
+              height={50}
+              loading="eager"
+              alt={
+                author.attributes.Profile_picture.data.attributes.alternativeText
+              }
+              src={
+                STRAPI_URL +
+                author.attributes.Profile_picture.data.attributes.url
+              }
+            />
+          </div>
+        ))}
+      <div class={isTextBlackLight ? "quick-info-black-light" : "quick-info-default"}>
+        <div
+          role="presentation"
+          aria-label={authors.data.map(({ attributes }) =>
+            ariaLabelRecurData.Wrote_by_text + ", " + attributes.givenName
+          )}
+          class="author-name"
+        >
+          {authors.data.map(({ attributes }, index) => (
+            <span>{`${index > 0 ? ", " : " "}${attributes.givenName}`}</span>
+          ))}
+        </div>
+        <div class="quick-info-item">
+          {new Date(createdAt).toLocaleString("en-US", {
+            day: "numeric",
+            month: "long",
+          })}
+        </div>
+      </div>
+    </div>
+  )}
+
+
