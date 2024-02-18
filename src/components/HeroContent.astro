@@ -58,67 +58,7 @@ const recurData = CMS.get("recurringElement", locale),
           }
         
           <AuthorSection page={page} authors={page.authors} createdAt={page.createdAt} />
-          <!-- {
-            page.authors && (
-              <div class="division-in-element-gap flex items-center">
-                {!noAuthorImg &&
-                  page.authors.data.map(
-                    (author, index) =>
-                      author.attributes.Profile_picture.data && (
-                        <div
-                          class:list={[
-                            "quick-info-author-img",
-                            index > 0 &&
-                              "relative -ml-[clamp(15px,calc(2.5vw-1px),35px)]",
-                          ]}
-                        >
-                          <Picture
-                            width={50}
-                            height={50}
-                            loading="eager"
-                            alt={
-                              author.attributes.Profile_picture.data.attributes
-                                .alternativeText
-                            }
-                            src={
-                              STRAPI_URL +
-                              author.attributes.Profile_picture.data.attributes
-                                .url
-                            }
-                          />
-                        </div>
-                      ),
-                  )}
-
-                <div class="quick-info-default">
-                  <div
-                    role="presentation"
-                    aria-label={page.authors.data.map(
-                      ({ attributes }, i) =>
-                        ariaLabelRecurData.Wrote_by_text +
-                        (i > 0 ? ", " : " ") +
-                        attributes.givenName,
-                    )}
-                    class="author-name"
-                  >
-                    {page.authors.data.map(({ attributes }, index) => (
-                      <span>
-                        {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div class="quick-info-item">
-                    {new Date(page.createdAt).toLocaleString("en-US", {
-                      day: "numeric",
-                      month: "long",
-                    })}
-                  </div>
-                </div>
-              </div>
-            )
-          } -->
-
+          
           {
             page.estate_name?.data.length > 0 && (
               <div class="flex flex-wrap items-center">
