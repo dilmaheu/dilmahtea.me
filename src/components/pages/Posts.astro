@@ -1,11 +1,10 @@
 ---
 import { Picture } from "astro-imagetools/components";
 
-import Hero from "@components/Hero.astro";
 import Markdown from "@components/Markdown.astro";
 import Pagination from "@components/Pagination.astro";
+import HeroContent from "@components/HeroContent.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
@@ -41,14 +40,13 @@ interface Props {
 }
 
 const {
-  white_cup,
   green_cup,
   left_post_leaf,
   green_leaf: right_post_leaf,
 } = RecurringImages;
 
 const { page, ariaLabelRecurData } = Astro.props,
-  { posts, locale, pagination } = page,
+  { posts, pagination } = page,
   { STRAPI_URL } = import.meta.env;
 
 posts.sort((a, b) => {
@@ -59,29 +57,6 @@ const [firstPost] = posts;
 ---
 
 <style lang="scss">
-  .post-title {
-    @apply font-bold leading-[130%];
-
-    font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
-  }
-
-  .post-intro {
-    @apply line-clamp-3 sm:line-clamp-4 md:line-clamp-5 lg:line-clamp-6;
-
-    font-size: clamp(1rem, 1.5vw + 0.15rem, 1.5rem);
-    line-height: 150%;
-  }
-
-  .post-img-curve-container {
-    aspect-ratio: 6 / 5;
-    width: 100%;
-    height: 100%;
-    max-width: 600px;
-    max-height: 500px;
-  }
-</style>
-
-<style lang="scss" is:global>
   .post-leaf {
     @apply absolute z-20;
     filter: drop-shadow(0px 8px 9px rgba(0, 0, 0, 0.5));
@@ -100,130 +75,50 @@ const [firstPost] = posts;
   }
 </style>
 
-{/* Hero Section */}
-<Hero {locale} {page}>
-  {/* Text Content */}
-  <div
-    role="banner"
-    aria-label={`${ariaLabelRecurData.Post_text} 1 ${ariaLabelRecurData.Product_post_of_text} ${posts.length}`}
-    class="wrapper hero-text-container h-full relative z-30"
-  >
-    <div class="flex flex-wrap items-center sm:w-7/12 h-full text-white">
-      <div class="my-[30px]">
-        {
-          firstPost.authors && (
-            <div class="grid gap-y-1 sm:gap-y-0 xl:gap-y-1">
-              <div
-                role="presentation"
-                aria-label={firstPost.authors.data.map(
-                  ({ attributes }, i) =>
-                    ariaLabelRecurData.Wrote_by_text +
-                    (i > 0 ? ", " : " ") +
-                    attributes.givenName,
-                )}
-                class="post-author flex flex-wrap font-bold"
-              >
-                {firstPost.authors.data.map(({ attributes }, i) => (
-                  <div>{`${i > 0 ? ", " : " "}` + attributes.givenName}</div>
-                ))}
-              </div>
-
-              <div class="post-publish-date">
-                {new Date(firstPost.createdAt).toLocaleString("en-US", {
-                  day: "numeric",
-                  month: "long",
-                })}
-              </div>
-            </div>
-          )
-        }
-
-        <div class="link-section">
-          <div class="hero-title pt-2.5 md:pt-3 lg:pt-[15px]">
-            <a
-              class="main-link"
-              set:text={firstPost.Title}
-              href={`/` + firstPost.Meta.URL_slug}
-            />
-
-            <span class="icon heading-inline-icon ml-2">
-              <img class="w-full h-full" {...white_cup} />
-            </span>
-          </div>
-
-          <div class="hero-text pt-2.5 prose text-white max-w-none">
-            <Markdown>{firstPost.Intro_text}</Markdown>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  {/* Blob Image - Desktop View */}
-  <div class="hero-img-curve-container h-full hidden sm:block absolute z-30">
-    <ClippedPicture
-      preload="avif"
-      id="hero-img-curve"
-      breakpoints={{ minWidth: 640 }}
-      sizes="clamp(330px, 26.4vw + 150px, 560px)"
-      alt={firstPost.Intro_blob.data.attributes.alternativeText}
-      src={STRAPI_URL + firstPost.Intro_blob.data.attributes.url}
-      path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
-      attributes={{ link: { media: "(min-width: 640px)" } }}
-    />
-  </div>
-</Hero>
-
-{/* Blob Image - Mobile View */}
-<div class="hero-img-sm-container block sm:hidden relative -mt-20 z-20 w-full">
-  <ClippedPicture
-    preload="avif"
-    id="hero-img-curve-sm"
-    alt={firstPost.Intro_blob.data.attributes.alternativeText}
-    src={STRAPI_URL + firstPost.Intro_blob.data.attributes.url}
-    path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
-    attributes={{ link: { media: "(max-width: 639.98px)" } }}
-  />
-</div>
+<HeroContent
+  page={{
+    ...page,
+    Title: firstPost.Title,
+    Intro_text: firstPost.Intro_text,
+    authors: firstPost.authors,
+    Intro_blob: firstPost.Intro_blob,
+    createdAt: firstPost.createdAt,
+  }}
+  link={firstPost.Meta.URL_slug}
+  noAuthorImg={true}
+/>
 
 {/* All Posts Section */}
-<section class="wrapper">
-  <ClipPathSVG
-    id="post-img-curve"
-    path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-  />
+<section class="wrapper grid section-gap section-in-v-pad">
+  <div>
+    <ClipPathSVG
+      id="post-img-curve"
+      path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+    />
 
-  <div
-    role="list"
-    aria-label={ariaLabelRecurData.All_posts_text}
-    class="flex flex-wrap items-center gap-y-[50px] py-[50px]"
-  >
-    {
-      posts.slice(1).map((post, index) => {
-        const isEven = index % 2 === 0,
-          postImgURL = STRAPI_URL + post.Intro_blob.data.attributes.url,
-          postLeafWidthMultiplier = isEven ? 0.24 : 0.18;
+    <div
+      role="list"
+      aria-label={ariaLabelRecurData.All_posts_text}
+      class="grid section-gap"
+    >
+      {
+        posts.slice(1).map((post, index) => {
+          const isEven = index % 2 === 0,
+            postImgURL = STRAPI_URL + post.Intro_blob.data.attributes.url,
+            postLeafWidthMultiplier = isEven ? 0.24 : 0.18;
 
-        return (
-          <div
-            role="listitem"
-            aria-label={`${ariaLabelRecurData.Post_text + (index + 2)} ${
-              ariaLabelRecurData.Product_post_of_text
-            } ${posts.length}`}
-            class="link-section flex flex-wrap items-center"
-          >
+          return (
             <div
-              class:list={[
-                "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
-                isEven
-                  ? "pr-0 sm:pr-5 md:pr-12 lg:pr-24"
-                  : "sm:order-2 pl-0 sm:pl-5 md:pl-12 lg:pl-24",
-              ]}
+              role="listitem"
+              aria-label={`${ariaLabelRecurData.Post_text + (index + 2)} ${
+                ariaLabelRecurData.Product_post_of_text
+              } ${posts.length}`}
+              class="link-section grid sm:grid-cols-2 items-center division-gap"
             >
               <div
                 class:list={[
-                  "post-img-curve-container",
-                  isEven ? "mr-auto" : "ml-auto",
+                  "relative post-img-curve-container",
+                  !isEven && "sm:order-2 ml-auto",
                 ]}
               >
                 <Picture
@@ -258,18 +153,13 @@ const [firstPost] = posts;
                   />
                 </div>
               </div>
-            </div>
 
-            {/* Text content */}
-            <div
-              class:list={[
-                "order-2 w-full sm:w-1/2 h-full flex flex-wrap",
-                isEven ? "pr-0 sm:pr-5" : "sm:order-1 pl-0 sm:pl-5",
-              ]}
-            >
-              <div>
+              {/* Text content */}
+              <div
+                class:list={["grid division-in-gap", !isEven & "sm:order-1"]}
+              >
                 {post.authors && (
-                  <div>
+                  <div class="quick-info-black-light">
                     <div
                       role="presentation"
                       aria-label={post.authors.data.map(
@@ -278,16 +168,16 @@ const [firstPost] = posts;
                           (i > 0 ? ", " : " ") +
                           attributes.givenName,
                       )}
-                      class="post-author flex flex-wrap font-bold text-black-light"
+                      class="author-name"
                     >
-                      {post.authors.data.map(({ attributes }, i) => (
-                        <div>
-                          {`${i > 0 ? ", " : " "}` + attributes.givenName}
-                        </div>
+                      {post.authors.data.map(({ attributes }, index) => (
+                        <span>
+                          {`${index > 0 ? ", " : " "}` + attributes.givenName}
+                        </span>
                       ))}
                     </div>
 
-                    <div class="post-publish-date text-black-light">
+                    <div class="quick-info-item">
                       {new Date(post.createdAt).toLocaleString("en-US", {
                         day: "numeric",
                         month: "long",
@@ -296,27 +186,26 @@ const [firstPost] = posts;
                   </div>
                 )}
 
-                <h2 class="post-title recoleta text-primary pt-[15px]">
+                <h2 class="text-h2 text-primary">
                   <a
                     class="main-link"
                     href={`/` + post.Meta.URL_slug}
-                    set:text={post.Title || post.Estate_name}
+                    set:text={post.Title}
                   />
 
                   <span class="icon heading-inline-icon ml-2">
                     <img class="w-full h-full" {...green_cup} />
                   </span>
                 </h2>
-
-                <div class="post-intro pt-[15px] prose max-w-none">
+                <div class="post-intro intro-text">
                   <Markdown>{post.Intro_text}</Markdown>
                 </div>
               </div>
             </div>
-          </div>
-        );
-      })
-    }
+          );
+        })
+      }
+    </div>
   </div>
 
   {pagination && <Pagination pagination={pagination} />}

@@ -24,7 +24,6 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
-  @use "src/styles/checkout" as *;
 
   .product-image {
     $fluid-image-size: poly-fluid-clamp(
@@ -94,7 +93,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               </button>
             </div>
 
-            <div class="border border-solid border-primary-light"></div>
+            <div class="border border-solid border-primary-lightest"></div>
           </div>
 
           <EmptyCartNotification locale={locale} />
@@ -185,7 +184,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                         <div
                           class="division-in-element-gap flex justify-between"
                         >
-                          <h3 class="recoleta text-h5">
+                          <h3 class="text-h5">
                             <placeholder name="name"></placeholder>
                           </h3>
 
@@ -248,7 +247,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           </div>
 
                           <span
-                            class="cart-overlay-product-price recoleta text-h5 text-black"
+                            class="cart-overlay-product-price text-b3 font-bold text-black"
                           >
                             €<placeholder name="price"></placeholder>
                           </span>
@@ -262,17 +261,19 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
             <div class="division-in-gap flex flex-col">
               <div class="division-in-element-gap flex flex-col">
-                <div class="flex justify-between items-center">
-                  <span class="text-b2 font-bold text-black">
+                <div
+                  class="flex justify-between items-center text-b2 font-bold"
+                >
+                  <span class="text-black">
                     {checkoutRecurData.text_subtotal}
                   </span>
 
-                  <span id="cart-subtotal" class="recoleta text-h3">
+                  <span id="cart-subtotal">
                     €<DynamicHTML htmlFn={() => window.cart.subTotal} />
                   </span>
                 </div>
 
-                <div class="text-b5">
+                <div class="text-b4 text-black-light">
                   {checkoutRecurData.text_shipping_calculated_at_checkout}
                 </div>
               </div>
@@ -288,7 +289,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               <div class="flex justify-center items-center">
                 <button
                   aria-label={checkoutRecurData.Aria_label_cart_close_button_text}
-                  class="close-cart-btn button-link-large"
+                  class="close-cart-btn button-link-primary-large"
                 >
                   {checkoutRecurData.text_continue_shopping}
                 </button>

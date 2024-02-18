@@ -20,10 +20,6 @@ const checkoutInfoLink = `/${locale}/${
   }/`;
 ---
 
-<style lang="scss">
-  @use "src/styles/checkout" as *;
-</style>
-
 <script
   define:vars={{
     checkoutInfoLink,
@@ -86,7 +82,7 @@ const checkoutInfoLink = `/${locale}/${
     <div
       role="list"
       aria-label={page.Aria_label_kindness_delivery_address_section_text}
-      class="tiled-div-pad division-in-gap grid bg-secondary-light rounded-[10px]"
+      class="tiled-div division-in-gap grid"
     >
       <div
         role="listitem"
@@ -105,14 +101,14 @@ const checkoutInfoLink = `/${locale}/${
           <a
             aria-label={`${userRecurr.Button_change_text} ${userRecurr.Aria_label_email}`}
             href={checkoutInfoLink + "?change=email"}
-            class="button-link-large"
+            class="button-link-primary-large"
           >
             {userRecurr.Button_change_text}
           </a>
         </div>
       </div>
 
-      <div class="w-full h-px bg-primary-light"></div>
+      <div class="w-full h-px bg-primary-lightest"></div>
 
       <div
         role="listitem"
@@ -131,7 +127,7 @@ const checkoutInfoLink = `/${locale}/${
           <a
             aria-label={`${userRecurr.Button_change_text} ${userRecurr.Aria_label_delivery_address}`}
             href={checkoutInfoLink + "?change=address"}
-            class="button-link-large"
+            class="button-link-primary-large"
           >
             {userRecurr.Button_change_text}
           </a>
@@ -144,7 +140,7 @@ const checkoutInfoLink = `/${locale}/${
       aria-label={page.text_shipping_method}
       class="flex flex-col gap-4"
     >
-      <h2 class="recoleta text-h2 text-primary">{page.text_shipping_method}</h2>
+      <h2 class="text-h2 text-primary">{page.text_shipping_method}</h2>
 
       {
         page.shipping_methods.data.map(
@@ -191,7 +187,7 @@ const checkoutInfoLink = `/${locale}/${
     </div>
 
     <div class="checkout-button-container">
-      <a href={checkoutInfoLink} class="button-link-large">
+      <a href={checkoutInfoLink} class="button-link-primary-large">
         <span class="sm:hidden">
           {
             `${

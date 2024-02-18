@@ -15,7 +15,11 @@ const { page, recurData } = Astro.props,
 ---
 
 <style lang="scss">
-  @use "src/styles/checkout" as *;
+  .prose-text {
+    p {
+      margin: 0;
+    }
+  }
 </style>
 
 <section class="w-full xl:w-2/3">
@@ -31,18 +35,18 @@ const { page, recurData } = Astro.props,
       aria-label={page.text_contact_info}
       class="division-gap grid"
     >
-      <h2 class="recoleta text-h2 text-primary">{page.text_customer}</h2>
+      <h2 class="text-h2 text-primary">{page.text_customer}</h2>
 
       <div
         id="guest-intro-text"
-        class="prose-text prose max-w-none text-b5 text-black-light"
+        class="prose-text"
       >
         <Markdown>{page.Guest_intro_text}</Markdown>
       </div>
 
       <div class="form-grid">
         <label>
-          <span class="input-label">{recurData.text_email_address}</span>
+          <span>{recurData.text_email_address}</span>
 
           <input
             type="email"
@@ -55,7 +59,7 @@ const { page, recurData } = Astro.props,
 
       <div
         id="sign-in-text"
-        class="prose-text prose max-w-none text-b5 text-black-light"
+        class="prose-text"
       >
         <Markdown>{page.Sign_in_text}</Markdown>
       </div>
@@ -71,13 +75,15 @@ const { page, recurData } = Astro.props,
       }
     </script>
 
+    <div class="w-full h-px bg-primary-lightest"></div>
+
     <div
       role="form"
       aria-label={page.text_shipping_address}
       id="shipping-address"
       class="division-gap grid"
     >
-      <h2 class="recoleta text-h2 text-primary">
+      <h2 class="text-h2 text-primary">
         {page.text_shipping_address}
       </h2>
 
@@ -93,7 +99,7 @@ const { page, recurData } = Astro.props,
     </div>
 
     <div class="checkout-button-container">
-      <a href={checkoutCartLink} class="button-link-large">
+      <a href={checkoutCartLink} class="button-link-primary-large">
         {page.text_return_to_cart}
       </a>
 

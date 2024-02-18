@@ -1,0 +1,909 @@
+@use "sass:meta";
+@use "sass:string";
+@use "src/styles/colors";
+@use "src/styles/poly-fluid" as *;
+
+// markdown/prose-links
+
+$link-dark: str-slice(meta.inspect(colors.$black), 2);
+$link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
+
+@mixin bg-img-($color) {
+  background-size: 100% 45%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23#{$color}'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
+}
+
+@mixin prose-content-($color) {
+  picture {
+    clip-path: url(#content-images-curve);
+  }
+
+  p,
+  ol,
+  ul,
+  p s,
+  blockquote p {
+    @if $color == $link-dark {
+      @apply text-white;
+    } @else {
+      @apply text-black-light;
+    }
+
+    a {
+      @include bg-img-($color);
+
+      @apply font-bold sm:font-semibold px-1 no-underline 
+        bg-bottom bg-no-repeat hover:brightness-90 transition-all;
+
+      @if $color == $link-dark {
+        @apply text-white;
+      } @else {
+        @apply text-primary;
+      }
+    }
+  }
+}
+
+@mixin no-pad-mar-first-last-child {
+  > *:first-child {
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@mixin number-list-circle {
+  @apply inline-flex items-center justify-center
+    text-b4 font-bold text-white bg-primary rounded-full;
+
+  width: clamp(30px, calc(1.875vw + 18px), 45px) !important;
+  height: clamp(30px, calc(1.875vw + 18px), 45px) !important;
+}
+
+@mixin prose-prose-text {
+  @include no-pad-mar-first-last-child;
+
+  @apply prose max-w-none;
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply recoleta;
+  }
+
+  h2 {
+    @apply text-h2 font-bold;
+  }
+
+  h3 {
+    @apply text-h3;
+  }
+
+  h4 {
+    @apply text-h4;
+  }
+
+  h5 {
+    @apply text-h5;
+  }
+
+  h6 {
+    @apply text-h6;
+  }
+
+  & .chapter {
+    &:first-child {
+      > *:first-child {
+        margin-top: 0;
+      }
+
+      > *:not(.tiled-title):first-child {
+        padding-top: 0;
+      }
+    }
+
+    &:last-child {
+      > *:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .tiled-div {
+      @apply mt-[clamp(25px,calc(0.625vw+21px),30px)];
+
+      @include no-pad-mar-first-last-child;
+    }
+  }
+
+  ol {
+    @apply grid division-gap list-none;
+    counter-reset: my-counter;
+    padding-left: clamp(40px, calc(1.875vw + 28px), 55px) !important;
+
+    li {
+      @include no-pad-mar-first-last-child;
+
+      @apply my-0;
+    }
+
+    li::before {
+      @include number-list-circle;
+
+      @apply absolute -ml-[clamp(40px,calc(1.875vw+28px),55px)];
+
+      margin-right: 10px !important;
+      content: counter(my-counter);
+      counter-increment: my-counter;
+    }
+  }
+}
+
+@mixin prose-content-default-text {
+  @apply text-b3;
+}
+
+@mixin prose-content-hero-text {
+  @apply text-b5 text-white;
+}
+
+@mixin prose-default {
+  @include prose-prose-text;
+  @include prose-content-default-text;
+}
+
+@mixin prose-hero-text {
+  @include prose-prose-text;
+  @include prose-content-hero-text;
+}
+
+// gaps
+
+@mixin section-gap {
+  @apply gap-[50px];
+}
+
+@mixin section-in-v-pad {
+  @apply py-[50px];
+}
+
+@mixin section-in-v-pad-sm {
+  @apply py-[clamp(25px,calc(3.125vw+5px),50px)];
+}
+
+@mixin division-gap {
+  @apply gap-[clamp(25px,calc(0.625vw+21px),30px)];
+}
+
+@mixin division-in-gap {
+  @apply gap-[clamp(10px,calc(0.625vw+6px),15px)];
+}
+
+@mixin division-in-element-gap {
+  @apply gap-[clamp(5px,calc(0.625vw+1px),10px)];
+}
+
+@mixin tiled-div-pad {
+  @apply p-[clamp(15px,calc(2.5vw-1px),35px)];
+}
+
+@mixin tiled-div-sm-pad {
+  @apply p-[15px];
+}
+
+@mixin tiled-title-div-pad {
+  @apply py-[15px] px-[clamp(15px,calc(2.5vw-1px),35px)];
+}
+
+@mixin blob-div-in-pad {
+  @apply py-[clamp(35px,calc(1.875vw+23px),50px)] px-[clamp(25px,calc(3.125vw+5px),50px)];
+}
+
+@mixin card-gap {
+  @apply gap-[clamp(15px,calc(4.375vw-13px),50px)];
+}
+
+@mixin grid-gap {
+  @apply gap-[clamp(15px,calc(4.375vw-13px),50px)];
+}
+
+@mixin form-gap {
+  @apply gap-[clamp(15px,calc(1.25vw+7px),25px)];
+}
+
+@mixin tiled-form {
+  @apply p-[clamp(10px,calc(1.25vw+2px),20px)]
+    bg-primary-light/30 border border-primary rounded-[10px];
+}
+
+// buttons
+
+@mixin focus-primary-lightest {
+  @apply focus:outline-none focus:ring focus:ring-primary-lightest;
+}
+
+@mixin button-common {
+  @apply flex items-center justify-center 
+    gap-2 py-2.5 px-5 cursor-pointer rounded-full select-none;
+
+  .button-icon {
+    @apply h-[16px];
+  }
+}
+
+@mixin button-font {
+  @apply text-base font-bold;
+}
+
+@mixin button-font-sm {
+  @apply text-sm font-medium;
+}
+
+@mixin button-font-large {
+  @apply text-b5 font-bold;
+}
+
+@mixin button {
+  @include button-common;
+  @include button-font;
+}
+
+@mixin button-large {
+  @include button-common;
+  @include button-font-large;
+
+  @apply py-[15px] px-[25px];
+}
+
+@mixin button-default-colors {
+  @include focus-primary-lightest;
+
+  @apply bg-white text-primary;
+}
+
+@mixin button-primary-colors {
+  @include focus-primary-lightest;
+
+  @apply bg-primary text-white;
+}
+
+@mixin button-disabled-colors {
+  @apply bg-black-lighter text-secondary-light;
+}
+
+@mixin button-link {
+  @include button;
+  @include focus-primary-lightest;
+
+  @apply p-0 focus:rounded-sm;
+}
+
+@mixin button-link-large {
+  @include button-common;
+  @include button-font-large;
+
+  @apply p-0 focus:rounded-sm;
+}
+
+@mixin button-link-primary {
+  @include button-link;
+
+  @apply text-primary;
+}
+
+@mixin button-link-primary-large {
+  @include button-link-large;
+
+  @apply text-primary;
+}
+
+@mixin button-link-error-dark {
+  @include button-link;
+
+  @apply text-error-dark;
+}
+
+@mixin button-link-error-dark-large {
+  @include button-link-large;
+
+  @apply text-error-dark;
+}
+
+@mixin button-link-primary-lightest {
+  a {
+    @include bg-img-($link-light);
+
+    @apply text-b3 font-bold text-primary px-[clamp(6px,calc(0.75vw+1.2px),12px)] 
+      no-underline bg-bottom bg-no-repeat hover:brightness-95 transition-all;
+  }
+}
+
+@mixin info-tag-button {
+  @apply text-b7 py-1 px-2 rounded-full;
+
+  line-height: 130% !important;
+}
+
+// cart-buttons
+
+@mixin button-cart-content {
+  @apply flex items-center justify-center gap-2 cursor-pointer rounded-full;
+}
+
+@mixin text-container {
+  .text-container {
+    @apply flex items-center gap-0.5 font-semibold sm:font-bold;
+
+    @media (min-width: 375px) {
+      @apply gap-1;
+    }
+  }
+}
+
+@mixin cart-icon {
+  .cart-icon {
+    @apply hidden sm:inline-block h-[clamp(16px,calc(0.25vw+14.4px),18px)];
+  }
+}
+
+@mixin button-cart {
+  @include cart-icon;
+  @include text-container;
+  @include button-cart-content;
+
+  @apply text-b6 py-[clamp(8px,calc(0.625vw+1px),10px)] px-[clamp(12px,calc(1vw+5.6px),20px)];
+}
+
+@mixin card-button-cart {
+  @include cart-icon;
+  @include text-container;
+  @include button-cart-content;
+
+  @apply text-[clamp(12px,calc(1.25vw+6px),14px)]
+    py-[clamp(4px,calc(0.625vw+1px),5px)] px-[clamp(4px,calc(5vw-20px),12px)];
+
+  @media (min-width: 640px) {
+    @include button-cart;
+  }
+}
+
+// cart-plus/minus-buttons
+
+@mixin button-cart-quantity-item-common {
+  @apply flex rounded-full;
+}
+
+@mixin button-cart-quantity-item-layout {
+  @apply flex items-center justify-center text-center;
+}
+
+@mixin button-cart-quantity-item {
+  @include button-cart-quantity-item-layout;
+
+  width: poly-fluid-clamp-primary(30px, 38px);
+  height: poly-fluid-clamp-primary(37px, 44px);
+}
+
+@mixin button-cart-quantity-item-sm {
+  @include button-cart-quantity-item-layout;
+
+  width: poly-fluid-clamp-primary(30px, 38px);
+  height: poly-fluid-clamp-primary(31px, 38px);
+}
+
+@mixin button-cart-quantity-icon {
+  width: poly-fluid-clamp-primary(15px, 18px);
+  height: poly-fluid-clamp-primary(15px, 18px);
+}
+
+@mixin button-cart-quantity-item-input {
+  input {
+    @include button-cart-quantity-item;
+
+    @apply text-b5;
+  }
+}
+
+@mixin button-cart-quantity {
+  @include button-cart-quantity-item-common;
+  @include button-cart-quantity-item-input;
+
+  .button-cart-quantity-item {
+    @include button-cart-quantity-item;
+  }
+
+  .button-cart-quantity-icon {
+    @include button-cart-quantity-icon;
+  }
+}
+
+@mixin button-cart-quantity-sm {
+  @include button-cart-quantity-item-common;
+  @include button-cart-quantity-item-input;
+
+  .button-cart-quantity-item-sm {
+    @include button-cart-quantity-item-sm;
+  }
+
+  .button-cart-quantity-icon {
+    @include button-cart-quantity-icon;
+  }
+}
+
+// radio-buttons
+
+@mixin radio-button {
+  @include button-common;
+  @include button-font-sm;
+
+  @apply text-primary border-2;
+}
+
+@mixin radio-button-card {
+  @apply tiled-div-sm-pad division-in-element-gap text-b5
+    grid items-center text-center text-black rounded-[10px]
+    bg-white border-2 border-white cursor-pointer select-none h-full
+    min-w-[clamp(100px,calc(6.25vw+60px),150px)] max-w-[150px] whitespace-pre-line
+    peer-checked:border-primary peer-checked:font-bold peer-checked:text-primary;
+
+  .payment-icon {
+    @apply w-full h-[clamp(30px,calc(1.25vw+22px),40px)] m-auto;
+  }
+}
+
+@mixin radio-input {
+  @apply flex items-center cursor-pointer;
+
+  input {
+    @include focus-primary-lightest;
+
+    @apply flex items-center justify-center
+      border-2 border-primary rounded-full appearance-none checked:before:block
+      w-[clamp(18px,calc(0.25vw+16.4px),20px)] h-[clamp(18px,calc(0.25vw+16.4px),20px)];
+
+    &::before {
+      @apply hidden bg-primary rounded-full
+        w-[clamp(8px,calc(0.25vw+6.4px),10px)] h-[clamp(8px,calc(0.25vw+6.4px),10px)];
+    }
+  }
+
+  .radio-input-text {
+    @apply text-b5 text-black-light;
+  }
+}
+
+// toggle-buttons
+
+@mixin toggle-button-primary {
+  @include button-font;
+
+  @apply flex items-center gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-primary;
+}
+
+// blob-card
+
+@mixin blob-cards-container {
+  @apply flex flex-wrap card-gap overflow-hidden;
+}
+
+@mixin blob-card {
+  @apply flex flex-col bg-primary;
+
+  .card-content-container {
+    @apply grid content-between grow division-in-gap 
+      text-secondary px-[clamp(12px,calc(2.16vw+3.9px),35px)] 
+      pt-[clamp(10px,calc(0.94vw+6.4px),20px)] pb-[clamp(12px,calc(1.22vw+7.42px),25px)];
+  }
+}
+
+// note: clamp calculation part should be as card-gap
+@mixin blob-card-width {
+  @apply w-[calc(50%-clamp(15px,calc(4.375vw-13px),50px)/2)]
+    lg:w-[calc(100%/3-clamp(15px,calc(4.375vw-13px),50px)/1.5)];
+}
+
+// post-card
+
+@mixin post-card-default-colors {
+  @apply bg-primary;
+
+  .post-title {
+    @apply text-white;
+  }
+}
+
+@mixin post-card-secondary-light-colors {
+  @apply bg-secondary-light;
+
+  .post-title {
+    @apply text-primary;
+  }
+}
+
+@mixin post-card {
+  @include blob-card;
+  @include blob-card-width;
+
+  clip-path: url(#blob-card-curve);
+
+  .card-content-container {
+    @apply pb-[clamp(12px,calc(2.16vw+3.9px),35px)];
+  }
+
+  .product-card-content {
+    @apply grid division-in-gap;
+
+    .post-title {
+      @apply text-h5-sm;
+    }
+
+    .post-title-icon {
+      @apply inline align-middle h-[clamp(8px,calc(1vw+1.6px),16px)] 
+        ml-[clamp(4px,calc(0.5vw+0.8px),8px)] -mt-[clamp(0px,calc(1vw-6.4px),8px)];
+    }
+  }
+}
+
+// product-card(smallest-size-375px)
+
+@mixin product-more-info {
+  @apply space-x-[3px] sm:space-x-1 text-b7 italic;
+
+  span {
+    @apply inline align-middle;
+  }
+}
+
+@mixin product-more-info-link {
+  @include bg-img-($link-dark);
+
+  @apply font-medium sm:font-semibold px-1 no-underline
+    bg-bottom bg-no-repeat hover:brightness-90 transition-all;
+}
+
+@mixin product-more-info-icon {
+  @apply w-[clamp(16px,calc(0.37vw+14.6px),20px)] h-[clamp(16px,calc(0.37vw+14.6px),20px)];
+}
+
+@mixin product-icon-circle {
+  @apply bg-white border border-primary rounded-full;
+}
+
+@mixin product-card {
+  @include blob-card;
+
+  clip-path: url(#product-card-curve);
+
+  .product-card-image-container {
+    @apply relative w-full bg-white;
+
+    .stock-out-label-top {
+      @apply bg-warning/80 border border-warning rounded-full text-black
+        text-[clamp(10px,calc(0.94vw+6.47px),20px)] font-semibold leading-[150%]
+        py-[clamp(3px,calc(0.19vw+2.29px),5px)] px-[clamp(10px,calc(0.47vw+8.23px),15px)]
+        absolute top-[clamp(10px,calc(1.88vw+2.9px),30px)] right-[clamp(20px,calc(2.82vw+9.43px),50px)];
+    }
+  }
+
+  .product-card-content {
+    @apply grid gap-[5px];
+
+    .product-title {
+      @apply recoleta text-h5-sm text-white;
+    }
+
+    .product-info {
+      @apply flex flex-wrap gap-1 text-b6-sm text-secondary-light;
+    }
+
+    .product-format {
+      @include product-more-info;
+
+      .icon-container {
+        @apply -space-x-[clamp(10px,calc(0.18vw+9.29px),12px)];
+
+        .icon,
+        .number {
+          @include product-more-info-icon;
+          @include product-icon-circle;
+        }
+
+        .number {
+          @apply inline-flex items-center justify-center text-primary
+            text-[clamp(6px,calc(0.5vw+2.8px),10px)] sm:font-medium;
+        }
+      }
+
+      .format-link-text {
+        @include product-more-info-link;
+      }
+
+      .desktop-only-text {
+        @apply hidden sm:inline align-middle;
+      }
+
+      .mobile-only-text {
+        @apply inline sm:hidden align-middle;
+      }
+    }
+
+    .product-estate {
+      @include product-more-info;
+
+      .icon {
+        @include product-more-info-icon;
+      }
+
+      a {
+        @include product-more-info-link;
+
+        @apply inline align-middle;
+      }
+    }
+  }
+}
+
+// quick-info
+
+@mixin quick-info-author-img {
+  @apply w-[clamp(40px,calc(1.25vw+32px),50px)] 
+    h-[clamp(40px,calc(1.25vw+32px),50px)] rounded-full overflow-hidden;
+}
+
+@mixin quick-common {
+  @apply grid items-center;
+
+  .quick-info-item {
+    @apply flex flex-wrap items-center;
+  }
+}
+
+@mixin quick-info {
+  @include quick-common;
+
+  .author-name {
+    @apply text-b5 font-bold;
+  }
+
+  .quick-info-item {
+    @apply gap-[clamp(4px,calc(0.5vw+0.8px),8px)] text-b7 font-medium;
+  }
+}
+
+@mixin quick-info-sm {
+  @include quick-common;
+
+  .author-name {
+    @apply text-b6-sm font-medium;
+  }
+
+  .quick-info-item {
+    @apply gap-1 text-b8;
+  }
+}
+
+@mixin quick-info-default {
+  @include quick-info;
+
+  @apply text-white;
+}
+
+@mixin quick-info-default-sm {
+  @include quick-info-sm;
+
+  @apply text-white;
+}
+
+@mixin quick-info-black-light {
+  @include quick-info;
+
+  @apply text-black-light;
+}
+
+@mixin quick-info-black-light-sm {
+  @include quick-info-sm;
+
+  @apply text-black-light;
+}
+
+@mixin quick-info-secondary-light {
+  @include quick-info;
+
+  @apply text-secondary-light;
+}
+
+@mixin quick-info-secondary-light-sm {
+  @include quick-info-sm;
+
+  @apply text-secondary-light;
+}
+
+// form & inputs
+
+@mixin input-field-default {
+  @include focus-primary-lightest;
+
+  @apply font-normal bg-transparent border border-primary rounded-full
+    py-[clamp(8px,calc(0.25vw+6.4px),10px)] px-[clamp(15px,calc(0.625vw+11px),20px)]
+    text-[clamp(16px,calc(0.25vw+14.4px),18px)] text-black placeholder:text-black-lighter;
+}
+
+@mixin selector-common {
+  @include focus-primary-lightest;
+
+  @apply w-full cursor-pointer appearance-none rounded-full;
+}
+
+@mixin selector-arrow-($type, $color) {
+  $space: if(
+    $type == "sm",
+    clamp(10px, calc(0.625vw + 6px), 15px),
+    clamp(15px, calc(0.625vw + 11px), 20px)
+  );
+  $bg-size: if(
+    $type == "sm",
+    clamp(12px, calc(0.25vw + 10.4px), 14px),
+    clamp(14px, calc(0.25vw + 12.4px), 16px)
+  );
+  $pr: if(
+    $type == "sm",
+    clamp(30px, calc(1.25vw + 22px), 40px),
+    clamp(40px, calc(1.25vw + 32px), 50px)
+  );
+
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath d='M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z' style='fill:%23#{$color}'/%3E%3C/svg%3E")
+    no-repeat right $space center;
+  background-size: $bg-size;
+  padding-right: $pr;
+}
+
+@mixin selector($color) {
+  @include selector-common;
+  @include selector-arrow-(normal, $color);
+
+  @apply w-fit text-b5;
+
+  padding: poly-fluid-clamp-primary(8px, 10px)
+    poly-fluid-clamp-primary(15px, 20px);
+  padding-right: poly-fluid-clamp-primary(35px, 45px);
+}
+
+@mixin selector-sm($color) {
+  @include selector-common;
+  @include selector-arrow-(sm, $color);
+
+  @apply w-fit text-b6 pr-[clamp(30px,calc(1.25vw+22px),40px)]
+    py-[clamp(5px,calc(0.375vw+2.6px),8px)] px-[clamp(10px,calc(0.625vw+6px),15px)];
+}
+
+$white: str-slice(meta.inspect(colors.$white), 2);
+$primary: str-slice(meta.inspect(colors.$primary), 2);
+
+@mixin selector-default {
+  @include selector($primary);
+  @include button-default-colors;
+}
+
+@mixin selector-default-bordered {
+  @include selector-sm($primary);
+  @include button-default-colors;
+
+  @apply border-2 border-primary;
+}
+
+@mixin selector-primary {
+  @include selector($white);
+  @include button-primary-colors;
+}
+
+@mixin input-selector-default {
+  select {
+    @include input-field-default;
+    @include selector-arrow-(normal, $primary);
+
+    @apply w-full cursor-pointer appearance-none;
+  }
+}
+
+@mixin input-label {
+  @apply text-b5 font-semibold text-black-light;
+}
+
+@mixin input-text-large-text {
+  @apply text-b3 text-black;
+}
+
+@mixin input-text-large {
+  @include input-text-large-text;
+
+  @apply w-full bg-transparent outline-none;
+
+  &:not(:disabled) {
+    @apply border-b-2 border-primary;
+  }
+
+  &.errored {
+    @apply border-error;
+  }
+}
+
+@mixin form-grid {
+  @include form-gap;
+  @include input-selector-default;
+  input {
+    @include input-field-default;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  @apply w-full grid sm:grid-cols-2;
+
+  label {
+    @include division-in-element-gap;
+    @include input-label;
+
+    @apply flex flex-col;
+
+    span.tag-input-close-button {
+      @apply absolute inset-y-0 right-0 cursor-pointer
+        flex items-center pr-5 font-bold text-error-dark;
+    }
+  }
+}
+
+@mixin form-button-container {
+  @include division-gap;
+
+  @apply flex flex-wrap items-center justify-center sm:justify-start;
+}
+
+//checkbox
+
+@mixin checkbox-primary {
+  @include division-in-element-gap;
+
+  @apply flex items-center text-b5 text-black-light cursor-pointer select-none;
+
+  .checkbox-input-container {
+    @apply relative block w-5 h-5;
+
+    & input {
+      @apply absolute opacity-0;
+
+      &:checked ~ .checkbox-primary {
+        @apply bg-primary rounded;
+
+        &::after {
+          @apply bg-transparent opacity-100;
+        }
+      }
+
+      &:focus ~ .checkbox-primary {
+        @apply outline-none ring ring-primary-lightest;
+      }
+    }
+
+    & .checkbox-primary {
+      @apply absolute w-[18px] sm:w-5 h-[18px] sm:h-5 
+        bg-transparent rounded border-2 border-primary;
+
+      &::after {
+        @apply text-sm font-bold text-white content-['✓'] 
+          absolute -top-[3px] sm:-top-0.5 left-0.5 sm:left-[3px] opacity-0;
+      }
+    }
+  }
+}

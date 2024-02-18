@@ -13,32 +13,6 @@ const { STRAPI_URL } = import.meta.env,
   pageURL = Astro.site.origin + Astro.url.pathname + "/";
 ---
 
-<style lang="scss">
-  .howto-header-method-title {
-    font-size: clamp(1.5rem, 2.2vw + 0.15rem, 2rem);
-  }
-
-  .howto-header-method-text,
-  .method-text {
-    font-size: clamp(1rem, 1.3vw + 0.1rem, 1.125rem);
-  }
-
-  .method-title {
-    @apply font-bold;
-
-    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
-    padding: 15px clamp(15px, 2.08vw + 0.01rem, 30px);
-  }
-
-  .chapter:nth-child(1) .method-title {
-    margin-top: 0;
-  }
-
-  .method-step {
-    padding: clamp(15px, 2.875vw, 36px) 36px;
-  }
-</style>
-
 <PostDetailsLayout
   {page}
   posts={howTos}
@@ -54,45 +28,36 @@ const { STRAPI_URL } = import.meta.env,
     <div
       role="complementary"
       aria-label={page.Method.length + recurData.text_practices_to_follow}
-      class="bg-secondary-light py-7 px-5 rounded-[10px]"
+      class="tiled-div-pad division-gap grid bg-secondary-light rounded-[10px]"
     >
-      <h2
-        class:list={[
-          "howto-header-method-title recoleta",
-          "text-primary font-semibold text-center sm:text-left leading-[110%] sm:leading-[130%]",
-        ]}
-      >
-        {page.Method.length}
-        {" "}
-        {recurData.text_practices_to_follow}
+      <h2 class="text-h3 text-primary text-center sm:text-left">
+        {
+          `
+        ${page.Method.length}
+        ${recurData.text_practices_to_follow}
+        `
+        }
       </h2>
 
       <div
         role="list"
         aria-label={`${recurData.text_practices_to_follow} items`}
-        class="flex flex-wrap justify-center sm:justify-start gap-x-5 gap-y-2.5 mt-[18px] sm:mt-[23px]"
+        class="flex flex-wrap justify-center sm:justify-start division-in-gap"
       >
         {
-          page.Method.map((method, index) => (
-            <span
+          page?.Method?.map(({ Method_title }, index) => (
+            <div
               role="listitem"
               aria-label={ariaLabelRecurData.Howto_method_text + (index + 1)}
-              class="w-full sm:w-auto"
+              class:list={[
+                "button-primary-large text-center",
+                "w-full sm:w-auto max-w-[600px] sm:max-w-[240px]",
+              ]}
             >
-              <a
-                href={
-                  `#` + method.Method_title.toLowerCase().replaceAll(" ", "-")
-                }
-                class:list={[
-                  "howto-header-method-text bg-primary cursor-pointer",
-                  "text-white text-center sm:text-left leading-[150%]",
-                  "w-full max-w-[600px] sm:max-w-[240px] min-h-[80px] rounded-[58px]",
-                  "flex items-center justify-center py-1.5 md:py-[13px] px-5 md:px-[35px]",
-                ]}
-              >
-                {method.Method_title}
+              <a href={`#` + Method_title?.replaceAll(" ", "-")}>
+                {Method_title}
               </a>
-            </span>
+            </div>
           ))
         }
       </div>
@@ -101,39 +66,32 @@ const { STRAPI_URL } = import.meta.env,
 
   <Fragment slot="post-details">
     {
-      page.Method.map((method) => (
+      page?.Method?.map((method) => (
         <div class="chapter">
           <h2
-            id={method.Method_title.toLowerCase()
-              .replaceAll(" ", "-")
+            id={method.Method_title?.replaceAll(" ", "-")
               .replace(/\s+/g, "")
               .trim()}
-            class="method-title recoleta bg-primary mt-[50px] text-secondary-light leading-[110%] rounded-[10px]"
+            class="tiled-title"
           >
             {method.Method_title}
           </h2>
 
-          {method.Steps.map((step, index) => (
-            <div class="method-step bg-secondary-light my-[30px] rounded-[10px]">
+          {method.Steps?.map(({ Step_title, Step_text, Step_blob }, index) => (
+            <div class="tiled-div">
               <h3
-                id={step.Step_title?.toLowerCase()
-                  ?.replaceAll(" ", "-")
-                  .replace(/\s+/g, "")
-                  .trim()}
-                class="font-semibold text-primary text-2xl leading-[130%]"
+                id={Step_title?.replaceAll(" ", "-").replace(/\s+/g, "").trim()}
               >
-                {index + 1 + ". " + step.Step_title}
+                {index + 1 + ". " + Step_title}
               </h3>
 
-              <div class="method-text prose max-w-none text-black-light leading-[130%] my-[15px]">
-                <Markdown>{step.Step_text}</Markdown>
-              </div>
+              <Markdown>{Step_text}</Markdown>
 
-              {step.Step_blob.data && (
+              {Step_blob?.data && (
                 <Picture
                   layout="fill"
-                  alt={step.Step_blob.data.attributes.alternativeText}
-                  src={STRAPI_URL + step.Step_blob.data.attributes.url}
+                  alt={Step_blob.data.attributes.alternativeText}
+                  src={STRAPI_URL + Step_blob.data.attributes.url}
                   sizes="(min-width: 768px) calc(90vw * 2/3 - 72px), calc(90vw - 72px)"
                   attributes={{
                     picture: { style: "margin-top: 20px;" },
