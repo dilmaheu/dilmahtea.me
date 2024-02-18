@@ -5,6 +5,7 @@ import Markdown from "@components/Markdown.astro";
 import Pagination from "@components/Pagination.astro";
 import HeroContent from "@components/HeroContent.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
+import AuthorSection from "@components/AuthorSection.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
@@ -45,7 +46,7 @@ const {
   green_leaf: right_post_leaf,
 } = RecurringImages;
 
-const { page, ariaLabelRecurData } = Astro.props,
+const { page, ariaLabelRecurData, noAuthorImg } = Astro.props,
   { posts, pagination } = page,
   { STRAPI_URL } = import.meta.env;
 
@@ -158,33 +159,7 @@ const [firstPost] = posts;
               <div
                 class:list={["grid division-in-gap", !isEven & "sm:order-1"]}
               >
-                {post.authors && (
-                  <div class="quick-info-black-light">
-                    <div
-                      role="presentation"
-                      aria-label={post.authors.data.map(
-                        ({ attributes }, i) =>
-                          ariaLabelRecurData.Wrote_by_text +
-                          (i > 0 ? ", " : " ") +
-                          attributes.givenName,
-                      )}
-                      class="author-name"
-                    >
-                      {post.authors.data.map(({ attributes }, index) => (
-                        <span>
-                          {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div class="quick-info-item">
-                      {new Date(post.createdAt).toLocaleString("en-US", {
-                        day: "numeric",
-                        month: "long",
-                      })}
-                    </div>
-                  </div>
-                )}
+                <AuthorSection page={page} authors={post.authors} noAuthorImg={!noAuthorImg} isTextBlackLight={true} createdAt={post.createdAt}  />
 
                 <h2 class="text-h2 text-primary">
                   <a
