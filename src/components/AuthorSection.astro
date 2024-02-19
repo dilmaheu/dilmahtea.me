@@ -18,7 +18,7 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 
 <div class="division-in-element-gap flex items-center">
   {!noAuthorImg &&
-    authors.data.map((author, index) => (
+    authors?.data?.map((author, index) => (
       <div
         class:list={[
           "quick-info-author-img",
@@ -30,11 +30,11 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
           height={50}
           loading="eager"
           alt={
-            author.attributes.Profile_picture.data.attributes.alternativeText
+            author?.attributes?.Profile_picture?.data?.attributes?.alternativeText
           }
           src={
             STRAPI_URL +
-            author.attributes.Profile_picture.data.attributes.url
+            author?.attributes?.Profile_picture?.data?.attributes?.url
           }
         />
       </div>
@@ -42,13 +42,13 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
   <div class={isTextBlackLight ? "quick-info-black-light" : "quick-info-default"}>
     <div
       role="presentation"
-      aria-label={authors.data.map(({ attributes }) =>
-        ariaLabelRecurData.Wrote_by_text + ", " + attributes.givenName
+      aria-label={authors?.data?.map(({ attributes }) =>
+        ariaLabelRecurData?.Wrote_by_text + ", " + attributes?.givenName
       )}
       class="author-name"
     >
-      {authors.data.map(({ attributes }, index) => (
-        <span>{`${index > 0 ? ", " : " "}${attributes.givenName}`}</span>
+      {authors?.data?.map(({ attributes }, index) => (
+        <span>{`${index > 0 ? ", " : " "}${attributes?.givenName}`}</span>
       ))}
     </div>
     <div class="quick-info-item">
