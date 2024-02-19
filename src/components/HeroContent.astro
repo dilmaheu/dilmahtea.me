@@ -2,7 +2,7 @@
 import Hero from "@components/Hero.astro";
 import Markdown from "@components/Markdown.astro";
 import ClippedPicture from "@components/ClippedPicture.astro";
-import AuthorSection from "@components/AuthorSection.astro"
+import AuthorSection from "@components/AuthorSection.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
@@ -57,16 +57,13 @@ const recurData = CMS.get("recurringElement", locale),
             )
           }
 
-          {
-            page.authors && (
-              <AuthorSection 
-              page={page} 
-              authors={page.authors} 
-              createdAt={page.createdAt} 
-              />
-          )}
-          
-          
+          <AuthorSection
+            locale={locale}
+            authors={page.authors}
+            noAuthorImg={noAuthorImg}
+            createdAt={page.createdAt}
+          />
+
           {
             page.estate_name?.data.length > 0 && (
               <div class="flex flex-wrap items-center">

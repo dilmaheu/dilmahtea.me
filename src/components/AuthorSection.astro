@@ -1,64 +1,67 @@
 ---
+import CMS from "@store/CMS";
 import { Picture } from "astro-imagetools/components";
 
-import CMS from "@store/CMS";
-
-const {
-    page,
-    noAuthorImg,
-    authors,
-    createdAt,
-    isTextBlackLight,
-} = Astro.props,
-    { locale } = page,
-    { STRAPI_URL } = import.meta.env;
+const { locale, authors, noAuthorImg, createdAt, blackLight } = Astro.props,
+  { STRAPI_URL } = import.meta.env;
 
 const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 ---
 
-<div class="division-in-element-gap flex items-center">
-  {!noAuthorImg &&
-    authors?.data?.map((author, index) => (
+{
+  authors?.data.length > 0 && (
+    <div class="division-in-element-gap flex items-center">
+      {!noAuthorImg &&
+        authors.data.map(
+          ({ attributes: { Profile_picture: img } }, index) =>
+            img.data && (
+              <div
+                class:list={[
+                  "quick-info-author-img",
+                  index > 0 &&
+                    "relative -ml-[clamp(15px,calc(2.5vw-1px),35px)]",
+                ]}
+              >
+                <Picture
+                  width={50}
+                  height={50}
+                  loading="eager"
+                  alt={img.data.attributes.alternativeText}
+                  src={STRAPI_URL + img.data.attributes.url}
+                />
+              </div>
+            ),
+        )}
+
       <div
         class:list={[
-          "quick-info-author-img",
-          index > 0 && "relative -ml-[clamp(15px,calc(2.5vw-1px),35px)]",
+          blackLight ? "quick-info-black-light" : "quick-info-default",
         ]}
       >
-        <Picture
-          width={50}
-          height={50}
-          loading="eager"
-          alt={
-            author?.attributes?.Profile_picture?.data?.attributes?.alternativeText || "Author Profile Picture"
-          }
-          src={
-            STRAPI_URL +
-            author?.attributes?.Profile_picture?.data?.attributes?.url
-          }
-        />
+        <div
+          role="presentation"
+          aria-label={authors.data.map(
+            ({ attributes }, i) =>
+              ariaLabelRecurData.Wrote_by_text +
+              (i > 0 ? ", " : " ") +
+              attributes.givenName,
+          )}
+          class="author-name"
+        >
+          {authors.data.map(({ attributes }, index) => (
+            <span>{`${index > 0 ? ", " : " "}` + attributes.givenName}</span>
+          ))}
+        </div>
+
+        {createdAt && (
+          <div class="quick-info-item">
+            {new Date(createdAt).toLocaleString("en-US", {
+              day: "numeric",
+              month: "long",
+            })}
+          </div>
+        )}
       </div>
-  ))}
-  <div class={isTextBlackLight ? "quick-info-black-light" : "quick-info-default"}>
-    <div
-      role="presentation"
-      aria-label={authors?.data?.map(({ attributes }) =>
-        ariaLabelRecurData?.Wrote_by_text + ", " + attributes.givenName
-      )}
-      class="author-name"
-    >
-      {authors?.data?.map(({ attributes }, index) => (
-        <span>{`${index > 0 ? ", " : " "}${attributes.givenName}`}</span>
-      ))}
     </div>
-    <div class="quick-info-item">
-      {new Date(createdAt).toLocaleString("en-US", {
-        day: "numeric",
-        month: "long",
-      })}
-    </div>
-  </div>
-</div>
- 
-
-
+  )
+}
