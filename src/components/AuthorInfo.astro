@@ -2,7 +2,7 @@
 import CMS from "@store/CMS";
 import { Picture } from "astro-imagetools/components";
 
-const { locale, authors, noAuthorImg, createdAt, author_sm, blackLight } = Astro.props,
+const { locale, authors, noAuthorImg, createdAt, authorsm, blackLight } = Astro.props,
   { STRAPI_URL } = import.meta.env;
 
 const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
@@ -35,10 +35,11 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 
       <div
         class:list={[
-          blackLight ? "quick-info-black-light" : "quick-info-default" &&
-          author_sm ? "quick-info-black-light-sm" : "quick-info-secondary-light-sm",
+          blackLight
+          ? (authorsm ? "quick-info-black-light-sm" : "quick-info-black-light") 
+          : (authorsm ? "quick-info-secondary-light-sm" : "quick-info-default")
         ]}
-        >
+      >
         <div
           role="presentation"
           aria-label={authors.data.map(
