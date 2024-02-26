@@ -2,7 +2,16 @@
 import CMS from "@store/CMS";
 import { Picture } from "astro-imagetools/components";
 
-const { locale, authors, noAuthorImg, createdAt, authorSm, blackLight } = Astro.props,
+declare interface Props {
+  locale: string;
+  authors: Record<string, any>;
+  authorImg?: boolean;
+  createdAt?: string;
+  authorSm?: boolean;
+  color: "black-light" | "secondary-light" | "default";
+};
+
+const { locale, authors, authorImg, createdAt, authorSm, color } = Astro.props,
   { STRAPI_URL } = import.meta.env;
 
 const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
