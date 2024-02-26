@@ -9,7 +9,7 @@ declare interface Props {
   createdAt?: string;
   authorSm?: boolean;
   color: "black-light" | "secondary-light" | "default";
-};
+}
 
 const { locale, authors, authorImg, createdAt, authorSm, color } = Astro.props,
   { STRAPI_URL } = import.meta.env;
@@ -42,7 +42,7 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
             ),
         )}
 
-      <div class:list=[{`quick-info-${color || "default"}${authorSm ? "-sm" : ""}`}]>
+      <div class={`quick-info-${color || "default"}${authorSm ? "-sm" : ""}`}>
         <div
           role="presentation"
           aria-label={authors.data.map(
@@ -60,10 +60,18 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 
         {createdAt && (
           <div class="quick-info-item">
-            {new Date(createdAt).toLocaleString("en-US", {
-              day: "numeric",
-              month: "long",
-            })}
+            <span class="block sm:hidden">
+              {new Date(createdAt).toLocaleString("en-US", {
+                day: "numeric",
+                month: "short",
+              })}
+            </span>
+            <span class="hidden sm:block">
+              {new Date(createdAt).toLocaleString("en-US", {
+                day: "numeric",
+                month: "long",
+              })}
+            </span>
           </div>
         )}
       </div>
