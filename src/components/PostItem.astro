@@ -47,64 +47,63 @@ const {
         !isEven && "sm:order-2 ml-auto",
     ]}
     >
-    <Picture
-        layout="fill"
-        src={postImgURL}
-        alt={altText}
-        sizes={sizes}
-        attributes={{
-        picture: { style: "clip-path: url(#post-img-curve);" },
-        }}
-    />
-
-    {leafVisible && (
-        <div
-            class:list={[
-            "post-leaf",
-            isEven ? "post-leaf-left" : "post-leaf-right",
-            ]}
-        >
-            <Picture
-            alt=""
+        <Picture
             layout="fill"
-            placeholder="blurred"
-            src={(isEven ? left_post_leaf : right_post_leaf).src}
-            sizes={[
-                `(min-width: 640px) min(600px, calc((50vw - min(100px, 5vw)) * ${postLeafWidthMultiplier}))`,
-                `calc(90vw * ${postLeafWidthMultiplier})`,
-            ].join(", ")}
-            />
-        </div>
-    )
-}
+            src={postImgURL}
+            alt={altText}
+            sizes={sizes}
+            attributes={{
+            picture: { style: "clip-path: url(#post-img-curve);" },
+            }}
+        />
+
+        {leafVisible && (
+            <div
+                class:list={[
+                "post-leaf",
+                isEven ? "post-leaf-left" : "post-leaf-right",
+                ]}
+            >
+                <Picture
+                alt=""
+                layout="fill"
+                placeholder="blurred"
+                src={(isEven ? left_post_leaf : right_post_leaf).src}
+                sizes={[
+                    `(min-width: 640px) min(600px, calc((50vw - min(100px, 5vw)) * ${postLeafWidthMultiplier}))`,
+                    `calc(90vw * ${postLeafWidthMultiplier})`,
+                ].join(", ")}
+                />
+            </div>
+        )}
     </div>
 
     {/* Text content */}
     <div
         class:list={["grid division-in-gap", !isEven & "sm:order-1"]}
     >
-    <AuthorInfo
-        locale={locale}
-        authors={authors}
-        createdAt={createdAt}
-        color={"black-light"}
-    />
-
-    <h2 class="text-h2 text-primary">
-        <a
-        class="main-link"
-        href={postURL}
-        set:text={postTitle}
+        <AuthorInfo
+            locale={locale}
+            authors={authors}
+            createdAt={createdAt}
+            color={"black-light"}
         />
-        {greenCupVisible && (
-            <span class="icon heading-inline-icon ml-2">
-                <img class="w-full h-full" {...green_cup} />
-            </span>
-        )}   
-    </h2>
-    <div class="post-intro intro-text">
-        <Markdown>{introText}</Markdown>
-    </div>
+
+        <h2 class="text-h2 text-primary">
+            <a
+            class="main-link"
+            href={postURL}
+            set:text={postTitle}
+            />
+            {greenCupVisible && (
+                <span class="icon heading-inline-icon ml-2">
+                    <img class="w-full h-full" {...green_cup} />
+                </span>
+            )}   
+        </h2>
+        <div class="post-intro intro-text">
+            <Markdown>{introText}</Markdown>
+        </div>
     </div>
 </div>
 
