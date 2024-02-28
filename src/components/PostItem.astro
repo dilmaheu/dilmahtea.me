@@ -6,7 +6,7 @@ import AuthorInfo from "@components/AuthorInfo.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
-const { ariaLabel, isEven, postImgURL, altText, sizes, postLeafWidthMultiplier, locale, authors, createdAt, postURL, postTitle, introText, leafVisible, greenCupVisible } = Astro.props;
+const { ariaLabel, isEven, postImgURL, altText, sizes, postLeafWidthMultiplier, locale, authors, createdAt, postURL, postTitle, introText, leafVisible, greenCupVisible, clipPathValue } = Astro.props;
 
 const {
     green_cup,
@@ -33,7 +33,7 @@ const {
         @apply -left-[5%] bottom-[6%];
       }
     }
-  </style>
+</style>
 
 
 <div
@@ -53,7 +53,7 @@ const {
             alt={altText}
             sizes={sizes}
             attributes={{
-            picture: { style: "clip-path: url(#post-img-curve);" },
+            picture: { style: `clip-path: url(${clipPathValue});`},
             }}
         />
 
@@ -91,9 +91,9 @@ const {
 
         <h2 class="text-h2 text-primary">
             <a
-            class="main-link"
-            href={postURL}
-            set:text={postTitle}
+                class="main-link"
+                href={postURL}
+                set:text={postTitle}
             />
             {greenCupVisible && (
                 <span class="icon heading-inline-icon ml-2">
