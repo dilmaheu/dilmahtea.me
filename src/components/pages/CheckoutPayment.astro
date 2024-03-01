@@ -1,6 +1,5 @@
 ---
 import CMS from "@store/CMS";
-import Markdown from "@components/Markdown.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import OrderSummary from "@components/OrderSummary.astro";
 import AdvancedNotification from "@components/AdvancedNotification.astro";
@@ -10,25 +9,23 @@ import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { page, recurData } = Astro.props,
   { locale, payment_methods, Accepted_cards_icon } = page,
-  checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
+  userRecurData = CMS.get("userAccountRecurringElement", locale);
+
+const checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
   steps = checkoutFlowData.steps.split("\n"),
-  shortenedSteps = checkoutFlowData.shortened_steps.split("\n"),
-  checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
+  shortenedSteps = checkoutFlowData.shortened_steps.split("\n");
+
+const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
   checkoutInfo = CMS.get("checkoutInformation", locale),
   checkoutInfoLink = `/${locale}/${checkoutInfo.Meta.URL_slug}/`,
   checkoutKindnessLink = `/${locale}/${
     CMS.get("checkoutKindness", locale).Meta.URL_slug
-  }/`,
-  userRecurData = CMS.get("userAccountRecurringElement", locale);
+  }/`;
 
 const methods = payment_methods.data?.map(({ attributes }) => attributes),
   accepted_cards_icon = Accepted_cards_icon.data?.map(
     ({ attributes }) => attributes,
   );
-
-const STRIPE_PUBLISHABLE_KEY = shouldDisplayExperimentals
-  ? "pk_test_51L5P0uFkZIhoESDNaT5ehYNQmhtAtFWuV7nZAyavga1x9BTYOpkRaRYzMVPzwRxooxKyoMIN4MLnB4P6yeENrvMp00jw25zPVV"
-  : "pk_live_51L5P0uFkZIhoESDNqe4zIQ79WujaSi7UALnwcpZrmdXiCkWcKvvmyC2e4hhKegR4tExdjiipgt2mj48UaL3y42so00eMUIBuUU";
 ---
 
 <style lang="scss">
@@ -412,7 +409,7 @@ const STRIPE_PUBLISHABLE_KEY = shouldDisplayExperimentals
         <input
           type="hidden"
           id="stripe-publishable-key"
-          data-key={STRIPE_PUBLISHABLE_KEY}
+          data-key={import.meta.env.STRIPE_PUBLISHABLE_KEY}
           disabled
         />
       </div>
@@ -488,9 +485,7 @@ const STRIPE_PUBLISHABLE_KEY = shouldDisplayExperimentals
   redirect_status === "failed" && paymentError.classList.remove("hidden");
 
   const toggleDisabled = (elements, condition) =>
-    elements.forEach((element) =>
-      element[condition ? "setAttribute" : "removeAttribute"]("disabled", true),
-    );
+    elements.forEach((element) => (element.disabled = !!condition));
 
   const selectTextAndNumberInputs = (parent) =>
     parent.querySelectorAll("input[type='text'], input[type='number'], select");
@@ -636,7 +631,10 @@ const STRIPE_PUBLISHABLE_KEY = shouldDisplayExperimentals
     const elementStyles = {
       style: {
         base: {
-          fontSize: `${Math.min(Math.max(16, 0.25 * window.innerWidth + 14.4), 18)}px`, //text-b5
+          fontSize: `${Math.min(
+            Math.max(16, 0.25 * window.innerWidth + 14.4),
+            18,
+          )}px`, //text-b5
         },
       },
       classes: {
