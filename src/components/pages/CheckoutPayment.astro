@@ -613,6 +613,8 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
 
 {/* for stripe payments */}
 <script>
+  import { loadStripe } from "@stripe/stripe-js";
+
   // Check if the element with ID "payment-info-form" exists before executing the scripts
   if (document.getElementById("payment-info-form")) {
     const id = document.getElementById.bind(document),
@@ -625,8 +627,8 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     const STRIPE_PUBLISHABLE_KEY =
       stripePublishableKey?.getAttribute("data-key");
 
-    const stripe = Stripe(STRIPE_PUBLISHABLE_KEY),
-      elements = stripe.elements({ locale: window.preferredLocale });
+    const stripe = await loadStripe(STRIPE_PUBLISHABLE_KEY),
+      elements = stripe.elements({ locale: window.preferredLocale as any });
 
     const elementStyles = {
       style: {
