@@ -16,7 +16,6 @@ const { page } = Astro.props,
   { posts, locale, blogs } = page,
   { STRAPI_URL } = import.meta.env;
 
-
 const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
 ---
 
@@ -79,14 +78,9 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
             const isEven = index % 2 === 0;
 
             return (
-              <PostItem 
+              <PostItem
                 postImgURL={STRAPI_URL + estate.Intro_blob.data.attributes.url}
                 altText={estate.Intro_blob.data.attributes.alternativeText}
-                sizes={[
-                  "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
-                  "(min-width: 640px) min(600px, calc(45vw - 20px))",
-                  "90vw",
-                ].join(", ")}
                 clipPathValue={"#estate-img-curve"}
                 postURL={`/` + estate.Meta.URL_slug}
                 postTitle={estate.Estate_name}

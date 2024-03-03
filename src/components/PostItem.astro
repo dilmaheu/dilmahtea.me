@@ -6,7 +6,7 @@ import AuthorInfo from "@components/AuthorInfo.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
-const { ariaLabel, isEven, postImgURL, altText, sizes, postLeafWidthMultiplier, locale, authors, createdAt, postURL, postTitle, introText, leafVisible, greenCupVisible, clipPathValue } = Astro.props;
+const { ariaLabel, isEven, postImgURL, altText, postLeafWidthMultiplier, locale, authors, createdAt, postURL, postTitle, introText, leafVisible, greenCupVisible, clipPathValue } = Astro.props;
 
 const {
     green_cup,
@@ -51,7 +51,11 @@ const {
             layout="fill"
             src={postImgURL}
             alt={altText}
-            sizes={sizes}
+            sizes={[
+                "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
+                "(min-width: 640px) min(600px, calc(45vw - 20px))",
+                "90vw",
+              ].join(", ")}
             attributes={{
             picture: { style: `clip-path: url(${clipPathValue});`},
             }}

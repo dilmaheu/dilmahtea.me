@@ -118,24 +118,20 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
             )}
 
             <PostItem
-              ariaLabel={ariaLabelRecurData.Highlighted_post_text} 
-              postImgURL={STRAPI_URL + randPost.Intro_blob?.data?.attributes.url}
+              ariaLabel={ariaLabelRecurData.Highlighted_post_text}
+              postImgURL={
+                STRAPI_URL + randPost.Intro_blob?.data?.attributes.url
+              }
               altText={randPost.Intro_blob?.data?.attributes.alternativeText}
-              sizes={[
-                "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
-                "(min-width: 640px) min(600px, calc(45vw - 20px))",
-                "90vw",
-              ].join(", ")}
               locale={page.locale}
               authors={randPost.authors}
               createdAt={randPost.createdAt}
               postURL={`/` + randPost.Meta.URL_slug}
               postTitle={randPost.Title}
-              introText={randPost.Intro_text} 
-              isEven={true} 
-              clipPathValue={"#post-img-curve"}        
+              introText={randPost.Intro_text}
+              isEven={true}
+              clipPathValue={"#post-img-curve"}
             />
-
           </div>
         </section>
       )
