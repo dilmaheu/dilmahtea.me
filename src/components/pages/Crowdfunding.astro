@@ -2,20 +2,15 @@
 import { Picture } from "astro-imagetools/components";
 
 import Hero from "@components/Hero.astro";
+import Banner from "@components/Banner.astro";
 import Markdown from "@components/Markdown.astro";
 import PlanCards from "@components/PlanCards.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
 import CrowdfundingProgress from "@components/CrowdfundingProgress.astro";
 
 import RecurringImages from "@store/RecurringImages";
 
-const {
-  white_cup,
-  white_flower,
-  green_love_ribbon,
-  crowdfunding_info_section_background,
-} = RecurringImages;
+const { white_cup, green_love_ribbon } = RecurringImages;
 
 const { page, ariaLabelRecurData } = Astro.props,
   { STRAPI_URL } = import.meta.env;
@@ -189,85 +184,10 @@ const goal = 100000,
   <PlanCards allPlans={page.allPlans} {ariaLabelRecurData} />
 </section>
 
-<ClipPathSVG
-  id="crowdfunding-info-bg-curve"
-  path="M1,0.055 S0.962,-0.005,0.847,0 C0.729,0.006,0.602,0.049,0.484,0.044 C0.381,0.04,0.239,0.018,0.136,0.028 C0.073,0.034,0,0.055,0,0.055 V0.965 s0.032,0.035,0.156,0.035 c0.061,0,0.136,-0.012,0.193,-0.027 c0.06,-0.016,0.161,-0.017,0.231,-0.017 c0.074,0,0.2,0.037,0.315,0.01 s0.106,-0.071,0.106,-0.071 V0.055"
+{/* Banner Section */}
+<Banner
+  title={page.Heading_block}
+  intro={page.Block_text}
+  blob={page.Block_blob}
+  blobCurveSecondary={true}
 />
-
-{/* Info Section */}
-<section
-  role="complementary"
-  style="clip-path: url(#crowdfunding-info-bg-curve);"
-  class="relative h-[400px] sm:h-[clamp(400px,20vw+430px,840px)] overflow-hidden bg-primary"
->
-  {/* Background  */}
-  {
-    crowdfunding_info_section_background && (
-      <Picture
-        alt=""
-        layout="fill"
-        objectPosition="left bottom"
-        src={crowdfunding_info_section_background.src}
-        sizes="(min-width: 640px) 100vw, 100vw"
-        attributes={{
-          picture: {
-            style: "position: absolute; width: 100vw; hight: 100%;",
-          },
-        }}
-      />
-    )
-  }
-
-  {/* Blob Image - Desktop View */}
-  <div
-    class="hidden sm:block absolute left-0 right-0 z-20 w-full sm:w-1/2 h-full py-20 pl-0 pr-6 lg:pr-12"
-  >
-    <ClippedPicture
-      id="crowdfunding-info-img-curve"
-      pictureStyle="position: relative; left: -20px;"
-      alt={page.Block_blob.data.attributes.alternativeText}
-      src={STRAPI_URL + page.Block_blob.data.attributes.url}
-      sizes={[
-        "(min-width: 1024px) calc(50vw - min(100px, 5vw) - 96px)",
-        "(min-width: 640px) calc(45vw - 24px)",
-      ].join(", ")}
-      path="M1 .494V.507A.019.028 0 0 0 1 .51v.016A.024.035 0 0 0 1 .53L.998.579C.991.693.986.856.835.945a.362.362 0 0 1-.222.05C.567.992.521.984.473.981L.438.98C.357.98.275 1 .204 1A.19.19 0 0 1 .079.961C-.011.886.018.658.018.485.018.396.005.337.001.277A.191.28 0 0 1 0 .244C0 .206.004.166.018.115.041.025.106.004.189.003c.071 0 .155.015.238.015L.45.017C.494.014.551.006.612.002.708-.004.816.001.893.063.976.13.997.311 1 .449v.025"
-    />
-  </div>
-
-  {/* Text Content */}
-  <div class="wrapper h-full relative z-30 flex flex-wrap justify-end">
-    <div
-      class="relative w-full sm:w-1/2 h-full flex flex-col sm:justify-center py-6 sm:py-0 sm:pl-6 lg:pl-12"
-    >
-      <h2 class="heading-primary leading-tight tracking-tight font-bold">
-        {page.Heading_block}
-
-        <span class="icon">
-          <img class="heading-inline-icon" alt="" {...white_flower} />
-        </span>
-      </h2>
-
-      <div
-        class:list={[
-          "crowdfunding-info-text pt-0.5 mt-7 sm:mt-12 overflow-hidden",
-          "prose max-w-none line-clamp-5 leading-normal tracking-tight",
-        ]}
-      >
-        <Markdown>{page.Block_text}</Markdown>
-      </div>
-    </div>
-  </div>
-</section>
-
-{/* Blob Image - Mobile View */}
-<div class="block sm:hidden w-screen relative z-20 -mt-28">
-  <ClippedPicture
-    id="crowdfunding-info-img-curve-sm"
-    alt={page.Block_blob.data.attributes.alternativeText}
-    src={STRAPI_URL + page.Block_blob.data.attributes.url}
-    path="M.282 0C.147 0 .062.021 0 .064V.97c.045.046.195.006.324 0C.473.963.625 1 .774 1A.561.561 0 0 0 1 .954v-.89c-.059-.061-.237 0-.32 0S.417 0 .282 0"
-  />
-</div>
-
-<div class="h-8"></div>
