@@ -8,11 +8,11 @@ import ClippedPicture from "@components/ClippedPicture.astro";
 const {
     title,
     intro,
-    button_text,
-    button_link,
+    buttonText,
+    buttonLink,
     blob,
     blobCurveSecondary,
-    background_img,
+    backgroundImg,
     transparent,
   } = Astro.props,
   { STRAPI_URL } = import.meta.env;
@@ -75,7 +75,7 @@ const {
     class:list={[
       "relative w-full",
       !transparent && "bg-primary",
-      background_img && "h-full",
+      backgroundImg && "h-full",
     ]}
   >
     <div class="h-full flex flex-wrap items-center">
@@ -83,7 +83,7 @@ const {
         class:list={[
           "items-center",
           !transparent && "section-in-v-pad-sm",
-          background_img
+          backgroundImg
             ? "wrapper flex flex-wrap text-center"
             : "grid sm:grid-cols-2 division-gap",
         ]}
@@ -92,9 +92,9 @@ const {
         <div
           class:list={[
             "division-in-gap flex flex-col w-full z-20 order-2",
-            !background_img && "wrapper sm:!pl-0 sm:!ml-0 sm:py-0",
+            !backgroundImg && "wrapper sm:!pl-0 sm:!ml-0 sm:py-0",
             transparent && "pb-[25px] sm:pb-0",
-            !transparent && !background_img && "pt-[25px] pb-[50px]",
+            !transparent && !backgroundImg && "pt-[25px] pb-[50px]",
           ]}
         >
           <h2
@@ -111,7 +111,7 @@ const {
               <div
                 class:list={[
                   transparent ? "intro-text" : "intro-text-dark-link",
-                  background_img &&
+                  backgroundImg &&
                     "overflow-hidden line-clamp-5 sm:line-clamp-3 md:line-clamp-5",
                 ]}
               >
@@ -121,15 +121,15 @@ const {
           }
 
           {
-            button_text && (
+            buttonText && (
               <a
-                href={button_link}
+                href={buttonLink}
                 class:list={[
                   "w-fit button-default",
-                  background_img && "mx-auto min-w-[150px]",
+                  backgroundImg && "mx-auto min-w-[150px]",
                 ]}
               >
-                {button_text}
+                {buttonText}
               </a>
             )
           }
@@ -137,12 +137,12 @@ const {
 
         {/* Background Image */}
         {
-          background_img && (
+          backgroundImg && (
             <div class="absolute inset-0 w-full h-full brightness-[.7]">
               <Picture
                 alt=""
                 layout="fill"
-                src={STRAPI_URL + background_img.data.attributes.url}
+                src={STRAPI_URL + backgroundImg.data.attributes.url}
               />
             </div>
           )
