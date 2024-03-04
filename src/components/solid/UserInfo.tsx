@@ -1,19 +1,39 @@
+import type { Address as AddressType } from "@solid/Address";
+import type { handleAPIResponseType } from "@utils/handleAPIResponseBase";
+
 import { createEffect, createSignal } from "solid-js";
 
 import { user } from "@signals/user";
+import { addresses } from "@signals/addresses";
 
 import InfoUnit from "@solid/InfoUnit";
-import DashboardNotification from "@solid/DashboardNotification";
+import EditAddress from "@solid/EditAddress";
+import DefaultAddress from "@solid/DefaultAddress";
+import SolidNotification from "@solid/SolidNotification";
+
+import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 
 export default function UserInfo({
   plusIcon,
   page,
   verificationHref,
   userAccountAddressURL,
-  recurringImages,
+  notificationIcons,
+  recurData,
   userAccountRecurData,
 }) {
-  const [notification, setNotification] = createSignal(null);
+  const [notification, setNotification] = createSignal(null),
+    [editAddress, setEditAddress] = createSignal<{
+      action: "add" | "update";
+      address?: AddressType;
+      tickCheckboxes?: {
+        default_delivery_address?: boolean;
+        default_billing_address?: boolean;
+      };
+    }>();
+
+  const handleAPIResponse: handleAPIResponseType = (response, callbacks) =>
+    handleAPIResponseBase(response, notification, setNotification, callbacks);
 
   const {
     Title,
@@ -36,29 +56,64 @@ export default function UserInfo({
     Button_update_text,
     Button_view_more_address_text_singular,
     Button_view_more_address_text,
+    Button_view_all_addresses_text,
     Button_add_new_address_text,
-    Address_tag,
     text_more_address,
+    text_default_delivery_address,
+    text_default_billing_address,
+    Notification_added_address,
+    Notification_updated_address,
+    Notification_deleted_address,
   } = userAccountRecurData;
+
+  function scrollToAddNewAddress(after: boolean = true) {
+    const header = document.querySelector("header"),
+      addNewAddressBtn = document.querySelector("#add-new-address-btn");
+
+    const headerRect = header.getBoundingClientRect(),
+      addNewAddressBtnRect = addNewAddressBtn.getBoundingClientRect();
+
+    window.scrollTo({
+      top:
+        window.scrollY +
+        addNewAddressBtnRect.top +
+        (after ? addNewAddressBtnRect.height : -20) -
+        headerRect.height,
+    });
+  }
 
   createEffect(() => {
     const searchParams = new URLSearchParams(location.search);
 
     if (searchParams.get("updated_user_info") === "true") {
       const info = searchParams.get("info"),
+        action = searchParams.get("action"),
         InfoLabels = {
           display_name: display_name_update_success_notification_label,
           email: email_update_success_notification_label,
           phone: phone_number_update_success_notification_label,
         };
 
-      if (InfoLabels[info]) {
+      const notificationMessage =
+        info === "address"
+          ? action === "add"
+            ? Notification_added_address
+            : action === "update"
+              ? Notification_updated_address
+              : action === "delete"
+                ? Notification_deleted_address
+                : null
+          : InfoLabels[info]
+            ? user_info_update_success_notification.replace(
+                "<info_label>",
+                InfoLabels[info],
+              )
+            : null;
+
+      if (notificationMessage) {
         setNotification({
           type: "success",
-          message: user_info_update_success_notification.replace(
-            "<info_label>",
-            InfoLabels[info],
-          ),
+          message: notificationMessage,
         });
       }
 
@@ -80,9 +135,10 @@ export default function UserInfo({
       <div class="dashboard-sec">
         <div class="grid division-gap">
           <div class="grid division-in-gap">
-            <DashboardNotification
+            <SolidNotification
               notification={notification}
-              recurringImages={recurringImages}
+              notificationIcons={notificationIcons}
+              bottomMargin={true}
             />
 
             <InfoUnit
@@ -118,80 +174,102 @@ export default function UserInfo({
 
             <div class="h-px bg-primary-light" />
 
-            <div class="grid division-in-element-gap">
-              <div class="input-label">{Label_delivery_address}</div>
+            {() => {
+              const default_delivery_address = user().default_delivery_address,
+                default_billing_address = user().default_billing_address;
 
-              <div class="quick-info">
-                <div>Sara jones</div>
-                <div>&#x2022;</div>
-                <div class="info-tag-button">Home</div>
-              </div>
+              return (
+                <>
+                  <DefaultAddress
+                    label={Label_delivery_address}
+                    address={default_delivery_address}
+                    userAccountRecurData={userAccountRecurData}
+                    setEditAddress={setEditAddress}
+                    scrollToAddNewAddress={scrollToAddNewAddress}
+                    handleAPIResponse={handleAPIResponse}
+                  />
 
-              <div class="flex items-center division-in-element-gap justify-between">
-                <div class="input-text-large-static">
-                  456B, Oakwoods, Germany
-                </div>
+                  <div class="h-px bg-primary-light" />
 
-                <a href={`#`} class="button-link-primary-big">
-                  {/*if there is no single address then we will show add
-                  {Button_add_text}*/}
-
-                  {/*if there is default address set then we will show update*/}
-                  {Button_update_text}
-                </a>
-              </div>
-            </div>
+                  <DefaultAddress
+                    label={Label_billing_address}
+                    address={default_billing_address}
+                    userAccountRecurData={userAccountRecurData}
+                    setEditAddress={setEditAddress}
+                    scrollToAddNewAddress={scrollToAddNewAddress}
+                    handleAPIResponse={handleAPIResponse}
+                  />
+                </>
+              );
+            }}
 
             <div class="h-px bg-primary-light" />
 
-            <div class="grid division-in-element-gap">
-              <div class="input-label">{Label_billing_address}</div>
+            <div class="flex w-full">
+              <button
+                id="add-new-address-btn"
+                class="button-primary"
+                onclick={() => {
+                  scrollToAddNewAddress();
 
-              <div class="quick-info">
-                <div>Sara jones</div>
-                <div>&#x2022;</div>
-                <div class="info-tag-button">Home</div>
-              </div>
-
-              <div class="flex items-center division-in-element-gap justify-between">
-                <div class="input-text-large-static">N/A</div>
-
-                <a href={`#`} class="button-link-primary-big">
-                  {/*if there is no single address then we will show add*/}
-                  {Button_add_text}
-
-                  {/*if there is default address set then we will show update*
-                  {Button_update_text}*/}
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/*if there is not default address set then hide button*/}
-
-          <div class="flex w-full">
-            <a href={userAccountAddressURL} class="button-primary">
-              {plusIcon}
-              {Button_add_new_address_text}
-            </a>
-          </div>
-
-          {/* {Address_tag.length > 2 && (
-            <div class="w-full flex justify-center">
-              <a
-                href={userAccountAddressURL}
-                id="more-address"
-                class="button-link-primary"
+                  setEditAddress({ action: "add" });
+                }}
               >
-                {Address_tag.length === 3
-                  ? Button_view_more_address_text_singular
-                  : Button_view_more_address_text.replace(
-                      "<number>",
-                      Address_tag.length - 2,
-                    )}
-              </a>
+                {plusIcon}
+                {Button_add_new_address_text}
+              </button>
             </div>
-          )} */}
+          </div>
+
+          {() => {
+            const editAddressInfo = editAddress();
+
+            return (
+              editAddressInfo && (
+                <EditAddress
+                  action={editAddress().action}
+                  address={editAddress().address}
+                  recurData={recurData}
+                  userAccountRecurData={userAccountRecurData}
+                  showForm={setEditAddress}
+                  handleAPIResponse={handleAPIResponse}
+                  setNotification={setNotification}
+                  scroll={() => scrollToAddNewAddress(false)}
+                  tickCheckboxes={editAddress().tickCheckboxes}
+                />
+              )
+            );
+          }}
+
+          {() => {
+            const { default_delivery_address, default_billing_address } =
+              user();
+
+            const shouldDisplayLink =
+              default_delivery_address?.id &&
+              addresses()?.length -
+                (default_delivery_address.id === default_billing_address.id
+                  ? 1
+                  : 2) >
+                0;
+
+            if (shouldDisplayLink) {
+              return (
+                <div class="w-full flex justify-center">
+                  <a
+                    href={userAccountAddressURL}
+                    id="more-address"
+                    class="button-link-primary"
+                  >
+                    {Button_view_all_addresses_text.replace(
+                      "<number>",
+                      addresses().length,
+                    )}
+                  </a>
+                </div>
+              );
+            }
+          }}
         </div>
       </div>
 

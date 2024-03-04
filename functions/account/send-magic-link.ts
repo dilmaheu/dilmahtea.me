@@ -3,10 +3,10 @@ import type { ENV } from "../utils/types";
 
 import { z } from "zod";
 import validator from "validator";
-import { fromZodError } from "zod-validation-error";
 
 import fetchExactAPI from "../utils/fetchExactAPI";
 import getCustomerFilter from "../utils/getCustomerFilter";
+import stringifyZodError from "../utils/stringifyZodError";
 
 import { initializeLucia } from "../utils/auth";
 import { getToken, removeToken, validateToken } from "../utils/token";
@@ -76,11 +76,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     try {
       var bodyData = BodySchema.parse(body);
     } catch (error) {
-      throw new PublicError(
-        fromZodError(error)
-          .toString()
-          .replace(/^Validation error: | at "[\w]+"$/g, ""),
-      );
+      throw new PublicError(stringifyZodError(error));
     }
 
     switch (bodyData.action) {
@@ -183,8 +179,6 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
     var magicLink =
       new URL(request.url).origin + "/account/verify/" + "?token=" + token;
-
-    console.log(magicLink);
   } catch (error) {
     const isPublicError = error instanceof PublicError;
 

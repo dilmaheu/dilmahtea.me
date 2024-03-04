@@ -7,7 +7,7 @@ import { orders, setOrders, ordersYear, setOrdersYear } from "@signals/orders";
 
 export default function Orders({
   noOrdersHTML,
-  recurringImages,
+  notificationIcons,
   userAccountRecurData,
   isOrdersPage,
 }) {
@@ -49,7 +49,7 @@ export default function Orders({
                 .map((order) => (
                   <Order
                     order={order}
-                    recurringImages={recurringImages}
+                    notificationIcons={notificationIcons}
                     userAccountRecurData={userAccountRecurData}
                   />
                 ))}
@@ -64,7 +64,7 @@ export default function Orders({
                     {orders.map((order) => (
                       <Order
                         order={order}
-                        recurringImages={recurringImages}
+                        notificationIcons={notificationIcons}
                         userAccountRecurData={userAccountRecurData}
                       />
                     ))}

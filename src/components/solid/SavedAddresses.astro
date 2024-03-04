@@ -2,18 +2,9 @@
 import { Icon } from "astro-icon/components";
 import subset from "@utils/shared/subset";
 import SavedAddresses from "@solid/SavedAddresses";
-import RecurringImages from "@store/RecurringImages";
+import notificationIcons from "@utils/notificationIcons";
 
 let { recurData, userAccountRecurData } = Astro.props;
-
-const { success_notification, warning_notification, error_notification } =
-  RecurringImages;
-
-const recurringImages = {
-  success_notification,
-  warning_notification,
-  error_notification,
-};
 
 recurData = subset(recurData, [
   "text_first_name",
@@ -67,13 +58,16 @@ userAccountRecurData = subset(userAccountRecurData, [
   "text_content",
   "text_default_delivery_address",
   "text_default_billing_address",
+  "Notification_added_address",
+  "Notification_updated_address",
+  "Notification_deleted_address",
 ]);
 ---
 
 <SavedAddresses
   client:load
   {recurData}
-  {recurringImages}
+  {notificationIcons}
   {userAccountRecurData}
 >
   <Icon slot="plusIcon" name="akar-icons:plus" class="w-[18px] select-none" />

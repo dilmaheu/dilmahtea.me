@@ -251,6 +251,6 @@ export default {
     key === "all"
       ? { data: allProducts }
       : key === "store"
-      ? Products
-      : Products[key],
+        ? Products
+        : Products[key],
 };
