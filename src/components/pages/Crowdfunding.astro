@@ -4,13 +4,13 @@ import { Picture } from "astro-imagetools/components";
 import Hero from "@components/Hero.astro";
 import Banner from "@components/Banner.astro";
 import Markdown from "@components/Markdown.astro";
-import PlanCards from "@components/PlanCards.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import CrowdfundingProgress from "@components/CrowdfundingProgress.astro";
 
 import RecurringImages from "@store/RecurringImages";
+import localizeCMSImage from "@utils/localizeCMSImage";
 
-const { white_cup, green_love_ribbon } = RecurringImages;
+const { tick, white_cup, green_love_ribbon } = RecurringImages;
 
 const { page, ariaLabelRecurData } = Astro.props,
   { STRAPI_URL } = import.meta.env;
@@ -28,7 +28,9 @@ const goal = 100000,
   finalProgress = `${progress * 100}%`;
 ---
 
-<style lang="scss">
+<style lang="scss" define:vars={{ tick: `url("${tick.src}")` }}>
+  @use "src/styles/poly-fluid" as *;
+
   .hero-text {
     padding-top: clamp(14px, 1.5vw, 20px);
     font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
@@ -41,6 +43,38 @@ const goal = 100000,
     a {
       @apply text-secondary;
     }
+  }
+
+  .crowdfunding-plan-card {
+    @apply flex flex-col bg-secondary-light w-full max-w-[400px] mx-auto sm:m-0
+      sm:max-w-max sm:w-[calc(50%-clamp(15px,calc(4.375vw-13px),50px)/2)]
+      lg:w-[calc(100%/3-clamp(15px,calc(4.375vw-13px),50px)/1.5)];
+
+    padding: poly-fluid-clamp-primary(25px, 15px)
+      poly-fluid-clamp-primary(20px, 35px) poly-fluid-clamp-primary(20px, 25px);
+    clip-path: url(#blob-card-curve);
+  }
+
+  .prose-text-sm ul {
+    @apply pl-0;
+
+    li {
+      @apply inline-block pl-0 items-center;
+
+      &::before {
+        background-image: var(--tick);
+
+        @apply content-[""] inline-block w-4 h-4 mr-2 align-baseline;
+      }
+    }
+  }
+
+  .crowdfunding-plan-title-icon {
+    @apply inline-block align-baseline;
+
+    width: poly-fluid-clamp-primary(20px, 30px);
+    height: poly-fluid-clamp-primary(20px, 30px);
+    margin-left: poly-fluid-clamp-primary(4px, 8px);
   }
 </style>
 
@@ -175,19 +209,61 @@ const goal = 100000,
   });
 </script>
 
-{/* Plans Section */}
-<section role="main" class="wrapper py-6 sm:py-[50px]">
-  <h2 id="plans" class="heading-primary text-primary pb-[25px] font-bold">
-    {page.Heading_plans}
-  </h2>
+<div role="main" class="grid section-gap section-in-v-pad">
+  {/* Plans Section */}
+  <section>
+    <ClipPathSVG
+      id="blob-card-curve"
+      path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
+    />
 
-  <PlanCards allPlans={page.allPlans} {ariaLabelRecurData} />
-</section>
+    <div class="wrapper grid division-gap">
+      <h2 id="plans" class="text-h2 text-primary">
+        {page.Heading_plans}
+      </h2>
 
-{/* Banner Section */}
-<Banner
-  title={page.Heading_block}
-  intro={page.Block_text}
-  blob={page.Block_blob}
-  blobCurveSecondary={true}
-/>
+      <div class="blob-cards-container">
+        {
+          page.allPlans.map(async (plan, index) => (
+            <a
+              href={`/plans/${plan.Title.toLowerCase()}`}
+              class="crowdfunding-plan-card division-in-gap"
+            >
+              <div class="division-in-element-gap flex flex-col text-center">
+                <div class="text-h5 text-primary">
+                  {plan.Title}
+
+                  <img
+                    class="crowdfunding-plan-title-icon"
+                    src={await localizeCMSImage(
+                      plan.Title_icon?.data?.attributes?.formats?.thumbnail
+                        ?.url || plan.Title_icon?.data?.attributes?.url,
+                    )}
+                    alt=""
+                  />
+                </div>
+
+                <div class="text-b2 font-bold text-black">
+                  &#8364;{plan.Price_EUR_excl_VAT}
+                </div>
+              </div>
+
+              <div class="prose-text-sm">
+                <p>{plan.Intro_text}</p>
+                <Markdown>{plan.List}</Markdown>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* Banner Section */}
+  <Banner
+    title={page.Heading_block}
+    intro={page.Block_text}
+    blob={page.Block_blob}
+    blobCurveSecondary={true}
+  />
+</div>

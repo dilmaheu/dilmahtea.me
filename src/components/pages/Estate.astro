@@ -63,34 +63,7 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
 
     {/* All Estates Section */}
     <div id="estates" class="wrapper">
-      <ClipPathSVG
-        id="estate-img-curve"
-        path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-      />
-
-      <div
-        role="list"
-        aria-label={page.Aria_label_all_estates_text}
-        class="grid section-gap"
-      >
-        {
-          posts.map((estate, index) => {
-            const isEven = index % 2 === 0;
-
-            return (
-              <PostItem
-                postImgURL={STRAPI_URL + estate.Intro_blob.data.attributes.url}
-                altText={estate.Intro_blob.data.attributes.alternativeText}
-                clipPathValue={"#estate-img-curve"}
-                postURL={`/` + estate.Meta.URL_slug}
-                postTitle={estate.Estate_name}
-                introText={estate.Intro_text}
-                isEven={isEven}
-              />
-            );
-          })
-        }
-      </div>
+      <PostItem posts={posts} locale={page.locale} />
     </div>
 
     <div class="wrapper">
