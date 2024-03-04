@@ -1,29 +1,34 @@
+import type { handleAPIResponseType } from "@utils/handleAPIResponseBase";
+
 import { For, createEffect, createSignal } from "solid-js";
 
 import Loading from "@solid/Loading";
 import Address from "@solid/Address";
 import EditAddress from "@solid/EditAddress";
-import DashboardNotification from "@solid/DashboardNotification";
+import SolidNotification from "@solid/SolidNotification";
+
+import { addresses } from "@signals/addresses";
+import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 
 export default function SavedAddresses({
   plusIcon,
   trashCanIcon,
   recurData,
-  recurringImages,
+  notificationIcons,
   userAccountRecurData,
 }) {
-  const [addresses, setAddresses] = createSignal([]),
-    [isLoading, setIsLoading] = createSignal(true),
+  const [isLoading, setIsLoading] = createSignal(true),
     [notification, setNotification] = createSignal(null),
-    [showingMoreAddresses, setShowingMoreAddresses] = createSignal(false);
+    [showMoreAddresses, setShowMoreAddresses] = createSignal(false),
+    [displayNewAddressForm, setShowNewAddressForm] = createSignal(false);
+
+  const handleAPIResponse: handleAPIResponseType = (response, callbacks) =>
+    handleAPIResponseBase(response, notification, setNotification, callbacks);
 
   createEffect(() => {
-    fetch("/api/addresses")
-      .then((res) => res.json<any[]>())
-      .then((addresses) => {
-        setIsLoading(false);
-        setAddresses(addresses);
-      });
+    if (Array.isArray(addresses())) {
+      setIsLoading(false);
+    }
   });
 
   const {
@@ -62,14 +67,49 @@ export default function SavedAddresses({
     text_content,
     text_default_delivery_address,
     text_default_billing_address,
+    Notification_added_address,
+    Notification_updated_address,
+    Notification_deleted_address,
   } = userAccountRecurData;
+
+  createEffect(() => {
+    const { updated_user_info, info, action } = Object.fromEntries(
+      new URLSearchParams(location.search),
+    );
+
+    if (
+      updated_user_info === "true" &&
+      info === "address" &&
+      ["add", "update", "delete"].includes(action)
+    ) {
+      const notificationMessage =
+        action === "add"
+          ? Notification_added_address
+          : action === "update"
+            ? Notification_updated_address
+            : Notification_deleted_address;
+
+      setNotification({
+        type: "success",
+        message: notificationMessage,
+      });
+
+      setTimeout(() => {
+        // skip if an error notification is set within 7 seconds
+        if (notification().type === "success") {
+          setNotification(null);
+        }
+      }, 7000);
+    }
+  });
 
   return (
     <div class="dashboard-sec">
       <div class="grid division-gap">
-        <DashboardNotification
+        <SolidNotification
           notification={notification}
-          recurringImages={recurringImages}
+          notificationIcons={notificationIcons}
+          bottomMargin={true}
         />
 
         <div class="flex flex-wrap items-center justify-between w-full">
@@ -77,64 +117,84 @@ export default function SavedAddresses({
             {text_saved_Addresses}
           </div>
 
-          <a href={`#`} class="button-primary">
+          <button
+            class="button-primary"
+            onclick={() => setShowNewAddressForm(true)}
+          >
             {plusIcon}
             {Button_add_new_address_text}
-          </a>
+          </button>
         </div>
 
-        <EditAddress
-          recurData={recurData}
-          userAccountRecurData={userAccountRecurData}
-        />
+        {displayNewAddressForm() && (
+          <EditAddress
+            action="add"
+            recurData={recurData}
+            userAccountRecurData={userAccountRecurData}
+            showForm={setShowNewAddressForm}
+            handleAPIResponse={handleAPIResponse}
+            setNotification={setNotification}
+          />
+        )}
 
-        {isLoading() ? (
-          <Loading />
-        ) : (
+        <div class="h-px bg-primary-light"></div>
+
+        {isLoading() && <Loading />}
+
+        {addresses()?.length > 0 && (
           <>
             <div class="grid division-in-gap">
               <For
-                each={addresses().slice(
-                  0,
-                  showingMoreAddresses() ? addresses().length : 3,
-                )}
+                each={addresses().slice(0, showMoreAddresses() ? Infinity : 3)}
               >
-                {(address, i) => (
-                  <>
-                    <Address
-                      address={address}
-                      trashCanIcon={trashCanIcon}
-                      text_default_delivery_address={
-                        text_default_delivery_address
-                      }
-                      text_default_billing_address={
-                        text_default_billing_address
-                      }
-                      Button_edit_text={Button_edit_text}
-                    />
+                {(address, i) => {
+                  const [editAddress, setEditAddress] = createSignal(false);
 
-                    {i() <
-                      (showingMoreAddresses() ? addresses().length : 3) - 1 && (
-                      <div class="h-px bg-primary-light"></div>
-                    )}
-                  </>
-                )}
+                  return (
+                    <>
+                      {editAddress() ? (
+                        <EditAddress
+                          action="update"
+                          address={address}
+                          recurData={recurData}
+                          userAccountRecurData={userAccountRecurData}
+                          showForm={setEditAddress}
+                          handleAPIResponse={handleAPIResponse}
+                          setNotification={setNotification}
+                        />
+                      ) : (
+                        <Address
+                          address={address}
+                          userAccountRecurData={userAccountRecurData}
+                          setEditAddress={setEditAddress}
+                          trashCanIcon={trashCanIcon}
+                          handleAPIResponse={handleAPIResponse}
+                        />
+                      )}
+
+                      {i() <
+                        (showMoreAddresses() ? addresses().length : 3) - 1 && (
+                        <div class="h-px bg-primary-light"></div>
+                      )}
+                    </>
+                  );
+                }}
               </For>
             </div>
 
             {addresses().length > 3 && (
               <button
-                onclick={() => setShowingMoreAddresses(!showingMoreAddresses())}
+                onclick={() => setShowMoreAddresses(!showMoreAddresses())}
                 class="horizontal-toggle-button-primary w-full flex justify-center"
               >
                 <span>
-                  {(!showingMoreAddresses()
+                  {(!showMoreAddresses()
                     ? text_more_address
                     : text_hide_more_address
                   ).replaceAll("<number>", addresses().length - 3)}
                 </span>
 
-                {!showingMoreAddresses() ? (
+                {!showMoreAddresses() ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 14 8"

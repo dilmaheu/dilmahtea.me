@@ -1,18 +1,18 @@
 import { Match, Switch, createSignal } from "solid-js";
 
-import DashboardNotification from "@solid/DashboardNotification";
+import SolidNotification from "@solid/SolidNotification";
 
 import handleEmptyFields from "@utils/shared/handleEmptyFields";
 import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
 
 export default function Order({
   order,
-  recurringImages,
+  notificationIcons,
   userAccountRecurData,
 }) {
   order = handleEmptyFields(order);
 
-  const [showingMoreProducts, setShowingMoreProducts] = createSignal(false);
+  const [showMoreProducts, setShowMoreProducts] = createSignal(false);
 
   const {
     Button_track_package,
@@ -79,107 +79,106 @@ export default function Order({
           )}
       </div>
 
-      {order.items
-        .slice(0, showingMoreProducts() ? undefined : 3)
-        .map((item) => {
-          const { sku, quantity } = item,
-            {
-              titles,
-              image,
-              Price,
-              VatPercentage,
-              tea_weight,
-              tea_size,
-              tea_variant,
-              stock_amount,
-            } = window.products[sku];
+      {order.items.slice(0, showMoreProducts() ? undefined : 3).map((item) => {
+        const { sku, quantity } = item,
+          {
+            titles,
+            image,
+            Price,
+            VatPercentage,
+            tea_weight,
+            tea_size,
+            tea_variant,
+            stock_amount,
+          } = window.products[sku];
 
-          let { in_stock_date } = window.products[sku];
+        let { in_stock_date } = window.products[sku];
 
-          const title = JSON.parse(titles)[window.preferredLocale],
-            [_, productPriceIncludingTax] = getPriceIncludingTax({
-              Price,
-              VatPercentage,
-              quantity,
-            });
-
-          const soldOut = stock_amount === 0;
-
-          in_stock_date &&= new Date(in_stock_date).toLocaleString("en-GB", {
-            year: "2-digit",
-            month: "short",
-            day: "numeric",
+        const title = JSON.parse(titles)[window.preferredLocale],
+          [_, productPriceIncludingTax] = getPriceIncludingTax({
+            Price,
+            VatPercentage,
+            quantity,
           });
 
-          return (
-            <div class="flex gap-2.5 sm:gap-[15px]">
-              <div class="order-img">
-                <img
-                  alt=""
-                  src={image}
-                  style="aspect-ratio: 1 / 1; clip-path: url(#orders-blob-curve);"
-                />
-              </div>
+        const soldOut = stock_amount === 0;
 
-              <div class="grow grid gap-[5px] sm:gap-2.5">
-                <div class="grid gap-[5px] sm:gap-2.5">
-                  <div class="order-item-title recoleta line-height-[110%]">
-                    {title}
-                  </div>
+        in_stock_date &&= new Date(in_stock_date).toLocaleString("en-GB", {
+          year: "2-digit",
+          month: "short",
+          day: "numeric",
+        });
 
-                  <div class="order-item-info">
-                    {[tea_size || tea_weight, tea_variant]
-                      .filter(Boolean)
-                      .join(" • ")}
-                  </div>
-                </div>
-
-                <div class="flex flex-wrap gap-[5px] sm:gap-2.5 items-center justify-between">
-                  <div class="order-item-quantity">
-                    {text_quantity}: {quantity}
-                  </div>
-
-                  <button
-                    class="order-item-cart-btn"
-                    disabled={soldOut}
-                    onclick={
-                      !soldOut && (() => window.addProductToCart(sku, quantity))
-                    }
-                  >
-                    {!soldOut ? Button_buy_again_text : Button_sold_out_text}
-                    <span class="text-secondary-light">&#8226;</span>
-                    <span class="recoleta font-bold">
-                      €{productPriceIncludingTax.toFixed(2).replace(".", ",")}
-                    </span>
-                  </button>
-                </div>
-
-                {in_stock_date && (
-                  <DashboardNotification
-                    notification={() => ({
-                      type: "warning",
-                      message: text_in_stock_date.replace(
-                        "<in_stock_date>",
-                        in_stock_date,
-                      ),
-                    })}
-                    recurringImages={recurringImages}
-                  />
-                )}
-              </div>
+        return (
+          <div class="flex gap-2.5 sm:gap-[15px]">
+            <div class="order-img">
+              <img
+                alt=""
+                src={image}
+                style="aspect-ratio: 1 / 1; clip-path: url(#orders-blob-curve);"
+              />
             </div>
-          );
-        })}
+
+            <div class="grow grid gap-[5px] sm:gap-2.5">
+              <div class="grid gap-[5px] sm:gap-2.5">
+                <div class="order-item-title recoleta line-height-[110%]">
+                  {title}
+                </div>
+
+                <div class="order-item-info">
+                  {[tea_size || tea_weight, tea_variant]
+                    .filter(Boolean)
+                    .join(" • ")}
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-[5px] sm:gap-2.5 items-center justify-between">
+                <div class="order-item-quantity">
+                  {text_quantity}: {quantity}
+                </div>
+
+                <button
+                  class="order-item-cart-btn"
+                  disabled={soldOut}
+                  onclick={
+                    !soldOut && (() => window.addProductToCart(sku, quantity))
+                  }
+                >
+                  {!soldOut ? Button_buy_again_text : Button_sold_out_text}
+                  <span class="text-secondary-light">&#8226;</span>
+                  <span class="recoleta font-bold">
+                    €{productPriceIncludingTax.toFixed(2).replace(".", ",")}
+                  </span>
+                </button>
+              </div>
+
+              {in_stock_date && (
+                <SolidNotification
+                  notification={() => ({
+                    type: "warning",
+                    message: text_in_stock_date.replace(
+                      "<in_stock_date>",
+                      in_stock_date,
+                    ),
+                  })}
+                  notificationIcons={notificationIcons}
+                  bottomMargin={true}
+                />
+              )}
+            </div>
+          </div>
+        );
+      })}
 
       {order.items.length > 3 && (
         <div class="flex justify-center w-full">
           <button
             class="show-more-toggle-btn"
             onClick={() => {
-              setShowingMoreProducts(!showingMoreProducts());
+              setShowMoreProducts(!showMoreProducts());
             }}
           >
-            {!showingMoreProducts() ? (
+            {!showMoreProducts() ? (
               <span>
                 {order.items.length === 4
                   ? text_show_more_product_in_this_order_singular

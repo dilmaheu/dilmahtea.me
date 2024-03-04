@@ -8,7 +8,7 @@ const [user, setUser] = createSignal<Record<string, any>>(
 
 createEffect(() => {
   if (window.cookies.isAuthenticated === "true") {
-    fetch("/account/user")
+    fetch("/api/user")
       .then((response) => response.json())
       .then(handleEmptyFields)
       .then(setUser);
