@@ -89,8 +89,8 @@ export default function InfoUnit({
                   user()[property] !== "N/A"
                     ? property
                     : property === "email"
-                    ? "phone"
-                    : "email";
+                      ? "phone"
+                      : "email";
 
                 return {
                   action: "update",

@@ -18,6 +18,9 @@ const checkoutSuccessLink = `/${locale}/${
   checkoutShippingLink = `/${locale}/${
     CMS.get("checkoutShipping", locale).Meta.URL_slug
   }/`,
+  checkoutPaymentLink = `/${locale}/${
+    CMS.get("checkoutPayment", locale).Meta.URL_slug
+  }/`,
   shopLink = `/${locale}/${CMS.get("homeProduct", locale).Meta.URL_slug}/`;
 ---
 
@@ -76,14 +79,20 @@ const checkoutSuccessLink = `/${locale}/${
   }
 </style>
 
-<script define:vars={{ checkoutShippingLink, shopLink }}>
-  const { paymentID } = Object.fromEntries(
+<script define:vars={{ checkoutShippingLink, checkoutPaymentLink, shopLink }}>
+  const { paymentID, redirect_status } = Object.fromEntries(
     new URLSearchParams(location.search),
   );
 
-  if (!paymentID) {
+  if (redirect_status === "failed") {
+    location.href = `${checkoutPaymentLink}?redirect_status=failed`;
+  } else if (
+    redirect_status === "succeeded" &&
+    !location.search.includes("clear=cart")
+  ) {
+    location.href = `${location.href}&clear=cart`;
+  } else if (!paymentID) {
     const cartLength = Object.keys(window.cart).length;
-
     location.href = cartLength === 0 ? shopLink : checkoutShippingLink;
   }
 

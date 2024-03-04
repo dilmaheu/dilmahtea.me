@@ -3,9 +3,11 @@ import type { ENV } from "../utils/types";
 
 import { z } from "zod";
 
-import { initializeLucia } from "../utils/auth";
 import { removeToken, validateToken } from "../utils/token";
 import { getProviderId, createSessionCookie } from "../utils";
+
+import { initializeLucia } from "../utils/auth";
+import fetchExactAccountWorker from "../utils/fetchExactAccountWorker";
 
 const BodySchema = z.object({
   first_name: z.string().trim(),
@@ -62,20 +64,18 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
   const ProviderId = providerId === "email" ? "Email" : "Phone";
 
-  await env.EXACT_ACCOUNT.fetch(env.EXACT_ACCOUNT_WORKER_URL, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "x-cf-secure-worker-token": env.CF_SECURE_WORKER_TOKEN,
-    },
-    body: JSON.stringify({
+  await fetchExactAccountWorker(
+    "/account",
+    "POST",
+    {
       userId: user.userId,
       [ProviderId]: contact,
       FirstName,
       LastName,
       Language,
-    }),
-  }).then((res) => res.json());
+    },
+    env,
+  );
 
   const sessionCookie = await createSessionCookie(auth, user);
 

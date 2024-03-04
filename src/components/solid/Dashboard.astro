@@ -1,19 +1,15 @@
 ---
 import subset from "@utils/shared/subset";
 import Dashboard from "@solid/Dashboard";
-import RecurringImages from "@store/RecurringImages";
+import notificationIcons from "@utils/notificationIcons";
 
-let { page, verificationHref, userAccountAddressURL, userAccountRecurData } =
-  structuredClone(Astro.props);
-
-const { success_notification, warning_notification, error_notification } =
-  RecurringImages;
-
-const recurringImages = {
-  success_notification,
-  warning_notification,
-  error_notification,
-};
+let {
+  page,
+  verificationHref,
+  userAccountAddressURL,
+  recurData,
+  userAccountRecurData,
+} = structuredClone(Astro.props);
 
 page.kindnessCauses.forEach((kindnessCause) => {
   delete kindnessCause.locale;
@@ -29,6 +25,22 @@ page = subset(page, [
   "Block3_title",
 ]);
 
+recurData = subset(recurData, [
+  "text_first_name",
+  "first_name_placeholder",
+  "text_last_name",
+  "last_name_placeholder",
+  "text_country",
+  "country_placeholder",
+  "text_city",
+  "city_placeholder",
+  "text_street",
+  "street_placeholder",
+  "text_postal_code",
+  "postal_code_placeholder",
+  "countries",
+]);
+
 userAccountRecurData = subset(userAccountRecurData, [
   "Button_add_text",
   "Button_edit_text",
@@ -37,13 +49,13 @@ userAccountRecurData = subset(userAccountRecurData, [
   "Button_cancel_text",
   "Button_view_more_address_text_singular",
   "Button_view_more_address_text",
+  "Button_view_all_addresses_text",
   "Button_track_package",
   "Button_track_package_text",
   "Button_buy_again_text",
   "Button_sold_out_text",
   "Button_go_to_my_orders_text",
   "Button_add_new_address_text",
-  "Address_tag",
   "Label_order",
   "text_quantity",
   "text_estimated_delivery",
@@ -55,6 +67,15 @@ userAccountRecurData = subset(userAccountRecurData, [
   "text_hide_more_product_in_this_order_singular",
   "text_show_more_products_in_this_order",
   "text_hide_more_products_in_this_order",
+  "Label_tag_text",
+  "Tag_others_text",
+  "Tag_others_placeholder_text",
+  "Tag_suggestions",
+  "Checkbox_set_default_delivery_address_text",
+  "Checkbox_set_default_billing_address_text",
+  "Notification_added_address",
+  "Notification_updated_address",
+  "Notification_deleted_address",
 ]);
 ---
 
@@ -63,8 +84,9 @@ userAccountRecurData = subset(userAccountRecurData, [
   {page}
   {verificationHref}
   {userAccountAddressURL}
+  {recurData}
   {userAccountRecurData}
-  {recurringImages}
+  {notificationIcons}
 >
   <slot name="plusIcon" slot="plusIcon" />
   <slot name="kindnessCausesHTML" slot="kindnessCausesHTML" />

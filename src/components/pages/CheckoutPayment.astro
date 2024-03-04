@@ -1,21 +1,26 @@
 ---
 import CMS from "@store/CMS";
-import Markdown from "@components/Markdown.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import OrderSummary from "@components/OrderSummary.astro";
+import AdvancedNotification from "@components/AdvancedNotification.astro";
 
 import localizeCMSImage from "@utils/localizeCMSImage";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
-const { page } = Astro.props,
+const { page, recurData } = Astro.props,
   { locale, payment_methods, Accepted_cards_icon } = page,
-  checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
+  userRecurData = CMS.get("userAccountRecurringElement", locale);
+
+const checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
   steps = checkoutFlowData.steps.split("\n"),
-  shortenedSteps = checkoutFlowData.shortened_steps.split("\n"),
-  checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug,
-  checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
+  shortenedSteps = checkoutFlowData.shortened_steps.split("\n");
+
+const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
   checkoutInfo = CMS.get("checkoutInformation", locale),
   checkoutInfoLink = `/${locale}/${checkoutInfo.Meta.URL_slug}/`,
-  userRecurr = CMS.get("userAccountRecurringElement", locale);
+  checkoutKindnessLink = `/${locale}/${
+    CMS.get("checkoutKindness", locale).Meta.URL_slug
+  }/`;
 
 const methods = payment_methods.data?.map(({ attributes }) => attributes),
   accepted_cards_icon = Accepted_cards_icon.data?.map(
@@ -23,10 +28,87 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
   );
 ---
 
-<form class="section-gap grid w-full xl:w-2/3">
+<style lang="scss">
+  .input-field-api {
+    @apply border border-primary rounded-full text-black
+      py-[clamp(8px,calc(0.25vw+6.4px),10px)] px-[clamp(15px,calc(0.625vw+11px),20px)];
+  }
+
+  .input-field-api-focus {
+    @apply ring ring-primary-light outline-none;
+  }
+</style>
+
+<script
+  define:vars={{
+    checkoutInfoLink,
+    checkoutKindnessLink,
+  }}
+>
+  if (Object.keys(window.checkoutInfo).length === 0) {
+    location.href = checkoutInfoLink;
+  }
+
+  window.checkoutKindnessLink = checkoutKindnessLink;
+</script>
+
+<form
+  method="POST"
+  id="payment-info-form"
+  class="section-gap grid w-full xl:w-2/3"
+  action={shouldDisplayExperimentals
+    ? "https://dev.pay.scripts.dilmahtea.me"
+    : "https://pay.scripts.dilmahtea.me"}
+>
+  <DynamicHTML
+    htmlFn={() => {
+      const { origin, pathname } = location;
+
+      const product_desc = Object.keys(window.cart)
+        .map((id) => {
+          const productData = window.cart[id],
+            names = JSON.parse(productData.names),
+            name = names[window.preferredLocale] || names["en"];
+
+          return `${productData.quantity}x ${name}`;
+        })
+        .join(", ");
+
+      const paymentInfo = {
+        ...window.checkoutInfo,
+        product_desc,
+        cart: JSON.stringify(window.cart),
+        tax: window.cart.tax.split(",").join("."),
+        price: window.cart.total.split(",").join("."),
+        payment_type: "ecommerce",
+        locale: window.preferredLocale,
+        origin_url: origin + pathname,
+        success_url: origin + window.checkoutKindnessLink,
+      };
+
+      delete paymentInfo.delivery_address;
+
+      return Object.keys(paymentInfo)
+        .map(
+          (name) =>
+            `<input type="hidden" name="${name}" value='${paymentInfo[name]}' />`,
+        )
+        .join("");
+    }}
+  />
+
+  <div id="payment-error" class="hidden">
+    <AdvancedNotification
+      Title={page.text_payment_error}
+      Type="Error"
+      Bordered={true}
+      Rounded={true}
+    />
+  </div>
+
   <section
     role="list"
-    aria-label={userRecurr.Input_label_email}
+    aria-label={userRecurData.Input_label_email}
     class="tiled-div-pad division-in-gap grid bg-secondary-light rounded-[10px]"
   >
     <div
@@ -35,7 +117,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
       class="division-in-element-gap"
     >
       <div class="input-label text-black">
-        {userRecurr.Input_label_email}
+        {userRecurData.Input_label_email}
       </div>
 
       <div class="division-in-element-gap flex flex-wrap items-center">
@@ -44,16 +126,16 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </div>
 
         <a
-          aria-label={`${userRecurr.Button_change_text} ${userRecurr.Input_label_email}`}
+          aria-label={`${userRecurData.Button_change_text} ${userRecurData.Input_label_email}`}
           href={checkoutInfoLink + "?change=email"}
-          class="button-link-large"
+          class="button-link-primary-large"
         >
-          {userRecurr.Button_change_text}
+          {userRecurData.Button_change_text}
         </a>
       </div>
     </div>
 
-    <div class="w-full h-px bg-primary-light"></div>
+    <div class="w-full h-px bg-primary-lightest"></div>
 
     <div
       role="listitem"
@@ -61,7 +143,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
       class="division-in-element-gap"
     >
       <div class="input-label text-black">
-        {userRecurr.Label_delivery_address}
+        {userRecurData.Label_delivery_address}
       </div>
 
       <div class="division-in-element-gap flex flex-wrap items-center">
@@ -70,16 +152,16 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </div>
 
         <a
-          aria-label={`${userRecurr.Button_change_text} ${userRecurr.Label_delivery_address}`}
+          aria-label={`${userRecurData.Button_change_text} ${userRecurData.Label_delivery_address}`}
           href={checkoutInfoLink + "?change=email"}
-          class="button-link-large"
+          class="button-link-primary-large"
         >
-          {userRecurr.Button_change_text}
+          {userRecurData.Button_change_text}
         </a>
       </div>
     </div>
 
-    <div class="w-full h-px bg-primary-light"></div>
+    <div class="w-full h-px bg-primary-lightest"></div>
 
     <div
       role="listitem"
@@ -87,7 +169,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
       class="division-in-element-gap"
     >
       <div class="input-label text-black">
-        {userRecurr.Label_shipping_method}
+        {userRecurData.Label_shipping_method}
       </div>
 
       <div class="division-in-element-gap flex flex-wrap items-center">
@@ -96,11 +178,11 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </div>
 
         <a
-          aria-label={`${userRecurr.Button_change_text} ${userRecurr.Label_shipping_method}`}
+          aria-label={`${userRecurData.Button_change_text} ${userRecurData.Label_shipping_method}`}
           href={checkoutShippingLink}
-          class="button-link-large"
+          class="button-link-primary-large"
         >
-          {userRecurr.Button_change_text}
+          {userRecurData.Button_change_text}
         </a>
       </div>
     </div>
@@ -115,8 +197,8 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
           <input
             type="radio"
             name="billing_address"
+            value=""
             id="same-as-shipping"
-            value={`method`}
             checked
           />
 
@@ -131,8 +213,8 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
           <input
             type="radio"
             name="billing_address"
+            value=""
             id="different-than-shipping"
-            value={`method`}
           />
 
           <div class="text-b5 text-black-light flex">
@@ -143,94 +225,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     </div>
 
     <div id="shipping-address" class="division-gap grid hidden">
-      <!-- <div class="division-in-gap grid">
-        <div class="input-label">{userRecurr.Label_tag_text}</div>
-
-        <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
-          {
-            userRecurr.Address_tag.map(({ Title }, i) => (
-              <div class:list={[i > 2 && "more-address hidden"]}>
-                <input
-                  type="radio"
-                  name="shipping_address"
-                  id={Title.toLowerCase()}
-                  value={Title.toLowerCase()}
-                  class="peer hidden"
-                />
-
-                <label for={Title.toLowerCase()} class="radio-button-default">
-                  {Title}
-                </label>
-              </div>
-            ))
-          }
-
-          <div>
-            <input
-              type="radio"
-              name="shipping_address"
-              id={`address-tag`}
-              value={`value`}
-              class="peer hidden"
-            />
-
-            <label for={`address-tag`} class="radio-button-extended">
-              Add +
-            </label>
-          </div>
-
-          <div
-            id="address-toggle-button"
-            class="flex items-center gap-1 text-primary font-bold cursor-pointer"
-          >
-            <svg
-              id="address-arrow-left"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 8 14"
-              class="hidden w-3 h-3 fill-primary"
-            >
-              <path
-                d="M7.7,13.7a1.1,1.1,0,0,0,.3-.8,1.1,1.1,0,0,0-.3-.7L2.5,7,7.7,1.8A1.1,1.1,0,0,0,8,1,1.1,1.1,0,0,0,7.7.3,1.1,1.1,0,0,0,7,0a1.1,1.1,0,0,0-.8.3L.3,6.2A1.1,1.1,0,0,0,0,7a.9.9,0,0,0,.3.7l5.9,6A1.1,1.1,0,0,0,7,14a1.1,1.1,0,0,0,.7-.3Z"
-              ></path>
-            </svg>
-
-            <div>
-              <div id="hide-address-text" class="hidden">
-                {userRecurr.text_hide_more_address.replace("<number>", "3")}
-              </div>
-              <div id="show-address-text">
-                {userRecurr.text_more_address.replace("<number>", "3")}
-              </div>
-            </div>
-
-            <svg
-              id="address-arrow-right"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 8 14"
-              class="w-3 h-3 fill-primary"
-            >
-              <path
-                d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"
-              ></path>
-            </svg>
-          </div>
-        </div>
-
-        <div id="tag-input" class="hidden">
-          <div class="form-grid">
-            <label class="relative">
-              <input
-                type="text"
-                name="new_tag"
-                placeholder={`Enter your tag`}
-                class="pr-[40px]"
-              />
-
-              <span class="tag-input-close-button"> &#10005;</span>
-            </label>
-          </div>
-        </div>
-      </div> -->
+      <!-- address tags goes here -->
 
       <div
         role="form"
@@ -238,65 +233,71 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         class="form-grid"
       >
         <label>
-          <span>{userRecurr.Input_label_first_name}</span>
+          <span>{recurData.text_first_name}</span>
 
           <input
             type="text"
             name="billing_first_name"
-            placeholder={userRecurr.Input_placeholder_first_name}
+            value=""
+            placeholder={recurData.first_name_placeholder}
+            required
           />
         </label>
 
         <label>
-          <span>{userRecurr.Input_label_last_name}</span>
+          <span>{recurData.text_last_name}</span>
 
           <input
             type="text"
             name="billing_last_name"
-            placeholder={userRecurr.Input_placeholder_last_name}
+            placeholder={recurData.last_name_placeholder}
+            required
           />
         </label>
 
         <label>
-          <span>{userRecurr.Input_label_street}</span>
+          <span>{recurData.text_street}</span>
 
           <input
             type="text"
             name="billing_street"
-            placeholder={userRecurr.Input_placeholder_street}
+            placeholder={recurData.street_placeholder}
+            required
           />
         </label>
 
         <label>
-          <span>{userRecurr.Input_label_city}</span>
+          <span>{recurData.text_city}</span>
 
           <input
             type="text"
             name="billing_city"
-            placeholder={userRecurr.Input_placeholder_city}
+            placeholder={recurData.city_placeholder}
+            required
           />
         </label>
 
         <label>
-          <span>{userRecurr.Input_label_postal_code}</span>
+          <span>{recurData.text_postal_code}</span>
 
           <input
-            type="number"
+            type="text"
             name="billing_postal_code"
-            placeholder={userRecurr.Input_placeholder_postal_code}
+            placeholder={recurData.postal_code_placeholder}
+            required
           />
         </label>
 
         <label>
-          <span>{userRecurr.Input_label_country}</span>
+          <span>{recurData.text_country}</span>
 
-          <select id="country-select" name="billing_country">
-            <option value="" selected disabled-large hidden>
-              {userRecurr.Input_placeholder_country}
+          <select id="country-select" name="billing_country" required>
+            <option value="" selected disabled hidden>
+              {recurData.country_placeholder}
             </option>
 
             {
-              checkoutInfo.countries.data.map(
+              recurData.countries.data.map(
                 ({ attributes: { name, localizations } }) => (
                   <option
                     value={localizations?.data[0]?.attributes?.name || name}
@@ -326,7 +327,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             <div class:list={[country.length > 0 && "hidden"]}>
               <input
                 type="radio"
-                name="payment_method"
+                name="payment_method_name"
                 id={method}
                 value={method}
                 data-country={country}
@@ -376,95 +377,76 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         </div>
       </div>
 
-      <div role="form" class="form-grid">
-        <label>
-          <span>{page.Card_label_name}</span>
+      <div>
+        <div role="form" class="form-grid" id="card-info">
+          <div class="grid division-in-element-gap">
+            <div class="input-label">{page.Card_label_number}</div>
 
-          <input
-            type="text"
-            name="card_name"
-            placeholder={page.Card_placeholder_name}
-          />
-        </label>
+            <div id="card-number"></div>
+          </div>
 
-        <label>
-          <span>{page.Card_label_number}</span>
+          <div class="hidden sm:block h-0 select-none"></div>
 
-          <input
-            type="number"
-            name="card_number"
-            placeholder={page.Card_placeholder_number}
-          />
-        </label>
+          <div class="grid division-in-element-gap">
+            <div class="input-label">{page.Card_label_date}</div>
 
-        <label>
-          <span>{page.Card_label_date}</span>
+            <div id="card-expiry"></div>
+          </div>
 
-          <input
-            type="text"
-            name="card_exp_date"
-            placeholder={page.Card_placeholder_date}
-          />
-        </label>
+          <div class="grid division-in-element-gap">
+            <div class="input-label">{page.Card_label_cvv}</div>
 
-        <label>
-          <span>{page.Card_label_cvv}</span>
+            <div id="card-cvc"></div>
+          </div>
 
-          <input
-            type="number"
-            name="card_cvv"
-            placeholder={page.Card_placeholder_cvv}
-          />
-        </label>
+          <input type="hidden" id="stripeToken" name="stripeToken" />
+
+          <div class="text-b5 text-error hidden" id="card-error">
+            {page.text_card_error_message}
+          </div>
+        </div>
+
+        <input
+          type="hidden"
+          id="stripe-publishable-key"
+          data-key={shouldDisplayExperimentals
+            ? import.meta.env.DEV_STRIPE_PUBLISHABLE_KEY
+            : import.meta.env.PROD_STRIPE_PUBLISHABLE_KEY}
+          disabled
+        />
       </div>
     </div>
 
     <div data-name="ideal-info" class="payment-info division-gap grid !hidden">
       <div role="form" class="form-grid">
-        <label>
-          <span>{page.Ideal_label_select_bank}</span>
+        <div class="grid division-in-element-gap">
+          <div class="input-label">{page.Ideal_label_select_bank}</div>
 
-          <input
-            type="number"
-            name="card_cvv"
-            placeholder={page.Ideal_placeholder_select_bank}
-          />
-        </label>
-      </div>
-    </div>
-
-    <div
-      data-name="paypal-klarna-bancontact-sofort-info"
-      class="payment-info division-gap grid !hidden"
-    >
-      <div role="form" class="form-grid">
-        <label>
-          <span>{page.Label_name}</span>
-
-          <input
-            type="text"
-            name="payment_name"
-            placeholder={page.Placeholder_name}
-          />
-        </label>
+          <div id="ideal-bank"></div>
+        </div>
       </div>
     </div>
 
     <div class="checkout-button-container">
-      <a href={checkoutShippingLink} class="button-link-large">
+      <a href={checkoutShippingLink} class="button-link-primary-large">
         <span class="sm:hidden">
           {
             `${
-              userRecurr.Button_return_to_text
+              userRecurData.Button_return_to_text
             } ${shortenedSteps[1]?.toLowerCase()}`
           }
         </span>
         <span class="hidden sm:block">
-          {`${userRecurr.Button_return_to_text} ${steps[1]?.toLowerCase()}`}
+          {`${userRecurData.Button_return_to_text} ${steps[1]?.toLowerCase()}`}
         </span>
       </a>
 
-      <button id="submit-btn" class="w-full sm:w-1/3 button-disabled-large">
+      <button
+        id="submit-btn"
+        type="submit"
+        class="w-full sm:w-1/3 button-disabled-large"
+        disabled
+      >
         <span>
           {page.Button_text_pay_with}
           <span class="payment-type"></span>
@@ -482,7 +464,11 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
   const id = document.getElementById.bind(document),
     queryAll = document.querySelectorAll.bind(document),
     addClass = (element, className) => element.classList.add(className),
-    removeClass = (element, className) => element.classList.remove(className);
+    removeClass = (element, className) => element.classList.remove(className),
+    getInputValue = (parent, name) =>
+      parent.querySelector(`input[name=${name}]`).value,
+    addChangeListener = (element, functionName) =>
+      element.addEventListener("change", functionName);
 
   const sameAsShipping = id("same-as-shipping"),
     differentThanShipping = id("different-than-shipping"),
@@ -491,37 +477,27 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     paymentCardInputSelector = queryAll(".payment-card-input-selector"),
     paymentInfoElements = queryAll(".payment-info"),
     submitBtn = id("submit-btn"),
-    submitBtnPaymentType = submitBtn.querySelector(".payment-type");
+    submitBtnPaymentType = submitBtn.querySelector(".payment-type"),
+    paymentError = id("payment-error");
 
-  const addOrRemoveRequired = (elements, condition) =>
-    elements.forEach((element) =>
-      element[condition ? "setAttribute" : "removeAttribute"](
-        "required",
-        "true",
-      ),
-    );
+  const { redirect_status } = Object.fromEntries(
+    new URLSearchParams(location.search),
+  );
+
+  redirect_status === "failed" && paymentError.classList.remove("hidden");
+
+  const toggleDisabled = (elements, condition) =>
+    elements.forEach((element) => (element.disabled = !!condition));
 
   const selectTextAndNumberInputs = (parent) =>
-    parent.querySelectorAll("input[type='text'], input[type='number']");
-
-  sameAsShipping.addEventListener("change", toggleShippingAddress);
-  differentThanShipping.addEventListener("change", toggleShippingAddress);
-  countrySelect.addEventListener("change", () => {
-    togglePaymentCardVisibility();
-    hideAllPaymentInfo();
-  });
-  document.addEventListener("change", handlePaymentCardInputChange);
+    parent.querySelectorAll("input[type='text'], input[type='number'], select");
 
   function toggleShippingAddress() {
     const isSameShipping = sameAsShipping.checked;
+
     isSameShipping
       ? addClass(shippingAddress, "hidden")
       : removeClass(shippingAddress, "hidden");
-
-    addOrRemoveRequired(
-      selectTextAndNumberInputs(shippingAddress),
-      !isSameShipping,
-    );
   }
 
   function hideAllPaymentInfo() {
@@ -532,6 +508,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     submitBtnPaymentType.innerHTML = "";
     removeClass(submitBtn, "button-primary-large");
     addClass(submitBtn, "button-disabled-large");
+    submitBtn.setAttribute("disabled", true);
   }
 
   function togglePaymentCardVisibility() {
@@ -549,12 +526,6 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         ? removeClass(cardSelector.parentElement, "hidden")
         : addClass(cardSelector.parentElement, "hidden");
     });
-
-    paymentInfoElements.forEach((paymentInfo) => {
-      const paymentInfoInputs = selectTextAndNumberInputs(paymentInfo);
-
-      paymentInfoInputs.forEach((input) => input.removeAttribute("required"));
-    });
   }
 
   function handlePaymentCardInputChange(event) {
@@ -564,6 +535,9 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     submitBtnPaymentType.innerHTML = ` ${inputValue}`;
     removeClass(submitBtn, "button-disabled-large");
     addClass(submitBtn, "button-primary-large");
+    submitBtn.removeAttribute("disabled", true);
+
+    redirect_status === "failed" && paymentError.classList.add("hidden");
 
     paymentInfoElements.forEach((paymentInfo) => {
       const includesValue = paymentInfo
@@ -571,14 +545,187 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         .toLowerCase()
         .includes(inputValue);
 
-      addOrRemoveRequired(
-        selectTextAndNumberInputs(paymentInfo),
-        includesValue,
-      );
+      toggleDisabled(selectTextAndNumberInputs(paymentInfo), !includesValue);
 
       includesValue
         ? removeClass(paymentInfo, "!hidden")
         : addClass(paymentInfo, "!hidden");
+
+      const paymentInputName =
+        includesValue && paymentInfo.querySelector("input[name*=name]");
+
+      if (paymentInputName && paymentInputName.value !== null) {
+        const fullName = `${getInputValue(
+          shippingAddress,
+          "billing_first_name",
+        )} ${getInputValue(shippingAddress, "billing_last_name")}`;
+
+        paymentInputName.setAttribute("value", fullName?.trim());
+      }
     });
+  }
+
+  const contactInfo = JSON.parse(localStorage.getItem("checkout-info"));
+
+  const setInputValue = (name, setValue) =>
+    shippingAddress
+      ?.querySelector(`input[name="${name}"]`)
+      ?.setAttribute("value", setValue);
+
+  const setBillingInfo = () => {
+    const isSameShipping = sameAsShipping.checked;
+    ["first_name", "last_name", "street", "city", "postal_code"].forEach(
+      (field) =>
+        setInputValue(
+          `billing_${field}`,
+          isSameShipping ? contactInfo[field] : "",
+        ),
+    );
+
+    countrySelect.querySelectorAll("option").forEach((option) => {
+      const isOptionSame =
+        option.value.toLowerCase() === contactInfo.country.toLowerCase();
+
+      isOptionSame &&
+        option[isSameShipping ? "setAttribute" : "removeAttribute"](
+          "selected",
+          true,
+        );
+    });
+
+    togglePaymentCardVisibility();
+    hideAllPaymentInfo();
+  };
+
+  setBillingInfo();
+  addChangeListener(sameAsShipping, () => {
+    toggleShippingAddress();
+    setBillingInfo();
+  });
+  addChangeListener(differentThanShipping, () => {
+    toggleShippingAddress();
+    setBillingInfo();
+  });
+  addChangeListener(countrySelect, () => {
+    togglePaymentCardVisibility();
+    hideAllPaymentInfo();
+  });
+  document.addEventListener("change", handlePaymentCardInputChange);
+</script>
+
+{/* for stripe payments */}
+<script>
+  import { loadStripe } from "@stripe/stripe-js";
+
+  // Check if the element with ID "payment-info-form" exists before executing the scripts
+  if (document.getElementById("payment-info-form")) {
+    const id = document.getElementById.bind(document),
+      form = id("payment-info-form"),
+      card = id("card"),
+      ideal = id("ideal"),
+      cardError = id("card-error"),
+      stripePublishableKey = id("stripe-publishable-key");
+
+    const STRIPE_PUBLISHABLE_KEY =
+      stripePublishableKey?.getAttribute("data-key");
+
+    const stripe = await loadStripe(STRIPE_PUBLISHABLE_KEY),
+      elements = stripe.elements({ locale: window.preferredLocale as any });
+
+    const elementStyles = {
+      style: {
+        base: {
+          fontSize: `${Math.min(
+            Math.max(16, 0.25 * window.innerWidth + 14.4),
+            18,
+          )}px`, //text-b5
+        },
+      },
+      classes: {
+        base: "input-field-api",
+        focus: "input-field-api-focus",
+      },
+    };
+
+    // Variables for Stripe Elements
+    let cardNumberElement = null;
+    let cardExpiryElement = null;
+    let cardCvcElement = null;
+    let idealBankElement = null;
+
+    document.addEventListener("change", () => {
+      const isCard = card.checked,
+        isIdeal = ideal.checked;
+
+      // Clear existing Stripe Elements
+      clearStripeElements();
+
+      if (isCard) {
+        // Create Stripe Elements for card number, expiry, and CVC if they don't exist
+        if (!cardNumberElement) {
+          cardNumberElement = elements.create("cardNumber", elementStyles);
+          cardNumberElement.mount("#card-number");
+        }
+        if (!cardExpiryElement) {
+          cardExpiryElement = elements.create("cardExpiry", elementStyles);
+          cardExpiryElement.mount("#card-expiry");
+        }
+        if (!cardCvcElement) {
+          cardCvcElement = elements.create("cardCvc", elementStyles);
+          cardCvcElement.mount("#card-cvc");
+        }
+      } else if (isIdeal) {
+        // Create idealBank Element if it doesn't exist
+        if (!idealBankElement) {
+          idealBankElement = elements.create("idealBank", elementStyles);
+          idealBankElement.mount("#ideal-bank");
+        }
+      }
+
+      if (isCard) {
+        // Attach form submission event listener for card payments
+        form.addEventListener("submit", onSubmitCard);
+      } else {
+        form.removeEventListener("submit", onSubmitCard);
+      }
+    });
+
+    function onSubmitCard(event) {
+      event.preventDefault();
+      createToken(cardNumberElement);
+    }
+
+    async function createToken(element) {
+      try {
+        const { token, error } = await stripe.createToken(element);
+        if (error) {
+          cardError.classList.remove("hidden");
+        } else {
+          id("stripeToken").value = token.id;
+          form.submit();
+        }
+      } catch (err) {
+        cardError.classList.remove("hidden");
+      }
+    }
+
+    function clearStripeElements() {
+      if (cardNumberElement) {
+        cardNumberElement.destroy();
+        cardNumberElement = null;
+      }
+      if (cardExpiryElement) {
+        cardExpiryElement.destroy();
+        cardExpiryElement = null;
+      }
+      if (cardCvcElement) {
+        cardCvcElement.destroy();
+        cardCvcElement = null;
+      }
+      if (idealBankElement) {
+        idealBankElement.destroy();
+        idealBankElement = null;
+      }
+    }
   }
 </script>

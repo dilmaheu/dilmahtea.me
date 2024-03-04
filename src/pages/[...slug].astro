@@ -154,8 +154,8 @@ export async function getStaticPaths() {
         fullSlug = slug === "/"
           ? locale?.substring(0, 2)
           : locale
-          ? locale?.substring(0, 2) + "/" + slug
-          : slug,
+            ? locale?.substring(0, 2) + "/" + slug
+            : slug,
       } = attributes;
 
       const props = getProps ? getProps(page, attributes) : {};
@@ -392,7 +392,7 @@ export async function getStaticPaths() {
     ...checkoutKindnessPages,
     ...checkoutInformationPages,
     ...checkoutShippingPages,
-    // ...checkoutPaymentPages,
+    ...checkoutPaymentPages,
     ...checkoutSuccessPages,
     ...userAccountPages,
     ...userAccountDashboardPages,
@@ -439,10 +439,10 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
         page.type === "cart"
           ? Cart
           : page.type === "checkoutSuccess"
-          ? CheckoutSuccess
-          : page.type.startsWith("checkout")
-          ? CheckoutLayout
-          : PageLayout;
+            ? CheckoutSuccess
+            : page.type.startsWith("checkout")
+              ? CheckoutLayout
+              : PageLayout;
 
       const Pages = {
         plan: CrowdfundingForm,
