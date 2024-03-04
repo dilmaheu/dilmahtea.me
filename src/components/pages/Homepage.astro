@@ -22,7 +22,7 @@ posts.sort((a, b) => {
   return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 });
 
-const randPost = posts[(Math.random() * posts.length) | 0],
+const randomPost = posts[(Math.random() * posts.length) | 0],
   estates = page.Estates.data.map(({ attributes }) => attributes);
 
 const latestProducts = Products.get("all")
@@ -117,21 +117,7 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
               </h2>
             )}
 
-            <PostItem
-              ariaLabel={ariaLabelRecurData.Highlighted_post_text}
-              postImgURL={
-                STRAPI_URL + randPost.Intro_blob?.data?.attributes.url
-              }
-              altText={randPost.Intro_blob?.data?.attributes.alternativeText}
-              locale={page.locale}
-              authors={randPost.authors}
-              createdAt={randPost.createdAt}
-              postURL={`/` + randPost.Meta.URL_slug}
-              postTitle={randPost.Title}
-              introText={randPost.Intro_text}
-              isEven={true}
-              clipPathValue={"#post-img-curve"}
-            />
+            <PostItem posts={randomPost} locale={page.locale} />
           </div>
         </section>
       )
