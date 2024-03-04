@@ -5,14 +5,16 @@ import { Picture } from "astro-imagetools/components";
 
 import Banner from "@components/Banner.astro";
 import Markdown from "@components/Markdown.astro";
+import AuthorInfo from "@components/AuthorInfo.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ProductCards from "@components/ProductCards.astro";
 import KindnessImpact from "@components/KindnessImpact.astro";
 import ProductCategories from "@components/ProductCategories.astro";
+import PostItem from "@components/PostItem.astro";
 
 import SecondaryPageLayout from "@layouts/SecondaryPageLayout.astro";
 
-const { page, ariaLabelRecurData } = Astro.props,
+const { page, ariaLabelRecurData, noAuthorImg } = Astro.props,
   { locale, posts } = page,
   { STRAPI_URL } = import.meta.env;
 
@@ -115,68 +117,21 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
               </h2>
             )}
 
-            <div
-              aria-label={ariaLabelRecurData.Highlighted_post_text}
-              class="link-section grid sm:grid-cols-2 items-center division-gap"
-            >
-              <div class="post-img-curve-container">
-                <Picture
-                  layout="fill"
-                  src={STRAPI_URL + randPost.Intro_blob?.data?.attributes.url}
-                  alt={randPost.Intro_blob?.data?.attributes.alternativeText}
-                  sizes={[
-                    "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
-                    "(min-width: 640px) min(600px, calc(45vw - 20px))",
-                    "90vw",
-                  ].join(", ")}
-                  attributes={{
-                    picture: { style: "clip-path: url(#post-img-curve);" },
-                  }}
-                />
-              </div>
-
-              {/* Text content */}
-              <div class="grid division-in-gap">
-                {randPost.authors && (
-                  <div class="quick-info-black-light">
-                    <div
-                      role="presentation"
-                      aria-label={randPost.authors.data.map(
-                        ({ attributes }, i) =>
-                          ariaLabelRecurData.Wrote_by_text +
-                          (i > 0 ? ", " : " ") +
-                          attributes.givenName,
-                      )}
-                      class="author-name"
-                    >
-                      {randPost.authors.data.map(({ attributes }, index) => (
-                        <span>
-                          {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div class="quick-info-item">
-                      {new Date(randPost.createdAt).toLocaleString("en-US", {
-                        day: "numeric",
-                        month: "long",
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                <h2 class="heading-secondary text-primary">
-                  <a
-                    class="main-link"
-                    href={`/` + randPost.Meta.URL_slug}
-                    set:text={randPost.Title}
-                  />
-                </h2>
-                <div class="post-intro intro-text">
-                  <Markdown>{randPost.Intro_text}</Markdown>
-                </div>
-              </div>
-            </div>
+            <PostItem
+              ariaLabel={ariaLabelRecurData.Highlighted_post_text}
+              postImgURL={
+                STRAPI_URL + randPost.Intro_blob?.data?.attributes.url
+              }
+              altText={randPost.Intro_blob?.data?.attributes.alternativeText}
+              locale={page.locale}
+              authors={randPost.authors}
+              createdAt={randPost.createdAt}
+              postURL={`/` + randPost.Meta.URL_slug}
+              postTitle={randPost.Title}
+              introText={randPost.Intro_text}
+              isEven={true}
+              clipPathValue={"#post-img-curve"}
+            />
           </div>
         </section>
       )
