@@ -104,7 +104,7 @@ export default function SavedAddresses({
   });
 
   return (
-    <div class="dashboard-sec">
+    <div class="tiled-div">
       <div class="grid division-gap">
         <SolidNotification
           notification={notification}

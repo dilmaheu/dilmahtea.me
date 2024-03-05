@@ -128,11 +128,11 @@ export default function UserInfo({
 
   return (
     <>
-      <h2 id="personal-information" class="dashboard-sec-title recoleta">
+      <h2 id="personal-information" class="tiled-title text-h2">
         {Title.replace("<username>", user().display_name)}
       </h2>
 
-      <div class="dashboard-sec">
+      <div class="tiled-div">
         <div class="grid division-gap">
           <div class="grid division-in-gap">
             <SolidNotification
@@ -274,7 +274,7 @@ export default function UserInfo({
       </div>
 
       {/* {Social_media && (
-        <div class="dashboard-sec">
+        <div class="tiled-div">
           <div>
             <div class="recoleta text-2xl leading-[110%] text-black">
               {Social_media_title}

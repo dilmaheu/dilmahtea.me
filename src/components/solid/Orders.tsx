@@ -32,7 +32,7 @@ export default function Orders({
       ) : (isOrdersPage ? Object.keys(orders()) : orders()).length === 0 ? (
         noOrdersHTML
       ) : (
-        <div class="dashboard-sec grid gap-[25px] sm:gap-[30px]">
+        <div class="tiled-div grid gap-[25px] sm:gap-[30px]">
           {Array.isArray(orders()) ? (
             <>
               {orders().length > 3 && (

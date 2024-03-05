@@ -29,7 +29,7 @@ export default function DefaultAddress({
                 },
               });
             }}
-            class="button-link-primary-big"
+            class="button-link-primary-large"
           >
             {Button_add_text}
           </button>
