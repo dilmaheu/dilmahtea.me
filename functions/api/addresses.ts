@@ -238,41 +238,43 @@ export const onRequestPut = getAPIHandler(
 
     const providedAddressHash = objectHash(providedAddress);
 
-    if (addressHashes.includes(providedAddressHash))
-      return Response.json(
-        { success: false, message: "Duplicate address provided" },
-        { status: 400 },
-      );
+    let hasNothingToUpdate = true;
 
-    const existingAddress = addresses.find((address) => address.id === id);
+    if (!addressHashes.includes(providedAddressHash)) {
+      hasNothingToUpdate = false;
 
-    if (!existingAddress)
-      return Response.json(
-        { success: false, message: "Address does not exist" },
-        { status: 400 },
-      );
+      const existingAddress = addresses.find((address) => address.id === id);
 
-    if (tag !== existingAddress.tag) {
-      const usedTags = addresses.map((address) => address.tag);
-
-      if (usedTags.includes(tag))
+      if (!existingAddress)
         return Response.json(
-          { success: false, message: "Address tag has been used already" },
+          { success: false, message: "Address does not exist" },
           { status: 400 },
         );
+
+      if (tag !== existingAddress.tag) {
+        const usedTags = addresses.map((address) => address.tag);
+
+        if (usedTags.includes(tag))
+          return Response.json(
+            { success: false, message: "Address tag has been used already" },
+            { status: 400 },
+          );
+      }
+
+      await env.USERS.prepare(
+        "UPDATE addresses SET tag = ?, first_name = ?, last_name = ?, street = ?, city = ?, postal_code = ?, country = ? WHERE id = ?",
+      )
+        .bind(
+          tag,
+          ...Object.values(subset(validatedData, addressDetailsKeys)),
+          id,
+        )
+        .run();
     }
 
-    await env.USERS.prepare(
-      "UPDATE addresses SET tag = ?, first_name = ?, last_name = ?, street = ?, city = ?, postal_code = ?, country = ? WHERE id = ?",
-    )
-      .bind(
-        tag,
-        ...Object.values(subset(validatedData, addressDetailsKeys)),
-        id,
-      )
-      .run();
-
     if (set_as_default_delivery_address && id !== default_delivery_address) {
+      hasNothingToUpdate = false;
+
       await env.USERS.prepare(
         "UPDATE user SET default_delivery_address = ? WHERE exact_account_guid = ?",
       )
@@ -281,12 +283,20 @@ export const onRequestPut = getAPIHandler(
     }
 
     if (set_as_default_billing_address && id !== default_billing_address) {
+      hasNothingToUpdate = false;
+
       await env.USERS.prepare(
         "UPDATE user SET default_billing_address = ? WHERE exact_account_guid = ?",
       )
         .bind(id, exact_account_guid)
         .run();
     }
+
+    if (hasNothingToUpdate)
+      return Response.json(
+        { success: false, message: "Nothing to update" },
+        { status: 400 },
+      );
 
     return Response.json({ success: true });
   },
