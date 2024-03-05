@@ -93,12 +93,12 @@ export default function CheckoutInformationForm({
           addressData.country === selectedAddress.country &&
           addressData.postal_code === selectedAddress.postal_code
         ) {
-          location.href = form.action;
+          form.submit();
 
           return;
         }
       } else if (window.cookies.isAuthenticated !== "true") {
-        location.href = form.action;
+        form.submit();
       }
 
       fetch("/api/addresses", {
@@ -110,7 +110,7 @@ export default function CheckoutInformationForm({
       }).then((response) =>
         handleAPIResponseBase(response, notification, setNotification, {
           onSuccess: () => {
-            location.href = form.action;
+            form.submit();
           },
         }),
       );
