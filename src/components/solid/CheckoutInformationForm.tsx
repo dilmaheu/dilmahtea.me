@@ -8,6 +8,7 @@ import AddressTags from "@solid/AddressTags";
 import EditAddressForm from "@solid/EditAddressForm";
 import SolidNotification from "@solid/SolidNotification";
 
+import addressDetailsKeys from "@utils/shared/addressDetailsKeys";
 import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 
 export default function CheckoutInformationForm({
@@ -75,16 +76,22 @@ export default function CheckoutInformationForm({
           ({ tag }) => tag === selectedTag(),
         );
 
+        const addressData = {} as Record<string, string>;
+
+        addressDetailsKeys.forEach((key) => {
+          addressData[key] = formData[isBilling ? `billing_${key}` : key];
+        });
+
         if (selectedAddress) {
-          formData.id = selectedAddress.id;
+          addressData.id = selectedAddress.id;
 
           if (
-            formData.first_name === selectedAddress.first_name &&
-            formData.last_name === selectedAddress.last_name &&
-            formData.street === selectedAddress.street &&
-            formData.city === selectedAddress.city &&
-            formData.country === selectedAddress.country &&
-            formData.postal_code === selectedAddress.postal_code
+            addressData.first_name === selectedAddress.first_name &&
+            addressData.last_name === selectedAddress.last_name &&
+            addressData.street === selectedAddress.street &&
+            addressData.city === selectedAddress.city &&
+            addressData.country === selectedAddress.country &&
+            addressData.postal_code === selectedAddress.postal_code
           ) {
             location.href = checkoutInfoForm.action;
 
@@ -99,7 +106,7 @@ export default function CheckoutInformationForm({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(addressData),
         }).then((response) =>
           handleAPIResponseBase(response, notification, setNotification, {
             onSuccess: () => {

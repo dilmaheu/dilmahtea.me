@@ -1,13 +1,15 @@
 import type { Session } from "lucia";
 import type { Address } from "@solid/Address";
 
+import type { ENV } from "../utils/types";
+
 import { z } from "zod";
 import objectHash from "object-hash";
 
 import subset from "@utils/shared/subset";
+import addressDetailsKeys from "@utils/shared/addressDetailsKeys";
 
 import { initializeLucia } from "../utils/auth";
-import type { ENV } from "functions/utils/types";
 
 const EditAddressBodySchema = z.object({
   first_name: z.string(),
@@ -42,15 +44,6 @@ declare type HandlerBody = (
   session: Session,
   bodyData: any,
 ) => Promise<Response>;
-
-const addressDetailsKeys = [
-  "first_name",
-  "last_name",
-  "street",
-  "city",
-  "postal_code",
-  "country",
-];
 
 function getAPIHandler(handlerBody: HandlerBody) {
   const handler: PagesFunction<ENV> = async (context) => {
