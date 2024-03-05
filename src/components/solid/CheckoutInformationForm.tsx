@@ -53,9 +53,9 @@ export default function CheckoutInformationForm({
 
       localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
 
-      const selectedAddress =
-        Array.isArray(addresses()) &&
-        addresses().find(({ tag }) => tag === selectedTag());
+      const selectedAddress = addresses()?.find(
+        ({ tag }) => tag === selectedTag(),
+      );
 
       if (selectedAddress) {
         formData.id = selectedAddress.id;

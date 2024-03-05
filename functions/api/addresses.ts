@@ -59,25 +59,27 @@ function getAPIHandler(handlerBody: HandlerBody) {
     const auth = initializeLucia(env.USERS),
       authRequest = auth.handleRequest(request);
 
+    const isGET = request.method === "GET";
+
     const session: Session = await authRequest.validate();
 
     if (!session)
       return Response.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 },
+        isGET ? [] : { success: false, error: "Unauthorized" },
+        { status: isGET ? 200 : 401 },
       );
 
-    const bodyData = request.method === "GET" ? null : await request.json();
+    const bodyData = isGET ? null : await request.json();
 
     try {
       const Schema =
         request.method === "POST"
           ? AddAddressBodySchema
           : request.method === "PUT"
-          ? UpdateAddressBodySchema
-          : request.method === "DELETE"
-          ? DeleteAddressBodySchema
-          : null;
+            ? UpdateAddressBodySchema
+            : request.method === "DELETE"
+              ? DeleteAddressBodySchema
+              : null;
 
       var validatedData = Schema?.parse(bodyData) || null;
     } catch (error) {
