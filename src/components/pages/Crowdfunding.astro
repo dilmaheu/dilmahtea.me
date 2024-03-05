@@ -1,49 +1,20 @@
 ---
-import { Picture } from "astro-imagetools/components";
-
-import Hero from "@components/Hero.astro";
 import Banner from "@components/Banner.astro";
 import Markdown from "@components/Markdown.astro";
+import HeroContent from "@components/HeroContent.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import CrowdfundingProgress from "@components/CrowdfundingProgress.astro";
 
 import RecurringImages from "@store/RecurringImages";
 import localizeCMSImage from "@utils/localizeCMSImage";
 
-const { tick, white_cup, green_love_ribbon } = RecurringImages;
+const { tick } = RecurringImages;
 
-const { page, ariaLabelRecurData } = Astro.props,
-  { STRAPI_URL } = import.meta.env;
-
-// fetch crowdfunding stats from Cloudflare Worker
-const { supportersCount, totalAmountRaised } = await fetch(
-  "https://crowdfunding-stats.scripts.dilmahtea.me",
-).then((res) => res.json());
-
-// calculate crowdfunding progress percent
-const goal = 100000,
-  initialProgress = `0%`,
-  animationDuration = 1000,
-  progress = totalAmountRaised / goal,
-  finalProgress = `${progress * 100}%`;
+const { page, ariaLabelRecurData } = Astro.props;
 ---
 
 <style lang="scss" define:vars={{ tick: `url("${tick.src}")` }}>
   @use "src/styles/poly-fluid" as *;
-
-  .hero-text {
-    padding-top: clamp(14px, 1.5vw, 20px);
-    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.25rem);
-  }
-
-  .crowdfunding-info-text {
-    font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1.5rem);
-
-    &,
-    a {
-      @apply text-secondary;
-    }
-  }
 
   .crowdfunding-plan-card {
     @apply flex flex-col bg-secondary-light w-full max-w-[400px] mx-auto sm:m-0
@@ -64,7 +35,11 @@ const goal = 100000,
       &::before {
         background-image: var(--tick);
 
-        @apply content-[""] inline-block w-4 h-4 mr-2 align-baseline;
+        @apply content-[""] inline-block align-baseline;
+
+        width: poly-fluid-clamp-primary(14px, 16px);
+        height: poly-fluid-clamp-primary(14px, 16px);
+        margin-right: poly-fluid-clamp-primary(6px, 8px);
       }
     }
   }
@@ -78,136 +53,26 @@ const goal = 100000,
   }
 </style>
 
-{/* Hero Section */}
-<Hero locale={page.locale}>
-  {/* Text Content */}
-  <div
-    role="banner"
-    aria-label={ariaLabelRecurData.Intro_text}
-    class="wrapper hero-text-container h-full relative z-30"
-  >
-    <div class="flex flex-wrap items-center sm:w-7/12 h-full sm:pb-8 md:pb-0">
-      <div class="mt-[30px] sm:mt-4 lg:mt-0">
-        <h1 class="hero-title text-white">
-          {page.Title}
-
-          <span class="icon">
-            <img class="heading-inline-icon" alt="" {...white_cup} />
-          </span>
-        </h1>
-
-        <div class="hero-text prose text-white max-w-none">
-          <Markdown>{page.Intro_text}</Markdown>
-        </div>
-
-        <a
-          href={page.Heading_button_link}
-          class:list={[
-            "w-[200px] p-[10px] mt-5 bg-secondary rounded-full",
-            "flex items-center justify-center font-bold text-primary text-center",
-          ]}
-        >
-          <span class="icon h-6">
-            <img class="w-full h-full" alt="" {...green_love_ribbon} />
-          </span>
-
-          {page.Heading_button_text}
-        </a>
-      </div>
-    </div>
-  </div>
-
-  {/* Blob Image - Desktop View */}
-  <div class="hero-img-curve-container h-full hidden sm:block absolute z-30">
-    <ClipPathSVG
-      id="hero-img-curve"
-      path="M1 0H.052C-.055.156.033.342.049.606.065.888.178 1 .555 1 .843 1 .918.906 1 .854"
+<HeroContent page={page} blobContent={true}>
+  <div class="flex items-center justify-center w-full" slot="blob-content">
+    <CrowdfundingProgress
+      goalText={page.Heading_goal}
+      supportersText={page.Heading_supporters}
+      {ariaLabelRecurData}
     />
-
-    <div
-      class="relative w-full h-full"
-      style="clip-path: url(#hero-img-curve);"
-    >
-      <Picture
-        layout="fill"
-        preload="avif"
-        breakpoints={{ minWidth: 640 }}
-        sizes="clamp(330px, 26.4vw + 150px, 560px)"
-        alt={page.Intro_blob.data.attributes.alternativeText}
-        src={STRAPI_URL + page.Intro_blob.data.attributes.url}
-        attributes={{ link: { media: "(min-width: 640px)" } }}
-      />
-
-      <div
-        class="py-[12%] absolute bottom-0 z-10 w-full flex items-center justify-center"
-      >
-        <div class="w-full h-full absolute top-0 left-0 bg-black opacity-70">
-        </div>
-
-        <CrowdfundingProgress
-          goalText={page.Heading_goal}
-          supportersText={page.Heading_supporters}
-          {supportersCount}
-          {totalAmountRaised}
-          {ariaLabelRecurData}
-        />
-      </div>
-    </div>
   </div>
-</Hero>
-
-{/* Blob Image - Mobile View */}
-<div class="hero-img-sm-container block sm:hidden w-full -mt-20 relative z-20">
-  <ClipPathSVG
-    id="hero-img-curve-sm"
-    path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
-  />
 
   <div
-    class="relative w-full h-full"
-    style="clip-path: url(#hero-img-curve-sm);"
+    class="wrapper flex items-center justify-center w-full"
+    slot="blob-content-sm"
   >
-    <Picture
-      layout="fill"
-      preload="avif"
-      alt={page.Intro_blob.data.attributes.alternativeText}
-      src={STRAPI_URL + page.Intro_blob.data.attributes.url}
-      attributes={{ link: { media: "(max-width: 639.98px)" } }}
+    <CrowdfundingProgress
+      goalText={page.Heading_goal}
+      supportersText={page.Heading_supporters}
+      {ariaLabelRecurData}
     />
-
-    <div
-      class="absolute bottom-0 z-10 w-full flex items-center justify-center p-[25px]"
-    >
-      <div class="w-full h-full absolute top-0 left-0 bg-black opacity-70">
-      </div>
-
-      <CrowdfundingProgress
-        goalText={page.Heading_goal}
-        supportersText={page.Heading_supporters}
-        {supportersCount}
-        {totalAmountRaised}
-        {ariaLabelRecurData}
-      />
-    </div>
   </div>
-</div>
-
-<script
-  defer
-  define:vars={{ initialProgress, finalProgress, animationDuration }}
->
-  const progressBars = document.querySelectorAll(".progress-bar");
-
-  // update crowdfunding progress-tracker width
-  progressBars.forEach((progressBar) => {
-    progressBar.animate(
-      { width: [initialProgress, finalProgress] },
-      animationDuration,
-    ).onfinish = () => {
-      progressBar.style.width = finalProgress;
-    };
-  });
-</script>
+</HeroContent>
 
 <div role="main" class="grid section-gap section-in-v-pad">
   {/* Plans Section */}

@@ -1,82 +1,80 @@
 ---
-const {
-  goalText,
-  supportersText,
-  supportersCount,
-  totalAmountRaised,
-  ariaLabelRecurData,
-} = Astro.props;
+const { goalText, supportersText, ariaLabelRecurData } = Astro.props;
+
+// fetch crowdfunding stats from Cloudflare Worker
+const { supportersCount, totalAmountRaised } = await fetch(
+  "https://crowdfunding-stats.scripts.dilmahtea.me",
+).then((res) => res.json());
+
+// calculate crowdfunding progress percent
+const goal = 100000,
+  initialProgress = `0%`,
+  animationDuration = 1000,
+  progress = totalAmountRaised / goal,
+  finalProgress = `${progress * 100}%`;
 ---
 
 <style lang="scss">
   @use "src/styles/colors";
+  @use "src/styles/poly-fluid" as *;
 
-  .progress-header {
-    line-height: 130%;
-    letter-spacing: -0.02em;
-    font-size: clamp(28px, 2vw + 1px, 40px);
-  }
+  .progress-content-container {
+    @apply grid w-full sm:w-2/3 lg:w-3/5 py-[25px] sm:py-2.5 sm:pr-4 md:pr-0 text-secondary;
 
-  .progress-text {
-    line-height: 130%;
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
+    @media (min-width: 640px) {
+      margin-bottom: poly-fluid-clamp-primary(25px, 40px);
+    }
   }
 
   .progress-bar {
     background-color: colors.$crowdfunding-progress;
-  }
-
-  .progressContent {
-    width: clamp(50px, 18vw + 120px, 400px);
-  }
-
-  .progress-content-container {
-    margin: -5% 8% 0 18%;
-
-    @media (max-width: 799.98px) {
-      margin: -5% 14% 0 16%;
-    }
-
-    @media (max-width: 699.98px) {
-      margin: -5% 18% 0 16%;
-    }
-
-    @media (max-width: 669.98px) {
-      margin: -5% 20% 0 15%;
-    }
-
-    @media (max-width: 639.98px) {
-      margin: 0;
-    }
+    padding: poly-fluid-clamp-primary(5px, 6px) 0;
   }
 </style>
 
-<div class="progress-content-container relative w-full text-white">
-  <div
-    aria-label={ariaLabelRecurData.Crowdfunding_total_raised_text +
-      ` ` +
-      totalAmountRaised}
-    class="progress-header"
-  >
-    €<span class="font-bold total-amount-raised">{totalAmountRaised}</span>
-  </div>
+<div class="division-in-element-gap progress-content-container">
+  <div class="flex flex-col">
+    <div
+      aria-label={ariaLabelRecurData.Crowdfunding_total_raised_text +
+        ` ` +
+        totalAmountRaised}
+      class="text-b1 font-bold text-white"
+    >
+      €{totalAmountRaised}
+    </div>
 
-  <div
-    class="flex flex-wrap items-center justify-between gap-x-1.5 h-auto text-secondary"
-  >
-    <div class="progress-text">{goalText}</div>
+    <div
+      class="flex flex-wrap items-center justify-between division-in-element-gap"
+    >
+      <div class="text-b5">{goalText}</div>
 
-    <div class="progress-text">
-      <span
-        class="supporters-count font-medium text-[1.5rem] md:text-[1.625rem] leading-[26px]"
-      >
-        {supportersCount}
-      </span>
-      {supportersText}
+      <div>
+        <span class="text-b4 font-medium text-secondary-light">
+          {supportersCount}
+        </span>
+        {supportersText}
+      </div>
     </div>
   </div>
 
-  <div class="bg-secondary w-full mt-1 sm:mt-2 md:mt-3 rounded-full">
-    <div style="width: 0%" class="progress-bar py-1.5 rounded-full"></div>
+  <div class="bg-secondary w-full rounded-full">
+    <div style="width: 0%" class="progress-bar rounded-full"></div>
   </div>
 </div>
+
+<script
+  defer
+  define:vars={{ initialProgress, finalProgress, animationDuration }}
+>
+  const progressBars = document.querySelectorAll(".progress-bar");
+
+  // update crowdfunding progress-tracker width
+  progressBars.forEach((progressBar) => {
+    progressBar.animate(
+      { width: [initialProgress, finalProgress] },
+      animationDuration,
+    ).onfinish = () => {
+      progressBar.style.width = finalProgress;
+    };
+  });
+</script>
