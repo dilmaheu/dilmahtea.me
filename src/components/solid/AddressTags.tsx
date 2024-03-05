@@ -85,7 +85,7 @@ export default function AddressTags({
                 type="radio"
                 name="tag"
                 id={`address-tag-${tag}`}
-                class="peer w-px opacity-0"
+                class="peer hidden"
                 value={tag}
                 onchange={hideCustomTagInput}
                 checked={address?.tag === tag}
@@ -93,14 +93,7 @@ export default function AddressTags({
                 onChange={() => action === "checkout" && setSelectedTag(tag)}
               />
 
-              <label
-                for={`address-tag-${tag}`}
-                class={[
-                  "radio-button-default text-primary",
-                  "bg-secondary-light border-secondary-light font-medium",
-                  "peer-checked:font-bold peer-checked:bg-primary peer-checked:text-secondary-light",
-                ].join(" ")}
-              >
+              <label for={`address-tag-${tag}`} class="radio-button-default">
                 {tag}
               </label>
             </div>
@@ -111,7 +104,7 @@ export default function AddressTags({
             type="radio"
             name="tag"
             id="add-new-address-tag"
-            class="peer w-px opacity-0"
+            class="peer hidden"
             value={customAddressTag()}
             checked={!!showCustomTagInput()}
             onchange={() => {
@@ -122,13 +115,7 @@ export default function AddressTags({
             required={action === "update"}
           />
 
-          <label
-            for="add-new-address-tag"
-            class={[
-              "radio-button-extended border-white",
-              "peer-checked:border-primary",
-            ].join(" ")}
-          >
+          <label for="add-new-address-tag" class="radio-button-extended">
             {Tag_others_text}
           </label>
         </div>
