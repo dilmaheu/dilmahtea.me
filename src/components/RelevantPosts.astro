@@ -45,6 +45,16 @@ const allPosts = curved_bg ? posts : posts?.slice(0, 3);
       clip-path: url(#section-bottom-curve);
     }
   }
+
+  .relevant-post-intro-light {
+    p,
+    ol,
+    ul,
+    p s,
+    blockquote p {
+      @apply text-secondary-light;
+    }
+  }
 </style>
 
 {
@@ -167,10 +177,8 @@ const allPosts = curved_bg ? posts : posts?.slice(0, 3);
                       </div>
                       <div
                         class:list={[
-                          "intro-text prose",
-                          curved_bg
-                            ? "text-black-light"
-                            : "text-secondary-light",
+                          "prose-text !text-b6-sm line-clamp-2",
+                          !curved_bg && "relevant-post-intro-light",
                         ]}
                       >
                         <Markdown>{post.Intro_text}</Markdown>
