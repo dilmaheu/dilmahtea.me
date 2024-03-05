@@ -53,69 +53,68 @@ export default function CheckoutInformationForm({
         "payment-info-form",
       ) as HTMLFormElement;
 
-    (isBilling ? paymentInfoForm : checkoutInfoForm)?.addEventListener(
-      "submit",
-      (event) => {
-        event.preventDefault();
+    const form = isBilling ? paymentInfoForm : checkoutInfoForm;
 
-        const formData = Object.fromEntries(new FormData(event.currentTarget));
+    form?.addEventListener("submit", (event) => {
+      event.preventDefault();
 
-        if (!isBilling) {
-          const { street, city, country } = formData,
-            contactInfo = {
-              ...formData,
-              delivery_address: [street, city, country].join(", "),
-            };
+      const formData = Object.fromEntries(new FormData(event.currentTarget));
 
-          if (selectedTag()) contactInfo.address_tag = selectedTag();
+      if (!isBilling) {
+        const { street, city, country } = formData,
+          contactInfo = {
+            ...formData,
+            delivery_address: [street, city, country].join(", "),
+          };
 
-          localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
+        if (selectedTag()) contactInfo.address_tag = selectedTag();
+
+        localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
+      }
+
+      const selectedAddress = addresses()?.find(
+        ({ tag }) => tag === selectedTag(),
+      );
+
+      const addressData = {} as Record<string, string>;
+
+      addressDetailsKeys.forEach((key) => {
+        addressData[key] = formData[isBilling ? `billing_${key}` : key];
+      });
+
+      if (selectedAddress) {
+        addressData.id = selectedAddress.id;
+
+        if (
+          addressData.first_name === selectedAddress.first_name &&
+          addressData.last_name === selectedAddress.last_name &&
+          addressData.street === selectedAddress.street &&
+          addressData.city === selectedAddress.city &&
+          addressData.country === selectedAddress.country &&
+          addressData.postal_code === selectedAddress.postal_code
+        ) {
+          location.href = form.action;
+
+          return;
         }
+      } else if (window.cookies.isAuthenticated !== "true") {
+        location.href = form.action;
+      }
 
-        const selectedAddress = addresses()?.find(
-          ({ tag }) => tag === selectedTag(),
-        );
-
-        const addressData = {} as Record<string, string>;
-
-        addressDetailsKeys.forEach((key) => {
-          addressData[key] = formData[isBilling ? `billing_${key}` : key];
-        });
-
-        if (selectedAddress) {
-          addressData.id = selectedAddress.id;
-
-          if (
-            addressData.first_name === selectedAddress.first_name &&
-            addressData.last_name === selectedAddress.last_name &&
-            addressData.street === selectedAddress.street &&
-            addressData.city === selectedAddress.city &&
-            addressData.country === selectedAddress.country &&
-            addressData.postal_code === selectedAddress.postal_code
-          ) {
-            location.href = checkoutInfoForm.action;
-
-            return;
-          }
-        } else if (window.cookies.isAuthenticated !== "true") {
-          location.href = checkoutInfoForm.action;
-        }
-
-        fetch("/api/addresses", {
-          method: selectedAddress ? "PUT" : "POST",
-          headers: {
-            "Content-Type": "application/json",
+      fetch("/api/addresses", {
+        method: selectedAddress ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(addressData),
+      }).then((response) =>
+        handleAPIResponseBase(response, notification, setNotification, {
+          onSuccess: () => {
+            location.href = form.action;
           },
-          body: JSON.stringify(addressData),
-        }).then((response) =>
-          handleAPIResponseBase(response, notification, setNotification, {
-            onSuccess: () => {
-              location.href = checkoutInfoForm.action;
-            },
-          }),
-        );
-      },
-    );
+        }),
+      );
+    });
   });
 
   return (
