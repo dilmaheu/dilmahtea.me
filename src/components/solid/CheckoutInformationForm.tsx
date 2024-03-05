@@ -12,7 +12,6 @@ import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 export default function CheckoutInformationForm({
   recurData,
   userAccountRecurData,
-  text_select_or_create_tag,
   notificationIcons,
 }) {
   const [notification, setNotification] = createSignal(null),
@@ -118,7 +117,6 @@ export default function CheckoutInformationForm({
                 setSelectedTag={setSelectedTag}
                 showMoreAddresses={showMoreAddresses}
                 setShowMoreAddresses={setShowMoreAddresses}
-                text_select_or_create_tag={text_select_or_create_tag}
                 shouldShowCustomTagInput={shouldShowCustomTagInput}
               />
             )}
