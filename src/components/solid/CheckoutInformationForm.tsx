@@ -27,6 +27,10 @@ export default function CheckoutInformationForm({
   });
 
   createEffect(() => {
+    if (!isBilling && window.checkoutInfo.address_tag) {
+      setSelectedTag(window.checkoutInfo.address_tag);
+    }
+
     const defaultAddress =
       user()[
         isBilling ? "default_billing_address" : "default_delivery_address"
@@ -53,6 +57,8 @@ export default function CheckoutInformationForm({
           ...formData,
           delivery_address: [street, city, country].join(", "),
         };
+
+      if (selectedTag()) contactInfo.address_tag = selectedTag();
 
       localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
 
