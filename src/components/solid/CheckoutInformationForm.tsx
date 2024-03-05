@@ -2,6 +2,7 @@ import { createEffect, createSignal, onMount } from "solid-js";
 
 import { user } from "@signals/user";
 import { addresses } from "@signals/addresses";
+import { showAddressForm } from "@signals/showAddressForm";
 
 import AddressTags from "@solid/AddressTags";
 import EditAddressForm from "@solid/EditAddressForm";
@@ -113,22 +114,26 @@ export default function CheckoutInformationForm({
 
         return (
           <>
-            <SolidNotification
-              notification={notification}
-              notificationIcons={notificationIcons}
-              bordered={false}
-            />
+            {(!isBilling || showAddressForm()) && (
+              <>
+                <SolidNotification
+                  notification={notification}
+                  notificationIcons={notificationIcons}
+                  bordered={false}
+                />
 
-            {shouldDisplayTags && (
-              <AddressTags
-                action="checkout"
-                address={selectedAddress}
-                userAccountRecurData={userAccountRecurData}
-                setSelectedTag={setSelectedTag}
-                showMoreAddresses={showMoreAddresses}
-                setShowMoreAddresses={setShowMoreAddresses}
-                shouldShowCustomTagInput={shouldShowCustomTagInput}
-              />
+                {shouldDisplayTags && (
+                  <AddressTags
+                    action="checkout"
+                    address={selectedAddress}
+                    userAccountRecurData={userAccountRecurData}
+                    setSelectedTag={setSelectedTag}
+                    showMoreAddresses={showMoreAddresses}
+                    setShowMoreAddresses={setShowMoreAddresses}
+                    shouldShowCustomTagInput={shouldShowCustomTagInput}
+                  />
+                )}
+              </>
             )}
 
             <EditAddressForm
