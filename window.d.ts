@@ -107,5 +107,8 @@ declare global {
 
     removeTopNotification: (notification: HTMLElement) => void; // defined in NotificationAnimations.astro
     slideOutTopNotification: (notification: HTMLElement) => void; // defined in NotificationAnimations.astro
+
+    hideAllPaymentInfo: () => void; // defined in CheckoutPayment.astro
+    togglePaymentCardVisibility: (selectedCountry: string) => void; // defined in CheckoutPayment.astro
   }
 }

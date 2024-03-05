@@ -1,6 +1,11 @@
 import { user } from "@signals/user";
 
-export default function EditAddressForm({ action, address, recurData }) {
+export default function EditAddressForm({
+  action,
+  address,
+  recurData,
+  isBilling = false,
+}) {
   const {
     text_first_name,
     first_name_placeholder,
@@ -17,6 +22,10 @@ export default function EditAddressForm({ action, address, recurData }) {
     countries,
   } = recurData;
 
+  if (isBilling && window.cookies.isAuthenticated !== "true") {
+    address = window.checkoutInfo; // no need to subset
+  }
+
   function getUserAttribute(attribute) {
     return ["…", "N/A"].includes(user()[attribute]) ? null : user()[attribute];
   }
@@ -28,7 +37,7 @@ export default function EditAddressForm({ action, address, recurData }) {
 
         <input
           type="text"
-          name="first_name"
+          name={(isBilling ? "billing_" : "") + "first_name"}
           value={
             action === "add"
               ? getUserAttribute("first_name")
@@ -46,7 +55,7 @@ export default function EditAddressForm({ action, address, recurData }) {
 
         <input
           type="text"
-          name="last_name"
+          name={(isBilling ? "billing_" : "") + "last_name"}
           value={
             action === "add"
               ? getUserAttribute("last_name")
@@ -64,7 +73,7 @@ export default function EditAddressForm({ action, address, recurData }) {
 
         <input
           type="text"
-          name="street"
+          name={(isBilling ? "billing_" : "") + "street"}
           value={address?.street || null}
           placeholder={street_placeholder}
           required
@@ -76,7 +85,7 @@ export default function EditAddressForm({ action, address, recurData }) {
 
         <input
           type="text"
-          name="city"
+          name={(isBilling ? "billing_" : "") + "city"}
           value={address?.city || null}
           placeholder={city_placeholder}
           required
@@ -88,7 +97,7 @@ export default function EditAddressForm({ action, address, recurData }) {
 
         <input
           type="text"
-          name="postal_code"
+          name={(isBilling ? "billing_" : "") + "postal_code"}
           value={address?.postal_code || null}
           placeholder={postal_code_placeholder}
           required
@@ -98,7 +107,18 @@ export default function EditAddressForm({ action, address, recurData }) {
       <label>
         <span class="input-label">{text_country}</span>
 
-        <select name="country" required>
+        <select
+          name={(isBilling ? "billing_" : "") + "country"}
+          required
+          onchange={(event) => {
+            if (isBilling) {
+              window.hideAllPaymentInfo();
+              window.togglePaymentCardVisibility(
+                event.currentTarget.value.toLowerCase(),
+              );
+            }
+          }}
+        >
           <option value="" selected disabled hidden>
             {country_placeholder}
           </option>

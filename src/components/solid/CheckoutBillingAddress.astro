@@ -1,0 +1,47 @@
+---
+import subset from "@utils/shared/subset";
+import notificationIcons from "@utils/notificationIcons";
+import CheckoutBillingAddress from "@solid/CheckoutBillingAddress";
+
+let { page, recurData, userAccountRecurData } = Astro.props;
+
+page = subset(page, [
+  "Block_title",
+  "Radio_button_text_same_as_shipping_address",
+  "Radio_button_text_use_different_billing_address",
+]);
+
+recurData = subset(recurData, [
+  "text_first_name",
+  "first_name_placeholder",
+  "text_last_name",
+  "last_name_placeholder",
+  "text_country",
+  "country_placeholder",
+  "text_city",
+  "city_placeholder",
+  "text_street",
+  "street_placeholder",
+  "text_postal_code",
+  "postal_code_placeholder",
+  "countries",
+]);
+
+userAccountRecurData = subset(userAccountRecurData, [
+  "Label_tag_text",
+  "Tag_others_text",
+  "Tag_others_placeholder_text",
+  "Tag_suggestions",
+  "text_more_address",
+  "text_hide_more_address",
+  "text_select_or_create_tag",
+]);
+---
+
+<CheckoutBillingAddress
+  client:load
+  {page}
+  {recurData}
+  {userAccountRecurData}
+  {notificationIcons}
+/>

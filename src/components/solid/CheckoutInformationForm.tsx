@@ -13,6 +13,7 @@ export default function CheckoutInformationForm({
   recurData,
   userAccountRecurData,
   notificationIcons,
+  isBilling = false,
 }) {
   const [notification, setNotification] = createSignal(null),
     [displayTags, setDisplayTags] = createSignal(false),
@@ -125,6 +126,7 @@ export default function CheckoutInformationForm({
               action="checkout"
               address={selectedAddress}
               recurData={recurData}
+              isBilling={isBilling}
             />
           </>
         );
