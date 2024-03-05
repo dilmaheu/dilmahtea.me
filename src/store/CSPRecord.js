@@ -14,7 +14,11 @@ export default function CSPRecord({ dev = false } = {}) {
       "https://analytics.scripts.dilmahtea.me",
     ],
     "upgrade-insecure-requests": [],
-    "script-src": ["'self'", "https://js.stripe.com", "https://static.openreplay.com"],
+    "script-src": [
+      "'self'",
+      "https://js.stripe.com",
+      "https://static.openreplay.com",
+    ],
     "manifest-src": ["'self'"],
     "frame-src": ["'self'", "https://js.stripe.com"],
   };
