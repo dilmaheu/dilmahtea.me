@@ -1,11 +1,15 @@
+import { createSignal, onMount } from "solid-js";
+
 import { user } from "@signals/user";
 
 export default function EditAddressForm({
   action,
-  address,
+  address: selectedAddress,
   recurData,
   isBilling = false,
 }) {
+  const [address, setAddress] = createSignal(selectedAddress);
+
   const {
     text_first_name,
     first_name_placeholder,
@@ -22,9 +26,11 @@ export default function EditAddressForm({
     countries,
   } = recurData;
 
-  if (isBilling && window.cookies.isAuthenticated !== "true") {
-    address = window.checkoutInfo; // no need to subset
-  }
+  onMount(() => {
+    if (window.cookies.isAuthenticated !== "true") {
+      setAddress(window.checkoutInfo /* no need to subset */);
+    }
+  });
 
   function getUserAttribute(attribute) {
     return ["…", "N/A"].includes(user()[attribute]) ? null : user()[attribute];
@@ -41,7 +47,7 @@ export default function EditAddressForm({
           value={
             action === "add"
               ? getUserAttribute("first_name")
-              : address?.first_name ||
+              : address()?.first_name ||
                 (action === "checkout" && getUserAttribute("first_name")) ||
                 null
           }
@@ -59,7 +65,7 @@ export default function EditAddressForm({
           value={
             action === "add"
               ? getUserAttribute("last_name")
-              : address?.last_name ||
+              : address()?.last_name ||
                 (action === "checkout" && getUserAttribute("last_name")) ||
                 null
           }
@@ -74,7 +80,7 @@ export default function EditAddressForm({
         <input
           type="text"
           name={(isBilling ? "billing_" : "") + "street"}
-          value={address?.street || null}
+          value={address()?.street || null}
           placeholder={street_placeholder}
           required
         />
@@ -86,7 +92,7 @@ export default function EditAddressForm({
         <input
           type="text"
           name={(isBilling ? "billing_" : "") + "city"}
-          value={address?.city || null}
+          value={address()?.city || null}
           placeholder={city_placeholder}
           required
         />
@@ -98,7 +104,7 @@ export default function EditAddressForm({
         <input
           type="text"
           name={(isBilling ? "billing_" : "") + "postal_code"}
-          value={address?.postal_code || null}
+          value={address()?.postal_code || null}
           placeholder={postal_code_placeholder}
           required
         />
@@ -127,8 +133,8 @@ export default function EditAddressForm({
             <option
               value={localizations?.data[0]?.attributes?.name || name}
               selected={
-                address &&
-                address.country ===
+                address() &&
+                address().country ===
                   (localizations?.data[0]?.attributes?.name || name)
               }
             >
