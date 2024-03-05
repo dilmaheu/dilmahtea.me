@@ -27,10 +27,13 @@ export default function CheckoutInformationForm({
   });
 
   createEffect(() => {
-    const { default_delivery_address } = user();
+    const defaultAddress =
+      user()[
+        isBilling ? "default_billing_address" : "default_delivery_address"
+      ];
 
-    if (default_delivery_address.constructor === Object) {
-      setSelectedTag(default_delivery_address.tag);
+    if (defaultAddress.constructor === Object) {
+      setSelectedTag(defaultAddress.tag);
     }
   });
 
