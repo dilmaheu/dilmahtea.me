@@ -1,6 +1,6 @@
-import { createSignal } from "solid-js";
-
 import CheckoutInformationForm from "@solid/CheckoutInformationForm";
+
+import { showAddressForm, setShowAddressForm } from "@signals/showAddressForm";
 
 export default function CheckoutBillingAddress({
   page,
@@ -8,8 +8,6 @@ export default function CheckoutBillingAddress({
   userAccountRecurData,
   notificationIcons,
 }) {
-  const [showAddressForm, setShowAddressForm] = createSignal(false);
-
   function handleShowAddressForm() {
     setShowAddressForm(!showAddressForm());
   }
@@ -53,14 +51,12 @@ export default function CheckoutBillingAddress({
         </div>
       </div>
 
-      {showAddressForm() && (
-        <CheckoutInformationForm
-          recurData={recurData}
-          userAccountRecurData={userAccountRecurData}
-          notificationIcons={notificationIcons}
-          isBilling={true}
-        />
-      )}
+      <CheckoutInformationForm
+        recurData={recurData}
+        userAccountRecurData={userAccountRecurData}
+        notificationIcons={notificationIcons}
+        isBilling={true}
+      />
     </section>
   );
 }

@@ -1,6 +1,7 @@
 import { createSignal, onMount } from "solid-js";
 
 import { user } from "@signals/user";
+import { showAddressForm } from "@signals/showAddressForm";
 
 export default function EditAddressForm({
   action,
@@ -37,7 +38,11 @@ export default function EditAddressForm({
   }
 
   return (
-    <div class="form-grid">
+    <div
+      class={
+        "form-grid" + (isBilling ? (showAddressForm() ? "" : " !hidden") : "")
+      }
+    >
       <label>
         <span class="input-label">{text_first_name}</span>
 
