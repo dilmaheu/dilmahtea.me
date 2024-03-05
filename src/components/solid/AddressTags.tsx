@@ -13,7 +13,6 @@ declare interface Props {
   setSelectedTag?: Setter<string>;
   showMoreAddresses?: Accessor<boolean>;
   setShowMoreAddresses?: Setter<boolean>;
-  text_select_or_create_tag?: string;
 }
 
 export default function AddressTags({
@@ -24,7 +23,6 @@ export default function AddressTags({
   setSelectedTag,
   showMoreAddresses,
   setShowMoreAddresses,
-  text_select_or_create_tag,
 }: Props) {
   const [usedTags, setUsedTags] = createSignal([]),
     [customAddressTag, setCustomAddressTag] = createSignal(""),
@@ -45,6 +43,7 @@ export default function AddressTags({
     Tag_suggestions,
     text_more_address,
     text_hide_more_address,
+    text_select_or_create_tag,
   } = userAccountRecurData;
 
   function hideCustomTagInput() {

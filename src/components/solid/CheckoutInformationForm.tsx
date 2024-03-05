@@ -12,7 +12,6 @@ import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 export default function CheckoutInformationForm({
   recurData,
   userAccountRecurData,
-  text_select_or_create_tag,
   notificationIcons,
 }) {
   const [notification, setNotification] = createSignal(null),
@@ -53,26 +52,27 @@ export default function CheckoutInformationForm({
 
       localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
 
-      const selectedAddress = addresses()?.find(
-        ({ tag }) => tag === selectedTag(),
-      );
+      const selectedAddress =
+        Array.isArray(addresses()) &&
+        addresses().find(({ tag }) => tag === selectedTag());
 
       if (selectedAddress) {
         formData.id = selectedAddress.id;
 
         if (
-          window.cookies.isAuthenticated !== "true" ||
-          (formData.first_name === selectedAddress.first_name &&
-            formData.last_name === selectedAddress.last_name &&
-            formData.street === selectedAddress.street &&
-            formData.city === selectedAddress.city &&
-            formData.country === selectedAddress.country &&
-            formData.postal_code === selectedAddress.postal_code)
+          formData.first_name === selectedAddress.first_name &&
+          formData.last_name === selectedAddress.last_name &&
+          formData.street === selectedAddress.street &&
+          formData.city === selectedAddress.city &&
+          formData.country === selectedAddress.country &&
+          formData.postal_code === selectedAddress.postal_code
         ) {
           location.href = checkoutInfoForm.action;
 
           return;
         }
+      } else if (window.cookies.isAuthenticated !== "true") {
+        location.href = checkoutInfoForm.action;
       }
 
       fetch("/api/addresses", {
@@ -117,7 +117,6 @@ export default function CheckoutInformationForm({
                 setSelectedTag={setSelectedTag}
                 showMoreAddresses={showMoreAddresses}
                 setShowMoreAddresses={setShowMoreAddresses}
-                text_select_or_create_tag={text_select_or_create_tag}
                 shouldShowCustomTagInput={shouldShowCustomTagInput}
               />
             )}
