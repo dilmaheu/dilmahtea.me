@@ -30,15 +30,15 @@ export default function CheckoutInformationForm({
   createEffect(() => {
     if (!isBilling && window.checkoutInfo.address_tag) {
       setSelectedTag(window.checkoutInfo.address_tag);
-    }
+    } else {
+      const defaultAddress =
+        user()[
+          isBilling ? "default_billing_address" : "default_delivery_address"
+        ];
 
-    const defaultAddress =
-      user()[
-        isBilling ? "default_billing_address" : "default_delivery_address"
-      ];
-
-    if (defaultAddress.constructor === Object) {
-      setSelectedTag(defaultAddress.tag);
+      if (defaultAddress.constructor === Object) {
+        setSelectedTag(defaultAddress.tag);
+      }
     }
   });
 
