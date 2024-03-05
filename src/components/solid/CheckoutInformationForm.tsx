@@ -46,60 +46,69 @@ export default function CheckoutInformationForm({
     setNotification(null);
 
     const checkoutInfoForm = document.getElementById(
-      "checkout-info-form",
-    ) as HTMLFormElement;
+        "checkout-info-form",
+      ) as HTMLFormElement,
+      paymentInfoForm = document.getElementById(
+        "payment-info-form",
+      ) as HTMLFormElement;
 
-    checkoutInfoForm?.addEventListener("submit", (event) => {
-      event.preventDefault();
+    (isBilling ? paymentInfoForm : checkoutInfoForm)?.addEventListener(
+      "submit",
+      (event) => {
+        event.preventDefault();
 
-      const formData = Object.fromEntries(new FormData(checkoutInfoForm)),
-        { street, city, country } = formData,
-        contactInfo = {
-          ...formData,
-          delivery_address: [street, city, country].join(", "),
-        };
+        const formData = Object.fromEntries(new FormData(event.currentTarget));
 
-      if (selectedTag()) contactInfo.address_tag = selectedTag();
+        if (!isBilling) {
+          const { street, city, country } = formData,
+            contactInfo = {
+              ...formData,
+              delivery_address: [street, city, country].join(", "),
+            };
 
-      localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
+          if (selectedTag()) contactInfo.address_tag = selectedTag();
 
-      const selectedAddress = addresses()?.find(
-        ({ tag }) => tag === selectedTag(),
-      );
-
-      if (selectedAddress) {
-        formData.id = selectedAddress.id;
-
-        if (
-          formData.first_name === selectedAddress.first_name &&
-          formData.last_name === selectedAddress.last_name &&
-          formData.street === selectedAddress.street &&
-          formData.city === selectedAddress.city &&
-          formData.country === selectedAddress.country &&
-          formData.postal_code === selectedAddress.postal_code
-        ) {
-          location.href = checkoutInfoForm.action;
-
-          return;
+          localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
         }
-      } else if (window.cookies.isAuthenticated !== "true") {
-        location.href = checkoutInfoForm.action;
-      }
 
-      fetch("/api/addresses", {
-        method: selectedAddress ? "PUT" : "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      }).then((response) =>
-        handleAPIResponseBase(response, notification, setNotification, {
-          onSuccess: () => {
+        const selectedAddress = addresses()?.find(
+          ({ tag }) => tag === selectedTag(),
+        );
+
+        if (selectedAddress) {
+          formData.id = selectedAddress.id;
+
+          if (
+            formData.first_name === selectedAddress.first_name &&
+            formData.last_name === selectedAddress.last_name &&
+            formData.street === selectedAddress.street &&
+            formData.city === selectedAddress.city &&
+            formData.country === selectedAddress.country &&
+            formData.postal_code === selectedAddress.postal_code
+          ) {
             location.href = checkoutInfoForm.action;
+
+            return;
+          }
+        } else if (window.cookies.isAuthenticated !== "true") {
+          location.href = checkoutInfoForm.action;
+        }
+
+        fetch("/api/addresses", {
+          method: selectedAddress ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        }),
-      );
-    });
+          body: JSON.stringify(formData),
+        }).then((response) =>
+          handleAPIResponseBase(response, notification, setNotification, {
+            onSuccess: () => {
+              location.href = checkoutInfoForm.action;
+            },
+          }),
+        );
+      },
+    );
   });
 
   return (
