@@ -131,6 +131,8 @@ const products = Object.fromEntries(
 
   if (queryParams.get("clear") === "cart") {
     localStorage.removeItem("cart");
+
+    delete window.checkoutInfo.address_tag;
   }
 
   const storedCart = JSON.parse(localStorage.getItem("cart") || "{}");
