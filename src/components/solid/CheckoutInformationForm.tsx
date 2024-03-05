@@ -78,7 +78,7 @@ export default function CheckoutInformationForm({
 
       const addressData = {} as Record<string, string>;
 
-      addressDetailsKeys.forEach((key) => {
+      ["tag", ...addressDetailsKeys].forEach((key) => {
         addressData[key] = formData[isBilling ? `billing_${key}` : key];
       });
 
