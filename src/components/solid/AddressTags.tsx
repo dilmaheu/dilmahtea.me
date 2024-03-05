@@ -120,7 +120,7 @@ export default function AddressTags({
           </label>
         </div>
 
-        {action === "checkout" && addresses()?.length > 0 && (
+        {action === "checkout" && addresses()?.length > 3 && (
           <button
             type="button"
             class="flex items-center gap-1 text-primary font-bold cursor-pointer"
