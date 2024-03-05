@@ -127,151 +127,153 @@ const headings = new Array(
     <Icon slot="plusIcon" name="akar-icons:plus" class="w-[18px] select-none" />
 
     <Fragment slot="kindnessCausesHTML">
-      {
-        Block2?.Block2_text && (
-          <div class="hero-text text-black block prose max-w-none">
-            <Markdown>{Block2?.Block2_text}</Markdown>
-          </div>
-        )
-      }
-
-      <form id="cause-form">
-        <label>
-          <input type="radio" disabled />
-
-          <div>
-            <div class="flex flex-wrap items-center justify-between gap-[7px]">
-              <h3 class="text-lg font-bold leading-[150%]">
-                {Block2?.Label_my_selected_cause}
-              </h3>
-
-              <div
-                class="cause-form-txt text-black-light w-full prose max-w-none"
-              >
-                <Markdown>{Block2?.My_selected_cause_text}</Markdown>
-              </div>
+      <div class="grid division-gap">
+        {
+          Block2?.Block2_text && (
+            <div class="prose-text text-black">
+              <Markdown>{Block2?.Block2_text}</Markdown>
             </div>
+          )
+        }
 
-            {
-              kindnessCauses.length > 0 && (
-                <div id="kindness-cause-grid">
-                  {kindnessCauses.map(
-                    ({ cause, description, featured_blob }) => (
-                      <div class="w-full h-full">
-                        <input
-                          type="radio"
-                          name="kindness_cause"
-                          id={cause}
-                          value={cause}
-                          class="peer hidden"
-                        />
+        <form id="cause-form">
+          <label>
+            <input type="radio" disabled />
 
-                        <label
-                          for={cause}
-                          class:list={[
-                            "kindness-cause-clip-path inline-block w-full h-full",
-                            "p-[3px] md:p-[5px] peer-checked:bg-primary select-none cursor-pointer",
-                          ]}
-                        >
-                          <div class="kindness-cause-clip-path w-full h-full p-[3px] md:p-[5px] bg-secondary-light">
-                            <div
-                              class:list={[
-                                "kindness-cause-clip-path w-full h-full bg-secondary",
-                                "grid md:grid-cols-[140px_1fr] lg:grid-cols-[180px_1fr] items-center sm:justify-center",
-                              ]}
-                            >
-                              <div class="w-full h-full">
-                                <div class="kindness-cause-img-container hidden md:block">
-                                  <Picture
-                                    layout="fill"
-                                    sizes="(min-width: 640px) 320px, 90vw)"
-                                    alt={
-                                      featured_blob.data.attributes
-                                        .alternativeText
-                                    }
-                                    attributes={{
-                                      img: {
-                                        style: "aspect-ratio: 6 / 5;",
-                                      },
-                                    }}
-                                    src={
-                                      STRAPI_URL +
-                                      featured_blob.data.attributes.url
-                                    }
-                                  />
-                                </div>
+            <div>
+              <div class="flex flex-wrap items-center justify-between division-in-element-gap">
+                <h3 class="text-b3 font-bold text-black">
+                  {Block2?.Label_my_selected_cause}
+                </h3>
 
-                                <div class="kindness-cause-img-container block md:hidden">
-                                  <Picture
-                                    layout="fullWidth"
-                                    sizes="(min-width: 640px) 320px, 90vw)"
-                                    alt={
-                                      featured_blob.data.attributes
-                                        .alternativeText
-                                    }
-                                    attributes={{
-                                      img: {
-                                        style: "aspect-ratio: 6 / 5;",
-                                      },
-                                    }}
-                                    src={
-                                      STRAPI_URL +
-                                      featured_blob.data.attributes.url
-                                    }
-                                  />
-                                </div>
-                              </div>
+                <div
+                  class="cause-form-txt text-black-light w-full prose-text !text-b5"
+                >
+                  <Markdown>{Block2?.My_selected_cause_text}</Markdown>
+                </div>
+              </div>
 
+              {
+                kindnessCauses.length > 0 && (
+                  <div id="kindness-cause-grid">
+                    {kindnessCauses.map(
+                      ({ cause, description, featured_blob }) => (
+                        <div class="w-full h-full">
+                          <input
+                            type="radio"
+                            name="kindness_cause"
+                            id={cause}
+                            value={cause}
+                            class="peer hidden"
+                          />
+
+                          <label
+                            for={cause}
+                            class:list={[
+                              "kindness-cause-clip-path inline-block w-full h-full",
+                              "p-[3px] md:p-[5px] peer-checked:bg-primary select-none cursor-pointer",
+                            ]}
+                          >
+                            <div class="kindness-cause-clip-path w-full h-full p-[3px] md:p-[5px] bg-secondary-light">
                               <div
                                 class:list={[
-                                  "w-full h-full flex flex-col justify-center",
-                                  "px-[clamp(15px,calc(4.43vw-13px),32px)] pt-2.5 lg:px-[15px] py-[15px]",
+                                  "kindness-cause-clip-path w-full h-full bg-secondary",
+                                  "grid md:grid-cols-[140px_1fr] lg:grid-cols-[180px_1fr] items-center sm:justify-center",
                                 ]}
                               >
-                                <div
-                                  class:list={[
-                                    "recoleta font-bold text-primary",
-                                    "text-[clamp(18px,calc(0.75vw+13.2px),24px)] leading-[110%]",
-                                  ]}
-                                >
-                                  {cause}
+                                <div class="w-full h-full">
+                                  <div class="kindness-cause-img-container hidden md:block">
+                                    <Picture
+                                      layout="fill"
+                                      sizes="(min-width: 640px) 320px, 90vw)"
+                                      alt={
+                                        featured_blob.data.attributes
+                                          .alternativeText
+                                      }
+                                      attributes={{
+                                        img: {
+                                          style: "aspect-ratio: 6 / 5;",
+                                        },
+                                      }}
+                                      src={
+                                        STRAPI_URL +
+                                        featured_blob.data.attributes.url
+                                      }
+                                    />
+                                  </div>
+
+                                  <div class="kindness-cause-img-container block md:hidden">
+                                    <Picture
+                                      layout="fullWidth"
+                                      sizes="(min-width: 640px) 320px, 90vw)"
+                                      alt={
+                                        featured_blob.data.attributes
+                                          .alternativeText
+                                      }
+                                      attributes={{
+                                        img: {
+                                          style: "aspect-ratio: 6 / 5;",
+                                        },
+                                      }}
+                                      src={
+                                        STRAPI_URL +
+                                        featured_blob.data.attributes.url
+                                      }
+                                    />
+                                  </div>
                                 </div>
+
                                 <div
                                   class:list={[
-                                    "prose max-w-none text-black-light mt-2.5",
-                                    "text-[clamp(14px,calc(0.25vw+12.4px),16px)]",
+                                    "w-full h-full flex flex-col justify-center",
+                                    "px-[clamp(15px,calc(4.43vw-13px),32px)] pt-2.5 lg:px-[15px] py-[15px]",
                                   ]}
                                 >
-                                  {" "}
-                                  {description}
+                                  <div
+                                    class:list={[
+                                      "recoleta font-bold text-primary",
+                                      "text-[clamp(18px,calc(0.75vw+13.2px),24px)] leading-[110%]",
+                                    ]}
+                                  >
+                                    {cause}
+                                  </div>
+                                  <div
+                                    class:list={[
+                                      "prose max-w-none text-black-light mt-2.5",
+                                      "text-[clamp(14px,calc(0.25vw+12.4px),16px)]",
+                                    ]}
+                                  >
+                                    {" "}
+                                    {description}
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </label>
-                      </div>
-                    ),
-                  )}
-                </div>
-              )
-            }
-          </div>
-        </label>
-
-        <label>
-          <input type="radio" name="kindness_cause" value="choice_of_dilmah" />
-
-          <div>
-            <h3 class="text-lg font-bold leading-[150%] cursor-pointer">
-              {Block2?.Label_let_dilmah_pick_cause}
-            </h3>
-
-            <div class="cause-form-txt text-black-light prose max-w-none">
-              <Markdown>{Block2?.Let_dilmah_pick_cause_text}</Markdown>
+                          </label>
+                        </div>
+                      ),
+                    )}
+                  </div>
+                )
+              }
             </div>
-          </div>
-        </label>
-      </form>
+          </label>
+
+          <label>
+            <input type="radio" name="kindness_cause" value="choice_of_dilmah" />
+
+            <div>
+              <h3 class="text-b3 font-bold text-black cursor-pointer">
+                {Block2?.Label_let_dilmah_pick_cause}
+              </h3>
+
+              <div class="cause-form-txt text-black-light prose-text !text-b5">
+                <Markdown>{Block2?.Let_dilmah_pick_cause_text}</Markdown>
+              </div>
+            </div>
+          </label>
+        </form>
+      </div>
     </Fragment>
 
     <NoOrders slot="noOrdersHTML" {userAccountRecurData} />

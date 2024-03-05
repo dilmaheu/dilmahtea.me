@@ -135,12 +135,12 @@ export default function DashboardKindnessCauses({
     <>
       <h2
         id={title.toLowerCase().replaceAll(" ", "-")}
-        class="dashboard-sec-title recoleta mt-[30px]"
+        class="tiled-title text-h2"
       >
         {title}
       </h2>
 
-      <div class="dashboard-sec">
+      <div class="tiled-div">
         <SolidNotification
           notification={notification}
           notificationIcons={notificationIcons}

@@ -36,7 +36,7 @@ export default function Dashboard({
 
       <h2
         id={page.Block3_title.toLowerCase().replaceAll(" ", "-")}
-        class="dashboard-sec-title recoleta mt-[30px]"
+        class="tiled-title text-h2"
       >
         {page.Block3_title}
       </h2>

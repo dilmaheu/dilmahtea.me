@@ -120,7 +120,7 @@ export default function Address({
 
             <div class="flex division-gap">
               <button
-                class="button-link-primary-big"
+                class="button-link-primary-large"
                 onclick={() => {
                   if (!isMyProfile) {
                     setEditAddress(true);
@@ -145,7 +145,7 @@ export default function Address({
                   !isMyProfile &&
                   !isDefaultDeliveryAddress && (
                     <button
-                      class="button-link-error-dark-big"
+                      class="button-link-error-dark-large"
                       innerHTML={trashCanIcon.innerHTML}
                       onclick={deleteAddress}
                     />
