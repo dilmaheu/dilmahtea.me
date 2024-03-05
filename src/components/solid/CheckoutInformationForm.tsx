@@ -61,18 +61,19 @@ export default function CheckoutInformationForm({
         formData.id = selectedAddress.id;
 
         if (
-          window.cookies.isAuthenticated !== "true" ||
-          (formData.first_name === selectedAddress.first_name &&
-            formData.last_name === selectedAddress.last_name &&
-            formData.street === selectedAddress.street &&
-            formData.city === selectedAddress.city &&
-            formData.country === selectedAddress.country &&
-            formData.postal_code === selectedAddress.postal_code)
+          formData.first_name === selectedAddress.first_name &&
+          formData.last_name === selectedAddress.last_name &&
+          formData.street === selectedAddress.street &&
+          formData.city === selectedAddress.city &&
+          formData.country === selectedAddress.country &&
+          formData.postal_code === selectedAddress.postal_code
         ) {
           location.href = checkoutInfoForm.action;
 
           return;
         }
+      } else if (window.cookies.isAuthenticated !== "true") {
+        location.href = checkoutInfoForm.action;
       }
 
       fetch("/api/addresses", {
