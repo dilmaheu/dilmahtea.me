@@ -38,10 +38,7 @@ export default function SolidNotification({
                   {...notificationIcons[`${type}_notification`]}
                 />
 
-                <div
-                  innerHTML={message}
-                  class="text-[clamp(14px,calc(0.25vw+12.4px),16px)] text-black"
-                />
+                <div innerHTML={message} class="text-b6 text-black" />
               </div>
             </div>
           );
