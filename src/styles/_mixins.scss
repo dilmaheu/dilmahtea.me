@@ -455,24 +455,56 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   }
 }
 
-@mixin radio-input {
-  @apply flex items-center cursor-pointer;
+@mixin radio-input-common {
+  @apply flex cursor-pointer;
 
-  input {
+  input[type="radio"] {
     @include focus-primary-lightest;
 
-    @apply flex items-center justify-center
-      border-2 border-primary rounded-full appearance-none checked:before:block
-      w-[clamp(18px,calc(0.25vw+16.4px),20px)] h-[clamp(18px,calc(0.25vw+16.4px),20px)];
+    @apply flex items-center justify-center border-2 border-primary 
+      rounded-full cursor-pointer appearance-none checked:before:block;
+
+    width: poly-fluid-clamp-primary(18px, 20px);
+    min-width: poly-fluid-clamp-primary(18px, 20px);
+    height: poly-fluid-clamp-primary(18px, 20px);
+    min-height: poly-fluid-clamp-primary(18px, 20px);
 
     &::before {
-      @apply hidden bg-primary rounded-full
-        w-[clamp(8px,calc(0.25vw+6.4px),10px)] h-[clamp(8px,calc(0.25vw+6.4px),10px)];
+      @apply hidden bg-primary rounded-full;
+
+      width: poly-fluid-clamp-primary(8px, 10px);
+      min-width: poly-fluid-clamp-primary(8px, 10px);
+      height: poly-fluid-clamp-primary(8px, 10px);
+      min-height: poly-fluid-clamp-primary(8px, 10px);
     }
   }
 
   .radio-input-text {
     @apply text-b5 text-black-light;
+  }
+}
+
+@mixin radio-input {
+  @apply items-center;
+
+  input[type="radio"] {
+    @apply items-center;
+  }
+
+  @include radio-input-common;
+}
+
+@mixin radio-input-extended {
+  @apply flex cursor-pointer;
+
+  input[type="radio"] {
+    margin-top: poly-fluid-clamp-primary(3px, 6px);
+  }
+
+  @include radio-input-common;
+
+  .radio-input-label {
+    @apply text-b3 font-bold text-black;
   }
 }
 
