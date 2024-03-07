@@ -66,7 +66,7 @@ const headings = new Array(
     }
 
     .kindness-cause-img-container {
-      @apply w-full aspect-[6/5];
+      @apply w-full h-full aspect-[6/5];
 
       picture,
       img {
@@ -158,27 +158,49 @@ const headings = new Array(
                               <span
                                 class:list={[
                                   "kindness-cause-clip-path w-full h-full bg-primary",
-                                  "flex flex-col lg:grid grid-cols-[180px_1fr] items-center sm:justify-center",
+                                  "flex flex-col lg:grid grid-cols-[120px_1fr] items-center sm:justify-center",
                                 ]}
                               >
-                                <span class="kindness-cause-img-container">
-                                  <Picture
-                                    layout="fill"
-                                    sizes="(min-width: 640px) 320px, 90vw)"
-                                    src={
-                                      STRAPI_URL +
-                                      featured_blob.data.attributes.url
-                                    }
-                                    alt={
-                                      featured_blob.data.attributes
-                                        .alternativeText
-                                    }
-                                    attributes={{
-                                      img: {
-                                        style: "aspect-ratio: 6 / 5;",
-                                      },
-                                    }}
-                                  />
+                                <span class="w-full h-full">
+                                  <span class="kindness-cause-img-container hidden md:block">
+                                    <Picture
+                                      layout="fill"
+                                      sizes="(min-width: 640px) 320px, 90vw)"
+                                      src={
+                                        STRAPI_URL +
+                                        featured_blob.data.attributes.url
+                                      }
+                                      alt={
+                                        featured_blob.data.attributes
+                                          .alternativeText
+                                      }
+                                      attributes={{
+                                        img: {
+                                          style: "aspect-ratio: 6 / 5;",
+                                        },
+                                      }}
+                                    />
+                                  </div>
+
+                                  <span class="kindness-cause-img-container block md:hidden">
+                                    <Picture
+                                      layout="fullWidth"
+                                      sizes="(min-width: 640px) 320px, 90vw)"
+                                      src={
+                                        STRAPI_URL +
+                                        featured_blob.data.attributes.url
+                                      }
+                                      alt={
+                                        featured_blob.data.attributes
+                                          .alternativeText
+                                      }
+                                      attributes={{
+                                        img: {
+                                          style: "aspect-ratio: 6 / 5;",
+                                        },
+                                      }}
+                                    />
+                                  </span>
                                 </span>
 
                                 <span
