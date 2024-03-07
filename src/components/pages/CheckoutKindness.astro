@@ -26,7 +26,7 @@ const checkoutSuccessLink = `/${locale}/${
 
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
-  
+
   .kindness-causes {
     > .active-kindness-cause {
       @apply -m-3 p-1.5 bg-primary;
@@ -75,13 +75,18 @@ const checkoutSuccessLink = `/${locale}/${
   <section class="text-center flex flex-col division-gap">
     <h1 class="recoleta text-h1 text-primary font-semibold">{page.Title}</h1>
 
-    <div class="text-b3 text-black-light"><Markdown>{page.Intro_text}</Markdown></div>
+    <div class="text-b3 text-black-light">
+      <Markdown>{page.Intro_text}</Markdown>
+    </div>
   </section>
 
   <section
     role="list"
     aria-label={checkoutRecurData.Aria_label_kindness_cause_items_text}
-    class="kindness-causes card-gap flex flex-col sm:flex-row flex-wrap justfify-center sm:justify-center"
+    class:list={[
+      "kindness-causes card-gap flex flex-col",
+      "sm:flex-row flex-wrap justfify-center sm:justify-center",
+    ]}
   >
     {
       page.kindness_causes.data.map(
@@ -98,7 +103,10 @@ const checkoutSuccessLink = `/${locale}/${
             <div class="h-full">
               <div
                 style="clip-path: url(#kindness-cause-card-curve);"
-                class="relative w-full h-full sm:w-[380px] flex flex-col bg-primary cursor-pointer"
+                class:list={[
+                  "relative w-full h-full sm:w-[380px]",
+                  "flex flex-col bg-primary cursor-pointer",
+                ]}
               >
                 <div class="h-[320px]">
                   <Picture
@@ -109,7 +117,12 @@ const checkoutSuccessLink = `/${locale}/${
                   />
                 </div>
 
-                <div class="grow px-[35px] pt-[20px] pb-[25px] division-in-gap flex flex-col justify-start text-white">
+                <div
+                  class:list={[
+                    "grow px-[35px] pt-[20px] pb-[25px] ",
+                    "division-in-gap flex flex-col justify-start text-white",
+                  ]}
+                >
                   <h2 class="recoleta text-h5-sm font-semibold">{cause}</h2>
 
                   <div class="text-b6-sm">
@@ -126,8 +139,8 @@ const checkoutSuccessLink = `/${locale}/${
 
   <div
     class:list={[
-      "flex flex-col-reverse sm:flex-row items-center",
-      "justify-center form-gap mx-auto w-full",
+      "flex flex-col-reverse sm:flex-row",
+      " items-center justify-center form-gap mx-auto w-full",
     ]}
   >
     <a href={checkoutSuccessLink} class="text-primary font-bold">
