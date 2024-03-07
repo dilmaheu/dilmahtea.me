@@ -35,12 +35,6 @@ export default function Orders({
         <div class="tiled-div division-gap grid">
           {Array.isArray(orders()) ? (
             <>
-              {orders().length > 3 && (
-                <a href="/account/orders" class="button-link-primary mx-auto">
-                  {userAccountRecurData.Button_go_to_my_orders_text}
-                </a>
-              )}
-
               {orders()
                 .slice(0, 3)
                 .map((order) => (
@@ -51,11 +45,17 @@ export default function Orders({
                       userAccountRecurData={userAccountRecurData}
                     />
 
-                    {index + 1 < orders.slice(0, 3).length && (
-                      <div class="border-b border-primary-lightest w-full"></div>
+                    {index + 1 < orders.slice(0, 4).length && (
+                      <div class="border-b border-primary-lightest"></div>
                     )}
                   </>
                 ))}
+
+              {orders().length > 3 && (
+                <a href="/account/orders" class="button-link-primary mx-auto">
+                  {userAccountRecurData.Button_go_to_my_orders_text}
+                </a>
+              )}
             </>
           ) : (
             Object.entries(orders()).map(([year, ordersByMonths]) => {
@@ -78,7 +78,7 @@ export default function Orders({
                         />
 
                         {index + 1 < orders.length && (
-                          <div class="border-b border-primary-lightest w-full"></div>
+                          <div class="border-b border-primary-lightest"></div>
                         )}
                       </>
                     ))}
