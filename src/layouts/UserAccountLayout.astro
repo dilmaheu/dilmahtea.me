@@ -21,17 +21,28 @@ const headingName =
   recurData.text_chapter;
 ---
 
-<div class="hero-sub-menu-shadow nav-bg"></div>
+<style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
+  .support-button-container {
+    right: poly-fluid-clamp-primary(24px, 50px);
+    bottom: poly-fluid-clamp-primary(25px, 50px);
+  }
+</style>
+
+<div class="relative z-5">
+  <div class="hero-sub-menu-shadow nav-bg hidden"></div>
+</div>
 
 <div class="wrapper">
   {
     Breadcrumb && (
       <div
         role="banner"
-        class="flex flex-wrap gap-2 recoleta text-2xl leading-[110%] text-primary mt-[25px]"
+        class="flex flex-wrap gap-2 sm:gap-2.5 text-h5 text-primary mt-[25px]"
       >
         {Breadcrumb?.Steps.map(({ Link, Name }, index) => (
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 sm:gap-2.5">
             {index > 0 && (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -51,13 +62,13 @@ const headingName =
   }
 </div>
 
-<section class="py-[50px]">
+<section class="section-in-v-pad">
   <Chapters fixedTop={true} headingName={headingName} headings={headings}>
     <slot name="sticky-top-timeline" slot="top-slot" />
   </Chapters>
 
   <div
-    class="wrapper w-full flex flex-col-reverse md:flex-row justify-between gap-[30px]"
+    class="wrapper division-gap w-full flex flex-col-reverse md:flex-row justify-between"
   >
     <div class="md:w-2/3 2xl:w-1/2 md:min-w-[400px]">
       <div class="xl:w-5/6 2xl:w-full grid division-gap">
@@ -77,22 +88,19 @@ const headingName =
 
 {
   Support_visibility && Support && (
-    <div class="z-[999] fixed bottom-[clamp(15px,3vw+5px,50px)] right-[clamp(15px,3vw+5px,50px)]">
-      <a href={Support.Button_link}>
-        <div class="flex items-center gap-4 p-5 md:py-5 md:px-[34px] rounded-full bg-[#3C994E]">
-          <div class="w-[45px] h-[45px]">
-            <img
-              class="w-full h-full object-contain"
-              src={await localizeCMSImage(
-                Support.Button_icon.data.attributes.url,
-              )}
-              alt={Support.Button_icon?.data?.attributes?.alternativeText}
-            />
-          </div>
-          <div class="hidden md:block text-3xl text-white">
-            {Support.Button_text}
-          </div>
+    <div class="support-button-container z-[999] fixed">
+      <a href={Support.Button_link} class="button-primary-large !bg-[#3C994E]">
+        <div class="button-icon">
+          <img
+            class="w-full h-full object-contain"
+            src={await localizeCMSImage(
+              Support.Button_icon.data.attributes.url,
+            )}
+            alt={Support.Button_icon?.data?.attributes?.alternativeText}
+          />
         </div>
+
+        <div class="hidden md:block">{Support.Button_text}</div>
       </a>
     </div>
   )
