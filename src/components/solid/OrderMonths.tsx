@@ -4,7 +4,7 @@ export default function OrderMonths({ green_right_arrow }) {
   return (
     <div
       role="list"
-      class="heading-content flex flex-col gap-[15px] text-2xl leading-[130%] lg:leading-[150%] overflow-y-auto"
+      class="heading-content division-in-gap flex flex-col text-b3 overflow-y-auto"
     >
       {!orders() ? (
         <>Loading...</>

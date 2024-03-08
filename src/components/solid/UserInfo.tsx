@@ -150,7 +150,7 @@ export default function UserInfo({
               setNotification={setNotification}
             />
 
-            <div class="h-px bg-primary-light" />
+            <div class="h-px bg-primary-lightest" />
 
             <InfoUnit
               label={Label_phone}
@@ -161,7 +161,7 @@ export default function UserInfo({
               setNotification={setNotification}
             />
 
-            <div class="h-px bg-primary-light" />
+            <div class="h-px bg-primary-lightest" />
 
             <InfoUnit
               label={Label_email}
@@ -172,7 +172,7 @@ export default function UserInfo({
               setNotification={setNotification}
             />
 
-            <div class="h-px bg-primary-light" />
+            <div class="h-px bg-primary-lightest" />
 
             {() => {
               const default_delivery_address = user().default_delivery_address,
@@ -189,7 +189,7 @@ export default function UserInfo({
                     handleAPIResponse={handleAPIResponse}
                   />
 
-                  <div class="h-px bg-primary-light" />
+                  <div class="h-px bg-primary-lightest" />
 
                   <DefaultAddress
                     label={Label_billing_address}
@@ -203,7 +203,7 @@ export default function UserInfo({
               );
             }}
 
-            <div class="h-px bg-primary-light" />
+            <div class="h-px bg-primary-lightest" />
 
             <div class="flex w-full">
               <button
