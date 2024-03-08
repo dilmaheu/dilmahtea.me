@@ -185,10 +185,6 @@ export default function SavedAddresses({
                 class="horizontal-toggle-button-primary mx-auto"
                 onClick={() => {
                   setShowMoreAddresses(!showMoreAddresses());
-
-                  document
-                    .querySelector(".toggle-button-arrow")
-                    .classList.toggle("rotate-180");
                 }}
               >
                 <span>
@@ -201,7 +197,10 @@ export default function SavedAddresses({
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 14 8"
-                  class="toggle-button-arrow fill-primary"
+                  class={
+                    "toggle-button-arrow fill-primary" +
+                    (showMoreAddresses() ? " rotate-180" : "")
+                  }
                 >
                   <path d="M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z" />
                 </svg>
