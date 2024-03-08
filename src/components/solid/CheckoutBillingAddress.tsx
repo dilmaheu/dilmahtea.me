@@ -28,9 +28,9 @@ export default function CheckoutBillingAddress({
               onchange={handleShowAddressForm}
             />
 
-            <div class="radio-input-text">
+            <span class="radio-input-text">
               {page.Radio_button_text_same_as_shipping_address}
-            </div>
+            </span>
           </label>
         </div>
 
@@ -44,9 +44,9 @@ export default function CheckoutBillingAddress({
               onchange={handleShowAddressForm}
             />
 
-            <div class="text-b5 text-black-light flex">
+            <span class="radio-input-text">
               {page.Radio_button_text_use_different_billing_address}
-            </div>
+            </span>
           </label>
         </div>
       </div>

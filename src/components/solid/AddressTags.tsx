@@ -60,7 +60,7 @@ export default function AddressTags({
           : Label_tag_text}
       </div>
 
-      <div class="flex flex-wrap gap-2.5 sm:gap-[15px]">
+      <div class="division-in-gap flex flex-wrap">
         {(action === "checkout" && addresses()?.length > 0
           ? usedTags()
           : [
@@ -123,19 +123,15 @@ export default function AddressTags({
         {action === "checkout" && addresses()?.length > 3 && (
           <button
             type="button"
-            class="flex items-center gap-1 text-primary font-bold cursor-pointer"
-            onclick={() => setShowMoreAddresses(!showMoreAddresses())}
-          >
-            {showMoreAddresses() && (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 8 14"
-                class="w-3 h-3 fill-primary"
-              >
-                <path d="M7.7,13.7a1.1,1.1,0,0,0,.3-.8,1.1,1.1,0,0,0-.3-.7L2.5,7,7.7,1.8A1.1,1.1,0,0,0,8,1,1.1,1.1,0,0,0,7.7.3,1.1,1.1,0,0,0,7,0a1.1,1.1,0,0,0-.8.3L.3,6.2A1.1,1.1,0,0,0,0,7a.9.9,0,0,0,.3.7l5.9,6A1.1,1.1,0,0,0,7,14a1.1,1.1,0,0,0,.7-.3Z"></path>
-              </svg>
-            )}
+            class="vertical-toggle-button-primary"
+            onClick={() => {
+              setShowMoreAddresses(!showMoreAddresses());
 
+              document
+                .querySelector(".toggle-button-arrow")
+                .classList.toggle("rotate-180");
+            }}
+          >
             <span>
               {(!showMoreAddresses()
                 ? text_more_address
@@ -143,15 +139,13 @@ export default function AddressTags({
               ).replace("<number>", addresses()?.length - 3)}
             </span>
 
-            {!showMoreAddresses() && (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 8 14"
-                class="w-3 h-3 fill-primary"
-              >
-                <path d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"></path>
-              </svg>
-            )}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 8 14"
+              class="toggle-button-arrow fill-primary"
+            >
+              <path d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"></path>
+            </svg>
           </button>
         )}
       </div>
@@ -173,7 +167,7 @@ export default function AddressTags({
               <span
                 tabIndex="0"
                 onclick={hideCustomTagInput}
-                class="tag-input-close-button text-2xl"
+                class="tag-input-close-button text-b3"
               >
                 <b>&#10005;</b>
               </span>

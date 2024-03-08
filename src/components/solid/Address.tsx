@@ -84,35 +84,37 @@ export default function Address({
         <Loading />
       ) : (
         <>
-          <div class="quick-info">
-            {() => {
-              const defaultDeliveryAddressId =
-                  user().default_delivery_address?.id,
-                defaultBillingAddressId = user().default_billing_address?.id,
-                isDefaultDeliveryAddress = defaultDeliveryAddressId === id,
-                isDefaultBillingAddress = defaultBillingAddressId === id;
+          <div class="quick-info-black-light">
+            <div class="quick-info-item">
+              {() => {
+                const defaultDeliveryAddressId =
+                    user().default_delivery_address?.id,
+                  defaultBillingAddressId = user().default_billing_address?.id,
+                  isDefaultDeliveryAddress = defaultDeliveryAddressId === id,
+                  isDefaultBillingAddress = defaultBillingAddressId === id;
 
-              return (
-                !isMyProfile &&
-                (isDefaultDeliveryAddress || isDefaultBillingAddress) && (
-                  <>
-                    <div class="info-tag-button-primary">
-                      {defaultDeliveryAddressId === defaultBillingAddressId
-                        ? Tag_default_text
-                        : isDefaultDeliveryAddress
-                          ? text_default_delivery_address
-                          : text_default_billing_address}
-                    </div>
+                return (
+                  !isMyProfile &&
+                  (isDefaultDeliveryAddress || isDefaultBillingAddress) && (
+                    <>
+                      <div class="info-tag-button-primary">
+                        {defaultDeliveryAddressId === defaultBillingAddressId
+                          ? Tag_default_text
+                          : isDefaultDeliveryAddress
+                            ? text_default_delivery_address
+                            : text_default_billing_address}
+                      </div>
 
-                    <div>&#x2022;</div>
-                  </>
-                )
-              );
-            }}
+                      <div>&#x2022;</div>
+                    </>
+                  )
+                );
+              }}
 
-            <div>{fullName}</div>
-            <div>&#x2022;</div>
-            <div class="info-tag-button">{tag}</div>
+              <div>{fullName}</div>
+              <div>&#x2022;</div>
+              <div class="info-tag-button-default">{tag}</div>
+            </div>
           </div>
 
           <div class="flex items-center division-in-element-gap justify-between">
