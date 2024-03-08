@@ -3,8 +3,9 @@ import type { handleAPIResponseType } from "@utils/handleAPIResponseBase";
 
 import { createSignal } from "solid-js";
 
-import Loading from "@solid/Loading";
 import { user } from "@signals/user";
+import Loading from "@solid/Loading";
+import EditIcon from "@solid/EditIcon";
 
 export interface Address {
   id: string;
@@ -136,7 +137,7 @@ export default function Address({
                   }
                 }}
               >
-                {isMyProfile ? Button_update_text : Button_edit_text}
+                <EditIcon />
               </button>
 
               {() => {

@@ -1,5 +1,7 @@
-import { user } from "@signals/user";
 import { createSignal } from "solid-js";
+
+import { user } from "@signals/user";
+import EditIcon from "@solid/EditIcon";
 
 export default function InfoUnit({
   label,
@@ -158,9 +160,7 @@ export default function InfoUnit({
           </div>
         ) : (
           <button class="button-link-primary-large" onclick={handleEdit}>
-            {["display_name", "address"].includes(property)
-              ? Button_edit_text
-              : Button_update_text}
+            <EditIcon />
           </button>
         )}
       </div>
