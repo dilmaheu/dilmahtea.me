@@ -32,12 +32,6 @@ const checkoutSuccessLink = `/${locale}/${
       @apply -m-3 p-1.5 bg-primary;
 
       clip-path: url(#kindness-cause-card-curve);
-
-      > div {
-        @apply p-1.5 bg-secondary;
-
-        clip-path: url(#kindness-cause-card-curve);
-      }
     }
   }
 
@@ -85,6 +79,69 @@ const checkoutSuccessLink = `/${locale}/${
     aria-label={checkoutRecurData.Aria_label_kindness_cause_items_text}
     class:list={[
       "kindness-causes card-gap flex flex-col",
+      "sm:flex-row flex-wrap justify-center sm:justify-center",
+    ]}
+  >
+    {
+      page.kindness_causes.data.map(
+        ({
+          attributes: { cause, description, featured_blob, localizations },
+        }) => (
+          <div
+            tabindex="0"
+            role="listitem"
+            aria-label={cause}
+            class="kindness-cause"
+            data-cause={localizations?.data[0]?.attributes?.cause || cause}
+          >
+            <input
+              type="radio"
+              name="kindness_cause"
+              id={`cause_${cause}`}
+              class="hidden"
+            />
+            <label for={`cause_${cause}`} class="relative h-full">
+              <div
+                style="clip-path: url(#kindness-cause-card-curve);"
+                class:list={[
+                  "relative w-full h-full sm:w-[380px]",
+                  "flex flex-col bg-primary cursor-pointer",
+                ]}
+              >
+                <div class="h-[320px]">
+                  <Picture
+                    layout="fill"
+                    sizes="(min-width: 640px) 320px, 90vw"
+                    alt={featured_blob.data.attributes.alternativeText}
+                    src={STRAPI_URL + featured_blob.data.attributes.url}
+                  />
+                </div>
+
+                <div
+                  class:list={[
+                    "grow px-[35px] pt-[20px] pb-[25px]",
+                    "division-in-gap flex flex-col justify-start text-white",
+                  ]}
+                >
+                  <h2 class="recoleta text-h5-sm font-semibold">{cause}</h2>
+
+                  <div class="text-b6-sm">
+                    <Markdown>{description}</Markdown>
+                  </div>
+                </div>
+              </div>
+            </label>
+          </div>
+        ),
+      )
+    }
+  </section>
+
+  <!-- <section
+    role="list"
+    aria-label={checkoutRecurData.Aria_label_kindness_cause_items_text}
+    class:list={[
+      "kindness-causes card-gap flex flex-col",
       "sm:flex-row flex-wrap justfify-center sm:justify-center",
     ]}
   >
@@ -101,6 +158,7 @@ const checkoutSuccessLink = `/${locale}/${
             data-cause={localizations?.data[0]?.attributes?.cause || cause}
           >
             <div class="h-full">
+              
               <div
                 style="clip-path: url(#kindness-cause-card-curve);"
                 class:list={[
@@ -135,7 +193,7 @@ const checkoutSuccessLink = `/${locale}/${
         ),
       )
     }
-  </section>
+  </section> -->
 
   <div
     class:list={[
