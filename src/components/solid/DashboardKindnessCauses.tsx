@@ -145,6 +145,7 @@ export default function DashboardKindnessCauses({
           notification={notification}
           notificationIcons={notificationIcons}
           bottomMargin={true}
+          bordered={true}
         />
 
         {kindnessCausesHTML}
