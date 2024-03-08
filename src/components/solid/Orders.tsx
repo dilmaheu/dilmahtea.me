@@ -32,41 +32,55 @@ export default function Orders({
       ) : (isOrdersPage ? Object.keys(orders()) : orders()).length === 0 ? (
         noOrdersHTML
       ) : (
-        <div class="dashboard-sec grid gap-[25px] sm:gap-[30px]">
+        <div class="tiled-div division-gap grid">
           {Array.isArray(orders()) ? (
             <>
-              {orders().length > 3 && (
-                <a
-                  href="/account/orders"
-                  class="mx-auto font-bold leading-[150%] text-primary"
-                >
-                  {userAccountRecurData.Button_go_to_my_orders_text}
-                </a>
-              )}
-
               {orders()
                 .slice(0, 3)
                 .map((order) => (
-                  <Order
-                    order={order}
-                    notificationIcons={notificationIcons}
-                    userAccountRecurData={userAccountRecurData}
-                  />
+                  <>
+                    <Order
+                      order={order}
+                      notificationIcons={notificationIcons}
+                      userAccountRecurData={userAccountRecurData}
+                    />
+
+                    {index + 1 < orders.slice(0, 4).length && (
+                      <div class="border-b border-primary-lightest"></div>
+                    )}
+                  </>
                 ))}
+
+              {orders().length > 3 && (
+                <a href="/account/orders" class="button-link-primary mx-auto">
+                  {userAccountRecurData.Button_go_to_my_orders_text}
+                </a>
+              )}
             </>
           ) : (
             Object.entries(orders()).map(([year, ordersByMonths]) => {
               if (year === ordersYear()) {
                 return Object.entries(ordersByMonths).map(([month, orders]) => (
                   <>
-                    <h2 id={month.toLowerCase()}>{month}</h2>
+                    <h2
+                      class="text-b3 font-bold text-primary"
+                      id={month.toLowerCase()}
+                    >
+                      {month}
+                    </h2>
 
-                    {orders.map((order) => (
-                      <Order
-                        order={order}
-                        notificationIcons={notificationIcons}
-                        userAccountRecurData={userAccountRecurData}
-                      />
+                    {orders.map((order, index) => (
+                      <>
+                        <Order
+                          order={order}
+                          notificationIcons={notificationIcons}
+                          userAccountRecurData={userAccountRecurData}
+                        />
+
+                        {index + 1 < orders.length && (
+                          <div class="border-b border-primary-lightest"></div>
+                        )}
+                      </>
                     ))}
                   </>
                 ));

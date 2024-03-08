@@ -128,11 +128,11 @@ export default function UserInfo({
 
   return (
     <>
-      <h2 id="personal-information" class="dashboard-sec-title recoleta">
+      <h2 id="personal-information" class="tiled-title text-h2">
         {Title.replace("<username>", user().display_name)}
       </h2>
 
-      <div class="dashboard-sec">
+      <div class="tiled-div">
         <div class="grid division-gap">
           <div class="grid division-in-gap">
             <SolidNotification
@@ -150,7 +150,7 @@ export default function UserInfo({
               setNotification={setNotification}
             />
 
-            <div class="h-px bg-primary-light" />
+            <div class="h-px bg-primary-lightest" />
 
             <InfoUnit
               label={Label_phone}
@@ -161,7 +161,7 @@ export default function UserInfo({
               setNotification={setNotification}
             />
 
-            <div class="h-px bg-primary-light" />
+            <div class="h-px bg-primary-lightest" />
 
             <InfoUnit
               label={Label_email}
@@ -172,7 +172,7 @@ export default function UserInfo({
               setNotification={setNotification}
             />
 
-            <div class="h-px bg-primary-light" />
+            <div class="h-px bg-primary-lightest" />
 
             {() => {
               const default_delivery_address = user().default_delivery_address,
@@ -189,7 +189,7 @@ export default function UserInfo({
                     handleAPIResponse={handleAPIResponse}
                   />
 
-                  <div class="h-px bg-primary-light" />
+                  <div class="h-px bg-primary-lightest" />
 
                   <DefaultAddress
                     label={Label_billing_address}
@@ -203,7 +203,7 @@ export default function UserInfo({
               );
             }}
 
-            <div class="h-px bg-primary-light" />
+            <div class="h-px bg-primary-lightest" />
 
             <div class="flex w-full">
               <button
@@ -274,7 +274,7 @@ export default function UserInfo({
       </div>
 
       {/* {Social_media && (
-        <div class="dashboard-sec">
+        <div class="tiled-div">
           <div>
             <div class="recoleta text-2xl leading-[110%] text-black">
               {Social_media_title}

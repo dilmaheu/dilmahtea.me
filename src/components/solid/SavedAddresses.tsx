@@ -104,7 +104,7 @@ export default function SavedAddresses({
   });
 
   return (
-    <div class="dashboard-sec">
+    <div class="tiled-div">
       <div class="grid division-gap">
         <SolidNotification
           notification={notification}
@@ -113,9 +113,7 @@ export default function SavedAddresses({
         />
 
         <div class="flex flex-wrap items-center justify-between w-full">
-          <div class="recoleta text-h5 font-bold text-black">
-            {text_saved_Addresses}
-          </div>
+          <div class="text-h5 font-bold text-black">{text_saved_Addresses}</div>
 
           <button
             class="button-primary"
@@ -137,7 +135,7 @@ export default function SavedAddresses({
           />
         )}
 
-        <div class="h-px bg-primary-light"></div>
+        <div class="h-px bg-primary-lightest"></div>
 
         {isLoading() && <Loading />}
 
@@ -174,7 +172,7 @@ export default function SavedAddresses({
 
                       {i() <
                         (showMoreAddresses() ? addresses().length : 3) - 1 && (
-                        <div class="h-px bg-primary-light"></div>
+                        <div class="h-px bg-primary-lightest"></div>
                       )}
                     </>
                   );
@@ -184,8 +182,14 @@ export default function SavedAddresses({
 
             {addresses().length > 3 && (
               <button
-                onclick={() => setShowMoreAddresses(!showMoreAddresses())}
-                class="horizontal-toggle-button-primary w-full flex justify-center"
+                class="horizontal-toggle-button-primary mx-auto"
+                onClick={() => {
+                  setShowMoreAddresses(!showMoreAddresses());
+
+                  document
+                    .querySelector(".toggle-button-arrow")
+                    .classList.toggle("rotate-180");
+                }}
               >
                 <span>
                   {(!showMoreAddresses()
@@ -194,23 +198,13 @@ export default function SavedAddresses({
                   ).replaceAll("<number>", addresses().length - 3)}
                 </span>
 
-                {!showMoreAddresses() ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 14 8"
-                    class="toggle-button-arrow fill-primary"
-                  >
-                    <path d="M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z" />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 14 8"
-                    class="toggle-button-arrow fill-primary"
-                  >
-                    <path d="M13.7,7.7a1.1,1.1,0,0,1-.8.3.9.9,0,0,1-.7-.3L7,2.5,1.8,7.7A1.1,1.1,0,0,1,1,8a.9.9,0,0,1-.7-.3A.9.9,0,0,1,0,7a1.1,1.1,0,0,1,.3-.8L6.2.3A1.1,1.1,0,0,1,7,0a.9.9,0,0,1,.7.3l6,5.9A1.1,1.1,0,0,1,14,7,.9.9,0,0,1,13.7,7.7Z" />
-                  </svg>
-                )}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 14 8"
+                  class="toggle-button-arrow fill-primary"
+                >
+                  <path d="M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z" />
+                </svg>
               </button>
             )}
           </>

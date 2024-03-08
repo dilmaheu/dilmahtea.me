@@ -1,13 +1,15 @@
 import type { Session } from "lucia";
 import type { Address } from "@solid/Address";
 
+import type { ENV } from "../utils/types";
+
 import { z } from "zod";
 import objectHash from "object-hash";
 
 import subset from "@utils/shared/subset";
+import addressDetailsKeys from "@utils/shared/addressDetailsKeys";
 
 import { initializeLucia } from "../utils/auth";
-import type { ENV } from "functions/utils/types";
 
 const EditAddressBodySchema = z.object({
   first_name: z.string(),
@@ -43,15 +45,6 @@ declare type HandlerBody = (
   bodyData: any,
 ) => Promise<Response>;
 
-const addressDetailsKeys = [
-  "first_name",
-  "last_name",
-  "street",
-  "city",
-  "postal_code",
-  "country",
-];
-
 function getAPIHandler(handlerBody: HandlerBody) {
   const handler: PagesFunction<ENV> = async (context) => {
     const { request, env } = context;
@@ -59,25 +52,27 @@ function getAPIHandler(handlerBody: HandlerBody) {
     const auth = initializeLucia(env.USERS),
       authRequest = auth.handleRequest(request);
 
+    const isGET = request.method === "GET";
+
     const session: Session = await authRequest.validate();
 
     if (!session)
       return Response.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 },
+        isGET ? [] : { success: false, error: "Unauthorized" },
+        { status: isGET ? 200 : 401 },
       );
 
-    const bodyData = request.method === "GET" ? null : await request.json();
+    const bodyData = isGET ? null : await request.json();
 
     try {
       const Schema =
         request.method === "POST"
           ? AddAddressBodySchema
           : request.method === "PUT"
-          ? UpdateAddressBodySchema
-          : request.method === "DELETE"
-          ? DeleteAddressBodySchema
-          : null;
+            ? UpdateAddressBodySchema
+            : request.method === "DELETE"
+              ? DeleteAddressBodySchema
+              : null;
 
       var validatedData = Schema?.parse(bodyData) || null;
     } catch (error) {
@@ -146,7 +141,7 @@ export const onRequestPost = getAPIHandler(
 
     const usedTags = addresses.map((address) => address.tag);
 
-    if (usedTags.includes(tag))
+    if (usedTags.map((tag) => tag.toLowerCase()).includes(tag.toLowerCase()))
       return Response.json(
         { success: false, message: "Address tag has been used already" },
         { status: 400 },
@@ -236,41 +231,43 @@ export const onRequestPut = getAPIHandler(
 
     const providedAddressHash = objectHash(providedAddress);
 
-    if (addressHashes.includes(providedAddressHash))
-      return Response.json(
-        { success: false, message: "Duplicate address provided" },
-        { status: 400 },
-      );
+    let hasNothingToUpdate = true;
 
-    const existingAddress = addresses.find((address) => address.id === id);
+    if (!addressHashes.includes(providedAddressHash)) {
+      hasNothingToUpdate = false;
 
-    if (!existingAddress)
-      return Response.json(
-        { success: false, message: "Address does not exist" },
-        { status: 400 },
-      );
+      const existingAddress = addresses.find((address) => address.id === id);
 
-    if (tag !== existingAddress.tag) {
-      const usedTags = addresses.map((address) => address.tag);
-
-      if (usedTags.includes(tag))
+      if (!existingAddress)
         return Response.json(
-          { success: false, message: "Address tag has been used already" },
+          { success: false, message: "Address does not exist" },
           { status: 400 },
         );
+
+      if (tag !== existingAddress.tag) {
+        const usedTags = addresses.map((address) => address.tag.toLowerCase());
+
+        if (usedTags.includes(tag.toLowerCase()))
+          return Response.json(
+            { success: false, message: "Address tag has been used already" },
+            { status: 400 },
+          );
+      }
+
+      await env.USERS.prepare(
+        "UPDATE addresses SET tag = ?, first_name = ?, last_name = ?, street = ?, city = ?, postal_code = ?, country = ? WHERE id = ?",
+      )
+        .bind(
+          tag,
+          ...Object.values(subset(validatedData, addressDetailsKeys)),
+          id,
+        )
+        .run();
     }
 
-    await env.USERS.prepare(
-      "UPDATE addresses SET tag = ?, first_name = ?, last_name = ?, street = ?, city = ?, postal_code = ?, country = ? WHERE id = ?",
-    )
-      .bind(
-        tag,
-        ...Object.values(subset(validatedData, addressDetailsKeys)),
-        id,
-      )
-      .run();
-
     if (set_as_default_delivery_address && id !== default_delivery_address) {
+      hasNothingToUpdate = false;
+
       await env.USERS.prepare(
         "UPDATE user SET default_delivery_address = ? WHERE exact_account_guid = ?",
       )
@@ -279,12 +276,20 @@ export const onRequestPut = getAPIHandler(
     }
 
     if (set_as_default_billing_address && id !== default_billing_address) {
+      hasNothingToUpdate = false;
+
       await env.USERS.prepare(
         "UPDATE user SET default_billing_address = ? WHERE exact_account_guid = ?",
       )
         .bind(id, exact_account_guid)
         .run();
     }
+
+    if (hasNothingToUpdate)
+      return Response.json(
+        { success: false, message: "Nothing to update" },
+        { status: 400 },
+      );
 
     return Response.json({ success: true });
   },

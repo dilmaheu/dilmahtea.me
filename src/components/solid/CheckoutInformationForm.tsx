@@ -2,17 +2,20 @@ import { createEffect, createSignal, onMount } from "solid-js";
 
 import { user } from "@signals/user";
 import { addresses } from "@signals/addresses";
+import { showAddressForm } from "@signals/showAddressForm";
 
 import AddressTags from "@solid/AddressTags";
 import EditAddressForm from "@solid/EditAddressForm";
 import SolidNotification from "@solid/SolidNotification";
 
+import addressDetailsKeys from "@utils/shared/addressDetailsKeys";
 import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 
 export default function CheckoutInformationForm({
   recurData,
   userAccountRecurData,
   notificationIcons,
+  isBilling = false,
 }) {
   const [notification, setNotification] = createSignal(null),
     [displayTags, setDisplayTags] = createSignal(false),
@@ -26,10 +29,17 @@ export default function CheckoutInformationForm({
   });
 
   createEffect(() => {
-    const { default_delivery_address } = user();
+    if (!isBilling && window.checkoutInfo.address_tag) {
+      setSelectedTag(window.checkoutInfo.address_tag);
+    } else {
+      const defaultAddress =
+        user()[
+          isBilling ? "default_billing_address" : "default_delivery_address"
+        ];
 
-    if (default_delivery_address.constructor === Object) {
-      setSelectedTag(default_delivery_address.tag);
+      if (defaultAddress.constructor === Object) {
+        setSelectedTag(defaultAddress.tag);
+      }
     }
   });
 
@@ -37,42 +47,60 @@ export default function CheckoutInformationForm({
     setNotification(null);
 
     const checkoutInfoForm = document.getElementById(
-      "checkout-info-form",
-    ) as HTMLFormElement;
+        "checkout-info-form",
+      ) as HTMLFormElement,
+      paymentInfoForm = document.getElementById(
+        "payment-info-form",
+      ) as HTMLFormElement;
 
-    checkoutInfoForm?.addEventListener("submit", (event) => {
+    const form = isBilling ? paymentInfoForm : checkoutInfoForm;
+
+    form?.addEventListener("submit", (event) => {
       event.preventDefault();
 
-      const formData = Object.fromEntries(new FormData(checkoutInfoForm)),
-        { street, city, country } = formData,
-        contactInfo = {
-          ...formData,
-          delivery_address: [street, city, country].join(", "),
-        };
+      const formData = Object.fromEntries(new FormData(event.currentTarget));
 
-      localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
+      if (!isBilling) {
+        const { street, city, country } = formData,
+          contactInfo = {
+            ...formData,
+            delivery_address: [street, city, country].join(", "),
+          };
 
-      const selectedAddress =
-        Array.isArray(addresses()) &&
-        addresses().find(({ tag }) => tag === selectedTag());
+        if (selectedTag()) contactInfo.address_tag = selectedTag();
+
+        localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
+      }
+
+      const selectedAddress = addresses()?.find(
+        ({ tag }) => tag === selectedTag(),
+      );
+
+      const addressData = {} as Record<string, string>;
+
+      addressDetailsKeys.forEach((key) => {
+        addressData[key] = formData[isBilling ? `billing_${key}` : key];
+      });
+
+      addressData.tag = formData.tag;
 
       if (selectedAddress) {
-        formData.id = selectedAddress.id;
+        addressData.id = selectedAddress.id;
 
         if (
-          formData.first_name === selectedAddress.first_name &&
-          formData.last_name === selectedAddress.last_name &&
-          formData.street === selectedAddress.street &&
-          formData.city === selectedAddress.city &&
-          formData.country === selectedAddress.country &&
-          formData.postal_code === selectedAddress.postal_code
+          addressData.first_name === selectedAddress.first_name &&
+          addressData.last_name === selectedAddress.last_name &&
+          addressData.street === selectedAddress.street &&
+          addressData.city === selectedAddress.city &&
+          addressData.country === selectedAddress.country &&
+          addressData.postal_code === selectedAddress.postal_code
         ) {
-          location.href = checkoutInfoForm.action;
+          form.submit();
 
           return;
         }
       } else if (window.cookies.isAuthenticated !== "true") {
-        location.href = checkoutInfoForm.action;
+        form.submit();
       }
 
       fetch("/api/addresses", {
@@ -80,11 +108,11 @@ export default function CheckoutInformationForm({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(addressData),
       }).then((response) =>
         handleAPIResponseBase(response, notification, setNotification, {
           onSuccess: () => {
-            location.href = checkoutInfoForm.action;
+            form.submit();
           },
         }),
       );
@@ -103,28 +131,33 @@ export default function CheckoutInformationForm({
 
         return (
           <>
-            <SolidNotification
-              notification={notification}
-              notificationIcons={notificationIcons}
-              bordered={false}
-            />
+            {(!isBilling || showAddressForm()) && (
+              <>
+                <SolidNotification
+                  notification={notification}
+                  notificationIcons={notificationIcons}
+                  bordered={false}
+                />
 
-            {shouldDisplayTags && (
-              <AddressTags
-                action="checkout"
-                address={selectedAddress}
-                userAccountRecurData={userAccountRecurData}
-                setSelectedTag={setSelectedTag}
-                showMoreAddresses={showMoreAddresses}
-                setShowMoreAddresses={setShowMoreAddresses}
-                shouldShowCustomTagInput={shouldShowCustomTagInput}
-              />
+                {shouldDisplayTags && (
+                  <AddressTags
+                    action="checkout"
+                    address={selectedAddress}
+                    userAccountRecurData={userAccountRecurData}
+                    setSelectedTag={setSelectedTag}
+                    showMoreAddresses={showMoreAddresses}
+                    setShowMoreAddresses={setShowMoreAddresses}
+                    shouldShowCustomTagInput={shouldShowCustomTagInput}
+                  />
+                )}
+              </>
             )}
 
             <EditAddressForm
               action="checkout"
               address={selectedAddress}
               recurData={recurData}
+              isBilling={isBilling}
             />
           </>
         );
