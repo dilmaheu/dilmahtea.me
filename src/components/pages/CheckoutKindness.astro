@@ -86,7 +86,7 @@ const checkoutSuccessLink = `/${locale}/${
               aria-label={cause}
               data-cause={localizations?.data[0]?.attributes?.cause || cause}
               class="post-card !bg-transparent"
-              onclick="KindnessSubmitToggle()"
+              onclick="document.getElementById('submit-cause-btn').removeAttribute('disabled')"
             >
               <input
                 type="radio"
@@ -121,7 +121,6 @@ const checkoutSuccessLink = `/${locale}/${
                       <span class="post-title">{cause}</span>
 
                       <div class="text-secondary-light text-b6-xs line-clamp-3">
-                        {" "}
                         {description}
                       </div>
                     </span>
@@ -147,22 +146,12 @@ const checkoutSuccessLink = `/${locale}/${
       <button
         disabled
         id="submit-cause-btn"
-        class="button-disabled-large w-full sm:min-w-[250px] sm:w-fit"
+        class="button-primary-large w-full sm:min-w-[250px] sm:w-fit"
       >
         {page.text_submit_kindness_cause}
       </button>
     </div>
   </section>
 </div>
-
-<script is:inline>
-  function KindnessSubmitToggle() {
-    const submitCauseBtn = document.getElementById("submit-cause-btn");
-
-    submitCauseBtn.disabled = false;
-    submitCauseBtn.classList.remove("button-disabled-large");
-    submitCauseBtn.classList.add("button-primary-large");
-  }
-</script>
 
 <CheckoutKindnessScript client:only checkoutSuccessLink={checkoutSuccessLink} />
