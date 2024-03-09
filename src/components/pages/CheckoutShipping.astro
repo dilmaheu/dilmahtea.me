@@ -1,5 +1,6 @@
 ---
 import CMS from "@store/CMS";
+import Markdown from "@components/Markdown.astro";
 import getLocalizedLink from "@utils/getLocalizedLink";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import OrderSummary from "@components/OrderSummary.astro";
@@ -89,37 +90,29 @@ const { page } = Astro.props,
       {
         page.shipping_methods.data.map(
           ({ attributes: { method, cost, description, localizations } }, i) => (
-            <label
-              role="listitem"
-              class="gap-5 flex items-center cursor-pointer"
-            >
-              <div>
-                <input
-                  type="radio"
-                  name="shipping_method"
-                  value={localizations?.data[0]?.attributes?.method || method}
-                  data-cost={cost}
-                  class:list={[
-                    "hover:brightness-50 active:brightness-150 block",
-                    "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
-                    "checked:before:block before:hidden before:w-2 before:h-2 before:bg-primary before:rounded-full",
-                  ]}
-                  checked={i === 0 ? "" : undefined}
-                  required
-                />
-              </div>
+            <label class="division-in-element-gap radio-input-extended">
+              <input
+                type="radio"
+                name="shipping_method"
+                value={localizations?.data[0]?.attributes?.method || method}
+                data-cost={cost}
+                checked={i === 0 ? "" : undefined}
+                class="peer hidden"
+              />
 
-              <div class="division-in-element-gap grid">
-                <span class="flex items-center gap-2 text-b3 font-bold text-black">
+              <span>
+                <span class="radio-input-label">
                   <span class="shipping-method">{method}</span>
-                  <span>&#x2022;</span>
+                  &#x2022;
                   <span class="shipping-cost">
                     €{cost.toFixed(2).toString().replace(".", ",")}
                   </span>
                 </span>
 
-                <span class="text-b5 text-black-light">{description}</span>
-              </div>
+                <span class="prose-text radio-input-text">
+                  <Markdown>{description}</Markdown>
+                </span>
+              </span>
             </label>
           ),
         )
