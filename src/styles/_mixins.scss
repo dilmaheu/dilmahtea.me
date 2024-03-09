@@ -247,6 +247,12 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   .button-icon {
     @apply h-[16px];
   }
+
+  &:disabled {
+    @apply cursor-not-allowed;
+
+    @include button-disabled-colors;
+  }
 }
 
 @mixin button-font {
@@ -881,12 +887,25 @@ $primary: str-slice(meta.inspect(colors.$primary), 2);
   }
 }
 
+@mixin input-default {
+  @apply w-full;
+  
+  label {
+    @include division-in-element-gap;
+    @include input-label;
+
+    @apply flex flex-col w-full;
+
+    input {
+      @include input-field-default;
+    }
+  }
+}
+
 @mixin form-grid {
   @include form-gap;
   @include input-selector-default;
-  input {
-    @include input-field-default;
-  }
+  @include input-default;
 
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
@@ -902,11 +921,6 @@ $primary: str-slice(meta.inspect(colors.$primary), 2);
   @apply w-full grid sm:grid-cols-2;
 
   label {
-    @include division-in-element-gap;
-    @include input-label;
-
-    @apply flex flex-col;
-
     span.tag-input-close-button {
       @apply absolute inset-y-0 right-0 cursor-pointer
         flex items-center pr-5 font-bold text-error-dark;
