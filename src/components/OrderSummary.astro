@@ -4,24 +4,23 @@ import DynamicHTML from "@components/DynamicHTML.astro";
 
 const { page } = Astro.props,
   { locale } = page,
-  checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
   userRecurData = CMS.get("userAccountRecurringElement", locale),
-  isCheckoutInformation = page.type === "checkoutInformation",
-  isCheckoutPayment = page.type === "checkoutPayment",
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+
+const checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug,
+  checkoutInfoLink = CMS.get("checkoutInformation", locale).Meta.URL_slug,
+  checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug;
+
+const isCheckoutInformation = page.type === "checkoutInformation",
   isCheckoutShipping = page.type === "checkoutShipping",
-  checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug;
+  isCheckoutPayment = page.type === "checkoutPayment";
 ---
 
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
 
   .product-image {
-    $fluid-image-size: poly-fluid-clamp(
-      (
-        375px: 50px,
-        1440px: 85px,
-      )
-    );
+    $fluid-image-size: poly-fluid-clamp-primary(50px, 85px);
 
     width: $fluid-image-size;
     height: $fluid-image-size;
@@ -44,141 +43,234 @@ const { page } = Astro.props,
 </style>
 
 <div
-  class:list={[
-    "order-summary division-gap text-black flex flex-col",
-    "h-full xl:pl-[50px] xl:border-l xl:border-l-primary-lightest",
-  ]}
+  class="division-gap grid h-full lg:pl-[50px] lg:border-l lg:border-l-primary-lightest"
 >
-  <div class="flex flex-col gap-5">
-    <div class="summery-text-container flex-wrap gap-2.5">
-      <h2 class="text-h3">
-        {checkoutRecurData.text_order_summary}
-      </h2>
-
-      <a
-        href={checkoutCartLink}
-        class="text-b4 text-primary font-bold underline underline-offset-2"
-      >
-        {checkoutRecurData.text_edit_cart}
-      </a>
-    </div>
-
-    <DynamicHTML
-      htmlFn={(content) =>
-        Object.keys(window.cart)
-          .map((id) => {
-            const productData = window.cart[id],
-              names = JSON.parse(productData.names),
-              name = names[window.preferredLocale] || names["en"],
-              infos = JSON.parse(productData.infos),
-              info = infos[window.preferredLocale] || infos["en"],
-              price = productData.price.toFixed(2).replace(".", ",");
-
-            return window.replacePlaceholders(content, {
-              ...productData,
-              name,
-              info,
-              price,
-            });
-          })
-          .join("")}
-    >
+  {
+    (isCheckoutShipping || isCheckoutPayment) && (
       <div
-        class:list={[
-          "product tiled-div-sm-pad division-in-gap",
-          "flex bg-secondary-light rounded-[10px]",
-        ]}
+        role="list"
+        aria-label={userRecurData.Input_label_email}
+        class="tiled-div-pad division-in-gap grid bg-secondary-light rounded-[10px]"
       >
-        <img
-          class="product-image"
-          src={`<placeholder name="image"></placeholder>`}
-          style="clip-path: url(#product-image-curve)"
-        />
-
-        <div class="division-in-element-gap flex flex-col flex-grow">
-          <h3 class="product-name recoleta text-h5">
-            <placeholder name="name"></placeholder>
-          </h3>
-
-          <div class="text-b6 text-black-light">
-            <placeholder name="info"></placeholder>
+        <div
+          role="listitem"
+          aria-label={page.Aria_label_email_address_text}
+          class="division-in-element-gap"
+        >
+          <div class="input-label text-black">
+            {userRecurData.Input_label_email}
           </div>
 
-          <div class="flex items-center justify-between">
-            <span class="text-b6 font-medium text-black-light">
-              <span>{userRecurData.text_quantity}:</span>
-              <placeholder name="quantity"></placeholder>
-            </span>
-            <span class="product-price text-b3 font-bold text-right">
-              €<placeholder name="price"></placeholder>
-            </span>
+          <div class="division-in-element-gap flex flex-wrap items-center">
+            <div class="input-text-large-static grow">
+              <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
+            </div>
+
+            <a
+              aria-label={`${userRecurData.Button_change_text} ${userRecurData.Input_label_email}`}
+              href={checkoutInfoLink + "?change=email"}
+              class="button-link-primary-large"
+            >
+              {userRecurData.Button_change_text}
+            </a>
           </div>
         </div>
+
+        <div class="w-full h-px bg-primary-lightest" />
+
+        <div
+          role="listitem"
+          aria-label={page.Aria_label_email_address_text}
+          class="division-in-element-gap"
+        >
+          <div class="input-label text-black">
+            {userRecurData.Label_delivery_address}
+          </div>
+
+          <div class="division-in-element-gap flex flex-wrap items-center">
+            <div class="input-text-large-static grow">
+              <DynamicHTML
+                htmlFn={() => window.checkoutInfo.delivery_address}
+              />
+            </div>
+
+            <a
+              aria-label={`${userRecurData.Button_change_text} ${userRecurData.Label_delivery_address}`}
+              href={checkoutInfoLink + "?change=address"}
+              class="button-link-primary-large"
+            >
+              {userRecurData.Button_change_text}
+            </a>
+          </div>
+        </div>
+
+        {isCheckoutPayment && (
+          <>
+            <div class="w-full h-px bg-primary-lightest" />
+
+            <div
+              role="listitem"
+              aria-label={page.Aria_label_email_address_text}
+              class="division-in-element-gap"
+            >
+              <div class="input-label text-black">
+                {userRecurData.Label_shipping_method}
+              </div>
+
+              <div class="division-in-element-gap flex flex-wrap items-center">
+                <div class="input-text-large-static grow">
+                  <DynamicHTML
+                    htmlFn={() => window.checkoutInfo.shipping_method}
+                  />
+                </div>
+
+                <a
+                  aria-label={`${userRecurData.Button_change_text} ${userRecurData.Label_shipping_method}`}
+                  href={checkoutShippingLink}
+                  class="button-link-primary-large"
+                >
+                  {userRecurData.Button_change_text}
+                </a>
+              </div>
+            </div>
+          </>
+        )}
       </div>
-    </DynamicHTML>
-  </div>
+    )
+  }
 
-  <div class="division-in-element-gap flex flex-col text-black-light">
-    <div
-      class="order-charges division-in-element-gap flex flex-col text-black-light"
-    >
-      <div
-        class:list={[
-          "summery-text-container",
-          isCheckoutInformation
-            ? "summery-highlighted-text"
-            : "summery-base-text",
-        ]}
+  <div class="order-summary division-gap text-black flex flex-col">
+    <div class="flex flex-col gap-5">
+      <div class="summery-text-container flex-wrap gap-2.5">
+        <h2 class="text-h3">
+          {checkoutRecurData.text_order_summary}
+        </h2>
+
+        <a
+          href={checkoutCartLink}
+          class="text-b4 text-primary font-bold underline underline-offset-2"
+        >
+          {checkoutRecurData.text_edit_cart}
+        </a>
+      </div>
+
+      <DynamicHTML
+        htmlFn={(content) =>
+          Object.keys(window.cart)
+            .map((id) => {
+              const productData = window.cart[id],
+                names = JSON.parse(productData.names),
+                name = names[window.preferredLocale] || names["en"],
+                infos = JSON.parse(productData.infos),
+                info = infos[window.preferredLocale] || infos["en"],
+                price = productData.price.toFixed(2).replace(".", ",");
+
+              return window.replacePlaceholders(content, {
+                ...productData,
+                name,
+                info,
+                price,
+              });
+            })
+            .join("")}
       >
-        <span class="order-subtotal">
-          {checkoutRecurData.text_subtotal}
-        </span>
+        <div
+          class:list={[
+            "product tiled-div-sm-pad division-in-gap",
+            "flex bg-secondary-light rounded-[10px]",
+          ]}
+        >
+          <img
+            class="product-image"
+            src={`<placeholder name="image"></placeholder>`}
+            style="clip-path: url(#product-image-curve)"
+          />
 
-        <span>
-          €<DynamicHTML htmlFn={() => window.cart.subTotal} />
-        </span>
+          <div class="division-in-element-gap flex flex-col flex-grow">
+            <h3 class="product-name recoleta text-h5">
+              <placeholder name="name"></placeholder>
+            </h3>
+
+            <div class="text-b6 text-black-light">
+              <placeholder name="info"></placeholder>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <span class="text-b6 font-medium text-black-light">
+                <span>{userRecurData.text_quantity}:</span>
+                <placeholder name="quantity"></placeholder>
+              </span>
+              <span class="product-price text-b3 font-bold text-right">
+                €<placeholder name="price"></placeholder>
+              </span>
+            </div>
+          </div>
+        </div>
+      </DynamicHTML>
+    </div>
+
+    <div class="division-in-element-gap flex flex-col text-black-light">
+      <div
+        class="order-charges division-in-element-gap flex flex-col text-black-light"
+      >
+        <div
+          class:list={[
+            "summery-text-container",
+            isCheckoutInformation
+              ? "summery-highlighted-text"
+              : "summery-base-text",
+          ]}
+        >
+          <span class="order-subtotal">
+            {checkoutRecurData.text_subtotal}
+          </span>
+
+          <span>
+            €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+          </span>
+        </div>
+
+        {
+          (isCheckoutShipping || isCheckoutPayment) && (
+            <div class="summery-text-container summery-base-text">
+              <span>{checkoutRecurData.text_shipping}</span>
+              <span class="order-shipping-cost">
+                €<DynamicHTML htmlFn={() => window.cart.shippingCost} />
+              </span>
+            </div>
+          )
+        }
       </div>
 
       {
         (isCheckoutShipping || isCheckoutPayment) && (
-          <div class="summery-text-container summery-base-text">
-            <span>{checkoutRecurData.text_shipping}</span>
-            <span class="order-shipping-cost">
-              €<DynamicHTML htmlFn={() => window.cart.shippingCost} />
-            </span>
+          <>
+            <div class="w-full h-px bg-primary-lightest" />
+
+            <div class="summery-text-container summery-highlighted-text">
+              <span>{checkoutRecurData.text_total}</span>
+              <span class="order-total">
+                €<DynamicHTML htmlFn={() => window.cart.total} />
+              </span>
+            </div>
+
+            <div class="summery-text-container summery-base-text">
+              <span>{checkoutRecurData.text_tax}</span>
+              <span class="order-tax">
+                €<DynamicHTML htmlFn={() => window.cart.tax} />
+              </span>
+            </div>
+          </>
+        )
+      }
+
+      {
+        isCheckoutInformation && (
+          <div class="text-b4">
+            {checkoutRecurData.text_shipping_calculated_at_checkout}
           </div>
         )
       }
     </div>
-
-    {
-      (isCheckoutShipping || isCheckoutPayment) && (
-        <>
-          <div class="w-full h-px bg-primary-lightest" />
-
-          <div class="summery-text-container summery-highlighted-text">
-            <span>{checkoutRecurData.text_total}</span>
-            <span class="order-total">
-              €<DynamicHTML htmlFn={() => window.cart.total} />
-            </span>
-          </div>
-
-          <div class="summery-text-container summery-base-text">
-            <span>{checkoutRecurData.text_tax}</span>
-            <span class="order-tax">
-              €<DynamicHTML htmlFn={() => window.cart.tax} />
-            </span>
-          </div>
-        </>
-      )
-    }
-
-    {
-      isCheckoutInformation && (
-        <div class="text-b4">
-          {checkoutRecurData.text_shipping_calculated_at_checkout}
-        </div>
-      )
-    }
   </div>
 </div>
