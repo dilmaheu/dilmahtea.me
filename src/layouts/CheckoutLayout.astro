@@ -1,10 +1,13 @@
 ---
-import CMS from "@store/CMS";
-import BaseLayout from "@layouts/BaseLayout.astro";
-import RecurringImages from "@store/RecurringImages";
 import { Picture } from "astro-imagetools/components";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
+
 import Footer from "@components/Footer.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import OrderSummary from "@components/OrderSummary.astro";
+
+import CMS from "@store/CMS";
+import RecurringImages from "@store/RecurringImages";
 
 const { logo, nav_background, nav_background_sm } = RecurringImages;
 
@@ -46,7 +49,7 @@ const footerText = recurData.Footer_text.replaceAll(
   .checkout-flow-container {
     padding: poly-fluid-clamp(
       (
-        640px: 24px 0px,
+        640px: 25px 0px,
         1440px: 36px 0px,
       )
     );
@@ -58,36 +61,21 @@ const footerText = recurData.Footer_text.replaceAll(
 
       span,
       h1 {
-        font-size: poly-fluid-clamp(
-          (
-            375px: 10px,
-            1440px: 16px,
-          )
-        );
+        @apply text-b6-xs;
       }
 
       div {
         @apply w-full rounded-full;
 
-        height: poly-fluid-clamp(
-          (
-            375px: 5px,
-            1440px: 8px,
-          )
-        );
+        height: poly-fluid-clamp-primary(5px, 8px);
       }
     }
   }
 
   .main-container {
-    margin-top: poly-fluid-clamp(
-      (
-        375px: 83px,
-        767px: 92px,
-      )
-    );
+    margin-top: poly-fluid-clamp-primary(85px, 92px);
 
-    @apply flex py-[50px] md:mt-0;
+    @apply flex flex-col lg:flex-row md:mt-0;
   }
 </style>
 
@@ -204,8 +192,17 @@ const footerText = recurData.Footer_text.replaceAll(
         path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
       />
 
-      <main id="checkout-main" class="wrapper section-gap main-container">
-        <slot />
+      <main
+        id="checkout-main"
+        class="wrapper section-in-v-pad section-gap main-container"
+      >
+        <section class="w-full lg:w-3/5 2xl:w-2/3">
+          <slot />
+        </section>
+
+        <section class="w-full lg:w-2/5 2xl:w-1/3">
+          <OrderSummary page={page} />
+        </section>
       </main>
     </div>
 

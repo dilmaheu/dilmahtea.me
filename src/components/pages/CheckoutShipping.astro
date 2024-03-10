@@ -16,141 +16,126 @@ const { page } = Astro.props,
   checkoutPaymentLink = CMS.get("checkoutPayment", locale).Meta.URL_slug;
 ---
 
-<section class="w-full xl:w-2/3">
-  <form
-    role="main"
-    id="shipping-details"
-    class="section-gap flex flex-col"
-    action={getLocalizedLink(locale, checkoutPaymentLink)}
+<form
+  id="shipping-details"
+  class="section-gap flex flex-col"
+  action={getLocalizedLink(locale, checkoutPaymentLink)}
+>
+  <input type="hidden" name="price" />
+  <div
+    role="list"
+    aria-label={page.Aria_label_kindness_delivery_address_section_text}
+    class="tiled-div division-in-gap grid"
   >
-    <input type="hidden" name="price" />
     <div
-      role="list"
-      aria-label={page.Aria_label_kindness_delivery_address_section_text}
-      class="tiled-div division-in-gap grid"
+      role="listitem"
+      aria-label={page.Aria_label_email_address_text}
+      class="grid division-in-element-gap"
     >
-      <div
-        role="listitem"
-        aria-label={page.Aria_label_email_address_text}
-        class="grid division-in-element-gap"
-      >
-        <div class="input-label">
-          {userRecurr.Input_label_email}
-        </div>
-
-        <div class="division-in-element-gap flex flex-wrap items-center">
-          <div class="input-text-large-static grow">
-            <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
-          </div>
-
-          <a
-            aria-label={`${userRecurr.Button_change_text} ${userRecurr.Aria_label_email}`}
-            href={checkoutInfoLink + "?change=email"}
-            class="button-link-primary-large"
-          >
-            {userRecurr.Button_change_text}
-          </a>
-        </div>
+      <div class="input-label">
+        {userRecurr.Input_label_email}
       </div>
 
-      <div class="w-full h-px bg-primary-lightest"></div>
-
-      <div
-        role="listitem"
-        aria-label={page.Aria_label_email_address_text}
-        class="division-in-element-gap"
-      >
-        <div class="input-label text-black">
-          {userRecurr.Label_delivery_address}
+      <div class="division-in-element-gap flex flex-wrap items-center">
+        <div class="input-text-large-static grow">
+          <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
         </div>
 
-        <div class="division-in-element-gap flex flex-wrap items-center">
-          <div class="input-text-large-static grow">
-            <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
-          </div>
-
-          <a
-            aria-label={`${userRecurr.Button_change_text} ${userRecurr.Aria_label_delivery_address}`}
-            href={checkoutInfoLink + "?change=address"}
-            class="button-link-primary-large"
-          >
-            {userRecurr.Button_change_text}
-          </a>
-        </div>
+        <a
+          aria-label={`${userRecurr.Button_change_text} ${userRecurr.Aria_label_email}`}
+          href={checkoutInfoLink + "?change=email"}
+          class="button-link-primary-large"
+        >
+          {userRecurr.Button_change_text}
+        </a>
       </div>
     </div>
 
+    <div class="w-full h-px bg-primary-lightest"></div>
+
     <div
-      role="list"
-      aria-label={page.text_shipping_method}
-      class="flex flex-col gap-4"
+      role="listitem"
+      aria-label={page.Aria_label_email_address_text}
+      class="division-in-element-gap"
     >
-      <h2 class="text-h2 text-primary">{page.text_shipping_method}</h2>
+      <div class="input-label text-black">
+        {userRecurr.Label_delivery_address}
+      </div>
 
-      {
-        page.shipping_methods.data.map(
-          ({ attributes: { method, cost, description, localizations } }, i) => (
-            <label class="division-in-element-gap radio-input-extended">
-              <input
-                type="radio"
-                name="shipping_method"
-                value={localizations?.data[0]?.attributes?.method || method}
-                data-cost={cost}
-                checked={i === 0 ? "" : undefined}
-                class="peer hidden"
-              />
+      <div class="division-in-element-gap flex flex-wrap items-center">
+        <div class="input-text-large-static grow">
+          <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
+        </div>
 
-              <span>
-                <span class="radio-input-label">
-                  <span class="shipping-method">{method}</span>
-                  &#x2022;
-                  <span class="shipping-cost">
-                    €{cost.toFixed(2).toString().replace(".", ",")}
-                  </span>
-                </span>
+        <a
+          aria-label={`${userRecurr.Button_change_text} ${userRecurr.Aria_label_delivery_address}`}
+          href={checkoutInfoLink + "?change=address"}
+          class="button-link-primary-large"
+        >
+          {userRecurr.Button_change_text}
+        </a>
+      </div>
+    </div>
+  </div>
 
-                <span class="prose-text radio-input-text">
-                  <Markdown>{description}</Markdown>
+  <div
+    role="list"
+    aria-label={page.text_shipping_method}
+    class="flex flex-col gap-4"
+  >
+    <h2 class="text-h2 text-primary">{page.text_shipping_method}</h2>
+
+    {
+      page.shipping_methods.data.map(
+        ({ attributes: { method, cost, description, localizations } }, i) => (
+          <label class="division-in-element-gap radio-input-extended">
+            <input
+              type="radio"
+              name="shipping_method"
+              value={localizations?.data[0]?.attributes?.method || method}
+              data-cost={cost}
+              checked={i === 0 ? "" : undefined}
+              class="peer hidden"
+            />
+
+            <span>
+              <span class="radio-input-label">
+                <span class="shipping-method">{method}</span>
+                &#x2022;
+                <span class="shipping-cost">
+                  €{cost.toFixed(2).toString().replace(".", ",")}
                 </span>
               </span>
-            </label>
-          ),
-        )
-      }
-    </div>
 
-    <div class="block lg:hidden">
-      <OrderSummary page={page} />
-    </div>
+              <span class="prose-text radio-input-text">
+                <Markdown>{description}</Markdown>
+              </span>
+            </span>
+          </label>
+        ),
+      )
+    }
+  </div>
 
-    <div class="checkout-button-container">
-      <a href={checkoutInfoLink} class="button-link-primary-large">
-        <span class="sm:hidden">
-          {
-            `${
-              userRecurr.Button_return_to_text
-            } ${shortenedSteps[0]?.toLowerCase()}`
-          }
-        </span>
-        <span class="hidden sm:block">
-          {`${userRecurr.Button_return_to_text} ${steps[0]?.toLowerCase()}`}
-        </span>
-      </a>
+  <div class="checkout-button-container">
+    <a href={checkoutInfoLink} class="button-link-primary-large">
+      <span class="sm:hidden">
+        {
+          `${
+            userRecurr.Button_return_to_text
+          } ${shortenedSteps[0]?.toLowerCase()}`
+        }
+      </span>
+      <span class="hidden sm:block">
+        {`${userRecurr.Button_return_to_text} ${steps[0]?.toLowerCase()}`}
+      </span>
+    </a>
 
-      <button class="w-full sm:w-1/3 button-primary-large">
-        {checkoutRecurData.text_continue_to_payment}
-      </button>
-    </div>
-  </form>
-</section>
-
-<section
-  role="complementary"
-  aria-label={checkoutRecurData.text_order_summary}
-  class="hidden xl:block xl:w-1/3"
->
-  <OrderSummary page={page} />
-</section>
+    <button class="w-full sm:w-1/3 button-primary-large">
+      {checkoutRecurData.text_continue_to_payment}
+    </button>
+  </div>
+</form>
 
 <script>
   const shippingDetailsForm = document.getElementById("shipping-details"),
