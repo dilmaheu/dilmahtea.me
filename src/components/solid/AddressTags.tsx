@@ -126,10 +126,6 @@ export default function AddressTags({
             class="vertical-toggle-button-primary"
             onClick={() => {
               setShowMoreAddresses(!showMoreAddresses());
-
-              document
-                .querySelector(".toggle-button-arrow")
-                .classList.toggle("rotate-180");
             }}
           >
             <span>
@@ -142,7 +138,10 @@ export default function AddressTags({
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 8 14"
-              class="toggle-button-arrow fill-primary"
+              class={
+                "toggle-button-arrow fill-primary" +
+                (showMoreAddresses() ? " rotate-180" : "")
+              }
             >
               <path d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"></path>
             </svg>
