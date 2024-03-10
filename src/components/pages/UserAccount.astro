@@ -9,13 +9,7 @@ import localizeCMSImage from "@utils/localizeCMSImage";
 const { green_cup } = RecurringImages;
 
 const { page } = Astro.props,
-  {
-    UID,
-    locale,
-    Form: form,
-    Social_media: social_media,
-    Block_text: block_text,
-  } = page;
+  { UID, locale, Form: form, Social_media, Block_text: block_text } = page;
 
 const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
 
@@ -27,7 +21,9 @@ const {
   text_mobile_number: textMobileNumber,
 } = userAccountRecurData;
 
-const isEmailOrPhoneForm = form?.Email_or_phone;
+const isEmailOrPhoneForm = form?.Email_or_phone,
+  social_media =
+    Social_media && Object.values(Social_media).some((value) => value);
 
 function fromEntries(array) {
   const formInputItems = Object.fromEntries(Object.entries(array).slice(0, 4)),
@@ -45,33 +41,11 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
 
 <style lang="scss">
   @use "src/styles/colors";
-
-  .form-heading-icon {
-    height: clamp(38px, 3.5vw + 6px, 58px);
-  }
+  @use "src/styles/poly-fluid" as *;
 
   .form-container {
-    @apply gap-x-[35px] gap-y-[25px];
-
     label {
-      @apply w-full md:w-[330px] lg:w-[350px] text-[1.125rem] font-bold leading-[150%] text-black-light;
-
-      width: 100%;
-
-      @media (min-width: 768px) {
-        width: 330px;
-      }
-
-      @media (min-width: 1024px) {
-        width: 350px;
-      }
-
       input {
-        border: 1px solid colors.$primary;
-
-        @apply block w-full mt-2.5 px-4 py-3 text-lg font-normal leading-[115%] text-black rounded-full bg-transparent;
-        @apply focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none focus:ring;
-
         &:disabled {
           @apply cursor-not-allowed bg-black-light/10;
         }
@@ -79,208 +53,218 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
 
       input:is([type="text"], [type="email"])::placeholder {
         color: colors.$black-light;
-
-        @apply text-[1.125rem];
       }
     }
+  }
 
-    .form-item {
-      @apply w-full md:w-[330px] lg:w-[350px] mx-auto;
-    }
+  .social-media-icon-container {
+    @apply bg-white rounded-full;
+
+    width: poly-fluid-clamp-primary(40px, 60px);
+    height: poly-fluid-clamp-primary(40px, 60px);
+    padding: poly-fluid-clamp-primary(10px, 15px);
+  }
+
+  .text-error {
+    @apply mt-[clamp(10px,calc(0.625vw+6px),15px)];
   }
 </style>
 
-<div class="wrapper py-[50px]">
-  <div role="banner">
+<div class="relative z-5">
+  <div class="hero-sub-menu-shadow nav-bg hidden"></div>
+</div>
+
+<div class="wrapper section-in-v-pad">
+  <div class="division-gap grid md:max-w-[748px] mx-auto">
+    <div role="banner" class="grid division-gap">
+      {
+        page.Intro_blob?.data && (
+          <div class="md:max-h-[300px] mx-auto">
+            <img
+              class="w-full h-full object-contain"
+              src={await localizeCMSImage(
+                page.Intro_blob?.data?.attributes?.url,
+              )}
+              alt={page.Intro_blob?.data?.attributes?.alternativeText}
+            />
+          </div>
+        )
+      }
+
+      <h1 class="text-h1 text-primary text-center">
+        {page.Title}
+
+        <span class="inline-block heading-inline-icon">
+          <img class="w-full h-full" {...green_cup} />
+        </span>
+      </h1>
+    </div>
+
     {
-      page.Intro_blob?.data && (
-        <div class="w-full h-full md:max-w-[740px] p-2.5 mb-[35px] mx-auto">
-          <img
-            class="w-full max-h-[330px] object-contain"
-            src={await localizeCMSImage(page.Intro_blob?.data?.attributes?.url)}
-            alt={page.Intro_blob?.data?.attributes?.alternativeText}
-          />
+      page.Intro_text && (
+        <div class="prose-text text-center">
+          <Markdown>{page.Intro_text}</Markdown>
         </div>
       )
     }
 
-    <h1 class="hero-title recoleta text-primary text-center">
-      {page.Title}
-
-      {" "}
-
-      <span class="icon heading-inline-icon">
-        <img class="w-full h-full" {...green_cup} />
-      </span>
-    </h1>
-  </div>
-
-  {
-    page.Intro_text && (
+    <section id="account-action" class="w-full mx-auto">
       <div
         class:list={[
-          "hero-text prose-text prose pt-2.5 mx-auto",
-          "w-full md:max-w-[740px] text-black-light text-center",
+          form?.Blob?.data
+            ? "division-gap grid md:grid-cols-2 items-center"
+            : "flex flex-wrap justify-center w-full",
         ]}
       >
-        <Markdown>{page.Intro_text}</Markdown>
-      </div>
-    )
-  }
+        <div class="division-gap grid w-full">
+          {
+            form && (
+              <form>
+                <div class:list={["division-gap grid form-container w-full"]}>
+                  {isEmailOrPhoneForm ? (
+                    <div class="form-gap grid w-full max-w-[360px] mx-auto">
+                      <div class="input-default">
+                        <label>
+                          {userAccountRecurData.Input_label_email}
 
-  <section id="account-action" class="w-full md:max-w-[740px] mx-auto">
-    <div
-      class:list={[
-        form?.Blob?.data
-          ? "grid md:grid-cols-2 items-center gap-[35px]"
-          : "flex flex-wrap justify-center",
-      ]}
-    >
-      <div>
-        {
-          form && (
-            <form>
-              <div
-                class:list={[
-                  "flex flex-wrap form-container mt-[35px] w-full",
-                  form && fromEntries(form) === 1
-                    ? "justify-center"
-                    : "justify-between",
-                ]}
-              >
-                {isEmailOrPhoneForm ? (
-                  <div class="grid gap-[15px] w-full">
-                    <label class="mx-auto">
-                      {userAccountRecurData.Input_label_email}
+                          <input
+                            type="email"
+                            name="email"
+                            placeholder={
+                              userAccountRecurData.Input_placeholder_email
+                            }
+                            required
+                          />
+                        </label>
+                      </div>
 
-                      <input
-                        type="email"
-                        name="email"
-                        placeholder={
-                          userAccountRecurData.Input_placeholder_email
-                        }
-                        required
-                      />
-                    </label>
+                      <div class="form-item w-full">
+                        <div class="flex items-center">
+                          <span class="w-full h-px bg-primary-lightest" />
+                          <span class="text-black-light px-3">
+                            {userAccountRecurData.Social_media_divider_or_text}
+                          </span>
+                          <span class="w-full h-px bg-primary-lightest" />
+                        </div>
+                      </div>
 
-                    <div class="form-item w-full">
-                      <div class="flex items-center">
-                        <span class="w-full h-px bg-black" />
-                        <span class="text-black-light px-3">
-                          {userAccountRecurData.Social_media_divider_or_text}
-                        </span>
-                        <span class="w-full h-px bg-black" />
+                      <div class="input-default">
+                        <label>
+                          {userAccountRecurData.Input_label_phone}
+
+                          <input
+                            type="tel"
+                            name="phone"
+                            placeholder={
+                              userAccountRecurData.Input_placeholder_phone
+                            }
+                            required
+                          />
+                        </label>
                       </div>
                     </div>
+                  ) : (
+                    <div
+                      class:list={[
+                        form?.Blob?.data
+                          ? "form-gap grid w-full"
+                          : "form-grid w-full",
+                      ]}
+                    >
+                      {form.First_name && (
+                        <div class="input-default">
+                          <label>
+                            {userAccountRecurData.Input_label_first_name}
 
-                    <label class="mx-auto">
-                      {userAccountRecurData.Input_label_phone}
+                            <input
+                              class="w-full"
+                              type="text"
+                              name="first_name"
+                              placeholder={
+                                userAccountRecurData.Input_placeholder_first_name
+                              }
+                              required
+                            />
+                          </label>
+                        </div>
+                      )}
 
-                      <input
-                        type="tel"
-                        name="phone"
-                        placeholder={
-                          userAccountRecurData.Input_placeholder_phone
-                        }
-                        required
-                      />
-                    </label>
+                      {form.Last_name && (
+                        <div class="input-default">
+                          <label>
+                            {userAccountRecurData.Input_label_last_name}
+
+                            <input
+                              type="text"
+                              name="last_name"
+                              placeholder={
+                                userAccountRecurData.Input_placeholder_last_name
+                              }
+                              required
+                            />
+                          </label>
+                        </div>
+                      )}
+
+                      {form.Email && (
+                        <div class="input-default">
+                          <label>
+                            {userAccountRecurData.Input_label_email}
+
+                            <input
+                              type="email"
+                              name="email"
+                              placeholder={
+                                userAccountRecurData.Input_placeholder_email
+                              }
+                              required
+                            />
+                          </label>
+                        </div>
+                      )}
+
+                      {form.Phone && (
+                        <div class="input-default">
+                          <label>
+                            {userAccountRecurData.Input_label_phone}
+
+                            <input
+                              type="tel"
+                              name="phone"
+                              placeholder={
+                                userAccountRecurData.Input_placeholder_phone
+                              }
+                              required
+                            />
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div class="grid w-full max-w-[360px] mx-auto">
+                    <button class="button-primary-large !w-full">
+                      {form?.Submit_button_text}
+                    </button>
+
+                    <strong>
+                      <p class="text-error text-center" />
+                    </strong>
                   </div>
-                ) : (
-                  <>
-                    {form.First_name && (
-                      <label>
-                        {userAccountRecurData.Input_label_first_name}
-
-                        <input
-                          type="text"
-                          name="first_name"
-                          placeholder={
-                            userAccountRecurData.Input_placeholder_first_name
-                          }
-                          required
-                        />
-                      </label>
-                    )}
-
-                    {form.Last_name && (
-                      <label>
-                        {userAccountRecurData.Input_label_last_name}
-
-                        <input
-                          type="text"
-                          name="last_name"
-                          placeholder={
-                            userAccountRecurData.Input_placeholder_last_name
-                          }
-                          required
-                        />
-                      </label>
-                    )}
-
-                    {form.Email && (
-                      <label>
-                        {userAccountRecurData.Input_label_email}
-
-                        <input
-                          type="email"
-                          name="email"
-                          placeholder={
-                            userAccountRecurData.Input_placeholder_email
-                          }
-                          required
-                        />
-                      </label>
-                    )}
-
-                    {form.Phone && (
-                      <label>
-                        {userAccountRecurData.Input_label_phone}
-
-                        <input
-                          type="tel"
-                          name="phone"
-                          placeholder={
-                            userAccountRecurData.Input_placeholder_phone
-                          }
-                          required
-                        />
-                      </label>
-                    )}
-                  </>
-                )}
-
-                <div class="w-full flex flex-col justify-center">
-                  <button
-                    class:list={[
-                      "font-bold text-white bg-primary rounded-full",
-                      "w-full md:w-fit md:min-w-[330px] lg:min-w-[350px] py-3 px-[35px] mt-2.5 mx-auto",
-                    ]}
-                  >
-                    {form?.Submit_button_text}
-                  </button>
-
-                  <strong>
-                    <p class="text-error pt-4 -mb-4 text-center" />
-                  </strong>
                 </div>
-              </div>
-            </form>
-          )
-        }
+              </form>
+            )
+          }
 
-        <div class="flex flex-wrap mx-auto justify-between form-container">
-          <div class="w-full">
+          <div class="form-container division-gap grid w-full mx-auto">
             {
               social_media && (
-                <div class="form-item mt-[35px]">
-                  <div class="flex items-center">
-                    <span class="w-full h-px bg-black" />
-                    <span class="text-black-light px-3">
-                      {userAccountRecurData.Social_media_divider_or_text}
-                    </span>
-                    <span class="w-full h-px bg-black" />
-                  </div>
+                <div class="flex items-center w-full max-w-[360px] mx-auto">
+                  <span class="w-full h-px bg-primary-lightest" />
+                  <span class="text-black-light px-3">
+                    {userAccountRecurData.Social_media_divider_or_text}
+                  </span>
+                  <span class="w-full h-px bg-primary-lightest" />
                 </div>
               )
             }
@@ -289,9 +273,9 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
               block_text && (
                 <div
                   class:list={[
-                    "block-text prose-text prose max-w-none mt-[35px] text-center text-black-light",
+                    "block-text prose-text-sm no-pad-mar-child text-center",
                     (isEmailOrPhoneForm || (form && fromEntries(form) === 1)) &&
-                      "form-item",
+                      "w-full !max-w-[360px] mx-auto overflow-hidden",
                   ]}
                 >
                   <Markdown>{block_text}</Markdown>
@@ -303,13 +287,13 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
               social_media && (
                 <div
                   class:list={[
-                    "flex flex-wrap gap-[25px] justify-center mt-[25px] text-center text-black-light",
+                    "grid-gap flex flex-wrap justify-center text-center",
                     (isEmailOrPhoneForm || (form && fromEntries(form) === 1)) &&
-                      "form-item",
+                      "w-full max-w-[360px]",
                   ]}
                 >
                   {social_media.Facebook && (
-                    <div class="w-[70px] h-[70px] p-3 bg-secondary-light rounded-full">
+                    <div class="social-media-icon-container">
                       <img
                         class="w-full h-full"
                         src={await localizeCMSImage(
@@ -320,7 +304,7 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                     </div>
                   )}
                   {social_media.Google && (
-                    <div class="w-[70px] h-[70px] p-3 bg-secondary-light rounded-full">
+                    <div class="social-media-icon-container">
                       <img
                         class="w-full h-full"
                         src={await localizeCMSImage(
@@ -331,7 +315,7 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                     </div>
                   )}
                   {social_media.Twitter && (
-                    <div class="w-[70px] h-[70px] p-3 bg-secondary-light rounded-full">
+                    <div class="social-media-icon-container">
                       <img
                         class="w-full h-full"
                         src={await localizeCMSImage(
@@ -347,43 +331,40 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
 
             {
               page?.Button_text && (
-                <div class="flex flex-col">
-                  <div class="flex flex-wrap justify-center text-center items-center gap-[25px] mt-[15px]">
+                <div class="grid">
+                  <div class="form-gap flex flex-wrap justify-center text-center items-center">
                     {page?.Button_pretext && (
-                      <div class="text-black-light">{page?.Button_pretext}</div>
+                      <div class="text-b5 text-black-light">
+                        {page?.Button_pretext}
+                      </div>
                     )}
 
-                    <button
-                      class:list={[
-                        "flex justify-center rounded-full font-bold text-white py-3 px-[35px]",
-                        "bg-primary cursor-pointer disabled:bg-slate disabled:cursor-not-allowed",
-                      ]}
-                    >
+                    <button class="button-primary-large w-full max-w-[360px]">
                       {page?.Button_text}
                     </button>
                   </div>
 
                   <strong>
-                    <p class="text-error pt-4 -mb-4 text-center" />
+                    <p class="text-error text-center" />
                   </strong>
                 </div>
               )
             }
           </div>
         </div>
-      </div>
 
-      {
-        form?.Blob?.data && (
-          <img
-            class="w-full max-h-[320px] p-2.5 mt-[35px]"
-            src={await localizeCMSImage(form.Blob.data.attributes.url)}
-            alt={form.Blob.data.attributes?.alternativeText}
-          />
-        )
-      }
-    </div>
-  </section>
+        {
+          form?.Blob?.data && (
+            <img
+              class="w-full max-h-[300px]"
+              src={await localizeCMSImage(form.Blob.data.attributes.url)}
+              alt={form.Blob.data.attributes?.alternativeText}
+            />
+          )
+        }
+      </div>
+    </section>
+  </div>
 </div>
 
 <script

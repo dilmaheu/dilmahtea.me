@@ -3,7 +3,8 @@ import { Picture } from "astro-imagetools/components";
 
 import Hero from "@components/Hero.astro";
 import Markdown from "@components/Markdown.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import AuthorInfo from "@components/AuthorInfo.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
@@ -18,6 +19,7 @@ const {
     headerBackgroundSm,
     link,
     noAuthorImg,
+    blobContent,
   } = Astro.props,
   { locale } = page,
   { STRAPI_URL } = import.meta.env;
@@ -58,66 +60,12 @@ const recurData = CMS.get("recurringElement", locale),
             )
           }
 
-          {
-            page.authors && (
-              <div class="division-in-element-gap flex items-center">
-                {!noAuthorImg &&
-                  page.authors.data.map(
-                    (author, index) =>
-                      author.attributes.Profile_picture.data && (
-                        <div
-                          class:list={[
-                            "quick-info-author-img",
-                            index > 0 &&
-                              "relative -ml-[clamp(15px,calc(2.5vw-1px),35px)]",
-                          ]}
-                        >
-                          <Picture
-                            width={50}
-                            height={50}
-                            loading="eager"
-                            alt={
-                              author.attributes.Profile_picture.data.attributes
-                                .alternativeText
-                            }
-                            src={
-                              STRAPI_URL +
-                              author.attributes.Profile_picture.data.attributes
-                                .url
-                            }
-                          />
-                        </div>
-                      ),
-                  )}
-
-                <div class="quick-info-default">
-                  <div
-                    role="presentation"
-                    aria-label={page.authors.data.map(
-                      ({ attributes }, i) =>
-                        ariaLabelRecurData.Wrote_by_text +
-                        (i > 0 ? ", " : " ") +
-                        attributes.givenName,
-                    )}
-                    class="author-name"
-                  >
-                    {page.authors.data.map(({ attributes }, index) => (
-                      <span>
-                        {`${index > 0 ? ", " : " "}` + attributes.givenName}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div class="quick-info-item">
-                    {new Date(page.createdAt).toLocaleString("en-US", {
-                      day: "numeric",
-                      month: "long",
-                    })}
-                  </div>
-                </div>
-              </div>
-            )
-          }
+          <AuthorInfo
+            locale={locale}
+            authors={page.authors}
+            authorImg={noAuthorImg ? false : true}
+            createdAt={page.createdAt}
+          />
 
           {
             page.estate_name?.data.length > 0 && (
@@ -160,10 +108,16 @@ const recurData = CMS.get("recurringElement", locale),
                     ) : (
                       <>{heroTitle}</>
                     )}
+
+                    {!plainTitle && (
+                      <span class="icon heading-inline-icon">
+                        <img class="w-full h-full" {...white_cup} />
+                      </span>
+                    )}
                   </h1>
 
                   {!page.estate_name && (
-                    <div class="hero-text">
+                    <div class="prose-hero-text">
                       <Markdown>{page.Intro_text}</Markdown>
                     </div>
                   )}
@@ -241,15 +195,30 @@ const recurData = CMS.get("recurringElement", locale),
   {
     !basicHeader && !headerBackground && (
       <div class="hero-img-curve-container h-full hidden sm:block absolute z-30">
-        <ClippedPicture
-          preload="avif"
+        <ClipPathSVG
           id="hero-img-curve"
-          sizes="clamp(330px, 26.4vw + 150px, 560px)"
-          alt={page.Intro_blob.data.attributes.alternativeText}
-          src={STRAPI_URL + page.Intro_blob.data.attributes.url}
           path="M1,0 S0.345,0.001,0.098,0.001 C-0.013,0.158,-0.007,0.342,0.009,0.606 C0.025,0.888,0.144,1,0.536,1 c0.3,0,0.379,-0.095,0.464,-0.147"
-          attributes={{ link: { media: "(min-width: 640px)" } }}
         />
+
+        <div
+          class="relative w-full h-full"
+          style="clip-path: url(#hero-img-curve);"
+        >
+          <Picture
+            layout="fill"
+            preload="avif"
+            sizes="clamp(330px, 26.4vw + 150px, 560px)"
+            alt={page.Intro_blob.data.attributes.alternativeText}
+            src={STRAPI_URL + page.Intro_blob.data.attributes.url}
+            attributes={{ link: { media: "(min-width: 640px)" } }}
+          />
+
+          {blobContent && (
+            <div class="absolute bottom-0 z-10 w-full bg-black/75">
+              <slot name="blob-content" />
+            </div>
+          )}
+        </div>
       </div>
     )
   }
@@ -259,14 +228,29 @@ const recurData = CMS.get("recurringElement", locale),
 {
   !basicHeader && !headerBackground && !headerBackgroundSm && (
     <div class="hero-img-sm-container block sm:hidden w-full relative z-20 -mt-20">
-      <ClippedPicture
-        preload="avif"
+      <ClipPathSVG
         id="hero-img-curve-sm"
-        alt={page.Intro_blob.data.attributes.alternativeText}
-        src={STRAPI_URL + page.Intro_blob.data.attributes.url}
         path="M1 .074v.904S.906 1 .774 1C.706 1 .637.996.569.993.487.989.405.984.324.986a4.576 4.576 0 0 0-.117.005C.115.996.032 1.001 0 .986V.074C.062.024.147 0 .282 0c.075 0 .165.023.244.043.062.016.118.03.154.03.026 0 .06-.007.097-.014C.861.044.959.025 1 .074"
-        attributes={{ link: { media: "(max-width: 639.98px)" } }}
       />
+
+      <div
+        class="relative w-full h-full"
+        style="clip-path: url(#hero-img-curve-sm);"
+      >
+        <Picture
+          layout="fill"
+          preload="avif"
+          alt={page.Intro_blob.data.attributes.alternativeText}
+          src={STRAPI_URL + page.Intro_blob.data.attributes.url}
+          attributes={{ link: { media: "(max-width: 639.98px)" } }}
+        />
+
+        {blobContent && (
+          <div class="absolute bottom-0 z-10 w-full bg-black/75">
+            <slot name="blob-content-sm" />
+          </div>
+        )}
+      </div>
     </div>
   )
 }

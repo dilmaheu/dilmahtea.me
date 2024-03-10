@@ -1,0 +1,154 @@
+---
+import { Picture } from "astro-imagetools/components";
+
+import CMS from "@store/CMS";
+import RecurringImages from "@store/RecurringImages";
+
+import Markdown from "@components/Markdown.astro";
+import AuthorInfo from "@components/AuthorInfo.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+
+interface Props {
+  posts: Post[];
+  type?: string;
+  locale: string;
+  leafVisible?: boolean;
+  titleIconVisible?: boolean;
+}
+
+const { type, posts, locale, leafVisible, titleIconVisible } = Astro.props,
+  { STRAPI_URL } = import.meta.env;
+
+const {
+  green_cup,
+  left_post_leaf,
+  green_leaf: right_post_leaf,
+} = RecurringImages;
+
+const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
+
+const allPosts = Array.isArray(posts) ? posts : [posts];
+---
+
+<style lang="scss">
+  .post-leaf {
+    @apply absolute z-20;
+    filter: drop-shadow(0px 8px 9px rgba(0, 0, 0, 0.5));
+  }
+
+  .post-leaf-left {
+    @apply -top-[6.5%] left-[3%] sm:-left-[1%] w-[24%] h-auto;
+  }
+
+  .post-leaf-right {
+    @apply sm:right-0 bottom-[7%] w-[18%] h-auto;
+
+    @media (max-width: 639.98px) {
+      @apply -left-[5%] bottom-[6%];
+    }
+  }
+</style>
+
+<div>
+  <ClipPathSVG
+    id="post-img-curve"
+    path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+  />
+
+  <div
+    role="list"
+    aria-label={ariaLabelRecurData.All_posts_text}
+    class="grid section-gap"
+  >
+    {
+      allPosts.map((post, index) => {
+        const isEven = index % 2 === 0,
+          postImgURL = STRAPI_URL + post.Intro_blob.data.attributes.url,
+          postLeafWidthMultiplier = isEven ? 0.24 : 0.18;
+
+        return (
+          <div
+            role="listitem"
+            aria-label={
+              ariaLabelRecurData.Post_text +
+              (index + (type === "post-overview" ? 2 : 1)) +
+              " " +
+              ariaLabelRecurData.Product_post_of_text +
+              " " +
+              posts.length
+            }
+            class="link-section grid sm:grid-cols-2 items-center division-gap"
+          >
+            <div
+              class:list={[
+                "relative post-img-curve-container",
+                !isEven && "sm:order-2 ml-auto",
+              ]}
+            >
+              <Picture
+                layout="fill"
+                src={postImgURL}
+                alt={post.Intro_blob.data.attributes.alternativeText}
+                sizes={[
+                  "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
+                  "(min-width: 640px) min(600px, calc(45vw - 20px))",
+                  "90vw",
+                ].join(", ")}
+                attributes={{
+                  picture: { style: "clip-path: url(#post-img-curve);" },
+                }}
+              />
+
+              {leafVisible && (
+                <div
+                  class:list={[
+                    "post-leaf",
+                    isEven ? "post-leaf-left" : "post-leaf-right",
+                  ]}
+                >
+                  <Picture
+                    alt=""
+                    layout="fill"
+                    placeholder="blurred"
+                    src={(isEven ? left_post_leaf : right_post_leaf).src}
+                    sizes={[
+                      `(min-width: 640px) min(600px, calc((50vw - min(100px, 5vw)) * ${postLeafWidthMultiplier}))`,
+                      `calc(90vw * ${postLeafWidthMultiplier})`,
+                    ].join(", ")}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Text content */}
+            <div class:list={["grid division-in-gap", !isEven && "sm:order-1"]}>
+              <AuthorInfo
+                locale={locale}
+                authors={post.authors}
+                createdAt={post.createdAt}
+                color={"black-light"}
+              />
+
+              <h2 class="text-h2 text-primary">
+                <a
+                  class="main-link"
+                  href={`/` + post.Meta.URL_slug}
+                  set:text={post.Title || post.Estate_name}
+                />
+
+                {titleIconVisible && (
+                  <span class="icon heading-inline-icon ml-2">
+                    <img class="w-full h-full" {...green_cup} />
+                  </span>
+                )}
+              </h2>
+              <div class="post-intro intro-text">
+                <Markdown>{post.Intro_text}</Markdown>
+              </div>
+            </div>
+          </div>
+        );
+      })
+    }
+  </div>
+</div>

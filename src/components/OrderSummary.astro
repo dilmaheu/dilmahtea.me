@@ -2,26 +2,25 @@
 import CMS from "@store/CMS";
 import DynamicHTML from "@components/DynamicHTML.astro";
 
-const { page } = Astro.props,
+const { page, recurData } = Astro.props,
   { locale } = page,
-  checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
   userRecurData = CMS.get("userAccountRecurringElement", locale),
-  isCheckoutInformation = page.type === "checkoutInformation",
-  isCheckoutPayment = page.type === "checkoutPayment",
+  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+
+const checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug,
+  checkoutInfoLink = CMS.get("checkoutInformation", locale).Meta.URL_slug,
+  checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug;
+
+const isCheckoutInformation = page.type === "checkoutInformation",
   isCheckoutShipping = page.type === "checkoutShipping",
-  checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug;
+  isCheckoutPayment = page.type === "checkoutPayment";
 ---
 
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
 
   .product-image {
-    $fluid-image-size: poly-fluid-clamp(
-      (
-        375px: 50px,
-        1440px: 85px,
-      )
-    );
+    $fluid-image-size: poly-fluid-clamp-primary(50px, 85px);
 
     width: $fluid-image-size;
     height: $fluid-image-size;
@@ -43,142 +42,319 @@ const { page } = Astro.props,
   }
 </style>
 
-<div
-  class:list={[
-    "order-summary division-gap text-black flex flex-col",
-    "h-full xl:pl-[50px] xl:border-l xl:border-l-primary-lightest",
-  ]}
->
-  <div class="flex flex-col gap-5">
-    <div class="summery-text-container flex-wrap gap-2.5">
-      <h2 class="text-h3">
-        {checkoutRecurData.text_order_summary}
-      </h2>
+<div class="section-gap flex flex-col lg:flex-row h-full">
+  <div class="w-full lg:w-px h-px lg:h-full bg-primary-lightest"></div>
 
-      <a
-        href={checkoutCartLink}
-        class="text-b4 text-primary font-bold underline underline-offset-2"
-      >
-        {checkoutRecurData.text_edit_cart}
-      </a>
-    </div>
-
-    <DynamicHTML
-      htmlFn={(content) =>
-        Object.keys(window.cart)
-          .map((id) => {
-            const productData = window.cart[id],
-              names = JSON.parse(productData.names),
-              name = names[window.preferredLocale] || names["en"],
-              infos = JSON.parse(productData.infos),
-              info = infos[window.preferredLocale] || infos["en"],
-              price = productData.price.toFixed(2).replace(".", ",");
-
-            return window.replacePlaceholders(content, {
-              ...productData,
-              name,
-              info,
-              price,
-            });
-          })
-          .join("")}
-    >
-      <div
-        class:list={[
-          "product tiled-div-sm-pad division-in-gap",
-          "flex bg-secondary-light rounded-[10px]",
-        ]}
-      >
-        <img
-          class="product-image"
-          src={`<placeholder name="image"></placeholder>`}
-          style="clip-path: url(#product-image-curve)"
-        />
-
-        <div class="division-in-element-gap flex flex-col flex-grow">
-          <h3 class="product-name recoleta text-h5">
-            <placeholder name="name"></placeholder>
-          </h3>
-
-          <div class="text-b6 text-black-light">
-            <placeholder name="info"></placeholder>
-          </div>
-
-          <div class="flex items-center justify-between">
-            <span class="text-b6 font-medium text-black-light">
-              <span>{userRecurData.text_quantity}:</span>
-              <placeholder name="quantity"></placeholder>
-            </span>
-            <span class="product-price text-b3 font-bold text-right">
-              €<placeholder name="price"></placeholder>
-            </span>
-          </div>
-        </div>
-      </div>
-    </DynamicHTML>
-  </div>
-
-  <div class="division-in-element-gap flex flex-col text-black-light">
-    <div
-      class="order-charges division-in-element-gap flex flex-col text-black-light"
-    >
-      <div
-        class:list={[
-          "summery-text-container",
-          isCheckoutInformation
-            ? "summery-highlighted-text"
-            : "summery-base-text",
-        ]}
-      >
-        <span class="order-subtotal">
-          {checkoutRecurData.text_subtotal}
-        </span>
-
-        <span>
-          €<DynamicHTML htmlFn={() => window.cart.subTotal} />
-        </span>
-      </div>
-
-      {
-        (isCheckoutShipping || isCheckoutPayment) && (
-          <div class="summery-text-container summery-base-text">
-            <span>{checkoutRecurData.text_shipping}</span>
-            <span class="order-shipping-cost">
-              €<DynamicHTML htmlFn={() => window.cart.shippingCost} />
-            </span>
-          </div>
-        )
-      }
-    </div>
-
+  <div class="division-gap grid">
     {
       (isCheckoutShipping || isCheckoutPayment) && (
-        <>
-          <div class="w-full h-px bg-primary-lightest" />
+        <div class="tiled-div-pad division-in-gap grid bg-secondary-light rounded-[10px]">
+          <div
+            id="checkout-information-overview-toggle"
+            class="vertical-toggle-button-primary lg:!hidden w-full"
+          >
+            <span class="grow">{recurData.text_information}</span>
 
-          <div class="summery-text-container summery-highlighted-text">
-            <span>{checkoutRecurData.text_total}</span>
-            <span class="order-total">
-              €<DynamicHTML htmlFn={() => window.cart.total} />
-            </span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 14 8"
+              class="toggle-button-arrow fill-primary"
+            >
+              <path d="M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z" />
+            </svg>
           </div>
 
-          <div class="summery-text-container summery-base-text">
-            <span>{checkoutRecurData.text_tax}</span>
-            <span class="order-tax">
-              €<DynamicHTML htmlFn={() => window.cart.tax} />
-            </span>
-          </div>
-        </>
-      )
-    }
+          <div id="checkout-information-overview" class="hidden lg:block">
+            <div role="list" class="division-in-gap grid">
+              <div class="w-full h-px lg:hidden bg-primary-lightest" />
 
-    {
-      isCheckoutInformation && (
-        <div class="text-b4">
-          {checkoutRecurData.text_shipping_calculated_at_checkout}
+              <div
+                role="listitem"
+                aria-label={page.Aria_label_email_address_text}
+                class="division-in-element-gap"
+              >
+                <div class="input-label text-black">
+                  {userRecurData.Input_label_email}
+                </div>
+
+                <div class="division-in-element-gap flex">
+                  <div class="input-text-large-static grow">
+                    <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
+                  </div>
+
+                  <a
+                    aria-label={`${userRecurData.Button_change_text} ${userRecurData.Input_label_email}`}
+                    href={checkoutInfoLink + "?change=email"}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 16.08 16.13"
+                      class="fill-primary address-update-icon"
+                    >
+                      <path d="M15.65,1.37c-.25-.32-.54-.61-.84-.89-.37-.33-.82-.48-1.32-.48-.56,0-1.04.2-1.44.59-.17.16-.34.34-.51.51-2.4,2.4-4.79,4.81-7.19,7.21-.26.26-.4.57-.43.94-.05.68-.11,1.36-.19,2.04-.06.64.41,1.15,1.05,1.09.68-.05,1.36-.13,2.04-.18.41-.04.74-.21,1.03-.5,2.5-2.52,5.01-5.03,7.52-7.54.06-.06.12-.12.18-.19.66-.73.71-1.82.1-2.6ZM14.3,3.49c-.11.11-.23.23-.33.34-.58-.58-1.14-1.14-1.7-1.7.14-.14.28-.29.43-.42.32-.27.78-.23,1.09.06.17.17.35.35.52.53.33.35.32.84-.01,1.19ZM5.39,9.6c.02-.15.04-.3.05-.45,0-.15.06-.25.16-.36,1.85-1.85,3.7-3.7,5.55-5.56.04-.03.07-.06.1-.09.57.57,1.13,1.13,1.71,1.72-.04.03-.09.06-.14.11-1.84,1.84-3.67,3.68-5.51,5.52-.11.11-.22.17-.38.19-.54.03-1.08.09-1.65.14.04-.42.08-.82.11-1.22Z" />
+                      <path d="M14.01,8.24c.46,0,.83.37.83.83v.77h-.01c.01,1.14.01,2.28,0,3.42-.01,1.38-.92,2.51-2.25,2.81-.22.05-.47.06-.7.06-1.49.01-2.99,0-4.48,0s-3.02.01-4.52,0c-1.39,0-2.52-.92-2.82-2.26C.01,13.66,0,13.43,0,13.22V4.17C0,2.71.94,1.57,2.35,1.3c.17-.03.35-.04.52-.04,1.1,0,2.21,0,3.31,0h.83c.46,0,.83.36.83.82h0c0,.46-.37.83-.83.83h-3.75c-.82,0-1.45.52-1.61,1.3-.02.11-.02.23-.02.36v8.27c0,.84.51,1.47,1.29,1.63.12.02.24.02.36.02h8.24c.82,0,1.45-.48,1.62-1.24.04-.14.04-.31.04-.46.01-.98.01-1.95,0-2.94v-.77c0-.46.37-.83.83-.83h0Z" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+
+              <div class="w-full h-px bg-primary-lightest" />
+
+              <div
+                role="listitem"
+                aria-label={page.Aria_label_email_address_text}
+                class="division-in-element-gap"
+              >
+                <div class="input-label text-black">
+                  {userRecurData.Label_delivery_address}
+                </div>
+
+                <div class="division-in-element-gap flex">
+                  <div class="input-text-large-static grow">
+                    <DynamicHTML
+                      htmlFn={() => window.checkoutInfo.delivery_address}
+                    />
+                  </div>
+
+                  <a
+                    aria-label={`${userRecurData.Button_change_text} ${userRecurData.Label_delivery_address}`}
+                    href={checkoutInfoLink + "?change=address"}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 16.08 16.13"
+                      class="fill-primary address-update-icon"
+                    >
+                      <path d="M15.65,1.37c-.25-.32-.54-.61-.84-.89-.37-.33-.82-.48-1.32-.48-.56,0-1.04.2-1.44.59-.17.16-.34.34-.51.51-2.4,2.4-4.79,4.81-7.19,7.21-.26.26-.4.57-.43.94-.05.68-.11,1.36-.19,2.04-.06.64.41,1.15,1.05,1.09.68-.05,1.36-.13,2.04-.18.41-.04.74-.21,1.03-.5,2.5-2.52,5.01-5.03,7.52-7.54.06-.06.12-.12.18-.19.66-.73.71-1.82.1-2.6ZM14.3,3.49c-.11.11-.23.23-.33.34-.58-.58-1.14-1.14-1.7-1.7.14-.14.28-.29.43-.42.32-.27.78-.23,1.09.06.17.17.35.35.52.53.33.35.32.84-.01,1.19ZM5.39,9.6c.02-.15.04-.3.05-.45,0-.15.06-.25.16-.36,1.85-1.85,3.7-3.7,5.55-5.56.04-.03.07-.06.1-.09.57.57,1.13,1.13,1.71,1.72-.04.03-.09.06-.14.11-1.84,1.84-3.67,3.68-5.51,5.52-.11.11-.22.17-.38.19-.54.03-1.08.09-1.65.14.04-.42.08-.82.11-1.22Z" />
+                      <path d="M14.01,8.24c.46,0,.83.37.83.83v.77h-.01c.01,1.14.01,2.28,0,3.42-.01,1.38-.92,2.51-2.25,2.81-.22.05-.47.06-.7.06-1.49.01-2.99,0-4.48,0s-3.02.01-4.52,0c-1.39,0-2.52-.92-2.82-2.26C.01,13.66,0,13.43,0,13.22V4.17C0,2.71.94,1.57,2.35,1.3c.17-.03.35-.04.52-.04,1.1,0,2.21,0,3.31,0h.83c.46,0,.83.36.83.82h0c0,.46-.37.83-.83.83h-3.75c-.82,0-1.45.52-1.61,1.3-.02.11-.02.23-.02.36v8.27c0,.84.51,1.47,1.29,1.63.12.02.24.02.36.02h8.24c.82,0,1.45-.48,1.62-1.24.04-.14.04-.31.04-.46.01-.98.01-1.95,0-2.94v-.77c0-.46.37-.83.83-.83h0Z" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+
+              {isCheckoutPayment && (
+                <>
+                  <div class="w-full h-px bg-primary-lightest" />
+
+                  <div
+                    role="listitem"
+                    aria-label={page.Aria_label_email_address_text}
+                    class="division-in-element-gap"
+                  >
+                    <div class="input-label text-black">
+                      {userRecurData.Label_shipping_method}
+                    </div>
+
+                    <div class="division-in-element-gap flex">
+                      <div class="input-text-large-static grow">
+                        <DynamicHTML
+                          htmlFn={() => window.checkoutInfo.shipping_method}
+                        />
+                      </div>
+
+                      <a
+                        aria-label={`${userRecurData.Button_change_text} ${userRecurData.Label_shipping_method}`}
+                        href={checkoutShippingLink}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 16.08 16.13"
+                          class="fill-primary address-update-icon"
+                        >
+                          <path d="M15.65,1.37c-.25-.32-.54-.61-.84-.89-.37-.33-.82-.48-1.32-.48-.56,0-1.04.2-1.44.59-.17.16-.34.34-.51.51-2.4,2.4-4.79,4.81-7.19,7.21-.26.26-.4.57-.43.94-.05.68-.11,1.36-.19,2.04-.06.64.41,1.15,1.05,1.09.68-.05,1.36-.13,2.04-.18.41-.04.74-.21,1.03-.5,2.5-2.52,5.01-5.03,7.52-7.54.06-.06.12-.12.18-.19.66-.73.71-1.82.1-2.6ZM14.3,3.49c-.11.11-.23.23-.33.34-.58-.58-1.14-1.14-1.7-1.7.14-.14.28-.29.43-.42.32-.27.78-.23,1.09.06.17.17.35.35.52.53.33.35.32.84-.01,1.19ZM5.39,9.6c.02-.15.04-.3.05-.45,0-.15.06-.25.16-.36,1.85-1.85,3.7-3.7,5.55-5.56.04-.03.07-.06.1-.09.57.57,1.13,1.13,1.71,1.72-.04.03-.09.06-.14.11-1.84,1.84-3.67,3.68-5.51,5.52-.11.11-.22.17-.38.19-.54.03-1.08.09-1.65.14.04-.42.08-.82.11-1.22Z" />
+                          <path d="M14.01,8.24c.46,0,.83.37.83.83v.77h-.01c.01,1.14.01,2.28,0,3.42-.01,1.38-.92,2.51-2.25,2.81-.22.05-.47.06-.7.06-1.49.01-2.99,0-4.48,0s-3.02.01-4.52,0c-1.39,0-2.52-.92-2.82-2.26C.01,13.66,0,13.43,0,13.22V4.17C0,2.71.94,1.57,2.35,1.3c.17-.03.35-.04.52-.04,1.1,0,2.21,0,3.31,0h.83c.46,0,.83.36.83.82h0c0,.46-.37.83-.83.83h-3.75c-.82,0-1.45.52-1.61,1.3-.02.11-.02.23-.02.36v8.27c0,.84.51,1.47,1.29,1.63.12.02.24.02.36.02h8.24c.82,0,1.45-.48,1.62-1.24.04-.14.04-.31.04-.46.01-.98.01-1.95,0-2.94v-.77c0-.46.37-.83.83-.83h0Z" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       )
     }
+
+    <div
+      class="tiled-div-pad block lg:hidden bg-secondary-light rounded-[10px]"
+    >
+      <div
+        id="checkout-order-summery-overview-toggle"
+        class="vertical-toggle-button-primary w-full h-fit lg:!h-0"
+      >
+        <span class="grow">{checkoutRecurData.text_order_summary}</span>
+
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 14 8"
+          class="toggle-button-arrow fill-primary"
+        >
+          <path
+            d="M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z"
+          ></path>
+        </svg>
+      </div>
+    </div>
+
+    <div id="checkout-order-summery-overview" class="hidden lg:block">
+      <div class="order-summary division-gap text-black flex flex-col">
+        <div class="flex flex-col gap-5">
+          <div class="summery-text-container flex-wrap gap-2.5">
+            <h2 class="text-h3">
+              {checkoutRecurData.text_order_summary}
+            </h2>
+
+            <div class="button-link-primary-lightest">
+              <a href={checkoutCartLink}>
+                {checkoutRecurData.text_edit_cart}
+              </a>
+            </div>
+          </div>
+
+          <DynamicHTML
+            htmlFn={(content) =>
+              Object.keys(window.cart)
+                .map((id) => {
+                  const productData = window.cart[id],
+                    names = JSON.parse(productData.names),
+                    name = names[window.preferredLocale] || names["en"],
+                    infos = JSON.parse(productData.infos),
+                    info = infos[window.preferredLocale] || infos["en"],
+                    price = productData.price.toFixed(2).replace(".", ",");
+
+                  return window.replacePlaceholders(content, {
+                    ...productData,
+                    name,
+                    info,
+                    price,
+                  });
+                })
+                .join("")}
+          >
+            <div
+              class:list={[
+                "product tiled-div-sm-pad division-in-gap",
+                "flex bg-secondary-light rounded-[10px]",
+              ]}
+            >
+              <img
+                class="product-image"
+                src={`<placeholder name="image"></placeholder>`}
+                style="clip-path: url(#product-image-curve)"
+              />
+
+              <div class="division-in-element-gap flex flex-col flex-grow">
+                <h3 class="product-name recoleta text-h5">
+                  <placeholder name="name"></placeholder>
+                </h3>
+
+                <div class="text-b6 text-black-light">
+                  <placeholder name="info"></placeholder>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <span class="text-b6 font-medium text-black-light">
+                    <span>{userRecurData.text_quantity}:</span>
+                    <placeholder name="quantity"></placeholder>
+                  </span>
+                  <span class="product-price text-b3 font-bold text-right">
+                    €<placeholder name="price"></placeholder>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </DynamicHTML>
+        </div>
+
+        <div class="division-in-element-gap flex flex-col text-black-light">
+          <div
+            class="order-charges division-in-element-gap flex flex-col text-black-light"
+          >
+            <div
+              class:list={[
+                "summery-text-container",
+                isCheckoutInformation
+                  ? "summery-highlighted-text"
+                  : "summery-base-text",
+              ]}
+            >
+              <span class="order-subtotal">
+                {checkoutRecurData.text_subtotal}
+              </span>
+
+              <span>
+                €<DynamicHTML htmlFn={() => window.cart.subTotal} />
+              </span>
+            </div>
+
+            {
+              (isCheckoutShipping || isCheckoutPayment) && (
+                <div class="summery-text-container summery-base-text">
+                  <span>{checkoutRecurData.text_shipping}</span>
+                  <span class="order-shipping-cost">
+                    €<DynamicHTML htmlFn={() => window.cart.shippingCost} />
+                  </span>
+                </div>
+              )
+            }
+          </div>
+
+          {
+            (isCheckoutShipping || isCheckoutPayment) && (
+              <>
+                <div class="w-full h-px bg-primary-lightest" />
+
+                <div class="summery-text-container summery-highlighted-text">
+                  <span>{checkoutRecurData.text_total}</span>
+                  <span class="order-total">
+                    €<DynamicHTML htmlFn={() => window.cart.total} />
+                  </span>
+                </div>
+
+                <div class="summery-text-container summery-base-text">
+                  <span>{checkoutRecurData.text_tax}</span>
+                  <span class="order-tax">
+                    €<DynamicHTML htmlFn={() => window.cart.tax} />
+                  </span>
+                </div>
+              </>
+            )
+          }
+
+          {
+            isCheckoutInformation && (
+              <div class="text-b4">
+                {checkoutRecurData.text_shipping_calculated_at_checkout}
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<script>
+  const id = document.getElementById.bind(document);
+
+  function checkoutInfoToggle(elementId, toggleButtonId) {
+    const element = id(elementId),
+      toggleBtn = id(toggleButtonId);
+
+    toggleBtn.addEventListener("click", () => {
+      element.classList.toggle("hidden");
+      toggleBtn
+        .querySelector(".toggle-button-arrow")
+        .classList.toggle("rotate-180");
+    });
+  }
+
+  checkoutInfoToggle(
+    "checkout-information-overview",
+    "checkout-information-overview-toggle",
+  );
+  checkoutInfoToggle(
+    "checkout-order-summery-overview",
+    "checkout-order-summery-overview-toggle",
+  );
+</script>

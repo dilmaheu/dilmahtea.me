@@ -3,7 +3,6 @@ import { Picture } from "astro-imagetools/components";
 
 import CMS from "@store/CMS";
 import Markdown from "@components/Markdown.astro";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
 
 import CheckoutKindnessScript from "@solid/CheckoutKindnessScript";
 
@@ -26,56 +25,12 @@ const checkoutSuccessLink = `/${locale}/${
 
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
-
-  .kindness-header {
-    h1 {
-      @apply font-bold;
-
-      font-size: poly-fluid-clamp(
-        (
-          375px: 28px,
-          1440px: 48px,
-        )
-      );
-    }
-
-    .intro-text {
-      font-size: poly-fluid-clamp(
-        (
-          375px: 16px,
-          1440px: 18px,
-        )
-      );
-    }
+  .kindness-cause-pad {
+    padding: poly-fluid-clamp-primary(2px, 5px);
   }
 
-  .kindness-causes {
-    > .active-kindness-cause {
-      @apply -m-3 p-1.5 bg-primary;
-
-      clip-path: url(#kindness-cause-card-curve);
-
-      > div {
-        @apply p-1.5 bg-secondary;
-
-        clip-path: url(#kindness-cause-card-curve);
-      }
-    }
-
-    h2 {
-      @apply sm:font-bold leading-[130%];
-
-      font-size: poly-fluid-clamp(
-        (
-          375px: 24px,
-          1440px: 28px,
-        )
-      );
-    }
-  }
-
-  #submit-cause-btn:disabled {
-    @apply bg-slate text-secondary;
+  .kindness-cause-clip-path {
+    clip-path: url(#blob-card-curve);
   }
 </style>
 
@@ -99,85 +54,94 @@ const checkoutSuccessLink = `/${locale}/${
   window.paymentID = paymentID;
 </script>
 
-<ClipPathSVG
-  id="kindness-cause-card-curve"
-  path="M0.99,0.554 V0.735 c0,0.331,-0.079,0.243,-0.519,0.258 S0.004,1,0.004,0.718 c0,-0.037,0.004,-0.093,0.001,-0.164 C-0.005,0.353,-0.003,0.148,0.042,0.078 C0.102,-0.013,0.358,0.003,0.513,0.003 c0.216,0,0.41,-0.034,0.459,0.141 C1,0.309,0.995,0.441,0.99,0.554"
-/>
+<div class="text-center flex flex-col division-in-gap">
+  <h1 class="text-h1 text-primary">{page.Title}</h1>
 
-<div class="wrapper pt-6 pb-12 flex flex-col gap-12">
-  <section class="kindness-header text-center text-primary">
-    <h1 class="recoleta tracking-[-0.02em]">{page.Title}</h1>
-
-    <div class="intro-text"><Markdown>{page.Intro_text}</Markdown></div>
-  </section>
-
-  <section
-    role="list"
-    aria-label={checkoutRecurData.Aria_label_kindness_cause_items_text}
-    class="kindness-causes flex flex-col sm:flex-row flex-wrap justify-center gap-10"
-  >
-    {
-      page.kindness_causes.data.map(
-        ({
-          attributes: { cause, description, featured_blob, localizations },
-        }) => (
-          <div
-            tabindex="0"
-            role="listitem"
-            aria-label={cause}
-            class="kindness-cause"
-            data-cause={localizations?.data[0]?.attributes?.cause || cause}
-          >
-            <div class="h-full">
-              <div
-                style="clip-path: url(#kindness-cause-card-curve);"
-                class="relative w-full h-full sm:w-80 flex flex-col bg-primary cursor-pointer"
-              >
-                <div class="h-48">
-                  <Picture
-                    layout="fill"
-                    sizes="(min-width: 640px) 320px, 90vw"
-                    alt={featured_blob.data.attributes.alternativeText}
-                    src={STRAPI_URL + featured_blob.data.attributes.url}
-                  />
-                </div>
-
-                <div class="grow px-6 pt-5 pb-7 flex flex-col justify-center gap-2">
-                  <h2 class="recoleta text-white leading-[120%]">{cause}</h2>
-
-                  <div class="font-medium text-base text-white">
-                    <Markdown>{description}</Markdown>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ),
-      )
-    }
-  </section>
-
-  <div
-    class:list={[
-      "flex flex-col-reverse sm:flex-row items-center",
-      "justify-center sm:justify-start gap-9 sm:gap-12 mx-auto",
-    ]}
-  >
-    <a href={checkoutSuccessLink} class="text-primary font-bold">
-      {recurData.text_skip}
-    </a>
-
-    <button
-      disabled
-      id="submit-cause-btn"
-      class:list={[
-        "w-full sm:w-auto py-4 px-20 sm:px-24",
-        "bg-primary text-white font-bold rounded-full",
-      ]}
-    >
-      {page.text_submit_kindness_cause}
-    </button>
+  <div class="prose-text no-pad-mar-child">
+    <Markdown>{page.Intro_text}</Markdown>
   </div>
+</div>
+
+<div
+  role="list"
+  aria-label={checkoutRecurData.Aria_label_kindness_cause_items_text}
+  class="blob-cards-container"
+>
+  {
+    page.kindness_causes.data.map(
+      ({
+        attributes: { cause, description, featured_blob, localizations },
+      }) => (
+        <div
+          tabindex="0"
+          role="listitem"
+          aria-label={cause}
+          data-cause={localizations?.data[0]?.attributes?.cause || cause}
+          class="post-card !bg-transparent"
+          onclick="document.getElementById('submit-cause-btn').removeAttribute('disabled')"
+        >
+          <input
+            type="radio"
+            name="kindness_cause"
+            id={cause}
+            value={cause}
+            class="peer !hidden"
+          />
+
+          <label
+            for={cause}
+            class:list={[
+              "kindness-cause-clip-path kindness-cause-pad",
+              "peer-checked:bg-primary select-none cursor-pointer",
+            ]}
+          >
+            <span class="kindness-cause-clip-path kindness-cause-pad h-full block bg-secondary">
+              <span class="kindness-cause-clip-path bg-primary h-full grid justify-center">
+                <Picture
+                  layout="fill"
+                  sizes="(min-width: 640px) 320px, 90vw)"
+                  src={STRAPI_URL + featured_blob.data.attributes.url}
+                  alt={featured_blob.data.attributes.alternativeText}
+                  attributes={{
+                    img: {
+                      style: "aspect-ratio: 6 / 5;",
+                    },
+                  }}
+                />
+
+                <span class="card-content-container">
+                  <span class="post-title">{cause}</span>
+
+                  <div class="text-secondary-light text-b6-xs line-clamp-3">
+                    {description}
+                  </div>
+                </span>
+              </span>
+            </span>
+          </label>
+        </div>
+      ),
+    )
+  }
+</div>
+
+<div
+  class:list={[
+    "flex flex-col-reverse sm:flex-row",
+    "items-center justify-center form-gap",
+  ]}
+>
+  <a href={checkoutSuccessLink} class="button-link-primary-large">
+    {recurData.text_skip}
+  </a>
+
+  <button
+    disabled
+    id="submit-cause-btn"
+    class="button-primary-large w-full sm:min-w-[250px] sm:w-fit"
+  >
+    {page.text_submit_kindness_cause}
+  </button>
 </div>
 
 <CheckoutKindnessScript client:only checkoutSuccessLink={checkoutSuccessLink} />

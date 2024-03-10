@@ -1,8 +1,7 @@
 ---
 import CMS from "@store/CMS";
+import Markdown from "@components/Markdown.astro";
 import getLocalizedLink from "@utils/getLocalizedLink";
-import DynamicHTML from "@components/DynamicHTML.astro";
-import OrderSummary from "@components/OrderSummary.astro";
 
 const { page } = Astro.props,
   { locale } = page,
@@ -15,149 +14,71 @@ const { page } = Astro.props,
   checkoutPaymentLink = CMS.get("checkoutPayment", locale).Meta.URL_slug;
 ---
 
-<section class="w-full xl:w-2/3">
-  <form
-    role="main"
-    id="shipping-details"
-    class="section-gap flex flex-col"
-    action={getLocalizedLink(locale, checkoutPaymentLink)}
-  >
-    <input type="hidden" name="price" />
-    <div
-      role="list"
-      aria-label={page.Aria_label_kindness_delivery_address_section_text}
-      class="tiled-div division-in-gap grid"
-    >
-      <div
-        role="listitem"
-        aria-label={page.Aria_label_email_address_text}
-        class="division-in-element-gap"
-      >
-        <div class="input-label text-black">
-          {userRecurr.Input_label_email}
-        </div>
-
-        <div class="division-in-element-gap flex flex-wrap items-center">
-          <div class="input-text-large-static grow">
-            <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
-          </div>
-
-          <a
-            aria-label={`${userRecurr.Button_change_text} ${userRecurr.Aria_label_email}`}
-            href={checkoutInfoLink + "?change=email"}
-            class="button-link-primary-large"
-          >
-            {userRecurr.Button_change_text}
-          </a>
-        </div>
-      </div>
-
-      <div class="w-full h-px bg-primary-lightest"></div>
-
-      <div
-        role="listitem"
-        aria-label={page.Aria_label_email_address_text}
-        class="division-in-element-gap"
-      >
-        <div class="input-label text-black">
-          {userRecurr.Label_delivery_address}
-        </div>
-
-        <div class="division-in-element-gap flex flex-wrap items-center">
-          <div class="input-text-large-static grow">
-            <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
-          </div>
-
-          <a
-            aria-label={`${userRecurr.Button_change_text} ${userRecurr.Aria_label_delivery_address}`}
-            href={checkoutInfoLink + "?change=address"}
-            class="button-link-primary-large"
-          >
-            {userRecurr.Button_change_text}
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div
-      role="list"
-      aria-label={page.text_shipping_method}
-      class="flex flex-col gap-4"
-    >
-      <h2 class="text-h2 text-primary">{page.text_shipping_method}</h2>
-
-      {
-        page.shipping_methods.data.map(
-          ({ attributes: { method, cost, description, localizations } }, i) => (
-            <label
-              role="listitem"
-              class="gap-5 flex items-center cursor-pointer"
-            >
-              <div>
-                <input
-                  type="radio"
-                  name="shipping_method"
-                  value={localizations?.data[0]?.attributes?.method || method}
-                  data-cost={cost}
-                  class:list={[
-                    "hover:brightness-50 active:brightness-150 block",
-                    "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
-                    "checked:before:block before:hidden before:w-2 before:h-2 before:bg-primary before:rounded-full",
-                  ]}
-                  checked={i === 0 ? "" : undefined}
-                  required
-                />
-              </div>
-
-              <div class="division-in-element-gap grid">
-                <span class="flex items-center gap-2 text-b3 font-bold text-black">
-                  <span class="shipping-method">{method}</span>
-                  <span>&#x2022;</span>
-                  <span class="shipping-cost">
-                    €{cost.toFixed(2).toString().replace(".", ",")}
-                  </span>
-                </span>
-
-                <span class="text-b5 text-black-light">{description}</span>
-              </div>
-            </label>
-          ),
-        )
-      }
-    </div>
-
-    <div class="block lg:hidden">
-      <OrderSummary page={page} />
-    </div>
-
-    <div class="checkout-button-container">
-      <a href={checkoutInfoLink} class="button-link-primary-large">
-        <span class="sm:hidden">
-          {
-            `${
-              userRecurr.Button_return_to_text
-            } ${shortenedSteps[0]?.toLowerCase()}`
-          }
-        </span>
-        <span class="hidden sm:block">
-          {`${userRecurr.Button_return_to_text} ${steps[0]?.toLowerCase()}`}
-        </span>
-      </a>
-
-      <button class="w-full sm:w-1/3 button-primary-large">
-        {checkoutRecurData.text_continue_to_payment}
-      </button>
-    </div>
-  </form>
-</section>
-
-<section
-  role="complementary"
-  aria-label={checkoutRecurData.text_order_summary}
-  class="hidden xl:block xl:w-1/3"
+<form
+  id="shipping-details"
+  class="section-gap flex flex-col"
+  action={getLocalizedLink(locale, checkoutPaymentLink)}
 >
-  <OrderSummary page={page} />
-</section>
+  <input type="hidden" name="price" />
+
+  <div
+    role="list"
+    aria-label={page.text_shipping_method}
+    class="flex flex-col gap-4"
+  >
+    <h2 class="text-h2 text-primary">{page.text_shipping_method}</h2>
+
+    {
+      page.shipping_methods.data.map(
+        ({ attributes: { method, cost, description, localizations } }, i) => (
+          <label class="division-in-element-gap radio-input-extended">
+            <input
+              type="radio"
+              name="shipping_method"
+              value={localizations?.data[0]?.attributes?.method || method}
+              data-cost={cost}
+              checked={i === 0 ? "" : undefined}
+              class="peer hidden"
+            />
+
+            <span>
+              <span class="radio-input-label">
+                <span class="shipping-method">{method}</span>
+                &#x2022;
+                <span class="shipping-cost">
+                  €{cost.toFixed(2).toString().replace(".", ",")}
+                </span>
+              </span>
+
+              <span class="prose-text radio-input-text">
+                <Markdown>{description}</Markdown>
+              </span>
+            </span>
+          </label>
+        ),
+      )
+    }
+  </div>
+
+  <div class="checkout-button-container">
+    <a href={checkoutInfoLink} class="button-link-primary-large">
+      <span class="sm:hidden">
+        {
+          `${
+            userRecurr.Button_return_to_text
+          } ${shortenedSteps[0]?.toLowerCase()}`
+        }
+      </span>
+      <span class="hidden sm:block">
+        {`${userRecurr.Button_return_to_text} ${steps[0]?.toLowerCase()}`}
+      </span>
+    </a>
+
+    <button class="w-full sm:w-1/3 button-primary-large">
+      {checkoutRecurData.text_continue_to_payment}
+    </button>
+  </div>
+</form>
 
 <script>
   const shippingDetailsForm = document.getElementById("shipping-details"),

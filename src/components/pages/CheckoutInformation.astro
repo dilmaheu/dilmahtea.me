@@ -3,7 +3,6 @@ import CMS from "@store/CMS";
 import getLocalizedLink from "@utils/getLocalizedLink";
 
 import Markdown from "@components/Markdown.astro";
-import OrderSummary from "@components/OrderSummary.astro";
 
 import CheckoutInformationForm from "@solid/CheckoutInformationForm.astro";
 
@@ -14,99 +13,80 @@ const { page, recurData } = Astro.props,
   userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
 ---
 
-<style lang="scss">
-  .prose-text {
-    p {
-      margin: 0;
-    }
-  }
-</style>
-
-<section class="w-full xl:w-2/3">
-  <form
-    role="main"
-    aria-label={page.Aria_label_form_text}
-    id="checkout-info-form"
-    class="section-gap flex flex-col"
-    action={getLocalizedLink(locale, checkoutShippingLink)}
+<form
+  aria-label={page.Aria_label_form_text}
+  id="checkout-info-form"
+  class="section-gap flex flex-col"
+  action={getLocalizedLink(locale, checkoutShippingLink)}
+>
+  <div
+    role="form"
+    aria-label={page.text_contact_info}
+    class="division-gap grid"
   >
-    <div
-      role="form"
-      aria-label={page.text_contact_info}
-      class="division-gap grid"
-    >
-      <h2 class="text-h2 text-primary">{page.text_customer}</h2>
+    <h2 class="text-h2 text-primary">{page.text_customer}</h2>
 
-      <div id="guest-intro-text" class="prose-text">
-        <Markdown>{page.Guest_intro_text}</Markdown>
-      </div>
-
-      <div class="form-grid">
-        <label>
-          <span>{recurData.text_email_address}</span>
-
-          <input
-            type="email"
-            name="email"
-            placeholder={recurData.email_address_placeholder}
-            required
-          />
-        </label>
-      </div>
-
-      <div id="sign-in-text" class="prose-text">
-        <Markdown>{page.Sign_in_text}</Markdown>
-      </div>
+    <div id="guest-intro-text" class="prose-text-sm no-pad-mar-child">
+      <Markdown>{page.Guest_intro_text}</Markdown>
     </div>
 
-    <script is:inline>
-      const guestIntroText = document.getElementById("guest-intro-text"),
-        signInText = document.getElementById("sign-in-text");
+    <div class="form-grid">
+      <label>
+        <span>{recurData.text_email_address}</span>
 
-      if (window.cookies.isAuthenticated === "true") {
-        guestIntroText.remove();
-        signInText.remove();
-      }
-    </script>
-
-    <div class="w-full h-px bg-primary-lightest"></div>
-
-    <div
-      role="form"
-      aria-label={page.text_shipping_address}
-      id="shipping-address"
-      class="division-gap grid"
-    >
-      <h2 class="text-h2 text-primary">
-        {page.text_shipping_address}
-      </h2>
-
-      <CheckoutInformationForm
-        {recurData}
-        {userAccountRecurData}
-        text_select_or_create_tag={page.text_select_or_create_tag}
-      />
+        <input
+          type="email"
+          name="email"
+          placeholder={recurData.email_address_placeholder}
+          required
+        />
+      </label>
     </div>
 
-    <div class="block lg:hidden">
-      <OrderSummary page={page} />
+    <div id="sign-in-text" class="prose-text-sm no-pad-mar-child">
+      <Markdown>{page.Sign_in_text}</Markdown>
     </div>
+  </div>
 
-    <div class="checkout-button-container">
-      <a href={checkoutCartLink} class="button-link-primary-large">
-        {page.text_return_to_cart}
-      </a>
+  <script is:inline>
+    const guestIntroText = document.getElementById("guest-intro-text"),
+      signInText = document.getElementById("sign-in-text");
 
-      <button class="w-full sm:w-1/3 button-primary-large">
-        {page.text_continue_to_shipping}
-      </button>
-    </div>
-  </form>
-</section>
+    if (window.cookies.isAuthenticated === "true") {
+      guestIntroText.remove();
+      signInText.remove();
+    }
+  </script>
 
-<section class="hidden xl:block xl:w-1/3">
-  <OrderSummary page={page} />
-</section>
+  <div class="w-full h-px bg-primary-lightest"></div>
+
+  <div
+    role="form"
+    aria-label={page.text_shipping_address}
+    id="shipping-address"
+    class="division-gap grid"
+  >
+    <h2 class="text-h2 text-primary">
+      {page.text_shipping_address}
+    </h2>
+
+    <CheckoutInformationForm
+      {recurData}
+      {userAccountRecurData}
+      text_select_or_create_tag={page.text_select_or_create_tag}
+    />
+  </div>
+
+  <div class="checkout-button-container">
+    <a href={checkoutCartLink} class="button-link-primary-large">
+      {page.text_return_to_cart}
+    </a>
+
+    <button class="w-full sm:w-1/3 button-primary-large">
+      {page.text_continue_to_shipping}
+    </button>
+  </div>
+</form>
 
 <script>
   const change = new URLSearchParams(location.search).get("change");

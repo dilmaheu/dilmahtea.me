@@ -55,6 +55,13 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   }
 }
 
+@mixin no-pad-mar-child {
+  > * {
+    padding: 0;
+    margin: 0;
+  }
+}
+
 @mixin number-list-circle {
   @apply inline-flex items-center justify-center
     text-b4 font-bold text-white bg-primary rounded-full;
@@ -147,8 +154,8 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   @apply text-b3;
 }
 
-@mixin prose-content-hero-text {
-  @apply text-b5 text-white;
+@mixin prose-content-sm-text {
+  @apply text-b5;
 }
 
 @mixin prose-default {
@@ -156,9 +163,16 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   @include prose-content-default-text;
 }
 
+@mixin prose-sm {
+  @include prose-prose-text;
+  @include prose-content-sm-text;
+}
+
 @mixin prose-hero-text {
   @include prose-prose-text;
-  @include prose-content-hero-text;
+  @include prose-content-sm-text;
+
+  @apply text-white;
 }
 
 // gaps
@@ -232,6 +246,12 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 
   .button-icon {
     @apply h-[16px];
+  }
+
+  &:disabled {
+    @apply cursor-not-allowed;
+
+    @include button-disabled-colors;
   }
 }
 
@@ -534,6 +554,10 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
       text-secondary px-[clamp(12px,calc(2.16vw+3.9px),35px)] 
       pt-[clamp(10px,calc(0.94vw+6.4px),20px)] pb-[clamp(12px,calc(1.22vw+7.42px),25px)];
   }
+
+  .post-title {
+    @apply text-h5-sm;
+  }
 }
 
 // note: clamp calculation part should be as card-gap
@@ -572,10 +596,6 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
 
   .product-card-content {
     @apply grid division-in-gap;
-
-    .post-title {
-      @apply text-h5-sm;
-    }
 
     .post-title-icon {
       @apply inline align-middle h-[clamp(8px,calc(1vw+1.6px),16px)] 
@@ -867,12 +887,25 @@ $primary: str-slice(meta.inspect(colors.$primary), 2);
   }
 }
 
+@mixin input-default {
+  @apply w-full;
+  
+  label {
+    @include division-in-element-gap;
+    @include input-label;
+
+    @apply flex flex-col w-full;
+
+    input {
+      @include input-field-default;
+    }
+  }
+}
+
 @mixin form-grid {
   @include form-gap;
   @include input-selector-default;
-  input {
-    @include input-field-default;
-  }
+  @include input-default;
 
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
@@ -888,11 +921,6 @@ $primary: str-slice(meta.inspect(colors.$primary), 2);
   @apply w-full grid sm:grid-cols-2;
 
   label {
-    @include division-in-element-gap;
-    @include input-label;
-
-    @apply flex flex-col;
-
     span.tag-input-close-button {
       @apply absolute inset-y-0 right-0 cursor-pointer
         flex items-center pr-5 font-bold text-error-dark;
