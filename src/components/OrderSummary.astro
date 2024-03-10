@@ -2,7 +2,7 @@
 import CMS from "@store/CMS";
 import DynamicHTML from "@components/DynamicHTML.astro";
 
-const { page } = Astro.props,
+const { page, recurData } = Astro.props,
   { locale } = page,
   userRecurData = CMS.get("userAccountRecurringElement", locale),
   checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
@@ -42,235 +42,306 @@ const isCheckoutInformation = page.type === "checkoutInformation",
   }
 </style>
 
-<div
-  class="division-gap grid h-full lg:pl-[50px] lg:border-l lg:border-l-primary-lightest"
->
-  {
-    (isCheckoutShipping || isCheckoutPayment) && (
-      <div
-        role="list"
-        aria-label={userRecurData.Input_label_email}
-        class="tiled-div-pad division-in-gap grid bg-secondary-light rounded-[10px]"
-      >
-        <div
-          role="listitem"
-          aria-label={page.Aria_label_email_address_text}
-          class="division-in-element-gap"
-        >
-          <div class="input-label text-black">
-            {userRecurData.Input_label_email}
-          </div>
+<div class="section-gap flex flex-col lg:flex-row h-full">
+  <div class="w-full lg:w-px h-px lg:h-full bg-primary-lightest"></div>
 
-          <div class="division-in-element-gap flex flex-wrap items-center">
-            <div class="input-text-large-static grow">
-              <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
-            </div>
+  <div class="division-gap grid">
+    {
+      (isCheckoutShipping || isCheckoutPayment) && (
+        <div class="tiled-div-pad division-in-gap grid bg-secondary-light rounded-[10px]">
+          <div
+            id="checkout-information-overview-toggle"
+            class="vertical-toggle-button-primary lg:!hidden w-full"
+          >
+            <span class="grow"> {recurData.text_information}</span>
 
-            <a
-              aria-label={`${userRecurData.Button_change_text} ${userRecurData.Input_label_email}`}
-              href={checkoutInfoLink + "?change=email"}
-              class="button-link-primary-large"
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 14 8"
+              id="information-toggle-icon"
+              class="toggle-button-arrow fill-primary"
             >
-              {userRecurData.Button_change_text}
-            </a>
-          </div>
-        </div>
-
-        <div class="w-full h-px bg-primary-lightest" />
-
-        <div
-          role="listitem"
-          aria-label={page.Aria_label_email_address_text}
-          class="division-in-element-gap"
-        >
-          <div class="input-label text-black">
-            {userRecurData.Label_delivery_address}
+              <path d="M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z" />
+            </svg>
           </div>
 
-          <div class="division-in-element-gap flex flex-wrap items-center">
-            <div class="input-text-large-static grow">
-              <DynamicHTML
-                htmlFn={() => window.checkoutInfo.delivery_address}
-              />
-            </div>
+          <div id="checkout-information-overview" class="hidden lg:block">
+            <div role="list" class="division-in-gap grid">
+              <div class="w-full h-px lg:hidden bg-primary-lightest" />
 
-            <a
-              aria-label={`${userRecurData.Button_change_text} ${userRecurData.Label_delivery_address}`}
-              href={checkoutInfoLink + "?change=address"}
-              class="button-link-primary-large"
-            >
-              {userRecurData.Button_change_text}
-            </a>
-          </div>
-        </div>
-
-        {isCheckoutPayment && (
-          <>
-            <div class="w-full h-px bg-primary-lightest" />
-
-            <div
-              role="listitem"
-              aria-label={page.Aria_label_email_address_text}
-              class="division-in-element-gap"
-            >
-              <div class="input-label text-black">
-                {userRecurData.Label_shipping_method}
-              </div>
-
-              <div class="division-in-element-gap flex flex-wrap items-center">
-                <div class="input-text-large-static grow">
-                  <DynamicHTML
-                    htmlFn={() => window.checkoutInfo.shipping_method}
-                  />
+              <div
+                role="listitem"
+                aria-label={page.Aria_label_email_address_text}
+                class="division-in-element-gap"
+              >
+                <div class="input-label text-black">
+                  {userRecurData.Input_label_email}
                 </div>
 
-                <a
-                  aria-label={`${userRecurData.Button_change_text} ${userRecurData.Label_shipping_method}`}
-                  href={checkoutShippingLink}
-                  class="button-link-primary-large"
-                >
-                  {userRecurData.Button_change_text}
-                </a>
+                <div class="division-in-element-gap flex flex-wrap items-center">
+                  <div class="input-text-large-static grow">
+                    <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
+                  </div>
+
+                  <a
+                    aria-label={`${userRecurData.Button_change_text} ${userRecurData.Input_label_email}`}
+                    href={checkoutInfoLink + "?change=email"}
+                    class="button-link-primary-large"
+                  >
+                    {userRecurData.Button_change_text}
+                  </a>
+                </div>
               </div>
-            </div>
-          </>
-        )}
-      </div>
-    )
-  }
 
-  <div class="order-summary division-gap text-black flex flex-col">
-    <div class="flex flex-col gap-5">
-      <div class="summery-text-container flex-wrap gap-2.5">
-        <h2 class="text-h3">
-          {checkoutRecurData.text_order_summary}
-        </h2>
+              <div class="w-full h-px bg-primary-lightest" />
 
-        <a
-          href={checkoutCartLink}
-          class="text-b4 text-primary font-bold underline underline-offset-2"
-        >
-          {checkoutRecurData.text_edit_cart}
-        </a>
-      </div>
+              <div
+                role="listitem"
+                aria-label={page.Aria_label_email_address_text}
+                class="division-in-element-gap"
+              >
+                <div class="input-label text-black">
+                  {userRecurData.Label_delivery_address}
+                </div>
 
-      <DynamicHTML
-        htmlFn={(content) =>
-          Object.keys(window.cart)
-            .map((id) => {
-              const productData = window.cart[id],
-                names = JSON.parse(productData.names),
-                name = names[window.preferredLocale] || names["en"],
-                infos = JSON.parse(productData.infos),
-                info = infos[window.preferredLocale] || infos["en"],
-                price = productData.price.toFixed(2).replace(".", ",");
+                <div class="division-in-element-gap flex flex-wrap items-center">
+                  <div class="input-text-large-static grow">
+                    <DynamicHTML
+                      htmlFn={() => window.checkoutInfo.delivery_address}
+                    />
+                  </div>
 
-              return window.replacePlaceholders(content, {
-                ...productData,
-                name,
-                info,
-                price,
-              });
-            })
-            .join("")}
-      >
-        <div
-          class:list={[
-            "product tiled-div-sm-pad division-in-gap",
-            "flex bg-secondary-light rounded-[10px]",
-          ]}
-        >
-          <img
-            class="product-image"
-            src={`<placeholder name="image"></placeholder>`}
-            style="clip-path: url(#product-image-curve)"
-          />
+                  <a
+                    aria-label={`${userRecurData.Button_change_text} ${userRecurData.Label_delivery_address}`}
+                    href={checkoutInfoLink + "?change=address"}
+                    class="button-link-primary-large"
+                  >
+                    {userRecurData.Button_change_text}
+                  </a>
+                </div>
+              </div>
 
-          <div class="division-in-element-gap flex flex-col flex-grow">
-            <h3 class="product-name recoleta text-h5">
-              <placeholder name="name"></placeholder>
-            </h3>
+              {isCheckoutPayment && (
+                <>
+                  <div class="w-full h-px bg-primary-lightest" />
 
-            <div class="text-b6 text-black-light">
-              <placeholder name="info"></placeholder>
-            </div>
+                  <div
+                    role="listitem"
+                    aria-label={page.Aria_label_email_address_text}
+                    class="division-in-element-gap"
+                  >
+                    <div class="input-label text-black">
+                      {userRecurData.Label_shipping_method}
+                    </div>
 
-            <div class="flex items-center justify-between">
-              <span class="text-b6 font-medium text-black-light">
-                <span>{userRecurData.text_quantity}:</span>
-                <placeholder name="quantity"></placeholder>
-              </span>
-              <span class="product-price text-b3 font-bold text-right">
-                €<placeholder name="price"></placeholder>
-              </span>
+                    <div class="division-in-element-gap flex flex-wrap items-center">
+                      <div class="input-text-large-static grow">
+                        <DynamicHTML
+                          htmlFn={() => window.checkoutInfo.shipping_method}
+                        />
+                      </div>
+
+                      <a
+                        aria-label={`${userRecurData.Button_change_text} ${userRecurData.Label_shipping_method}`}
+                        href={checkoutShippingLink}
+                        class="button-link-primary-large"
+                      >
+                        {userRecurData.Button_change_text}
+                      </a>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
-      </DynamicHTML>
+      )
+    }
+
+    <div
+      class="tiled-div-pad block lg:hidden bg-secondary-light rounded-[10px]"
+    >
+      <div
+        id="checkout-order-summery-overview-toggle"
+        class="vertical-toggle-button-primary w-full h-fit lg:!h-0"
+      >
+        <span class="grow"> {checkoutRecurData.text_order_summary}</span>
+
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 14 8"
+          id="checkout-order-summery-toggle-icon"
+          class="toggle-button-arrow fill-primary"
+        >
+          <path
+            d="M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z"
+          ></path>
+        </svg>
+      </div>
     </div>
 
-    <div class="division-in-element-gap flex flex-col text-black-light">
-      <div
-        class="order-charges division-in-element-gap flex flex-col text-black-light"
-      >
-        <div
-          class:list={[
-            "summery-text-container",
-            isCheckoutInformation
-              ? "summery-highlighted-text"
-              : "summery-base-text",
-          ]}
-        >
-          <span class="order-subtotal">
-            {checkoutRecurData.text_subtotal}
-          </span>
+    <div id="checkout-order-summery-overview" class="hidden lg:block">
+      <div class="order-summary division-gap text-black flex flex-col">
+        <div class="flex flex-col gap-5">
+          <div class="summery-text-container flex-wrap gap-2.5">
+            <h2 class="text-h3">
+              {checkoutRecurData.text_order_summary}
+            </h2>
 
-          <span>
-            €<DynamicHTML htmlFn={() => window.cart.subTotal} />
-          </span>
+            <div class="button-link-primary-lightest">
+              <a href={checkoutCartLink}>
+                {checkoutRecurData.text_edit_cart}
+              </a>
+            </div>
+          </div>
+
+          <DynamicHTML
+            htmlFn={(content) =>
+              Object.keys(window.cart)
+                .map((id) => {
+                  const productData = window.cart[id],
+                    names = JSON.parse(productData.names),
+                    name = names[window.preferredLocale] || names["en"],
+                    infos = JSON.parse(productData.infos),
+                    info = infos[window.preferredLocale] || infos["en"],
+                    price = productData.price.toFixed(2).replace(".", ",");
+
+                  return window.replacePlaceholders(content, {
+                    ...productData,
+                    name,
+                    info,
+                    price,
+                  });
+                })
+                .join("")}
+          >
+            <div
+              class:list={[
+                "product tiled-div-sm-pad division-in-gap",
+                "flex bg-secondary-light rounded-[10px]",
+              ]}
+            >
+              <img
+                class="product-image"
+                src={`<placeholder name="image"></placeholder>`}
+                style="clip-path: url(#product-image-curve)"
+              />
+
+              <div class="division-in-element-gap flex flex-col flex-grow">
+                <h3 class="product-name recoleta text-h5">
+                  <placeholder name="name"></placeholder>
+                </h3>
+
+                <div class="text-b6 text-black-light">
+                  <placeholder name="info"></placeholder>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <span class="text-b6 font-medium text-black-light">
+                    <span>{userRecurData.text_quantity}:</span>
+                    <placeholder name="quantity"></placeholder>
+                  </span>
+                  <span class="product-price text-b3 font-bold text-right">
+                    €<placeholder name="price"></placeholder>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </DynamicHTML>
         </div>
 
-        {
-          (isCheckoutShipping || isCheckoutPayment) && (
-            <div class="summery-text-container summery-base-text">
-              <span>{checkoutRecurData.text_shipping}</span>
-              <span class="order-shipping-cost">
-                €<DynamicHTML htmlFn={() => window.cart.shippingCost} />
+        <div class="division-in-element-gap flex flex-col text-black-light">
+          <div
+            class="order-charges division-in-element-gap flex flex-col text-black-light"
+          >
+            <div
+              class:list={[
+                "summery-text-container",
+                isCheckoutInformation
+                  ? "summery-highlighted-text"
+                  : "summery-base-text",
+              ]}
+            >
+              <span class="order-subtotal">
+                {checkoutRecurData.text_subtotal}
               </span>
-            </div>
-          )
-        }
-      </div>
 
-      {
-        (isCheckoutShipping || isCheckoutPayment) && (
-          <>
-            <div class="w-full h-px bg-primary-lightest" />
-
-            <div class="summery-text-container summery-highlighted-text">
-              <span>{checkoutRecurData.text_total}</span>
-              <span class="order-total">
-                €<DynamicHTML htmlFn={() => window.cart.total} />
+              <span>
+                €<DynamicHTML htmlFn={() => window.cart.subTotal} />
               </span>
             </div>
 
-            <div class="summery-text-container summery-base-text">
-              <span>{checkoutRecurData.text_tax}</span>
-              <span class="order-tax">
-                €<DynamicHTML htmlFn={() => window.cart.tax} />
-              </span>
-            </div>
-          </>
-        )
-      }
-
-      {
-        isCheckoutInformation && (
-          <div class="text-b4">
-            {checkoutRecurData.text_shipping_calculated_at_checkout}
+            {
+              (isCheckoutShipping || isCheckoutPayment) && (
+                <div class="summery-text-container summery-base-text">
+                  <span>{checkoutRecurData.text_shipping}</span>
+                  <span class="order-shipping-cost">
+                    €<DynamicHTML htmlFn={() => window.cart.shippingCost} />
+                  </span>
+                </div>
+              )
+            }
           </div>
-        )
-      }
+
+          {
+            (isCheckoutShipping || isCheckoutPayment) && (
+              <>
+                <div class="w-full h-px bg-primary-lightest" />
+
+                <div class="summery-text-container summery-highlighted-text">
+                  <span>{checkoutRecurData.text_total}</span>
+                  <span class="order-total">
+                    €<DynamicHTML htmlFn={() => window.cart.total} />
+                  </span>
+                </div>
+
+                <div class="summery-text-container summery-base-text">
+                  <span>{checkoutRecurData.text_tax}</span>
+                  <span class="order-tax">
+                    €<DynamicHTML htmlFn={() => window.cart.tax} />
+                  </span>
+                </div>
+              </>
+            )
+          }
+
+          {
+            isCheckoutInformation && (
+              <div class="text-b4">
+                {checkoutRecurData.text_shipping_calculated_at_checkout}
+              </div>
+            )
+          }
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<script>
+  const id = document.getElementById.bind(document);
+
+  // Check if the element with ID "checkout-information-overview" exists before executing the scripts
+  if (document.getElementById("checkout-information-overview")) {
+    const informationToggleIcon = id("information-toggle-icon"),
+      informationOverview = id("checkout-information-overview"),
+      checkoutInfoToggleBtn = id("checkout-information-overview-toggle");
+
+    checkoutInfoToggleBtn.addEventListener("click", () => {
+      informationToggleIcon.classList.toggle("rotate-180");
+      informationOverview.classList.toggle("hidden");
+    });
+  }
+
+  // Check if the element with ID "checkout-information-overview" exists before executing the scripts
+  if (document.getElementById("checkout-order-summery-overview")) {
+    const orderSummeryToggleIcon = id("checkout-order-summery-toggle-icon"),
+      orderSummeryOverview = id("checkout-order-summery-overview"),
+      orderSummeryToggleBtn = id("checkout-order-summery-overview-toggle");
+
+    orderSummeryToggleBtn.addEventListener("click", () => {
+      orderSummeryToggleIcon.classList.toggle("rotate-180");
+      orderSummeryOverview.classList.toggle("hidden");
+    });
+  }
+</script>
