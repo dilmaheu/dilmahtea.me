@@ -1,6 +1,8 @@
 import type { Key, User } from "lucia";
 import type { ENV } from "../utils/types";
 
+import { isbot } from "isbot";
+
 import { removeToken, validateToken } from "../utils/token";
 import { getProviderId, createSessionCookie } from "../utils";
 
@@ -12,6 +14,11 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
 
   const requestURL = new URL(request.url),
     { origin, searchParams } = requestURL;
+
+  const userAgent = request.headers.get("User-Agent");
+
+  if (isbot(userAgent))
+    return Response.redirect(origin + "/account/login", 303);
 
   const token = searchParams.get("token");
 
