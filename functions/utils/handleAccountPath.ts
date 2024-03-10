@@ -36,7 +36,7 @@ export async function handleAccountPath(
     ) {
       return redirectToReferrer();
     }
-  } else if (["", "orders"].includes(pathID)) {
+  } else if (["", "orders", "address"].includes(pathID)) {
     return redirectToLogin();
   }
 

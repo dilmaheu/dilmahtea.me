@@ -324,7 +324,9 @@ export const onRequestDelete = getAPIHandler(
     if (id === default_billing_address) {
       await env.USERS.prepare(
         "UPDATE user SET default_billing_address = ? WHERE exact_account_guid = ?",
-      ).bind(default_delivery_address, exact_account_guid);
+      )
+        .bind(default_delivery_address, exact_account_guid)
+        .run();
     }
 
     return Response.json({ success: true });
