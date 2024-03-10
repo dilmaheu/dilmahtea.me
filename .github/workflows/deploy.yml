@@ -93,6 +93,7 @@ jobs:
           key: ${{ steps.astro-imagetools-cache-key.outputs.key }}
 
       - name: Delete obsolete astro-imagetools caches
+        if: always()
         run: |
           curl -L \
             -H "Accept: application/vnd.github+json" \
