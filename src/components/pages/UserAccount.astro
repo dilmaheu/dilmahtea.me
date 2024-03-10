@@ -420,11 +420,13 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
       const formInputs = form.querySelectorAll("input");
 
       formInputs.forEach((input, i) => {
-        input.addEventListener("input", () => {
-          const { value } = input;
+        const disableOtherInput = () => {
+          formInputs[i === 0 ? 1 : 0].disabled = input.value.length > 0;
+        };
 
-          formInputs[i === 0 ? 1 : 0].disabled = value.length > 0;
-        });
+        disableOtherInput();
+
+        input.addEventListener("input", disableOtherInput);
       });
 
       break;
