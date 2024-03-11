@@ -146,6 +146,7 @@ export default function CheckoutInformationForm({
                     action="checkout"
                     address={selectedAddress}
                     userAccountRecurData={userAccountRecurData}
+                    selectedTag={selectedTag}
                     setSelectedTag={setSelectedTag}
                     showMoreAddresses={showMoreAddresses}
                     setShowMoreAddresses={setShowMoreAddresses}

@@ -10,6 +10,7 @@ declare interface Props {
   address: Address;
   userAccountRecurData: any;
   shouldShowCustomTagInput?: boolean;
+  selectedTag?: Accessor<string>;
   setSelectedTag?: Setter<string>;
   showMoreAddresses?: Accessor<boolean>;
   setShowMoreAddresses?: Setter<boolean>;
@@ -20,6 +21,7 @@ export default function AddressTags({
   address,
   userAccountRecurData,
   shouldShowCustomTagInput = false,
+  selectedTag,
   setSelectedTag,
   showMoreAddresses,
   setShowMoreAddresses,
@@ -88,7 +90,7 @@ export default function AddressTags({
                 class="peer hidden"
                 value={tag}
                 onchange={hideCustomTagInput}
-                checked={address?.tag === tag}
+                checked={(selectedTag ? selectedTag() : address?.tag) === tag}
                 required={action === "update"}
                 onChange={() => action === "checkout" && setSelectedTag(tag)}
               />
