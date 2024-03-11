@@ -156,15 +156,26 @@ export default function CheckoutInformationForm({
               </>
             )}
 
-            <EditAddressForm
-              action="checkout"
-              address={selectedAddress}
-              recurData={recurData}
-              isBilling={isBilling}
-            />
+            {addresses()?.length > 0 && (
+              <EditAddressForm
+                action="checkout"
+                address={selectedAddress}
+                recurData={recurData}
+                isBilling={isBilling}
+              />
+            )}
           </>
         );
       }}
+
+      {!(addresses()?.length > 0) && (
+        <EditAddressForm
+          action="checkout"
+          address={undefined}
+          recurData={recurData}
+          isBilling={isBilling}
+        />
+      )}
     </>
   );
 }
