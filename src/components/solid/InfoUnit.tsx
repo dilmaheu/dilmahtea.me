@@ -37,8 +37,8 @@ export default function InfoUnit({
   }
 
   function handleCancel(event: Event) {
-    const input = (event.target as HTMLButtonElement)
-      .previousElementSibling as HTMLInputElement;
+    const input = (event.currentTarget as HTMLButtonElement).parentElement
+      .parentElement.firstElementChild as HTMLInputElement;
 
     input.disabled = true;
 
@@ -48,8 +48,8 @@ export default function InfoUnit({
   }
 
   function handleSave(event: Event) {
-    const input = (event.target as HTMLButtonElement).previousElementSibling
-      .previousElementSibling as HTMLInputElement;
+    const input = (event.currentTarget as HTMLButtonElement).parentElement
+      .parentElement.firstElementChild as HTMLInputElement;
 
     if ([user()[property], ""].includes(input.value)) {
       input.classList.add("errored");
