@@ -27,14 +27,13 @@ const {
   meta,
   locale,
   recurData,
+  ariaLabelRecurData,
   alternateURLs,
   availableLocales,
   metaImageSrc,
 } = Astro.props;
 
-const checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
-  ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale),
-  checkoutInfoLink = CMS.get("checkoutInformation", locale).Meta.URL_slug;
+const checkoutInfoLink = CMS.get("checkoutInformation", locale).Meta.URL_slug;
 
 const footerText = recurData.Footer_text.replaceAll(
   "<current_year>",
@@ -200,7 +199,7 @@ const footerText = recurData.Footer_text.replaceAll(
                       </h2>
 
                       <button
-                        aria-label={checkoutRecurData.Aria_label_remove_item_button_text}
+                        aria-label={ariaLabelRecurData.Remove_item_button_text}
                         class="remove-item-btn md:hidden h-fit text-black"
                       >
                         <Icon
