@@ -19,8 +19,8 @@ export default function InfoUnit({
   const [isEditing, setIsEditing] = createSignal(false);
 
   function handleEdit(event: Event) {
-    const input = (event.target as HTMLButtonElement)
-      .previousElementSibling as HTMLInputElement;
+    const input = (event.currentTarget as HTMLButtonElement).parentElement
+      .firstElementChild as HTMLInputElement;
 
     input.disabled = false;
 
@@ -91,8 +91,8 @@ export default function InfoUnit({
                   user()[property] !== "N/A"
                     ? property
                     : property === "email"
-                      ? "phone"
-                      : "email";
+                    ? "phone"
+                    : "email";
 
                 return {
                   action: "update",
