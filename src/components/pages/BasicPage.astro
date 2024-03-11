@@ -1,37 +1,21 @@
 ---
+import Banner from "@components/Banner.astro";
 import Markdown from "@components/Markdown.astro";
 import Chapterize from "@components/Chapterize.astro";
-import BasicPageHero from "@components/BasicPageHero.astro";
-import ClippedPicture from "@components/ClippedPicture.astro";
-import OptimizeContentImages from "@components/OptimizeContentImages.astro";
+import HeroContent from "@components/HeroContent.astro";
 import BasicPagePostDetails from "@components/BasicPagePostDetails.astro";
+import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
-const { page, recurData, ariaLabelRecurData } = Astro.props,
-  { Title: title, locale } = page,
-  [introText] = page.Intro_text.split("\n"),
-  contentDescription = page.Intro_text.replace(introText, "");
-
-const { STRAPI_URL } = import.meta.env;
+const { page, recurData, ariaLabelRecurData } = Astro.props;
 ---
 
-<BasicPageHero {title} {introText} {locale} />
+<HeroContent {page} basicHeader={true} />
 
-<div role="main">
-  {
-    contentDescription.length > 1 && (
-      // Intro description
-      <div class="wrapper">
-        <div class="block content-text pt-[50px]">
-          <Markdown>{contentDescription}</Markdown>
-        </div>
-      </div>
-    )
-  }
-
+<div role="main" class="section-in-v-pad">
   {
     page.Block_text && !page.Block_blob.data && (
       <BasicPagePostDetails page={page} {recurData} {ariaLabelRecurData}>
-        <div slot="post-details" class="prose content-text">
+        <div slot="post-details" class="prose-text">
           <Chapterize>
             <OptimizeContentImages>
               <Markdown>{page.Block_text}</Markdown>
@@ -42,53 +26,15 @@ const { STRAPI_URL } = import.meta.env;
     )
   }
 
+  {/* Banner Section */}
   {
     page.Block_blob.data && (
-      <Fragment>
-        {/* Information Section */}
-        <section class="relative overflow-hidden h-full sm:min-h-[clamp(550px,22vw+420px,820px)]">
-          {/* Blob Image - Desktop view */}
-          <div class="hidden sm:block absolute left-0 z-20 w-1/2 h-full py-[50px] pr-6 lg:pr-24">
-            <div class="aspect-[6/5] my-auto">
-              <ClippedPicture
-                id="info-section-curve"
-                breakpoints={{ minWidth: 640 }}
-                pictureStyle="position: relative; left: -20px;"
-                alt={page.Block_blob.data.attributes.alternativeText}
-                src={STRAPI_URL + page.Block_blob.data.attributes.url}
-                sizes={[
-                  "(min-width: 1024px) calc(50vw - min(100px, 5vw) - 96px)",
-                  "(min-width: 640px) calc(45vw - 24px)",
-                ].join(", ")}
-                path="M1 .494V.507A.019.028 0 0 0 1 .51v.016A.024.035 0 0 0 1 .53L.998.579C.991.693.986.856.835.945a.362.362 0 0 1-.222.05C.567.992.521.984.473.981L.438.98C.357.98.275 1 .204 1A.19.19 0 0 1 .079.961C-.011.886.018.658.018.485.018.396.005.337.001.277A.191.28 0 0 1 0 .244C0 .206.004.166.018.115.041.025.106.004.189.003c.071 0 .155.015.238.015L.45.017C.494.014.551.006.612.002.708-.004.816.001.893.063.976.13.997.311 1 .449v.025"
-              />
-            </div>
-          </div>
-
-          {/* Text content */}
-          <div class="wrapper h-full flex flex-wrap justify-end p-6 sm:px-0 sm:py-12">
-            <div class="w-full sm:w-1/2 h-full flex flex-col sm:justify-center px-0">
-              <h2 class="heading-primary text-primary leading-[115%] font-bold">
-                {page.Heading_block}
-              </h2>
-
-              <div class="prose-text content-text prose pt-0.5 mt-7">
-                <Markdown>{page.Block_text}</Markdown>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Blob Image - Mobile view */}
-        <div class="block sm:hidden w-screen">
-          <ClippedPicture
-            id="info-section-curve-sm"
-            alt={page.Block_blob.data.attributes.alternativeText}
-            src={STRAPI_URL + page.Block_blob.data.attributes.url}
-            path="M.282 0C.147 0 .062.021 0 .064V.97c.045.046.195.006.324 0C.473.963.625 1 .774 1A.561.561 0 0 0 1 .954v-.89c-.059-.061-.237 0-.32 0S.417 0 .282 0"
-          />
-        </div>
-      </Fragment>
+      <Banner
+        title={page.Heading_block}
+        intro={page.Block_text}
+        blob={page.Block_blob}
+        transparent={true}
+      />
     )
   }
 </div>

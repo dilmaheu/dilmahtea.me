@@ -32,22 +32,14 @@ titles = [...contentBlocksDocument.querySelectorAll("h2")];
 
     return (
       <>
-        <h2
-          id={titleText.replaceAll(" ", "-")}
-          class:list={[
-            "recipe-title bg-primary mt-[50px] rounded-[10px]",
-            "recoleta text-secondary-light font-semibold leading-[110%]",
-          ]}
-        >
+        <h2 id={titleText?.replaceAll(" ", "-")} class="tiled-title">
           {titleText}
         </h2>
 
-        <div class="bg-secondary-light p-[15px] sm:p-5 md:p-[25px] lg:p-[35px] mt-[25px] rounded-[10px]">
-          <div class="recipe-content prose max-w-none mb-[15px] text-black-light">
-            <OptimizeContentImages>
-              <Fragment set:html={innerHTML} />
-            </OptimizeContentImages>
-          </div>
+        <div class="tiled-div">
+          <OptimizeContentImages>
+            <Fragment set:html={innerHTML} />
+          </OptimizeContentImages>
         </div>
       </>
     );

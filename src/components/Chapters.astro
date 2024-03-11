@@ -58,7 +58,7 @@ const headingTexts = dynamicHeadings || staticHeadings?.filter(Boolean);
     class:list={[
       fixedTop
         ? "flex flex-col wrapper relative select-none"
-        : "w-full md:max-w-[484px] ml-auto grid gap-[25px] sm:gap-[30px]",
+        : "w-full md:max-w-[484px] ml-auto grid division-gap",
     ]}
   >
     <div
@@ -77,10 +77,9 @@ const headingTexts = dynamicHeadings || staticHeadings?.filter(Boolean);
       <h3
         id={fixedTop && "sticky-chapters-heading"}
         class:list={[
-          "text-black",
           fixedTop
-            ? "grow text-sm font-medium"
-            : "text-[clamp(24px,calc(1vw+17.6px),32px)] font-bold",
+            ? "grow text-sm font-medium text-black-light "
+            : "text-b1 font-bold text-black",
         ]}
       >
         {headingName}
@@ -102,17 +101,15 @@ const headingTexts = dynamicHeadings || staticHeadings?.filter(Boolean);
 
     <div
       class:list={[
-        "grid gap-[25px] md:gap-[30px] overflow-y-auto",
+        "overflow-y-auto flex flex-col division-gap",
         fixedTop && "hidden py-[25px] border-t border-primary-light",
       ]}
     >
-      <slot name="top-slot" />
-
       <div
         role="list"
         id={fixedTop ? "sticky-chapter-links" : "chapter-links"}
         class:list={[
-          "grid gap-2.5 md:gap-[15px] overflow-y-auto",
+          "grid division-in-gap overflow-y-auto",
           fixedTop && "max-h-[50vh]",
         ]}
       >
@@ -122,9 +119,8 @@ const headingTexts = dynamicHeadings || staticHeadings?.filter(Boolean);
               href={`#${title?.toLowerCase()?.replaceAll(" ", "-")}`}
               role="listitem"
               class:list={[
-                "chapter-link inline-flex items-center",
-                "gap-[clamp(10px,calc(0.625vw+6px),15px)]",
-                "text-[clamp(18px,calc(0.75vw+13.2px),24px)] text-black-light",
+                "chapter-link division-in-gap",
+                "inline-flex items-center text-b3 text-black-light",
                 fixedTop && "chapter-link-sm",
                 i === 0 && "active",
               ]}

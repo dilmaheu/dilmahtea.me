@@ -1,4 +1,6 @@
 @use "typography";
+@use "src/styles/mixins" as *;
+@use "src/styles/poly-fluid" as *;
 
 html {
   @apply h-full bg-white;
@@ -25,81 +27,12 @@ body {
 }
 
 .heading-secondary {
-  font-family: typography.$recoleta;
-  font-size: clamp(2rem, 3vw + 0.4rem, 3rem);
+  @apply recoleta text-h2 font-bold;
 }
 
 .heading-inline-icon {
-  height: clamp(27px, 3.5vw + 6px, 42px);
-}
-
-.prose-text,
-.hero-text {
-  picture {
-    clip-path: url(#content-images-curve);
-  }
-
-  p,
-  ol,
-  ul,
-  p s,
-  blockquote p {
-    a {
-      @apply font-bold sm:font-semibold px-1 text-primary
-        no-underline bg-bottom bg-no-repeat hover:brightness-95 transition-all;
-
-      background-size: 100% 45%;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23b3cccc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
-    }
-  }
-}
-
-.hero-text {
-  a {
-    color: white !important;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23474747'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E") !important;
-  }
-}
-
-.link-text {
-  @apply px-3 no-underline bg-bottom bg-no-repeat hover:brightness-95 transition-all;
-
-  background-size: 100% 45%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23b3cccc'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
-}
-
-.link-text-white {
-  @apply px-1 no-underline bg-bottom bg-no-repeat 
-    brightness-[50] hover:brightness-90 transition-all;
-
-  background-size: 100% 45%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='border-radius:9999px' opacity='0.4' preserveAspectRatio='none' viewBox='0 0 1 1' fill='%23ffffff'%3E%3Cpath d='M0 0h1v1H0z'/%3E%3C/svg%3E");
-}
-
-.content-text {
-  @apply text-black-light leading-[150%] max-w-none;
-
-  font-size: clamp(1.125rem, 1.5vw + 0.3rem, 1.5rem);
-
-  & h2 {
-    @apply text-black font-semibold leading-[130%];
-
-    font-family: typography.$recoleta;
-    font-size: clamp(2rem, 3vw + 0.55rem, 2.625rem);
-  }
-  & h3,
-  h4,
-  h5,
-  h6 {
-    @apply text-black;
-
-    font-family: typography.$recoleta;
-  }
-
-  & .chapter:nth-child(1) h2:nth-of-type(1) {
-    margin-top: 0;
-    padding-top: 0;
-  }
+  height: poly-fluid-clamp-primary(25px, 40px);
+  margin-left: poly-fluid-clamp-primary(4px, 8px);
 }
 
 .howto-details #headings {
@@ -110,6 +43,491 @@ body {
 
 .product-card-btn {
   @apply w-full flex justify-center items-center gap-1
-    p-1 md:p-2 lg:p-3 mt-[clamp(5px,calc(2.23vw-12px),20px)]
+    p-1 md:p-2 lg:p-3
     font-bold text-[clamp(12px,0.38vw+10,16px)] rounded-full;
+}
+
+//heading
+
+.text-heading-big,
+.text-h1,
+.text-h2,
+.text-h3,
+.text-h4,
+.text-h5,
+.text-h5-sm,
+.text-h6 {
+  @apply recoleta font-bold;
+}
+
+// markdown/prose-links
+
+.prose-text {
+  @include prose-default;
+  @include prose-content-($link-light);
+}
+
+.prose-text-sm {
+  @include prose-sm;
+  @include prose-content-($link-light);
+}
+
+.prose-text-dark-link {
+  @include prose-default;
+  @include prose-content-($link-dark);
+}
+
+.prose-hero-text {
+  @include prose-hero-text;
+  @include prose-content-($link-dark);
+}
+
+.no-pad-mar-child {
+  @include no-pad-mar-child;
+}
+
+.no-pad-mar-first-last-child {
+  @include no-pad-mar-first-last-child;
+}
+
+.number-list-circle {
+  @include number-list-circle;
+}
+
+.intro-text {
+  @include prose-default;
+  @include prose-content-($link-light);
+}
+
+.intro-text-dark-link {
+  @include prose-default;
+  @include prose-content-($link-dark);
+}
+
+.link-text {
+  @include prose-content-default-text;
+  @include prose-content-($link-light);
+
+  @apply px-3;
+}
+
+.link-text {
+  @include prose-content-($link-light);
+}
+
+.link-text-black {
+  @include prose-content-($link-dark);
+}
+
+.tiled-title {
+  @apply tiled-title-div-pad bg-primary text-white rounded-[10px];
+}
+
+.tiled-div {
+  @apply tiled-div-pad bg-secondary-light rounded-[10px];
+}
+
+.post-intro {
+  @apply line-clamp-3 sm:line-clamp-4 md:line-clamp-5 lg:line-clamp-6;
+}
+
+.post-img-curve-container {
+  aspect-ratio: 6 / 5;
+  width: 100%;
+  height: 100%;
+  max-width: 600px;
+  max-height: 500px;
+}
+
+// gaps
+
+.section-gap {
+  @include section-gap;
+}
+
+.section-in-v-pad {
+  @include section-in-v-pad;
+}
+
+.section-in-v-pad-sm {
+  @include section-in-v-pad-sm;
+}
+
+.division-gap {
+  @include division-gap;
+}
+
+.division-in-gap {
+  @include division-in-gap;
+}
+
+.division-in-element-gap {
+  @include division-in-element-gap;
+}
+
+.tiled-div-pad {
+  @include tiled-div-pad;
+}
+
+.tiled-div-sm-pad {
+  @include tiled-div-sm-pad;
+}
+
+.tiled-title-div-pad {
+  @include tiled-title-div-pad;
+}
+
+.blob-div-in-pad {
+  @include blob-div-in-pad;
+}
+
+.card-gap {
+  @include card-gap;
+}
+
+.grid-gap {
+  @include card-gap;
+}
+
+.form-gap {
+  @include form-gap;
+}
+
+.tiled-form {
+  @include tiled-form;
+}
+
+// buttons
+
+.button-default {
+  @include button;
+  @include button-default-colors;
+}
+
+.button-default-large {
+  @include button-large;
+  @include button-default-colors;
+}
+
+.button-primary {
+  @include button;
+  @include button-primary-colors;
+}
+
+.button-primary-large {
+  @include button-large;
+  @include button-primary-colors;
+}
+
+.button-disabled {
+  @include button;
+  @include button-disabled-colors;
+}
+
+.button-disabled-large {
+  @include button-large;
+  @include button-disabled-colors;
+}
+
+.button-link-primary {
+  @include button-link-primary;
+}
+
+.button-link-primary-large {
+  @include button-link-primary-large;
+}
+
+.button-link-primary-lightest {
+  @include button-link-primary-lightest;
+}
+
+.button-link-error-dark {
+  @include button-link-error-dark;
+}
+
+.button-link-error-dark-large {
+  @include button-link-error-dark-large;
+}
+
+.info-tag-button-default {
+  @include info-tag-button;
+
+  @apply text-black-light bg-white;
+}
+
+.info-tag-button-primary {
+  @include info-tag-button;
+  @include button-primary-colors;
+}
+
+// cart-buttons
+
+// cart buttons are
+//   button-cart-default, card-button-cart-default
+//   button-cart-primary, card-button-cart-primary
+//   button-cart-disabled, card-button-cart-disabled
+
+.button-cart-default,
+.card-button-cart-default {
+  @include button-default-colors;
+}
+
+.button-cart-primary,
+.card-button-cart-primary {
+  @include button-primary-colors;
+}
+
+.button-cart-disabled,
+.card-button-cart-disabled {
+  @include button-disabled-colors;
+
+  cursor: not-allowed !important;
+}
+
+.button-cart-default,
+.button-cart-primary,
+.button-cart-disabled {
+  @include button-cart;
+}
+
+.card-button-cart-default,
+.card-button-cart-primary,
+.card-button-cart-disabled {
+  @include card-button-cart;
+}
+
+// cart-plus/minus-buttons
+
+.button-cart-quantity-default {
+  @include button-cart-quantity;
+  @include button-default-colors;
+
+  input {
+    @include button-default-colors;
+  }
+}
+
+.button-cart-quantity-primary {
+  @include button-cart-quantity;
+  @include button-primary-colors;
+
+  input {
+    @include button-primary-colors;
+  }
+}
+
+.button-cart-quantity-primary-sm {
+  @include button-cart-quantity-sm;
+  @include button-primary-colors;
+
+  input {
+    @include button-primary-colors;
+  }
+}
+
+// blob-button
+
+.blob-button {
+  @apply flex items-center gap-2.5 text-sm font-bold;
+
+  .blob-button-icon {
+    @apply w-[25px];
+  }
+}
+
+// radio-buttons
+
+.radio-button-default {
+  @include radio-button;
+
+  @apply bg-secondary-light border-secondary-light
+    peer-checked:font-bold peer-checked:text-secondary-light peer-checked:bg-primary;
+}
+
+.radio-button-extended {
+  @include radio-button;
+
+  @apply font-bold bg-white border-white peer-checked:border-primary;
+}
+
+.radio-button-card {
+  @include radio-button-card;
+}
+
+.radio-input {
+  @include radio-input;
+}
+
+.radio-input-extended {
+  @include radio-input-extended;
+}
+
+// toggle-buttons
+
+.horizontal-toggle-button-primary {
+  @include toggle-button-primary;
+
+  .toggle-button-arrow {
+    @apply w-[14px] h-[14px];
+  }
+}
+
+.vertical-toggle-button-primary {
+  @include toggle-button-primary;
+
+  .toggle-button-arrow {
+    @apply w-[14px] h-3;
+  }
+}
+
+// breadcrumb
+
+.breadcrumb {
+  @apply recoleta text-h5 text-primary flex items-center gap-[clamp(8px,calc(0.25vw+6.4px),10px)];
+
+  .breadcrumb-arrow {
+    @apply h-[clamp(16px,calc(0.25vw+14.4px),18px)];
+  }
+}
+
+// pagination
+
+.pagination {
+  @apply flex items-center justify-between;
+
+  .pagination-item {
+    @apply text-b3 font-bold text-black flex items-center justify-center rounded-full 
+      w-[clamp(35px,calc(1.25vw+27px),45px)] h-[clamp(35px,calc(1.25vw+27px),45px)];
+
+    &.active {
+      @apply bg-primary text-white;
+    }
+  }
+
+  .pagination-arrow-icon {
+    @apply h-[clamp(25px,calc(1.25vw+17px),35px)];
+  }
+}
+
+// post-card
+
+.blob-cards-container {
+  @include blob-cards-container;
+}
+
+.post-card {
+  @include post-card;
+  @include post-card-default-colors;
+}
+
+.post-card-secondary-light {
+  @include post-card;
+  @include post-card-secondary-light-colors;
+}
+
+// product-card(smallest-size-375px)
+
+.product-card {
+  @include product-card;
+}
+
+// quick-info
+
+.quick-info-author-img {
+  @include quick-info-author-img;
+}
+
+.quick-info-default {
+  @include quick-info-default;
+}
+
+.quick-info-default-sm {
+  @include quick-info-default-sm;
+}
+
+.quick-info-black-light {
+  @include quick-info-black-light;
+}
+
+.quick-info-black-light-sm {
+  @include quick-info-black-light-sm;
+}
+
+.quick-info-secondary-light {
+  @include quick-info-secondary-light;
+}
+
+.quick-info-secondary-light-sm {
+  @include quick-info-secondary-light-sm;
+}
+
+// form & inputs
+
+.input-field-default {
+  input {
+    @include input-field-default;
+  }
+}
+
+.selector-default {
+  @include selector-default;
+}
+
+.selector-default-bordered {
+  @include selector-default-bordered;
+}
+
+.selector-primary {
+  @include selector-primary;
+}
+
+.input-label {
+  @include input-label;
+}
+
+.input-text-large-static {
+  @include input-text-large-text;
+}
+
+.input-text-large {
+  @include input-text-large;
+}
+
+.input-default {
+  @include input-default;
+}
+
+.form-grid {
+  @include form-grid;
+}
+
+.form-button-container {
+  @include form-button-container;
+}
+
+//checkbox
+
+.checkbox-primary {
+  @include checkbox-primary;
+}
+
+// exceptions
+
+.checkout-button-container {
+  @include division-gap;
+
+  @apply flex flex-col-reverse sm:flex-row items-center justify-center sm:justify-start;
+}
+
+//dashboard-related
+.order-img {
+  width: poly-fluid-clamp-primary(50px, 65px);
+  height: poly-fluid-clamp-primary(50px, 65px);
+  clip-path: url(#orders-blob-curve);
+  background: #fff;
+}
+
+.address-update-icon {
+  width: fit-content;
+  height: poly-fluid-clamp-primary(16px, 18px);
 }

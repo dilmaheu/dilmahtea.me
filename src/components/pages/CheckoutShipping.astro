@@ -1,311 +1,83 @@
 ---
 import CMS from "@store/CMS";
-import DynamicHTML from "@components/DynamicHTML.astro";
-import OrderSummary from "@components/OrderSummary.astro";
-import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+import Markdown from "@components/Markdown.astro";
+import getLocalizedLink from "@utils/getLocalizedLink";
 
-const { page } = Astro.props,
+const { page, recurData } = Astro.props,
   { locale } = page,
-  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
-
-const checkoutInfoLink = `/${locale}/${
-    CMS.get("checkoutInformation", locale).Meta.URL_slug
-  }/`,
-  checkoutKindnessLink = `/${locale}/${
-    CMS.get("checkoutKindness", locale).Meta.URL_slug
-  }/`;
+  checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
+  steps = checkoutFlowData.steps.split("\n"),
+  shortenedSteps = checkoutFlowData.shortened_steps.split("\n"),
+  userRecurr = CMS.get("userAccountRecurringElement", locale),
+  checkoutInfoLink = CMS.get("checkoutInformation", locale).Meta.URL_slug,
+  checkoutPaymentLink = CMS.get("checkoutPayment", locale).Meta.URL_slug;
 ---
 
-<style lang="scss">
-  @use "src/styles/poly-fluid" as *;
-
-  #shipping-details {
-    padding: poly-fluid-clamp(
-      (
-        375px: 50px 24px,
-        1024px: 50px 29px,
-      )
-    );
-
-    @media (min-width: 1024px) {
-      padding: poly-fluid-clamp(
-        (
-          1024px: 29px 42px,
-          1440px: 32px 56px,
-        )
-      );
-    }
-  }
-
-  h2 {
-    @apply font-bold text-primary leading-[110%];
-
-    font-size: poly-fluid-clamp(
-      (
-        375px: 28px,
-        1440px: 32px,
-      )
-    );
-  }
-
-  .shipping-detail {
-    @apply flex flex-col gap-1.5;
-
-    div {
-      &:first-of-type {
-        @apply font-bold text-black-light;
-
-        font-size: poly-fluid-clamp(
-          (
-            375px: 16px,
-            1440px: 18px,
-          )
-        );
-      }
-
-      &:last-of-type {
-        @apply flex justify-between;
-
-        gap: poly-fluid-clamp(
-          (
-            375px: 20px,
-            1440px: 68px,
-          )
-        );
-
-        p {
-          @apply text-primary grow;
-
-          font-size: poly-fluid-clamp(
-            (
-              375px: 18px,
-              1440px: 24px,
-            )
-          );
-        }
-
-        a {
-          @apply font-semibold text-primary leading-[130%];
-
-          font-size: poly-fluid-clamp(
-            (
-              375px: 18px,
-              1440px: 24px,
-            )
-          );
-        }
-      }
-    }
-  }
-
-  .shipping-method,
-  .shipping-cost {
-    font-size: poly-fluid-clamp(
-      (
-        375px: 18px,
-        1440px: 24px,
-      )
-    );
-  }
-
-  .shipping-description {
-    font-size: poly-fluid-clamp(
-      (
-        375px: 16px,
-        1440px: 18px,
-      )
-    );
-  }
-</style>
-
-<script
-  define:vars={{
-    checkoutInfoLink,
-    checkoutKindnessLink,
-  }}
+<form
+  id="shipping-details"
+  class="section-gap flex flex-col"
+  action={getLocalizedLink(locale, checkoutPaymentLink)}
 >
-  if (Object.keys(window.checkoutInfo).length === 0) {
-    location.href = checkoutInfoLink;
-  }
+  <input type="hidden" name="price" />
 
-  window.checkoutKindnessLink = checkoutKindnessLink;
-</script>
-
-<section class="w-full lg:w-[66.67%]">
-  <form
-    method="POST"
-    id="shipping-details"
-    class="flex flex-col gap-12"
-    action={shouldDisplayExperimentals
-      ? "https://dev.pay.scripts.dilmahtea.me"
-      : "https://pay.scripts.dilmahtea.me"}
+  <div
+    role="list"
+    aria-label={page.text_shipping_method}
+    class="flex flex-col gap-4"
   >
-    <DynamicHTML
-      htmlFn={() => {
-        const { origin, pathname } = location;
+    <h2 class="text-h2 text-primary">{page.text_shipping_method}</h2>
 
-        const product_desc = Object.keys(window.cart)
-          .map((id) => {
-            const productData = window.cart[id],
-              names = JSON.parse(productData.names),
-              name = names[window.preferredLocale] || names["en"];
+    {
+      page.shipping_methods.data.map(
+        ({ attributes: { method, cost, description, localizations } }, i) => (
+          <label class="division-in-element-gap radio-input-extended">
+            <input
+              type="radio"
+              name="shipping_method"
+              value={localizations?.data[0]?.attributes?.method || method}
+              data-cost={cost}
+              checked={i === 0 ? "" : undefined}
+              class="peer hidden"
+            />
 
-            return `${productData.quantity}x ${name}`;
-          })
-          .join(", ");
-
-        const paymentInfo = {
-          ...window.checkoutInfo,
-          product_desc,
-          cart: JSON.stringify(window.cart),
-          tax: window.cart.tax.split(",").join("."),
-          price: window.cart.total.split(",").join("."),
-          payment_type: "ecommerce",
-          locale: window.preferredLocale,
-          origin_url: origin + pathname,
-          success_url: `${origin}${window.checkoutKindnessLink}?clear=cart`,
-        };
-
-        delete paymentInfo.delivery_address;
-
-        return Object.keys(paymentInfo)
-          .map(
-            (name) =>
-              `<input type="hidden" name="${name}" value='${paymentInfo[name]}' />`,
-          )
-          .join("");
-      }}
-    />
-
-    <div
-      role="list"
-      aria-label={page.Aria_label_kindness_delivery_address_section_text}
-      class="p-4 gap-6 flex flex-col bg-secondary-light rounded-2xl"
-    >
-      <div
-        role="listitem"
-        aria-label={page.Aria_label_email_address_text}
-        class="shipping-detail"
-      >
-        <div>{page.text_contact}</div>
-
-        <div>
-          <p>
-            <DynamicHTML htmlFn={() => window.checkoutInfo.email} />
-          </p>
-
-          <a
-            aria-label={`${page.Aria_label_change_text} ${page.Aria_label_email_address_text}`}
-            href={checkoutInfoLink + "?change=email"}
-          >
-            {page.text_change}
-          </a>
-        </div>
-      </div>
-
-      <div class="border border-black-light opacity-80"></div>
-
-      <div
-        role="listitem"
-        aria-label={page.Aria_label_delivery_address_text}
-        class="shipping-detail"
-      >
-        <div>{page.text_delivery_address}</div>
-
-        <div>
-          <p>
-            <DynamicHTML htmlFn={() => window.checkoutInfo.delivery_address} />
-          </p>
-
-          <a
-            aria-label={`${page.Aria_label_change_text} ${page.Aria_label_delivery_address_text}`}
-            href={checkoutInfoLink + "?change=street"}
-          >
-            {page.text_change}
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div
-      role="list"
-      aria-label={page.text_shipping_method}
-      class="flex flex-col gap-4"
-    >
-      <h2 class="recoleta text-black">{page.text_shipping_method}</h2>
-
-      {
-        page.shipping_methods.data.map(
-          ({ attributes: { method, cost, description, localizations } }, i) => (
-            <label
-              role="listitem"
-              class="gap-5 flex items-center cursor-pointer"
-            >
-              <div>
-                <input
-                  type="radio"
-                  name="shipping_method"
-                  value={localizations?.data[0]?.attributes?.method || method}
-                  data-cost={cost}
-                  class:list={[
-                    "hover:brightness-50 active:brightness-150 block",
-                    "appearance-none w-5 h-5 flex items-center justify-center border-2 border-primary rounded-full",
-                    "checked:before:block before:hidden before:w-2 before:h-2 before:bg-primary before:rounded-full",
-                  ]}
-                  checked={i === 0 ? "" : undefined}
-                  required
-                />
-              </div>
-
-              <div class="grid gap-[5px]">
-                <span class="gap-3 flex items-center">
-                  <span class="shipping-method font-semibold text-black leading-[130%]">
-                    {method}
-                  </span>
-                  <span class="w-1 h-1 bg-black rounded-full" />
-                  <span class="shipping-cost font-semibold text-black leading-[130%]">
-                    € {cost.toFixed(2).toString().replace(".", ",")}
-                  </span>
+            <span>
+              <span class="radio-input-label">
+                <span class="shipping-method">{method}</span>
+                &#x2022;
+                <span class="shipping-cost">
+                  €{cost.toFixed(2).toString().replace(".", ",")}
                 </span>
+              </span>
 
-                <span class="shipping-description text-black-light leading-[130%]">
-                  {description}
-                </span>
-              </div>
-            </label>
-          ),
-        )
-      }
-    </div>
+              <span class="prose-text radio-input-text">
+                <Markdown>{description}</Markdown>
+              </span>
+            </span>
+          </label>
+        ),
+      )
+    }
+  </div>
 
-    <div class="block lg:hidden -mb-6">
-      <OrderSummary page={page} />
-    </div>
+  <div class="checkout-button-container">
+    <a href={checkoutInfoLink} class="button-link-primary-large">
+      <span class="sm:hidden">
+        {
+          `${
+            userRecurr.Button_return_to_text
+          } ${shortenedSteps[0]?.toLowerCase()}`
+        }
+      </span>
+      <span class="hidden sm:block">
+        {`${userRecurr.Button_return_to_text} ${steps[0]?.toLowerCase()}`}
+      </span>
+    </a>
 
-    <div
-      class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-9 sm:gap-12"
-    >
-      <button
-        type="submit"
-        class="w-full sm:w-auto py-4 px-20 sm:px-24 bg-primary text-white font-bold rounded-full"
-      >
-        {checkoutRecurData.text_continue_to_payment}
-      </button>
-
-      <a href={checkoutInfoLink} class="text-primary font-bold">
-        {checkoutRecurData.text_return_to_information}
-      </a>
-    </div>
-  </form>
-</section>
-
-<section
-  role="complementary"
-  aria-label={checkoutRecurData.text_order_summary}
-  class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-primary-light"
->
-  <OrderSummary page={page} />
-</section>
+    <button class="w-full sm:max-w-[250px] button-primary-large">
+      {`${recurData.text_continue_to} ${shortenedSteps[2]?.toLowerCase()}`}
+    </button>
+  </div>
+</form>
 
 <script>
   const shippingDetailsForm = document.getElementById("shipping-details"),

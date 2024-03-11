@@ -43,8 +43,8 @@ export default function OrdersTimeline() {
             <select
               id="year-selector"
               class={[
-                "grow text-[clamp(1.25rem,1.5vw+0.15rem,1.5rem)] font-bold",
-                "text-primary text-center bg-transparent appearance-none",
+                "grow text-b3 font-bold text-primary",
+                "text-center bg-transparent appearance-none",
               ].join(" ")}
               onChange={(event) => setOrdersYear(event.target.value)}
             >

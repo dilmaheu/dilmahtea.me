@@ -5,14 +5,16 @@ import { Picture } from "astro-imagetools/components";
 
 import Banner from "@components/Banner.astro";
 import Markdown from "@components/Markdown.astro";
+import AuthorInfo from "@components/AuthorInfo.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import ProductCards from "@components/ProductCards.astro";
 import KindnessImpact from "@components/KindnessImpact.astro";
 import ProductCategories from "@components/ProductCategories.astro";
+import DynamicPost from "@components/DynamicPost.astro";
 
 import SecondaryPageLayout from "@layouts/SecondaryPageLayout.astro";
 
-const { page, ariaLabelRecurData } = Astro.props,
+const { page, recurData, ariaLabelRecurData, noAuthorImg } = Astro.props,
   { locale, posts } = page,
   { STRAPI_URL } = import.meta.env;
 
@@ -20,7 +22,7 @@ posts.sort((a, b) => {
   return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 });
 
-const randPost = posts[(Math.random() * posts.length) | 0],
+const randomPost = posts[(Math.random() * posts.length) | 0],
   estates = page.Estates.data.map(({ attributes }) => attributes);
 
 const latestProducts = Products.get("all")
@@ -47,27 +49,6 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
 ---
 
 <style lang="scss">
-  .post-title {
-    @apply font-bold leading-[130%];
-
-    font-size: clamp(1.75rem, 3.5vw + 0.01rem, 3rem);
-  }
-
-  .post-intro {
-    @apply line-clamp-3 sm:line-clamp-4 md:line-clamp-5 lg:line-clamp-6;
-
-    font-size: clamp(1rem, 1.5vw + 0.15rem, 1.5rem);
-    line-height: 150%;
-  }
-
-  .post-img-curve-container {
-    aspect-ratio: 6 / 5;
-    width: 100%;
-    height: 100%;
-    max-width: 600px;
-    max-height: 500px;
-  }
-
   .estates-banner-bottom {
     clip-path: url(#estates-banner-curve-sm);
 
@@ -80,37 +61,37 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
     @apply text-[clamp(20px,1.5vw+8px,30px)] font-medium text-primary;
   }
 </style>
+<ClipPathSVG
+  id="post-img-curve"
+  path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
+/>
 
 <SecondaryPageLayout {page} plainTitle={true} headerBackground={true}>
-  <div role="main" class="grid gap-[50px] my-[50px]">
+  <div role="main" class="grid section-gap section-in-v-pad">
     {/* latest Products Section */}
     {
       page.Block_visibility && (
-        <section>
-          {page.Block_visibility && (
-            <h2
-              id={page?.Block_title.toLowerCase().replaceAll(" ", "-")}
-              class:list={[
-                "heading-secondary mb-[25px] sm:mb-[30px]",
-                "wrapper font-semibold leading-[130%] text-primary",
-              ]}
-            >
-              {page.Block_title}
-            </h2>
-          )}
-
-          <ProductCards {locale} products={latestProducts} />
-
-          {page.Block_button_text && (
-            <div class="flex justify-center mt-[25px] sm:mt-[30px]">
-              <a
-                href={page?.Block_button_link || "#"}
-                class="link-text linked-button"
+        <section class="wrapper ">
+          <div class="grid division-gap">
+            {page.Block_visibility && (
+              <h2
+                id={page?.Block_title.toLowerCase().replaceAll(" ", "-")}
+                class="heading-secondary text-primary"
               >
-                {page.Block_button_text}
-              </a>
-            </div>
-          )}
+                {page.Block_title}
+              </h2>
+            )}
+
+            <ProductCards products={latestProducts} recurData={recurData} />
+
+            {page.Block_button_text && (
+              <div class="button-link-primary-lightest text-center">
+                <a href={page?.Block_button_link || "#"}>
+                  {page.Block_button_text}
+                </a>
+              </div>
+            )}
+          </div>
         </section>
       )
     }
@@ -126,72 +107,23 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
     {
       page.Block3_visibility && (
         <section class="wrapper">
-          <ClipPathSVG
-            id="post-img-curve"
-            path="M.516.008C.359.008.1-.008.039.083S.002.495.017.736.182 1 .528 1C.813 1 .902.936.974.717 1 .624 1 .395.946.128.897-.045.735.008.516.008"
-          />
+          <div class="grid division-gap">
+            {page.Block3_title && (
+              <h2
+                id={page.Block3_title.toLowerCase().replaceAll(" ", "-")}
+                class="heading-secondary text-center text-primary"
+              >
+                {page.Block3_title}
+              </h2>
+            )}
 
-          {page.Block3_title && (
-            <h2
-              id={page.Block3_title.toLowerCase().replaceAll(" ", "-")}
-              class:list={[
-                "heading-secondary font-semibold leading-[130%]",
-                "text-primary text-center mb-[30px]",
-              ]}
-            >
-              {page.Block3_title}
-            </h2>
-          )}
-
-          <div
-            aria-label={ariaLabelRecurData.Highlighted_post_text}
-            class="link-section flex flex-wrap items-center"
-          >
-            <div
-              class:list={[
-                "relative w-full sm:w-1/2 order-1 mb-[25px] sm:mb-0",
-                "pr-0 sm:pr-5 md:pr-12 lg:pr-24",
-              ]}
-            >
-              <div class="post-img-curve-container mr-auto">
-                <Picture
-                  layout="fill"
-                  src={STRAPI_URL + randPost.Intro_blob?.data?.attributes.url}
-                  alt={randPost.Intro_blob?.data?.attributes.alternativeText}
-                  sizes={[
-                    "(min-width: 768px) min(600px, calc(50vw - min(100px, 5vw) - 48px))",
-                    "(min-width: 640px) min(600px, calc(45vw - 20px))",
-                    "90vw",
-                  ].join(", ")}
-                  attributes={{
-                    picture: { style: "clip-path: url(#post-img-curve);" },
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Text content */}
-            <div class="order-2 w-full sm:w-1/2 h-full flex flex-wrap pr-0 sm:pr-5">
-              <div>
-                <h2 class="post-title recoleta text-primary pt-[15px]">
-                  <a
-                    class="main-link"
-                    href={`/` + randPost.Meta.URL_slug}
-                    set:text={randPost.Title}
-                  />
-                </h2>
-
-                <div class="post-intro pt-[15px] prose max-w-none">
-                  <Markdown>{randPost.Intro_text}</Markdown>
-                </div>
-              </div>
-            </div>
+            <DynamicPost posts={randomPost} locale={page.locale} />
           </div>
         </section>
       )
     }
 
-    <div class="grid gap-[50px]">
+    <div class="grid section-gap">
       {/* Banner Section */}
       {
         page.Block4_visibility && (
@@ -199,9 +131,9 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
             <Banner
               title={page.Block4_title}
               intro={page.Block4_text}
-              button_text={page.Block4_button_text}
-              button_link={page.Block4_button_link}
-              background_img={page.Block4_blob}
+              buttonText={page.Block4_button_text}
+              buttonLink={page.Block4_button_link}
+              backgroundImg={page.Block4_blob}
             />
           </div>
         )
@@ -222,23 +154,24 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
             />
 
             <div class="bg-primary pt-[60px] relative z-10">
-              <div class="wrapper pt-[50px] pb-6 text-white">
-                <div class="heading-secondary font-semibold leading-[130%] text-center">
-                  <h2>{page.Block5_title}</h2>
-                </div>
-
-                {page.Block5_text && (
-                  <div class="hero-text prose max-w-none text-white text-center mt-[15px]">
-                    <Markdown>{page.Block5_text}</Markdown>
+              <div class="wrapper grid division-gap section-in-v-pad-sm !pb-0 text-white">
+                <div class="grid division-in-gap">
+                  <div class="heading-secondary text-center">
+                    <h2>{page.Block5_title}</h2>
                   </div>
-                )}
+
+                  {page.Block5_text && (
+                    <div class="prose-text-dark-link text-center">
+                      <Markdown>{page.Block5_text}</Markdown>
+                    </div>
+                  )}
+                </div>
 
                 <div
                   role="list"
                   aria-label={ariaLabelRecurData.Kindness_Items_text}
                   class:list={[
-                    "wrapper grid justify-around",
-                    "gap-[25px] sm:gap-[50px] mt-[25px] sm:mt-[30px]",
+                    "grid justify-center card-gap",
                     "grid-cols-[repeat(auto-fit,minmax(0,400px))]",
                     "2xl:grid-cols-[repeat(auto-fit,minmax(0,480px))]",
                   ]}
@@ -249,7 +182,7 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
                       aria-label={ariaLabelRecurData.Kindness_Items_text}
                       class:list={[
                         "link-section relative overflow-hidden",
-                        "aspect-[6/5] rounded-[20px] bg-secondary",
+                        "aspect-[6/5] rounded-[10px] bg-secondary",
                       ]}
                     >
                       <Picture
@@ -267,16 +200,11 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
 
                       <div
                         class:list={[
-                          "relative z-50 flex items-end h-full  aspect-[6/5]",
+                          "relative z-50 flex items-end h-full aspect-[6/5]",
                           "bg-gradient-to-t from-black/70 p-[25px] sm:p-5",
                         ]}
                       >
-                        <div
-                          class:list={[
-                            "text-[clamp(1.5rem,1.8vw+0.1rem,1.75rem)]",
-                            "recoleta leading-[110%]",
-                          ]}
-                        >
+                        <div class="text-h4">
                           <a
                             class="main-link"
                             set:text={post.Estate_name}
@@ -289,7 +217,7 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
                 </div>
               </div>
             </div>
-            <div class="estates-banner-bottom py-8 -mt-1 bg-primary z-10" />
+            <div class="estates-banner-bottom section-in-v-pad-sm !pb-1 -mt-1 bg-primary z-10" />
           </section>
         )
       }
@@ -297,31 +225,30 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
 
     {
       page.Block6_visibility && block6FilteredProducts.length > 0 && (
-        <section>
-          {page.Block6_visibility && (
-            <h2
-              id={page?.Block6_title.toLowerCase().replaceAll(" ", "-")}
-              class:list={[
-                "heading-secondary mb-[25px] sm:mb-[30px]",
-                "wrapper font-semibold leading-[130%] text-primary",
-              ]}
-            >
-              {page.Block6_title}
-            </h2>
-          )}
-
-          <ProductCards {locale} products={block6FilteredProducts} />
-
-          {page.Block6_button_text && (
-            <div class="flex justify-center mt-[25px] sm:mt-[30px]">
-              <a
-                href={page?.Block6_button_link || "#"}
-                class="link-text linked-button"
+        <section class="wrapper">
+          <div class="grid division-gap">
+            {page.Block6_visibility && (
+              <h2
+                id={page?.Block6_title.toLowerCase().replaceAll(" ", "-")}
+                class="heading-secondary text-primary"
               >
-                {page.Block6_button_text}
-              </a>
-            </div>
-          )}
+                {page.Block6_title}
+              </h2>
+            )}
+
+            <ProductCards
+              products={block6FilteredProducts}
+              recurData={recurData}
+            />
+
+            {page.Block6_button_text && (
+              <div class="button-link-primary-lightest text-center">
+                <a href={page?.Block6_button_link || "#"}>
+                  {page.Block6_button_text}
+                </a>
+              </div>
+            )}
+          </div>
         </section>
       )
     }
@@ -332,8 +259,8 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
         <Banner
           title={page.Block7_title}
           intro={page.Block7_text}
-          button_text={page.Block7_button_text}
-          button_link={page.Block7_button_link}
+          buttonText={page.Block7_button_text}
+          buttonLink={page.Block7_button_link}
           blob={page.Block7_blob}
         />
       )

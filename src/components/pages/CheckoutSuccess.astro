@@ -28,6 +28,7 @@ const {
   meta,
   locale,
   recurData,
+  ariaLabelRecurData,
   alternateURLs,
   availableLocales,
   metaImageSrc,
@@ -56,9 +57,9 @@ const { Nav_menu: menu } = recurData;
         "padding-top",
         (
           639.98px: 135px,
-          640px: 70px,
-          768px: 74px,
-          1024px: 104px,
+          640px: 90px,
+          768px: 134px,
+          1024px: 184px,
         )
       );
     }
@@ -171,34 +172,13 @@ const { Nav_menu: menu } = recurData;
       <div class="hero overflow-hidden relative w-full">
         <UpdateTopMargin />
 
-        <div class="relative">
-          <div class="hidden md:flex items-end bg-primary-light md:h-[76px]">
-            <div
-              class="relative hidden md:flex items-end bg-dark-green md:h-[76px] w-full"
-            >
-              <div class="nav-menu-container wrapper pb-2.5 md:pb-[15px]">
-                <nav class="text-white font-semibold h-full">
-                  <span class="flex gap-5 justify-between items-center h-full">
-                    {
-                      menu.map(
-                        ({ Visibility, Title, Link }) =>
-                          Visibility && <a href={Link}>{Title}</a>,
-                      )
-                    }
-                  </span>
-                </nav>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="wrapper flex flex-col gap-[30px] items-center py-[50px]">
-          <div class="flex flex-col gap-5 items-center text-center">
+        <div class="wrapper flex flex-col items-center section-in-v-pad">
+          <div class="flex flex-col division-gap items-center text-center">
             <img class="hero-icon" {...green_cup} />
 
             <h1 class="recoleta font-semibold text-primary">{page.Title}</h1>
 
-            <div class="prose content-text">
+            <div class="prose prose-text">
               <LocalizeContentImages>
                 <Markdown>{page.Intro_text}</Markdown>
               </LocalizeContentImages>
@@ -211,5 +191,9 @@ const { Nav_menu: menu } = recurData;
     <Footer footerText={footerText} recurData={recurData} />
   </div>
 
-  <CartOverlay page={page} />
+  <CartOverlay
+    page={page}
+    recurData={recurData}
+    ariaLabelRecurData={ariaLabelRecurData}
+  />
 </BaseLayout>

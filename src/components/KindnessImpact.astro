@@ -6,46 +6,27 @@ import ClipPathSVG from "@components/ClipPathSVG.astro";
 
 import localizeCMSImage from "@utils/localizeCMSImage";
 
-const { locale, heading, impacts } = Astro.props,
-  { STRAPI_URL } = import.meta.env;
+const { locale, heading, impacts } = Astro.props;
 
 const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 ---
 
 <style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
   .kindness-impact-container {
     clip-path: url(#kindness-impact-bg-curve-sm);
-    padding: 40px clamp(30px, 3.875vw, 50px);
 
     @media (min-width: 640px) {
       clip-path: url(#kindness-impact-bg-curve);
     }
   }
 
-  .kindness-impact-title {
-    @apply w-full leading-[150%] font-semibold text-black text-center;
-
-    font-size: clamp(1.5rem, 1.7vw + 0.6rem, 1.75rem);
-  }
-
-  .kindness-impacts-container {
-    @apply w-full flex flex-wrap justify-around gap-[35px] mx-auto;
-
-    column-gap: clamp(1.25rem, 2.2vw + 0.13rem, 2.188rem);
-  }
-
-  .kindness-impacts-num {
-    @apply font-semibold leading-[110%] md:leading-[115%] 
-      text-primary whitespace-nowrap;
-
-    font-size: clamp(3rem, 3vw + 1.2rem, 4rem);
+  .kindness-impacts-icon {
+    height: poly-fluid-clamp-primary(35px, 45px);
   }
 
   .kindness-impacts-text {
-    @apply prose max-w-none text-black-light text-center leading-[150%];
-
-    font-size: clamp(1rem, 1.5vw + 0.1rem, 1.25rem);
-
     p {
       margin: 0;
     }
@@ -63,16 +44,16 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
     path="M0.913,0.04 c0.088,0.046,0.08,0.124,0.084,0.222 c0.007,0.165,-0.005,0.26,0,0.425 c0.003,0.116,0,0.179,-0.029,0.242 c-0.022,0.048,-0.301,0.075,-0.479,0.071 c-0.162,-0.003,-0.386,0.008,-0.413,-0.054 C0.05,0.888,0.042,0.753,0.026,0.694 C-0.003,0.583,0.033,0.464,0.026,0.363 C0.021,0.271,-0.054,0.156,0.076,0.054 C0.144,0,0.315,-0.001,0.489,0 C0.655,0.002,0.823,-0.007,0.913,0.04"
   />
 
-  <div class="kindness-impact-container bg-secondary-light">
-    <div class="flex flex-wrap items-center relative z-20 gap-y-[25px]">
-      <h3 class="kindness-impact-title">
+  <div class="kindness-impact-container blob-div-in-pad bg-secondary-light">
+    <div class="flex flex-wrap items-center relative z-20 division-gap">
+      <h3 class="text-b1 w-full font-bold text-black text-center">
         {heading}
       </h3>
 
       <div
         role="list"
         aria-label={ariaLabelRecurData.Kindness_impact_items}
-        class="kindness-impacts-container"
+        class="w-full flex flex-wrap justify-around mx-auto division-gap"
       >
         {
           impacts.map(
@@ -80,9 +61,9 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
               <div
                 role="listitem"
                 aria-label={Value + Description}
-                class="grid justify-items-center"
+                class="grid justify-items-center division-in-element-gap"
               >
-                <div class="h-[43px] mb-2.5">
+                <div class="kindness-impacts-icon">
                   {async () => (
                     <img
                       class="w-full h-full"
@@ -91,16 +72,19 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
                     />
                   )}
                 </div>
+                <div class="grid justify-items-center text-center">
+                  <div class="flex items-center">
+                    <span class="text-heading-big text-primary whitespace-nowrap">
+                      {Value}
+                    </span>
+                    <span class="kindness-impacts-text text-b1 text-black-light">
+                      {Value_unit}
+                    </span>
+                  </div>
 
-                <div class="kindness-impacts-num recoleta">
-                  {Value}
-                  <span class="roboto-flex text-[32px] font-normal text-black-light">
-                    {Value_unit}
-                  </span>
-                </div>
-
-                <div class="kindness-impacts-text">
-                  <Markdown>{Description}</Markdown>
+                  <div class="kindness-impacts-text text-b5 text-black-light">
+                    <Markdown>{Description}</Markdown>
+                  </div>
                 </div>
               </div>
             ),

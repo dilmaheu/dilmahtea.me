@@ -1,290 +1,107 @@
 ---
 import CMS from "@store/CMS";
-import Markdown from "@components/Markdown.astro";
-import OrderSummary from "@components/OrderSummary.astro";
+import getLocalizedLink from "@utils/getLocalizedLink";
 
-const { page } = Astro.props,
+import Markdown from "@components/Markdown.astro";
+
+import CheckoutInformationForm from "@solid/CheckoutInformationForm.astro";
+
+const { page, recurData } = Astro.props,
   { locale } = page,
   checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug,
-  checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug;
+  checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
+  userAccountRecurData = CMS.get("userAccountRecurringElement", locale),
+  checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
+  shortenedSteps = checkoutFlowData.shortened_steps.split("\n");
 ---
 
-<style lang="scss">
-  @use "src/styles/poly-fluid" as *;
-
-  h2 {
-    @apply font-bold text-primary leading-[110%];
-
-    font-size: poly-fluid-clamp(
-      (
-        375px: 28px,
-        1440px: 32px,
-      )
-    );
-  }
-
-  form {
-    padding: poly-fluid-clamp(
-      (
-        375px: 25px 25px,
-        1440px: 32px 56px,
-      )
-    );
-  }
-
-  .form-grid-container {
-    @apply flex flex-col;
-
-    gap: poly-fluid-clamp(
-      (
-        375px: 10px,
-        1440px: 25px,
-      )
-    );
-
-    .prose-text {
-      font-size: poly-fluid-clamp(
-        (
-          375px: 16px,
-          1440px: 20px,
-        )
-      );
-    }
-
-    .form-grid {
-      @apply w-full grid gap-y-2.5;
-
-      @media (min-width: 640px) {
-        @apply grid-cols-2;
-
-        gap: poly-fluid-clamp(
-          (
-            480px: 10px 40px,
-            1440px: 25px 50px,
-          )
-        );
-      }
-
-      label {
-        @apply flex flex-col gap-1.5;
-
-        span {
-          @apply font-bold text-black-light sm:text-[1.125rem];
-        }
-
-        input,
-        select {
-          @apply focus:ring focus:ring-emerald-800 focus:ring-opacity-20 focus:outline-none;
-          @apply h-12 bg-secondary py-3 px-4 border border-primary rounded-full text-black sm:text-[1.125rem];
-        }
-      }
-    }
-  }
-</style>
-
-<section class="w-full lg:w-[66.67%]">
-  <form
-    role="main"
-    aria-label={page.Aria_label_form_text}
-    id="checkout-info-form"
-    class="flex flex-col gap-[25px]"
-    action={"/" + locale + "/" + checkoutShippingLink + "/"}
-  >
-    <div
-      role="form"
-      aria-label={page.text_contact_info}
-      class="form-grid-container"
-    >
-      <h2 class="recoleta">{page.text_customer}</h2>
-
-      <div
-        id="guest-intro-text"
-        class="prose-text prose max-w-none leading-[150%] text-black-light"
-      >
-        <Markdown>{page.Guest_intro_text}</Markdown>
-      </div>
-
-      <div class="form-grid">
-        <label>
-          <span>{page.text_email_address}</span>
-
-          <input
-            type="email"
-            name="email"
-            placeholder={page.email_address_placeholder}
-            required
-          />
-        </label>
-      </div>
-
-      <div
-        id="sign-in-text"
-        class="prose-text prose max-w-none leading-[150%] text-black-light"
-      >
-        <Markdown>{page.Sign_in_text}</Markdown>
-      </div>
-    </div>
-
-    <div class="w-full h-px bg-primary-light"></div>
-
-    <div
-      role="form"
-      aria-label={page.text_shipping_address}
-      class="form-grid-container"
-    >
-      <h2 class="recoleta">{page.text_shipping_address}</h2>
-
-      <div class="form-grid">
-        <label>
-          <span>{page.text_first_name}</span>
-
-          <input
-            type="text"
-            name="first_name"
-            placeholder={page.first_name_placeholder}
-            required
-          />
-        </label>
-
-        <label>
-          <span>{page.text_last_name}</span>
-
-          <input
-            type="text"
-            name="last_name"
-            placeholder={page.last_name_placeholder}
-            required
-          />
-        </label>
-
-        <label>
-          <span>{page.text_street}</span>
-
-          <input
-            type="text"
-            name="street"
-            placeholder={page.street_placeholder}
-            required
-          />
-        </label>
-
-        <label>
-          <span>{page.text_city}</span>
-
-          <input
-            type="text"
-            name="city"
-            placeholder={page.city_placeholder}
-            required
-          />
-        </label>
-
-        <label>
-          <span>{page.text_postal_code}</span>
-
-          <input
-            type="text"
-            name="postal_code"
-            placeholder={page.postal_code_placeholder}
-            required
-          />
-        </label>
-
-        <label>
-          <span>{page.text_country}</span>
-
-          <select name="country" required>
-            <option value="" selected disabled hidden>
-              {page.country_placeholder}
-            </option>
-
-            {
-              page.countries.data.map(
-                ({ attributes: { name, localizations } }) => (
-                  <option
-                    value={localizations?.data[0]?.attributes?.name || name}
-                  >
-                    {name}
-                  </option>
-                ),
-              )
-            }
-          </select>
-        </label>
-      </div>
-    </div>
-
-    <div class="block lg:hidden -mb-6">
-      <OrderSummary page={page} />
-    </div>
-
-    <div
-      class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-9 sm:gap-12"
-    >
-      <button
-        class="w-full sm:w-auto py-4 px-8 sm:px-20 bg-primary text-white font-bold rounded-full"
-      >
-        {page.text_continue_to_shipping}
-      </button>
-
-      <a href={checkoutCartLink} class="text-primary font-bold">
-        {page.text_return_to_cart}
-      </a>
-    </div>
-  </form>
-</section>
-
-<section
-  class="hidden lg:block lg:w-[36.67%] lg:border lg:border-l-primary-light"
+<form
+  aria-label={page.Aria_label_form_text}
+  id="checkout-info-form"
+  class="section-gap flex flex-col"
+  action={getLocalizedLink(locale, checkoutShippingLink)}
 >
-  <OrderSummary page={page} />
-</section>
+  <div
+    role="form"
+    aria-label={page.text_contact_info}
+    class="division-gap grid"
+  >
+    <h2 class="text-h2 text-primary">{page.text_customer}</h2>
 
-<script is:inline>
-  const guestIntroText = document.getElementById("guest-intro-text"),
-    signInText = document.getElementById("sign-in-text");
+    <div id="guest-intro-text" class="prose-text-sm no-pad-mar-child">
+      <Markdown>{page.Guest_intro_text}</Markdown>
+    </div>
 
-  if (window.cookies.isAuthenticated === "true") {
-    guestIntroText.remove();
-    signInText.remove();
-  }
-</script>
+    <div class="form-grid">
+      <label>
+        <span>{recurData.text_email_address}</span>
+
+        <input
+          type="email"
+          name="email"
+          placeholder={recurData.email_address_placeholder}
+          required
+        />
+      </label>
+    </div>
+
+    <div id="sign-in-text" class="prose-text-sm no-pad-mar-child">
+      <Markdown>{page.Sign_in_text}</Markdown>
+    </div>
+  </div>
+
+  <script is:inline>
+    const guestIntroText = document.getElementById("guest-intro-text"),
+      signInText = document.getElementById("sign-in-text");
+
+    if (window.cookies.isAuthenticated === "true") {
+      guestIntroText.remove();
+      signInText.remove();
+    }
+  </script>
+
+  <div class="w-full h-px bg-primary-lightest"></div>
+
+  <div
+    role="form"
+    aria-label={page.text_shipping_address}
+    id="shipping-address"
+    class="division-gap grid"
+  >
+    <h2 class="text-h2 text-primary">
+      {page.text_shipping_address}
+    </h2>
+
+    <CheckoutInformationForm
+      {recurData}
+      {userAccountRecurData}
+      text_select_or_create_tag={page.text_select_or_create_tag}
+    />
+  </div>
+
+  <div class="checkout-button-container">
+    <a href={checkoutCartLink} class="button-link-primary-large">
+      {page.text_return_to_cart}
+    </a>
+
+    <button class="w-full sm:max-w-[250px] button-primary-large">
+      {`${recurData.text_continue_to} ${shortenedSteps[1]?.toLowerCase()}`}
+    </button>
+  </div>
+</form>
 
 <script>
-  const inputToBeChanged = new URLSearchParams(location.search).get("change"),
-    returnToCartBtn = document.getElementById("return-to-cart-btn"),
-    checkoutInfoForm = document.getElementById(
-      "checkout-info-form",
-    ) as HTMLFormElement;
+  const change = new URLSearchParams(location.search).get("change");
 
-  checkoutInfoForm?.addEventListener("submit", (event) => {
-    event.preventDefault();
+  if (["email", "address"].includes(change)) {
+    const elementToScrollTo = document.querySelector(
+      change === "email" ? "input[name=email]" : "#shipping-address",
+    ) as HTMLElement;
 
-    const formData = Object.fromEntries(new FormData(checkoutInfoForm)),
-      { street, city, country } = formData,
-      contactInfo = {
-        ...formData,
-        delivery_address: [street, city, country].join(", "),
-        kindness_cause: window.checkoutInfo.kindness_cause,
-      };
+    elementToScrollTo.scrollIntoView({
+      block: change === "email" ? "center" : "start",
+    });
 
-    localStorage.setItem("checkout-info", JSON.stringify(contactInfo));
-
-    location.href = checkoutInfoForm.action;
-  });
-
-  returnToCartBtn?.addEventListener("click", (event) => {
-    event.preventDefault();
-
-    window.openCart();
-  });
-
-  if (inputToBeChanged) {
-    const inputElement = document.querySelector(
-      `input[name=${inputToBeChanged}]`,
-    ) as HTMLInputElement;
-
-    inputElement.scrollIntoView({ block: "center" });
-    inputElement.focus();
+    elementToScrollTo.focus();
   }
 </script>

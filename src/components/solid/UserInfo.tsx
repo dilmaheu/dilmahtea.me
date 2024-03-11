@@ -1,17 +1,39 @@
+import type { Address as AddressType } from "@solid/Address";
+import type { handleAPIResponseType } from "@utils/handleAPIResponseBase";
+
 import { createEffect, createSignal } from "solid-js";
 
 import { user } from "@signals/user";
+import { addresses } from "@signals/addresses";
 
 import InfoUnit from "@solid/InfoUnit";
-import DashboardNotification from "@solid/DashboardNotification";
+import EditAddress from "@solid/EditAddress";
+import DefaultAddress from "@solid/DefaultAddress";
+import SolidNotification from "@solid/SolidNotification";
+
+import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 
 export default function UserInfo({
+  plusIcon,
   page,
   verificationHref,
-  recurringImages,
+  userAccountAddressURL,
+  notificationIcons,
+  recurData,
   userAccountRecurData,
 }) {
-  const [notification, setNotification] = createSignal(null);
+  const [notification, setNotification] = createSignal(null),
+    [editAddress, setEditAddress] = createSignal<{
+      action: "add" | "update";
+      address?: AddressType;
+      tickCheckboxes?: {
+        default_delivery_address?: boolean;
+        default_billing_address?: boolean;
+      };
+    }>();
+
+  const handleAPIResponse: handleAPIResponseType = (response, callbacks) =>
+    handleAPIResponseBase(response, notification, setNotification, callbacks);
 
   const {
     Title,
@@ -19,6 +41,8 @@ export default function UserInfo({
       Label_username,
       Label_phone,
       Label_email,
+      Label_delivery_address,
+      Label_billing_address,
       user_info_update_success_notification,
       display_name_update_success_notification_label,
       email_update_success_notification_label,
@@ -26,24 +50,68 @@ export default function UserInfo({
     },
   } = page;
 
+  const {
+    Button_add_text,
+    Button_view_more_address_text_singular,
+    Button_view_more_address_text,
+    Button_view_all_addresses_text,
+    Button_add_new_address_text,
+    text_more_address,
+    text_default_delivery_address,
+    text_default_billing_address,
+    Notification_added_address,
+    Notification_updated_address,
+    Notification_deleted_address,
+  } = userAccountRecurData;
+
+  function scrollToAddNewAddress(after: boolean = true) {
+    const header = document.querySelector("header"),
+      addNewAddressBtn = document.querySelector("#add-new-address-btn");
+
+    const headerRect = header.getBoundingClientRect(),
+      addNewAddressBtnRect = addNewAddressBtn.getBoundingClientRect();
+
+    window.scrollTo({
+      top:
+        window.scrollY +
+        addNewAddressBtnRect.top +
+        (after ? addNewAddressBtnRect.height : -20) -
+        headerRect.height,
+    });
+  }
+
   createEffect(() => {
     const searchParams = new URLSearchParams(location.search);
 
     if (searchParams.get("updated_user_info") === "true") {
       const info = searchParams.get("info"),
+        action = searchParams.get("action"),
         InfoLabels = {
           display_name: display_name_update_success_notification_label,
           email: email_update_success_notification_label,
           phone: phone_number_update_success_notification_label,
         };
 
-      if (InfoLabels[info]) {
+      const notificationMessage =
+        info === "address"
+          ? action === "add"
+            ? Notification_added_address
+            : action === "update"
+            ? Notification_updated_address
+            : action === "delete"
+            ? Notification_deleted_address
+            : null
+          : InfoLabels[info]
+          ? user_info_update_success_notification.replace(
+              "<info_label>",
+              InfoLabels[info],
+            )
+          : null;
+
+      if (notificationMessage) {
         setNotification({
           type: "success",
-          message: user_info_update_success_notification.replace(
-            "<info_label>",
-            InfoLabels[info],
-          ),
+          message: notificationMessage,
         });
       }
 
@@ -58,100 +126,153 @@ export default function UserInfo({
 
   return (
     <>
-      <h2 id="personal-information" class="dashboard-sec-title recoleta">
+      <h2 id="personal-information" class="tiled-title text-h2">
         {Title.replace("<username>", user().display_name)}
       </h2>
 
-      <div class="dashboard-sec">
-        <DashboardNotification
-          notification={notification}
-          recurringImages={recurringImages}
-        />
+      <div class="tiled-div">
+        <div class="grid division-gap">
+          <div class="grid division-in-gap">
+            <SolidNotification
+              notification={notification}
+              notificationIcons={notificationIcons}
+              bottomMargin={true}
+            />
 
-        <InfoUnit
-          label={Label_username}
-          type="text"
-          property="display_name"
-          verificationHref={verificationHref}
-          userAccountRecurData={userAccountRecurData}
-          setNotification={setNotification}
-        />
+            <InfoUnit
+              label={Label_username}
+              type="text"
+              property="display_name"
+              verificationHref={verificationHref}
+              userAccountRecurData={userAccountRecurData}
+              setNotification={setNotification}
+            />
 
-        <InfoUnit
-          label={Label_phone}
-          type="tel"
-          property="phone"
-          verificationHref={verificationHref}
-          userAccountRecurData={userAccountRecurData}
-          setNotification={setNotification}
-        />
+            <div class="h-px bg-primary-lightest" />
 
-        <InfoUnit
-          label={Label_email}
-          type="email"
-          property="email"
-          verificationHref={verificationHref}
-          userAccountRecurData={userAccountRecurData}
-          setNotification={setNotification}
-        />
+            <InfoUnit
+              label={Label_phone}
+              type="tel"
+              property="phone"
+              verificationHref={verificationHref}
+              userAccountRecurData={userAccountRecurData}
+              setNotification={setNotification}
+            />
 
-        {/* <div class="grid gap-[25px]">
-          <div class="grid gap-1">
-            <div class="information-label">{Label_delivery_address}</div>
+            <div class="h-px bg-primary-lightest" />
 
-            <div class="flex flex-wrap items-center gap-[15px] justify-between">
-              <div class="information-text">456B, Oakwoods, Germany</div>
-              <div class="information-btn cursor-pointer">
-                {Button_edit_text}
-              </div>
-            </div>
-          </div>
+            <InfoUnit
+              label={Label_email}
+              type="email"
+              property="email"
+              verificationHref={verificationHref}
+              userAccountRecurData={userAccountRecurData}
+              setNotification={setNotification}
+            />
 
-          <div class="grid gap-1">
-            <div class="information-label">{Label_billing_address}</div>
+            <div class="h-px bg-primary-lightest" />
 
-            <div class="flex flex-wrap items-center gap-[15px] justify-between">
-              <div class="information-text">456B, Oakwoods, Germany</div>
-              <div class="information-btn cursor-pointer">
-                {Button_edit_text}
-              </div>
-            </div>
-          </div>
+            {() => {
+              const default_delivery_address = user().default_delivery_address,
+                default_billing_address = user().default_billing_address;
 
-          <div class="flex w-full">
-            <a
-              href={userAccountAddress_url}
-              class:list={[
-                "flex gap-3 py-[15px] px-10 mt-[15px] md:min-w-[250px] font-bold",
-                "text-white leading-[150%] bg-primary rounded-full cursor-pointer",
-              ]}
-            >
-              <Icon name="akar-icons:plus" class="w-5 select-none" />
-              {Button_add_new_address_text}
-            </a>
-          </div>
+              return (
+                <>
+                  <DefaultAddress
+                    label={Label_delivery_address}
+                    address={default_delivery_address}
+                    userAccountRecurData={userAccountRecurData}
+                    setEditAddress={setEditAddress}
+                    scrollToAddNewAddress={scrollToAddNewAddress}
+                    handleAPIResponse={handleAPIResponse}
+                  />
 
-          {address_tag.length > 2 && (
-            <div class="mt-[25px] w-full flex justify-center">
-              <a
-                href={userAccountAddress_url}
-                id="toggle-more-address"
-                class="font-bold leading-[150%] text-primary cursor-pointer"
+                  <div class="h-px bg-primary-lightest" />
+
+                  <DefaultAddress
+                    label={Label_billing_address}
+                    address={default_billing_address}
+                    userAccountRecurData={userAccountRecurData}
+                    setEditAddress={setEditAddress}
+                    scrollToAddNewAddress={scrollToAddNewAddress}
+                    handleAPIResponse={handleAPIResponse}
+                  />
+                </>
+              );
+            }}
+
+            <div class="h-px bg-primary-lightest" />
+
+            <div class="flex w-full">
+              <button
+                id="add-new-address-btn"
+                class="button-primary"
+                onclick={() => {
+                  scrollToAddNewAddress();
+
+                  setEditAddress({ action: "add" });
+                }}
               >
-                <span id="show-more-address" class="flex items-center">
-                  {text_more_address.replaceAll(
-                    "<number>",
-                    address_tag.length - 2,
-                  )}
-                </span>
-              </a>
+                {plusIcon}
+                {Button_add_new_address_text}
+              </button>
             </div>
-          )}
-        </div> */}
+          </div>
+
+          {() => {
+            const editAddressInfo = editAddress();
+
+            return (
+              editAddressInfo && (
+                <EditAddress
+                  action={editAddress().action}
+                  address={editAddress().address}
+                  recurData={recurData}
+                  userAccountRecurData={userAccountRecurData}
+                  showForm={setEditAddress}
+                  handleAPIResponse={handleAPIResponse}
+                  setNotification={setNotification}
+                  scroll={() => scrollToAddNewAddress(false)}
+                  tickCheckboxes={editAddress().tickCheckboxes}
+                />
+              )
+            );
+          }}
+
+          {() => {
+            const { default_delivery_address, default_billing_address } =
+              user();
+
+            const shouldDisplayLink =
+              default_delivery_address?.id &&
+              addresses()?.length -
+                (default_delivery_address.id === default_billing_address.id
+                  ? 1
+                  : 2) >
+                0;
+
+            if (shouldDisplayLink) {
+              return (
+                <div class="w-full flex justify-center">
+                  <a
+                    href={userAccountAddressURL}
+                    id="more-address"
+                    class="button-link-primary"
+                  >
+                    {Button_view_all_addresses_text.replace(
+                      "<number>",
+                      addresses().length,
+                    )}
+                  </a>
+                </div>
+              );
+            }
+          }}
+        </div>
       </div>
 
       {/* {Social_media && (
-        <div class="dashboard-sec">
+        <div class="tiled-div">
           <div>
             <div class="recoleta text-2xl leading-[110%] text-black">
               {Social_media_title}

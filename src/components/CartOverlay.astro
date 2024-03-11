@@ -1,39 +1,45 @@
 ---
+import { Icon } from "astro-icon/components";
+
 import CMS from "@store/CMS";
-import { Icon } from "astro-icon";
-import ClipPathSVG from "@components/ClipPathSVG.astro";
+import getLocalizedLink from "@utils/getLocalizedLink";
+
 import DynamicHTML from "@components/DynamicHTML.astro";
-import EmptyCartNotification from "./EmptyCartNotification.astro";
+import ClipPathSVG from "@components/ClipPathSVG.astro";
+import EmptyCartNotification from "@components/EmptyCartNotification.astro";
 
 declare interface Props {
   page: Record<string, any>;
+  recurData: Record<string, any>;
+  ariaLabelRecurData: Record<string, any>;
 }
 
-const { page } = Astro.props as Props;
+const { page, recurData, ariaLabelRecurData } = Astro.props as Props;
 
 const { locale } = page,
   { data: checkoutInformationData } = CMS.get("checkoutInformation"),
   { URL_slug: checkoutInfoPageSlug } = checkoutInformationData.attributes.Meta,
-  checkoutInfoPageLink = "/" + locale + "/" + checkoutInfoPageSlug;
-
-const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+  checkoutInfoPageLink = getLocalizedLink(locale, checkoutInfoPageSlug);
 ---
 
 <style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
+  .product-image {
+    $fluid-image-size: poly-fluid-clamp(
+      (
+        375px: 50px,
+        1440px: 85px,
+      )
+    );
+
+    width: $fluid-image-size;
+    height: $fluid-image-size;
+    min-width: $fluid-image-size;
+  }
+
   #cart-overlay-products-container {
     @apply max-w-full w-[375px] sm:w-[528.96px];
-  }
-
-  .cart-overlay-heading {
-    @apply text-[clamp(2rem,3vw+0.55rem,2.625rem)] leading-[110%];
-  }
-
-  .cart-overlay-product-details {
-    @apply max-w-full w-[272px];
-  }
-
-  .cart-overlay-product-name {
-    @apply text-[1.125rem] sm:text-[1.5rem] md:font-bold leading-[120%];
   }
 
   .cart-overlay-product-amount-tweak-btn:disabled {
@@ -49,33 +55,17 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
       margin: 0;
     }
   }
-
-  .subtotal-text {
-    @apply text-base sm:text-[1.125rem];
-  }
-
-  .cart-overlay-product-price {
-    @apply text-[1.75rem] font-bold leading-[120%] sm:leading-[110%];
-  }
-
-  #cart-subtotal {
-    @apply text-[1.75rem] sm:text-[2rem] font-bold leading-[120%] sm:leading-[110%];
-  }
-
-  .shipping-charge-info {
-    @apply text-[0.875rem] sm:text-base;
-  }
 </style>
 
 <div
   id="cart"
-  class="hidden fixed z-[1000] flex justify-end w-full h-full top-0 left-0"
+  class="hidden fixed z-[1000] justify-end w-full h-full top-0 left-0"
 >
   <div class="w-full max-w-[2050px] h-full mx-auto bg-[rgba(0,0,0,0.5)]">
     <div
       role="alert"
       tabindex="0"
-      aria-label={checkoutRecurData.Aria_label_cart_focus_text}
+      aria-label={ariaLabelRecurData.Cart_focus_text}
       id="cart-overlay-products-container"
       class:list={[
         "focus:outline-1 outline-black -outline-offset-1",
@@ -87,36 +77,39 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         path="M0.516,0.008 C0.36,0.008,0.1,-0.008,0.04,0.082 C-0.021,0.172,0.002,0.495,0.017,0.736 C0.032,0.978,0.182,1,0.528,1 C0.813,1,0.902,0.936,0.974,0.717 C1,0.624,1,0.395,0.946,0.128 C0.897,-0.045,0.735,0.008,0.516,0.008"
       />
 
-      <div id="cart-products" class="h-full p-6 sm:py-9 sm:px-14">
-        <div class="flex flex-col gap-5 h-full">
-          <div class="flex flex-col gap-5">
+      <div id="cart-products" class="h-full px-6 sm:px-14 section-in-v-pad-sm">
+        <div class="flex flex-col h-full division-in-gap">
+          <div class="flex flex-col division-in-gap">
             <div class="flex justify-between items-center">
-              <h2 class="cart-overlay-heading recoleta font-bold">
-                {checkoutRecurData.text_cart}
+              <h2 class="recoleta text-h3 font-bold">
+                {recurData.text_cart}
               </h2>
 
               <button
-                aria-label={checkoutRecurData.Aria_label_cart_close_button_text}
+                aria-label={ariaLabelRecurData.Cart_close_button_text}
                 class="close-cart-btn"
               >
-                <Icon name="heroicons-solid:x" class="w-14" />
+                <Icon
+                  name="heroicons-solid:x"
+                  class="w-[30px] h-[30px] md:w-[45px] md:h-[45px]"
+                />
               </button>
             </div>
 
-            <div class="border border-solid border-primary-light"></div>
+            <div class="border border-solid border-primary-lightest"></div>
           </div>
 
           <EmptyCartNotification locale={locale} />
 
           <div
             id="cart-overlay-content"
-            class="grow flex flex-col justify-between gap-9"
+            class="grow flex flex-col division-gap justify-between"
           >
             <div class="relative grow w-full">
               <div
                 role="list"
-                aria-label={checkoutRecurData.Aria_label_cart_items_text}
-                class="absolute w-full h-full flex flex-col gap-5 overflow-auto"
+                aria-label={ariaLabelRecurData.Cart_items_text}
+                class="absolute w-full h-full flex flex-col division-in-gap overflow-auto"
               >
                 <DynamicHTML
                   voidFn={(content, currentScript) => {
@@ -131,6 +124,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                       const productData = window.cart[id],
                         names = JSON.parse(productData.names),
                         name = names[window.preferredLocale] || names["en"],
+                        infos = JSON.parse(productData.infos),
+                        info = infos[window.preferredLocale] || infos["en"],
                         price = Number(productData.price)
                           .toFixed(2)
                           .replace(".", ",");
@@ -141,6 +136,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           ...productData,
                           id,
                           name,
+                          info,
                           price,
                         }),
                       );
@@ -177,83 +173,81 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     <div
                       id={`<placeholder name="id"></placeholder>`}
                       class:list={[
-                        "cart-product bg-secondary-light p-4",
-                        "flex justify-between items-center gap-3.5 w-full rounded-[10px]",
+                        "cart-product tiled-div-sm-pad division-in-gap",
+                        "flex w-full bg-secondary-light rounded-[10px]",
                       ]}
                     >
                       <img
-                        alt=""
+                        class="product-image"
                         src={`<placeholder name="image"></placeholder>`}
-                        style={[
-                          "clip-path: url(#cart-overlay-product-image);",
-                          "min-width: 100px; width: 100px; height: 100px;",
-                        ].join(" ")}
+                        style="clip-path: url(#cart-overlay-product-image)"
                       />
 
-                      <div
-                        class="cart-overlay-product-details flex flex-col gap-1.5"
-                      >
-                        <div class="flex justify-between items-center gap-1.5">
-                          <h3 class="recoleta cart-overlay-product-name">
+                      <div class="flex flex-col division-in-element-gap">
+                        <div
+                          class="flex justify-between division-in-element-gap"
+                        >
+                          <h3 class="text-h5 text-primary">
                             <placeholder name="name"></placeholder>
                           </h3>
 
                           <button
-                            class="remove-item-btn"
-                            aria-label={checkoutRecurData.Aria_label_remove_cart_item_button_text +
+                            class="remove-item-btn h-fit"
+                            aria-label={ariaLabelRecurData.Remove_cart_item_button_text +
                               ` <placeholder name="name"></placeholder>`}
                           >
                             <Icon name="akar-icons:trash-can" class="w-6 h-6" />
                           </button>
                         </div>
 
+                        <div class="text-b6 text-black-light">
+                          <placeholder name="info"></placeholder>
+                        </div>
+
                         <div
-                          class="flex flex-wrap justify-between items-center gap-1.5"
+                          class="flex flex-wrap justify-between items-center division-in-element-gap"
                         >
                           <div
-                            class="flex items-center bg-primary text-secondary rounded-full"
+                            class="flex items-center button-cart-quantity-primary-sm text-b5"
                           >
                             <button
                               data-action="decrement"
-                              aria-label={checkoutRecurData.Aria_label_cart_item_quantity_minus_button_text +
+                              aria-label={ariaLabelRecurData.Cart_item_quantity_minus_button_text +
                                 ` <placeholder name="name"></placeholder>`}
-                              class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-2 pr-1"
+                              class="cart-overlay-product-amount-tweak-btn button-cart-quantity-item-sm"
                               disabled
                             >
                               <Icon
                                 name="akar-icons:minus"
-                                class="w-5 h-5 select-none"
+                                class="button-cart-quantity-icon"
                               />
                             </button>
 
                             <input
                               type="number"
-                              aria-label={checkoutRecurData.Aria_label_cart_item_quantity_text +
+                              aria-label={ariaLabelRecurData.Cart_item_quantity_text +
                                 ` <placeholder name="name"></placeholder>`}
                               min="1"
                               value={`<placeholder name="quantity"></placeholder>`}
-                              class:list={[
-                                "cart-overlay-product-amount-input",
-                                "w-9 h-full text-center lg:text-lg bg-primary outline-none",
-                              ]}
+                              class="cart-overlay-product-amount-input"
                               required
                             />
 
                             <button
                               data-action="increment"
-                              aria-label={checkoutRecurData.Aria_label_cart_item_quantity_plus_button_text +
+                              aria-label={ariaLabelRecurData.Cart_item_quantity_plus_button_text +
                                 ` <placeholder name="name"></placeholder>`}
-                              class="cart-overlay-product-amount-tweak-btn w-8 h-8 py-1.5 pl-1 pr-2"
+                              class="cart-overlay-product-amount-tweak-btn button-cart-quantity-item-sm"
                             >
                               <Icon
                                 name="akar-icons:plus"
-                                class="w-5 h-5 select-none"
+                                class="button-cart-quantity-icon"
                               />
                             </button>
                           </div>
 
                           <span
-                            class="cart-overlay-product-price recoleta text-black"
+                            class="cart-overlay-product-price text-b3 font-bold text-black"
                           >
                             €<placeholder name="price"></placeholder>
                           </span>
@@ -265,38 +259,42 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               </div>
             </div>
 
-            <div class="flex flex-col gap-5">
-              <div>
-                <div class="flex justify-between items-center">
-                  <span class="subtotal-text font-medium">
-                    {checkoutRecurData.text_subtotal}
+            <div class="flex flex-col division-in-gap">
+              <div class="flex flex-col division-in-element-gap">
+                <div
+                  class="flex justify-between items-center division-in-gap text-b2 font-bold"
+                >
+                  <span class="text-black">
+                    {recurData.text_subtotal}
                   </span>
 
-                  <span id="cart-subtotal" class="recoleta">
+                  <span id="cart-subtotal">
                     €<DynamicHTML htmlFn={() => window.cart.subTotal} />
                   </span>
                 </div>
 
-                <div class="shipping-charge-info">
-                  {checkoutRecurData.text_shipping_calculated_at_checkout}
+                <div class="text-b4 text-black-light">
+                  {recurData.text_shipping_calculated_at_checkout}
                 </div>
               </div>
 
-              <a
-                id="checkout-info-link"
-                href={checkoutInfoPageLink}
-                class="capitalize py-4 bg-primary text-white font-bold text-center rounded-[9999px]"
-              >
-                {checkoutRecurData.text_proceed_to_checkout}
-              </a>
-
-              <div class="flex justify-center items-center">
-                <button
-                  aria-label={checkoutRecurData.Aria_label_cart_close_button_text}
-                  class="close-cart-btn text-primary font-bold"
+              <div class="flex flex-col form-gap">
+                <a
+                  id="checkout-info-link"
+                  href={checkoutInfoPageLink}
+                  class="button-primary-large"
                 >
-                  {checkoutRecurData.text_continue_shopping}
-                </button>
+                  {recurData.text_proceed_to_checkout}
+                </a>
+
+                <div class="flex justify-center items-center">
+                  <button
+                    aria-label={ariaLabelRecurData.Cart_close_button_text}
+                    class="close-cart-btn button-link-primary-large"
+                  >
+                    {recurData.text_continue_shopping}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

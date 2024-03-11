@@ -39,12 +39,22 @@ const products = Object.fromEntries(
       const names = JSON.stringify(
         Object.fromEntries(
           [{ attributes }, ...attributes.localizations.data].map(
+            ({ attributes: { locale, Title } }) => [
+              locale.substring(0, 2),
+              Title,
+            ],
+          ),
+        ),
+      );
+
+      const infos = JSON.stringify(
+        Object.fromEntries(
+          [{ attributes }, ...attributes.localizations.data].map(
             ({
-              attributes: { locale, Title, category, category_tea_range, size },
+              attributes: { locale, category, category_tea_range, size },
             }) => [
               locale.substring(0, 2),
               [
-                Title,
                 category_tea_range?.data?.attributes?.Title,
                 category?.data?.attributes?.Title,
                 size?.data?.attributes?.Title,
@@ -67,6 +77,7 @@ const products = Object.fromEntries(
           image,
           titles,
           names,
+          infos,
           tea_weight,
           tea_variant: productVariant,
           tea_size: productSize,
@@ -120,6 +131,8 @@ const products = Object.fromEntries(
 
   if (queryParams.get("clear") === "cart") {
     localStorage.removeItem("cart");
+
+    delete window.checkoutInfo.address_tag;
   }
 
   const storedCart = JSON.parse(localStorage.getItem("cart") || "{}");
@@ -233,7 +246,7 @@ const products = Object.fromEntries(
       const productExistsInCart = !!cart[productId];
 
       const { quantity } = productData,
-        { Price, VatPercentage, image, names, tea_variant, tea_size } =
+        { Price, VatPercentage, image, names, infos, tea_variant, tea_size } =
           products[productId];
 
       const [tax, price] = window.getPriceIncludingTax({
@@ -249,6 +262,7 @@ const products = Object.fromEntries(
         price,
         image,
         names,
+        infos,
         tea_variant,
         tea_size,
       };

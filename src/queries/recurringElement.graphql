@@ -96,6 +96,7 @@ fragment RecurringElementAttributes on RecurringElement {
   estate_location
   text_content
   product_made_love_from
+  product_from
   product_kindness_impact
   product_each_penny_you_spend
   product_check_where_going
@@ -118,6 +119,39 @@ fragment RecurringElementAttributes on RecurringElement {
   text_lang_selector_unavailable
   text_skip
   text_in
+  text_information
+  text_email_address
+  email_address_placeholder
+  text_first_name
+  first_name_placeholder
+  text_last_name
+  last_name_placeholder
+  text_country
+  country_placeholder
+  text_city
+  city_placeholder
+  text_street
+  street_placeholder
+  text_postal_code
+  postal_code_placeholder
+  text_add
+  text_cart
+  text_add_to_cart
+  text_add_to_cart_for
+  text_order_summary
+  text_update_cart
+  text_variant
+  text_size
+  text_quantity
+  text_subtotal
+  text_shipping
+  text_total
+  text_tax
+  text_shipping_calculated_at_checkout
+  text_continue_to
+  text_proceed_to_checkout
+  text_continue_shopping
+  text_empty_cart
 }
 
 query {
@@ -126,11 +160,32 @@ query {
       id
       attributes {
         ...RecurringElementAttributes
+        countries {
+          data {
+            attributes {
+              name
+            }
+          }
+        }
         localizations {
           data {
             id
             attributes {
               ...RecurringElementAttributes
+              countries {
+                data {
+                  attributes {
+                    name
+                    localizations(filters: { locale: { eq: "en" } }) {
+                      data {
+                        attributes {
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
