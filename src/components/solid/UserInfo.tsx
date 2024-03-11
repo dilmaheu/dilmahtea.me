@@ -52,8 +52,6 @@ export default function UserInfo({
 
   const {
     Button_add_text,
-    Button_edit_text,
-    Button_update_text,
     Button_view_more_address_text_singular,
     Button_view_more_address_text,
     Button_view_all_addresses_text,
@@ -99,16 +97,16 @@ export default function UserInfo({
           ? action === "add"
             ? Notification_added_address
             : action === "update"
-              ? Notification_updated_address
-              : action === "delete"
-                ? Notification_deleted_address
-                : null
+            ? Notification_updated_address
+            : action === "delete"
+            ? Notification_deleted_address
+            : null
           : InfoLabels[info]
-            ? user_info_update_success_notification.replace(
-                "<info_label>",
-                InfoLabels[info],
-              )
-            : null;
+          ? user_info_update_success_notification.replace(
+              "<info_label>",
+              InfoLabels[info],
+            )
+          : null;
 
       if (notificationMessage) {
         setNotification({

@@ -44,10 +44,8 @@ export default function Address({
     address;
 
   const {
-    Button_update_text,
     text_default_delivery_address,
     text_default_billing_address,
-    Button_edit_text,
     Tag_default_text,
   } = userAccountRecurData;
 
@@ -102,8 +100,8 @@ export default function Address({
                         {defaultDeliveryAddressId === defaultBillingAddressId
                           ? Tag_default_text
                           : isDefaultDeliveryAddress
-                            ? text_default_delivery_address
-                            : text_default_billing_address}
+                          ? text_default_delivery_address
+                          : text_default_billing_address}
                       </div>
 
                       <div>&#x2022;</div>

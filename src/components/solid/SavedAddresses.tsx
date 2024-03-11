@@ -38,8 +38,6 @@ export default function SavedAddresses({
     Tag_others_placeholder_text: tag_placeholder_others,
     Tag_suggestions,
     Button_add_text,
-    Button_edit_text,
-    Button_update_text,
     Button_add_new_address_text,
     Button_make_default_text,
     Button_save_text,
@@ -86,8 +84,8 @@ export default function SavedAddresses({
         action === "add"
           ? Notification_added_address
           : action === "update"
-            ? Notification_updated_address
-            : Notification_deleted_address;
+          ? Notification_updated_address
+          : Notification_deleted_address;
 
       setNotification({
         type: "success",

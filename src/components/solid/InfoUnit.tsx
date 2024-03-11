@@ -8,12 +8,7 @@ export default function InfoUnit({
   type,
   property,
   verificationHref,
-  userAccountRecurData: {
-    Button_edit_text,
-    Button_update_text,
-    Button_save_text,
-    Button_cancel_text,
-  },
+  userAccountRecurData: { Button_save_text, Button_cancel_text },
   setNotification,
 }) {
   const [isEditing, setIsEditing] = createSignal(false);
