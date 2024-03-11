@@ -101,6 +101,8 @@ export default function CheckoutInformationForm({
         }
       } else if (window.cookies.isAuthenticated !== "true") {
         form.submit();
+
+        return;
       }
 
       fetch("/api/addresses", {
