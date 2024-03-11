@@ -1,6 +1,9 @@
-import CheckoutInformationForm from "@solid/CheckoutInformationForm";
+import { createEffect } from "solid-js";
 
+import { user } from "@signals/user";
 import { showAddressForm, setShowAddressForm } from "@signals/showAddressForm";
+
+import CheckoutInformationForm from "@solid/CheckoutInformationForm";
 
 export default function CheckoutBillingAddress({
   page,
@@ -11,6 +14,14 @@ export default function CheckoutBillingAddress({
   function handleShowAddressForm() {
     setShowAddressForm(!showAddressForm());
   }
+
+  createEffect(() => {
+    if (
+      user().default_delivery_address.id !== user().default_billing_address.id
+    ) {
+      setShowAddressForm(true);
+    }
+  });
 
   return (
     <section class="division-gap grid">
@@ -24,7 +35,7 @@ export default function CheckoutBillingAddress({
               name="billing_address"
               value=""
               id="same-as-shipping"
-              checked
+              checked={!showAddressForm()}
               onchange={handleShowAddressForm}
             />
 
@@ -41,6 +52,7 @@ export default function CheckoutBillingAddress({
               name="billing_address"
               value=""
               id="different-than-shipping"
+              checked={showAddressForm()}
               onchange={handleShowAddressForm}
             />
 
