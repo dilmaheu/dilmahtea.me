@@ -21,8 +21,7 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   { locale } = page;
 
 const productSizes = CMS.get("productSizes"),
-  productVariants = CMS.get("productVariants"),
-  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+  productVariants = CMS.get("productVariants");
 
 const subCategories = page.Sub_categories.data.filter(
   ({ attributes: { products } }) => products.data.length > 0,
@@ -57,13 +56,7 @@ page.Heading_button_link = "#content";
 
     {/* Products Section */}
     <section role="main" class="grid section-gap">
-      <FilteredProducts
-        {page}
-        {recurData}
-        {checkoutRecurData}
-        {white_love}
-        category={page.Title}
-      >
+      <FilteredProducts {page} {recurData} {white_love} category={page.Title}>
         <Icon
           slot="alertCircleIcon"
           name="mdi:alert-circle"
@@ -91,7 +84,6 @@ page.Heading_button_link = "#content";
               <FilteredProducts
                 {page}
                 {recurData}
-                {checkoutRecurData}
                 {white_love}
                 subCategory={Title}
               >
