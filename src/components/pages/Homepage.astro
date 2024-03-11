@@ -14,7 +14,7 @@ import DynamicPost from "@components/DynamicPost.astro";
 
 import SecondaryPageLayout from "@layouts/SecondaryPageLayout.astro";
 
-const { page, ariaLabelRecurData, noAuthorImg } = Astro.props,
+const { page, recurData, ariaLabelRecurData, noAuthorImg } = Astro.props,
   { locale, posts } = page,
   { STRAPI_URL } = import.meta.env;
 
@@ -82,7 +82,7 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
               </h2>
             )}
 
-            <ProductCards {locale} products={latestProducts} />
+            <ProductCards products={latestProducts} recurData={recurData} />
 
             {page.Block_button_text && (
               <div class="button-link-primary-lightest text-center">
@@ -236,7 +236,10 @@ const block6FilteredProducts = page.Block6_products.data.map(({ attributes }) =>
               </h2>
             )}
 
-            <ProductCards {locale} products={block6FilteredProducts} />
+            <ProductCards
+              products={block6FilteredProducts}
+              recurData={recurData}
+            />
 
             {page.Block6_button_text && (
               <div class="button-link-primary-lightest text-center">

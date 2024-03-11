@@ -12,7 +12,7 @@ declare interface Props {
   page: Record<string, any>;
 }
 
-const { page } = Astro.props as Props;
+const { page, recurData } = Astro.props as Props;
 
 const { locale } = page,
   { data: checkoutInformationData } = CMS.get("checkoutInformation"),
@@ -82,14 +82,17 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <div class="flex flex-col division-in-gap">
             <div class="flex justify-between items-center">
               <h2 class="recoleta text-h3 font-bold">
-                {checkoutRecurData.text_cart}
+                {recurData.text_cart}
               </h2>
 
               <button
                 aria-label={checkoutRecurData.Aria_label_cart_close_button_text}
                 class="close-cart-btn"
               >
-                <Icon name="heroicons-solid:x" class="w-[30px] h-[30px] md:w-[45px] md:h-[45px]" />
+                <Icon
+                  name="heroicons-solid:x"
+                  class="w-[30px] h-[30px] md:w-[45px] md:h-[45px]"
+                />
               </button>
             </div>
 
@@ -256,13 +259,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               </div>
             </div>
 
-            <div class="flex flex-col division-in-gap ">
+            <div class="flex flex-col division-in-gap">
               <div class="flex flex-col division-in-element-gap">
                 <div
                   class="flex justify-between items-center division-in-gap text-b2 font-bold"
                 >
                   <span class="text-black">
-                    {checkoutRecurData.text_subtotal}
+                    {recurData.text_subtotal}
                   </span>
 
                   <span id="cart-subtotal">
@@ -271,17 +274,17 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                 </div>
 
                 <div class="text-b4 text-black-light">
-                  {checkoutRecurData.text_shipping_calculated_at_checkout}
+                  {recurData.text_shipping_calculated_at_checkout}
                 </div>
               </div>
-              
+
               <div class="flex flex-col form-gap">
                 <a
                   id="checkout-info-link"
                   href={checkoutInfoPageLink}
                   class="button-primary-large"
                 >
-                  {checkoutRecurData.text_proceed_to_checkout}
+                  {recurData.text_proceed_to_checkout}
                 </a>
 
                 <div class="flex justify-center items-center">
@@ -289,7 +292,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                     aria-label={checkoutRecurData.Aria_label_cart_close_button_text}
                     class="close-cart-btn button-link-primary-large"
                   >
-                    {checkoutRecurData.text_continue_shopping}
+                    {recurData.text_continue_shopping}
                   </button>
                 </div>
               </div>

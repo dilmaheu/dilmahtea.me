@@ -10,7 +10,9 @@ const { page, recurData } = Astro.props,
   { locale } = page,
   checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug,
   checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
-  userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
+  userAccountRecurData = CMS.get("userAccountRecurringElement", locale),
+  checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
+  shortenedSteps = checkoutFlowData.shortened_steps.split("\n");
 ---
 
 <form
@@ -83,7 +85,7 @@ const { page, recurData } = Astro.props,
     </a>
 
     <button class="w-full sm:max-w-[250px] button-primary-large">
-      {page.text_continue_to_shipping}
+      {`${recurData.text_continue_to} ${shortenedSteps[1]?.toLowerCase()}`}
     </button>
   </div>
 </form>

@@ -3,7 +3,7 @@ import CMS from "@store/CMS";
 import Markdown from "@components/Markdown.astro";
 import getLocalizedLink from "@utils/getLocalizedLink";
 
-const { page } = Astro.props,
+const { page, recurData } = Astro.props,
   { locale } = page,
   checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
   steps = checkoutFlowData.steps.split("\n"),
@@ -75,7 +75,7 @@ const { page } = Astro.props,
     </a>
 
     <button class="w-full sm:max-w-[250px] button-primary-large">
-      {checkoutRecurData.text_continue_to_payment}
+      {`${recurData.text_continue_to} ${shortenedSteps[2]?.toLowerCase()}`}
     </button>
   </div>
 </form>

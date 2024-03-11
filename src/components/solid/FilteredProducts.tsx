@@ -5,7 +5,6 @@ export default function FilteredProducts({
   alertCircleIcon,
   page,
   recurData,
-  checkoutRecurData,
   white_love,
   category,
   subCategory,
@@ -268,7 +267,7 @@ export default function FilteredProducts({
                 </svg>
                 <div class="text-container">
                   {product.Stock_amount > 0
-                    ? checkoutRecurData.text_add
+                    ? recurData.text_add
                     : recurData.Product_sold_out_text}
                   <span>&#x025CF;</span>
                   <span>

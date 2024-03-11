@@ -11,11 +11,8 @@ import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
 
 const { white_love } = RecurringImages;
 
-const { products, locale } = Astro.props,
+const { products, recurData } = Astro.props,
   { STRAPI_URL } = import.meta.env;
-
-const recurData = CMS.get("recurringElement", locale),
-  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <div>
@@ -232,7 +229,7 @@ const recurData = CMS.get("recurringElement", locale),
                 <div class="text-container">
                   <span>
                     {Stock_amount > 0
-                      ? checkoutRecurData.text_add
+                      ? recurData.text_add
                       : recurData.Product_sold_out_text}
                   </span>
                   <span>&#x025CF;</span>
