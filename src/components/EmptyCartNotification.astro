@@ -9,7 +9,7 @@ declare interface Props {
 
 const { locale } = Astro.props as Props;
 
-const checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
+const recurData = CMS.get("recurringElement", locale),
   shopLink = CMS.get("homeProduct", locale).Meta.URL_slug;
 ---
 
@@ -17,7 +17,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
   id="empty-cart-notification"
   class:list={[
     "grow justify-self-center self-center min-h-[500px]",
-    " text-primary max-w-md flex flex-col justify-center division-in-gap items-center",
+    "text-primary max-w-md flex flex-col justify-center division-in-gap items-center",
   ]}
 >
   <Icon
@@ -25,16 +25,14 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
     class="w-[74px] h-[74px] md:w-[88px] md:h-[88px]"
   />
 
-  <div
-    class="text-center font-bold text-b3 text-black-light"
-  >
-    <Markdown set:html={checkoutRecurData.text_empty_cart} />
+  <div class="text-center font-bold text-b3 text-black-light">
+    <Markdown set:html={recurData.text_empty_cart} />
   </div>
 
   <a
     href={shopLink}
     class="w-full px-[25px] py-[15px] bg-primary text-white font-bold text-center rounded-full text-b5"
   >
-    {checkoutRecurData.text_continue_shopping}
+    {recurData.text_continue_shopping}
   </a>
 </div>

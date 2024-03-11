@@ -4,8 +4,7 @@ import DynamicHTML from "@components/DynamicHTML.astro";
 
 const { page, recurData } = Astro.props,
   { locale } = page,
-  userRecurData = CMS.get("userAccountRecurringElement", locale),
-  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+  userRecurData = CMS.get("userAccountRecurringElement", locale);
 
 const checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug,
   checkoutInfoLink = CMS.get("checkoutInformation", locale).Meta.URL_slug,
@@ -45,7 +44,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
 <div class="section-gap flex flex-col lg:flex-row h-full">
   <div class="w-full lg:w-px h-px lg:h-full bg-primary-lightest"></div>
 
-  <div class="division-gap grid">
+  <div class="division-gap flex flex-col">
     {
       (isCheckoutShipping || isCheckoutPayment) && (
         <div class="tiled-div-pad division-in-gap grid bg-secondary-light rounded-[10px]">
@@ -71,7 +70,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
               <div
                 role="listitem"
                 aria-label={page.Aria_label_email_address_text}
-                class="division-in-element-gap"
+                class="division-in-element-gap grid"
               >
                 <div class="input-label text-black">
                   {userRecurData.Input_label_email}
@@ -103,7 +102,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
               <div
                 role="listitem"
                 aria-label={page.Aria_label_email_address_text}
-                class="division-in-element-gap"
+                class="division-in-element-gap grid"
               >
                 <div class="input-label text-black">
                   {userRecurData.Label_delivery_address}
@@ -139,7 +138,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
                   <div
                     role="listitem"
                     aria-label={page.Aria_label_email_address_text}
-                    class="division-in-element-gap"
+                    class="division-in-element-gap grid"
                   >
                     <div class="input-label text-black">
                       {userRecurData.Label_shipping_method}
@@ -182,7 +181,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
         id="checkout-order-summery-overview-toggle"
         class="vertical-toggle-button-primary w-full h-fit lg:!h-0"
       >
-        <span class="grow">{checkoutRecurData.text_order_summary}</span>
+        <span class="grow">{recurData.text_order_summary}</span>
 
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -201,12 +200,12 @@ const isCheckoutInformation = page.type === "checkoutInformation",
         <div class="flex flex-col gap-5">
           <div class="summery-text-container flex-wrap gap-2.5">
             <h2 class="text-h3">
-              {checkoutRecurData.text_order_summary}
+              {recurData.text_order_summary}
             </h2>
 
             <div class="button-link-primary-lightest">
               <a href={checkoutCartLink}>
-                {checkoutRecurData.text_edit_cart}
+                {recurData.text_update_cart}
               </a>
             </div>
           </div>
@@ -254,7 +253,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
 
                 <div class="flex items-center justify-between">
                   <span class="text-b6 font-medium text-black-light">
-                    <span>{userRecurData.text_quantity}:</span>
+                    <span>{recurData.text_quantity}:</span>
                     <placeholder name="quantity"></placeholder>
                   </span>
                   <span class="product-price text-b3 font-bold text-right">
@@ -279,7 +278,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
               ]}
             >
               <span class="order-subtotal">
-                {checkoutRecurData.text_subtotal}
+                {recurData.text_subtotal}
               </span>
 
               <span>
@@ -290,7 +289,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
             {
               (isCheckoutShipping || isCheckoutPayment) && (
                 <div class="summery-text-container summery-base-text">
-                  <span>{checkoutRecurData.text_shipping}</span>
+                  <span>{recurData.text_shipping}</span>
                   <span class="order-shipping-cost">
                     €<DynamicHTML htmlFn={() => window.cart.shippingCost} />
                   </span>
@@ -305,14 +304,14 @@ const isCheckoutInformation = page.type === "checkoutInformation",
                 <div class="w-full h-px bg-primary-lightest" />
 
                 <div class="summery-text-container summery-highlighted-text">
-                  <span>{checkoutRecurData.text_total}</span>
+                  <span>{recurData.text_total}</span>
                   <span class="order-total">
                     €<DynamicHTML htmlFn={() => window.cart.total} />
                   </span>
                 </div>
 
                 <div class="summery-text-container summery-base-text">
-                  <span>{checkoutRecurData.text_tax}</span>
+                  <span>{recurData.text_tax}</span>
                   <span class="order-tax">
                     €<DynamicHTML htmlFn={() => window.cart.tax} />
                   </span>
@@ -324,7 +323,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
           {
             isCheckoutInformation && (
               <div class="text-b4">
-                {checkoutRecurData.text_shipping_calculated_at_checkout}
+                {recurData.text_shipping_calculated_at_checkout}
               </div>
             )
           }
