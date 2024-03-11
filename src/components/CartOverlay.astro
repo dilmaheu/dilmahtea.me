@@ -10,16 +10,16 @@ import EmptyCartNotification from "@components/EmptyCartNotification.astro";
 
 declare interface Props {
   page: Record<string, any>;
+  recurData: Record<string, any>;
+  ariaLabelRecurData: Record<string, any>;
 }
 
-const { page, recurData } = Astro.props as Props;
+const { page, recurData, ariaLabelRecurData } = Astro.props as Props;
 
 const { locale } = page,
   { data: checkoutInformationData } = CMS.get("checkoutInformation"),
   { URL_slug: checkoutInfoPageSlug } = checkoutInformationData.attributes.Meta,
   checkoutInfoPageLink = getLocalizedLink(locale, checkoutInfoPageSlug);
-
-const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style lang="scss">
@@ -65,7 +65,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
     <div
       role="alert"
       tabindex="0"
-      aria-label={checkoutRecurData.Aria_label_cart_focus_text}
+      aria-label={ariaLabelRecurData.Cart_focus_text}
       id="cart-overlay-products-container"
       class:list={[
         "focus:outline-1 outline-black -outline-offset-1",
@@ -86,7 +86,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
               </h2>
 
               <button
-                aria-label={checkoutRecurData.Aria_label_cart_close_button_text}
+                aria-label={ariaLabelRecurData.Cart_close_button_text}
                 class="close-cart-btn"
               >
                 <Icon
@@ -108,7 +108,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             <div class="relative grow w-full">
               <div
                 role="list"
-                aria-label={checkoutRecurData.Aria_label_cart_items_text}
+                aria-label={ariaLabelRecurData.Cart_items_text}
                 class="absolute w-full h-full flex flex-col division-in-gap overflow-auto"
               >
                 <DynamicHTML
@@ -193,7 +193,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
                           <button
                             class="remove-item-btn h-fit"
-                            aria-label={checkoutRecurData.Aria_label_remove_cart_item_button_text +
+                            aria-label={ariaLabelRecurData.Remove_cart_item_button_text +
                               ` <placeholder name="name"></placeholder>`}
                           >
                             <Icon name="akar-icons:trash-can" class="w-6 h-6" />
@@ -212,7 +212,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
                           >
                             <button
                               data-action="decrement"
-                              aria-label={checkoutRecurData.Aria_label_cart_item_quantity_minus_button_text +
+                              aria-label={ariaLabelRecurData.Cart_item_quantity_minus_button_text +
                                 ` <placeholder name="name"></placeholder>`}
                               class="cart-overlay-product-amount-tweak-btn button-cart-quantity-item-sm"
                               disabled
@@ -225,7 +225,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
                             <input
                               type="number"
-                              aria-label={checkoutRecurData.Aria_label_cart_item_quantity_text +
+                              aria-label={ariaLabelRecurData.Cart_item_quantity_text +
                                 ` <placeholder name="name"></placeholder>`}
                               min="1"
                               value={`<placeholder name="quantity"></placeholder>`}
@@ -235,7 +235,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
                             <button
                               data-action="increment"
-                              aria-label={checkoutRecurData.Aria_label_cart_item_quantity_plus_button_text +
+                              aria-label={ariaLabelRecurData.Cart_item_quantity_plus_button_text +
                                 ` <placeholder name="name"></placeholder>`}
                               class="cart-overlay-product-amount-tweak-btn button-cart-quantity-item-sm"
                             >
@@ -289,7 +289,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
                 <div class="flex justify-center items-center">
                   <button
-                    aria-label={checkoutRecurData.Aria_label_cart_close_button_text}
+                    aria-label={ariaLabelRecurData.Cart_close_button_text}
                     class="close-cart-btn button-link-primary-large"
                   >
                     {recurData.text_continue_shopping}
