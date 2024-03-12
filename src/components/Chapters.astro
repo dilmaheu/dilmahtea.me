@@ -105,35 +105,37 @@ const headingTexts = dynamicHeadings || staticHeadings?.filter(Boolean);
         fixedTop && "hidden py-[25px] border-t border-primary-light",
       ]}
     >
-      <div
-        role="list"
-        id={fixedTop ? "sticky-chapter-links" : "chapter-links"}
-        class:list={[
-          "grid division-in-gap overflow-y-auto",
-          fixedTop && "max-h-[50vh]",
-        ]}
-      >
-        {
-          headingTexts?.map((title, i) => (
-            <a
-              href={`#${title?.toLowerCase()?.replaceAll(" ", "-")}`}
-              role="listitem"
-              class:list={[
-                "chapter-link division-in-gap",
-                "inline-flex items-center text-b3 text-black-light",
-                fixedTop && "chapter-link-sm",
-                i === 0 && "active",
-              ]}
-            >
-              <div class="min-w-[clamp(35px,calc(1.25vw+27px),45px)]">
-                <img src={green_right_arrow.src} alt="" />
-              </div>
+      {
+        headingTexts && (
+          <div
+            role="list"
+            id={fixedTop ? "sticky-chapter-links" : "chapter-links"}
+            class:list={[
+              "grid division-in-gap overflow-y-auto",
+              fixedTop && "max-h-[50vh]",
+            ]}
+          >
+            {headingTexts?.map((title, i) => (
+              <a
+                href={`#${title?.toLowerCase()?.replaceAll(" ", "-")}`}
+                role="listitem"
+                class:list={[
+                  "chapter-link division-in-gap",
+                  "inline-flex items-center text-b3 text-black-light",
+                  fixedTop && "chapter-link-sm",
+                  i === 0 && "active",
+                ]}
+              >
+                <div class="min-w-[clamp(35px,calc(1.25vw+27px),45px)]">
+                  <img src={green_right_arrow.src} alt="" />
+                </div>
 
-              <div>{title}</div>
-            </a>
-          ))
-        }
-      </div>
+                <div>{title}</div>
+              </a>
+            ))}
+          </div>
+        )
+      }
 
       <slot />
     </div>

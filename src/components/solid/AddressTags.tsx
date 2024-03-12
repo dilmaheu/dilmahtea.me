@@ -139,7 +139,7 @@ export default function AddressTags({
 
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 8 14"
+              viewBox="0 0 14 8"
               class={
                 "toggle-button-arrow fill-primary" +
                 (showMoreAddresses() ? " rotate-180" : "")

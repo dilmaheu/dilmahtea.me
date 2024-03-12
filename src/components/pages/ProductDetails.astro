@@ -843,16 +843,19 @@ const totalSpentAmount = spentAmounts.reduce(
         decrementBtn.disabled = true;
       });
 
-      const [_, productPriceIncludingTax] = getPriceIncludingTax({
+      const [_, priceIncludingTax] = getPriceIncludingTax({
         Price: window.productPrice,
         VatPercentage: window.productVatPercentage,
         quantity: 1,
       });
 
-      productAmountPriceOutput.textContent = formatPrice(priceIncludingTax);
-      productAmountPriceOutputSm.textContent = formatPrice(priceIncludingTax);
-      productAmountPriceOutputSmFixed.textContent =
-        formatPrice(priceIncludingTax);
+      [
+        productAmountPriceOutput,
+        productAmountPriceOutputSm,
+        productAmountPriceOutputSmFixed,
+      ].forEach(
+        (element) => (element.textContent = formatPrice(priceIncludingTax)),
+      );
 
       window.openCart();
     });
@@ -877,10 +880,13 @@ const totalSpentAmount = spentAmounts.reduce(
         quantity,
       });
 
-    productAmountPriceOutput.textContent = formatPrice(priceIncludingTax);
-    productAmountPriceOutputSm.textContent = formatPrice(priceIncludingTax);
-    productAmountPriceOutputSmFixed.textContent =
-      formatPrice(priceIncludingTax);
+    [
+      productAmountPriceOutput,
+      productAmountPriceOutputSm,
+      productAmountPriceOutputSmFixed,
+    ].forEach(
+      (element) => (element.textContent = formatPrice(priceIncludingTax)),
+    );
   }
 
   tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
