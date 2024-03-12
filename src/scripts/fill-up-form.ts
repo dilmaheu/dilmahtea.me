@@ -33,7 +33,7 @@ Object.entries<string>(availableData).forEach(([name, value]) => {
             `input[name="${name}"][value="${value}"]`,
           );
 
-          selectedOptionInput.checked = true;
+          if (selectedOptionInput) selectedOptionInput.checked = true;
         } else {
           input.value = value || "";
 
