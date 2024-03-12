@@ -82,7 +82,7 @@ export default function OrdersTimeline() {
             </button>
           </div>
 
-          <div class="division-in-gap flex flex-wrap">
+          <div class="division-in-gap flex flex-wrap justify-evenly">
             {[
               "January",
               "February",
