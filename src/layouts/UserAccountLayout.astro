@@ -76,13 +76,17 @@ const headingName =
       </div>
     </div>
 
-    <Chapters
-      headingName={headingName}
-      staticHeadings={headings}
-      desktopOnly={true}
-    >
-      <slot name="timeline" />
-    </Chapters>
+    {
+      page.type !== "accountAddress" && (
+        <Chapters
+          headingName={headingName}
+          staticHeadings={headings}
+          desktopOnly={true}
+        >
+          <slot name="timeline" />
+        </Chapters>
+      )
+    }
   </div>
 </section>
 
