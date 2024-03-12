@@ -82,7 +82,7 @@ export default function OrdersTimeline() {
             </button>
           </div>
 
-          <div class="month-container">
+          <div class="division-in-gap flex flex-wrap">
             {[
               "January",
               "February",
@@ -100,10 +100,11 @@ export default function OrdersTimeline() {
               <a
                 href={`#${month.toLowerCase()}`}
                 class={
-                  years().length &&
-                  !!orders()[ordersYear()][month] &&
-                  "selected"
+                  years().length && !!orders()[ordersYear()][month]
+                    ? "button-state-selected"
+                    : "button-state-not-selected"
                 }
+                style="min-width: 85px;"
               >
                 {month.slice(0, 3)}
               </a>

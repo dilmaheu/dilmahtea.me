@@ -283,6 +283,11 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   }
 }
 
+@mixin button-state {
+  @include button-common;
+  @include button-font-sm;
+}
+
 @mixin button-default-colors {
   @include focus-primary-lightest;
 
@@ -293,6 +298,12 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
   @include focus-primary-lightest;
 
   @apply bg-primary text-white;
+}
+
+@mixin button-primary-lighter-colors {
+  @include focus-primary-lightest;
+
+  @apply bg-primary-lighter text-white;
 }
 
 @mixin button-disabled-colors {
@@ -889,7 +900,7 @@ $primary: str-slice(meta.inspect(colors.$primary), 2);
 
 @mixin input-default {
   @apply w-full;
-  
+
   label {
     @include division-in-element-gap;
     @include input-label;
