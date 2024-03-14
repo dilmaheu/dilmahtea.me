@@ -69,24 +69,20 @@ const recurData = CMS.get("recurringElement", locale),
 
           {
             page.estate_name?.data.length > 0 && (
-              <div class="flex flex-wrap items-center">
-                <div class="flex flex-wrap items-center text-b5">
+              <div class="prose-text-sm-dark-link no-pad-mar-child">
+                <p>
                   {recurData.product_made_love_from + `\xa0`}
 
-                  <div class="flex flex-wrap gap-x-1.5">
-                    {page.estate_name.data.map((estate, index) => (
-                      <a
-                        href={estate.attributes.Meta.URL_slug}
-                        class="flex flex-wrap font-bold underline decoration-1 underline-offset-[2px]"
-                      >
-                        {estate.attributes.Estate_name +
-                          (index === page.estate_name.data.length - 1
-                            ? ""
-                            : ",")}
+                  {page.estate_name.data.map((estate, index) => (
+                    <>
+                      <a href={estate.attributes.Meta.URL_slug}>
+                        {estate.attributes.Estate_name}
                       </a>
-                    ))}
-                  </div>
-                </div>
+
+                      {index === page.estate_name.data.length - 1 ? "" : ", "}
+                    </>
+                  ))}
+                </p>
               </div>
             )
           }
