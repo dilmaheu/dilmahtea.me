@@ -79,6 +79,12 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     padding-bottom: $navbar-pad;
   }
 
+  #nav-top-content-container {
+    @media (max-width: 639.98px) {
+      clip-path: url(#nav-curve);
+    }
+  }
+
   .profile-dropdown-notch {
     padding-right: poly-fluid-clamp(
       (
@@ -89,7 +95,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
   }
 
   .fullscreen-menu-sm-block {
-    @media (max-width: 640px) {
+    @media (max-width: 639.98px) {
       display: block !important;
     }
   }
@@ -255,7 +261,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     />
 
     <div
-      class="absolute top-0 left-0 w-full h-full"
+      class="absolute top-0 left-0 w-full h-full sm:bg-primary-lighter"
       style="clip-path: url(#nav-curve);"
     >
       {
@@ -295,11 +301,13 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
       )
     }
 
-    <div 
-      class="relative top-0 z-50 w-full bg-primary-lighter"
-      style="clip-path: url(#nav-curve);"
+    <div
+      id="nav-top-content-container"
+      class="relative top-0 z-50 w-full bg-primary-lighter sm:bg-transparent"
     >
-      <div class="navbar wrapper grid-gap flex mx-auto justify-between items-center">
+      <div
+        class="navbar wrapper grid-gap flex mx-auto justify-between items-center"
+      >
         <div class="grid-gap flex">
           <a href="/" class="brand-logo my-auto">
             <img class="h-full" {...logo} />
@@ -308,7 +316,11 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
           {
             searchVisibility && (
               <div class="hidden sm:block relative h-fit">
-                <input type="search" placeholder="Search" class="search-input" />
+                <input
+                  type="search"
+                  placeholder="Search"
+                  class="search-input"
+                />
 
                 <span class="search-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37">
@@ -511,7 +523,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
       id="sidebar"
       class:list={[
         "hidden md:!hidden drop-shadow-[-280px_0_200px_rgba(0,0,0,0.5)]",
-        "fixed right-0 w-[300px] max-w-full h-full bg-primary-lighter z-[49]",
+        "fixed right-0 w-[300px] max-w-full h-full bg-primary-lighter z-[48]",
       ]}
     >
       {
@@ -640,7 +652,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
     {
       searchVisibility && (
-        <div class="block sm:hidden wrapper relative z-[60] py-[15px] bg-primary">
+        <div class="block sm:hidden wrapper relative z-[49] py-[15px] bg-primary">
           <div class="relative">
             <input type="search" placeholder="Search" class="search-input" />
 
@@ -819,6 +831,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     sidebarOpenButton = id("sidebar-open-btn"),
     sidebarCloseButton = id("sidebar-close-btn"),
     localizationMenu = id("localization-menu"),
+    navTopContentContainer = id("nav-top-content-container"),
     localizationMenuContainer = localizationMenu?.parentElement,
     localizationMenuOpenButton = id("localization-menu-open-btn"),
     localizationMenuCloseButton = id("localization-menu-close-btn");
@@ -943,6 +956,8 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     window.localizationMenuOpened = false;
 
     window.enableScrolling();
+
+    navTopContentContainer.style.clipPath = "url(#nav-curve)";
   });
 
   const hideLocalizationMenu = () => {
@@ -971,6 +986,9 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
         window.disableScrolling();
       }
+
+      navTopContentContainer.style.clipPath =
+        window.localizationMenuOpened && "none";
     } else if (localizationMenu && !localizationMenu.contains(target)) {
       window.localizationMenuOpened && window.enableScrolling();
 
