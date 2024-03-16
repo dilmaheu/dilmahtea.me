@@ -69,17 +69,14 @@ function trimLink(link) {
 const loginLink = getUserAccountPagesLink("login", docLocale);
 ---
 
-<style lang="scss" is:global>
-  .nav-bg {
-    @apply bg-primary-light drop-shadow-[0px_4px_5px_rgba(0,0,0,0.15)];
-  }
-</style>
-
 <style lang="scss">
   @use "src/styles/poly-fluid" as *;
 
-  .brand-logo {
-    height: clamp(35px, 5vw, 50px);
+  .navbar {
+    $navbar-pad: poly-fluid-clamp-md(20px, 35px);
+
+    padding-top: $navbar-pad;
+    padding-bottom: $navbar-pad;
   }
 
   .profile-dropdown-notch {
@@ -98,64 +95,30 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
   }
 
   .nav-icon {
-    width: poly-fluid-clamp(
-      (
-        768px: 35px,
-        1024px: 50px,
-      )
-    );
+    $nav-icon-size: poly-fluid-clamp-md(35px, 50px);
 
-    height: poly-fluid-clamp(
-      (
-        768px: 35px,
-        1024px: 50px,
-      )
-    );
-
-    padding: poly-fluid-clamp(
-      (
-        768px: 10px,
-        1024px: 12px,
-      )
-    );
+    width: $nav-icon-size;
+    height: $nav-icon-size;
+    padding: poly-fluid-clamp-md(10px, 12px);
   }
 
   .nav-cart-num {
-    width: poly-fluid-clamp(
-      (
-        768px: 15px,
-        1024px: 20px,
-      )
-    );
+    $nav-cart-num-size: poly-fluid-clamp-md(15px, 20px);
 
-    height: poly-fluid-clamp(
-      (
-        768px: 15px,
-        1024px: 20px,
-      )
-    );
+    width: $nav-cart-num-size;
+    height: $nav-cart-num-size;
   }
 
   .nav-menu-title {
     @apply leading-[150%] py-[15px];
 
-    font-size: poly-fluid-clamp(
-      (
-        768px: 12px,
-        1440px: 18px,
-      )
-    );
+    font-size: poly-fluid-clamp-md(12px, 18px);
   }
 
   .nav-menu-flex {
     @apply flex items-center;
 
-    gap: poly-fluid-clamp(
-      (
-        768px: 20px,
-        1240px: 80px,
-      )
-    );
+    gap: poly-fluid-clamp-md(20px, 80px);
   }
 
   .nav-menu-padding-right {
@@ -175,23 +138,13 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
   .nav-menu-flex {
     @apply flex items-center;
 
-    gap: poly-fluid-clamp(
-      (
-        768px: 20px,
-        1240px: 80px,
-      )
-    );
+    gap: poly-fluid-clamp-md(20px, 80px);
   }
 
   .nav-sub-menu-title {
     @apply font-normal leading-[150%] text-white py-3;
 
-    font-size: poly-fluid-clamp(
-      (
-        768px: 12px,
-        1440px: 16px,
-      )
-    );
+    font-size: poly-fluid-clamp-md(12px, 16px);
   }
 
   .open-sub-menu-checkbox {
@@ -293,7 +246,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
 <header
   id="navigation"
-  class="shadow-md sm:shadow-none sticky top-0 z-[99] grid w-full md:bg-primary"
+  class="shadow-md sm:shadow-none sticky top-0 z-[99] grid w-full bg-primary sm:bg-transparent md:bg-primary"
 >
   <div class="navbar-container relative w-full sm:flex items-center z-20">
     <ClipPathSVG
@@ -302,7 +255,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     />
 
     <div
-      class="absolute top-0 left-0 w-full h-full bg-primary-lighter"
+      class="absolute top-0 left-0 w-full h-full"
       style="clip-path: url(#nav-curve);"
     >
       {
@@ -342,214 +295,214 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
       )
     }
 
-    <div
-      class:list={[
-        "flex justify-between items-center gap-2.5 md:gap-[15px]",
-        "navbar wrapper relative top-0 z-50 mx-auto py-[clamp(20px,3vw,36px)]",
-      ]}
+    <div 
+      class="relative top-0 z-50 w-full bg-primary-lighter"
+      style="clip-path: url(#nav-curve);"
     >
-      <div class="flex gap-[35px] md:gap-[50px]">
-        <a href="/" class="brand-logo my-auto">
-          <img class="h-full" {...logo} />
-        </a>
+      <div class="navbar wrapper grid-gap flex mx-auto justify-between items-center">
+        <div class="grid-gap flex">
+          <a href="/" class="brand-logo my-auto">
+            <img class="h-full" {...logo} />
+          </a>
 
-        {
-          searchVisibility && (
-            <div class="hidden sm:block relative h-fit">
-              <input type="search" placeholder="Search" class="search-input" />
+          {
+            searchVisibility && (
+              <div class="hidden sm:block relative h-fit">
+                <input type="search" placeholder="Search" class="search-input" />
 
-              <span class="search-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37">
-                  <path
-                    d="M0,18.5C0,8.28,8.28,0,18.5,0h0c10.22,0,18.5,8.28,18.5,18.5h0c0,10.22-8.28,18.5-18.5,18.5h0C8.28,37,0,28.72,0,18.5h0Z"
-                    fill="#1e4848"
+                <span class="search-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37">
+                    <path
+                      d="M0,18.5C0,8.28,8.28,0,18.5,0h0c10.22,0,18.5,8.28,18.5,18.5h0c0,10.22-8.28,18.5-18.5,18.5h0C8.28,37,0,28.72,0,18.5h0Z"
+                      fill="#1e4848"
+                    />
+                    <path
+                      d="M22.54,23.88c-1.37,1.08-3.1,1.73-4.99,1.73-4.45,0-8.05-3.61-8.05-8.05s3.61-8.05,8.05-8.05,8.05,3.61,8.05,8.05c0,1.88-.65,3.61-1.73,4.99l3.34,3.34c.37.37.37.97,0,1.34-.37.37-.97.37-1.34,0l-3.34-3.34ZM23.71,17.55c0,3.4-2.76,6.16-6.16,6.16s-6.16-2.76-6.16-6.16,2.76-6.16,6.16-6.16,6.16,2.76,6.16,6.16Z"
+                      fill="#fff"
+                      fill-rule="evenodd"
+                    />
+                  </svg>
+                </span>
+              </div>
+            )
+          }
+        </div>
+
+        <div class="division-in-gap flex justify-end items-center">
+          {
+            localizationVisibility && (
+              <div class="relative group hover:z-10">
+                <button
+                  id="localization-menu-open-btn"
+                  aria-label={
+                    ariaLabelRecurData.Navbar_open_localization_menu_text
+                  }
+                  class="peer w-fit flex justify-center items-center bg-white rounded-full cursor-pointer"
+                >
+                  <img
+                    class="nav-icon w-full h-full"
+                    src={await localizeCMSImage(
+                      localizationIcon?.data?.attributes.url,
+                    )}
+                    alt={localizationIcon?.data?.attributes.alternativeText}
                   />
-                  <path
-                    d="M22.54,23.88c-1.37,1.08-3.1,1.73-4.99,1.73-4.45,0-8.05-3.61-8.05-8.05s3.61-8.05,8.05-8.05,8.05,3.61,8.05,8.05c0,1.88-.65,3.61-1.73,4.99l3.34,3.34c.37.37.37.97,0,1.34-.37.37-.97.37-1.34,0l-3.34-3.34ZM23.71,17.55c0,3.4-2.76,6.16-6.16,6.16s-6.16-2.76-6.16-6.16,2.76-6.16,6.16-6.16,6.16,2.76,6.16,6.16Z"
-                    fill="#fff"
-                    fill-rule="evenodd"
-                  />
-                </svg>
-              </span>
-            </div>
-          )
-        }
-      </div>
-
-      <div class="flex justify-end items-center gap-2.5 md:gap-[15px]">
-        {
-          localizationVisibility && (
-            <div class="relative group hover:z-10">
-              <button
-                id="localization-menu-open-btn"
-                aria-label={
-                  ariaLabelRecurData.Navbar_open_localization_menu_text
-                }
-                class="peer w-fit flex justify-center items-center bg-white rounded-full cursor-pointer"
-              >
-                <img
-                  class="nav-icon w-full h-full"
-                  src={await localizeCMSImage(
-                    localizationIcon?.data?.attributes.url,
-                  )}
-                  alt={localizationIcon?.data?.attributes.alternativeText}
-                />
-              </button>
-
-              <div
-                id="localization-menu"
-                class:list={[
-                  "hidden fixed sm:absolute z-[99] top-0 sm:top-auto",
-                  "left-0 sm:left-1/2 sm:-translate-x-1/2 px-[min(100px,5vw)] py-[25px] sm:p-0",
-                  "w-screen sm:w-[280px] h-screen sm:h-full bg-secondary sm:bg-transparent drop-shadow-lg",
-                ]}
-              >
-                <div class="relative hidden sm:flex justify-center pt-1">
-                  <div class="w-5 h-5 bg-white rotate-45 rounded" />
-                </div>
+                </button>
 
                 <div
+                  id="localization-menu"
                   class:list={[
-                    "grid gap-[25px] sm:gap-[15px] sm:p-[25px]",
-                    "sm:bg-white sm:rounded-[10px] sm:-translate-y-3",
+                    "hidden fixed sm:absolute z-[99] top-0 sm:top-auto",
+                    "left-0 sm:left-1/2 sm:-translate-x-1/2 px-[min(100px,5vw)] py-[25px] sm:p-0",
+                    "w-screen sm:w-[280px] h-screen sm:h-full bg-secondary sm:bg-transparent drop-shadow-lg",
                   ]}
                 >
-                  <div class="flex sm:hidden justify-end">
-                    <button
-                      type="button"
-                      id="localization-menu-close-btn"
-                      class="select-none cursor-pointer"
-                    >
-                      <svg
-                        viewBox="0 0 19.2 19.2"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="w-[35px] h-[35px] p-[5px]"
-                      >
-                        <path
-                          d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
-                          style="fill: #474747; fill-rule: evenodd"
-                        />
-                      </svg>
-                    </button>
+                  <div class="relative hidden sm:flex justify-center pt-1">
+                    <div class="w-5 h-5 bg-white rotate-45 rounded" />
                   </div>
 
-                  <div class="grid gap-1.5 text-black-light">
-                    <div class="text-[15px] font-medium text-black">
-                      {text_language}
-                    </div>
-
-                    {languageSelectorVisibility &&
-                      (availableLocales.length > 1 ? (
-                        <LangSelectorsDropdown
-                          docLocale={docLocale}
-                          availableLocales={availableLocales}
-                        />
-                      ) : (
-                        <p>
-                          <i>{recurData.text_lang_selector_unavailable}</i>
-                        </p>
-                      ))}
-                  </div>
-
-                  <div class="grid gap-1.5 text-black-light">
-                    <div class="text-[15px] font-medium text-black">
-                      {text_region}
-                    </div>
-
-                    {regionSelectorVisibility && (
-                      <RegionSelectorsDropdown docLocale={docLocale} />
-                    )}
-                  </div>
-
-                  {/* <button
-                    type="submit"
-                    class="py-2.5 px-4 bg-primary text-white leading-[120%] rounded-full"
+                  <div
+                    class:list={[
+                      "grid gap-[25px] sm:gap-[15px] sm:p-[25px]",
+                      "sm:bg-white sm:rounded-[10px] sm:-translate-y-3",
+                    ]}
                   >
-                    {Button_save_text}
-                  </button> */}
+                    <div class="flex sm:hidden justify-end">
+                      <button
+                        type="button"
+                        id="localization-menu-close-btn"
+                        class="select-none cursor-pointer"
+                      >
+                        <svg
+                          viewBox="0 0 19.2 19.2"
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="w-[35px] h-[35px] p-[5px]"
+                        >
+                          <path
+                            d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+                            style="fill: #474747; fill-rule: evenodd"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div class="grid gap-1.5 text-black-light">
+                      <div class="text-[15px] font-medium text-black">
+                        {text_language}
+                      </div>
+
+                      {languageSelectorVisibility &&
+                        (availableLocales.length > 1 ? (
+                          <LangSelectorsDropdown
+                            docLocale={docLocale}
+                            availableLocales={availableLocales}
+                          />
+                        ) : (
+                          <p>
+                            <i>{recurData.text_lang_selector_unavailable}</i>
+                          </p>
+                        ))}
+                    </div>
+
+                    <div class="grid gap-1.5 text-black-light">
+                      <div class="text-[15px] font-medium text-black">
+                        {text_region}
+                      </div>
+
+                      {regionSelectorVisibility && (
+                        <RegionSelectorsDropdown docLocale={docLocale} />
+                      )}
+                    </div>
+
+                    {/* <button
+                      type="submit"
+                      class="py-2.5 px-4 bg-primary text-white leading-[120%] rounded-full"
+                    >
+                      {Button_save_text}
+                    </button> */}
+                  </div>
                 </div>
               </div>
-            </div>
-          )
-        }
+            )
+          }
 
-        {
-          cartVisibility && !isCartNavbar && (
-            <button
-              aria-label={ariaLabelRecurData.Navbar_open_cart_text}
-              id="open-cart-btn"
-              class="inline-block relative"
-            >
-              <span
-                style="clip-path: url(#cart-btn-curve);"
-                class="nav-icon block bg-white rounded-full"
-              >
-                <img
-                  class="w-full h-full"
-                  src={await localizeCMSImage(cartIcon?.data?.attributes.url)}
-                  alt={cartIcon?.data?.attributes.alternativeText}
-                />
-              </span>
-
-              <span
-                class:list={[
-                  "absolute -top-[3px] -right-[3px]",
-                  "flex justify-center items-center rounded-full",
-                ]}
+          {
+            cartVisibility && !isCartNavbar && (
+              <button
+                aria-label={ariaLabelRecurData.Navbar_open_cart_text}
+                id="open-cart-btn"
+                class="inline-block relative"
               >
                 <span
+                  style="clip-path: url(#cart-btn-curve);"
+                  class="nav-icon block bg-white rounded-full"
+                >
+                  <img
+                    class="w-full h-full"
+                    src={await localizeCMSImage(cartIcon?.data?.attributes.url)}
+                    alt={cartIcon?.data?.attributes.alternativeText}
+                  />
+                </span>
+
+                <span
                   class:list={[
-                    "nav-cart-num flex justify-center items-center",
-                    "text-[10px] lg:text-xs text-white rounded-full bg-error",
+                    "absolute -top-[3px] -right-[3px]",
+                    "flex justify-center items-center rounded-full",
                   ]}
                 >
-                  <span id="cart-size">
-                    <DynamicHTML
-                      htmlFn={() => Object.keys(window.cart).length}
-                    />
+                  <span
+                    class:list={[
+                      "nav-cart-num flex justify-center items-center",
+                      "text-[10px] lg:text-xs text-white rounded-full bg-error",
+                    ]}
+                  >
+                    <span id="cart-size">
+                      <DynamicHTML
+                        htmlFn={() => Object.keys(window.cart).length}
+                      />
+                    </span>
                   </span>
                 </span>
-              </span>
+              </button>
+            )
+          }
+
+          {
+            profileVisibility && (
+              <ProfileMenu
+                profileIcon={profileIcon}
+                profileMenu={profile_menu}
+                loginLink={loginLink}
+              />
+            )
+          }
+
+          <div class="block md:hidden w-[35px] h-[35px]">
+            <button
+              id="sidebar-open-btn"
+              aria-label={ariaLabelRecurData.Navbar_open_sidebar_menu_text}
+              class="block w-full h-full select-none cursor-pointer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 31">
+                <path
+                  transform="translate(0)"
+                  style="fill: #fff; fill-rule: evenodd"
+                  d="M0,28.4a2.7,2.7,0,0,0,.7,1.8,2.5,2.5,0,0,0,1.7.8H31.2a2.5,2.5,0,0,0,1.7-.8,2.7,2.7,0,0,0,.7-1.8,2.9,2.9,0,0,0-.7-1.8,2.5,2.5,0,0,0-1.7-.8H2.4a2.5,2.5,0,0,0-1.7.8A2.9,2.9,0,0,0,0,28.4ZM9.9,15.5a2.9,2.9,0,0,0,.7,1.8,2.5,2.5,0,0,0,1.7.8H31.6a2.1,2.1,0,0,0,1.7-.8,2.4,2.4,0,0,0,.7-1.8,2.4,2.4,0,0,0-.7-1.8,2.1,2.1,0,0,0-1.7-.8H12.3a2.5,2.5,0,0,0-1.7.8A2.9,2.9,0,0,0,9.9,15.5ZM0,2.6A2.9,2.9,0,0,0,.7,4.4a2.5,2.5,0,0,0,1.7.8H31.2a2.5,2.5,0,0,0,1.7-.8,2.9,2.9,0,0,0,.7-1.8A2.7,2.7,0,0,0,32.9.8,2.5,2.5,0,0,0,31.2,0H2.4A2.5,2.5,0,0,0,.7.8,2.7,2.7,0,0,0,0,2.6Z"
+                ></path>
+              </svg>
             </button>
-          )
-        }
 
-        {
-          profileVisibility && (
-            <ProfileMenu
-              profileIcon={profileIcon}
-              profileMenu={profile_menu}
-              loginLink={loginLink}
-            />
-          )
-        }
-
-        <div class="block md:hidden w-[35px] h-[35px]">
-          <button
-            id="sidebar-open-btn"
-            aria-label={ariaLabelRecurData.Navbar_open_sidebar_menu_text}
-            class="block w-full h-full select-none cursor-pointer"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 31">
-              <path
-                transform="translate(0)"
-                style="fill: #fff; fill-rule: evenodd"
-                d="M0,28.4a2.7,2.7,0,0,0,.7,1.8,2.5,2.5,0,0,0,1.7.8H31.2a2.5,2.5,0,0,0,1.7-.8,2.7,2.7,0,0,0,.7-1.8,2.9,2.9,0,0,0-.7-1.8,2.5,2.5,0,0,0-1.7-.8H2.4a2.5,2.5,0,0,0-1.7.8A2.9,2.9,0,0,0,0,28.4ZM9.9,15.5a2.9,2.9,0,0,0,.7,1.8,2.5,2.5,0,0,0,1.7.8H31.6a2.1,2.1,0,0,0,1.7-.8,2.4,2.4,0,0,0,.7-1.8,2.4,2.4,0,0,0-.7-1.8,2.1,2.1,0,0,0-1.7-.8H12.3a2.5,2.5,0,0,0-1.7.8A2.9,2.9,0,0,0,9.9,15.5ZM0,2.6A2.9,2.9,0,0,0,.7,4.4a2.5,2.5,0,0,0,1.7.8H31.2a2.5,2.5,0,0,0,1.7-.8,2.9,2.9,0,0,0,.7-1.8A2.7,2.7,0,0,0,32.9.8,2.5,2.5,0,0,0,31.2,0H2.4A2.5,2.5,0,0,0,.7.8,2.7,2.7,0,0,0,0,2.6Z"
-              ></path>
-            </svg>
-          </button>
-
-          <button
-            id="sidebar-close-btn"
-            aria-label={ariaLabelRecurData.Navbar_close_sidebar_menu_text}
-            class="hidden w-full h-full select-none cursor-pointer"
-          >
-            <svg viewBox="0 0 19.2 19.2" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
-                style="fill: #fff; fill-rule: evenodd"></path>
-            </svg>
-          </button>
+            <button
+              id="sidebar-close-btn"
+              aria-label={ariaLabelRecurData.Navbar_close_sidebar_menu_text}
+              class="hidden w-full h-full select-none cursor-pointer"
+            >
+              <svg viewBox="0 0 19.2 19.2" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M.5.5A1.6,1.6,0,0,1,1.6,0,1.6,1.6,0,0,1,2.7.5L9.6,7.4,16.5.5A1,1,0,0,1,17,.1h1.2l.6.4.3.5a1.3,1.3,0,0,1,.1.6,1.3,1.3,0,0,1-.1.6l-.4.6L11.9,9.6l6.8,6.9a1.6,1.6,0,0,1-1.1,2.7,2.1,2.1,0,0,1-1.1-.4L9.6,11.9,2.7,18.8a2.1,2.1,0,0,1-1.1.4,1.6,1.6,0,0,1-1.1-.5,1.5,1.5,0,0,1,0-2.2L7.3,9.6.5,2.8A1.8,1.8,0,0,1,0,1.6,1.6,1.6,0,0,1,.5.5Z"
+                  style="fill: #fff; fill-rule: evenodd"></path>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -557,8 +510,8 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
     <div
       id="sidebar"
       class:list={[
-        "hidden md:!hidden shadow-md fixed right-0",
-        "w-[300px] max-w-full h-full bg-primary z-[99]",
+        "hidden md:!hidden drop-shadow-[-280px_0_200px_rgba(0,0,0,0.5)]",
+        "fixed right-0 w-[300px] max-w-full h-full bg-primary-lighter z-[49]",
       ]}
     >
       {
@@ -687,7 +640,7 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 
     {
       searchVisibility && (
-        <div class="block sm:hidden bg-primary wrapper py-[15px]">
+        <div class="block sm:hidden wrapper relative z-[60] py-[15px] bg-primary">
           <div class="relative">
             <input type="search" placeholder="Search" class="search-input" />
 
