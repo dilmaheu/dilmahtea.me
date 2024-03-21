@@ -10,7 +10,6 @@ const { page, recurData } = Astro.props,
   { locale } = page,
   checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug,
   checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
-  userAccountRecurData = CMS.get("userAccountRecurringElement", locale),
   checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
   shortenedSteps = checkoutFlowData.shortened_steps.split("\n");
 ---
@@ -74,7 +73,6 @@ const { page, recurData } = Astro.props,
 
     <CheckoutInformationForm
       {recurData}
-      {userAccountRecurData}
       text_select_or_create_tag={page.text_select_or_create_tag}
     />
   </div>

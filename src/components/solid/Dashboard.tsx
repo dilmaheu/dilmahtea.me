@@ -10,7 +10,6 @@ export default function Dashboard({
   verificationHref,
   userAccountAddressURL,
   recurData,
-  userAccountRecurData,
   notificationIcons,
 }) {
   const { Block2 } = page;
@@ -24,7 +23,6 @@ export default function Dashboard({
         userAccountAddressURL={userAccountAddressURL}
         notificationIcons={notificationIcons}
         recurData={recurData}
-        userAccountRecurData={userAccountRecurData}
       />
 
       <DashboardKindnessCauses
@@ -44,7 +42,7 @@ export default function Dashboard({
       <Orders
         noOrdersHTML={noOrdersHTML}
         notificationIcons={notificationIcons}
-        userAccountRecurData={userAccountRecurData}
+        recurData={recurData}
         isOrdersPage={false}
       />
     </>

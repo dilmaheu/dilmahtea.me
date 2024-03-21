@@ -8,7 +8,6 @@ import CheckoutInformationForm from "@solid/CheckoutInformationForm";
 export default function CheckoutBillingAddress({
   page,
   recurData,
-  userAccountRecurData,
   notificationIcons,
 }) {
   function handleShowAddressForm() {
@@ -65,7 +64,6 @@ export default function CheckoutBillingAddress({
 
       <CheckoutInformationForm
         recurData={recurData}
-        userAccountRecurData={userAccountRecurData}
         notificationIcons={notificationIcons}
         isBilling={true}
       />

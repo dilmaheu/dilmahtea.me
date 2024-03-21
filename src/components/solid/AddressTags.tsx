@@ -8,7 +8,7 @@ import { addresses } from "@signals/addresses";
 declare interface Props {
   action: "add" | "update" | "checkout";
   address: Address;
-  userAccountRecurData: any;
+  recurData: any;
   shouldShowCustomTagInput?: boolean;
   selectedTag?: Accessor<string>;
   setSelectedTag?: Setter<string>;
@@ -19,7 +19,7 @@ declare interface Props {
 export default function AddressTags({
   action,
   address,
-  userAccountRecurData,
+  recurData,
   shouldShowCustomTagInput = false,
   selectedTag,
   setSelectedTag,
@@ -40,13 +40,13 @@ export default function AddressTags({
 
   const {
     Label_tag_text,
-    Tag_others_text,
-    Tag_others_placeholder_text,
+    Tag_add_text,
+    Tag_add_placeholder,
     Tag_suggestions,
     text_more_address,
     text_hide_more_address,
     text_select_or_create_tag,
-  } = userAccountRecurData;
+  } = recurData;
 
   function hideCustomTagInput() {
     setCustomAddressTag("");
@@ -118,7 +118,7 @@ export default function AddressTags({
           />
 
           <label for="add-new-address-tag" class="radio-button-extended">
-            {Tag_others_text}
+            {Tag_add_text}
           </label>
         </div>
 
@@ -158,7 +158,7 @@ export default function AddressTags({
               <input
                 type="text"
                 class="pr-[40px]"
-                placeholder={Tag_others_placeholder_text}
+                placeholder={Tag_add_placeholder}
                 oninput={(event) =>
                   setCustomAddressTag(event.currentTarget.value)
                 }

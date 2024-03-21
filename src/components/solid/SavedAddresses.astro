@@ -4,7 +4,7 @@ import subset from "@utils/shared/subset";
 import SavedAddresses from "@solid/SavedAddresses";
 import notificationIcons from "@utils/notificationIcons";
 
-let { recurData, userAccountRecurData } = Astro.props;
+let { recurData } = Astro.props;
 
 recurData = subset(recurData, [
   "text_first_name",
@@ -20,40 +20,21 @@ recurData = subset(recurData, [
   "text_postal_code",
   "postal_code_placeholder",
   "countries",
-]);
-
-userAccountRecurData = subset(userAccountRecurData, [
   "Label_tag_text",
   "Tag_default_text",
-  "Tag_others_text",
-  "Tag_others_placeholder_text",
+  "Tag_add_text",
+  "Tag_add_placeholder",
   "Tag_suggestions",
-  "Button_add_text",
-  "Button_update_text",
-  "Button_add_new_address_text",
-  "Button_make_default_text",
-  "Button_save_text",
-  "Button_cancel_text",
-  "Tag_default_text",
+  "text_add",
+  "text_update",
+  "text_save",
+  "text_cancel",
+  "text_add_new_address",
+  "text_default_delivery_address",
+  "text_default_billing_address",
   "text_saved_Addresses",
   "text_more_address",
   "text_hide_more_address",
-  "Input_label_first_name",
-  "Input_placeholder_first_name",
-  "Input_label_last_name",
-  "Input_placeholder_last_name",
-  "Input_label_country",
-  "Input_placeholder_country",
-  "Input_label_city",
-  "Input_placeholder_city",
-  "Input_label_street",
-  "Input_placeholder_street",
-  "Input_label_postal_code",
-  "Input_placeholder_postal_code",
-  "Checkbox_set_default_delivery_address_text",
-  "Checkbox_set_default_billing_address_text",
-  "Checkbox_add_delivery_address_text",
-  "Checkbox_add_billing_address_text",
   "text_content",
   "text_default_delivery_address",
   "text_default_billing_address",
@@ -63,12 +44,7 @@ userAccountRecurData = subset(userAccountRecurData, [
 ]);
 ---
 
-<SavedAddresses
-  client:load
-  {recurData}
-  {notificationIcons}
-  {userAccountRecurData}
->
+<SavedAddresses client:load {recurData} {notificationIcons}>
   <Icon slot="plusIcon" name="akar-icons:plus" class="w-[18px] select-none" />
 
   <Icon

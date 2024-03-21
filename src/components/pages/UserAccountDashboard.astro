@@ -26,8 +26,7 @@ const {
   } = page,
   { STRAPI_URL } = import.meta.env;
 
-const userAccountRecurData = CMS.get("userAccountRecurringElement", locale),
-  userAccountAddress = CMS.get("userAccountAddress", locale);
+const userAccountAddress = CMS.get("userAccountAddress", locale);
 
 const userAccountAddressURL = getLocalizedLink(
   locale,
@@ -99,13 +98,7 @@ const headings = new Array(
 />
 
 <UserAccountLayout page={page} headings={headings}>
-  <Dashboard
-    {page}
-    {verificationHref}
-    {userAccountAddressURL}
-    {recurData}
-    {userAccountRecurData}
-  >
+  <Dashboard {page} {verificationHref} {userAccountAddressURL} {recurData}>
     <Icon slot="plusIcon" name="akar-icons:plus" class="w-[18px] select-none" />
 
     <Fragment slot="kindnessCausesHTML">

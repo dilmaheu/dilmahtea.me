@@ -14,9 +14,7 @@ import UserAccountLayout from "@layouts/UserAccountLayout.astro";
 const { green_right_arrow } = RecurringImages;
 
 const { page, recurData } = Astro.props,
-  { Title, locale } = page;
-
-const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
+  { Title } = page;
 ---
 
 <ClipPathSVG
@@ -32,7 +30,7 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
           id="orders-timeline-sm-toggle-btn"
           class="font-bold text-primary select-none"
         >
-          {userAccountRecurData.text_orders_timeline}
+          {recurData.text_orders_timeline}
         </button>
       </div>
 
@@ -47,7 +45,7 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
     <MyOrdersInYearTitle client:load {Title} text_in={recurData.text_in} />
 
     <section class="grid gap-[25px] sm:gap-[30px]">
-      <MyOrders {userAccountRecurData}>
+      <MyOrders {recurData}>
         <NoOrders slot="noOrdersHTML" {recurData} />
       </MyOrders>
     </section>

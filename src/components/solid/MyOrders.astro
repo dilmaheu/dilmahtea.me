@@ -3,7 +3,7 @@ import Orders from "@solid/Orders";
 import subset from "@utils/shared/subset";
 import RecurringImages from "@store/RecurringImages";
 
-let { userAccountRecurData } = Astro.props;
+let { recurData } = Astro.props;
 
 const { success_notification, warning_notification, error_notification } =
   RecurringImages;
@@ -14,17 +14,17 @@ const recurringImages = {
   error_notification,
 };
 
-userAccountRecurData = subset(userAccountRecurData, [
+recurData = subset(recurData, [
   "Button_track_package",
   "Button_track_package_text",
-  "Button_buy_again_text",
-  "Button_sold_out_text",
-  "Label_order",
+  "text_buy_again",
+  "text_sold_out",
+  "text_order",
   "text_quantity",
   "text_estimated_delivery",
   "text_estimated_shipment",
   "text_delivered",
-  "text_in_stock_date",
+  "Item_stock_text",
   "text_show_more_product_in_this_order_singular",
   "text_hide_more_product_in_this_order_singular",
   "text_show_more_products_in_this_order",
@@ -32,11 +32,6 @@ userAccountRecurData = subset(userAccountRecurData, [
 ]);
 ---
 
-<Orders
-  client:load
-  {recurringImages}
-  {userAccountRecurData}
-  isOrdersPage={true}
->
+<Orders client:load {recurringImages} {recurData} isOrdersPage={true}>
   <slot name="noOrdersHTML" slot="noOrdersHTML" />
 </Orders>

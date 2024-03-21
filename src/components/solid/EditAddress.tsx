@@ -12,7 +12,6 @@ declare interface Props {
   action: "add" | "update";
   address?: Address;
   recurData: any;
-  userAccountRecurData: any;
   showForm: Setter<any>;
   handleAPIResponse: handleAPIResponseType;
   setNotification: Setter<any>;
@@ -27,7 +26,6 @@ export default function EditAddress({
   action,
   address,
   recurData,
-  userAccountRecurData,
   showForm,
   handleAPIResponse,
   setNotification,
@@ -35,12 +33,12 @@ export default function EditAddress({
   tickCheckboxes,
 }: Props) {
   const {
-    Button_add_text,
-    Button_update_text,
-    Button_cancel_text,
+    text_add,
+    text_update,
+    text_cancel,
     Checkbox_set_default_delivery_address_text,
     Checkbox_set_default_billing_address_text,
-  } = userAccountRecurData;
+  } = recurData;
 
   function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
@@ -82,11 +80,7 @@ export default function EditAddress({
 
   return (
     <form class="tiled-form division-gap grid" onsubmit={handleSubmit}>
-      <AddressTags
-        action={action}
-        address={address}
-        userAccountRecurData={userAccountRecurData}
-      />
+      <AddressTags action={action} address={address} recurData={recurData} />
 
       <EditAddressForm
         action={action}
@@ -153,7 +147,7 @@ export default function EditAddress({
       <div class="form-button-container">
         <div class="flex w-full sm:w-1/2 sm:order-2">
           <button type="submit" class="button-primary w-full">
-            {action === "add" ? Button_add_text : Button_update_text}
+            {action === "add" ? text_add : text_update}
           </button>
         </div>
 
@@ -169,7 +163,7 @@ export default function EditAddress({
               showForm(false);
             }}
           >
-            {Button_cancel_text}
+            {text_cancel}
           </button>
         </div>
       </div>
