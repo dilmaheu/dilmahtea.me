@@ -18,6 +18,7 @@ const products = Object.fromEntries(
         In_stock_date,
         Weight_tea,
         Weight_tea_unit,
+        Meta: { URL_slug },
       } = attributes;
 
       const image = await importImage(
@@ -83,6 +84,7 @@ const products = Object.fromEntries(
           tea_size: productSize,
           stock_amount: Stock_amount,
           in_stock_date: In_stock_date,
+          url: URL_slug,
         },
       ];
     }),
@@ -246,8 +248,16 @@ const products = Object.fromEntries(
       const productExistsInCart = !!cart[productId];
 
       const { quantity } = productData,
-        { Price, VatPercentage, image, names, infos, tea_variant, tea_size } =
-          products[productId];
+        {
+          Price,
+          VatPercentage,
+          image,
+          names,
+          infos,
+          tea_variant,
+          tea_size,
+          url,
+        } = products[productId];
 
       const [tax, price] = window.getPriceIncludingTax({
         Price,
@@ -265,6 +275,7 @@ const products = Object.fromEntries(
         infos,
         tea_variant,
         tea_size,
+        url,
       };
 
       cart[productId] = productData;
