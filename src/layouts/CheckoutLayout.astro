@@ -5,9 +5,11 @@ import Footer from "@components/Footer.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import OrderSummary from "@components/OrderSummary.astro";
+import Navbar from "@components/Navbar.astro";
 
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+import getAvailableLocales from "@utils/getAvailableLocales";
 
 const { logo, nav_background, nav_background_sm } = RecurringImages;
 
@@ -93,98 +95,98 @@ const footerText = recurData.Footer_text.replaceAll(
 
   <div class="flex flex-wrap w-full h-full">
     <div id="checkout" class="block w-full bg-secondary">
-      <header
-        class="checkout-flow-container z-[99] fixed md:relative w-full bg-primary"
-        style="clip-path: url(#checkout-header-curve);"
-      >
-        <ClipPathSVG
-          id="checkout-header-curve"
-          path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
-        />
-
-        {
-          nav_background && (
-            <Picture
-              alt=""
-              layout="fill"
-              preload="avif"
-              src={nav_background_sm?.src || nav_background.src}
-              artDirectives={[
-                {
-                  media: "(min-width: 640px)",
-                  breakpoints: { minWidth: 640 },
-                  src: nav_background.src,
-                },
-              ]}
-              attributes={{
-                picture: {
-                  style: "position: absolute; top: 0; left: 0;",
-                },
-              }}
-            />
-          )
-        }
-
-        <div
-          class="wrapper relative flex gap-[clamp(15px,calc(2.5vw-1px),35px)]"
-        >
-          <a href="/" class="h-[clamp(35px,calc(1.40vw+29.72px),50px)]">
-            <img {...logo} class="h-full" />
-          </a>
-
-          <div
-            class="flow flex-grow grid gap-[clamp(5px,calc(2.5vw-11px),25px)] text-white"
-            style={`grid-template-columns: ${Array.from({
-              length: steps.length,
-            })
-              .map(() => "1fr")
-              .join(" ")}`}
+      {
+        page.type === "plan" ? (
+          <Navbar page={page} docLocale={locale} />
+        ) : (
+          <header
+            class="checkout-flow-container z-[99] fixed md:relative w-full bg-primary"
+            style="clip-path: url(#checkout-header-curve);"
           >
-            {
-              steps.map((step, i) => {
-                const shortenedStep = shortenedSteps[i],
-                  StepTitleTag = i + 1 === checkoutStepOrder ? "h1" : "span";
+            <ClipPathSVG
+              id="checkout-header-curve"
+              path="M0,0 L0,0.936 C0,0.936,0.009,1,0.107,1 C0.152,1,0.198,0.992,0.247,0.983 C0.305,0.973,0.368,0.961,0.441,0.961 C0.511,0.961,0.573,0.971,0.634,0.981 C0.692,0.991,0.749,1,0.81,1 C0.934,1,1,0.878,1,0.878 V0 H0"
+            />
 
-                return (
-                  <div>
-                    <StepTitleTag
-                      class:list={[
-                        shortenedStep !== step && "hidden sm:inline",
-                        i + 1 === checkoutStepOrder
-                          ? "font-bold"
-                          : "font-normal",
-                      ]}
-                    >
-                      {step}
-                    </StepTitleTag>
+            {nav_background && (
+              <Picture
+                alt=""
+                layout="fill"
+                preload="avif"
+                src={nav_background_sm?.src || nav_background.src}
+                artDirectives={[
+                  {
+                    media: "(min-width: 640px)",
+                    breakpoints: { minWidth: 640 },
+                    src: nav_background.src,
+                  },
+                ]}
+                attributes={{
+                  picture: {
+                    style: "position: absolute; top: 0; left: 0;",
+                  },
+                }}
+              />
+            )}
 
-                    {shortenedStep !== step && (
+            <div class="wrapper relative flex gap-[clamp(15px,calc(2.5vw-1px),35px)]">
+              <a href="/" class="h-[clamp(35px,calc(1.40vw+29.72px),50px)]">
+                <img {...logo} class="h-full" />
+              </a>
+
+              <div
+                class="flow flex-grow grid gap-[clamp(5px,calc(2.5vw-11px),25px)] text-white"
+                style={`grid-template-columns: ${Array.from({
+                  length: steps.length,
+                })
+                  .map(() => "1fr")
+                  .join(" ")}`}
+              >
+                {steps.map((step, i) => {
+                  const shortenedStep = shortenedSteps[i],
+                    StepTitleTag = i + 1 === checkoutStepOrder ? "h1" : "span";
+
+                  return (
+                    <div>
                       <StepTitleTag
                         class:list={[
-                          "inline sm:hidden",
-                          i + 1 === checkoutStepOrder && "font-bold",
+                          shortenedStep !== step && "hidden sm:inline",
+                          i + 1 === checkoutStepOrder
+                            ? "font-bold"
+                            : "font-normal",
                         ]}
                       >
-                        {shortenedStep}
+                        {step}
                       </StepTitleTag>
-                    )}
 
-                    {i + 1 === checkoutStepOrder ? (
-                      <div class="grid grid-cols-2 bg-white/30">
+                      {shortenedStep !== step && (
+                        <StepTitleTag
+                          class:list={[
+                            "inline sm:hidden",
+                            i + 1 === checkoutStepOrder && "font-bold",
+                          ]}
+                        >
+                          {shortenedStep}
+                        </StepTitleTag>
+                      )}
+
+                      {i + 1 === checkoutStepOrder ? (
+                        <div class="grid grid-cols-2 bg-white/30">
+                          <div class="bg-white" />
+                        </div>
+                      ) : i + 1 > checkoutStepOrder ? (
+                        <div class="bg-white/30" />
+                      ) : (
                         <div class="bg-white" />
-                      </div>
-                    ) : i + 1 > checkoutStepOrder ? (
-                      <div class="bg-white/30" />
-                    ) : (
-                      <div class="bg-white" />
-                    )}
-                  </div>
-                );
-              })
-            }
-          </div>
-        </div>
-      </header>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </header>
+        )
+      }
 
       {
         page.type === "checkoutKindness" ? (
@@ -219,13 +221,13 @@ const footerText = recurData.Footer_text.replaceAll(
           <slot />
         </section>
 
-        {
-          page.type !== "checkoutKindness" && (
-            <section class="w-full lg:w-2/5 2xl:w-1/3">
+        <section class="w-full lg:w-2/5 2xl:w-1/3">
+          {
+            page?.type !== "checkoutKindness" && (
               <OrderSummary page={page} recurData={recurData} />
-            </section>
-          )
-        }
+            )
+          }
+        </section>
       </main>
     </div>
 
