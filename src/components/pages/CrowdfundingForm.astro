@@ -1,223 +1,481 @@
 ---
-import RecurringImages from "@store/RecurringImages";
+import CMS from "@store/CMS";
+
+import getLocalizedLink from "@utils/getLocalizedLink";
+import localizeCMSImage from "@utils/localizeCMSImage";
+
+import AddressTags from "@solid/AddressTags";
+
+import CheckoutInformationForm from "@components/solid/CheckoutInformationForm.astro";
+
 import DynamicHTML from "@components/DynamicHTML.astro";
-import HeroContent from "@components/HeroContent.astro";
-import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+import Markdown from "@components/Markdown.astro";
+import AdvancedNotification from "@components/AdvancedNotification.astro";
 
-const { light_green_cup, light_green_flower } = RecurringImages;
+const {
+    page,
+    recurData,
+    selectedAddress,
+    setSelectedTag,
+    showMoreAddresses,
+    setShowMoreAddresses,
+    shouldShowCustomTagInput,
+  } = Astro.props,
+  { locale } = page,
+  checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
+  userRecurData = CMS.get("userAccountRecurringElement", locale),
+  checkoutInfo = CMS.get("checkoutInformation", locale),
+  checkoutPay = CMS.get("checkoutPayment", locale);
 
-const { locale, page } = Astro.props,
-  { Perk: perk, Price_EUR_excl_VAT: price } = page,
-  product_desc = `${page.Title} Plan`;
+const methods = checkoutPay.payment_methods?.data?.map(
+    ({ attributes }) => attributes,
+  ),
+  accepted_cards_icon = checkoutPay.Accepted_cards_icon?.data?.map(
+    ({ attributes }) => attributes,
+  );
 ---
 
-<style lang="scss">
-  @use "src/styles/colors";
-
-  .form-heading-icon {
-    height: clamp(38px, 3.5vw + 6px, 58px);
-  }
-
-  .form-grid {
-    @apply mt-[30px];
-
-    label {
-      select {
-        &:required:invalid {
-          color: colors.$black-light;
-        }
-
-        option[value=""][disabled] {
-          display: none;
-        }
-      }
-    }
-  }
-</style>
-
-<HeroContent {page} basicHeader={true} />
-
-{/* Form Section */}
-
 <form
-  role="main"
-  method="POST"
-  class="mx-auto pt-[130px] pb-[100px] max-w-[940px]"
-  action={shouldDisplayExperimentals
-    ? "https://dev.pay.scripts.dilmahtea.me"
-    : "https://pay.scripts.dilmahtea.me"}
+  aria-label={checkoutInfo.Aria_label_form_text}
+  id="crowdfunding-info-form"
+  class="section-gap flex flex-col"
+  action={getLocalizedLink(locale, checkoutShippingLink)}
 >
-  <div>
-    <div
-      class="pb-0.5 inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7"
-    >
-      <h2 class="heading-primary text-primary font-bold">
-        {locale === "nl" ? "Basis gegevens" : "Basic info"}
-      </h2>
+  <div
+    role="form"
+    aria-label={checkoutInfo.text_contact_info}
+    class="division-gap grid"
+  >
+    <h2 class="text-h2 text-primary">
+      {checkoutInfo.text_customer}
+    </h2>
 
-      <img class="form-heading-icon" {...light_green_cup} />
+    <div id="guest-intro-text" class="prose-text-sm no-pad-mar-child">
+      <Markdown>{checkoutInfo.Guest_intro_text}</Markdown>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 form-grid">
+    <div class="form-grid">
       <label>
-        {locale === "nl" ? "Voornaam" : "First Name"}
-
-        <input
-          type="text"
-          name="first_name"
-          placeholder={locale === "nl" ? "Voornaam" : "First Name"}
-          required
-        />
-      </label>
-
-      <label>
-        {locale === "nl" ? "Achternaam" : "Last Name"}
-
-        <input
-          type="text"
-          name="last_name"
-          placeholder={locale === "nl" ? "Achternaam" : "Last Name"}
-          required
-        />
-      </label>
-
-      <label>
-        {locale === "nl" ? "E-mailadres" : "Email Address"}
+        <span>{recurData.text_email_address}</span>
 
         <input
           type="email"
           name="email"
-          placeholder={locale === "nl"
-            ? "Vul je e-mailadres in"
-            : "Enter your email address"}
+          placeholder={recurData.email_address_placeholder}
           required
         />
       </label>
-
       <label>
-        {locale === "nl" ? "Favoriete thee" : "Favourite Tea"}
+        <span>{recurData.text_favourite_tea}</span>
 
         <input
           type="text"
-          name="favorite_tea"
-          placeholder={locale === "nl" ? "Earl Grey" : "Black Tea"}
-          required
+          name="favourite_tea_text"
+          placeholder={recurData.favourite_tea_placeholder}
         />
       </label>
+    </div>
+
+    <div id="sign-in-text" class="prose-text-sm no-pad-mar-child">
+      <Markdown>{checkoutInfo.Sign_in_text}</Markdown>
     </div>
   </div>
 
-  <div class="py-[50px]">
-    <div class="inline-flex items-center gap-x-2 sm:gap-x-3.5 md:gap-x-7">
-      <h3 class="heading-primary text-primary font-bold">
-        {locale === "nl" ? "Factuurgegevens" : "Billing details"}
-      </h3>
+  <script is:inline>
+    const guestIntroText = document.getElementById("guest-intro_text"),
+      signInText = document.getElementById("sign-in-text");
 
-      <img class="form-heading-icon" {...light_green_flower} />
-    </div>
+    if (window.cookies.isAuthenticated === "true") {
+      guestIntroText.remove();
+      signInText.remove();
+    }
+  </script>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 form-grid">
-      <label>
-        {locale === "nl" ? "Land" : "Country"}
+  <div class="w-full h-px bg-primary-lightest"></div>
 
-        <select name="country" required>
-          <option value="" disabled>
-            {
-              locale === "nl"
-                ? "Selecteer jouw land"
-                : "Select or type your country"
-            }
-          </option>
-
-          <option value="Netherlands" selected>
-            {locale === "nl" ? "Nederland" : "Netherlands"}
-          </option>
-        </select>
-      </label>
-
-      <label>
-        {locale === "nl" ? "Plaatsnaam" : "City"}
-
-        <input
-          type="text"
-          name="city"
-          placeholder={locale === "nl"
-            ? "Vul je plaatsnaam in"
-            : "Enter your city address"}
-          required
-        />
-      </label>
-
-      <label>
-        {locale === "nl" ? "Straat en huisnummer" : "Street and house number"}
-
-        <input
-          type="text"
-          name="street"
-          placeholder={locale === "nl"
-            ? "Vul je straat en huisnummer in"
-            : "Enter your street address"}
-          required
-        />
-      </label>
-
-      <label>
-        {locale === "nl" ? "Postcode" : "Postal Code"}
-
-        <input
-          type="text"
-          name="postal_code"
-          placeholder={locale === "nl"
-            ? "Vul je postcode in"
-            : "Enter your postal code"}
-          required
-        />
-      </label>
-    </div>
-
-    <input type="hidden" name="perk" value={perk} />
-
-    <input type="hidden" name="product_desc" value={product_desc} />
-
-    <input type="hidden" name="price" value={price} />
-
-    <input type="hidden" name="payment_type" value="crowdfunding" />
-
-    <input type="hidden" name="locale" value={locale} />
-
-    <DynamicHTML
-      htmlFn={(content) => {
-        const { origin, pathname } = location,
-          origin_url = origin + pathname,
-          success_url = `${origin}/${window.preferredLocale}/crowdfunding-confirmation`;
-
-        return window.replacePlaceholders(content, {
-          origin_url,
-          success_url,
-        });
-      }}
-    >
-      <input
-        type="hidden"
-        name="origin_url"
-        value={`<placeholder name="origin_url"></placeholder>`}
-      />
-
-      <input
-        type="hidden"
-        name="success_url"
-        value={`<placeholder name="success_url"></placeholder>`}
-      />
-    </DynamicHTML>
-
-    <input
-      type="submit"
-      class:list={[
-        "text-[16px] font-bold bg-primary rounded-[40px] cursor-pointer",
-        "w-full md:w-[300px] mt-[70px] md:mt-[100px] py-[16px] px-[30px]",
-      ]}
-      value={locale === "nl" ? "Naar betaalgegevens" : "To payment details"}
-      required
+  <div id="payment-error" class="hidden">
+    <AdvancedNotification
+      Title={checkoutPay.text_payment_error}
+      Type="Error"
+      Bordered={true}
+      Rounded={true}
     />
   </div>
+
+  <div class="grid division-gap">
+    <h2 class="recoleta text-h2 text-primary">{checkoutPay.Block_title}</h2>
+
+    <AddressTags
+      action="checkout"
+      userAccountRecurData={userRecurData}
+      address={selectedAddress}
+      setSelectedTag={setSelectedTag}
+      showMoreAddresses={showMoreAddresses}
+      setShowMoreAddresses={setShowMoreAddresses}
+      shouldShowCustomTagInput={shouldShowCustomTagInput}
+    />
+
+    <CheckoutInformationForm
+      {page}
+      {recurData}
+      userAccountRecurData={userRecurData}
+      isBilling={true}
+    />
+  </div>
+
+  <div class="w-full h-px bg-primary-lightest"></div>
+
+  <div class="division-gap grid">
+    <h2 class="recoleta text-h2 text-primary">{checkoutPay.Block2_title}</h2>
+
+    <div role="list" class="payment-card-container flex flex-wrap form-gap">
+      {
+        methods?.map(({ method, icon, supported_countries }) => {
+          const country = supported_countries.data?.map(
+            ({ attributes: { name } }) => name,
+          );
+
+          return (
+            <div>
+              <input
+                type="radio"
+                name="payment_method_name"
+                id={method}
+                value={method}
+                data-country={country}
+                class="payment-card-input-selector peer hidden"
+              />
+
+              <label for={method} class="radio-button-card">
+                {async () => (
+                  <img
+                    class="payment-icon"
+                    alt={icon.data?.attributes.alternativeText}
+                    src={await localizeCMSImage(icon.data?.attributes.url)}
+                  />
+                )}
+
+                <span>
+                  {method?.charAt(0)?.toUpperCase() + method?.slice(1)}
+                </span>
+              </label>
+            </div>
+          );
+        })
+      }
+    </div>
+
+    <div data-name="card-info" class="payment-info division-gap grid !hidden">
+      <div class="division-in-gap">
+        <div class="text-b3 font-bold text-black">
+          {checkoutPay.text_card_details}
+        </div>
+
+        <div class="division-in-gap flex flex-wrap">
+          <div class="text-b5 text-black-light">
+            {checkoutPay.text_accepted_cards}
+          </div>
+
+          <div class="division-in-element-gap flex flex-wrap items-center">
+            {
+              accepted_cards_icon?.map(
+                ({ url, alternativeText }) =>
+                  async () => (
+                    <img
+                      class="h-[20px] bg-white rounded"
+                      alt={alternativeText}
+                      src={await localizeCMSImage(url)}
+                    />
+                  ),
+              )
+            }
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div role="form" class="form-grid" id="card-info">
+          <div class="grid division-in-element-gap">
+            <div class="input-label">{checkoutPay.Card_label_number}</div>
+
+            <div id="card-number"></div>
+          </div>
+
+          <div class="hidden sm:block h-0 select-none"></div>
+
+          <div class="grid division-in-element-gap">
+            <div class="input-label">{checkoutPay.Card_label_date}</div>
+
+            <div id="card-expiry"></div>
+          </div>
+
+          <div class="grid division-in-element-gap">
+            <div class="input-label">{checkoutPay.Card_label_cvv}</div>
+
+            <div id="card-cvc"></div>
+          </div>
+
+          <input type="hidden" id="stripeToken" name="stripeToken" />
+
+          <div class="text-b5 text-error hidden" id="card-error">
+            {checkoutPay.text_card_error_message}
+          </div>
+        </div>
+
+        <input
+          type="hidden"
+          id="stripe-publishable-key"
+          data-key={import.meta.env.STRIPE_PUBLISHABLE_KEY}
+          disabled
+        />
+      </div>
+    </div>
+
+    <div data-name="ideal-info" class="payment-info division-gap grid !hidden">
+      <div role="form" class="form-grid">
+        <div class="grid division-in-element-gap">
+          <div class="input-label">{checkoutPay.Ideal_label_select_bank}</div>
+
+          <div id="ideal-bank"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="checkout-button-container">
+      <a href={checkoutShippingLink} class="button-link-primary-large">
+        <span class="sm:hidden">
+          {`${userRecurData?.Button_return_to_text} ${recurData.text_plans}`}
+        </span>
+        <span class="hidden sm:block">
+          {`${userRecurData?.Button_return_to_text} ${recurData.text_plans}`}
+        </span>
+      </a>
+
+      <button
+        id="submit-btn"
+        type="submit"
+        class="w-full sm:w-1/3 button-disabled-large"
+        disabled
+      >
+        <span>
+          {checkoutPay.Button_text_pay_with}
+          <span class="payment-type"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+  <div class="w-full h-px bg-primary-lightest"></div>
 </form>
+
+<script is:inline>
+  const id = document.getElementById.bind(document),
+    queryAll = document.querySelectorAll.bind(document),
+    addClass = (element, className) => element.classList.add(className),
+    removeClass = (element, className) => element.classList.remove(className),
+    getInputValue = (parent, name) =>
+      parent.querySelector(`input[name=${name}]`).value;
+
+  const shippingAddress = id("shipping-address"),
+    paymentCardInputSelector = queryAll(".payment-card-input-selector"),
+    paymentInfoElements = queryAll(".payment-info"),
+    submitBtn = id("submit-btn"),
+    submitBtnPaymentType = submitBtn.querySelector(".payment-type"),
+    paymentError = id("payment-error");
+
+  const { redirect_status } = Object.fromEntries(
+    new URLSearchParams(location.search),
+  );
+
+  redirect_status === "failed" && paymentError.classList.remove("hidden");
+
+  const toggleDisabled = (elements, condition) =>
+    elements.forEach((element) => (element.disabled = !!condition));
+
+  const selectTextAndNumberInputs = (parent) =>
+    parent.querySelectorAll("input[type='text'], input[type='number'], select");
+
+  window.hideAllPaymentInfo = () => {
+    paymentInfoElements.forEach((paymentInfo) =>
+      addClass(paymentInfo, "!hidden"),
+    );
+
+    submitBtnPaymentType.innerHTML = "";
+    removeClass(submitBtn, "button-primary-large");
+    addClass(submitBtn, "button-disabled-large");
+    submitBtn.setAttribute("disabled", true);
+  };
+
+  window.togglePaymentCardVisibility = (selectedCountry) => {
+    paymentCardInputSelector.forEach((cardSelector) => {
+      cardSelector.checked = false;
+
+      const countryName = cardSelector
+        ?.getAttribute("data-country")
+        ?.toLowerCase();
+
+      if (!countryName) return;
+
+      countryName.includes(selectedCountry)
+        ? removeClass(cardSelector.parentElement, "hidden")
+        : addClass(cardSelector.parentElement, "hidden");
+    });
+  };
+
+  function handlePaymentCardInputChange(event) {
+    if (!event.target.classList.contains("payment-card-input-selector")) return;
+
+    const inputValue = event.target.value.toLowerCase();
+    submitBtnPaymentType.innerHTML = ` ${inputValue}`;
+    removeClass(submitBtn, "button-disabled-large");
+    addClass(submitBtn, "button-primary-large");
+    submitBtn.removeAttribute("disabled", true);
+
+    redirect_status === "failed" && paymentError.classList.add("hidden");
+
+    paymentInfoElements.forEach((paymentInfo) => {
+      const includesValue = paymentInfo
+        .getAttribute("data-name")
+        .toLowerCase()
+        .includes(inputValue);
+
+      toggleDisabled(selectTextAndNumberInputs(paymentInfo), !includesValue);
+
+      includesValue
+        ? removeClass(paymentInfo, "!hidden")
+        : addClass(paymentInfo, "!hidden");
+
+      const paymentInputName =
+        includesValue && paymentInfo.querySelector("input[name*=name]");
+
+      if (paymentInputName && paymentInputName.value !== null) {
+        const fullName = `${getInputValue(
+          shippingAddress,
+          "billing_first_name",
+        )} ${getInputValue(shippingAddress, "billing_last_name")}`;
+
+        paymentInputName.setAttribute("value", fullName?.trim());
+      }
+    });
+  }
+
+  document.addEventListener("change", handlePaymentCardInputChange);
+
+  window.togglePaymentCardVisibility(window.checkoutInfo.country.toLowerCase());
+</script>
+
+{/* for stripe payments */}
+<script>
+  import { loadStripe } from "@stripe/stripe-js";
+
+  // Check if the element with ID "payment-info-form" exists before executing the scripts
+  if (document.getElementById("payment-info-form")) {
+    const id = document.getElementById.bind(document),
+      form = id("payment-info-form"),
+      card = id("card"),
+      ideal = id("ideal"),
+      cardError = id("card-error"),
+      stripePublishableKey = id("stripe-publishable-key");
+
+    const STRIPE_PUBLISHABLE_KEY =
+      stripePublishableKey?.getAttribute("data-key");
+
+    const stripe = await loadStripe(STRIPE_PUBLISHABLE_KEY),
+      elements = stripe.elements({ locale: window.preferredLocale as any });
+
+    const elementStyles = {
+      style: {
+        base: {
+          fontSize: `${Math.min(
+            Math.max(16, 0.25 * window.innerWidth + 14.4),
+            18,
+          )}px`, //text-b5
+        },
+      },
+      classes: {
+        base: "input-field-api",
+        focus: "input-field-api-focus",
+      },
+    };
+
+    // Variables for Stripe Elements
+    let cardNumberElement = null;
+    let cardExpiryElement = null;
+    let cardCvcElement = null;
+    let idealBankElement = null;
+
+    document.addEventListener("change", () => {
+      const isCard = card.checked,
+        isIdeal = ideal.checked;
+
+      // Clear existing Stripe Elements
+      clearStripeElements();
+
+      if (isCard) {
+        // Create Stripe Elements for card number, expiry, and CVC if they don't exist
+        if (!cardNumberElement) {
+          cardNumberElement = elements.create("cardNumber", elementStyles);
+          cardNumberElement.mount("#card-number");
+        }
+        if (!cardExpiryElement) {
+          cardExpiryElement = elements.create("cardExpiry", elementStyles);
+          cardExpiryElement.mount("#card-expiry");
+        }
+        if (!cardCvcElement) {
+          cardCvcElement = elements.create("cardCvc", elementStyles);
+          cardCvcElement.mount("#card-cvc");
+        }
+      } else if (isIdeal) {
+        // Create idealBank Element if it doesn't exist
+        if (!idealBankElement) {
+          idealBankElement = elements.create("idealBank", elementStyles);
+          idealBankElement.mount("#ideal-bank");
+        }
+      }
+
+      if (isCard) {
+        // Attach form submission event listener for card payments
+        form.addEventListener("submit", onSubmitCard);
+      } else {
+        form.removeEventListener("submit", onSubmitCard);
+      }
+    });
+
+    function onSubmitCard(event) {
+      event.preventDefault();
+      createToken(cardNumberElement);
+    }
+
+    async function createToken(element) {
+      try {
+        const { token, error } = await stripe.createToken(element);
+        if (error) {
+          cardError.classList.remove("hidden");
+        } else {
+          id("stripeToken").value = token.id;
+          form.submit();
+        }
+      } catch (err) {
+        cardError.classList.remove("hidden");
+      }
+    }
+
+    function clearStripeElements() {
+      if (cardNumberElement) {
+        cardNumberElement.destroy();
+        cardNumberElement = null;
+      }
+      if (cardExpiryElement) {
+        cardExpiryElement.destroy();
+        cardExpiryElement = null;
+      }
+      if (cardCvcElement) {
+        cardCvcElement.destroy();
+        cardCvcElement = null;
+      }
+      if (idealBankElement) {
+        idealBankElement.destroy();
+        idealBankElement = null;
+      }
+    }
+  }
+</script>
