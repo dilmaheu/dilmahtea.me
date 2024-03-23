@@ -20,7 +20,7 @@ import RecipeDetails from "@pages/RecipeDetails.astro";
 import EstateDetails from "@pages/EstateDetails.astro";
 import ProductDetails from "@pages/ProductDetails.astro";
 import ProductCategory from "@pages/ProductCategory.astro";
-import CrowdfundingForm from "@pages/CrowdfundingForm.astro";
+import CrowdfundingPayment from "@components/pages/CrowdfundingPayment.astro";
 import CheckoutSuccess from "@pages/CheckoutSuccess.astro";
 import CheckoutKindness from "@pages/CheckoutKindness.astro";
 import CheckoutShipping from "@pages/CheckoutShipping.astro";
@@ -43,7 +43,7 @@ export async function getStaticPaths() {
     howTos,
     recipes,
     estates,
-    crowdfundingForm,
+    crowdfundingPayment,
     crowdfundingPlans,
     crowdfundingHome,
     basicPages: basicPagesData,
@@ -215,7 +215,7 @@ export async function getStaticPaths() {
     ),
   ].forEach(({ attributes }) => {
     attributes.Meta = {
-      ...crowdfundingForm.data.attributes.Meta,
+      ...crowdfundingPayment.data.attributes.Meta,
       URL_slug: `plans/${attributes.Title.toLowerCase()}`,
     };
   });
@@ -445,7 +445,7 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
               : PageLayout;
 
       const Pages = {
-        plan: CrowdfundingForm,
+        plan: CrowdfundingPayment,
         crowdfunding: Crowdfunding,
         basic: BasicPage,
         blogDetails: BlogDetails,
