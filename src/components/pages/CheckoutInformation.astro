@@ -8,7 +8,7 @@ import CheckoutInformationForm from "@solid/CheckoutInformationForm.astro";
 
 const { page, recurData } = Astro.props,
   { locale } = page,
-  checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug,
+  checkoutCart = CMS.get("cart", locale),
   checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
   checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
   shortenedSteps = checkoutFlowData.shortened_steps.split("\n");
@@ -78,8 +78,8 @@ const { page, recurData } = Astro.props,
   </div>
 
   <div class="checkout-button-container">
-    <a href={checkoutCartLink} class="button-link-primary-large">
-      {page.text_return_to_cart}
+    <a href={checkoutCart.Meta.URL_slug} class="button-link-primary-large">
+      {`${recurData.text_return_to} ${checkoutCart.Title.toLowerCase()}`}
     </a>
 
     <button class="w-full sm:max-w-[250px] button-primary-large">
