@@ -59,7 +59,7 @@ const { locale } = page,
 
 <div
   id="cart"
-  class="hidden fixed z-[1000] justify-end w-full h-full top-0 left-0"
+  class="cart-overlay hidden fixed z-[1000] justify-end w-full h-full top-0 left-0"
 >
   <div class="w-full max-w-[2050px] h-full mx-auto bg-[rgba(0,0,0,0.5)]">
     <div
@@ -317,6 +317,7 @@ const { locale } = page,
     emptyCartNotification = id("empty-cart-notification"),
     cartOverlayProductsContainer = id("cart-overlay-products-container"),
     closeCartBtnElements = queryAll(".close-cart-btn"),
+    cartOverlay = document.querySelector(".cart-overlay"),
     { overflowY: prevBodyOverflowYValue } = document.body.style;
 
   window.openCart = () => {
@@ -341,10 +342,10 @@ const { locale } = page,
       sidebar?.offsetWidth > 0 ? "scroll" : prevBodyOverflowYValue;
   };
 
-  cart?.addEventListener("click", (event) => {
+  cartOverlay?.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
 
-    if (target === cart.firstElementChild) {
+    if (target === cartOverlay.firstElementChild) {
       // close cart if clicked outside of cart content
       closeCart();
     }
