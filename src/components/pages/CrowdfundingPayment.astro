@@ -23,35 +23,31 @@ const {
   } = Astro.props,
   { locale } = page,
   checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
-  userRecurData = CMS.get("userAccountRecurringElement", locale),
-  checkoutInfo = CMS.get("checkoutInformation", locale),
-  checkoutPay = CMS.get("checkoutPayment", locale);
+  userRecurData = CMS.get("userAccountRecurringElement", locale);
 
-const methods = checkoutPay.payment_methods?.data?.map(
-    ({ attributes }) => attributes,
-  ),
-  accepted_cards_icon = checkoutPay.Accepted_cards_icon?.data?.map(
+const methods = page.payment_methods?.data?.map(({ attributes }) => attributes),
+  accepted_cards_icon = page.Accepted_cards_icon?.data?.map(
     ({ attributes }) => attributes,
   );
 ---
 
 <form
-  aria-label={checkoutInfo.Aria_label_form_text}
+  aria-label={page.Aria_label_form_text}
   id="crowdfunding-info-form"
   class="section-gap flex flex-col"
   action={getLocalizedLink(locale, checkoutShippingLink)}
 >
   <div
     role="form"
-    aria-label={checkoutInfo.text_contact_info}
+    aria-label={page.text_contact_info}
     class="division-gap grid"
   >
     <h2 class="text-h2 text-primary">
-      {checkoutInfo.text_customer}
+      {page.text_customer}
     </h2>
 
     <div id="guest-intro-text" class="prose-text-sm no-pad-mar-child !text-b3">
-      <Markdown>{checkoutInfo.Guest_intro_text}</Markdown>
+      <Markdown>{page.Guest_intro_text}</Markdown>
     </div>
 
     <div class="form-grid !font-bold">
@@ -77,7 +73,7 @@ const methods = checkoutPay.payment_methods?.data?.map(
     </div>
 
     <div id="sign-in-text" class="prose-text-sm no-pad-mar-child !text-b3">
-      <Markdown>{checkoutInfo.Sign_in_text}</Markdown>
+      <Markdown>{page.Sign_in_text}</Markdown>
     </div>
   </div>
 
@@ -95,7 +91,7 @@ const methods = checkoutPay.payment_methods?.data?.map(
 
   <div id="payment-error" class="hidden">
     <AdvancedNotification
-      Title={checkoutPay.text_payment_error}
+      Title={page.text_payment_error}
       Type="Error"
       Bordered={true}
       Rounded={true}
@@ -103,7 +99,7 @@ const methods = checkoutPay.payment_methods?.data?.map(
   </div>
 
   <div class="grid division-gap">
-    <h2 class="recoleta text-h2 text-primary">{checkoutPay.Block_title}</h2>
+    <h2 class="recoleta text-h2 text-primary">{page.Block_title}</h2>
 
     <AddressTags
       action="checkout"
@@ -126,7 +122,7 @@ const methods = checkoutPay.payment_methods?.data?.map(
   <div class="w-full h-px bg-primary-lightest"></div>
 
   <div class="division-gap grid">
-    <h2 class="recoleta text-h2 text-primary">{checkoutPay.Block2_title}</h2>
+    <h2 class="recoleta text-h2 text-primary">{page.Block2_title}</h2>
 
     <div role="list" class="payment-card-container flex flex-wrap form-gap">
       {
@@ -168,12 +164,12 @@ const methods = checkoutPay.payment_methods?.data?.map(
     <div data-name="card-info" class="payment-info division-gap grid !hidden">
       <div class="division-in-gap">
         <div class="text-b3 font-bold text-black">
-          {checkoutPay.text_card_details}
+          {page.text_card_details}
         </div>
 
         <div class="division-in-gap flex flex-wrap">
           <div class="text-b5 text-black-light">
-            {checkoutPay.text_accepted_cards}
+            {page.text_accepted_cards}
           </div>
 
           <div class="division-in-element-gap flex flex-wrap items-center">
@@ -196,7 +192,7 @@ const methods = checkoutPay.payment_methods?.data?.map(
       <div>
         <div role="form" class="form-grid" id="card-info">
           <div class="grid division-in-element-gap">
-            <div class="input-label">{checkoutPay.Card_label_number}</div>
+            <div class="input-label">{page.Card_label_number}</div>
 
             <div id="card-number"></div>
           </div>
@@ -204,13 +200,13 @@ const methods = checkoutPay.payment_methods?.data?.map(
           <div class="hidden sm:block h-0 select-none"></div>
 
           <div class="grid division-in-element-gap">
-            <div class="input-label">{checkoutPay.Card_label_date}</div>
+            <div class="input-label">{page.Card_label_date}</div>
 
             <div id="card-expiry"></div>
           </div>
 
           <div class="grid division-in-element-gap">
-            <div class="input-label">{checkoutPay.Card_label_cvv}</div>
+            <div class="input-label">{page.Card_label_cvv}</div>
 
             <div id="card-cvc"></div>
           </div>
@@ -218,7 +214,7 @@ const methods = checkoutPay.payment_methods?.data?.map(
           <input type="hidden" id="stripeToken" name="stripeToken" />
 
           <div class="text-b5 text-error hidden" id="card-error">
-            {checkoutPay.text_card_error_message}
+            {page.text_card_error_message}
           </div>
         </div>
 
@@ -234,7 +230,7 @@ const methods = checkoutPay.payment_methods?.data?.map(
     <div data-name="ideal-info" class="payment-info division-gap grid !hidden">
       <div role="form" class="form-grid">
         <div class="grid division-in-element-gap">
-          <div class="input-label">{checkoutPay.Ideal_label_select_bank}</div>
+          <div class="input-label">{page.Ideal_label_select_bank}</div>
 
           <div id="ideal-bank"></div>
         </div>
@@ -258,7 +254,7 @@ const methods = checkoutPay.payment_methods?.data?.map(
         disabled
       >
         <span>
-          {checkoutPay.Button_text_pay_with}
+          {page.Button_text_pay_with}
           <span class="payment-type"></span>
         </span>
       </button>
