@@ -8,10 +8,7 @@ import SavedAddresses from "@solid/SavedAddresses.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import UserAccountLayout from "@layouts/UserAccountLayout.astro";
 
-const { page, recurData } = Astro.props,
-  { Title, locale } = page;
-
-const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
+const { page, recurData } = Astro.props;
 ---
 
 <style lang="scss">
@@ -53,14 +50,7 @@ const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
 
 <UserAccountLayout page={page}>
   <Fragment>
-    <h2
-      id={`#` + Title.toLowerCase().replaceAll(" ", "-")}
-      class="tiled-div-title recoleta"
-    >
-      {Title}
-    </h2>
-
-    <SavedAddresses {recurData} {userAccountRecurData}>
+    <SavedAddresses {recurData}>
       <Icon
         slot="plusIcon"
         name="akar-icons:plus"

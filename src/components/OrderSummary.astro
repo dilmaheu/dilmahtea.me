@@ -3,8 +3,7 @@ import CMS from "@store/CMS";
 import DynamicHTML from "@components/DynamicHTML.astro";
 
 const { page, recurData } = Astro.props,
-  { locale } = page,
-  userRecurData = CMS.get("userAccountRecurringElement", locale);
+  { locale } = page;
 
 const checkoutCartLink = CMS.get("cart", locale).Meta.URL_slug,
   checkoutInfoLink = CMS.get("checkoutInformation", locale).Meta.URL_slug,
@@ -73,7 +72,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
                 class="division-in-element-gap grid"
               >
                 <div class="input-label text-black">
-                  {userRecurData.Input_label_email}
+                  {recurData.text_email_address}
                 </div>
 
                 <div class="division-in-element-gap flex">
@@ -82,7 +81,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
                   </div>
 
                   <a
-                    aria-label={`${userRecurData.Button_change_text} ${userRecurData.Input_label_email}`}
+                    aria-label={`${recurData.text_change} ${recurData.text_email_address}`}
                     href={checkoutInfoLink + "?change=email"}
                   >
                     <svg
@@ -105,7 +104,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
                 class="division-in-element-gap grid"
               >
                 <div class="input-label text-black">
-                  {userRecurData.Label_delivery_address}
+                  {recurData.text_shipping_address}
                 </div>
 
                 <div class="division-in-element-gap flex">
@@ -116,7 +115,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
                   </div>
 
                   <a
-                    aria-label={`${userRecurData.Button_change_text} ${userRecurData.Label_delivery_address}`}
+                    aria-label={`${recurData.text_change} ${recurData.text_shipping_address}`}
                     href={checkoutInfoLink + "?change=address"}
                   >
                     <svg
@@ -141,7 +140,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
                     class="division-in-element-gap grid"
                   >
                     <div class="input-label text-black">
-                      {userRecurData.Label_shipping_method}
+                      {recurData.text_shipping_method}
                     </div>
 
                     <div class="division-in-element-gap flex">
@@ -152,7 +151,7 @@ const isCheckoutInformation = page.type === "checkoutInformation",
                       </div>
 
                       <a
-                        aria-label={`${userRecurData.Button_change_text} ${userRecurData.Label_shipping_method}`}
+                        aria-label={`${recurData.text_change} ${recurData.text_shipping_method}`}
                         href={checkoutShippingLink}
                       >
                         <svg

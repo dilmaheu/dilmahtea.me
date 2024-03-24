@@ -71,7 +71,7 @@ const { products, recurData } = Astro.props,
               {Stock_amount < 1 && (
                 <>
                   <div class="stock-out-label-top">
-                    {recurData.Product_sold_out_text}
+                    {recurData.text_sold_out}
                   </div>
 
                   {
@@ -105,9 +105,8 @@ const { products, recurData } = Astro.props,
                 <div class="product-title">
                   <a
                     aria-label={
-                      (Stock_amount < 1
-                        ? `${recurData.Product_sold_out_text}, `
-                        : "") + Title
+                      (Stock_amount < 1 ? `${recurData.text_sold_out}, ` : "") +
+                      Title
                     }
                     class="main-link"
                     href={URL_slug}
@@ -230,7 +229,7 @@ const { products, recurData } = Astro.props,
                   <span>
                     {Stock_amount > 0
                       ? recurData.text_add
-                      : recurData.Product_sold_out_text}
+                      : recurData.text_sold_out}
                   </span>
                   <span>&#x025CF;</span>
                   <span>
