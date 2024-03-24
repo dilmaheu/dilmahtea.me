@@ -220,7 +220,9 @@ export async function getStaticPaths() {
     };
   });
 
-  const plansPages = getRoutes(crowdfundingPlans, () => ({ type: "plan" }));
+  const crowdfundingPaymentPages = getRoutes(crowdfundingPayment, (_, { locale }) => ({
+    type: "plan",
+  }));
 
   const crowdfundingPages = getRoutes(crowdfundingHome, (_, { locale }) => ({
     type: "crowdfunding",
@@ -371,7 +373,7 @@ export async function getStaticPaths() {
   }));
 
   return [
-    ...plansPages,
+    ...crowdfundingPaymentPages,
     ...crowdfundingPages,
     ...basicPages,
     ...crowdfundingPaymentConfirmationPages,
