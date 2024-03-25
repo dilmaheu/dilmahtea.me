@@ -5,6 +5,7 @@ import ClippedPicture from "@components/ClippedPicture.astro";
 import KindnessImpact from "@components/KindnessImpact.astro";
 import EstatesInfoSection from "@components/EstatesInfoSection.astro";
 import DynamicPost from "@components/DynamicPost.astro";
+import Pagination from "@components/Pagination.astro";
 
 import SecondaryPageLayout from "@layouts/SecondaryPageLayout.astro";
 
@@ -13,7 +14,7 @@ import RecurringImages from "@store/RecurringImages";
 const { left_quote } = RecurringImages;
 
 const { page } = Astro.props,
-  { posts, locale, blogs } = page,
+  { posts, locale, blogs, pagination } = page,
   { STRAPI_URL } = import.meta.env;
 
 const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
@@ -62,8 +63,10 @@ const relatedPosts = blogs?.data?.map(({ attributes }) => attributes);
     </div>
 
     {/* All Estates Section */}
-    <div id="estates" class="wrapper">
+    <div id="estates" class="wrapper section-gap grid">
       <DynamicPost posts={posts} locale={page.locale} />
+
+      {pagination && <Pagination pagination={pagination} />}
     </div>
 
     <div class="wrapper">
