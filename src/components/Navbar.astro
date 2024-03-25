@@ -66,7 +66,8 @@ function trimLink(link) {
   return link?.replace(/^\/|\/$/g, "");
 }
 
-const loginLink = getUserAccountPagesLink("login", docLocale);
+const visibleMenuItems = menu.filter((item) => item.Visibility === true),
+  loginLink = getUserAccountPagesLink("login", docLocale);
 ---
 
 <style lang="scss">
@@ -548,103 +549,103 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
         )
       }
 
-      <div class="wrapper section-in-v-pad-sm grid content-between h-full z-10">
-        <div class="z-10 division-gap grid overflow-y-auto">
-          <nav class="division-gap flex flex-col text-white">
-            {
-              menu.map(({ Visibility, Title, Link, Sub_menu }, index) => {
-                const currentPageUrl = trimLink(page?.Meta?.URL_slug),
-                  isActive =
-                    currentPageUrl === trimLink(Link) ||
-                    Sub_menu.map(({ Link }) => trimLink(Link)).includes(
-                      currentPageUrl,
-                    );
+      <div
+        class="wrapper section-in-v-pad-sm division-gap grid content-between h-full z-10"
+      >
+        <nav class="division-gap flex flex-col text-white overflow-y-auto">
+          {
+            menu.map(({ Visibility, Title, Link, Sub_menu }, index) => {
+              const currentPageUrl = trimLink(page?.Meta?.URL_slug),
+                isActive =
+                  currentPageUrl === trimLink(Link) ||
+                  Sub_menu.map(({ Link }) => trimLink(Link)).includes(
+                    currentPageUrl,
+                  );
 
-                const hasSubMenu = Sub_menu.length > 0;
+              const hasSubMenu = Sub_menu.length > 0;
 
-                return (
-                  Visibility && (
-                    <div class="division-gap flex flex-col">
-                      {index > 0 && (
-                        <div class="w-full h-px bg-white rounded" />
-                      )}
+              return (
+                Visibility && (
+                  <div class="division-gap flex flex-col">
+                    {hasSubMenu && (
+                      <input
+                        type="checkbox"
+                        id={"open-sub-menu-" + index}
+                        class="open-sub-menu-checkbox hidden"
+                        checked={isActive}
+                      />
+                    )}
+
+                    <div class="relative text-white flex items-center justify-between gap-2.5">
+                      <a
+                        href={Link}
+                        class:list={[
+                          "menu-title",
+                          isActive ? "font-bold" : "font-semibold",
+                        ]}
+                      >
+                        {Title}
+                      </a>
 
                       {hasSubMenu && (
-                        <input
-                          type="checkbox"
-                          id={"open-sub-menu-" + index}
-                          class="open-sub-menu-checkbox hidden"
-                          checked={isActive}
-                        />
-                      )}
-
-                      <div class="relative text-white flex items-center justify-between gap-2.5">
-                        <a
-                          href={Link}
-                          class:list={[
-                            "menu-title",
-                            isActive ? "font-bold" : "font-semibold",
-                          ]}
+                        <label
+                          for={"open-sub-menu-" + index}
+                          role="button"
+                          aria-label={
+                            ariaLabelRecurData.Navbar_open_sidebar_sub_menu_text
+                          }
+                          class="block md:hidden w-[29px] h-[29px] p-1 my-auto select-none cursor-pointer"
                         >
-                          {Title}
-                        </a>
-
-                        {hasSubMenu && (
-                          <label
-                            for={"open-sub-menu-" + index}
-                            role="button"
-                            aria-label={
-                              ariaLabelRecurData.Navbar_open_sidebar_sub_menu_text
-                            }
-                            class="block md:hidden w-[29px] h-[29px] p-1 my-auto select-none cursor-pointer"
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="open-sub-menu-icon pointer-events-none w-full h-full"
+                            viewBox="0 0 19.9 20"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="open-sub-menu-icon pointer-events-none w-full h-full"
-                              viewBox="0 0 19.9 20"
-                            >
-                              <path
-                                d="m1.5,10h16.9m-8.5,8.5V1.5"
-                                style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3px;"
-                              />
-                            </svg>
+                            <path
+                              d="m1.5,10h16.9m-8.5,8.5V1.5"
+                              style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3px;"
+                            />
+                          </svg>
 
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="close-sub-menu-icon pointer-events-none w-full h-full"
-                              viewBox="0 0 19.9 3"
-                            >
-                              <line
-                                x1="1.5"
-                                y1="1.5"
-                                x2="18.4"
-                                y2="1.5"
-                                style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3px;"
-                              />
-                            </svg>
-                          </label>
-                        )}
-                      </div>
-
-                      {hasSubMenu && (
-                        <div class="sub-menu gap-[5px]">
-                          {Sub_menu.map(
-                            ({ Visibility, Title, Link }) =>
-                              Visibility && (
-                                <a href={Link} class="sub-menu-title">
-                                  {Title}
-                                </a>
-                              ),
-                          )}
-                        </div>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="close-sub-menu-icon pointer-events-none w-full h-full"
+                            viewBox="0 0 19.9 3"
+                          >
+                            <line
+                              x1="1.5"
+                              y1="1.5"
+                              x2="18.4"
+                              y2="1.5"
+                              style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3px;"
+                            />
+                          </svg>
+                        </label>
                       )}
                     </div>
-                  )
-                );
-              })
-            }
-          </nav>
-        </div>
+
+                    {hasSubMenu && (
+                      <div class="sub-menu gap-[5px]">
+                        {Sub_menu.map(
+                          ({ Visibility, Title, Link }) =>
+                            Visibility && (
+                              <a href={Link} class="sub-menu-title">
+                                {Title}
+                              </a>
+                            ),
+                        )}
+                      </div>
+                    )}
+
+                    {index < visibleMenuItems.length && (
+                      <div class="w-full h-px bg-white" />
+                    )}
+                  </div>
+                )
+              );
+            })
+          }
+        </nav>
 
         <div class="text-b7 z-10" set:html={footerText} />
       </div>
