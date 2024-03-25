@@ -782,42 +782,47 @@ const loginLink = getUserAccountPagesLink("login", docLocale);
 </header>
 
 <script>
+  const queryAll = document.querySelectorAll.bind(document);
+
+  const navSubMenuBlocks = queryAll(".nav-sub-menu.block"),
+    navSubMenuContents = queryAll(".nav-sub-menu-content"),
+    navMenuContainers = queryAll(".nav-menu-container"),
+    headerNavShadow = document.querySelector<HTMLDivElement>(
+      ".hero-sub-menu-shadow",
+    );
+
   const updateNavSubMenuClasses = () => {
     const shouldHide = window.scrollY > 0;
 
-    document.querySelectorAll(".nav-sub-menu.block").forEach((navSubMenu) => {
+    navSubMenuBlocks?.forEach((navSubMenu) => {
       navSubMenu.classList.toggle("hidden", shouldHide);
       navSubMenu.classList.toggle("group-hover:block", shouldHide);
     });
 
-    document.querySelectorAll(".nav-sub-menu-content").forEach((navSubMenu) => {
+    navSubMenuContents?.forEach((navSubMenu) => {
       navSubMenu.classList.toggle("nav-bg", shouldHide);
     });
   };
 
+  const handleNavMenuEvents = (container) => {
+    container.addEventListener("mouseenter", () => {
+      headerNavShadow.style.display = container.querySelector(".nav-sub-menu")
+        ? "block"
+        : "none";
+    });
+
+    container.addEventListener("mouseleave", () => {
+      headerNavShadow.style.display = "none";
+    });
+  };
+
+  navMenuContainers?.forEach(handleNavMenuEvents);
+
   updateNavSubMenuClasses();
 
-  window.addEventListener("scroll", updateNavSubMenuClasses);
-
-  const headerNavShadow = document.querySelector<HTMLDivElement>(
-    ".hero-sub-menu-shadow",
-  );
-
-  document
-    .querySelectorAll(".nav-menu-container")
-    .forEach((navMenuContainer) => {
-      navMenuContainer.addEventListener("mouseenter", () => {
-        headerNavShadow.style.display = navMenuContainer.querySelector(
-          ".nav-sub-menu",
-        )
-          ? "block"
-          : "none";
-      });
-
-      navMenuContainer.addEventListener("mouseleave", () => {
-        headerNavShadow.style.display = "none";
-      });
-    });
+  window.addEventListener("scroll", () => {
+    document.body.style.position !== "fixed" && updateNavSubMenuClasses();
+  });
 </script>
 
 <script>
