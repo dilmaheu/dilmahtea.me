@@ -2,14 +2,15 @@
 import subset from "@utils/shared/subset";
 import FilteredProducts from "@solid/FilteredProducts";
 
-let { page, recurData, checkoutRecurData, white_love, category, subCategory } =
-  structuredClone(Astro.props);
+let { page, recurData, white_love, category, subCategory } = structuredClone(
+  Astro.props,
+);
 
 page = subset(page, ["Aria_label_all_teas_text", "Aria_label_tea_item_text"]);
 
 recurData = subset(recurData, [
   "Item_stock_text",
-  "Product_sold_out_text",
+  "text_sold_out",
   "product_made_love_from",
   "Product_stock_available_text",
   "Product_available_text",
@@ -17,16 +18,14 @@ recurData = subset(recurData, [
   "Product_other_formats_singular_text",
   "Product_other_formats_text_sm",
   "Product_other_formats_singular_text_sm",
+  "text_add",
 ]);
-
-checkoutRecurData = subset(checkoutRecurData, ["text_add"]);
 ---
 
 <FilteredProducts
   client:load
   page={page}
   recurData={recurData}
-  checkoutRecurData={checkoutRecurData}
   white_love={white_love}
   category={category}
   subCategory={subCategory}

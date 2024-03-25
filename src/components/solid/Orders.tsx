@@ -8,7 +8,7 @@ import { orders, setOrders, ordersYear, setOrdersYear } from "@signals/orders";
 export default function Orders({
   noOrdersHTML,
   notificationIcons,
-  userAccountRecurData,
+  recurData,
   isOrdersPage,
 }) {
   createEffect(() => {
@@ -35,25 +35,27 @@ export default function Orders({
         <div class="tiled-div division-gap grid">
           {Array.isArray(orders()) ? (
             <>
-              {orders()
-                .slice(0, 3)
-                .map((order) => (
+              {() => {
+                const recentOrders = orders().slice(0, 3);
+
+                return recentOrders.map((order, index) => (
                   <>
                     <Order
                       order={order}
                       notificationIcons={notificationIcons}
-                      userAccountRecurData={userAccountRecurData}
+                      recurData={recurData}
                     />
 
-                    {index + 1 < orders.slice(0, 4).length && (
+                    {index + 1 < recentOrders.length && (
                       <div class="border-b border-primary-lightest"></div>
                     )}
                   </>
-                ))}
+                ));
+              }}
 
               {orders().length > 3 && (
                 <a href="/account/orders" class="button-link-primary mx-auto">
-                  {userAccountRecurData.Button_go_to_my_orders_text}
+                  {recurData.text_go_to_my_orders}
                 </a>
               )}
             </>
@@ -74,7 +76,7 @@ export default function Orders({
                         <Order
                           order={order}
                           notificationIcons={notificationIcons}
-                          userAccountRecurData={userAccountRecurData}
+                          recurData={recurData}
                         />
 
                         {index + 1 < orders.length && (

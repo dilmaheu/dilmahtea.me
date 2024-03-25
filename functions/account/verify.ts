@@ -1,6 +1,8 @@
 import type { Key, User } from "lucia";
 import type { ENV } from "../utils/types";
 
+import { isbot } from "isbot";
+
 import { removeToken, validateToken } from "../utils/token";
 import { getProviderId, createSessionCookie } from "../utils";
 
@@ -13,24 +15,12 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
   const requestURL = new URL(request.url),
     { origin, searchParams } = requestURL;
 
+  const userAgent = request.headers.get("User-Agent");
+
+  if (isbot(userAgent))
+    return Response.redirect(origin + "/account/login", 303);
+
   const token = searchParams.get("token");
-
-  {
-    const clonedRequest = request.clone();
-
-    await fetch("https://api.jsonbin.io/v3/b", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Master-Key":
-          "$2a$10$NzPqJzqi53uUEtvHJ5vlVuDSa0vhPZn7VMm0eyecaA0GN.o/zPwcu",
-      },
-      body: JSON.stringify({
-        url: clonedRequest.url,
-        ...new Headers(clonedRequest.headers),
-      }),
-    });
-  }
 
   try {
     var storedToken = await validateToken(env.USERS, token);

@@ -13,7 +13,6 @@ import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 
 export default function CheckoutInformationForm({
   recurData,
-  userAccountRecurData,
   notificationIcons,
   isBilling = false,
 }) {
@@ -101,6 +100,8 @@ export default function CheckoutInformationForm({
         }
       } else if (window.cookies.isAuthenticated !== "true") {
         form.submit();
+
+        return;
       }
 
       fetch("/api/addresses", {
@@ -143,7 +144,8 @@ export default function CheckoutInformationForm({
                   <AddressTags
                     action="checkout"
                     address={selectedAddress}
-                    userAccountRecurData={userAccountRecurData}
+                    recurData={recurData}
+                    selectedTag={selectedTag}
                     setSelectedTag={setSelectedTag}
                     showMoreAddresses={showMoreAddresses}
                     setShowMoreAddresses={setShowMoreAddresses}
@@ -153,15 +155,26 @@ export default function CheckoutInformationForm({
               </>
             )}
 
-            <EditAddressForm
-              action="checkout"
-              address={selectedAddress}
-              recurData={recurData}
-              isBilling={isBilling}
-            />
+            {addresses()?.length > 0 && (
+              <EditAddressForm
+                action="checkout"
+                address={selectedAddress}
+                recurData={recurData}
+                isBilling={isBilling}
+              />
+            )}
           </>
         );
       }}
+
+      {!(addresses()?.length > 0) && (
+        <EditAddressForm
+          action="checkout"
+          address={undefined}
+          recurData={recurData}
+          isBilling={isBilling}
+        />
+      )}
     </>
   );
 }

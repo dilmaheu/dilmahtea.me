@@ -8,19 +8,14 @@ export default function InfoUnit({
   type,
   property,
   verificationHref,
-  userAccountRecurData: {
-    Button_edit_text,
-    Button_update_text,
-    Button_save_text,
-    Button_cancel_text,
-  },
+  recurData: { text_save, text_cancel },
   setNotification,
 }) {
   const [isEditing, setIsEditing] = createSignal(false);
 
   function handleEdit(event: Event) {
-    const input = (event.target as HTMLButtonElement)
-      .previousElementSibling as HTMLInputElement;
+    const input = (event.currentTarget as HTMLButtonElement).parentElement
+      .firstElementChild as HTMLInputElement;
 
     input.disabled = false;
 
@@ -42,8 +37,8 @@ export default function InfoUnit({
   }
 
   function handleCancel(event: Event) {
-    const input = (event.target as HTMLButtonElement)
-      .previousElementSibling as HTMLInputElement;
+    const input = (event.currentTarget as HTMLButtonElement).parentElement
+      .parentElement.firstElementChild as HTMLInputElement;
 
     input.disabled = true;
 
@@ -53,8 +48,8 @@ export default function InfoUnit({
   }
 
   function handleSave(event: Event) {
-    const input = (event.target as HTMLButtonElement).previousElementSibling
-      .previousElementSibling as HTMLInputElement;
+    const input = (event.currentTarget as HTMLButtonElement).parentElement
+      .parentElement.firstElementChild as HTMLInputElement;
 
     if ([user()[property], ""].includes(input.value)) {
       input.classList.add("errored");
@@ -147,7 +142,7 @@ export default function InfoUnit({
         {isEditing() ? (
           <div class="division-gap flex">
             <button class="button-link-error-dark-large" onclick={handleCancel}>
-              {Button_cancel_text}
+              {text_cancel}
             </button>
 
             <button
@@ -155,7 +150,7 @@ export default function InfoUnit({
               onclick={handleSave}
               type="submit"
             >
-              {Button_save_text}
+              {text_save}
             </button>
           </div>
         ) : (

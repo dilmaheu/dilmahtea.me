@@ -21,7 +21,7 @@ export interface Address {
 
 declare interface Props {
   address: Address;
-  userAccountRecurData: Record<string, any>;
+  recurData: Record<string, any>;
   setEditAddress: Setter<any>;
   scroll?: () => void;
   isMyProfile?: boolean;
@@ -31,7 +31,7 @@ declare interface Props {
 
 export default function Address({
   address,
-  userAccountRecurData,
+  recurData,
   setEditAddress,
   scroll,
   isMyProfile,
@@ -44,12 +44,10 @@ export default function Address({
     address;
 
   const {
-    Button_update_text,
     text_default_delivery_address,
     text_default_billing_address,
-    Button_edit_text,
     Tag_default_text,
-  } = userAccountRecurData;
+  } = recurData;
 
   const fullName = first_name + " " + last_name,
     fullAddress = [street, city, postal_code, country].join(", ");

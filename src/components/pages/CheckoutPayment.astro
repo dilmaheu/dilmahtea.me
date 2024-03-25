@@ -10,8 +10,7 @@ import localizeCMSImage from "@utils/localizeCMSImage";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { page, recurData } = Astro.props,
-  { locale, payment_methods, Accepted_cards_icon } = page,
-  userRecurData = CMS.get("userAccountRecurringElement", locale);
+  { locale, payment_methods, Accepted_cards_icon } = page;
 
 const checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
   steps = checkoutFlowData.steps.split("\n"),
@@ -108,11 +107,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     />
   </div>
 
-  <CheckoutBillingAddress
-    {page}
-    {recurData}
-    userAccountRecurData={userRecurData}
-  />
+  <CheckoutBillingAddress {page} {recurData} />
 
   <section class="division-gap grid">
     <h2 class="recoleta text-h2 text-primary">{page.Block2_title}</h2>
@@ -229,21 +224,17 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     <div class="checkout-button-container">
       <a href={checkoutShippingLink} class="button-link-primary-large">
         <span class="sm:hidden">
-          {
-            `${
-              userRecurData.Button_return_to_text
-            } ${shortenedSteps[1]?.toLowerCase()}`
-          }
+          {`${recurData.text_return_to} ${shortenedSteps[1]?.toLowerCase()}`}
         </span>
         <span class="hidden sm:block">
-          {`${userRecurData.Button_return_to_text} ${steps[1]?.toLowerCase()}`}
+          {`${recurData.text_return_to} ${steps[1]?.toLowerCase()}`}
         </span>
       </a>
 
       <button
         id="submit-btn"
         type="submit"
-        class="w-full sm:w-1/3 button-disabled-large"
+        class="w-full sm:max-w-[250px] button-primary-large"
         disabled
       >
         <span>
@@ -288,8 +279,6 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     );
 
     submitBtnPaymentType.innerHTML = "";
-    removeClass(submitBtn, "button-primary-large");
-    addClass(submitBtn, "button-disabled-large");
     submitBtn.setAttribute("disabled", true);
   };
 
@@ -314,8 +303,6 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
 
     const inputValue = event.target.value.toLowerCase();
     submitBtnPaymentType.innerHTML = ` ${inputValue}`;
-    removeClass(submitBtn, "button-disabled-large");
-    addClass(submitBtn, "button-primary-large");
     submitBtn.removeAttribute("disabled", true);
 
     redirect_status === "failed" && paymentError.classList.add("hidden");

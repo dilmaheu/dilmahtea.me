@@ -8,8 +8,9 @@ import { addresses } from "@signals/addresses";
 declare interface Props {
   action: "add" | "update" | "checkout";
   address: Address;
-  userAccountRecurData: any;
+  recurData: any;
   shouldShowCustomTagInput?: boolean;
+  selectedTag?: Accessor<string>;
   setSelectedTag?: Setter<string>;
   showMoreAddresses?: Accessor<boolean>;
   setShowMoreAddresses?: Setter<boolean>;
@@ -18,8 +19,9 @@ declare interface Props {
 export default function AddressTags({
   action,
   address,
-  userAccountRecurData,
+  recurData,
   shouldShowCustomTagInput = false,
+  selectedTag,
   setSelectedTag,
   showMoreAddresses,
   setShowMoreAddresses,
@@ -38,13 +40,13 @@ export default function AddressTags({
 
   const {
     Label_tag_text,
-    Tag_others_text,
-    Tag_others_placeholder_text,
+    Tag_add_text,
+    Tag_add_placeholder,
     Tag_suggestions,
     text_more_address,
     text_hide_more_address,
     text_select_or_create_tag,
-  } = userAccountRecurData;
+  } = recurData;
 
   function hideCustomTagInput() {
     setCustomAddressTag("");
@@ -88,7 +90,7 @@ export default function AddressTags({
                 class="peer hidden"
                 value={tag}
                 onchange={hideCustomTagInput}
-                checked={address?.tag === tag}
+                checked={(selectedTag ? selectedTag() : address?.tag) === tag}
                 required={action === "update"}
                 onChange={() => action === "checkout" && setSelectedTag(tag)}
               />
@@ -116,7 +118,7 @@ export default function AddressTags({
           />
 
           <label for="add-new-address-tag" class="radio-button-extended">
-            {Tag_others_text}
+            {Tag_add_text}
           </label>
         </div>
 
@@ -126,10 +128,6 @@ export default function AddressTags({
             class="vertical-toggle-button-primary"
             onClick={() => {
               setShowMoreAddresses(!showMoreAddresses());
-
-              document
-                .querySelector(".toggle-button-arrow")
-                .classList.toggle("rotate-180");
             }}
           >
             <span>
@@ -141,8 +139,11 @@ export default function AddressTags({
 
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 8 14"
-              class="toggle-button-arrow fill-primary"
+              viewBox="0 0 14 8"
+              class={
+                "toggle-button-arrow fill-primary" +
+                (showMoreAddresses() ? " rotate-180" : "")
+              }
             >
               <path d="M.3,13.7a1.1,1.1,0,0,1-.3-.8,1.1,1.1,0,0,1,.3-.7L5.5,7,.3,1.8A1.1,1.1,0,0,1,0,1,1.1,1.1,0,0,1,.3.3,1.1,1.1,0,0,1,1,0a1.1,1.1,0,0,1,.8.3L7.7,6.2A1.1,1.1,0,0,1,8,7a.9.9,0,0,1-.3.7l-5.9,6A1.1,1.1,0,0,1,1,14a1.1,1.1,0,0,1-.7-.3Z"></path>
             </svg>
@@ -157,7 +158,7 @@ export default function AddressTags({
               <input
                 type="text"
                 class="pr-[40px]"
-                placeholder={Tag_others_placeholder_text}
+                placeholder={Tag_add_placeholder}
                 oninput={(event) =>
                   setCustomAddressTag(event.currentTarget.value)
                 }

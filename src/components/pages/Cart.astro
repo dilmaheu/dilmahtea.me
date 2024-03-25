@@ -27,14 +27,13 @@ const {
   meta,
   locale,
   recurData,
+  ariaLabelRecurData,
   alternateURLs,
   availableLocales,
   metaImageSrc,
 } = Astro.props;
 
-const checkoutRecurData = CMS.get("checkoutRecurringElement", locale),
-  ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale),
-  checkoutInfoLink = CMS.get("checkoutInformation", locale).Meta.URL_slug;
+const checkoutInfoLink = CMS.get("checkoutInformation", locale).Meta.URL_slug;
 
 const footerText = recurData.Footer_text.replaceAll(
   "<current_year>",
@@ -129,14 +128,14 @@ const footerText = recurData.Footer_text.replaceAll(
 
         <div id="cart" class="division-gap grow flex flex-col section-in-v-pad">
           <h1 class="recoleta text-h1 text-primary font-semibold">
-            {page.text_cart}
+            {page.Title}
           </h1>
 
           <div class="cart-products division-in-gap flex flex-col">
             <div class="!hidden md:!grid text-b3 font-semibold text-black">
               <div>{page.text_product}</div>
-              <div>{checkoutRecurData.text_quantity}</div>
-              <div>{checkoutRecurData.text_subtotal}</div>
+              <div>{recurData.text_quantity}</div>
+              <div>{recurData.text_subtotal}</div>
             </div>
 
             <div class="h-px bg-primary-lightest"></div>
@@ -200,7 +199,7 @@ const footerText = recurData.Footer_text.replaceAll(
                       </h2>
 
                       <button
-                        aria-label={checkoutRecurData.Aria_label_remove_item_button_text}
+                        aria-label={ariaLabelRecurData.Remove_item_button_text}
                         class="remove-item-btn md:hidden h-fit text-black"
                       >
                         <Icon
@@ -257,11 +256,11 @@ const footerText = recurData.Footer_text.replaceAll(
             <div class="division-in-element-gap flex justify-between">
               <div class="division-in-element-gap flex flex-col">
                 <div class="text-b2 font-bold text-black">
-                  {checkoutRecurData.text_subtotal}
+                  {recurData.text_subtotal}
                 </div>
 
                 <div class="text-b4">
-                  {checkoutRecurData.text_shipping_calculated_at_checkout}
+                  {recurData.text_shipping_calculated_at_checkout}
                 </div>
               </div>
 

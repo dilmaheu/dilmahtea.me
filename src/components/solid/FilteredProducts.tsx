@@ -5,7 +5,6 @@ export default function FilteredProducts({
   alertCircleIcon,
   page,
   recurData,
-  checkoutRecurData,
   white_love,
   category,
   subCategory,
@@ -105,7 +104,7 @@ export default function FilteredProducts({
               {product.Stock_amount < 1 && (
                 <>
                   <div class="stock-out-label-top">
-                    {recurData.Product_sold_out_text}
+                    {recurData.text_sold_out}
                   </div>
 
                   {
@@ -136,7 +135,7 @@ export default function FilteredProducts({
                   <a
                     aria-label={
                       (product.Stock_amount < 1
-                        ? `${recurData.Product_sold_out_text}, `
+                        ? `${recurData.text_sold_out}, `
                         : "") + product.Title
                     }
                     class="main-link"
@@ -268,8 +267,8 @@ export default function FilteredProducts({
                 </svg>
                 <div class="text-container">
                   {product.Stock_amount > 0
-                    ? checkoutRecurData.text_add
-                    : recurData.Product_sold_out_text}
+                    ? recurData.text_add
+                    : recurData.text_sold_out}
                   <span>&#x025CF;</span>
                   <span>
                     {"€" +

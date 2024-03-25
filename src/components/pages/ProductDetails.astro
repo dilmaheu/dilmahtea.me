@@ -55,8 +55,6 @@ const totalSpentAmount = spentAmounts.reduce(
   (total, currentValue) => total + currentValue,
   0,
 );
-
-const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 ---
 
 <style lang="scss">
@@ -219,9 +217,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         {
           availableSizes.length > 0 && (
             <div class="division-in-element-gap flex flex-wrap items-center">
-              <div class="input-label !text-white">
-                {checkoutRecurData.text_size}:
-              </div>
+              <div class="input-label !text-white">{recurData.text_size}:</div>
 
               <div class="flex flex-wrap division-in-element-gap">
                 {availableSizes.map(({ value, size, link }) => (
@@ -306,8 +302,8 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <span class="text-container">
             {
               stockAmount > 0
-                ? checkoutRecurData.text_add_to_cart_for
-                : recurData.Product_sold_out_text
+                ? recurData.text_add_to_cart_for
+                : recurData.text_sold_out
             }
             <span>&#x2022;</span>€
             <output class="product-amount-price">
@@ -319,6 +315,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
       {
         stockAmount < 1 &&
+          availableFormats.length > 0 &&
           (() => {
             let stockText = "";
             if (page.In_stock_date) {
@@ -366,7 +363,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         <div class="w-full flex flex-wrap division-in-element-gap items-center">
           {availableVariants.length > 0 && (
             <label class="grid division-in-element-gap grow">
-              <span class="input-label">{checkoutRecurData.text_variant}:</span>
+              <span class="input-label">{recurData.text_variant}:</span>
 
               <select
                 name="tea_variant"
@@ -387,7 +384,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
 
           {availableSizes.length > 0 && (
             <label class="grid division-in-element-gap grow">
-              <span class="input-label">{checkoutRecurData.text_size}:</span>
+              <span class="input-label">{recurData.text_size}:</span>
 
               <select name="tea_size" class="selector-default-bordered !w-full">
                 {availableSizes.map(({ value, size, link }) => (
@@ -456,15 +453,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
           <span class="hidden xl:block"
             >{
               stockAmount > 0
-                ? checkoutRecurData.text_add_to_cart
-                : recurData.Product_sold_out_text
+                ? recurData.text_add_to_cart
+                : recurData.text_sold_out
             }</span
           >
           <span class="block xl:hidden"
             >{
-              stockAmount > 0
-                ? checkoutRecurData.text_add
-                : recurData.Product_sold_out_text
+              stockAmount > 0 ? recurData.text_add : recurData.text_sold_out
             }</span
           >
           <span>&#x2022;</span>€
@@ -523,7 +518,7 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
             <Icon name="mi:shopping-cart" class="cart-icon" />
 
             <span class="text-container">
-              {checkoutRecurData.text_add}
+              {recurData.text_add}
               <span>&#x2022;</span>€
               <output class="product-amount-price-sm-fixed">
                 {productPriceIncludingTax.toFixed(2).replace(".", ",")}
@@ -847,16 +842,19 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         decrementBtn.disabled = true;
       });
 
-      const [_, productPriceIncludingTax] = getPriceIncludingTax({
+      const [_, priceIncludingTax] = getPriceIncludingTax({
         Price: window.productPrice,
         VatPercentage: window.productVatPercentage,
         quantity: 1,
       });
 
-      productAmountPriceOutput.textContent = formatPrice(priceIncludingTax);
-      productAmountPriceOutputSm.textContent = formatPrice(priceIncludingTax);
-      productAmountPriceOutputSmFixed.textContent =
-        formatPrice(priceIncludingTax);
+      [
+        productAmountPriceOutput,
+        productAmountPriceOutputSm,
+        productAmountPriceOutputSmFixed,
+      ].forEach(
+        (element) => (element.textContent = formatPrice(priceIncludingTax)),
+      );
 
       window.openCart();
     });
@@ -881,10 +879,13 @@ const checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
         quantity,
       });
 
-    productAmountPriceOutput.textContent = formatPrice(priceIncludingTax);
-    productAmountPriceOutputSm.textContent = formatPrice(priceIncludingTax);
-    productAmountPriceOutputSmFixed.textContent =
-      formatPrice(priceIncludingTax);
+    [
+      productAmountPriceOutput,
+      productAmountPriceOutputSm,
+      productAmountPriceOutputSmFixed,
+    ].forEach(
+      (element) => (element.textContent = formatPrice(priceIncludingTax)),
+    );
   }
 
   tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);

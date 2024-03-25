@@ -20,7 +20,6 @@ export default function UserInfo({
   userAccountAddressURL,
   notificationIcons,
   recurData,
-  userAccountRecurData,
 }) {
   const [notification, setNotification] = createSignal(null),
     [editAddress, setEditAddress] = createSignal<{
@@ -51,20 +50,17 @@ export default function UserInfo({
   } = page;
 
   const {
-    Button_add_text,
-    Button_edit_text,
-    Button_update_text,
-    Button_view_more_address_text_singular,
-    Button_view_more_address_text,
-    Button_view_all_addresses_text,
-    Button_add_new_address_text,
+    text_save,
+    text_view_more_address_singular,
+    text_view_all_addresses,
+    text_add_new_address,
     text_more_address,
     text_default_delivery_address,
     text_default_billing_address,
     Notification_added_address,
     Notification_updated_address,
     Notification_deleted_address,
-  } = userAccountRecurData;
+  } = recurData;
 
   function scrollToAddNewAddress(after: boolean = true) {
     const header = document.querySelector("header"),
@@ -146,7 +142,7 @@ export default function UserInfo({
               type="text"
               property="display_name"
               verificationHref={verificationHref}
-              userAccountRecurData={userAccountRecurData}
+              recurData={recurData}
               setNotification={setNotification}
             />
 
@@ -157,7 +153,7 @@ export default function UserInfo({
               type="tel"
               property="phone"
               verificationHref={verificationHref}
-              userAccountRecurData={userAccountRecurData}
+              recurData={recurData}
               setNotification={setNotification}
             />
 
@@ -168,7 +164,7 @@ export default function UserInfo({
               type="email"
               property="email"
               verificationHref={verificationHref}
-              userAccountRecurData={userAccountRecurData}
+              recurData={recurData}
               setNotification={setNotification}
             />
 
@@ -183,7 +179,7 @@ export default function UserInfo({
                   <DefaultAddress
                     label={Label_delivery_address}
                     address={default_delivery_address}
-                    userAccountRecurData={userAccountRecurData}
+                    recurData={recurData}
                     setEditAddress={setEditAddress}
                     scrollToAddNewAddress={scrollToAddNewAddress}
                     handleAPIResponse={handleAPIResponse}
@@ -194,7 +190,7 @@ export default function UserInfo({
                   <DefaultAddress
                     label={Label_billing_address}
                     address={default_billing_address}
-                    userAccountRecurData={userAccountRecurData}
+                    recurData={recurData}
                     setEditAddress={setEditAddress}
                     scrollToAddNewAddress={scrollToAddNewAddress}
                     handleAPIResponse={handleAPIResponse}
@@ -216,7 +212,7 @@ export default function UserInfo({
                 }}
               >
                 {plusIcon}
-                {Button_add_new_address_text}
+                {text_add_new_address}
               </button>
             </div>
           </div>
@@ -230,7 +226,6 @@ export default function UserInfo({
                   action={editAddress().action}
                   address={editAddress().address}
                   recurData={recurData}
-                  userAccountRecurData={userAccountRecurData}
                   showForm={setEditAddress}
                   handleAPIResponse={handleAPIResponse}
                   setNotification={setNotification}
@@ -261,7 +256,7 @@ export default function UserInfo({
                     id="more-address"
                     class="button-link-primary"
                   >
-                    {Button_view_all_addresses_text.replace(
+                    {text_view_all_addresses.replace(
                       "<number>",
                       addresses().length,
                     )}

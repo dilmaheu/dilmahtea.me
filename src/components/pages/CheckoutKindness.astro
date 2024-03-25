@@ -6,10 +6,9 @@ import Markdown from "@components/Markdown.astro";
 
 import CheckoutKindnessScript from "@solid/CheckoutKindnessScript";
 
-const { page, recurData } = Astro.props,
+const { page, recurData, ariaLabelRecurData } = Astro.props,
   { locale } = page,
-  { STRAPI_URL } = import.meta.env,
-  checkoutRecurData = CMS.get("checkoutRecurringElement", locale);
+  { STRAPI_URL } = import.meta.env;
 
 const checkoutSuccessLink = `/${locale}/${
     CMS.get("checkoutSuccess", locale).Meta.URL_slug
@@ -64,8 +63,8 @@ const checkoutSuccessLink = `/${locale}/${
 
 <div
   role="list"
-  aria-label={checkoutRecurData.Aria_label_kindness_cause_items_text}
-  class="blob-cards-container"
+  aria-label={ariaLabelRecurData.Kindness_cause_items_text}
+  class="kindness-causes blob-cards-container"
 >
   {
     page.kindness_causes.data.map(
@@ -77,8 +76,7 @@ const checkoutSuccessLink = `/${locale}/${
           role="listitem"
           aria-label={cause}
           data-cause={localizations?.data[0]?.attributes?.cause || cause}
-          class="post-card !bg-transparent"
-          onclick="document.getElementById('submit-cause-btn').removeAttribute('disabled')"
+          class="kindness-cause post-card !bg-transparent"
         >
           <input
             type="radio"

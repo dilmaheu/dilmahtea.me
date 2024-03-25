@@ -141,7 +141,10 @@ export const onRequestPost = getAPIHandler(
 
     const usedTags = addresses.map((address) => address.tag);
 
-    if (usedTags.map((tag) => tag.toLowerCase()).includes(tag.toLowerCase()))
+    if (
+      tag &&
+      usedTags.map((tag) => tag.toLowerCase()).includes(tag.toLowerCase())
+    )
       return Response.json(
         { success: false, message: "Address tag has been used already" },
         { status: 400 },
