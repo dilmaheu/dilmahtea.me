@@ -86,4 +86,21 @@ const footerText = recurData.Footer_text.replaceAll(
       sectionHeadingLink.click();
     }
   });
+
+  // disable submit button on click
+  document.addEventListener("click", (event) => {
+    if (event.target.classList.contains("submit-btn")) {
+      event.target.disabled = true;
+    }
+  });
+
+  // enable submit button on input change
+  document.addEventListener("input", (event) => {
+    const targetTagName = event.target.tagName.toLowerCase();
+    if (targetTagName === "input" || targetTagName === "select") {
+      document
+        .querySelectorAll(".submit-btn")
+        .forEach((button) => (button.disabled = false));
+    }
+  });
 </script>
