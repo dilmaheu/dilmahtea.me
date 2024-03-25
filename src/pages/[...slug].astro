@@ -296,10 +296,14 @@ export async function getStaticPaths() {
     true,
   );
 
-  const estatePages = getRoutes(homeEstate, (_, { locale }) => ({
-    type: "estate",
-    posts: locale && getPosts(estates, locale),
-  }));
+  const estatePages = getRoutes(
+    homeEstate,
+    (_, { locale }) => ({
+      type: "estate",
+      posts: locale && getPosts(estates, locale),
+    }),
+    true,
+  );
 
   const productPages = getRoutes(homeProduct, () => ({
     type: "product",
