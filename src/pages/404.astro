@@ -8,12 +8,12 @@ const requestPath = Astro.url.pathname,
   { STRAPI_URL } = import.meta.env,
   basicPagesData = CMS.get("basicPages");
 
-const { attributes: _404Page } = basicPagesData?.data?.find(
+const { attributes: _404Page } = basicPagesData.data.find(
     ({ attributes }) => attributes.Meta.URL_slug === "404",
   ),
   flattened404Pages = [
     _404Page,
-    ..._404Page.localizations?.data?.map(({ attributes }) => attributes),
+    ..._404Page.localizations.data.map(({ attributes }) => attributes),
   ];
 
 const [availableLocales, availableLocalesRecord] =
@@ -63,7 +63,7 @@ const alternateURLs = Object.fromEntries(
   ariaLabelRecurData={ariaLabelRecurData}
   metaImageSrc={STRAPI_URL +
     (_404Page.Block_blob?.data?.url ||
-      recurringElements.OpenGraph_default?.data?.attributes?.url)}
+      recurringElements.OpenGraph_default.data.attributes.url)}
 >
   <BasicPage page={localized404Page} />
 </PageLayout>
