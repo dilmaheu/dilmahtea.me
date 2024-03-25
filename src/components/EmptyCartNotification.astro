@@ -13,6 +13,19 @@ const recurData = CMS.get("recurringElement", locale),
   shopLink = CMS.get("homeProduct", locale).Meta.URL_slug;
 ---
 
+<style lang="scss">
+  @use "src/styles/poly-fluid" as *;
+
+  .cart-icon {
+    // Icon component have extra padding, unless exact-size-would-be(45px, 75px).
+
+    $size: poly-fluid-clamp-primary(54px, 90px);
+
+    width: $size;
+    height: $size;
+  }
+</style>
+
 <div
   id="empty-cart-notification"
   class:list={[
@@ -20,19 +33,13 @@ const recurData = CMS.get("recurringElement", locale),
     "text-primary max-w-md flex flex-col justify-center division-in-gap items-center",
   ]}
 >
-  <Icon
-    name="mi:shopping-cart"
-    class="w-[74px] h-[74px] md:w-[88px] md:h-[88px]"
-  />
+  <Icon name="mi:shopping-cart" class="cart-icon" />
 
-  <div class="text-center font-bold text-b3 text-black-light">
+  <div class="prose-text font-bold text-center">
     <Markdown set:html={recurData.text_empty_cart} />
   </div>
 
-  <a
-    href={shopLink}
-    class="w-full px-[25px] py-[15px] bg-primary text-white font-bold text-center rounded-full text-b5"
-  >
+  <a href={shopLink} class="button-primary-large sm:min-w-[350px]">
     {recurData.text_continue_shopping}
   </a>
 </div>

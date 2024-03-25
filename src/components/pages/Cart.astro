@@ -59,12 +59,7 @@ const footerText = recurData.Footer_text.replaceAll(
   }
 
   .product-image {
-    $fluid-image-size: poly-fluid-clamp(
-      (
-        375px: 50px,
-        1440px: 85px,
-      )
-    );
+    $fluid-image-size: poly-fluid-clamp-primary(50px, 85px);
 
     width: $fluid-image-size;
     height: $fluid-image-size;
@@ -93,6 +88,15 @@ const footerText = recurData.Footer_text.replaceAll(
         }
       }
     }
+  }
+
+  .delete-icon {
+    // Icon component have extra padding, unless exact-size-would-be(20px, 30px).
+
+    $size: poly-fluid-clamp-primary(24px, 36px);
+
+    width: $size;
+    height: $size;
   }
 </style>
 
@@ -127,7 +131,7 @@ const footerText = recurData.Footer_text.replaceAll(
         />
 
         <div id="cart" class="division-gap grow flex flex-col section-in-v-pad">
-          <h1 class="recoleta text-h1 text-primary font-semibold">
+          <h1 class="text-h1 text-primary">
             {page.Title}
           </h1>
 
@@ -182,12 +186,12 @@ const footerText = recurData.Footer_text.replaceAll(
                 id={`<placeholder name="id"></placeholder>`}
                 class:list={[
                   "cart-product tiled-div-sm-pad division-in-gap",
-                  "flex items-center bg-secondary-light rounded-[19px]",
+                  "flex items-center bg-secondary-light rounded-[10px]",
                 ]}
               >
                 <div class="division-in-gap w-full flex text-black-light">
                   <img
-                    class="product-image"
+                    class="product-image bg-white"
                     src={`<placeholder name="image"></placeholder>`}
                     style="clip-path: url(#cart-product-image)"
                   />
@@ -208,10 +212,7 @@ const footerText = recurData.Footer_text.replaceAll(
                         aria-label={ariaLabelRecurData.Remove_item_button_text}
                         class="remove-item-btn md:hidden h-fit text-black"
                       >
-                        <Icon
-                          name="akar-icons:trash-can"
-                          class="w-[24px] h-[24px]"
-                        />
+                        <Icon name="akar-icons:trash-can" class="delete-icon" />
                       </button>
                     </div>
 
@@ -240,10 +241,7 @@ const footerText = recurData.Footer_text.replaceAll(
                     class="remove-item-btn text-black"
                     aria-label={page.Aria_label_remove_item_button_text}
                   >
-                    <Icon
-                      name="akar-icons:trash-can"
-                      class="w-[29px] h-[29px]"
-                    />
+                    <Icon name="akar-icons:trash-can" class="delete-icon" />
                   </button>
                 </div>
 
