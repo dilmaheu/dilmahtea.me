@@ -1,6 +1,7 @@
 ---
 import CMS from "@store/CMS";
 import products from "@store/Products";
+import RecurringImages from "@store/RecurringImages";
 
 import PageLayout from "@layouts/PageLayout.astro";
 import CheckoutLayout from "@layouts/CheckoutLayout.astro";
@@ -427,13 +428,17 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
         recurData = CMS.get("recurringElement", locale),
         ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 
+      const introBlob =
+          !page.Intro_blob?.data?.attributes.url.includes(".svg") &&
+          page.Intro_blob?.data?.attributes.url,
+        blockBlob =
+          !page.Block_blob?.data?.attributes.url.includes(".svg") &&
+          page.Block_blob?.data?.attributes.url;
+
       const metaImageSrc =
-        STRAPI_URL +
-        ((!page.Intro_blob?.data?.attributes.url.includes(".svg") &&
-          page.Intro_blob?.data?.attributes.url) ||
-          (!page.Block_blob?.data?.attributes.url.includes(".svg") &&
-            page.Block_blob?.data?.attributes.url) ||
-          recurData.OpenGraph_default?.data?.attributes.url);
+        introBlob || blockBlob
+          ? STRAPI_URL + (introBlob || blockBlob)
+          : RecurringImages.OpenGraph_default.src;
 
       const Layout =
         page.type === "cart"
