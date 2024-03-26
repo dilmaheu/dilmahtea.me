@@ -42,6 +42,7 @@ type Cart = {
 
 type Cookies = {
   country: string;
+  preferredLocale: string;
   isAuthenticated: string;
   [key: string]: string;
 };

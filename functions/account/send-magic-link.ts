@@ -8,6 +8,7 @@ import fetchExactAPI from "../utils/fetchExactAPI";
 import getCustomerFilter from "../utils/getCustomerFilter";
 import stringifyZodError from "../utils/stringifyZodError";
 
+import D1Strapi from "../utils/D1Strapi";
 import { initializeLucia } from "../utils/auth";
 import { getToken, removeToken, validateToken } from "../utils/token";
 import { PublicError, checkUpdatedContact, isMobilePhone } from "../utils";
@@ -15,23 +16,21 @@ import { PublicError, checkUpdatedContact, isMobilePhone } from "../utils";
 const BaseSchema = z.object({
   email: z
     .string()
-    .email({ message: "Invalid email address" })
+    .email({ message: "error_invalid_email" })
     .toLowerCase()
     .optional(),
   phone: z
     .string()
-
     .superRefine((val, ctx) => {
       if (!isMobilePhone(val)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Invalid phone number",
+          message: "error_invalid_phone",
         });
       } else if (!isMobilePhone(val, true)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message:
-            "Phone number must be in an international format with country code and without spaces/dividers. E.g. +31851309242",
+          message: "error_invalid_i18n_phone",
         });
       }
     })
@@ -63,6 +62,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
   const { request, env } = context,
     requestOrigin = new URL(request.url).origin;
 
+  const recurData = await D1Strapi.getSingle("recurringElement", context);
+
   const body = await request.json<Body>();
 
   let email: string,
@@ -76,7 +77,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     try {
       var bodyData = BodySchema.parse(body);
     } catch (error) {
-      throw new PublicError(stringifyZodError(error));
+      throw new PublicError(stringifyZodError(error, recurData));
     }
 
     switch (bodyData.action) {
@@ -109,7 +110,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
           const isEmail = validator.isEmail(linkWith);
 
           if (!(email || phone) || (isEmail && email) || (!isEmail && phone)) {
-            throw new PublicError("Bad request");
+            throw new PublicError(recurData.error_bad_request);
           }
         }
         break;
@@ -120,7 +121,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
         const session: Session = await authRequest.validate();
 
-        if (!session) throw new PublicError("Unauthorized");
+        if (!session) throw new PublicError(recurData.error_unauthorized);
 
         ({ email, phone, referrer, previous_contact } = bodyData);
 
@@ -128,9 +129,10 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
 
         // throw error if account with email or phone already exists
         const DuplicateAccountError = new PublicError(
-          `The entered ${
-            email ? "email address" : "phone number"
-          } already exists. Please contact support at <a href="mailto:hello@dilmahtea.me">hello@dilmahtea.me</a>`,
+          recurData.error_contact_already_exists.replace(
+            "<contact_type>",
+            recurData[`text_contact_type_${email ? "email" : "phone"}`],
+          ),
         );
 
         const Customer = await fetchExactAPI(
@@ -159,7 +161,9 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     return Response.json(
       {
         success: false,
-        message: isPublicError ? error.message : "Something went wrong",
+        message: isPublicError
+          ? recurData[error.message] || error.message
+          : recurData.error_something_went_wrong,
       },
       { status: 400 },
     );
@@ -186,8 +190,8 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
       {
         success: false,
         message: isPublicError
-          ? error.message
-          : "Something went wrong. Failed to generate magic link.",
+          ? recurData[error.message] || error.message
+          : recurData.error_magic_link_creation_failed,
       },
       { status: isPublicError ? 400 : 500 },
     );
@@ -257,7 +261,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     return Response.json(
       {
         success: false,
-        message: "Something went wrong. Failed to send magic link.",
+        message: recurData.error_magic_link_sending_failed,
       },
       { status: 500 },
     );

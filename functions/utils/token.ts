@@ -13,6 +13,14 @@ type GetToken = (
   previous_contact: string,
 ) => Promise<string>;
 
+type ValidateToken = (
+  db: D1Database,
+  token: string,
+  checkIfExpired?: boolean,
+) => Promise<Token>;
+
+type RemoveToken = (db: D1Database, token: string) => Promise<void>;
+
 const EXPIRES_IN = 1000 * 60 * 60;
 
 export const getToken: GetToken = async (
@@ -40,7 +48,7 @@ export const getToken: GetToken = async (
     const { id, expires } = reusableToken;
 
     if (isWithinExpiration(expires - EXPIRES_IN * (59 / 60))) {
-      throw new PublicError("Too many requests");
+      throw new PublicError("error_too_many_requests");
     }
 
     await db
@@ -69,29 +77,29 @@ export const getToken: GetToken = async (
   return token;
 };
 
-export async function validateToken(
-  db: D1Database,
-  token: string,
-  checkIfExpired: boolean = true,
-) {
-  if (!token) throw new Error("Bad Request");
+export const validateToken: ValidateToken = async (
+  db,
+  token,
+  checkIfExpired = true,
+) => {
+  if (!token) throw new Error("error_bad_request");
 
   const storedToken = await db
     .prepare("SELECT * FROM verification_tokens WHERE id = ?")
     .bind(token)
     .first<Token>();
 
-  if (!storedToken) throw new Error("Invalid token");
+  if (!storedToken) throw new Error("error_invalid_token");
 
   if (checkIfExpired && !isWithinExpiration(storedToken.expires))
-    throw new Error("Expired token");
+    throw new Error("error_expired_token");
 
   return storedToken;
-}
+};
 
-export async function removeToken(db: D1Database, token: string) {
+export const removeToken: RemoveToken = async (db, token) => {
   await db
     .prepare("DELETE FROM verification_tokens WHERE id = ?")
     .bind(token)
     .all();
-}
+};
