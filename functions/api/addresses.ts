@@ -9,6 +9,7 @@ import objectHash from "object-hash";
 import subset from "@utils/shared/subset";
 import addressDetailsKeys from "@utils/shared/addressDetailsKeys";
 
+import D1Strapi from "../utils/D1Strapi";
 import { initializeLucia } from "../utils/auth";
 
 const EditAddressBodySchema = z.object({
@@ -43,11 +44,14 @@ declare type HandlerBody = (
   env: ENV,
   session: Session,
   bodyData: any,
+  recurData: Record<string, any>,
 ) => Promise<Response>;
 
 function getAPIHandler(handlerBody: HandlerBody) {
   const handler: PagesFunction<ENV> = async (context) => {
     const { request, env } = context;
+
+    const recurData = await D1Strapi.getSingle("recurringElement", context);
 
     const auth = initializeLucia(env.USERS),
       authRequest = auth.handleRequest(request);
@@ -58,7 +62,7 @@ function getAPIHandler(handlerBody: HandlerBody) {
 
     if (!session)
       return Response.json(
-        isGET ? [] : { success: false, error: "Unauthorized" },
+        isGET ? [] : { success: false, error: recurData.error_unauthorized },
         { status: isGET ? 200 : 401 },
       );
 
@@ -77,12 +81,12 @@ function getAPIHandler(handlerBody: HandlerBody) {
       var validatedData = Schema?.parse(bodyData) || null;
     } catch (error) {
       return Response.json(
-        { success: false, error: "Invalid address details" },
+        { success: false, error: recurData.error_invalid_address_details },
         { status: 400 },
       );
     }
 
-    return await handlerBody(env, session, validatedData);
+    return await handlerBody(env, session, validatedData, recurData);
   };
 
   return handler;
@@ -124,7 +128,7 @@ export const onRequestGet = getAPIHandler(async (env, session) => {
 });
 
 export const onRequestPost = getAPIHandler(
-  async (env, session, validatedData: AddAddressBody) => {
+  async (env, session, validatedData: AddAddressBody, recurData) => {
     const { exact_account_guid } = session.user;
 
     let {
@@ -146,7 +150,7 @@ export const onRequestPost = getAPIHandler(
       usedTags.map((tag) => tag.toLowerCase()).includes(tag.toLowerCase())
     )
       return Response.json(
-        { success: false, message: "Address tag has been used already" },
+        { success: false, message: recurData.error_address_tag_exists },
         { status: 400 },
       );
 
@@ -160,7 +164,7 @@ export const onRequestPost = getAPIHandler(
 
     if (addressHashes.includes(providedAddressHash))
       return Response.json(
-        { success: false, message: "Duplicate address provided" },
+        { success: false, message: recurData.error_duplicate_address },
         { status: 400 },
       );
 
@@ -209,7 +213,7 @@ export const onRequestPost = getAPIHandler(
 );
 
 export const onRequestPut = getAPIHandler(
-  async (env, session, validatedData: UpdateAddressBody) => {
+  async (env, session, validatedData: UpdateAddressBody, recurData) => {
     const { id, tag } = validatedData,
       {
         exact_account_guid,
@@ -243,7 +247,7 @@ export const onRequestPut = getAPIHandler(
 
       if (!existingAddress)
         return Response.json(
-          { success: false, message: "Address does not exist" },
+          { success: false, message: recurData.error_address_not_found },
           { status: 400 },
         );
 
@@ -252,7 +256,7 @@ export const onRequestPut = getAPIHandler(
 
         if (usedTags.includes(tag.toLowerCase()))
           return Response.json(
-            { success: false, message: "Address tag has been used already" },
+            { success: false, message: recurData.error_address_tag_exists },
             { status: 400 },
           );
       }
@@ -290,7 +294,7 @@ export const onRequestPut = getAPIHandler(
 
     if (hasNothingToUpdate)
       return Response.json(
-        { success: false, message: "Nothing to update" },
+        { success: false, message: recurData.error_nothing_to_update },
         { status: 400 },
       );
 
@@ -299,7 +303,7 @@ export const onRequestPut = getAPIHandler(
 );
 
 export const onRequestDelete = getAPIHandler(
-  async (env, session, validatedData: DeleteAddressBody) => {
+  async (env, session, validatedData: DeleteAddressBody, recurData) => {
     const { id } = validatedData,
       {
         exact_account_guid,
@@ -309,7 +313,10 @@ export const onRequestDelete = getAPIHandler(
 
     if (id === default_delivery_address)
       return Response.json(
-        { success: false, message: "Cannot delete default delivery address" },
+        {
+          success: false,
+          message: recurData.error_delete_default_delivery_address,
+        },
         { status: 400 },
       );
 
@@ -319,7 +326,7 @@ export const onRequestDelete = getAPIHandler(
         .run();
     } catch (error) {
       return Response.json(
-        { success: false, message: "Address does not exist" },
+        { success: false, message: recurData.error_address_not_found },
         { status: 400 },
       );
     }

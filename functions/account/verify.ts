@@ -3,14 +3,17 @@ import type { ENV } from "../utils/types";
 
 import { isbot } from "isbot";
 
+import { initializeLucia } from "../utils/auth";
 import { removeToken, validateToken } from "../utils/token";
 import { getProviderId, createSessionCookie } from "../utils";
 
-import { initializeLucia } from "../utils/auth";
+import D1Strapi from "../utils/D1Strapi";
 import fetchExactAccountWorker from "../utils/fetchExactAccountWorker";
 
 export const onRequestGet: PagesFunction<ENV> = async (context) => {
   const { request, env } = context;
+
+  const recurData = await D1Strapi.getSingle("recurringElement", context);
 
   const requestURL = new URL(request.url),
     { origin, searchParams } = requestURL;
@@ -25,7 +28,9 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
   try {
     var storedToken = await validateToken(env.USERS, token);
   } catch (error) {
-    return new Response(error.message, { status: 400 });
+    return new Response(recurData[error.message] || error.message, {
+      status: 400,
+    });
   }
 
   const { locale, contact, referrer, link_with, previous_contact } =
@@ -45,9 +50,10 @@ export const onRequestGet: PagesFunction<ENV> = async (context) => {
   } catch (error) {
     if (!previous_contact && error.message === "AUTH_INVALID_KEY_ID") {
       if (link_with) {
-        return new Response("No user account exists with " + contact, {
-          status: 400,
-        });
+        return new Response(
+          recurData.error_no_user_account_exists.replace("<contact>", contact),
+          { status: 400 },
+        );
       }
 
       const queryParams = new URLSearchParams({
