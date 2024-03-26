@@ -104,7 +104,7 @@ export default function FilteredProducts({
               {product.Stock_amount < 1 && (
                 <>
                   <div class="stock-out-label-top">
-                    {recurData.Product_sold_out_text}
+                    {recurData.text_sold_out}
                   </div>
 
                   {
@@ -135,7 +135,7 @@ export default function FilteredProducts({
                   <a
                     aria-label={
                       (product.Stock_amount < 1
-                        ? `${recurData.Product_sold_out_text}, `
+                        ? `${recurData.text_sold_out}, `
                         : "") + product.Title
                     }
                     class="main-link"
@@ -268,7 +268,7 @@ export default function FilteredProducts({
                 <div class="text-container">
                   {product.Stock_amount > 0
                     ? recurData.text_add
-                    : recurData.Product_sold_out_text}
+                    : recurData.text_sold_out}
                   <span>&#x025CF;</span>
                   <span>
                     {"€" +

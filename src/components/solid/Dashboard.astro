@@ -3,13 +3,8 @@ import subset from "@utils/shared/subset";
 import Dashboard from "@solid/Dashboard";
 import notificationIcons from "@utils/notificationIcons";
 
-let {
-  page,
-  verificationHref,
-  userAccountAddressURL,
-  recurData,
-  userAccountRecurData,
-} = structuredClone(Astro.props);
+let { page, verificationHref, userAccountAddressURL, recurData } =
+  structuredClone(Astro.props);
 
 page.kindnessCauses.forEach((kindnessCause) => {
   delete kindnessCause.locale;
@@ -39,36 +34,31 @@ recurData = subset(recurData, [
   "text_postal_code",
   "postal_code_placeholder",
   "countries",
-]);
-
-userAccountRecurData = subset(userAccountRecurData, [
-  "Button_add_text",
-  "Button_update_text",
-  "Button_save_text",
-  "Button_cancel_text",
-  "Button_view_more_address_text_singular",
-  "Button_view_more_address_text",
-  "Button_view_all_addresses_text",
+  "text_add",
+  "text_update",
+  "text_save",
+  "text_cancel",
+  "text_view_all_addresses",
   "Button_track_package",
   "Button_track_package_text",
-  "Button_buy_again_text",
-  "Button_sold_out_text",
-  "Button_go_to_my_orders_text",
-  "Button_add_new_address_text",
-  "Label_order",
+  "text_buy_again",
+  "text_sold_out",
+  "text_go_to_my_orders",
+  "text_add_new_address",
+  "text_order",
   "text_quantity",
-  "text_estimated_delivery",
   "text_estimated_shipment",
+  "text_estimated_delivery",
   "text_delivered",
-  "text_in_stock_date",
+  "Item_stock_text",
   "text_more_address",
   "text_show_more_product_in_this_order_singular",
   "text_hide_more_product_in_this_order_singular",
   "text_show_more_products_in_this_order",
   "text_hide_more_products_in_this_order",
   "Label_tag_text",
-  "Tag_others_text",
-  "Tag_others_placeholder_text",
+  "Tag_add_text",
+  "Tag_add_placeholder",
   "Tag_suggestions",
   "Checkbox_set_default_delivery_address_text",
   "Checkbox_set_default_billing_address_text",
@@ -84,7 +74,6 @@ userAccountRecurData = subset(userAccountRecurData, [
   {verificationHref}
   {userAccountAddressURL}
   {recurData}
-  {userAccountRecurData}
   {notificationIcons}
 >
   <slot name="plusIcon" slot="plusIcon" />

@@ -8,18 +8,21 @@ import localizeCMSImage from "@utils/localizeCMSImage";
 
 const { green_cup } = RecurringImages;
 
-const { page } = Astro.props,
+const { page, recurData } = Astro.props,
   { UID, locale, Form: form, Social_media, Block_text: block_text } = page;
 
-const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
-
 const {
-  Facebook_icon: fb_icon,
-  Google_icon: g_icon,
-  Twitter_icon: twitter_icon,
-  text_email: textEmail,
-  text_mobile_number: textMobileNumber,
-} = userAccountRecurData;
+  text_email_address: textEmail,
+  text_phone: textMobileNumber,
+  email_address_placeholder,
+  text_phone,
+  phone_placeholder,
+  text_first_name,
+  first_name_placeholder,
+  text_last_name,
+  last_name_placeholder,
+  text_or,
+} = recurData;
 
 const isEmailOrPhoneForm = form?.Email_or_phone,
   social_media =
@@ -125,14 +128,12 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                     <div class="form-gap grid w-full max-w-[360px] mx-auto">
                       <div class="input-default">
                         <label>
-                          {userAccountRecurData.Input_label_email}
+                          {textEmail}
 
                           <input
                             type="email"
                             name="email"
-                            placeholder={
-                              userAccountRecurData.Input_placeholder_email
-                            }
+                            placeholder={email_address_placeholder}
                             required
                           />
                         </label>
@@ -141,23 +142,19 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                       <div class="form-item w-full">
                         <div class="flex items-center">
                           <span class="w-full h-px bg-primary-lightest" />
-                          <span class="text-black-light px-3">
-                            {userAccountRecurData.Social_media_divider_or_text}
-                          </span>
+                          <span class="text-black-light px-3">{text_or}</span>
                           <span class="w-full h-px bg-primary-lightest" />
                         </div>
                       </div>
 
                       <div class="input-default">
                         <label>
-                          {userAccountRecurData.Input_label_phone}
+                          {text_phone}
 
                           <input
                             type="tel"
                             name="phone"
-                            placeholder={
-                              userAccountRecurData.Input_placeholder_phone
-                            }
+                            placeholder={phone_placeholder}
                             required
                           />
                         </label>
@@ -174,15 +171,13 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                       {form.First_name && (
                         <div class="input-default">
                           <label>
-                            {userAccountRecurData.Input_label_first_name}
+                            {text_first_name}
 
                             <input
                               class="w-full"
                               type="text"
                               name="first_name"
-                              placeholder={
-                                userAccountRecurData.Input_placeholder_first_name
-                              }
+                              placeholder={first_name_placeholder}
                               required
                             />
                           </label>
@@ -192,14 +187,12 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                       {form.Last_name && (
                         <div class="input-default">
                           <label>
-                            {userAccountRecurData.Input_label_last_name}
+                            {text_last_name}
 
                             <input
                               type="text"
                               name="last_name"
-                              placeholder={
-                                userAccountRecurData.Input_placeholder_last_name
-                              }
+                              placeholder={last_name_placeholder}
                               required
                             />
                           </label>
@@ -209,14 +202,12 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                       {form.Email && (
                         <div class="input-default">
                           <label>
-                            {userAccountRecurData.Input_label_email}
+                            {textEmail}
 
                             <input
                               type="email"
                               name="email"
-                              placeholder={
-                                userAccountRecurData.Input_placeholder_email
-                              }
+                              placeholder={email_address_placeholder}
                               required
                             />
                           </label>
@@ -226,14 +217,12 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                       {form.Phone && (
                         <div class="input-default">
                           <label>
-                            {userAccountRecurData.Input_label_phone}
+                            {text_phone}
 
                             <input
                               type="tel"
                               name="phone"
-                              placeholder={
-                                userAccountRecurData.Input_placeholder_phone
-                              }
+                              placeholder={phone_placeholder}
                               required
                             />
                           </label>
@@ -243,7 +232,7 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                   )}
 
                   <div class="grid w-full max-w-[360px] mx-auto">
-                    <button class="button-primary-large !w-full">
+                    <button class="button-primary-large !w-full submit-btn">
                       {form?.Submit_button_text}
                     </button>
 
@@ -261,9 +250,7 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
               social_media && (
                 <div class="flex items-center w-full max-w-[360px] mx-auto">
                   <span class="w-full h-px bg-primary-lightest" />
-                  <span class="text-black-light px-3">
-                    {userAccountRecurData.Social_media_divider_or_text}
-                  </span>
+                  <span class="text-black-light px-3">{text_or}</span>
                   <span class="w-full h-px bg-primary-lightest" />
                 </div>
               )

@@ -10,8 +10,7 @@ import localizeCMSImage from "@utils/localizeCMSImage";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { page, recurData } = Astro.props,
-  { locale, payment_methods, Accepted_cards_icon } = page,
-  userRecurData = CMS.get("userAccountRecurringElement", locale);
+  { locale, payment_methods } = page;
 
 const checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
   steps = checkoutFlowData.steps.split("\n"),
@@ -25,7 +24,7 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
   }/`;
 
 const methods = payment_methods.data?.map(({ attributes }) => attributes),
-  accepted_cards_icon = Accepted_cards_icon.data?.map(
+  accepted_cards_icon = recurData.Accepted_cards_icon.data?.map(
     ({ attributes }) => attributes,
   );
 ---
@@ -101,18 +100,14 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
 
   <div id="payment-error" class="hidden">
     <AdvancedNotification
-      Title={page.text_payment_error}
+      Title={recurData.error_payment}
       Type="Error"
       Bordered={true}
       Rounded={true}
     />
   </div>
 
-  <CheckoutBillingAddress
-    {page}
-    {recurData}
-    userAccountRecurData={userRecurData}
-  />
+  <CheckoutBillingAddress {page} {recurData} />
 
   <section class="division-gap grid">
     <h2 class="recoleta text-h2 text-primary">{page.Block2_title}</h2>
@@ -156,10 +151,14 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
 
     <div data-name="card-info" class="payment-info division-gap grid !hidden">
       <div class="division-in-gap">
-        <div class="text-b3 font-bold text-black">{page.text_card_details}</div>
+        <div class="text-b3 font-bold text-black">
+          {recurData.text_card_details}
+        </div>
 
         <div class="division-in-gap flex flex-wrap">
-          <div class="text-b5 text-black-light">{page.text_accepted_cards}</div>
+          <div class="text-b5 text-black-light">
+            {recurData.text_accepted_cards}
+          </div>
 
           <div class="division-in-element-gap flex flex-wrap items-center">
             {
@@ -181,7 +180,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
       <div>
         <div role="form" class="form-grid" id="card-info">
           <div class="grid division-in-element-gap">
-            <div class="input-label">{page.Card_label_number}</div>
+            <div class="input-label">{recurData.text_card_number}</div>
 
             <div id="card-number"></div>
           </div>
@@ -189,13 +188,13 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
           <div class="hidden sm:block h-0 select-none"></div>
 
           <div class="grid division-in-element-gap">
-            <div class="input-label">{page.Card_label_date}</div>
+            <div class="input-label">{recurData.text_card_date}</div>
 
             <div id="card-expiry"></div>
           </div>
 
           <div class="grid division-in-element-gap">
-            <div class="input-label">{page.Card_label_cvv}</div>
+            <div class="input-label">{recurData.text_card_cvv}</div>
 
             <div id="card-cvc"></div>
           </div>
@@ -203,7 +202,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
           <input type="hidden" id="stripeToken" name="stripeToken" />
 
           <div class="text-b5 text-error hidden" id="card-error">
-            {page.text_card_error_message}
+            {recurData.error_invalid_card}
           </div>
         </div>
 
@@ -219,7 +218,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     <div data-name="ideal-info" class="payment-info division-gap grid !hidden">
       <div role="form" class="form-grid">
         <div class="grid division-in-element-gap">
-          <div class="input-label">{page.Ideal_label_select_bank}</div>
+          <div class="input-label">{recurData.text_select_bank}</div>
 
           <div id="ideal-bank"></div>
         </div>
@@ -229,14 +228,10 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     <div class="checkout-button-container">
       <a href={checkoutShippingLink} class="button-link-primary-large">
         <span class="sm:hidden">
-          {
-            `${
-              userRecurData.Button_return_to_text
-            } ${shortenedSteps[1]?.toLowerCase()}`
-          }
+          {`${recurData.text_return_to} ${shortenedSteps[1]?.toLowerCase()}`}
         </span>
         <span class="hidden sm:block">
-          {`${userRecurData.Button_return_to_text} ${steps[1]?.toLowerCase()}`}
+          {`${recurData.text_return_to} ${steps[1]?.toLowerCase()}`}
         </span>
       </a>
 
@@ -247,7 +242,7 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
         disabled
       >
         <span>
-          {page.Button_text_pay_with}
+          {recurData.text_pay_with}
           <span class="payment-type"></span>
         </span>
       </button>

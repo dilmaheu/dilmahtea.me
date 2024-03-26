@@ -15,7 +15,6 @@ export default function SavedAddresses({
   trashCanIcon,
   recurData,
   notificationIcons,
-  userAccountRecurData,
 }) {
   const [isLoading, setIsLoading] = createSignal(true),
     [notification, setNotification] = createSignal(null),
@@ -34,41 +33,39 @@ export default function SavedAddresses({
   const {
     Label_tag_text,
     Tag_default_text: tag_default,
-    Tag_others_text: tag_others,
-    Tag_others_placeholder_text: tag_placeholder_others,
+    Tag_add_text: tag_others,
+    Tag_add_placeholder: tag_placeholder_others,
     Tag_suggestions,
-    Button_add_text,
-    Button_add_new_address_text,
-    Button_make_default_text,
-    Button_save_text,
-    Button_cancel_text,
+    text_add,
+    text_add_new_address,
+    text_set_default,
+    text_save,
+    text_cancel,
     Tag_default_text,
     text_saved_Addresses,
     text_more_address,
     text_hide_more_address,
-    Input_label_first_name,
-    Input_placeholder_first_name,
-    Input_label_last_name,
-    Input_placeholder_last_name,
-    Input_label_country,
-    Input_placeholder_country,
-    Input_label_city,
-    Input_placeholder_city,
-    Input_label_street,
-    Input_placeholder_street,
-    Input_label_postal_code,
-    Input_placeholder_postal_code,
+    text_first_name,
+    first_name_placeholder,
+    text_last_name,
+    last_name_placeholder,
+    text_country,
+    country_placeholder,
+    text_city,
+    city_placeholder,
+    text_street,
+    street_placeholder,
+    text_postal_code,
+    postal_code_placeholder,
     Checkbox_set_default_delivery_address_text,
     Checkbox_set_default_billing_address_text,
-    Checkbox_add_delivery_address_text,
-    Checkbox_add_billing_address_text,
     text_content,
     text_default_delivery_address,
     text_default_billing_address,
     Notification_added_address,
     Notification_updated_address,
     Notification_deleted_address,
-  } = userAccountRecurData;
+  } = recurData;
 
   createEffect(() => {
     const { updated_user_info, info, action } = Object.fromEntries(
@@ -84,8 +81,8 @@ export default function SavedAddresses({
         action === "add"
           ? Notification_added_address
           : action === "update"
-          ? Notification_updated_address
-          : Notification_deleted_address;
+            ? Notification_updated_address
+            : Notification_deleted_address;
 
       setNotification({
         type: "success",
@@ -118,7 +115,7 @@ export default function SavedAddresses({
             onclick={() => setShowNewAddressForm(true)}
           >
             {plusIcon}
-            {Button_add_new_address_text}
+            {text_add_new_address}
           </button>
         </div>
 
@@ -126,7 +123,6 @@ export default function SavedAddresses({
           <EditAddress
             action="add"
             recurData={recurData}
-            userAccountRecurData={userAccountRecurData}
             showForm={setShowNewAddressForm}
             handleAPIResponse={handleAPIResponse}
             setNotification={setNotification}
@@ -153,7 +149,6 @@ export default function SavedAddresses({
                           action="update"
                           address={address}
                           recurData={recurData}
-                          userAccountRecurData={userAccountRecurData}
                           showForm={setEditAddress}
                           handleAPIResponse={handleAPIResponse}
                           setNotification={setNotification}
@@ -161,7 +156,7 @@ export default function SavedAddresses({
                       ) : (
                         <Address
                           address={address}
-                          userAccountRecurData={userAccountRecurData}
+                          recurData={recurData}
                           setEditAddress={setEditAddress}
                           trashCanIcon={trashCanIcon}
                           handleAPIResponse={handleAPIResponse}
