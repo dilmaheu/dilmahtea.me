@@ -38,18 +38,18 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     if (redirectResponse) return redirectResponse;
   }
 
-  const parsedCookie = parseCookie(request.headers.get("Cookie") || "");
+  const parsedCookies = parseCookie(request.headers.get("Cookie") || "");
 
   const { country } = request.cf,
     isAuthenticated = String(!!session),
-    cookie = Object.entries({ country, isAuthenticated });
+    cookies = Object.entries({ country, isAuthenticated });
 
-  if (cookie.some(([name, value]) => parsedCookie[name] !== value)) {
+  if (cookies.some(([name, value]) => parsedCookies[name] !== value)) {
     let response = await env.ASSETS.fetch(request.url);
 
     response = new Response(response.body, response);
 
-    cookie.forEach(([name, value]) => {
+    cookies.forEach(([name, value]) => {
       response.headers.append(
         "Set-Cookie",
         serializeCookie(name, value, { path: "/" }),
