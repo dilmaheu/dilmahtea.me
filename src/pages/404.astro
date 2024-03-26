@@ -1,5 +1,7 @@
 ---
 import CMS from "@store/CMS";
+import RecurringImages from "@store/RecurringImages";
+
 import BasicPage from "@pages/BasicPage.astro";
 import PageLayout from "@layouts/PageLayout.astro";
 import getAvailableLocales from "@utils/getAvailableLocales";
@@ -32,6 +34,11 @@ const recurringElements = CMS.get("recurringElement", locale),
 const alternateURLs = Object.fromEntries(
   Object.entries(availableLocalesRecord).filter((entry) => entry[0] !== locale),
 );
+
+const blockBlob = _404Page.Block_blob?.data?.url,
+  metaImageSrc = blockBlob
+    ? STRAPI_URL + blockBlob
+    : RecurringImages.OpenGraph_default.src;
 ---
 
 <script is:inline define:vars={{ availableLocales }}>
@@ -61,9 +68,13 @@ const alternateURLs = Object.fromEntries(
   meta={_404Page.Meta}
   recurData={recurringElements}
   ariaLabelRecurData={ariaLabelRecurData}
+<<<<<<< HEAD
   metaImageSrc={STRAPI_URL +
     (_404Page.Block_blob?.data?.url ||
       recurringElements.OpenGraph_default.data.attributes.url)}
+=======
+  metaImageSrc={metaImageSrc}
+>>>>>>> 6e3cd32ae164d1df61e3bc45a2d54fe87ef11f9d
 >
   <BasicPage page={localized404Page} />
 </PageLayout>

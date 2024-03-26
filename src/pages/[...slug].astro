@@ -5,7 +5,6 @@ import RecurringImages from "@store/RecurringImages";
 
 import PageLayout from "@layouts/PageLayout.astro";
 import CheckoutLayout from "@layouts/CheckoutLayout.astro";
-import UserAccountLayout from "@layouts/UserAccountLayout.astro";
 
 import Cart from "@pages/Cart.astro";
 import Posts from "@pages/Posts.astro";
@@ -299,10 +298,14 @@ export async function getStaticPaths() {
     true,
   );
 
-  const estatePages = getRoutes(homeEstate, (_, { locale }) => ({
-    type: "estate",
-    posts: locale && getPosts(estates, locale),
-  }));
+  const estatePages = getRoutes(
+    homeEstate,
+    (_, { locale }) => ({
+      type: "estate",
+      posts: locale && getPosts(estates, locale),
+    }),
+    true,
+  );
 
   const productPages = getRoutes(homeProduct, () => ({
     type: "product",
