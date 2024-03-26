@@ -36,8 +36,8 @@ D1Strapi.getSingle = async function (
 
   return [
     single,
-    single.localizations.data.map(({ attributes }) => attributes),
-  ].find(({ locale }) => locale === preferredLocale);
+    ...single.localizations.data.map(({ attributes }) => attributes),
+  ].find(({ locale }) => locale.substring(0, 2) === preferredLocale);
 };
 
 export default D1Strapi;
