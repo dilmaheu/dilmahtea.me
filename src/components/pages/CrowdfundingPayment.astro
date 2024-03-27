@@ -11,8 +11,23 @@ import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 import CheckoutInformationForm from "@solid/CheckoutInformationForm.astro";
 
 const { page, recurData } = Astro.props,
-  { locale, payment_methods } = page;
+  { locale, payment_methods, success_url } = page;
+
+const crowdfundingSuccessLink = `/${locale}/${success_url}/`;
 ---
+
+<script
+  define:vars={{
+    crowdfundingSuccessLink,
+  }}
+  is:inline
+>
+  window.crowdfundingInfo = JSON.parse(
+    localStorage.getItem("crowdfunding-info") || "{}",
+  );
+
+  window.crowdfundingSuccessLink = crowdfundingSuccessLink;
+</script>
 
 <form
   method="POST"
@@ -31,7 +46,7 @@ const { page, recurData } = Astro.props,
         payment_type: "crowdfunding",
         locale: window.preferredLocale,
         origin_url: origin + pathname,
-        success_url: origin + page.success_url,
+        success_url: origin + window.crowdfundingSuccessLink,
       };
 
       return Object.keys(paymentInfo)

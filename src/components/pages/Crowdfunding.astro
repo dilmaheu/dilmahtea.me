@@ -91,7 +91,7 @@ const { page, ariaLabelRecurData } = Astro.props,
         {page.Block_title}
       </h2>
 
-      <div role="listitem" class="blob-cards-container">
+      <div role="list" class="blob-cards-container">
         {
           page.allPlans.map(
             async ({
@@ -102,7 +102,7 @@ const { page, ariaLabelRecurData } = Astro.props,
               List,
             }) => (
               <div
-                role="list"
+                role="listitem"
                 tabindex="0"
                 class="crowdfunding-plan-card division-in-gap"
                 data-plan={JSON.stringify({
@@ -157,6 +157,7 @@ const { page, ariaLabelRecurData } = Astro.props,
 >
   async function handleCrowdfundingPlanClick(plan) {
     localStorage.setItem("crowdfunding-info", JSON.stringify(plan));
+
     window.location.href = crowdfundingPaymentLink;
   }
 
@@ -164,10 +165,12 @@ const { page, ariaLabelRecurData } = Astro.props,
     const crowdfundingCards = document.querySelectorAll(
       ".crowdfunding-plan-card",
     );
+
     crowdfundingCards.forEach((card) => {
       card.addEventListener("click", function () {
-        const planData = card.getAttribute("data-plan");
-        const plan = planData ? JSON.parse(planData) : null;
+        const planData = card.getAttribute("data-plan"),
+          plan = planData ? JSON.parse(planData) : null;
+
         handleCrowdfundingPlanClick(plan);
       });
     });
