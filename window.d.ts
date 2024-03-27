@@ -67,6 +67,7 @@ declare global {
   interface Window {
     paymentID: string; // defined in CheckoutKindness.astro
     checkoutKindnessLink: string; // defined in CheckoutShipping.astro
+    crowdfundingSuccessLink: string; // defined in crowdfundingPayment.astro
 
     regions: Regions; // defined in SetUserRegion.astro
     userRegion: string; // defined in SetUserRegion.astro (SetUserRegionDev.astro for dev)
