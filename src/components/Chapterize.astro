@@ -45,9 +45,9 @@ headings.forEach((heading, i) => {
       contentHTML = contentHTML.replace(
         headingOuterHTML,
         (i === 0 ? "" : "</div>") +
-          `<div id="${heading.innerText
-            ?.toLowerCase()
-            ?.replaceAll(" ", "-")}" class='chapter'>` +
+          `<div id="${encodeURIComponent(
+            heading.innerText?.toLowerCase()?.replaceAll(" ", "-"),
+          )}" class='chapter'>` +
           headingOuterHTML,
       );
 
