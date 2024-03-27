@@ -40,6 +40,7 @@ export default function AddressTags({
 
   const {
     Label_tag_text,
+    label_auto_tag,
     Tag_add_text,
     Tag_add_placeholder,
     Tag_suggestions,
@@ -96,7 +97,9 @@ export default function AddressTags({
               />
 
               <label for={`address-tag-${tag}`} class="radio-button-default">
-                {tag}
+                {!tag.startsWith("Address #")
+                  ? tag
+                  : label_auto_tag + tag.split(" "[1])}
               </label>
             </div>
           ))}
