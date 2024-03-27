@@ -5,9 +5,9 @@ import { For, createEffect, createSignal } from "solid-js";
 import Loading from "@solid/Loading";
 import Address from "@solid/Address";
 import EditAddress from "@solid/EditAddress";
-import SolidNotification from "@solid/SolidNotification";
 
 import { addresses } from "@signals/addresses";
+
 import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 
 export default function SavedAddresses({
@@ -101,12 +101,6 @@ export default function SavedAddresses({
   return (
     <div class="tiled-div">
       <div class="grid division-gap">
-        <SolidNotification
-          notification={notification}
-          notificationIcons={notificationIcons}
-          bottomMargin={true}
-        />
-
         <div class="flex flex-wrap items-center justify-between w-full">
           <div class="text-h5 font-bold text-black">{text_saved_Addresses}</div>
 
@@ -123,9 +117,8 @@ export default function SavedAddresses({
           <EditAddress
             action="add"
             recurData={recurData}
+            notificationIcons={notificationIcons}
             showForm={setShowNewAddressForm}
-            handleAPIResponse={handleAPIResponse}
-            setNotification={setNotification}
           />
         )}
 
@@ -149,9 +142,8 @@ export default function SavedAddresses({
                           action="update"
                           address={address}
                           recurData={recurData}
+                          notificationIcons={notificationIcons}
                           showForm={setEditAddress}
-                          handleAPIResponse={handleAPIResponse}
-                          setNotification={setNotification}
                         />
                       ) : (
                         <Address

@@ -2,19 +2,23 @@ import type { Setter } from "solid-js";
 import type { Address } from "@solid/Address";
 import type { handleAPIResponseType } from "@utils/handleAPIResponseBase";
 
+import { createSignal } from "solid-js";
+
 import { user } from "@signals/user";
 import { addresses } from "@signals/addresses";
 
 import AddressTags from "@solid/AddressTags";
 import EditAddressForm from "@solid/EditAddressForm";
+import SolidNotification from "@solid/SolidNotification";
+
+import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 
 declare interface Props {
   action: "add" | "update";
   address?: Address;
   recurData: any;
+  notificationIcons: any;
   showForm: Setter<any>;
-  handleAPIResponse: handleAPIResponseType;
-  setNotification: Setter<any>;
   scroll?: () => void;
   tickCheckboxes?: {
     default_billing_address?: boolean;
@@ -26,12 +30,13 @@ export default function EditAddress({
   action,
   address,
   recurData,
+  notificationIcons,
   showForm,
-  handleAPIResponse,
-  setNotification,
   scroll,
   tickCheckboxes,
 }: Props) {
+  const [notification, setNotification] = createSignal(null);
+
   const {
     text_add,
     text_update,
@@ -39,6 +44,9 @@ export default function EditAddress({
     Checkbox_set_default_delivery_address_text,
     Checkbox_set_default_billing_address_text,
   } = recurData;
+
+  const handleAPIResponse: handleAPIResponseType = (response, callbacks) =>
+    handleAPIResponseBase(response, notification, setNotification, callbacks);
 
   function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
@@ -167,6 +175,11 @@ export default function EditAddress({
           </button>
         </div>
       </div>
+
+      <SolidNotification
+        notification={notification}
+        notificationIcons={notificationIcons}
+      />
     </form>
   );
 }
