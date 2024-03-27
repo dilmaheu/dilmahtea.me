@@ -69,8 +69,8 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
     padding: poly-fluid-clamp-primary(10px, 15px);
   }
 
-  .text-error {
-    @apply mt-[clamp(10px,calc(0.625vw+6px),15px)];
+  .error-notification {
+    margin-top: poly-fluid-clamp-primary(25px, 30px);
   }
 </style>
 
@@ -237,9 +237,14 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                       {form?.Submit_button_text}
                     </button>
 
-                    <strong>
-                      <p class="text-error text-center" />
-                    </strong>
+                    <div class="error-notification hidden">
+                      <AdvancedNotification
+                        Title={null}
+                        Type="Error"
+                        Bordered={true}
+                        Rounded={true}
+                      />
+                    </div>
                   </div>
                 </div>
               </form>
@@ -334,9 +339,14 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                     </button>
                   </div>
 
-                  <strong>
-                    <p class="text-error text-center" />
-                  </strong>
+                  <div class="error-notification hidden">
+                    <AdvancedNotification
+                      Title={null}
+                      Type="Error"
+                      Bordered={true}
+                      Rounded={true}
+                    />
+                  </div>
                 </div>
               )
             }
@@ -371,8 +381,13 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
 
   const form = accountActionSection.querySelector("form"),
     ctaButton = accountActionSection.querySelector("button"),
-    errorArea = accountActionSection.querySelector(".text-error"),
-    blockText = accountActionSection.querySelector(".block-text");
+    blockText = accountActionSection.querySelector(".block-text"),
+    errorNotification = accountActionSection.querySelector(
+      ".error-notification",
+    ),
+    errorNotificationContent = errorNotification.querySelector(
+      ".notification-content",
+    );
 
   const searchParams = Object.fromEntries(new URLSearchParams(location.search));
 
@@ -469,7 +484,7 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
   }
 
   async function sendRequest({ url, data, onSuccess }) {
-    errorArea.textContent = "";
+    errorNotification.classList.add("hidden");
 
     const response = await fetch(url, {
       method: "POST",
@@ -487,7 +502,9 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
     if (response.success) {
       onSuccess(response);
     } else {
-      errorArea.textContent = response.message;
+      errorNotificationContent.textContent = response.message;
+
+      errorNotification.classList.remove("hidden");
     }
   }
 
