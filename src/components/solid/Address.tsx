@@ -26,7 +26,7 @@ declare interface Props {
   scroll?: () => void;
   isMyProfile?: boolean;
   trashCanIcon?: HTMLElement;
-  handleAPIResponse: handleAPIResponseType;
+  handleAPIResponse?: handleAPIResponseType; // required for delete only
 }
 
 export default function Address({

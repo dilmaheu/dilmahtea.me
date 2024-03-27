@@ -1,5 +1,4 @@
 import type { Address as AddressType } from "@solid/Address";
-import type { handleAPIResponseType } from "@utils/handleAPIResponseBase";
 
 import { createEffect, createSignal } from "solid-js";
 
@@ -10,8 +9,6 @@ import InfoUnit from "@solid/InfoUnit";
 import EditAddress from "@solid/EditAddress";
 import DefaultAddress from "@solid/DefaultAddress";
 import SolidNotification from "@solid/SolidNotification";
-
-import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 
 export default function UserInfo({
   plusIcon,
@@ -30,9 +27,6 @@ export default function UserInfo({
         default_billing_address?: boolean;
       };
     }>();
-
-  const handleAPIResponse: handleAPIResponseType = (response, callbacks) =>
-    handleAPIResponseBase(response, notification, setNotification, callbacks);
 
   const {
     Title,
@@ -182,7 +176,6 @@ export default function UserInfo({
                     recurData={recurData}
                     setEditAddress={setEditAddress}
                     scrollToAddNewAddress={scrollToAddNewAddress}
-                    handleAPIResponse={handleAPIResponse}
                   />
 
                   <div class="h-px bg-primary-lightest" />
@@ -193,7 +186,6 @@ export default function UserInfo({
                     recurData={recurData}
                     setEditAddress={setEditAddress}
                     scrollToAddNewAddress={scrollToAddNewAddress}
-                    handleAPIResponse={handleAPIResponse}
                   />
                 </>
               );
@@ -226,9 +218,8 @@ export default function UserInfo({
                   action={editAddress().action}
                   address={editAddress().address}
                   recurData={recurData}
+                  notificationIcons={notificationIcons}
                   showForm={setEditAddress}
-                  handleAPIResponse={handleAPIResponse}
-                  setNotification={setNotification}
                   scroll={() => scrollToAddNewAddress(false)}
                   tickCheckboxes={editAddress().tickCheckboxes}
                 />
