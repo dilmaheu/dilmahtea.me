@@ -3,10 +3,11 @@ import type { ENV } from "../utils/types";
 
 import { z } from "zod";
 
+import { initializeLucia } from "../utils/auth";
 import { removeToken, validateToken } from "../utils/token";
 import { getProviderId, createSessionCookie } from "../utils";
 
-import { initializeLucia } from "../utils/auth";
+import D1Strapi from "../utils/D1Strapi";
 import fetchExactAccountWorker from "../utils/fetchExactAccountWorker";
 
 const BodySchema = z.object({
@@ -20,6 +21,8 @@ type Body = z.infer<typeof BodySchema>;
 export const onRequestPost: PagesFunction<ENV> = async (context) => {
   const { request, env } = context;
 
+  const recurData = await D1Strapi.getSingle("recurringElement", context);
+
   const body = await request.json<Body>();
 
   try {
@@ -32,7 +35,7 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     );
   } catch (error) {
     return Response.json(
-      { success: false, message: "Bad request" },
+      { success: false, message: recurData.error_bad_request },
       { status: 400 },
     );
   }

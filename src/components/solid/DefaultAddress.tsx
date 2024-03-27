@@ -3,12 +3,11 @@ import Address from "@solid/Address";
 export default function DefaultAddress({
   label,
   address,
-  userAccountRecurData,
+  recurData,
   setEditAddress,
   scrollToAddNewAddress,
-  handleAPIResponse,
 }) {
-  const { Button_add_text } = userAccountRecurData;
+  const { text_add } = recurData;
 
   return (
     <div class="grid division-in-element-gap">
@@ -31,17 +30,16 @@ export default function DefaultAddress({
             }}
             class="button-link-primary-large"
           >
-            {Button_add_text}
+            {text_add}
           </button>
         </div>
       ) : (
         <Address
           address={address}
-          userAccountRecurData={userAccountRecurData}
+          recurData={recurData}
           setEditAddress={setEditAddress}
           isMyProfile={true}
           scroll={scrollToAddNewAddress}
-          handleAPIResponse={handleAPIResponse}
         />
       )}
     </div>

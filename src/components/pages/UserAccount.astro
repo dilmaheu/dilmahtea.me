@@ -1,28 +1,32 @@
 ---
 import Markdown from "@components/Markdown.astro";
+import AdvancedNotification from "@components/AdvancedNotification.astro";
 
-import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
-import getUserAccountPagesLink from "@utils/getUserAccountPagesLink";
+
 import localizeCMSImage from "@utils/localizeCMSImage";
+import getUserAccountPagesLink from "@utils/getUserAccountPagesLink";
 
 const { green_cup } = RecurringImages;
 
-const { page } = Astro.props,
+const { page, recurData } = Astro.props,
   { UID, locale, Form: form, Social_media, Block_text: block_text } = page;
 
-const userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
-
 const {
-  Facebook_icon: fb_icon,
-  Google_icon: g_icon,
-  Twitter_icon: twitter_icon,
-  text_email: textEmail,
-  text_mobile_number: textMobileNumber,
-} = userAccountRecurData;
+  text_email_address: textEmail,
+  text_phone: textMobileNumber,
+  email_address_placeholder,
+  text_phone,
+  phone_placeholder,
+  text_first_name,
+  first_name_placeholder,
+  text_last_name,
+  last_name_placeholder,
+  text_or,
+} = recurData;
 
 const isEmailOrPhoneForm = form?.Email_or_phone,
-  social_media =
+  displaySocialMedia =
     Social_media && Object.values(Social_media).some((value) => value);
 
 function fromEntries(array) {
@@ -65,8 +69,8 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
     padding: poly-fluid-clamp-primary(10px, 15px);
   }
 
-  .text-error {
-    @apply mt-[clamp(10px,calc(0.625vw+6px),15px)];
+  .error-notification {
+    margin-top: poly-fluid-clamp-primary(25px, 30px);
   }
 </style>
 
@@ -125,14 +129,12 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                     <div class="form-gap grid w-full max-w-[360px] mx-auto">
                       <div class="input-default">
                         <label>
-                          {userAccountRecurData.Input_label_email}
+                          {textEmail}
 
                           <input
                             type="email"
                             name="email"
-                            placeholder={
-                              userAccountRecurData.Input_placeholder_email
-                            }
+                            placeholder={email_address_placeholder}
                             required
                           />
                         </label>
@@ -141,23 +143,19 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                       <div class="form-item w-full">
                         <div class="flex items-center">
                           <span class="w-full h-px bg-primary-lightest" />
-                          <span class="text-black-light px-3">
-                            {userAccountRecurData.Social_media_divider_or_text}
-                          </span>
+                          <span class="text-black-light px-3">{text_or}</span>
                           <span class="w-full h-px bg-primary-lightest" />
                         </div>
                       </div>
 
                       <div class="input-default">
                         <label>
-                          {userAccountRecurData.Input_label_phone}
+                          {text_phone}
 
                           <input
                             type="tel"
                             name="phone"
-                            placeholder={
-                              userAccountRecurData.Input_placeholder_phone
-                            }
+                            placeholder={phone_placeholder}
                             required
                           />
                         </label>
@@ -174,15 +172,13 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                       {form.First_name && (
                         <div class="input-default">
                           <label>
-                            {userAccountRecurData.Input_label_first_name}
+                            {text_first_name}
 
                             <input
                               class="w-full"
                               type="text"
                               name="first_name"
-                              placeholder={
-                                userAccountRecurData.Input_placeholder_first_name
-                              }
+                              placeholder={first_name_placeholder}
                               required
                             />
                           </label>
@@ -192,14 +188,12 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                       {form.Last_name && (
                         <div class="input-default">
                           <label>
-                            {userAccountRecurData.Input_label_last_name}
+                            {text_last_name}
 
                             <input
                               type="text"
                               name="last_name"
-                              placeholder={
-                                userAccountRecurData.Input_placeholder_last_name
-                              }
+                              placeholder={last_name_placeholder}
                               required
                             />
                           </label>
@@ -209,14 +203,12 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                       {form.Email && (
                         <div class="input-default">
                           <label>
-                            {userAccountRecurData.Input_label_email}
+                            {textEmail}
 
                             <input
                               type="email"
                               name="email"
-                              placeholder={
-                                userAccountRecurData.Input_placeholder_email
-                              }
+                              placeholder={email_address_placeholder}
                               required
                             />
                           </label>
@@ -226,14 +218,12 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                       {form.Phone && (
                         <div class="input-default">
                           <label>
-                            {userAccountRecurData.Input_label_phone}
+                            {text_phone}
 
                             <input
                               type="tel"
                               name="phone"
-                              placeholder={
-                                userAccountRecurData.Input_placeholder_phone
-                              }
+                              placeholder={phone_placeholder}
                               required
                             />
                           </label>
@@ -243,13 +233,18 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                   )}
 
                   <div class="grid w-full max-w-[360px] mx-auto">
-                    <button class="button-primary-large !w-full">
+                    <button class="button-primary-large !w-full submit-btn">
                       {form?.Submit_button_text}
                     </button>
 
-                    <strong>
-                      <p class="text-error text-center" />
-                    </strong>
+                    <div class="error-notification hidden">
+                      <AdvancedNotification
+                        Title={null}
+                        Type="Error"
+                        Bordered={true}
+                        Rounded={true}
+                      />
+                    </div>
                   </div>
                 </div>
               </form>
@@ -257,17 +252,15 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
           }
 
           <div class="form-container division-gap grid w-full mx-auto">
-            {
-              social_media && (
+            <!-- {
+              displaySocialMedia && (
                 <div class="flex items-center w-full max-w-[360px] mx-auto">
                   <span class="w-full h-px bg-primary-lightest" />
-                  <span class="text-black-light px-3">
-                    {userAccountRecurData.Social_media_divider_or_text}
-                  </span>
+                  <span class="text-black-light px-3">{text_or}</span>
                   <span class="w-full h-px bg-primary-lightest" />
                 </div>
               )
-            }
+            } -->
 
             {
               block_text && (
@@ -283,8 +276,8 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
               )
             }
 
-            {
-              social_media && (
+            <!-- {
+              displaySocialMedia && (
                 <div
                   class:list={[
                     "grid-gap flex flex-wrap justify-center text-center",
@@ -292,7 +285,7 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                       "w-full max-w-[360px]",
                   ]}
                 >
-                  {social_media.Facebook && (
+                  {Social_media.Facebook && (
                     <div class="social-media-icon-container">
                       <img
                         class="w-full h-full"
@@ -303,7 +296,8 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                       />
                     </div>
                   )}
-                  {social_media.Google && (
+
+                  {Social_media.Google && (
                     <div class="social-media-icon-container">
                       <img
                         class="w-full h-full"
@@ -314,7 +308,8 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                       />
                     </div>
                   )}
-                  {social_media.Twitter && (
+
+                  {Social_media.Twitter && (
                     <div class="social-media-icon-container">
                       <img
                         class="w-full h-full"
@@ -327,7 +322,7 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                   )}
                 </div>
               )
-            }
+            } -->
 
             {
               page?.Button_text && (
@@ -344,9 +339,14 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
                     </button>
                   </div>
 
-                  <strong>
-                    <p class="text-error text-center" />
-                  </strong>
+                  <div class="error-notification hidden">
+                    <AdvancedNotification
+                      Title={null}
+                      Type="Error"
+                      Bordered={true}
+                      Rounded={true}
+                    />
+                  </div>
                 </div>
               )
             }
@@ -381,8 +381,13 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
 
   const form = accountActionSection.querySelector("form"),
     ctaButton = accountActionSection.querySelector("button"),
-    errorArea = accountActionSection.querySelector(".text-error"),
-    blockText = accountActionSection.querySelector(".block-text");
+    blockText = accountActionSection.querySelector(".block-text"),
+    errorNotification = accountActionSection.querySelector(
+      ".error-notification",
+    ),
+    errorNotificationContent = errorNotification.querySelector(
+      ".notification-content",
+    );
 
   const searchParams = Object.fromEntries(new URLSearchParams(location.search));
 
@@ -479,7 +484,7 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
   }
 
   async function sendRequest({ url, data, onSuccess }) {
-    errorArea.textContent = "";
+    errorNotification.classList.add("hidden");
 
     const response = await fetch(url, {
       method: "POST",
@@ -497,7 +502,9 @@ const verificationHref = getUserAccountPagesLink("verification", locale),
     if (response.success) {
       onSuccess(response);
     } else {
-      errorArea.textContent = response.message;
+      errorNotificationContent.textContent = response.message;
+
+      errorNotification.classList.remove("hidden");
     }
   }
 

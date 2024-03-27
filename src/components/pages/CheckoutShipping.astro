@@ -8,7 +8,6 @@ const { page, recurData } = Astro.props,
   checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
   steps = checkoutFlowData.steps.split("\n"),
   shortenedSteps = checkoutFlowData.shortened_steps.split("\n"),
-  userRecurr = CMS.get("userAccountRecurringElement", locale),
   checkoutInfoLink = CMS.get("checkoutInformation", locale).Meta.URL_slug,
   checkoutPaymentLink = CMS.get("checkoutPayment", locale).Meta.URL_slug;
 ---
@@ -20,56 +19,53 @@ const { page, recurData } = Astro.props,
 >
   <input type="hidden" name="price" />
 
-  <div
-    role="list"
-    aria-label={page.text_shipping_method}
-    class="flex flex-col gap-4"
-  >
-    <h2 class="text-h2 text-primary">{page.text_shipping_method}</h2>
+  <div class="division-gap grid">
+    <h2 class="text-h2 text-primary">{page.Block_title}</h2>
 
-    {
-      page.shipping_methods.data.map(
-        ({ attributes: { method, cost, description, localizations } }, i) => (
-          <label class="division-in-element-gap radio-input-extended">
-            <input
-              type="radio"
-              name="shipping_method"
-              value={localizations?.data[0]?.attributes?.method || method}
-              data-cost={cost}
-              checked={i === 0 ? "" : undefined}
-              class="peer hidden"
-            />
+    <div role="list" class="division-in-gap flex flex-col">
+      {
+        page.shipping_methods.data.map(
+          ({ attributes: { method, cost, description, localizations } }, i) => (
+            <label
+              role="listitem"
+              class="division-in-element-gap radio-input-extended"
+            >
+              <input
+                type="radio"
+                name="shipping_method"
+                value={localizations?.data[0]?.attributes?.method || method}
+                data-cost={cost}
+                checked={i === 0 ? "" : undefined}
+                class="peer hidden"
+              />
 
-            <span>
-              <span class="radio-input-label">
-                <span class="shipping-method">{method}</span>
-                &#x2022;
-                <span class="shipping-cost">
-                  €{cost.toFixed(2).toString().replace(".", ",")}
+              <span>
+                <span class="radio-input-label">
+                  <span class="shipping-method">{method}</span>
+                  &#x2022;
+                  <span class="shipping-cost">
+                    €{cost.toFixed(2).toString().replace(".", ",")}
+                  </span>
+                </span>
+
+                <span class="prose-text radio-input-text">
+                  <Markdown>{description}</Markdown>
                 </span>
               </span>
-
-              <span class="prose-text radio-input-text">
-                <Markdown>{description}</Markdown>
-              </span>
-            </span>
-          </label>
-        ),
-      )
-    }
+            </label>
+          ),
+        )
+      }
+    </div>
   </div>
 
   <div class="checkout-button-container">
     <a href={checkoutInfoLink} class="button-link-primary-large">
       <span class="sm:hidden">
-        {
-          `${
-            userRecurr.Button_return_to_text
-          } ${shortenedSteps[0]?.toLowerCase()}`
-        }
+        {`${recurData.text_return_to} ${shortenedSteps[0]?.toLowerCase()}`}
       </span>
       <span class="hidden sm:block">
-        {`${userRecurr.Button_return_to_text} ${steps[0]?.toLowerCase()}`}
+        {`${recurData.text_return_to} ${steps[0]?.toLowerCase()}`}
       </span>
     </a>
 

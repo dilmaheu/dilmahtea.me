@@ -2,20 +2,23 @@ import type { Setter } from "solid-js";
 import type { Address } from "@solid/Address";
 import type { handleAPIResponseType } from "@utils/handleAPIResponseBase";
 
+import { createSignal } from "solid-js";
+
 import { user } from "@signals/user";
 import { addresses } from "@signals/addresses";
 
 import AddressTags from "@solid/AddressTags";
 import EditAddressForm from "@solid/EditAddressForm";
+import SolidNotification from "@solid/SolidNotification";
+
+import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 
 declare interface Props {
   action: "add" | "update";
   address?: Address;
   recurData: any;
-  userAccountRecurData: any;
+  notificationIcons: any;
   showForm: Setter<any>;
-  handleAPIResponse: handleAPIResponseType;
-  setNotification: Setter<any>;
   scroll?: () => void;
   tickCheckboxes?: {
     default_billing_address?: boolean;
@@ -27,20 +30,23 @@ export default function EditAddress({
   action,
   address,
   recurData,
-  userAccountRecurData,
+  notificationIcons,
   showForm,
-  handleAPIResponse,
-  setNotification,
   scroll,
   tickCheckboxes,
 }: Props) {
+  const [notification, setNotification] = createSignal(null);
+
   const {
-    Button_add_text,
-    Button_update_text,
-    Button_cancel_text,
+    text_add,
+    text_update,
+    text_cancel,
     Checkbox_set_default_delivery_address_text,
     Checkbox_set_default_billing_address_text,
-  } = userAccountRecurData;
+  } = recurData;
+
+  const handleAPIResponse: handleAPIResponseType = (response, callbacks) =>
+    handleAPIResponseBase(response, notification, setNotification, callbacks);
 
   function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
@@ -82,11 +88,7 @@ export default function EditAddress({
 
   return (
     <form class="tiled-form division-gap grid" onsubmit={handleSubmit}>
-      <AddressTags
-        action={action}
-        address={address}
-        userAccountRecurData={userAccountRecurData}
-      />
+      <AddressTags action={action} address={address} recurData={recurData} />
 
       <EditAddressForm
         action={action}
@@ -153,7 +155,7 @@ export default function EditAddress({
       <div class="form-button-container">
         <div class="flex w-full sm:w-1/2 sm:order-2">
           <button type="submit" class="button-primary w-full">
-            {action === "add" ? Button_add_text : Button_update_text}
+            {action === "add" ? text_add : text_update}
           </button>
         </div>
 
@@ -169,10 +171,15 @@ export default function EditAddress({
               showForm(false);
             }}
           >
-            {Button_cancel_text}
+            {text_cancel}
           </button>
         </div>
       </div>
+
+      <SolidNotification
+        notification={notification}
+        notificationIcons={notificationIcons}
+      />
     </form>
   );
 }

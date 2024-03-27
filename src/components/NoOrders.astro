@@ -1,33 +1,23 @@
 ---
 import Markdown from "@components/Markdown.astro";
-import localizeCMSImage from "@utils/localizeCMSImage";
+import RecurringImages from "@store/RecurringImages";
 
-const { userAccountRecurData } = Astro.props;
+const { recurData } = Astro.props;
 
-const {
-  Empty_order_blob: { data: Empty_blob },
-  Empty_order_button_text,
-  Empty_order_button_link,
-  Empty_order_text,
-} = userAccountRecurData;
+const { Empty_order_blob } = RecurringImages;
+
+const { text_empty_cart, Empty_order_button_text, Empty_order_button_link } =
+  recurData;
 ---
 
 <div class="tiled-div division-gap grid justify-center">
   <div class="w-full max-h-[200px]">
-    {
-      async () => (
-        <img
-          class="w-full h-full"
-          src={await localizeCMSImage(Empty_blob?.attributes.url)}
-          alt={Empty_blob?.attributes.alternativeText}
-        />
-      )
-    }
+    <img class="w-full h-full" {...Empty_order_blob} />
   </div>
 
   <div class="division-in-gap grid justify-center text-center">
     <div class="prose-text">
-      <Markdown>{Empty_order_text}</Markdown>
+      <Markdown>{text_empty_cart}</Markdown>
     </div>
 
     <a href={Empty_order_button_link} class="button-primary-large">

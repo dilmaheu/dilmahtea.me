@@ -11,13 +11,12 @@ const { page, headings } = Astro.props;
 const { locale, type, Breadcrumb } = page;
 
 const recurData = CMS.get("recurringElement", locale),
-  userAccountDashboard = CMS.get("userAccountDashboard", locale),
-  userAccountRecurData = CMS.get("userAccountRecurringElement", locale);
+  userAccountDashboard = CMS.get("userAccountDashboard", locale);
 
 const { Support, Support_visibility } = userAccountDashboard;
 
 const headingName =
-  (type === "accountOrders" && userAccountRecurData.text_orders_timeline) ||
+  (type === "accountOrders" && recurData.text_orders_timeline) ||
   recurData.text_chapter;
 ---
 

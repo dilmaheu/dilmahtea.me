@@ -5,11 +5,7 @@ import SolidNotification from "@solid/SolidNotification";
 import handleEmptyFields from "@utils/shared/handleEmptyFields";
 import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
 
-export default function Order({
-  order,
-  notificationIcons,
-  userAccountRecurData,
-}) {
+export default function Order({ order, notificationIcons, recurData }) {
   order = handleEmptyFields(order);
 
   const [showMoreProducts, setShowMoreProducts] = createSignal(false);
@@ -17,26 +13,26 @@ export default function Order({
   const {
     Button_track_package,
     Button_track_package_text,
-    Button_buy_again_text,
-    Button_sold_out_text,
-    Label_order,
+    text_buy_again,
+    text_sold_out,
+    text_order,
     text_quantity,
     text_estimated_delivery,
     text_estimated_shipment,
     text_delivered,
-    text_in_stock_date,
+    Item_stock_text,
     text_show_more_product_in_this_order_singular,
     text_hide_more_product_in_this_order_singular,
     text_show_more_products_in_this_order,
     text_hide_more_products_in_this_order,
-  } = userAccountRecurData;
+  } = recurData;
 
   return (
     <div class="division-gap grid text-black-light">
       <div class="division-in-element-gap flex flex-wrap items-center justify-between">
         <div class="division-in-element-gap grid">
           <div class="text-b5 font-bold">
-            {Label_order} #{order.id}
+            {text_order} #{order.id}
           </div>
 
           <div class="text-b6">
@@ -131,7 +127,7 @@ export default function Order({
                   }
                 >
                   <span class="text-container">
-                    {!soldOut ? Button_buy_again_text : Button_sold_out_text}
+                    {!soldOut ? text_buy_again : text_sold_out}
                     <span>&#8226;</span>
                     <span>
                       €{productPriceIncludingTax.toFixed(2).replace(".", ",")}
@@ -144,7 +140,7 @@ export default function Order({
                 <SolidNotification
                   notification={() => ({
                     type: "warning",
-                    message: text_in_stock_date.replace(
+                    message: Item_stock_text.replace(
                       "<in_stock_date>",
                       in_stock_date,
                     ),

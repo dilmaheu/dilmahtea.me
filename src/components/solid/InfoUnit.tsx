@@ -8,7 +8,7 @@ export default function InfoUnit({
   type,
   property,
   verificationHref,
-  userAccountRecurData: { Button_save_text, Button_cancel_text },
+  recurData: { text_save, text_cancel },
   setNotification,
 }) {
   const [isEditing, setIsEditing] = createSignal(false);
@@ -86,8 +86,8 @@ export default function InfoUnit({
                   user()[property] !== "N/A"
                     ? property
                     : property === "email"
-                    ? "phone"
-                    : "email";
+                      ? "phone"
+                      : "email";
 
                 return {
                   action: "update",
@@ -142,7 +142,7 @@ export default function InfoUnit({
         {isEditing() ? (
           <div class="division-gap flex">
             <button class="button-link-error-dark-large" onclick={handleCancel}>
-              {Button_cancel_text}
+              {text_cancel}
             </button>
 
             <button
@@ -150,7 +150,7 @@ export default function InfoUnit({
               onclick={handleSave}
               type="submit"
             >
-              {Button_save_text}
+              {text_save}
             </button>
           </div>
         ) : (

@@ -13,7 +13,6 @@ import handleAPIResponseBase from "@utils/handleAPIResponseBase";
 
 export default function CheckoutInformationForm({
   recurData,
-  userAccountRecurData,
   notificationIcons,
   isBilling = false,
 }) {
@@ -145,7 +144,7 @@ export default function CheckoutInformationForm({
                   <AddressTags
                     action="checkout"
                     address={selectedAddress}
-                    userAccountRecurData={userAccountRecurData}
+                    recurData={recurData}
                     selectedTag={selectedTag}
                     setSelectedTag={setSelectedTag}
                     showMoreAddresses={showMoreAddresses}

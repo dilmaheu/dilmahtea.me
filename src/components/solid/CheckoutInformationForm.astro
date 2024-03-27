@@ -3,7 +3,7 @@ import subset from "@utils/shared/subset";
 import notificationIcons from "@utils/notificationIcons";
 import CheckoutInformationForm from "@solid/CheckoutInformationForm";
 
-let { recurData, userAccountRecurData } = Astro.props;
+let { recurData } = Astro.props;
 
 recurData = subset(recurData, [
   "text_first_name",
@@ -19,12 +19,10 @@ recurData = subset(recurData, [
   "text_postal_code",
   "postal_code_placeholder",
   "countries",
-]);
-
-userAccountRecurData = subset(userAccountRecurData, [
   "Label_tag_text",
-  "Tag_others_text",
-  "Tag_others_placeholder_text",
+  "label_auto_tag",
+  "Tag_add_text",
+  "Tag_add_placeholder",
   "Tag_suggestions",
   "text_more_address",
   "text_hide_more_address",
@@ -32,9 +30,4 @@ userAccountRecurData = subset(userAccountRecurData, [
 ]);
 ---
 
-<CheckoutInformationForm
-  client:load
-  {recurData}
-  {userAccountRecurData}
-  {notificationIcons}
-/>
+<CheckoutInformationForm client:load {recurData} {notificationIcons} />
