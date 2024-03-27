@@ -1,0 +1,56 @@
+fragment CrowdfundingPaymentAttributes on CrowdfundingPayment {
+  locale
+  updatedAt
+  Block_title
+  Guest_intro_text
+  Sign_in_text
+  Block2_title
+  Block3_title
+  payment_methods {
+    data {
+      attributes {
+        method
+        icon {
+          ...Media
+        }
+        supported_countries {
+          data {
+            id
+            attributes {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+  return_button_text
+  return_button_link
+  success_url
+  Meta {
+    HTML_Title
+    Meta_description
+    noindex
+    nofollow
+    URL_slug
+    Canonical_link
+  }
+}
+
+query {
+  crowdfundingPayment {
+    data {
+      attributes {
+        ...CrowdfundingPaymentAttributes
+
+        localizations {
+          data {
+            attributes {
+              ...CrowdfundingPaymentAttributes
+            }
+          }
+        }
+      }
+    }
+  }
+}

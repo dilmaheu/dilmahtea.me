@@ -67,6 +67,7 @@ declare global {
   interface Window {
     paymentID: string; // defined in CheckoutKindness.astro
     checkoutKindnessLink: string; // defined in CheckoutShipping.astro
+    crowdfundingSuccessLink: string; // defined in crowdfundingPayment.astro
 
     regions: Regions; // defined in SetUserRegion.astro
     userRegion: string; // defined in SetUserRegion.astro (SetUserRegionDev.astro for dev)
@@ -94,6 +95,7 @@ declare global {
     cart: Cart; // defined in CartStore.astro
     cookies: Cookies; // defined in Cookies.astro
     checkoutInfo: CheckoutInfo; // defined in CartStore.astro
+    crowdfundingInfo: crowdfundingInfo; // defined in crowdfundingPayment.astro
     openCart: () => void; // defined in CartOverlay.astro
     updateCartOverlay: (id: string) => void; // defined in CartOverlay.astro
     addProductToCart: (sku: string, quantity?: number) => void; // defined in CartStore.astro

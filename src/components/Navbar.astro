@@ -404,7 +404,7 @@ const visibleMenuItems = menu.filter((item) => item.Visibility === true),
                       </div>
 
                       {languageSelectorVisibility &&
-                        (availableLocales.length > 1 ? (
+                        (availableLocales?.length > 1 ? (
                           <LangSelectorsDropdown
                             docLocale={docLocale}
                             availableLocales={availableLocales}
@@ -590,7 +590,6 @@ const visibleMenuItems = menu.filter((item) => item.Visibility === true),
                       {hasSubMenu && (
                         <label
                           for={"open-sub-menu-" + index}
-                          role="button"
                           aria-label={
                             ariaLabelRecurData.Navbar_open_sidebar_sub_menu_text
                           }
@@ -702,7 +701,7 @@ const visibleMenuItems = menu.filter((item) => item.Visibility === true),
                 currentPageUrl,
               );
 
-          const hasSubMenu = Sub_menu.length > 0;
+          const hasSubMenu = Sub_menu?.length > 0;
 
           return (
             Visibility && (
@@ -1058,7 +1057,7 @@ const visibleMenuItems = menu.filter((item) => item.Visibility === true),
         }
 
         const maxItems = window.innerWidth < 640 ? 4 : 10,
-          resultsCount = Math.min(maxItems, matches.length);
+          resultsCount = Math.min(maxItems, matches?.length);
 
         for (let i = 0; i < resultsCount; i++) {
           const match = matches[i],
@@ -1094,10 +1093,10 @@ const visibleMenuItems = menu.filter((item) => item.Visibility === true),
           searchResults.appendChild(resultLinkBlock);
         }
 
-        noSearchResult.style.display = matches.length === 0 ? "block" : "none";
+        noSearchResult.style.display = matches?.length === 0 ? "block" : "none";
 
         searchResultsContainer.style.display =
-          searchTerm.length > 0 ? "grid" : "none";
+          searchTerm?.length > 0 ? "grid" : "none";
       });
     });
   });

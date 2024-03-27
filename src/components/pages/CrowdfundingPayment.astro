@@ -1,0 +1,218 @@
+---
+import CMS from "@store/CMS";
+
+import Markdown from "@components/Markdown.astro";
+import DynamicHTML from "@components/DynamicHTML.astro";
+import CheckoutPaymentInfo from "@components/CheckoutPaymentInfo.astro";
+import AdvancedNotification from "@components/AdvancedNotification.astro";
+
+import getLocalizedLink from "@utils/getLocalizedLink";
+import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+import CheckoutInformationForm from "@solid/CheckoutInformationForm.astro";
+
+const { page, recurData } = Astro.props,
+  { locale, payment_methods, success_url } = page;
+
+const crowdfundingSuccessLink = `/${locale}/${success_url}/`;
+---
+
+<script
+  define:vars={{
+    crowdfundingSuccessLink,
+  }}
+  is:inline
+>
+  window.crowdfundingInfo = JSON.parse(
+    localStorage.getItem("crowdfunding-info") || "{}",
+  );
+
+  window.crowdfundingSuccessLink = crowdfundingSuccessLink;
+</script>
+
+<form
+  method="POST"
+  id="payment-info-form"
+  class="section-gap flex flex-col"
+  action={shouldDisplayExperimentals
+    ? "https://dev.pay.scripts.dilmahtea.me"
+    : "https://pay.scripts.dilmahtea.me"}
+>
+  <DynamicHTML
+    htmlFn={() => {
+      const { origin, pathname } = location;
+
+      const paymentInfo = {
+        ...window.crowdfundingInfo,
+        payment_type: "crowdfunding",
+        locale: window.preferredLocale,
+        origin_url: origin + pathname,
+        success_url: origin + window.crowdfundingSuccessLink,
+      };
+
+      return Object.keys(paymentInfo)
+        .map(
+          (name) =>
+            `<input type="hidden" name="${name}" value='${paymentInfo[name]}' />`,
+        )
+        .join("");
+    }}
+  />
+
+  <div class="division-gap grid">
+    <h2 class="text-h2 text-primary">
+      {page.Block_title}
+    </h2>
+
+    <div id="guest-intro-text" class="prose-text-sm no-pad-mar-child !text-b3">
+      <Markdown>{page.Guest_intro_text}</Markdown>
+    </div>
+
+    <div class="form-grid !font-bold">
+      <label>
+        <span>{recurData.text_email_address}</span>
+
+        <input
+          type="email"
+          name="email"
+          placeholder={recurData.email_address_placeholder}
+          required
+        />
+      </label>
+      <label>
+        <span>{recurData.text_favourite_tea}</span>
+
+        <input
+          type="text"
+          name="favourite_tea_text"
+          placeholder={recurData.favourite_tea_placeholder}
+        />
+      </label>
+    </div>
+
+    <div id="sign-in-text" class="prose-text-sm no-pad-mar-child !text-b3">
+      <Markdown>{page.Sign_in_text}</Markdown>
+    </div>
+  </div>
+
+  <script is:inline>
+    const guestIntroText = document.getElementById("guest-intro_text"),
+      signInText = document.getElementById("sign-in-text");
+
+    if (window.cookies.isAuthenticated === "true") {
+      guestIntroText.remove();
+      signInText.remove();
+    }
+  </script>
+
+  <div class="w-full h-px bg-primary-lightest"></div>
+
+  <div id="payment-error" class="hidden">
+    <AdvancedNotification
+      Title={page.text_payment_error}
+      Type="Error"
+      Bordered={true}
+      Rounded={true}
+    />
+  </div>
+
+  <div class="grid division-gap">
+    <h2 class="recoleta text-h2 text-primary">{page.Block2_title}</h2>
+
+    <CheckoutInformationForm {recurData} />
+  </div>
+
+  <div class="w-full h-px bg-primary-lightest"></div>
+
+  <CheckoutPaymentInfo
+    title={page.Block3_title}
+    payment_methods={payment_methods}
+    returnButtonText={`${recurData.text_return_to} ${page.return_button_text}`}
+    returnButtonLink={page.return_button_link}
+    recurData={recurData}
+  />
+</form>
+
+<script is:inline>
+  const id = document.getElementById.bind(document),
+    queryAll = document.querySelectorAll.bind(document),
+    addClass = (element, className) => element.classList.add(className),
+    removeClass = (element, className) => element.classList.remove(className),
+    getInputValue = (parent, name) =>
+      parent.querySelector(`input[name=${name}]`).value;
+
+  const shippingAddress = id("shipping-address"),
+    paymentCardInputSelector = queryAll(".payment-card-input-selector"),
+    paymentInfoElements = queryAll(".payment-info"),
+    submitBtn = id("submit-btn"),
+    submitBtnPaymentType = submitBtn.querySelector(".payment-type"),
+    paymentError = id("payment-error");
+
+  const { redirect_status } = Object.fromEntries(
+    new URLSearchParams(location.search),
+  );
+
+  redirect_status === "failed" && paymentError.classList.remove("hidden");
+
+  const toggleDisabled = (elements, condition) =>
+    elements.forEach((element) => (element.disabled = !!condition));
+
+  const selectTextAndNumberInputs = (parent) =>
+    parent.querySelectorAll("input[type='text'], input[type='number'], select");
+
+  window.togglePaymentCardVisibility = (selectedCountry) => {
+    paymentCardInputSelector.forEach((cardSelector) => {
+      cardSelector.checked = false;
+
+      const countryName = cardSelector
+        ?.getAttribute("data-country")
+        ?.toLowerCase();
+
+      if (!countryName) return;
+
+      countryName.includes(selectedCountry)
+        ? removeClass(cardSelector.parentElement, "hidden")
+        : addClass(cardSelector.parentElement, "hidden");
+    });
+  };
+
+  function handlePaymentCardInputChange(event) {
+    if (!event.target.classList.contains("payment-card-input-selector")) return;
+
+    const inputValue = event.target.value.toLowerCase();
+    submitBtnPaymentType.innerHTML = ` ${inputValue}`;
+    removeClass(submitBtn, "button-disabled-large");
+    addClass(submitBtn, "button-primary-large");
+    submitBtn.removeAttribute("disabled", true);
+
+    redirect_status === "failed" && paymentError.classList.add("hidden");
+
+    paymentInfoElements.forEach((paymentInfo) => {
+      const includesValue = paymentInfo
+        .getAttribute("data-name")
+        .toLowerCase()
+        .includes(inputValue);
+
+      toggleDisabled(selectTextAndNumberInputs(paymentInfo), !includesValue);
+
+      includesValue
+        ? removeClass(paymentInfo, "!hidden")
+        : addClass(paymentInfo, "!hidden");
+
+      const paymentInputName =
+        includesValue && paymentInfo.querySelector("input[name*=name]");
+
+      if (paymentInputName && paymentInputName.value !== null) {
+        const fullName = `${getInputValue(
+          shippingAddress,
+          "billing_first_name",
+        )} ${getInputValue(shippingAddress, "billing_last_name")}`;
+
+        paymentInputName.setAttribute("value", fullName?.trim());
+      }
+    });
+  }
+
+  document.addEventListener("change", handlePaymentCardInputChange);
+
+  window.togglePaymentCardVisibility(window.checkoutInfo.country.toLowerCase());
+</script>
