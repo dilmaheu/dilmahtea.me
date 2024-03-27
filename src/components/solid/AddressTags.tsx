@@ -99,7 +99,7 @@ export default function AddressTags({
               <label for={`address-tag-${tag}`} class="radio-button-default">
                 {!tag.startsWith("Address #")
                   ? tag
-                  : label_auto_tag + tag.split(" "[1])}
+                  : label_auto_tag + tag.split(" ")[1]}
               </label>
             </div>
           ))}

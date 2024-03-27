@@ -208,25 +208,13 @@ export async function getStaticPaths() {
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
       );
 
-  [
-    ...crowdfundingPlans.data,
-    ...crowdfundingPlans.data.flatMap(
-      ({ attributes }) => attributes.localizations.data,
-    ),
-  ].forEach(({ attributes }) => {
-    attributes.Meta = {
-      ...crowdfundingPayment.data.attributes.Meta,
-      URL_slug: `crowdfunding/payment`,
-    };
-  });
-
-  const crowdfundingPaymentPages = getRoutes(crowdfundingPayment, (_, { locale }) => ({
-    type: "plan",
-  }));
-
   const crowdfundingPages = getRoutes(crowdfundingHome, (_, { locale }) => ({
     type: "crowdfunding",
     allPlans: locale && getPosts(crowdfundingPlans, locale),
+  }));
+
+  const crowdfundingPaymentPages = getRoutes(crowdfundingPayment, (_, { locale }) => ({
+    type: "crowdfundingPayment",
   }));
 
   const basicPages = getRoutes(basicPagesData, () => ({ type: "basic" }));
@@ -450,13 +438,13 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
           ? Cart
           : page.type === "checkoutSuccess"
             ? CheckoutSuccess
-            : page.type.startsWith("checkout") || page.type.startsWith("plan")
+            : page.type.startsWith("checkout") || page.type === "crowdfundingPayment"
               ? CheckoutLayout
               : PageLayout;
 
       const Pages = {
-        plan: CrowdfundingPayment,
         crowdfunding: Crowdfunding,
+        crowdfundingPayment: CrowdfundingPayment,
         basic: BasicPage,
         blogDetails: BlogDetails,
         howToDetails: HowToDetails,

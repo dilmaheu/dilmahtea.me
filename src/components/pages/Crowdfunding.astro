@@ -1,23 +1,27 @@
 ---
+import CMS from "@store/CMS";
+import RecurringImages from "@store/RecurringImages";
+import localizeCMSImage from "@utils/localizeCMSImage";
+
 import Banner from "@components/Banner.astro";
 import Markdown from "@components/Markdown.astro";
 import HeroContent from "@components/HeroContent.astro";
 import ClipPathSVG from "@components/ClipPathSVG.astro";
 import CrowdfundingProgress from "@components/CrowdfundingProgress.astro";
 
-import RecurringImages from "@store/RecurringImages";
-import localizeCMSImage from "@utils/localizeCMSImage";
-
 const { tick } = RecurringImages;
 
-const { page, ariaLabelRecurData } = Astro.props;
+const { page, ariaLabelRecurData } = Astro.props,
+  { locale } = page,
+  crowdfundingPaymentLink = `/${locale}/${CMS.get("crowdfundingPayment", locale).Meta.URL_slug}/`;
 ---
 
 <style lang="scss" define:vars={{ tick: `url("${tick.src}")` }}>
   @use "src/styles/poly-fluid" as *;
 
   .crowdfunding-plan-card {
-    @apply flex flex-col bg-secondary-light w-full max-w-[400px] mx-auto sm:m-0
+    @apply flex flex-col bg-secondary-light
+      w-full max-w-[400px] mx-auto sm:m-0 cursor-pointer
       sm:max-w-max sm:w-[calc(50%-clamp(15px,calc(4.375vw-13px),50px)/2)]
       lg:w-[calc(100%/3-clamp(15px,calc(4.375vw-13px),50px)/1.5)];
 
@@ -87,38 +91,51 @@ const { page, ariaLabelRecurData } = Astro.props;
         {page.Block_title}
       </h2>
 
-      <div class="blob-cards-container">
+      <div role="listitem" class="blob-cards-container">
         {
-          page.allPlans.map(async (plan, index) => (
-            <a
-              href={`crowdfunding/payment`}
-              class="crowdfunding-plan-card division-in-gap"
-            >
-              <div class="division-in-element-gap flex flex-col text-center">
-                <div class="text-h5 text-primary">
-                  {plan.Title}
+          page.allPlans.map(
+            async ({
+              Title,
+              Price_EUR_excl_VAT,
+              Title_icon,
+              Intro_text,
+              List,
+            }) => (
+              <div
+                role="list"
+                tabindex="0"
+                class="crowdfunding-plan-card division-in-gap"
+                data-plan={JSON.stringify({
+                  perk: Title,
+                  price: Price_EUR_excl_VAT,
+                })}
+              >
+                <div class="division-in-element-gap flex flex-col text-center">
+                  <div class="text-h5 text-primary">
+                    {Title}
 
-                  <img
-                    class="crowdfunding-plan-title-icon"
-                    src={await localizeCMSImage(
-                      plan.Title_icon?.data?.attributes?.formats?.thumbnail
-                        ?.url || plan.Title_icon?.data?.attributes?.url,
-                    )}
-                    alt=""
-                  />
+                    <img
+                      class="crowdfunding-plan-title-icon"
+                      src={await localizeCMSImage(
+                        Title_icon?.data?.attributes?.formats?.thumbnail?.url ||
+                          Title_icon?.data?.attributes?.url,
+                      )}
+                      alt=""
+                    />
+                  </div>
+
+                  <div class="text-b2 font-bold text-black">
+                    &#8364;{Price_EUR_excl_VAT}
+                  </div>
                 </div>
 
-                <div class="text-b2 font-bold text-black">
-                  &#8364;{plan.Price_EUR_excl_VAT}
+                <div class="prose-text-sm">
+                  <p>{Intro_text}</p>
+                  <Markdown>{List}</Markdown>
                 </div>
               </div>
-
-              <div class="prose-text-sm">
-                <p>{plan.Intro_text}</p>
-                <Markdown>{plan.List}</Markdown>
-              </div>
-            </a>
-          ))
+            ),
+          )
         }
       </div>
     </div>
@@ -132,3 +149,27 @@ const { page, ariaLabelRecurData } = Astro.props;
     blobCurveSecondary={true}
   />
 </div>
+
+<script
+  define:vars={{
+    crowdfundingPaymentLink,
+  }}
+>
+  async function handleCrowdfundingPlanClick(plan) {
+    localStorage.setItem("crowdfunding-info", JSON.stringify(plan));
+    window.location.href = crowdfundingPaymentLink;
+  }
+
+  document.addEventListener("DOMContentLoaded", function (event) {
+    const crowdfundingCards = document.querySelectorAll(
+      ".crowdfunding-plan-card",
+    );
+    crowdfundingCards.forEach((card) => {
+      card.addEventListener("click", function () {
+        const planData = card.getAttribute("data-plan");
+        const plan = planData ? JSON.parse(planData) : null;
+        handleCrowdfundingPlanClick(plan);
+      });
+    });
+  });
+</script>

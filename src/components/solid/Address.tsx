@@ -116,7 +116,7 @@ export default function Address({
               <div class="info-tag-button-default">
                 {!tag.startsWith("Address #")
                   ? tag
-                  : label_auto_tag + tag.split(" "[1])}
+                  : label_auto_tag + tag.split(" ")[1]}
               </div>
             </div>
           </div>
