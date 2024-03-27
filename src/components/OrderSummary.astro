@@ -8,7 +8,8 @@ const { page, recurData } = Astro.props,
 const checkoutCartLink = CMS.get("cart", locale)?.Meta.URL_slug,
   checkoutInfoLink = CMS.get("checkoutInformation", locale)?.Meta.URL_slug,
   checkoutShippingLink = CMS.get("checkoutShipping", locale)?.Meta.URL_slug,
-  crowdfundingPaymentLink = CMS.get("crowdfundingPayment", locale)?.Meta.URL_slug;
+  crowdfundingPaymentLink = CMS.get("crowdfundingPayment", locale)?.Meta
+    .URL_slug;
 
 const isCheckoutInformation = page.type === "checkoutInformation",
   isCheckoutShipping = page.type === "checkoutShipping",
@@ -183,10 +184,7 @@ const isInformationOverview =
 
               {isCrowdfundingPayment && (
                 <>
-                  <div
-                    role="listitem"
-                    class="division-in-element-gap grid"
-                  >
+                  <div role="listitem" class="division-in-element-gap grid">
                     <div class="input-label text-black">
                       <DynamicHTML
                         htmlFn={() => window.crowdfundingInfo.perk}
@@ -195,7 +193,7 @@ const isInformationOverview =
 
                     <div class="division-in-element-gap flex items-baseline">
                       <div class="input-text-large-static grow">
-                        <DynamicHTML
+                        €<DynamicHTML
                           htmlFn={() => window.crowdfundingInfo.price}
                         />
                       </div>
@@ -226,9 +224,7 @@ const isInformationOverview =
     {
       !isCrowdfundingPayment && (
         <>
-          <div
-            class="tiled-div-pad block lg:hidden bg-secondary-light rounded-[10px]"
-          >
+          <div class="tiled-div-pad block lg:hidden bg-secondary-light rounded-[10px]">
             <div
               id="checkout-order-summery-overview-toggle"
               class="vertical-toggle-button-primary w-full h-fit lg:!h-0"
@@ -240,9 +236,7 @@ const isInformationOverview =
                 viewBox="0 0 14 8"
                 class="toggle-button-arrow fill-primary"
               >
-                <path
-                  d="M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z"
-                ></path>
+                <path d="M.3.3A1.1,1.1,0,0,1,1.1,0a.9.9,0,0,1,.7.3L7,5.5,12.2.3A1.1,1.1,0,0,1,13,0a.9.9,0,0,1,.7.3A.9.9,0,0,1,14,1a1.1,1.1,0,0,1-.3.8L7.8,7.7A1.1,1.1,0,0,1,7,8a.9.9,0,0,1-.7-.3L.3,1.8A1.1,1.1,0,0,1,0,1,.9.9,0,0,1,.3.3Z" />
               </svg>
             </div>
           </div>
@@ -267,7 +261,9 @@ const isInformationOverview =
                           name = names[window.preferredLocale] || names["en"],
                           infos = JSON.parse(productData.infos),
                           info = infos[window.preferredLocale] || infos["en"],
-                          price = productData.price.toFixed(2).replace(".", ",");
+                          price = productData.price
+                            .toFixed(2)
+                            .replace(".", ",");
 
                         return window.replacePlaceholders(content, {
                           ...productData,
@@ -328,7 +324,9 @@ const isInformationOverview =
                         : "summery-base-text",
                     ]}
                   >
-                    <span class="order-subtotal">{recurData.text_subtotal}</span>
+                    <span class="order-subtotal">
+                      {recurData.text_subtotal}
+                    </span>
 
                     <span>
                       €<DynamicHTML htmlFn={() => window.cart.subTotal} />
