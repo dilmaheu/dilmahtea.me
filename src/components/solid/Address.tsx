@@ -44,6 +44,7 @@ export default function Address({
     address;
 
   const {
+    label_auto_tag,
     text_default_delivery_address,
     text_default_billing_address,
     Tag_default_text,
@@ -112,7 +113,11 @@ export default function Address({
 
               <div>{fullName}</div>
               <div>&#x2022;</div>
-              <div class="info-tag-button-default">{tag}</div>
+              <div class="info-tag-button-default">
+                {!tag.startsWith("Address #")
+                  ? tag
+                  : label_auto_tag + tag.split(" "[1])}
+              </div>
             </div>
           </div>
 
