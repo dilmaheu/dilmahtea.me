@@ -6,7 +6,6 @@ export default function DefaultAddress({
   recurData,
   setEditAddress,
   scrollToAddNewAddress,
-  handleAPIResponse,
 }) {
   const { text_add } = recurData;
 
@@ -41,7 +40,6 @@ export default function DefaultAddress({
           setEditAddress={setEditAddress}
           isMyProfile={true}
           scroll={scrollToAddNewAddress}
-          handleAPIResponse={handleAPIResponse}
         />
       )}
     </div>
