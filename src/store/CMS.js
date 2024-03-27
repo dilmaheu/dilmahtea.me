@@ -149,10 +149,13 @@ const CMS = {
 
       if (locale === "en") return content.data.attributes;
 
-      return data[contentType].data.attributes.localizations.data.find(
+      const localizedData = data[contentType]?.data?.attributes?.localizations?.data || [];
+      const localizedContent = localizedData.find(
         ({ attributes }) =>
-          attributes.locale.substring(0, 2) === locale.substring(0, 2),
-      ).attributes;
+          attributes.locale?.substring(0, 2) === locale.substring(0, 2),
+      );
+
+      return localizedContent ? localizedContent.attributes : null;
     }
 
     return content;
