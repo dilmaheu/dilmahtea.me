@@ -14,6 +14,12 @@ const { page, recurData } = Astro.props,
   { locale, payment_methods } = page;
 ---
 
+<script is:inline>
+  window.crowdfundingInfo = JSON.parse(
+    localStorage.getItem("crowdfunding-info") || "{}",
+  );
+</script>
+
 <form
   method="POST"
   id="payment-info-form"
@@ -31,7 +37,6 @@ const { page, recurData } = Astro.props,
         payment_type: "crowdfunding",
         locale: window.preferredLocale,
         origin_url: origin + pathname,
-        success_url: origin + page.success_url,
       };
 
       return Object.keys(paymentInfo)
