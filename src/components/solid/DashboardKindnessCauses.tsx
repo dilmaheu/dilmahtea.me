@@ -67,10 +67,7 @@ export default function DashboardKindnessCauses({
         kindnessCausesTitleRect = kindnessCausesTitle.getBoundingClientRect();
 
       window.scrollTo({
-        top:
-          window.scrollY +
-          kindnessCausesTitleRect.top -
-          (headerRect.height + 20),
+        top: window.scrollY + kindnessCausesTitleRect.top - headerRect.height,
       });
 
       setTimeout(() => {
