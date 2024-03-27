@@ -39,6 +39,8 @@ export default function DashboardKindnessCauses({
     return memoizedElements;
   };
 
+  let kindnessCausesTitle: HTMLHeadingElement;
+
   onMount(() => {
     const {
       kindnessCauseContainer,
@@ -57,6 +59,18 @@ export default function DashboardKindnessCauses({
       setNotification({
         type: "success",
         message: successNotificationText,
+      });
+
+      const header = document.querySelector("header");
+
+      const headerRect = header.getBoundingClientRect(),
+        kindnessCausesTitleRect = kindnessCausesTitle.getBoundingClientRect();
+
+      window.scrollTo({
+        top:
+          window.scrollY +
+          kindnessCausesTitleRect.top -
+          (headerRect.height + 20),
       });
 
       setTimeout(() => {
@@ -134,6 +148,7 @@ export default function DashboardKindnessCauses({
   return (
     <>
       <h2
+        ref={kindnessCausesTitle}
         id={title.toLowerCase().replaceAll(" ", "-")}
         class="tiled-title text-h2"
       >
