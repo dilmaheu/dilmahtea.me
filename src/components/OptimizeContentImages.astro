@@ -9,7 +9,7 @@ const { document: contentDocument } = parseHTML(contentHTML),
 
 // wrap every heading and its following content with div.chapter
 await Promise.all(
-  [...images].map(async (img) => {
+  Array.from(images).map(async (img) => {
     const { src, alt = "" } = img;
 
     const { style, picture } = await renderPicture({
@@ -26,9 +26,11 @@ await Promise.all(
       },
     });
 
-    contentHTML = contentHTML.replace(img.outerHTML, style + picture);
+    img.outerHTML = style + picture;
   }),
 );
+
+contentHTML = contentDocument.toString();
 ---
 
 <Fragment set:html={contentHTML} />
