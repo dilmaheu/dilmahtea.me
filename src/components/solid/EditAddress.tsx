@@ -146,7 +146,7 @@ export default function EditAddress({
 
       <div class="form-button-container">
         <div class="flex w-full sm:w-1/2 sm:order-2">
-          <button type="submit" class="button-primary w-full submit-btn">
+          <button type="submit" class="button-primary w-full">
             {action === "add" ? text_add : text_update}
           </button>
         </div>
