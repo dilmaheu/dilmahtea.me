@@ -29,14 +29,7 @@ const crowdfundingSuccessLink = `/${locale}/${success_url}/`;
   window.crowdfundingSuccessLink = crowdfundingSuccessLink;
 </script>
 
-<form
-  method="POST"
-  id="payment-info-form"
-  class="section-gap flex flex-col"
-  action={shouldDisplayExperimentals
-    ? "https://dev.pay.scripts.dilmahtea.me"
-    : "https://pay.scripts.dilmahtea.me"}
->
+<form method="POST" id="payment-info-form" class="section-gap flex flex-col">
   <DynamicHTML
     htmlFn={() => {
       const { origin, pathname } = location;
@@ -124,11 +117,12 @@ const crowdfundingSuccessLink = `/${locale}/${success_url}/`;
   <div class="w-full h-px bg-primary-lightest"></div>
 
   <CheckoutPaymentInfo
+    page={page}
+    recurData={recurData}
     title={page.Block3_title}
     payment_methods={payment_methods}
     returnButtonText={`${recurData.text_return_to} ${page.return_button_text}`}
     returnButtonLink={page.return_button_link}
-    recurData={recurData}
   />
 </form>
 

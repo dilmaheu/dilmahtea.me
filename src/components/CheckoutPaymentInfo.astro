@@ -2,6 +2,7 @@
 import localizeCMSImage from "@utils/localizeCMSImage";
 
 declare interface Props {
+  page: Record<string, any>;
   title: string;
   returnButtonLink: string;
   returnButtonText: string;
@@ -11,6 +12,7 @@ declare interface Props {
 }
 
 const {
+  page,
   title,
   returnButtonLink,
   returnButtonText,
@@ -23,6 +25,8 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
   accepted_cards_icon = recurData.Accepted_cards_icon.data?.map(
     ({ attributes }) => attributes,
   );
+
+const isCrowdfundingPayment = page.type === "crowdfundingPayment";
 ---
 
 <style lang="scss">
@@ -157,17 +161,28 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
       </span>
     </a>
 
-    <button
-      id="submit-btn"
-      type="submit"
-      class="w-full sm:max-w-[250px] button-primary-large"
-      disabled
-    >
-      <span>
-        {recurData.text_pay_with}
-        <span class="payment-type"></span>
-      </span>
-    </button>
+    {
+      isCrowdfundingPayment ? (
+        <div
+          id="submit-btn"
+          class="w-full sm:max-w-[250px] button-disabled-large"
+        >
+          <span>{recurData.text_pay_with}</span>
+        </div>
+      ) : (
+        <button
+          id="submit-btn"
+          type="submit"
+          class="w-full sm:max-w-[250px] button-primary-large"
+          disabled
+        >
+          <span>
+            {recurData.text_pay_with}
+            <span class="payment-type" />
+          </span>
+        </button>
+      )
+    }
   </div>
 </section>
 
