@@ -28,18 +28,17 @@ $link-light: str-slice(meta.inspect(colors.$primary-lightest), 2);
     } @else {
       @apply text-black-light;
     }
+  }
+  a {
+    @include bg-img-($color);
 
-    a {
-      @include bg-img-($color);
+    @apply font-bold sm:font-semibold px-1 no-underline 
+      bg-bottom bg-no-repeat hover:brightness-90 transition-all;
 
-      @apply font-bold sm:font-semibold px-1 no-underline 
-        bg-bottom bg-no-repeat hover:brightness-90 transition-all;
-
-      @if $color == $link-dark {
-        @apply text-white;
-      } @else {
-        @apply text-primary;
-      }
+    @if $color == $link-dark {
+      @apply text-white;
+    } @else {
+      @apply text-primary;
     }
   }
 }
