@@ -3,6 +3,7 @@ import { Schema } from "astro-seo-schema";
 import { Picture } from "astro-imagetools/components";
 
 import Markdown from "@components/Markdown.astro";
+import Chapterize from "@components/Chapterize.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
@@ -68,20 +69,11 @@ const { STRAPI_URL } = import.meta.env,
     </div>
   </div>
 
-  <Fragment slot="post-details">
+  <Chapterize slot="post-details">
     {
       page?.Method?.map((method) => (
-        <div class="chapter">
-          <h2
-            id={encodeURIComponent(
-              method.Method_title?.replaceAll(" ", "-")
-                .replace(/\s+/g, "")
-                .trim(),
-            )}
-            class="tiled-title"
-          >
-            {method.Method_title}
-          </h2>
+        <>
+          <h2 class="tiled-title">{method.Method_title}</h2>
 
           {method.Steps?.map(({ Step_title, Step_text, Step_blob }, index) => (
             <div class="tiled-div">
@@ -111,10 +103,10 @@ const { STRAPI_URL } = import.meta.env,
               )}
             </div>
           ))}
-        </div>
+        </>
       ))
     }
-  </Fragment>
+  </Chapterize>
 </PostDetailsLayout>
 
 <Schema
