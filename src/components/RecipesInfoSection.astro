@@ -9,7 +9,7 @@ const { page } = Astro.props;
 let contentBlocksHTML = he.decode(renderMarkdown(page.Block_text));
 
 let { document: contentBlocksDocument } = parseHTML(contentBlocksHTML),
-  titles = [...contentBlocksDocument.querySelectorAll("h2")];
+  titles = Array.from(contentBlocksDocument.querySelectorAll("h2"));
 ---
 
 {
