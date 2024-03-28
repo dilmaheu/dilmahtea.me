@@ -57,7 +57,10 @@ const { STRAPI_URL } = import.meta.env,
             >
               <a
                 href={
-                  `#` + encodeURIComponent(Method_title?.replaceAll(" ", "-"))
+                  `#` +
+                  encodeURIComponent(
+                    Method_title?.toLowerCase().replaceAll(" ", "-"),
+                  )
                 }
               >
                 {Method_title}
@@ -79,7 +82,10 @@ const { STRAPI_URL } = import.meta.env,
             <div class="tiled-div">
               <h3
                 id={encodeURIComponent(
-                  Step_title?.replaceAll(" ", "-").replace(/\s+/g, "").trim(),
+                  Step_title?.toLowerCase()
+                    .replaceAll(" ", "-")
+                    .replace(/\s+/g, "")
+                    .trim(),
                 )}
               >
                 {index + 1 + ". " + Step_title}
