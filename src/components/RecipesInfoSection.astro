@@ -10,19 +10,6 @@ let contentBlocksHTML = he.decode(renderMarkdown(page.Block_text));
 
 let { document: contentBlocksDocument } = parseHTML(contentBlocksHTML),
   titles = [...contentBlocksDocument.querySelectorAll("h2")];
-
-titles.forEach((title, i) => {
-  contentBlocksHTML = contentBlocksHTML.replace(
-    title.outerHTML,
-    (i === 0 ? "" : "</div>") + title.outerHTML + "<div>",
-  );
-});
-
-titles.length > 0 && (contentBlocksHTML += "</div>");
-
-// refresh linkedom generated dom
-({ document: contentBlocksDocument } = parseHTML(contentBlocksHTML));
-titles = [...contentBlocksDocument.querySelectorAll("h2")];
 ---
 
 {
