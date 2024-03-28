@@ -311,6 +311,9 @@ const countries = CMS.get("countries"),
         type: selectedPaymentMethod,
         ...(selectedPaymentMethod === "card" && { card: cardNumberElement }),
         ...(selectedPaymentMethod === "ideal" && { ideal: idealBankElement }),
+        ...(selectedPaymentMethod === "sofort" && {
+          sofort: { country: customer.address.country },
+        }),
         billing_details,
       });
 
