@@ -1,5 +1,7 @@
 ---
+import CMS from "@store/CMS";
 import localizeCMSImage from "@utils/localizeCMSImage";
+import AdvancedNotification from "@components/AdvancedNotification.astro";
 
 declare interface Props {
   title: string;
@@ -22,6 +24,11 @@ const {
 const methods = payment_methods.data?.map(({ attributes }) => attributes),
   accepted_cards_icon = recurData.Accepted_cards_icon.data?.map(
     ({ attributes }) => attributes,
+  );
+
+const countries = CMS.get("countries"),
+  countryCodesMap = Object.fromEntries(
+    countries.data.map(({ attributes }) => [attributes.name, attributes.code]),
   );
 ---
 
@@ -123,8 +130,6 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
 
           <div id="card-cvc"></div>
         </div>
-
-        <input type="hidden" id="stripeToken" name="stripeToken" />
       </div>
 
       <input
@@ -168,10 +173,26 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
       </span>
     </button>
   </div>
+
+  <div id="payment-error-bottom" class="hidden">
+    <AdvancedNotification
+      Title={recurData.error_payment}
+      Type="Error"
+      Bordered={true}
+      Rounded={true}
+    />
+  </div>
 </section>
+
+<script is:inline define:vars={{ countryCodesMap }}>
+  window.countryCodesMap = countryCodesMap;
+</script>
 
 <script>
   import { loadStripe } from "@stripe/stripe-js/pure";
+
+  import subset from "@utils/shared/subset";
+  import getCustomer from "@utils/client/getCustomer";
 
   const id = document.getElementById.bind(document),
     checkoutPaymentContainer = document.getElementById(
@@ -181,6 +202,11 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
   if (checkoutPaymentContainer) {
     const form = id("payment-info-form"),
       stripePublishableKey = id("stripe-publishable-key");
+
+    const paymentErrorBottom = id("payment-error-bottom"),
+      paymentErrorBottomContent = paymentErrorBottom.querySelector(
+        ".notification-content",
+      );
 
     const STRIPE_PUBLISHABLE_KEY =
       stripePublishableKey?.getAttribute("data-key");
@@ -249,37 +275,49 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
+      paymentErrorBottom.classList.add("hidden");
+
+      // @ts-ignore
       const formData = Object.fromEntries(new FormData(form));
 
-      const response = await fetch(
-        window.shouldDisplayExperimentals
-          ? "https://dev.pay.scripts.dilmahtea.me"
-          : "https://pay.scripts.dilmahtea.me",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+      const customer = getCustomer(formData, window.countryCodesMap),
+        billing_details = subset(customer, ["name", "email", "address"]);
+
+      formData.customer = JSON.stringify(customer);
+
+      let paymentError;
+
+      const { value: selectedPaymentMethod } = document.querySelector(
+        'input[name="payment_method_name"]:checked',
+      ) as HTMLInputElement;
+
+      // @ts-ignore
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: selectedPaymentMethod,
+        ...(selectedPaymentMethod === "card" && { card: cardNumberElement }),
+        ...(selectedPaymentMethod === "ideal" && { ideal: idealBankElement }),
+        billing_details,
+      });
+
+      if (error) {
+        paymentError = error;
+      } else {
+        const response = await fetch(
+          window.shouldDisplayExperimentals
+            ? "https://dev.pay.scripts.dilmahtea.me"
+            : "https://pay.scripts.dilmahtea.me",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
           },
-          body: JSON.stringify(formData),
-        },
-      ).then((res) => res.json<any>());
+        ).then((res) => res.json<any>());
 
-      if (response.success) {
-        const { client_secret, successURL, billing_details } = response;
+        const { client_secret, successURL } = response;
 
-        const { value: selectedPaymentMethod } = document.querySelector(
-          'input[name="payment_method_name"]:checked',
-        ) as HTMLInputElement;
-
-        // @ts-ignore
-        const { error, paymentMethod } = await stripe.createPaymentMethod({
-          type: selectedPaymentMethod,
-          ...(selectedPaymentMethod === "card" && { card: cardNumberElement }),
-          ...(selectedPaymentMethod === "ideal" && { ideal: idealBankElement }),
-          billing_details,
-        });
-
-        if (!error) {
+        if (response.success) {
           const { error } = await stripe.confirmPayment({
             clientSecret: client_secret,
             confirmParams: {
@@ -287,7 +325,17 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
               payment_method: paymentMethod.id,
             },
           });
+
+          paymentError = error;
+        } else {
+          paymentError = response.error;
         }
+      }
+
+      if (paymentError) {
+        paymentErrorBottomContent.textContent = paymentError.message;
+
+        paymentErrorBottom.classList.remove("hidden");
       }
     });
 

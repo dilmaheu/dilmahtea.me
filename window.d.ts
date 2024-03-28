@@ -102,6 +102,8 @@ declare global {
       data: Record<string, string | number>,
     ) => string; // defined in CartStore.astro
 
+    countryCodesMap: Record<string, string>; // defined in CheckoutPaymentInfo.astro
+
     listenToInputEvents: (
       tweakBtns: NodeListOf<HTMLButtonElement>,
       input: HTMLInputElement,
