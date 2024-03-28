@@ -1,77 +1,46 @@
 ---
 import CMS from "@store/CMS";
 
+import Markdown from "@components/Markdown.astro";
 import DynamicHTML from "@components/DynamicHTML.astro";
 import CheckoutPaymentInfo from "@components/CheckoutPaymentInfo.astro";
 import AdvancedNotification from "@components/AdvancedNotification.astro";
 
-import CheckoutBillingAddress from "@solid/CheckoutBillingAddress.astro";
-
+import getLocalizedLink from "@utils/getLocalizedLink";
 import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
+import CheckoutInformationForm from "@solid/CheckoutInformationForm.astro";
 
 const { page, recurData } = Astro.props,
-  { locale, payment_methods } = page;
+  { locale, payment_methods, success_url } = page;
 
-const checkoutFlowData = CMS.get("checkoutFlow").data.attributes,
-  steps = checkoutFlowData.steps.split("\n"),
-  shortenedSteps = checkoutFlowData.shortened_steps.split("\n");
-
-const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
-  checkoutInfo = CMS.get("checkoutInformation", locale),
-  checkoutInfoLink = `/${locale}/${checkoutInfo.Meta.URL_slug}/`,
-  checkoutKindnessLink = `/${locale}/${
-    CMS.get("checkoutKindness", locale).Meta.URL_slug
-  }/`;
+const crowdfundingSuccessLink = `/${locale}/${success_url}/`;
 ---
 
 <script
   define:vars={{
-    checkoutInfoLink,
-    checkoutKindnessLink,
+    crowdfundingSuccessLink,
   }}
+  is:inline
 >
-  if (Object.keys(window.checkoutInfo).length === 0) {
-    location.href = checkoutInfoLink;
-  }
+  window.crowdfundingInfo = JSON.parse(
+    localStorage.getItem("crowdfunding-info") || "{}",
+  );
 
-  window.checkoutKindnessLink = checkoutKindnessLink;
+  window.crowdfundingSuccessLink = crowdfundingSuccessLink;
 </script>
 
-<form
-  method="POST"
-  id="payment-info-form"
-  class="section-gap grid"
-  action={shouldDisplayExperimentals
-    ? "https://dev.pay.scripts.dilmahtea.me"
-    : "https://pay.scripts.dilmahtea.me"}
->
+<form method="POST" id="payment-info-form" class="section-gap flex flex-col">
   <DynamicHTML
     htmlFn={() => {
       const { origin, pathname } = location;
 
-      const product_desc = Object.keys(window.cart)
-        .map((id) => {
-          const productData = window.cart[id],
-            names = JSON.parse(productData.names),
-            name = names[window.preferredLocale] || names["en"];
-
-          return `${productData.quantity}x ${name}`;
-        })
-        .join(", ");
-
       const paymentInfo = {
-        ...window.checkoutInfo,
-        product_desc,
-        cart: JSON.stringify(window.cart),
-        tax: window.cart.tax.split(",").join("."),
-        price: window.cart.total.split(",").join("."),
-        payment_type: "ecommerce",
+        ...window.crowdfundingInfo,
+        payment_type: "crowdfunding",
         locale: window.preferredLocale,
         origin_url: origin + pathname,
-        success_url: origin + window.checkoutKindnessLink,
+        success_url: origin + window.crowdfundingSuccessLink,
       };
-
-      delete paymentInfo.delivery_address;
 
       return Object.keys(paymentInfo)
         .map(
@@ -82,25 +51,78 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
     }}
   />
 
+  <div class="division-gap grid">
+    <h2 class="text-h2 text-primary">
+      {page.Block_title}
+    </h2>
+
+    <div id="guest-intro-text" class="prose-text-sm no-pad-mar-child">
+      <Markdown>{page.Guest_intro_text}</Markdown>
+    </div>
+
+    <div class="form-grid">
+      <label>
+        <span>{recurData.text_email_address}</span>
+
+        <input
+          type="email"
+          name="email"
+          placeholder={recurData.email_address_placeholder}
+          required
+        />
+      </label>
+      <label>
+        <span>{recurData.text_favourite_tea}</span>
+
+        <input
+          type="text"
+          name="favourite_tea_text"
+          placeholder={recurData.favourite_tea_placeholder}
+        />
+      </label>
+    </div>
+
+    <div id="sign-in-text" class="prose-text-sm no-pad-mar-child">
+      <Markdown>{page.Sign_in_text}</Markdown>
+    </div>
+  </div>
+
+  <script is:inline>
+    const guestIntroText = document.getElementById("guest-intro_text"),
+      signInText = document.getElementById("sign-in-text");
+
+    if (window.cookies.isAuthenticated === "true") {
+      guestIntroText.remove();
+      signInText.remove();
+    }
+  </script>
+
+  <div class="w-full h-px bg-primary-lightest"></div>
+
   <div id="payment-error" class="hidden">
     <AdvancedNotification
-      Title={recurData.error_payment}
+      Title={page.text_payment_error}
       Type="Error"
       Bordered={true}
       Rounded={true}
     />
   </div>
 
-  <CheckoutBillingAddress {page} {recurData} />
+  <div class="grid division-gap">
+    <h2 class="text-h2 text-primary">{page.Block2_title}</h2>
+
+    <CheckoutInformationForm {recurData} />
+  </div>
+
+  <div class="w-full h-px bg-primary-lightest"></div>
 
   <CheckoutPaymentInfo
     page={page}
     recurData={recurData}
-    title={page.Block2_title}
+    title={page.Block3_title}
     payment_methods={payment_methods}
-    returnButtonText={`${recurData.text_return_to} ${steps[1]?.toLowerCase()}`}
-    returnButtonTextSm={`${recurData.text_return_to} ${shortenedSteps[1]?.toLowerCase()}`}
-    returnButtonLink={checkoutShippingLink}
+    returnButtonText={`${recurData.text_return_to} ${page.return_button_text}`}
+    returnButtonLink={page.return_button_link}
   />
 </form>
 
@@ -131,15 +153,6 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
   const selectTextAndNumberInputs = (parent) =>
     parent.querySelectorAll("input[type='text'], input[type='number'], select");
 
-  window.hideAllPaymentInfo = () => {
-    paymentInfoElements.forEach((paymentInfo) =>
-      addClass(paymentInfo, "!hidden"),
-    );
-
-    submitBtnPaymentType.innerHTML = "";
-    submitBtn.setAttribute("disabled", true);
-  };
-
   window.togglePaymentCardVisibility = (selectedCountry) => {
     paymentCardInputSelector.forEach((cardSelector) => {
       cardSelector.checked = false;
@@ -161,6 +174,8 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
 
     const inputValue = event.target.value.toLowerCase();
     submitBtnPaymentType.innerHTML = ` ${inputValue}`;
+    removeClass(submitBtn, "button-disabled-large");
+    addClass(submitBtn, "button-primary-large");
     submitBtn.removeAttribute("disabled", true);
 
     redirect_status === "failed" && paymentError.classList.add("hidden");
