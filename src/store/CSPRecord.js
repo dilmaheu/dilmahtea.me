@@ -8,10 +8,15 @@ export default function CSPRecord({ dev = false } = {}) {
     "worker-src": ["blob:"],
     "connect-src": [
       "'self'",
-      "https://baserow.scripts.dilmahtea.me",
       "https://js.stripe.com",
       "https://api.openreplay.com",
       "https://analytics.scripts.dilmahtea.me",
+      dev
+        ? "https://dev.pay.scripts.dilmahtea.me/"
+        : "https://pay.scripts.dilmahtea.me",
+      dev
+        ? "https://dev.baserow.scripts.dilmahtea.me"
+        : "https://baserow.scripts.dilmahtea.me",
     ],
     "upgrade-insecure-requests": [],
     "script-src": [
