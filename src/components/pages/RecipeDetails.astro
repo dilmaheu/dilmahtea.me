@@ -165,9 +165,10 @@ const nutrition: Nutrition = {
     </div>
 
     <a
-      href={`#${page.Title} ${recipe_recipe}`
-        ?.toLowerCase()
-        ?.replaceAll(" ", "-")}
+      href={"#" +
+        encodeURIComponent(
+          (page.Title + recipe_recipe).toLowerCase().replaceAll(" ", "-"),
+        )}
       class="button-default sm:!hidden w-fit"
     >
       <span>{recipe_jump_to_recipe}</span>
@@ -176,9 +177,10 @@ const nutrition: Nutrition = {
   </Fragment>
 
   <a
-    href={`#${page.Title} ${recipe_recipe}`
-      ?.toLowerCase()
-      ?.replaceAll(" ", "-")}
+    href={"#" +
+      encodeURIComponent(
+        (page.Title + recipe_recipe).toLowerCase().replaceAll(" ", "-"),
+      )}
     slot="jump-to-recipe-sm"
     class="button-primary"
   >
@@ -188,9 +190,10 @@ const nutrition: Nutrition = {
 
   <div slot="jump-to-recipe" class="hidden md:block">
     <a
-      href={`#${page.Title} ${recipe_recipe}`
-        ?.toLowerCase()
-        ?.replaceAll(" ", "-")}
+      href={"#" +
+        encodeURIComponent(
+          (page.Title + recipe_recipe).toLowerCase().replaceAll(" ", "-"),
+        )}
       class="button-primary-large"
     >
       <span>{recipe_jump_to_recipe}</span>
@@ -205,9 +208,11 @@ const nutrition: Nutrition = {
       page.Recipe_variations.data.length > 0 && (
         <>
           <h2
-            id={`${recipe_similar} ${page.Title}`
-              ?.toLowerCase()
-              ?.replaceAll(" ", "-")}
+            id={encodeURIComponent(
+              `${recipe_similar} ${page.Title}`
+                .toLowerCase()
+                .replaceAll(" ", "-"),
+            )}
             class="tiled-title"
           >
             {`${recipe_similar} ${page.Title?.toLowerCase()}`}
@@ -227,7 +232,9 @@ const nutrition: Nutrition = {
     }
 
     <h2
-      id={`${page.Title} ${recipe_recipe}`?.toLowerCase()?.replaceAll(" ", "-")}
+      id={encodeURIComponent(
+        `${page.Title} ${recipe_recipe}`.toLowerCase().replaceAll(" ", "-"),
+      )}
       class="tiled-title"
     >
       {`${page.Title} ${recipe_recipe?.toLowerCase()}`}
@@ -403,7 +410,9 @@ const nutrition: Nutrition = {
 
     <h2
       aria-label={recipe_cooking_instructions}
-      id={recipe_cooking_instructions?.toLowerCase()?.replaceAll(" ", "-")}
+      id={encodeURIComponent(
+        recipe_cooking_instructions?.toLowerCase()?.replaceAll(" ", "-"),
+      )}
       class="tiled-title"
     >
       {recipe_cooking_instructions}
@@ -416,9 +425,11 @@ const nutrition: Nutrition = {
             <div class="border-l-[3px] border-primary rounded-full" />
 
             <h3
-              id={item.Instructions_part_name?.replaceAll(" ", "-")
-                ?.replace(/\s+/g, "")
-                .trim()}
+              id={encodeURIComponent(
+                item.Instructions_part_name?.replaceAll(" ", "-")
+                  ?.replace(/\s+/g, "")
+                  .trim(),
+              )}
               class="grow !my-0"
             >
               {item.Instructions_part_name}
@@ -429,13 +440,13 @@ const nutrition: Nutrition = {
             <div
               role="listitem"
               aria-label={ariaLabelRecurData.Recipe_step_text + (index + 1)}
-              id={
+              id={encodeURIComponent(
                 item.Instructions_part_name.replaceAll(" ", "-")
                   .replace(/\s+/g, "")
                   .trim() +
-                `-step-` +
-                (index + 1)
-              }
+                  `-step-` +
+                  (index + 1),
+              )}
               class="tiled-div"
             >
               <div class="flex gap-[15px]">
@@ -595,11 +606,13 @@ const nutrition: Nutrition = {
           url: `${
             pageURL +
             `#` +
-            item.Instructions_part_name.replaceAll(" ", "-")
-              .replace(/\s+/g, "")
-              .trim() +
-            `-step-` +
-            (index + 1)
+            encodeURIComponent(
+              item.Instructions_part_name.replaceAll(" ", "-")
+                .replace(/\s+/g, "")
+                .trim() +
+                `-step-` +
+                (index + 1),
+            )
           }`,
           image: step.Instructions_part_steps_blob.data
             ? await importImage(
