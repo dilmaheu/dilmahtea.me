@@ -224,23 +224,26 @@ const totalSpentAmount = spentAmounts.reduce(
               <div class="input-label !text-white">{recurData.text_size}:</div>
 
               <div class="flex flex-wrap division-in-element-gap">
-                {availableSizes.map(({ value, size, link }) => (
-                  <div>
-                    <input
-                      type="radio"
-                      name="tea_size"
-                      id={size}
-                      value={value}
-                      data-href={link}
-                      checked={value === productSize}
-                      class="peer hidden"
-                    />
+                {availableSizes.map(({ value, size, link }) => {
+                  const sizeId = size.replace(/\s+/g, "-");
+                  return (
+                    <div>
+                      <input
+                        type="radio"
+                        name="tea_size"
+                        id={sizeId}
+                        value={value}
+                        data-href={link}
+                        checked={value === productSize}
+                        class="peer hidden"
+                      />
 
-                    <label for={size} class="radio-button-default">
-                      {size}
-                    </label>
-                  </div>
-                ))}
+                      <label for={sizeId} class="radio-button-default">
+                        {size}
+                      </label>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )
