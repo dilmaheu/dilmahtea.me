@@ -1,12 +1,11 @@
 ---
-import he from "he";
 import { parseHTML } from "linkedom";
 import renderMarkdown from "@utils/renderMarkdown";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 const { page } = Astro.props;
 
-let contentBlocksHTML = he.decode(renderMarkdown(page.Block_text));
+let contentBlocksHTML = renderMarkdown(page.Block_text);
 
 let { document: contentBlocksDocument } = parseHTML(contentBlocksHTML),
   titles = Array.from(contentBlocksDocument.querySelectorAll("h2"));
