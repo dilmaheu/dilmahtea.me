@@ -15,7 +15,7 @@ let { document: contentBlocksDocument } = parseHTML(contentBlocksHTML),
 {
   titles.map((title) => {
     const { textContent: titleText } = title,
-      { innerHTML } = title.nextElementSibling;
+      { outerHTML } = title.nextElementSibling;
 
     return (
       <>
@@ -23,7 +23,7 @@ let { document: contentBlocksDocument } = parseHTML(contentBlocksHTML),
 
         <div class="tiled-div">
           <OptimizeContentImages>
-            <Fragment set:html={innerHTML} />
+            <Fragment set:html={outerHTML} />
           </OptimizeContentImages>
         </div>
       </>
