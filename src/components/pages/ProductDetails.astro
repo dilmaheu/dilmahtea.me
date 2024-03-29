@@ -161,54 +161,58 @@ const totalSpentAmount = spentAmounts.reduce(
           availableVariants.length > 0 && (
             <div class="grid sm:flex flex-wrap items-center division-in-element-gap w-full">
               {availableVariants.map(
-                ({ value, variant, variantIcon, link }) => (
-                  <div class="h-[62px]">
-                    <input
-                      type="radio"
-                      name="tea_variant"
-                      id={variant}
-                      value={value}
-                      data-href={link}
-                      checked={value === productVariant}
-                      class="peer hidden"
-                    />
+                ({ value, variant, variantIcon, link }) => {
+                  const variantId = variant.replace(/\s+/g, "-");
 
-                    <label
-                      for={variant}
-                      class:list={[
-                        "product-variant-blob-button-clip",
-                        "inline-block p-[3px] text-white w-full h-full",
-                        "peer-checked:bg-white select-none cursor-pointer",
-                      ]}
-                    >
-                      <span
+                  return (
+                    <div class="h-[62px]">
+                      <input
+                        type="radio"
+                        name="tea_variant"
+                        id={variantId}
+                        value={value}
+                        data-href={link}
+                        checked={value === productVariant}
+                        class="peer hidden"
+                      />
+
+                      <label
+                        for={variantId}
                         class:list={[
                           "product-variant-blob-button-clip",
-                          "block md:w-[200px] p-0.5 bg-primary-light h-full",
+                          "inline-block p-[3px] text-white w-full h-full",
+                          "peer-checked:bg-white select-none cursor-pointer",
                         ]}
                       >
                         <span
                           class:list={[
                             "product-variant-blob-button-clip",
-                            "division-in-element-gap w-full h-full",
-                            "flex items-center py-[5px] px-2.5 bg-primary",
+                            "block md:w-[200px] p-0.5 bg-primary-light h-full",
                           ]}
                         >
-                          {variantIcon?.src &&
-                            (async () => (
-                              <img
-                                src={await localizeCMSImage(variantIcon.src)}
-                                alt={variantIcon.alt}
-                                class="w-[25px] h-[15px]"
-                              />
-                            ))}
+                          <span
+                            class:list={[
+                              "product-variant-blob-button-clip",
+                              "division-in-element-gap w-full h-full",
+                              "flex items-center py-[5px] px-2.5 bg-primary",
+                            ]}
+                          >
+                            {variantIcon?.src &&
+                              (async () => (
+                                <img
+                                  src={await localizeCMSImage(variantIcon.src)}
+                                  alt={variantIcon.alt}
+                                  class="w-[25px] h-[15px]"
+                                />
+                              ))}
 
-                          <span class="text-sm font-bold">{variant}</span>
+                            <span class="text-sm font-bold">{variant}</span>
+                          </span>
                         </span>
-                      </span>
-                    </label>
-                  </div>
-                ),
+                      </label>
+                    </div>
+                  );
+                },
               )}
             </div>
           )
