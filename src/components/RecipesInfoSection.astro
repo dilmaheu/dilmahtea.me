@@ -1,15 +1,28 @@
 ---
-import he from "he";
 import { parseHTML } from "linkedom";
 import renderMarkdown from "@utils/renderMarkdown";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 const { page } = Astro.props;
 
-let contentBlocksHTML = he.decode(renderMarkdown(page.Block_text));
+let contentBlocksHTML = renderMarkdown(page.Block_text);
 
 let { document: contentBlocksDocument } = parseHTML(contentBlocksHTML),
   titles = Array.from(contentBlocksDocument.querySelectorAll("h2"));
+
+titles.forEach((title, i) => {
+  contentBlocksHTML = contentBlocksHTML.replace(
+    title.outerHTML,
+    (i === 0 ? "" : "</div>") + title.outerHTML + "<div>",
+  );
+});
+
+titles.length > 0 && (contentBlocksHTML += "</div>");
+
+// refresh linkedom generated dom
+({ document: contentBlocksDocument } = parseHTML(contentBlocksHTML));
+
+titles = Array.from(contentBlocksDocument.querySelectorAll("h2"));
 ---
 
 {
