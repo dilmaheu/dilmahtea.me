@@ -1,10 +1,10 @@
 ---
 import CMS from "@store/CMS";
+import subset from "@utils/shared/subset";
 
 import DynamicHTML from "@components/DynamicHTML.astro";
 import CheckoutPaymentInfo from "@components/CheckoutPaymentInfo.astro";
 import AdvancedNotification from "@components/AdvancedNotification.astro";
-
 import CheckoutBillingAddress from "@solid/CheckoutBillingAddress.astro";
 
 const { page, recurData } = Astro.props,
@@ -95,7 +95,7 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
   />
 </form>
 
-<script is:inline>
+<script define:vars={subset(recurData, ["text_pay", "text_pay_with"])}>
   const id = document.getElementById.bind(document),
     queryAll = document.querySelectorAll.bind(document),
     addClass = (element, className) => element.classList.add(className),
@@ -107,7 +107,6 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
     paymentCardInputSelector = queryAll(".payment-card-input-selector"),
     paymentInfoElements = queryAll(".payment-info"),
     submitBtn = document.querySelector("button[type=submit]"),
-    submitBtnPaymentType = submitBtn.querySelector(".payment-type"),
     paymentError = id("payment-error"),
     paymentErrorBottom = id("payment-error-bottom");
 
@@ -128,7 +127,7 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
       addClass(paymentInfo, "!hidden"),
     );
 
-    submitBtnPaymentType.innerHTML = "";
+    submitBtn.textContent = text_pay;
     submitBtn.setAttribute("disabled", true);
   };
 
@@ -152,7 +151,7 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
     if (!event.target.classList.contains("payment-card-input-selector")) return;
 
     const inputValue = event.target.value.toLowerCase();
-    submitBtnPaymentType.innerHTML = ` ${inputValue}`;
+    submitBtn.textContent = text_pay_with + " " + inputValue;
     submitBtn.removeAttribute("disabled", true);
 
     redirect_status === "failed" && paymentError.classList.add("hidden");
