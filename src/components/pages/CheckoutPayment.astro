@@ -110,7 +110,8 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
     paymentInfoElements = queryAll(".payment-info"),
     submitBtn = id("submit-btn"),
     submitBtnPaymentType = submitBtn.querySelector(".payment-type"),
-    paymentError = id("payment-error");
+    paymentError = id("payment-error"),
+    paymentErrorBottom = id("payment-error-bottom");
 
   const { redirect_status } = Object.fromEntries(
     new URLSearchParams(location.search),
@@ -157,6 +158,8 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
     submitBtn.removeAttribute("disabled", true);
 
     redirect_status === "failed" && paymentError.classList.add("hidden");
+
+    paymentErrorBottom.classList.add("hidden");
 
     paymentInfoElements.forEach((paymentInfo) => {
       const includesValue = paymentInfo
