@@ -98,8 +98,6 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
 <script define:vars={subset(recurData, ["text_pay", "text_pay_with"])}>
   const id = document.getElementById.bind(document),
     queryAll = document.querySelectorAll.bind(document),
-    addClass = (element, className) => element.classList.add(className),
-    removeClass = (element, className) => element.classList.remove(className),
     getInputValue = (parent, name) =>
       parent.querySelector(`input[name=${name}]`).value;
 
@@ -124,7 +122,7 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
 
   window.hideAllPaymentInfo = () => {
     paymentInfoElements.forEach((paymentInfo) =>
-      addClass(paymentInfo, "!hidden"),
+      paymentInfo.classList.add("!hidden"),
     );
 
     submitBtn.textContent = text_pay;
@@ -141,9 +139,9 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
 
       if (!countryName) return;
 
-      countryName.includes(selectedCountry)
-        ? removeClass(cardSelector.parentElement, "hidden")
-        : addClass(cardSelector.parentElement, "hidden");
+      cardSelector.parentElement.classList[
+        countryName.includes(selectedCountry) ? "remove" : "add"
+      ]("hidden");
     });
   };
 
@@ -166,9 +164,7 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
 
       toggleDisabled(selectTextAndNumberInputs(paymentInfo), !includesValue);
 
-      includesValue
-        ? removeClass(paymentInfo, "!hidden")
-        : addClass(paymentInfo, "!hidden");
+      paymentInfo.classList[includesValue ? "remove" : "add"]("!hidden");
 
       const paymentInputName =
         includesValue && paymentInfo.querySelector("input[name*=name]");
