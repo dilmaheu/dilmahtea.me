@@ -1,5 +1,6 @@
 ---
 import CMS from "@store/CMS";
+import LoadingSpinner from "@solid/LoadingSpinner";
 import localizeCMSImage from "@utils/localizeCMSImage";
 import AdvancedNotification from "@components/AdvancedNotification.astro";
 
@@ -44,6 +45,18 @@ const countries = CMS.get("countries"),
 
   .input-field-api-focus {
     @apply ring ring-primary-lightest outline-none;
+  }
+
+  button[type="submit"] {
+    svg.animate-spin {
+      display: none;
+    }
+
+    &.processing {
+      svg.animate-spin {
+        @apply inline pl-0.5;
+      }
+    }
   }
 </style>
 
@@ -175,7 +188,6 @@ const countries = CMS.get("countries"),
         </div>
       ) : (
         <button
-          id="submit-btn"
           type="submit"
           class="w-full sm:max-w-[250px] button-primary-large"
           disabled
@@ -183,6 +195,8 @@ const countries = CMS.get("countries"),
           <span>
             {recurData.text_pay_with}
             <span class="payment-type" />
+
+            <LoadingSpinner />
           </span>
         </button>
       )
@@ -222,6 +236,12 @@ const countries = CMS.get("countries"),
       paymentErrorBottomContent = paymentErrorBottom.querySelector(
         ".notification-content",
       );
+
+    const formSubmitBtn = form.querySelector("button[type=submit"),
+      paymentCardInputs = document.querySelectorAll(
+        ".payment-card-input-selector",
+      ),
+      elementsToDisable = [formSubmitBtn, ...Array.from(paymentCardInputs)];
 
     const STRIPE_PUBLISHABLE_KEY =
       stripePublishableKey?.getAttribute("data-key");
@@ -290,6 +310,11 @@ const countries = CMS.get("countries"),
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
+      elementsToDisable.forEach((element) => {
+        element.disabled = true;
+      });
+
+      formSubmitBtn.classList.add("processing");
       paymentErrorBottom.classList.add("hidden");
 
       // @ts-ignore
@@ -355,6 +380,12 @@ const countries = CMS.get("countries"),
 
         paymentErrorBottom.classList.remove("hidden");
       }
+
+      elementsToDisable.forEach((element) => {
+        element.disabled = false;
+      });
+
+      formSubmitBtn.classList.remove("processing");
     });
 
     function clearStripeElements() {
