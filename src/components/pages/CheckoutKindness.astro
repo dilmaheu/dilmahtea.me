@@ -20,6 +20,9 @@ const checkoutSuccessLink = `/${locale}/${
     CMS.get("checkoutPayment", locale).Meta.URL_slug
   }/`,
   shopLink = `/${locale}/${CMS.get("homeProduct", locale).Meta.URL_slug}/`;
+
+const generateId = (inputString) =>
+  encodeURIComponent(inputString?.toLowerCase().replaceAll(" ", "-"));
 ---
 
 <style lang="scss">
@@ -81,13 +84,13 @@ const checkoutSuccessLink = `/${locale}/${
           <input
             type="radio"
             name="kindness_cause"
-            id={cause}
+            id={generateId(cause)}
             value={cause}
             class="peer !hidden"
           />
 
           <label
-            for={cause}
+            for={generateId(cause)}
             class:list={[
               "kindness-cause-clip-path kindness-cause-pad",
               "peer-checked:bg-primary select-none cursor-pointer",

@@ -55,6 +55,9 @@ const totalSpentAmount = spentAmounts.reduce(
   (total, currentValue) => total + currentValue,
   0,
 );
+
+const generateId = (inputString) =>
+  encodeURIComponent(inputString?.toLowerCase().replaceAll(" ", "-"));
 ---
 
 <style lang="scss">
@@ -161,58 +164,54 @@ const totalSpentAmount = spentAmounts.reduce(
           availableVariants.length > 0 && (
             <div class="grid sm:flex flex-wrap items-center division-in-element-gap w-full">
               {availableVariants.map(
-                ({ value, variant, variantIcon, link }) => {
-                  const variantId = variant.replace(/\s+/g, "-");
+                ({ value, variant, variantIcon, link }) => (
+                  <div class="h-[62px]">
+                    <input
+                      type="radio"
+                      name="tea_variant"
+                      id={generateId(variant)}
+                      value={value}
+                      data-href={link}
+                      checked={value === productVariant ? "" : undefined}
+                      class="peer hidden"
+                    />
 
-                  return (
-                    <div class="h-[62px]">
-                      <input
-                        type="radio"
-                        name="tea_variant"
-                        id={variantId}
-                        value={value}
-                        data-href={link}
-                        checked={value === productVariant ? "" : undefined}
-                        class="peer hidden"
-                      />
-
-                      <label
-                        for={variantId}
+                    <label
+                      for={generateId(variant)}
+                      class:list={[
+                        "product-variant-blob-button-clip",
+                        "inline-block p-[3px] text-white w-full h-full",
+                        "peer-checked:bg-white select-none cursor-pointer",
+                      ]}
+                    >
+                      <span
                         class:list={[
                           "product-variant-blob-button-clip",
-                          "inline-block p-[3px] text-white w-full h-full",
-                          "peer-checked:bg-white select-none cursor-pointer",
+                          "block md:w-[200px] p-0.5 bg-primary-light h-full",
                         ]}
                       >
                         <span
                           class:list={[
                             "product-variant-blob-button-clip",
-                            "block md:w-[200px] p-0.5 bg-primary-light h-full",
+                            "division-in-element-gap w-full h-full",
+                            "flex items-center py-[5px] px-2.5 bg-primary",
                           ]}
                         >
-                          <span
-                            class:list={[
-                              "product-variant-blob-button-clip",
-                              "division-in-element-gap w-full h-full",
-                              "flex items-center py-[5px] px-2.5 bg-primary",
-                            ]}
-                          >
-                            {variantIcon?.src &&
-                              (async () => (
-                                <img
-                                  src={await localizeCMSImage(variantIcon.src)}
-                                  alt={variantIcon.alt}
-                                  class="w-[25px] h-[15px]"
-                                />
-                              ))}
+                          {variantIcon?.src &&
+                            (async () => (
+                              <img
+                                src={await localizeCMSImage(variantIcon.src)}
+                                alt={variantIcon.alt}
+                                class="w-[25px] h-[15px]"
+                              />
+                            ))}
 
-                            <span class="text-sm font-bold">{variant}</span>
-                          </span>
+                          <span class="text-sm font-bold">{variant}</span>
                         </span>
-                      </label>
-                    </div>
-                  );
-                },
+                      </span>
+                    </label>
+                  </div>
+                ),
               )}
             </div>
           )
@@ -224,26 +223,23 @@ const totalSpentAmount = spentAmounts.reduce(
               <div class="input-label !text-white">{recurData.text_size}:</div>
 
               <div class="flex flex-wrap division-in-element-gap">
-                {availableSizes.map(({ value, size, link }) => {
-                  const sizeId = size.replace(/\s+/g, "-");
-                  return (
-                    <div>
-                      <input
-                        type="radio"
-                        name="tea_size"
-                        id={sizeId}
-                        value={value}
-                        data-href={link}
-                        checked={value === productSize ? "" : undefined}
-                        class="peer hidden"
-                      />
+                {availableSizes.map(({ value, size, link }) => (
+                  <div>
+                    <input
+                      type="radio"
+                      name="tea_size"
+                      id={generateId(size)}
+                      value={value}
+                      data-href={link}
+                      checked={value === productSize ? "" : undefined}
+                      class="peer hidden"
+                    />
 
-                      <label for={sizeId} class="radio-button-default">
-                        {size}
-                      </label>
-                    </div>
-                  );
-                })}
+                    <label for={generateId(size)} class="radio-button-default">
+                      {size}
+                    </label>
+                  </div>
+                ))}
               </div>
             </div>
           )
