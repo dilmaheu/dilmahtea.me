@@ -26,33 +26,32 @@ const { page, recurData } = Astro.props,
       {
         page.shipping_methods.data.map(
           ({ attributes: { method, cost, description, localizations } }, i) => (
-            <label
-              role="listitem"
-              class="division-in-element-gap radio-input-extended"
-            >
-              <input
-                type="radio"
-                name="shipping_method"
-                value={localizations?.data[0]?.attributes?.method || method}
-                data-cost={cost}
-                checked={i === 0 ? "" : undefined}
-                class="peer hidden"
-              />
+            <div role="listitem">
+              <label class="division-in-element-gap radio-input-extended">
+                <input
+                  type="radio"
+                  name="shipping_method"
+                  value={localizations?.data[0]?.attributes?.method || method}
+                  data-cost={cost}
+                  checked={i === 0 ? "" : undefined}
+                  class="peer hidden"
+                />
 
-              <span>
-                <span class="radio-input-label">
-                  <span class="shipping-method">{method}</span>
-                  &#x2022;
-                  <span class="shipping-cost">
-                    €{cost.toFixed(2).toString().replace(".", ",")}
+                <span>
+                  <span class="radio-input-label">
+                    <span class="shipping-method">{method}</span>
+                    &#x2022;
+                    <span class="shipping-cost">
+                      €{cost.toFixed(2).toString().replace(".", ",")}
+                    </span>
+                  </span>
+
+                  <span class="prose-text radio-input-text">
+                    <Markdown>{description}</Markdown>
                   </span>
                 </span>
-
-                <span class="prose-text radio-input-text">
-                  <Markdown>{description}</Markdown>
-                </span>
-              </span>
-            </label>
+              </label>
+            </div>
           ),
         )
       }

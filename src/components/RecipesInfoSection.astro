@@ -13,7 +13,9 @@ let { document: contentBlocksDocument } = parseHTML(contentBlocksHTML),
 titles.forEach((title, i) => {
   contentBlocksHTML = contentBlocksHTML.replace(
     title.outerHTML,
-    (i === 0 ? "" : "</div>") + title.outerHTML + "<div>",
+    (i === 0 ? "" : "</div>") +
+      title.outerHTML +
+      "<div class='no-pad-mar-first-last-child'>",
   );
 });
 
@@ -28,7 +30,7 @@ titles = Array.from(contentBlocksDocument.querySelectorAll("h2"));
 {
   titles.map((title) => {
     const { textContent: titleText } = title,
-      { innerHTML } = title.nextElementSibling;
+      { outerHTML } = title.nextElementSibling;
 
     return (
       <>
@@ -36,7 +38,7 @@ titles = Array.from(contentBlocksDocument.querySelectorAll("h2"));
 
         <div class="tiled-div">
           <OptimizeContentImages>
-            <Fragment set:html={innerHTML} />
+            <Fragment set:html={outerHTML} />
           </OptimizeContentImages>
         </div>
       </>
