@@ -35,7 +35,7 @@ page.Heading_button_link = "#content";
   {recurData}
   {ariaLabelRecurData}
   {headingName}
-  type="section"
+  type="complementary"
   headerBackgroundSm={true}
 >
   <div slot="tea-variants-header">
@@ -55,7 +55,7 @@ page.Heading_button_link = "#content";
     />
 
     {/* Products Section */}
-    <section role="main" class="grid section-gap">
+    <div role="main" class="grid section-gap">
       <FilteredProducts {page} {recurData} {white_love} category={page.Title}>
         <Icon
           slot="alertCircleIcon"
@@ -70,7 +70,9 @@ page.Heading_button_link = "#content";
             <div class="grid division-gap">
               <div class="wrapper grid division-in-gap">
                 <h2
-                  id={Title?.toLowerCase()?.replaceAll(" ", "-")}
+                  id={encodeURIComponent(
+                    Title?.toLowerCase()?.replaceAll(" ", "-"),
+                  )}
                   class="text-h2 text-primary"
                 >
                   {Title}
@@ -97,7 +99,7 @@ page.Heading_button_link = "#content";
           </div>
         ))
       }
-    </section>
+    </div>
   </div>
 
   {

@@ -33,7 +33,9 @@ export default function Dashboard({
       />
 
       <h2
-        id={page.Block3_title.toLowerCase().replaceAll(" ", "-")}
+        id={encodeURIComponent(
+          page.Block3_title.toLowerCase().replaceAll(" ", "-"),
+        )}
         class="tiled-title text-h2"
       >
         {page.Block3_title}

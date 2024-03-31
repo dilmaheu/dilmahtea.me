@@ -3,6 +3,7 @@ import { Schema } from "astro-seo-schema";
 import { Picture } from "astro-imagetools/components";
 
 import Markdown from "@components/Markdown.astro";
+import Chapterize from "@components/Chapterize.astro";
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
@@ -54,7 +55,14 @@ const { STRAPI_URL } = import.meta.env,
                 "w-full sm:w-auto max-w-[600px] sm:max-w-[240px]",
               ]}
             >
-              <a href={`#` + Method_title?.replaceAll(" ", "-")}>
+              <a
+                href={
+                  `#` +
+                  encodeURIComponent(
+                    Method_title?.toLowerCase().replaceAll(" ", "-"),
+                  )
+                }
+              >
                 {Method_title}
               </a>
             </div>
@@ -64,23 +72,21 @@ const { STRAPI_URL } = import.meta.env,
     </div>
   </div>
 
-  <Fragment slot="post-details">
+  <Chapterize slot="post-details">
     {
       page?.Method?.map((method) => (
-        <div class="chapter">
-          <h2
-            id={method.Method_title?.replaceAll(" ", "-")
-              .replace(/\s+/g, "")
-              .trim()}
-            class="tiled-title"
-          >
-            {method.Method_title}
-          </h2>
+        <>
+          <h2 class="tiled-title">{method.Method_title}</h2>
 
           {method.Steps?.map(({ Step_title, Step_text, Step_blob }, index) => (
             <div class="tiled-div">
               <h3
-                id={Step_title?.replaceAll(" ", "-").replace(/\s+/g, "").trim()}
+                id={encodeURIComponent(
+                  Step_title?.toLowerCase()
+                    .replaceAll(" ", "-")
+                    .replace(/\s+/g, "")
+                    .trim(),
+                )}
               >
                 {index + 1 + ". " + Step_title}
               </h3>
@@ -103,10 +109,10 @@ const { STRAPI_URL } = import.meta.env,
               )}
             </div>
           ))}
-        </div>
+        </>
       ))
     }
-  </Fragment>
+  </Chapterize>
 </PostDetailsLayout>
 
 <Schema
@@ -127,7 +133,7 @@ const { STRAPI_URL } = import.meta.env,
             "@type": "HowToStep",
             name: step.Step_title,
             text: step.Step_text,
-            url: `${pageURL + `#` + step.Step_title.replaceAll(" ", "-")}`,
+            url: `${pageURL + `#` + encodeURIComponent(step.Step_title.replaceAll(" ", "-"))}`,
             image: {
               "@type": "ImageObject",
               url: !step.Step_blob?.data

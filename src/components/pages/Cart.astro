@@ -286,69 +286,70 @@ const footerText = recurData.Footer_text.replaceAll(
 
     <Footer footerText={footerText} recurData={recurData} type={page?.type} />
   </div>
-</BaseLayout>
-
-<script defer>
-  const removeItemBtns = document.querySelectorAll(".remove-item-btn"),
-    cart = document.getElementById("cart"),
-    emptyCartNotification = document.getElementById("empty-cart-notification");
-
-  removeItemBtns.forEach((button) => {
-    button.addEventListener("click", () => {
-      const parentCartProduct = button.closest(".cart-product"),
-        productId = parentCartProduct.id;
-
-      delete window.cart[productId];
-
-      if (Object.keys(window.cart).length === 0) {
-        cart.classList.add("hidden");
-        emptyCartNotification.classList.remove("hidden");
-      }
-
-      parentCartProduct.remove();
-    });
-  });
-</script>
-
-<script>
-  import tweakAmount from "@utils/client/tweakAmount";
-
-  const cartProductAmountInputs = document.querySelectorAll(
-      ".cart-product-amount-input",
-    ),
-    cartProductAmountTweakBtns = document.querySelectorAll(
-      ".cart-product-amount-tweak-btn",
-    ),
-    decreaseAmountBtns = document.querySelectorAll(
-      ".cart-product-amount-tweak-btn[data-action='decrement']",
-    );
-
-  decreaseAmountBtns.forEach((button: HTMLButtonElement) => {
-    const input = button.nextElementSibling as HTMLInputElement;
-
-    button.disabled = input.value === "1";
-  });
-
-  function tweakAmountCallback(input) {
-    const parentCartProduct = input.closest(".cart-product"),
-      productPriceElements = parentCartProduct.querySelectorAll(
-        ".cart-product-price",
+  <script defer>
+    const removeItemBtns = document.querySelectorAll(".remove-item-btn"),
+      cart = document.getElementById("cart"),
+      emptyCartNotification = document.getElementById(
+        "empty-cart-notification",
       );
 
-    const SKU = parentCartProduct.id,
-      quantity = Number(input.value);
+    removeItemBtns.forEach((button) => {
+      button.addEventListener("click", () => {
+        const parentCartProduct = button.closest(".cart-product"),
+          productId = parentCartProduct.id;
 
-    window.cart[SKU] = { quantity };
+        delete window.cart[productId];
 
-    productPriceElements.forEach((element) => {
-      element.textContent =
-        "€" + window.cart[SKU].price.toFixed(2).replace(".", ",");
+        if (Object.keys(window.cart).length === 0) {
+          cart.classList.add("hidden");
+          emptyCartNotification.classList.remove("hidden");
+        }
+
+        parentCartProduct.remove();
+      });
     });
-  }
+  </script>
 
-  tweakAmount(
-    cartProductAmountTweakBtns,
-    cartProductAmountInputs,
-    tweakAmountCallback,
-  );
-</script>
+  <script>
+    import tweakAmount from "@utils/client/tweakAmount";
+
+    const cartProductAmountInputs = document.querySelectorAll(
+        ".cart-product-amount-input",
+      ),
+      cartProductAmountTweakBtns = document.querySelectorAll(
+        ".cart-product-amount-tweak-btn",
+      ),
+      decreaseAmountBtns = document.querySelectorAll(
+        ".cart-product-amount-tweak-btn[data-action='decrement']",
+      );
+
+    decreaseAmountBtns.forEach((button: HTMLButtonElement) => {
+      const input = button.nextElementSibling as HTMLInputElement;
+
+      button.disabled = input.value === "1";
+    });
+
+    function tweakAmountCallback(input) {
+      const parentCartProduct = input.closest(".cart-product"),
+        productPriceElements = parentCartProduct.querySelectorAll(
+          ".cart-product-price",
+        );
+
+      const SKU = parentCartProduct.id,
+        quantity = Number(input.value);
+
+      window.cart[SKU] = { quantity };
+
+      productPriceElements.forEach((element) => {
+        element.textContent =
+          "€" + window.cart[SKU].price.toFixed(2).replace(".", ",");
+      });
+    }
+
+    tweakAmount(
+      cartProductAmountTweakBtns,
+      cartProductAmountInputs,
+      tweakAmountCallback,
+    );
+  </script>
+</BaseLayout>

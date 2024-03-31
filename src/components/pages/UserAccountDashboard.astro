@@ -40,6 +40,9 @@ const headings = new Array(
   Block2_visibility && Block2?.Block2_title,
   Block3_title,
 );
+
+const generateId = (inputString) =>
+  encodeURIComponent(inputString?.toLowerCase().replaceAll(" ", "-"));
 ---
 
 <style lang="scss">
@@ -99,7 +102,19 @@ const headings = new Array(
 
 <UserAccountLayout page={page} headings={headings}>
   <Dashboard {page} {verificationHref} {userAccountAddressURL} {recurData}>
-    <Icon slot="plusIcon" name="akar-icons:plus" class="w-[18px] select-none" />
+    <svg
+      slot="plusIcon"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24" 
+      class="button-icon"
+    >
+      <path
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-width="2"
+        d="M12 5v14m-7-7h14"
+      />
+    </svg>
 
     <Fragment slot="kindnessCausesHTML">
       <div class="grid division-gap">
@@ -112,36 +127,39 @@ const headings = new Array(
         }
 
         <form id="cause-form" class="grid division-in-gap">
-          <label class="division-in-element-gap radio-input-extended">
+          <div class="division-in-element-gap radio-input-extended">
             <input type="radio" disabled class="peer hidden" />
 
-            <span class="grid division-in-element-gap">
-              <span>
-                <span class="radio-input-label">
+            <div class="grid division-in-element-gap">
+              <div>
+                <div class="radio-input-label">
                   {Block2?.Label_my_selected_cause}
-                </span>
+                </div>
 
-                <span class="prose-text radio-input-text">
+                <div class="prose-text radio-input-text">
                   <Markdown>{Block2?.My_selected_cause_text}</Markdown>
-                </span>
-              </span>
+                </div>
+              </div>
 
               {
                 kindnessCauses.length > 0 && (
-                  <div id="kindness-cause-grid" class="division-in-element-gap">
+                  <span
+                    id="kindness-cause-grid"
+                    class="division-in-element-gap block"
+                  >
                     {kindnessCauses.map(
                       ({ cause, description, featured_blob }) => (
-                        <div class="w-full h-full">
+                        <span class="w-full h-full">
                           <input
                             type="radio"
                             name="kindness_cause"
-                            id={cause}
+                            id={generateId(cause)}
                             value={cause}
                             class="peer !hidden"
                           />
 
                           <label
-                            for={cause}
+                            for={generateId(cause)}
                             class:list={[
                               "kindness-cause-clip-path kindness-cause-pad inline-block",
                               "w-full h-full peer-checked:bg-primary select-none cursor-pointer",
@@ -206,22 +224,22 @@ const headings = new Array(
                                     {cause}
                                   </span>
 
-                                  <div class="text-secondary-light text-b6-xs line-clamp-3">
+                                  <span class="text-secondary-light text-b6-xs line-clamp-3">
                                     {" "}
                                     {description}
-                                  </div>
+                                  </span>
                                 </span>
                               </span>
                             </span>
                           </label>
-                        </div>
+                        </span>
                       ),
                     )}
-                  </div>
+                  </span>
                 )
               }
-            </span>
-          </label>
+            </div>
+          </div>
 
           <label class="division-in-element-gap radio-input-extended">
             <input

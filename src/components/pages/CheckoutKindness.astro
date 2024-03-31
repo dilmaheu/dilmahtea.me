@@ -20,6 +20,9 @@ const checkoutSuccessLink = `/${locale}/${
     CMS.get("checkoutPayment", locale).Meta.URL_slug
   }/`,
   shopLink = `/${locale}/${CMS.get("homeProduct", locale).Meta.URL_slug}/`;
+
+const generateId = (inputString) =>
+  encodeURIComponent(inputString?.toLowerCase().replaceAll(" ", "-"));
 ---
 
 <style lang="scss">
@@ -54,7 +57,7 @@ const checkoutSuccessLink = `/${locale}/${
 </script>
 
 <div class="text-center flex flex-col division-in-gap">
-  <h1 class="text-h1 text-primary">{page.Title}</h1>
+  <h2 class="text-h1 text-primary">{page.Title}</h2>
 
   <div class="prose-text no-pad-mar-child">
     <Markdown>{page.Intro_text}</Markdown>
@@ -81,13 +84,13 @@ const checkoutSuccessLink = `/${locale}/${
           <input
             type="radio"
             name="kindness_cause"
-            id={cause}
+            id={generateId(cause)}
             value={cause}
             class="peer !hidden"
           />
 
           <label
-            for={cause}
+            for={generateId(cause)}
             class:list={[
               "kindness-cause-clip-path kindness-cause-pad",
               "peer-checked:bg-primary select-none cursor-pointer",
@@ -110,9 +113,9 @@ const checkoutSuccessLink = `/${locale}/${
                 <span class="card-content-container">
                   <span class="post-title">{cause}</span>
 
-                  <div class="text-secondary-light text-b6-xs line-clamp-3">
+                  <span class="text-secondary-light text-b6-xs line-clamp-3">
                     {description}
-                  </div>
+                  </span>
                 </span>
               </span>
             </span>

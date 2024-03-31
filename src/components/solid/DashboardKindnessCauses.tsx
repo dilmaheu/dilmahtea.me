@@ -146,7 +146,7 @@ export default function DashboardKindnessCauses({
     <>
       <h2
         ref={kindnessCausesTitle}
-        id={title.toLowerCase().replaceAll(" ", "-")}
+        id={encodeURIComponent(title.toLowerCase().replaceAll(" ", "-"))}
         class="tiled-title text-h2"
       >
         {title}

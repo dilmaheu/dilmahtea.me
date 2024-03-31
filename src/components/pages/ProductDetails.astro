@@ -55,6 +55,9 @@ const totalSpentAmount = spentAmounts.reduce(
   (total, currentValue) => total + currentValue,
   0,
 );
+
+const generateId = (inputString) =>
+  encodeURIComponent(inputString?.toLowerCase().replaceAll(" ", "-"));
 ---
 
 <style lang="scss">
@@ -166,15 +169,15 @@ const totalSpentAmount = spentAmounts.reduce(
                     <input
                       type="radio"
                       name="tea_variant"
-                      id={variant}
+                      id={generateId(variant)}
                       value={value}
                       data-href={link}
-                      checked={value === productVariant}
+                      checked={value === productVariant ? "" : undefined}
                       class="peer hidden"
                     />
 
                     <label
-                      for={variant}
+                      for={generateId(variant)}
                       class:list={[
                         "product-variant-blob-button-clip",
                         "inline-block p-[3px] text-white w-full h-full",
@@ -225,14 +228,14 @@ const totalSpentAmount = spentAmounts.reduce(
                     <input
                       type="radio"
                       name="tea_size"
-                      id={size}
+                      id={generateId(size)}
                       value={value}
                       data-href={link}
-                      checked={value === productSize}
+                      checked={value === productSize ? "" : undefined}
                       class="peer hidden"
                     />
 
-                    <label for={size} class="radio-button-default">
+                    <label for={generateId(size)} class="radio-button-default">
                       {size}
                     </label>
                   </div>
@@ -257,10 +260,13 @@ const totalSpentAmount = spentAmounts.reduce(
                 class="product-amount-tweak-btn button-cart-quantity-item"
                 disabled
               >
-                <Icon
-                  name="akar-icons:minus"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
                   class="button-cart-quantity-icon"
-                />
+                >
+                  <path stroke="currentColor" stroke-width="2" d="M5 12h14" />
+                </svg>
               </button>
 
               <input
@@ -281,10 +287,18 @@ const totalSpentAmount = spentAmounts.reduce(
                 }
                 class="product-amount-tweak-btn button-cart-quantity-item"
               >
-                <Icon
-                  name="akar-icons:plus"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
                   class="button-cart-quantity-icon"
-                />
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-width="2"
+                    d="M12 5v14m-7-7h14"
+                  />
+                </svg>
               </button>
             </div>
           )
@@ -373,7 +387,7 @@ const totalSpentAmount = spentAmounts.reduce(
                   <option
                     value={value}
                     data-href={link}
-                    selected={value === productVariant}
+                    selected={value === productVariant ? "" : undefined}
                   >
                     {variant}
                   </option>
@@ -391,7 +405,7 @@ const totalSpentAmount = spentAmounts.reduce(
                   <option
                     value={value}
                     data-href={link}
-                    selected={value === productSize}
+                    selected={value === productSize ? "" : undefined}
                   >
                     {size}
                   </option>
@@ -415,7 +429,18 @@ const totalSpentAmount = spentAmounts.reduce(
               class="product-amount-tweak-btn button-cart-quantity-item"
               disabled
             >
-              <Icon name="akar-icons:minus" class="button-cart-quantity-icon" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                class="button-cart-quantity-icon"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-width="2"
+                  d="M5 12h14"
+                />
+              </svg>
             </button>
 
             <input
@@ -434,7 +459,18 @@ const totalSpentAmount = spentAmounts.reduce(
               aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
               class="product-amount-tweak-btn button-cart-quantity-item"
             >
-              <Icon name="akar-icons:plus" class="button-cart-quantity-icon" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                class="button-cart-quantity-icon"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-width="2"
+                  d="M12 5v14m-7-7h14"
+                />
+              </svg>
             </button>
           </div>
         )
@@ -491,7 +527,18 @@ const totalSpentAmount = spentAmounts.reduce(
               class="product-amount-tweak-btn button-cart-quantity-item"
               disabled
             >
-              <Icon name="akar-icons:minus" class="button-cart-quantity-icon" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                class="button-cart-quantity-icon"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-width="2"
+                  d="M5 12h14"
+                />
+              </svg>
             </button>
 
             <input
@@ -510,7 +557,18 @@ const totalSpentAmount = spentAmounts.reduce(
               aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
               class="product-amount-tweak-btn button-cart-quantity-item"
             >
-              <Icon name="akar-icons:plus" class="button-cart-quantity-icon" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                class="button-cart-quantity-icon"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-width="2"
+                  d="M12 5v14m-7-7h14"
+                />
+              </svg>
             </button>
           </div>
 

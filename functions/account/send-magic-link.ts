@@ -74,6 +74,9 @@ export const onRequestPost: PagesFunction<ENV> = async (context) => {
     previous_contact: string;
 
   try {
+    if (!body.email && !body.phone)
+      throw new PublicError("error_provide_email_or_phone");
+
     try {
       var bodyData = BodySchema.parse(body);
     } catch (error) {

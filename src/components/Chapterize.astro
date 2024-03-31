@@ -18,9 +18,9 @@ astroIslands.forEach((island) => {
       islandHTML = islandHTML.replace(
         heading.outerHTML,
         (i === 0 ? "" : "</div>") +
-          `<div id="${heading.innerText
-            ?.toLowerCase()
-            ?.replaceAll(" ", "-")}" class='chapter'>` +
+          `<div id="${encodeURIComponent(
+            heading.innerText?.toLowerCase()?.replaceAll(" ", "-"),
+          )}" class='chapter'>` +
           heading.outerHTML,
       );
 

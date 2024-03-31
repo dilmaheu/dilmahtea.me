@@ -1,20 +1,21 @@
 ---
-import he from "he";
 import { parseHTML } from "linkedom";
 import renderMarkdown from "@utils/renderMarkdown";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
 const { page } = Astro.props;
 
-let contentBlocksHTML = he.decode(renderMarkdown(page.Block_text));
+let contentBlocksHTML = renderMarkdown(page.Block_text);
 
 let { document: contentBlocksDocument } = parseHTML(contentBlocksHTML),
-  titles = [...contentBlocksDocument.querySelectorAll("h2")];
+  titles = Array.from(contentBlocksDocument.querySelectorAll("h2"));
 
 titles.forEach((title, i) => {
   contentBlocksHTML = contentBlocksHTML.replace(
     title.outerHTML,
-    (i === 0 ? "" : "</div>") + title.outerHTML + "<div>",
+    (i === 0 ? "" : "</div>") +
+      title.outerHTML +
+      "<div class='no-pad-mar-first-last-child'>",
   );
 });
 
@@ -22,23 +23,22 @@ titles.length > 0 && (contentBlocksHTML += "</div>");
 
 // refresh linkedom generated dom
 ({ document: contentBlocksDocument } = parseHTML(contentBlocksHTML));
-titles = [...contentBlocksDocument.querySelectorAll("h2")];
+
+titles = Array.from(contentBlocksDocument.querySelectorAll("h2"));
 ---
 
 {
   titles.map((title) => {
     const { textContent: titleText } = title,
-      { innerHTML } = title.nextElementSibling;
+      { outerHTML } = title.nextElementSibling;
 
     return (
       <>
-        <h2 id={titleText?.replaceAll(" ", "-")} class="tiled-title">
-          {titleText}
-        </h2>
+        <h2 class="tiled-title">{titleText}</h2>
 
         <div class="tiled-div">
           <OptimizeContentImages>
-            <Fragment set:html={innerHTML} />
+            <Fragment set:html={outerHTML} />
           </OptimizeContentImages>
         </div>
       </>

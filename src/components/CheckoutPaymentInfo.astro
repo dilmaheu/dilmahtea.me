@@ -1,7 +1,11 @@
 ---
+import CMS from "@store/CMS";
+import LoadingSpinner from "@solid/LoadingSpinner";
 import localizeCMSImage from "@utils/localizeCMSImage";
+import AdvancedNotification from "@components/AdvancedNotification.astro";
 
 declare interface Props {
+  page: Record<string, any>;
   title: string;
   returnButtonLink: string;
   returnButtonText: string;
@@ -11,6 +15,7 @@ declare interface Props {
 }
 
 const {
+  page,
   title,
   returnButtonLink,
   returnButtonText,
@@ -23,6 +28,13 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
   accepted_cards_icon = recurData.Accepted_cards_icon.data?.map(
     ({ attributes }) => attributes,
   );
+
+const isCrowdfundingPayment = page.type === "crowdfundingPayment";
+
+const countries = CMS.get("countries"),
+  countryCodesMap = Object.fromEntries(
+    countries.data.map(({ attributes }) => [attributes.name, attributes.code]),
+  );
 ---
 
 <style lang="scss">
@@ -33,6 +45,18 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
 
   .input-field-api-focus {
     @apply ring ring-primary-lightest outline-none;
+  }
+
+  button[type="submit"] {
+    svg.animate-spin {
+      display: none;
+    }
+
+    &.processing {
+      svg.animate-spin {
+        @apply inline-block mr-0.5;
+      }
+    }
   }
 </style>
 
@@ -51,13 +75,16 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
             <input
               type="radio"
               name="payment_method_name"
-              id={method}
+              id={`payment_method_name-${method}`}
               value={method}
               data-country={country}
               class="payment-card-input-selector peer hidden"
             />
 
-            <label for={method} class="radio-button-card">
+            <label
+              for={`payment_method_name-${method}`}
+              class="radio-button-card"
+            >
               {async () => (
                 <img
                   class="payment-icon"
@@ -120,12 +147,6 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
 
           <div id="card-cvc"></div>
         </div>
-
-        <input type="hidden" id="stripeToken" name="stripeToken" />
-
-        <div class="text-b5 text-error hidden" id="card-error">
-          {recurData.error_invalid_card}
-        </div>
       </div>
 
       <input
@@ -157,36 +178,74 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
       </span>
     </a>
 
-    <button
-      id="submit-btn"
-      type="submit"
-      class="w-full sm:max-w-[250px] button-primary-large"
-      disabled
-    >
-      <span>
-        {recurData.text_pay_with}
-        <span class="payment-type"></span>
-      </span>
-    </button>
+    {
+      isCrowdfundingPayment ? (
+        <div
+          id="submit-btn"
+          class="w-full sm:max-w-[250px] button-disabled-large"
+        >
+          <span>{recurData.text_pay_with}</span>
+        </div>
+      ) : (
+        <button
+          type="submit"
+          class="w-full sm:max-w-[250px] button-primary-large"
+          disabled
+        >
+          <LoadingSpinner />
+
+          <span class="button-content">{recurData.text_pay}</span>
+        </button>
+      )
+    }
+  </div>
+
+  <div id="payment-error-bottom" class="hidden">
+    <AdvancedNotification
+      Title={recurData.error_payment}
+      Type="Error"
+      Bordered={true}
+      Rounded={true}
+    />
   </div>
 </section>
+
+<script is:inline define:vars={{ countryCodesMap }}>
+  window.countryCodesMap = countryCodesMap;
+</script>
 
 <script>
   import { loadStripe } from "@stripe/stripe-js/pure";
 
-  // Check if the element with ID "payment-info-form" exists before executing the scripts
-  if (document.getElementById("checkout-payment-container")) {
-    const id = document.getElementById.bind(document),
-      form = id("payment-info-form"),
-      card = id("card"),
-      ideal = id("ideal"),
-      cardError = id("card-error"),
+  import subset from "@utils/shared/subset";
+  import getCustomer from "@utils/client/getCustomer";
+
+  const id = document.getElementById.bind(document),
+    checkoutPaymentContainer = document.getElementById(
+      "checkout-payment-container",
+    );
+
+  if (checkoutPaymentContainer) {
+    const form = id("payment-info-form"),
       stripePublishableKey = id("stripe-publishable-key");
+
+    const paymentErrorBottom = id("payment-error-bottom"),
+      paymentErrorBottomContent = paymentErrorBottom.querySelector(
+        ".notification-content",
+      );
+
+    const formSubmitBtn = form.querySelector("button[type=submit"),
+      paymentCardInputs = document.querySelectorAll(
+        ".payment-card-input-selector",
+      ),
+      elementsToDisable = [formSubmitBtn, ...Array.from(paymentCardInputs)];
 
     const STRIPE_PUBLISHABLE_KEY =
       stripePublishableKey?.getAttribute("data-key");
 
-    const stripe = await loadStripe(STRIPE_PUBLISHABLE_KEY),
+    const stripe = await loadStripe(STRIPE_PUBLISHABLE_KEY, {
+        locale: window.preferredLocale as any,
+      }),
       elements = stripe.elements({ locale: window.preferredLocale as any });
 
     const elementStyles = {
@@ -210,61 +269,121 @@ const methods = payment_methods.data?.map(({ attributes }) => attributes),
     let cardCvcElement = null;
     let idealBankElement = null;
 
-    document.addEventListener("change", () => {
-      const isCard = card.checked,
-        isIdeal = ideal.checked;
+    checkoutPaymentContainer.addEventListener("change", () => {
+      const selectedPaymentMethod = document.querySelector(
+        'input[name="payment_method_name"]:checked',
+      ) as HTMLInputElement;
 
       // Clear existing Stripe Elements
       clearStripeElements();
 
-      if (isCard) {
-        // Create Stripe Elements for card number, expiry, and CVC if they don't exist
-        if (!cardNumberElement) {
-          cardNumberElement = elements.create("cardNumber", elementStyles);
-          cardNumberElement.mount("#card-number");
-        }
-        if (!cardExpiryElement) {
-          cardExpiryElement = elements.create("cardExpiry", elementStyles);
-          cardExpiryElement.mount("#card-expiry");
-        }
-        if (!cardCvcElement) {
-          cardCvcElement = elements.create("cardCvc", elementStyles);
-          cardCvcElement.mount("#card-cvc");
-        }
-      } else if (isIdeal) {
-        // Create idealBank Element if it doesn't exist
-        if (!idealBankElement) {
-          idealBankElement = elements.create("idealBank", elementStyles);
-          idealBankElement.mount("#ideal-bank");
-        }
-      }
+      switch (selectedPaymentMethod.value) {
+        case "card":
+          // Create Stripe Elements for card number, expiry, and CVC if they don't exist
+          if (!cardNumberElement) {
+            cardNumberElement = elements.create("cardNumber", elementStyles);
+            cardNumberElement.mount("#card-number");
+          }
+          if (!cardExpiryElement) {
+            cardExpiryElement = elements.create("cardExpiry", elementStyles);
+            cardExpiryElement.mount("#card-expiry");
+          }
+          if (!cardCvcElement) {
+            cardCvcElement = elements.create("cardCvc", elementStyles);
+            cardCvcElement.mount("#card-cvc");
+          }
 
-      if (isCard) {
-        // Attach form submission event listener for card payments
-        form.addEventListener("submit", onSubmitCard);
-      } else {
-        form.removeEventListener("submit", onSubmitCard);
+          break;
+
+        case "ideal":
+          // Create idealBank Element if it doesn't exist
+          if (!idealBankElement) {
+            idealBankElement = elements.create("idealBank", elementStyles);
+            idealBankElement.mount("#ideal-bank");
+          }
       }
     });
 
-    function onSubmitCard(event) {
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      createToken(cardNumberElement);
-    }
 
-    async function createToken(element) {
-      try {
-        const { token, error } = await stripe.createToken(element);
-        if (error) {
-          cardError.classList.remove("hidden");
+      elementsToDisable.forEach((element) => {
+        element.disabled = true;
+      });
+
+      formSubmitBtn.classList.add("processing");
+      paymentErrorBottom.classList.add("hidden");
+
+      // @ts-ignore
+      const formData = Object.fromEntries(new FormData(form));
+
+      const customer = getCustomer(formData),
+        billing_details = subset(customer, ["name", "email", "address"]);
+
+      formData.customer = JSON.stringify(customer);
+
+      let paymentError;
+
+      const { value: selectedPaymentMethod } = document.querySelector(
+        'input[name="payment_method_name"]:checked',
+      ) as HTMLInputElement;
+
+      // @ts-ignore
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: selectedPaymentMethod,
+        ...(selectedPaymentMethod === "card" && { card: cardNumberElement }),
+        ...(selectedPaymentMethod === "ideal" && { ideal: idealBankElement }),
+        ...(selectedPaymentMethod === "sofort" && {
+          sofort: { country: customer.address.country },
+        }),
+        billing_details,
+      });
+
+      if (error) {
+        paymentError = error;
+      } else {
+        const response = await fetch(
+          window.shouldDisplayExperimentals
+            ? "https://dev.pay.scripts.dilmahtea.me"
+            : "https://pay.scripts.dilmahtea.me",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          },
+        ).then((res) => res.json<any>());
+
+        const { client_secret, successURL } = response;
+
+        if (response.success) {
+          const { error } = await stripe.confirmPayment({
+            clientSecret: client_secret,
+            confirmParams: {
+              return_url: successURL,
+              payment_method: paymentMethod.id,
+            },
+          });
+
+          paymentError = error;
         } else {
-          id("stripeToken").value = token.id;
-          form.submit();
+          paymentError = response;
         }
-      } catch (err) {
-        cardError.classList.remove("hidden");
       }
-    }
+
+      if (paymentError) {
+        paymentErrorBottomContent.textContent = paymentError.message;
+
+        paymentErrorBottom.classList.remove("hidden");
+      }
+
+      elementsToDisable.forEach((element) => {
+        element.disabled = false;
+      });
+
+      formSubmitBtn.classList.remove("processing");
+    });
 
     function clearStripeElements() {
       if (cardNumberElement) {

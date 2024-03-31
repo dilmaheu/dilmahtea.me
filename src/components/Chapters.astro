@@ -116,22 +116,23 @@ const headingTexts = dynamicHeadings || staticHeadings?.filter(Boolean);
             ]}
           >
             {headingTexts?.map((title, i) => (
-              <a
-                href={`#${encodeURIComponent(title?.toLowerCase()?.replaceAll(" ", "-"))}`}
-                role="listitem"
-                class:list={[
-                  "chapter-link division-in-gap",
-                  "inline-flex items-center text-b3 text-black-light",
-                  fixedTop && "chapter-link-sm",
-                  i === 0 && "active",
-                ]}
-              >
-                <div class="min-w-[clamp(35px,calc(1.25vw+27px),45px)]">
-                  <img src={green_right_arrow.src} alt="" />
-                </div>
+              <div role="listitem">
+                <a
+                  href={`#${encodeURIComponent(title?.toLowerCase()?.replaceAll(" ", "-"))}`}
+                  class:list={[
+                    "chapter-link division-in-gap",
+                    "inline-flex items-center text-b3 text-black-light",
+                    fixedTop && "chapter-link-sm",
+                    i === 0 && "active",
+                  ]}
+                >
+                  <div class="min-w-[clamp(35px,calc(1.25vw+27px),45px)]">
+                    <img src={green_right_arrow.src} alt="" />
+                  </div>
 
-                <div>{title}</div>
-              </a>
+                  <div>{title}</div>
+                </a>
+              </div>
             ))}
           </div>
         )

@@ -27,8 +27,8 @@ export default function CheckoutBillingAddress({
       <h2 class="recoleta text-h2 text-primary">{page.Block_title}</h2>
 
       <div role="list" class="division-in-element-gap flex flex-col">
-        <div class="flex">
-          <label role="listitem" class="division-in-element-gap radio-input">
+        <div class="flex" role="listitem">
+          <label class="division-in-element-gap radio-input">
             <input
               type="radio"
               name="billing_address"
@@ -44,8 +44,8 @@ export default function CheckoutBillingAddress({
           </label>
         </div>
 
-        <div class="flex">
-          <label role="listitem" class="division-in-element-gap radio-input">
+        <div class="flex" role="listitem">
+          <label class="division-in-element-gap radio-input">
             <input
               type="radio"
               name="billing_address"
