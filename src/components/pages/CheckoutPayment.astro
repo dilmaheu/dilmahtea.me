@@ -105,6 +105,7 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
     paymentCardInputSelector = queryAll(".payment-card-input-selector"),
     paymentInfoElements = queryAll(".payment-info"),
     submitBtn = document.querySelector("button[type=submit]"),
+    submitBtnontent = submitBtn.querySelector(".button-content"),
     paymentError = id("payment-error"),
     paymentErrorBottom = id("payment-error-bottom");
 
@@ -125,7 +126,7 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
       paymentInfo.classList.add("!hidden"),
     );
 
-    submitBtn.textContent = text_pay;
+    submitBtnontent.textContent = text_pay;
     submitBtn.setAttribute("disabled", true);
   };
 
@@ -149,7 +150,7 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
     if (!event.target.classList.contains("payment-card-input-selector")) return;
 
     const inputValue = event.target.value.toLowerCase();
-    submitBtn.textContent = text_pay_with + " " + inputValue;
+    submitBtnontent.textContent = text_pay_with + " " + inputValue;
     submitBtn.removeAttribute("disabled", true);
 
     redirect_status === "failed" && paymentError.classList.add("hidden");
