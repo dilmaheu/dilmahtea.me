@@ -94,12 +94,12 @@ export default function CheckoutInformationForm({
           addressData.country === selectedAddress.country &&
           addressData.postal_code === selectedAddress.postal_code
         ) {
-          form.submit();
+          !isBilling && form.submit();
 
           return;
         }
       } else if (window.cookies.isAuthenticated !== "true") {
-        form.submit();
+        !isBilling && form.submit();
 
         return;
       }
@@ -113,7 +113,7 @@ export default function CheckoutInformationForm({
       }).then((response) =>
         handleAPIResponseBase(response, notification, setNotification, {
           onSuccess: () => {
-            form.submit();
+            !isBilling && form.submit();
           },
         }),
       );

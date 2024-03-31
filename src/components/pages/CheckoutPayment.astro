@@ -1,13 +1,11 @@
 ---
 import CMS from "@store/CMS";
+import subset from "@utils/shared/subset";
 
 import DynamicHTML from "@components/DynamicHTML.astro";
 import CheckoutPaymentInfo from "@components/CheckoutPaymentInfo.astro";
 import AdvancedNotification from "@components/AdvancedNotification.astro";
-
 import CheckoutBillingAddress from "@solid/CheckoutBillingAddress.astro";
-
-import shouldDisplayExperimentals from "@utils/shouldDisplayExperimentals";
 
 const { page, recurData } = Astro.props,
   { locale, payment_methods } = page;
@@ -37,14 +35,7 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
   window.checkoutKindnessLink = checkoutKindnessLink;
 </script>
 
-<form
-  method="POST"
-  id="payment-info-form"
-  class="section-gap grid"
-  action={shouldDisplayExperimentals
-    ? "https://dev.pay.scripts.dilmahtea.me"
-    : "https://pay.scripts.dilmahtea.me"}
->
+<form id="payment-info-form" class="section-gap grid">
   <DynamicHTML
     htmlFn={() => {
       const { origin, pathname } = location;
@@ -104,20 +95,19 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
   />
 </form>
 
-<script is:inline>
+<script define:vars={subset(recurData, ["text_pay", "text_pay_with"])}>
   const id = document.getElementById.bind(document),
     queryAll = document.querySelectorAll.bind(document),
-    addClass = (element, className) => element.classList.add(className),
-    removeClass = (element, className) => element.classList.remove(className),
     getInputValue = (parent, name) =>
       parent.querySelector(`input[name=${name}]`).value;
 
   const shippingAddress = id("shipping-address"),
     paymentCardInputSelector = queryAll(".payment-card-input-selector"),
     paymentInfoElements = queryAll(".payment-info"),
-    submitBtn = id("submit-btn"),
-    submitBtnPaymentType = submitBtn.querySelector(".payment-type"),
-    paymentError = id("payment-error");
+    submitBtn = document.querySelector("button[type=submit]"),
+    submitBtnontent = submitBtn.querySelector(".button-content"),
+    paymentError = id("payment-error"),
+    paymentErrorBottom = id("payment-error-bottom");
 
   const { redirect_status } = Object.fromEntries(
     new URLSearchParams(location.search),
@@ -133,10 +123,10 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
 
   window.hideAllPaymentInfo = () => {
     paymentInfoElements.forEach((paymentInfo) =>
-      addClass(paymentInfo, "!hidden"),
+      paymentInfo.classList.add("!hidden"),
     );
 
-    submitBtnPaymentType.innerHTML = "";
+    submitBtnontent.textContent = text_pay;
     submitBtn.setAttribute("disabled", true);
   };
 
@@ -150,9 +140,9 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
 
       if (!countryName) return;
 
-      countryName.includes(selectedCountry)
-        ? removeClass(cardSelector.parentElement, "hidden")
-        : addClass(cardSelector.parentElement, "hidden");
+      cardSelector.parentElement.classList[
+        countryName.includes(selectedCountry) ? "remove" : "add"
+      ]("hidden");
     });
   };
 
@@ -160,10 +150,12 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
     if (!event.target.classList.contains("payment-card-input-selector")) return;
 
     const inputValue = event.target.value.toLowerCase();
-    submitBtnPaymentType.innerHTML = ` ${inputValue}`;
+    submitBtnontent.textContent = text_pay_with + " " + inputValue;
     submitBtn.removeAttribute("disabled", true);
 
     redirect_status === "failed" && paymentError.classList.add("hidden");
+
+    paymentErrorBottom.classList.add("hidden");
 
     paymentInfoElements.forEach((paymentInfo) => {
       const includesValue = paymentInfo
@@ -173,9 +165,7 @@ const checkoutShippingLink = CMS.get("checkoutShipping", locale).Meta.URL_slug,
 
       toggleDisabled(selectTextAndNumberInputs(paymentInfo), !includesValue);
 
-      includesValue
-        ? removeClass(paymentInfo, "!hidden")
-        : addClass(paymentInfo, "!hidden");
+      paymentInfo.classList[includesValue ? "remove" : "add"]("!hidden");
 
       const paymentInputName =
         includesValue && paymentInfo.querySelector("input[name*=name]");
