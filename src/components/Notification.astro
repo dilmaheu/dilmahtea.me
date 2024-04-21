@@ -1,7 +1,9 @@
 ---
+import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
 
 declare interface Notification {
+  locale: string;
   Title: string;
   Type: "Error" | "Warning" | "Info" | "Success" | "Default";
   top: boolean;
@@ -9,11 +11,13 @@ declare interface Notification {
   Content: string;
 }
 
-const { Title, Type, Closing_Enabled } = Astro.props as Notification;
+const { locale, Title, Type, Closing_Enabled } = Astro.props as Notification;
 
 if (Type !== "Default") {
   var icon = RecurringImages[`${Type.toLowerCase()}_notification`];
 }
+
+const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
 ---
 
 <style lang="scss">
@@ -62,7 +66,10 @@ if (Type !== "Default") {
 
   {
     Closing_Enabled && (
-      <button class="close-button">
+      <button
+        class="close-button"
+        aria-label={ariaLabelRecurData.Advanced_notification_close_button_text}
+      >
         <svg
           width="15"
           height="14"
