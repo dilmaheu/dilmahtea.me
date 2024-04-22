@@ -72,45 +72,49 @@ export default function ProductFiltersForm({
       class="flex flex-wrap items-center division-in-element-gap"
       onchange={updateProductFilters}
     >
-      <select
-        id="tea_variant"
-        name="tea_variant"
-        class={[
-          type === "header" ? "selector-default" : "selector-primary",
-          "max-w-[90vw]",
-        ].join(" ")}
-      >
-        <option value="" selected>
-          {recurData.text_all_tea_variants}
-        </option>
+      <label for="tea_variant">
+        <select
+          id="tea_variant"
+          name="tea_variant"
+          class={[
+            type === "header" ? "selector-default" : "selector-primary",
+            "max-w-[90vw]",
+          ].join(" ")}
+        >
+          <option value="" selected>
+            {recurData.text_all_tea_variants}
+          </option>
 
-        <VariantOptions
-          type="variant"
-          data={productVariants.data}
-          tea_variant={tea_variant}
-          tea_size={tea_size}
-        />
-      </select>
+          <VariantOptions
+            type="variant"
+            data={productVariants.data}
+            tea_variant={tea_variant}
+            tea_size={tea_size}
+          />
+        </select>
+      </label>
 
-      <select
-        id="tea_size"
-        name="tea_size"
-        class={[
-          type === "header" ? "selector-default" : "selector-primary",
-          "max-w-[90vw]",
-        ].join(" ")}
-      >
-        <option value="" selected>
-          {recurData.text_all_tea_sizes}
-        </option>
+      <label for="tea_size">
+        <select
+          id="tea_size"
+          name="tea_size"
+          class={[
+            type === "header" ? "selector-default" : "selector-primary",
+            "max-w-[90vw]",
+          ].join(" ")}
+        >
+          <option value="" selected>
+            {recurData.text_all_tea_sizes}
+          </option>
 
-        <VariantOptions
-          type="size"
-          data={productSizes.data}
-          tea_variant={tea_variant}
-          tea_size={tea_size}
-        />
-      </select>
+          <VariantOptions
+            type="size"
+            data={productSizes.data}
+            tea_variant={tea_variant}
+            tea_size={tea_size}
+          />
+        </select>
+      </label>
     </form>
   );
 }
