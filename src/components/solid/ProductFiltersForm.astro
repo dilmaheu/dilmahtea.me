@@ -3,8 +3,14 @@ import subset from "@utils/shared/subset";
 import ProductFiltersForm from "@solid/ProductFiltersForm";
 import Products, { teaBag, teaBagVariants } from "@store/Products";
 
-let { locale, productSizes, productVariants, recurData, type } =
-  structuredClone(Astro.props);
+let {
+  locale,
+  productSizes,
+  productVariants,
+  recurData,
+  ariaLabelRecurData,
+  type,
+} = structuredClone(Astro.props);
 
 recurData = subset(recurData, ["text_all_tea_variants", "text_all_tea_sizes"]);
 
@@ -90,5 +96,6 @@ const teaBagVariantLocalizedTitle = [
   productSizes={productSizes}
   productVariants={productVariants}
   recurData={recurData}
+  ariaLabelRecurData={ariaLabelRecurData}
   type={type}
 />
