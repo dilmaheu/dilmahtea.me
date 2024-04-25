@@ -42,10 +42,20 @@ const teaBagVariantLocalizedTitle = [
                 .map(([, variants]) => variants.map(([, variant]) => variant))
                 .flat();
 
-          const rawAvailableCombinations = products.map(
-            (attributes) =>
-              attributes[i === 0 ? "variant" : "size"].data.attributes.Title,
-          );
+          const rawAvailableCombinations = products.map((attributes) => {
+            const variantType = i === 0 ? "variant" : "size",
+              variant = attributes[variantType];
+
+            try {
+              return variant.data.attributes.Title;
+            } catch (error) {
+              const { Title, locale } = attributes;
+
+              throw new Error(
+                `${Title} (${locale}) is missing '${variantType}'`,
+              );
+            }
+          });
 
           if (
             i === 0 &&
