@@ -20,6 +20,7 @@ export default function ProductFiltersForm({
   productSizes,
   productVariants,
   recurData,
+  ariaLabelRecurData,
   type,
 }) {
   const { tea_variant, tea_size } = productFilters();
@@ -73,6 +74,7 @@ export default function ProductFiltersForm({
       onchange={updateProductFilters}
     >
       <select
+        aria-label={ariaLabelRecurData?.Select_tea_variant_text}
         id="tea_variant"
         name="tea_variant"
         class={[
@@ -93,6 +95,7 @@ export default function ProductFiltersForm({
       </select>
 
       <select
+        aria-label={ariaLabelRecurData?.Select_tea_size_text}
         id="tea_size"
         name="tea_size"
         class={[
