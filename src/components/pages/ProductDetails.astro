@@ -260,11 +260,13 @@ const generateId = (inputString) =>
 
         <a href={Shopify_URL} class="flex grow">
           <button
+            type="button"
             class:list={[
               "justify-center grow",
-              stockAmount > 0 ? "button-cart-default" : "button-cart-disabled",
+              // stockAmount > 0 ? "button-cart-default" : "button-cart-disabled",
+              "button-cart-default",
             ]}
-            disabled={stockAmount < 1}
+            {/* disabled={stockAmount < 1} */}
           >
             <!-- <Icon name="mi:shopping-cart" class="cart-icon" /> -->
 
@@ -284,7 +286,7 @@ const generateId = (inputString) =>
         </a>
       </div>
 
-      {
+      <!-- {
         stockAmount < 1 &&
           availableFormats.length > 0 &&
           (() => {
@@ -320,7 +322,7 @@ const generateId = (inputString) =>
               />
             );
           })
-      }
+      } -->
     </div>
   </form>
 
@@ -390,11 +392,13 @@ const generateId = (inputString) =>
 
       <a href={Shopify_URL} class="flex grow">
         <button
+          type="button"
           class:list={[
             "justify-center grow",
-            stockAmount > 0 ? "button-cart-primary" : "button-cart-disabled",
+            // stockAmount > 0 ? "button-cart-primary" : "button-cart-disabled",
+            "button-cart-primary",
           ]}
-          disabled={stockAmount < 1}
+          {/* disabled={stockAmount < 1} */}
         >
           <!-- <Icon name="mi:shopping-cart" class="cart-icon" /> -->
 
@@ -422,7 +426,8 @@ const generateId = (inputString) =>
   </form>
 
   {
-    stockAmount > 0 && (
+    // stockAmount > 0
+    true && (
       <form
         slot="cart-adding-form-fixed-sm"
         class:list={[
@@ -441,7 +446,10 @@ const generateId = (inputString) =>
           />
 
           <a href={Shopify_URL} class="flex grow">
-            <button class="button-cart-primary justify-center grow">
+            <button
+              type="button"
+              class="button-cart-primary justify-center grow"
+            >
               {/* <Icon name="mi:shopping-cart" class="cart-icon" /> */}
 
               <span class="text-container">
@@ -749,44 +757,42 @@ const generateId = (inputString) =>
       }
     });
 
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
+    // form.addEventListener("submit", (event) => {
+    //   event.preventDefault();
 
-      // const productData = Object.fromEntries(new FormData(form)) as ProductData,
-      //   { SKU } = productData,
-      //   inCartProduct = window.cart[SKU];
+    //   const productData = Object.fromEntries(new FormData(form)) as ProductData,
+    //     { SKU } = productData,
+    //     inCartProduct = window.cart[SKU];
 
-      // const quantity =
-      //   Number(productData.quantity) + (inCartProduct?.quantity || 0);
+    //   const quantity =
+    //     Number(productData.quantity) + (inCartProduct?.quantity || 0);
 
-      // window.cart[SKU] = { quantity };
+    //   window.cart[SKU] = { quantity };
 
-      // cartAddingForms.forEach((form: HTMLFormElement) => {
-      //   form.reset();
+    //   cartAddingForms.forEach((form: HTMLFormElement) => {
+    //     form.reset();
+    //     const decrementBtn = form.querySelector<HTMLButtonElement>(
+    //       "button[data-action='decrement']",
+    //     );
+    //     decrementBtn.disabled = true;
+    //   });
 
-      //   const decrementBtn = form.querySelector<HTMLButtonElement>(
-      //     "button[data-action='decrement']",
-      //   );
+    //   const [_, priceIncludingTax] = getPriceIncludingTax({
+    //     Price: window.productPrice,
+    //     VatPercentage: window.productVatPercentage,
+    //     quantity: 1,
+    //   });
 
-      //   decrementBtn.disabled = true;
-      // });
+    //   [
+    //     productAmountPriceOutput,
+    //     productAmountPriceOutputSm,
+    //     productAmountPriceOutputSmFixed,
+    //   ].forEach(
+    //     (element) => (element.textContent = formatPrice(priceIncludingTax)),
+    //   );
 
-      // const [_, priceIncludingTax] = getPriceIncludingTax({
-      //   Price: window.productPrice,
-      //   VatPercentage: window.productVatPercentage,
-      //   quantity: 1,
-      // });
-
-      // [
-      //   productAmountPriceOutput,
-      //   productAmountPriceOutputSm,
-      //   productAmountPriceOutputSmFixed,
-      // ].forEach(
-      //   (element) => (element.textContent = formatPrice(priceIncludingTax)),
-      // );
-
-      // window.openCart();
-    });
+    //   window.openCart();
+    // });
   });
 
   // function tweakAmountCallback(input) {

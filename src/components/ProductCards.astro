@@ -69,7 +69,7 @@ const { products, recurData } = Astro.props,
                 ].join(", ")}
               />
 
-              {Stock_amount < 1 && (
+              {/* {Stock_amount < 1 && (
                 <>
                   <div class="stock-out-label-top">
                     {recurData.text_sold_out}
@@ -98,7 +98,7 @@ const { products, recurData } = Astro.props,
                     )
                   }
                 </>
-              )}
+              )} */}
             </div>
 
             <div class:list={["card-content-container"]}>
@@ -106,7 +106,7 @@ const { products, recurData } = Astro.props,
                 <div class="product-title">
                   <a
                     aria-label={
-                      (Stock_amount < 1 ? `${recurData.text_sold_out}, ` : "") +
+                      // (Stock_amount < 1 ? `${recurData.text_sold_out}, ` : "") +
                       Title
                     }
                     class="main-link"
@@ -149,15 +149,17 @@ const { products, recurData } = Astro.props,
                     </span>
 
                     <span class="desktop-only-text">
-                      {Stock_amount === 0
-                        ? recurData.Product_stock_available_text
-                        : recurData.Product_available_text}
+                      {
+                        /* Stock_amount === 0) */ false
+                          ? recurData.Product_stock_available_text
+                          : recurData.Product_available_text
+                      }
                     </span>
 
                     <span
                       class:list={[
                         "desktop-only-text format-link-text",
-                        Stock_amount === 0 && "text-white",
+                        // Stock_amount === 0 && "text-white",
                       ]}
                     >
                       {availableFormatsCount === 1
@@ -171,7 +173,7 @@ const { products, recurData } = Astro.props,
                     <span
                       class:list={[
                         "mobile-only-text format-link-text",
-                        Stock_amount === 0 && "text-white",
+                        // Stock_amount === 0 && "text-white",
                       ]}
                     >
                       {availableFormatsCount === 1
@@ -219,11 +221,13 @@ const { products, recurData } = Astro.props,
                   data-sku={Stock_amount > 0 && SKU}
                   class:list={[
                     "unlink product-card-btn",
-                    Stock_amount > 0
-                      ? "card-button-cart-default"
-                      : "card-button-cart-disabled",
+                    // Stock_amount > 0
+                    //   ? "card-button-cart-default"
+                    //   : "card-button-cart-disabled",
+                    "card-button-cart-default",
                   ]}
-                  disabled={Stock_amount === 0}
+                  {
+                  /* disabled={Stock_amount === 0} */ }
                 >
                   {/* <Icon name="mi:shopping-cart-add" class="cart-icon" /> */}
 
