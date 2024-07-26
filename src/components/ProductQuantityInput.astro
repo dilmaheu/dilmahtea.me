@@ -1,0 +1,53 @@
+---
+const { type, stockAmount, ariaLabelRecurData } = Astro.props;
+---
+
+<div class={`button-cart-quantity-${type}`}>
+  <button
+    data-action="decrement"
+    aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
+    class="product-amount-tweak-btn button-cart-quantity-item"
+    disabled
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      class="button-cart-quantity-icon"
+    >
+      <path
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-width="2"
+        d="M5 12h14"></path>
+    </svg>
+  </button>
+
+  <input
+    type="number"
+    name="quantity"
+    aria-label={ariaLabelRecurData.Product_quantity_text}
+    min={1}
+    max={stockAmount}
+    value={1}
+    class="product-amount-input"
+    required
+  />
+
+  <button
+    data-action="increment"
+    aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
+    class="product-amount-tweak-btn button-cart-quantity-item"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      class="button-cart-quantity-icon"
+    >
+      <path
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-width="2"
+        d="M12 5v14m-7-7h14"></path>
+    </svg>
+  </button>
+</div>

@@ -14,6 +14,7 @@ import localizeCMSImage from "@utils/localizeCMSImage";
 
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
+import ProductQuantityInput from "@components/ProductQuantityInput.astro";
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
@@ -248,56 +249,11 @@ const generateId = (inputString) =>
       <div class="division-in-gap flex flex-wrap items-center">
         {
           stockAmount > 0 && (
-            <div class="button-cart-quantity-default">
-              <button
-                data-action="decrement"
-                aria-label={
-                  ariaLabelRecurData.Product_quantity_minus_button_text
-                }
-                class="product-amount-tweak-btn button-cart-quantity-item"
-                disabled
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  class="button-cart-quantity-icon"
-                >
-                  <path stroke="currentColor" stroke-width="2" d="M5 12h14" />
-                </svg>
-              </button>
-
-              <input
-                type="number"
-                name="quantity"
-                aria-label={ariaLabelRecurData.Product_quantity_text}
-                min={1}
-                max={stockAmount}
-                value={1}
-                class="product-amount-input"
-                required
-              />
-
-              <button
-                data-action="increment"
-                aria-label={
-                  ariaLabelRecurData.Product_quantity_plus_button_text
-                }
-                class="product-amount-tweak-btn button-cart-quantity-item"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  class="button-cart-quantity-icon"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-width="2"
-                    d="M12 5v14m-7-7h14"
-                  />
-                </svg>
-              </button>
-            </div>
+            <ProductQuantityInput
+              type="default"
+              stockAmount={stockAmount}
+              ariaLabelRecurData={ariaLabelRecurData}
+            />
           )
         }
 
@@ -420,57 +376,11 @@ const generateId = (inputString) =>
     >
       {
         stockAmount > 0 && (
-          <div class="button-cart-quantity-primary">
-            <button
-              data-action="decrement"
-              aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
-              class="product-amount-tweak-btn button-cart-quantity-item"
-              disabled
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="button-cart-quantity-icon"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  d="M5 12h14"
-                />
-              </svg>
-            </button>
-
-            <input
-              type="number"
-              name="quantity"
-              aria-label={ariaLabelRecurData.Product_quantity_text}
-              min={1}
-              max={stockAmount}
-              value={1}
-              class="product-amount-input"
-              required
-            />
-
-            <button
-              data-action="increment"
-              aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
-              class="product-amount-tweak-btn button-cart-quantity-item"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="button-cart-quantity-icon"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  d="M12 5v14m-7-7h14"
-                />
-              </svg>
-            </button>
-          </div>
+          <ProductQuantityInput
+            type="primary"
+            stockAmount={stockAmount}
+            ariaLabelRecurData={ariaLabelRecurData}
+          />
         )
       }
 
@@ -518,57 +428,11 @@ const generateId = (inputString) =>
         <input type="hidden" name="SKU" value={productSKU} />
 
         <div class="wrapper flex items-center division-in-gap justify-between">
-          <div class="button-cart-quantity-primary">
-            <button
-              data-action="decrement"
-              aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
-              class="product-amount-tweak-btn button-cart-quantity-item"
-              disabled
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="button-cart-quantity-icon"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  d="M5 12h14"
-                />
-              </svg>
-            </button>
-
-            <input
-              type="number"
-              name="quantity"
-              aria-label={ariaLabelRecurData.Product_quantity_text}
-              min={1}
-              max={stockAmount}
-              value={1}
-              class="product-amount-input"
-              required
-            />
-
-            <button
-              data-action="increment"
-              aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
-              class="product-amount-tweak-btn button-cart-quantity-item"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="button-cart-quantity-icon"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  d="M12 5v14m-7-7h14"
-                />
-              </svg>
-            </button>
-          </div>
+          <ProductQuantityInput
+            type="primary"
+            stockAmount={stockAmount}
+            ariaLabelRecurData={ariaLabelRecurData}
+          />
 
           <button class="button-cart-primary justify-center grow">
             <Icon name="mi:shopping-cart" class="cart-icon" />
