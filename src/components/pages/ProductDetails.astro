@@ -29,6 +29,7 @@ const {
   availableSizes,
   availableFormats,
   Stock_amount: stockAmount,
+  Shopify_URL,
 } = page;
 
 const { SKU: productSKU, Price, VatPercentage } = page,
@@ -257,27 +258,30 @@ const generateId = (inputString) =>
           )
         }
 
-        <button
-          class:list={[
-            "justify-center grow",
-            stockAmount > 0 ? "button-cart-default" : "button-cart-disabled",
-          ]}
-          disabled={stockAmount < 1}
-        >
-          <Icon name="mi:shopping-cart" class="cart-icon" />
+        <a href={Shopify_URL} class="flex grow">
+          <button
+            class:list={[
+              "justify-center grow",
+              stockAmount > 0 ? "button-cart-default" : "button-cart-disabled",
+            ]}
+            disabled={stockAmount < 1}
+          >
+            <!-- <Icon name="mi:shopping-cart" class="cart-icon" /> -->
 
-          <span class="text-container">
-            {
-              stockAmount > 0
-                ? recurData.text_add_to_cart_for
-                : recurData.text_sold_out
-            }
-            <span>&#x2022;</span>€
-            <output class="product-amount-price">
-              {productPriceIncludingTax.toFixed(2).replace(".", ",")}
-            </output>
-          </span>
-        </button>
+            <span class="text-container">
+              <!-- {
+                stockAmount > 0
+                  ? recurData.text_add_to_cart_for
+                  : recurData.text_sold_out
+              } -->
+              {recurData.text_buy}
+              <span>&#x2022;</span>€
+              <output class="product-amount-price">
+                {productPriceIncludingTax.toFixed(2).replace(".", ",")}
+              </output>
+            </span>
+          </button>
+        </a>
       </div>
 
       {
@@ -384,34 +388,36 @@ const generateId = (inputString) =>
         )
       }
 
-      <button
-        class:list={[
-          "justify-center grow",
-          stockAmount > 0 ? "button-cart-primary" : "button-cart-disabled",
-        ]}
-        disabled={stockAmount < 1}
-      >
-        <Icon name="mi:shopping-cart" class="cart-icon" />
+      <a href={Shopify_URL} class="flex grow">
+        <button
+          class:list={[
+            "justify-center grow",
+            stockAmount > 0 ? "button-cart-primary" : "button-cart-disabled",
+          ]}
+          disabled={stockAmount < 1}
+        >
+          <!-- <Icon name="mi:shopping-cart" class="cart-icon" /> -->
 
-        <span class="text-container">
-          <span class="hidden xl:block"
-            >{
-              stockAmount > 0
-                ? recurData.text_add_to_cart
-                : recurData.text_sold_out
-            }</span
-          >
-          <span class="block xl:hidden"
-            >{
-              stockAmount > 0 ? recurData.text_add : recurData.text_sold_out
-            }</span
-          >
-          <span>&#x2022;</span>€
-          <output class="product-amount-price-sm">
-            {productPriceIncludingTax.toFixed(2).replace(".", ",")}
-          </output>
-        </span>
-      </button>
+          <span class="text-container">
+            <span class="hidden xl:block">
+              <!-- {
+                stockAmount > 0
+                  ? recurData.text_add_to_cart
+                  : recurData.text_sold_out
+              } -->
+              {recurData.text_buy}
+            </span>
+            <span class="block xl:hidden">
+              <!-- {stockAmount > 0 ? recurData.text_add : recurData.text_sold_out} -->
+              {recurData.text_buy}
+            </span>
+            <span>&#x2022;</span>€
+            <output class="product-amount-price-sm">
+              {productPriceIncludingTax.toFixed(2).replace(".", ",")}
+            </output>
+          </span>
+        </button>
+      </a>
     </div>
   </form>
 
@@ -434,17 +440,20 @@ const generateId = (inputString) =>
             ariaLabelRecurData={ariaLabelRecurData}
           />
 
-          <button class="button-cart-primary justify-center grow">
-            <Icon name="mi:shopping-cart" class="cart-icon" />
+          <a href={Shopify_URL} class="flex grow">
+            <button class="button-cart-primary justify-center grow">
+              {/* <Icon name="mi:shopping-cart" class="cart-icon" /> */}
 
-            <span class="text-container">
-              {recurData.text_add}
-              <span>&#x2022;</span>€
-              <output class="product-amount-price-sm-fixed">
-                {productPriceIncludingTax.toFixed(2).replace(".", ",")}
-              </output>
-            </span>
-          </button>
+              <span class="text-container">
+                {/* {recurData.text_add} */}
+                {recurData.text_buy}
+                <span>&#x2022;</span>€
+                <output class="product-amount-price-sm-fixed">
+                  {productPriceIncludingTax.toFixed(2).replace(".", ",")}
+                </output>
+              </span>
+            </button>
+          </a>
         </div>
       </form>
     )

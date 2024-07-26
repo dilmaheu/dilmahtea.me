@@ -42,6 +42,7 @@ const { products, recurData } = Astro.props,
           productSize,
           availableFormats,
           estate_name,
+          Shopify_URL,
           Meta: { URL_slug },
         } = product;
 
@@ -213,31 +214,34 @@ const { products, recurData } = Astro.props,
                 )}
               </div>
 
-              <button
-                data-sku={Stock_amount > 0 && SKU}
-                class:list={[
-                  "unlink product-card-btn",
-                  Stock_amount > 0
-                    ? "card-button-cart-default"
-                    : "card-button-cart-disabled",
-                ]}
-                disabled={Stock_amount === 0 && "disabled"}
-              >
-                <Icon name="mi:shopping-cart-add" class="cart-icon" />
+              <a href={Shopify_URL}>
+                <button
+                  data-sku={Stock_amount > 0 && SKU}
+                  class:list={[
+                    "unlink product-card-btn",
+                    Stock_amount > 0
+                      ? "card-button-cart-default"
+                      : "card-button-cart-disabled",
+                  ]}
+                  disabled={Stock_amount === 0 && "disabled"}
+                >
+                  {/* <Icon name="mi:shopping-cart-add" class="cart-icon" /> */}
 
-                <span class="text-container">
-                  <span>
-                    {Stock_amount > 0
-                      ? recurData.text_add
-                      : recurData.text_sold_out}
+                  <span class="text-container">
+                    <span>
+                      {/* {Stock_amount > 0
+                        ? recurData.text_add
+                        : recurData.text_sold_out} */}
+                      {recurData.text_buy}
+                    </span>
+                    <span>&#x025CF;</span>
+                    <span>
+                      {`€` +
+                        productPriceIncludingTax.toFixed(2).replace(".", ",")}
+                    </span>
                   </span>
-                  <span>&#x025CF;</span>
-                  <span>
-                    {`€` +
-                      productPriceIncludingTax.toFixed(2).replace(".", ",")}
-                  </span>
-                </span>
-              </button>
+                </button>
+              </a>
             </div>
           </div>
         );
