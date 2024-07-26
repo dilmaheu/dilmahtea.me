@@ -72,18 +72,6 @@ export default function FilteredProducts({
     );
   });
 
-  const addProductToCart = (product) => {
-    const { SKU } = product;
-
-    const inCartProduct = window.cart[SKU];
-
-    const quantity = 1 + (inCartProduct?.quantity || 0);
-
-    window.cart[SKU] = { quantity };
-
-    window.openCart();
-  };
-
   return (
     <div
       role="list"
@@ -244,7 +232,7 @@ export default function FilteredProducts({
               <button
                 onClick={() => {
                   if (product.Stock_amount > 0) {
-                    addProductToCart(product);
+                    window.addProductToCart(product.SKU);
                   }
                 }}
                 class={[
