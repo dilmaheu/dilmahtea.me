@@ -230,11 +230,11 @@ export default function FilteredProducts({
               </div>
 
               <button
-                onClick={() => {
-                  if (product.Stock_amount > 0) {
-                    window.addProductToCart(product.SKU);
-                  }
-                }}
+                // onClick={() => {
+                //   if (product.Stock_amount > 0) {
+                //     window.addProductToCart(product.SKU);
+                //   }
+                // }}
                 class={[
                   "unlink product-card-btn",
                   product.Stock_amount > 0

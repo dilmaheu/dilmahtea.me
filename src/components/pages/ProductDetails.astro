@@ -743,72 +743,72 @@ const generateId = (inputString) =>
     form.addEventListener("submit", (event) => {
       event.preventDefault();
 
-      const productData = Object.fromEntries(new FormData(form)) as ProductData,
-        { SKU } = productData,
-        inCartProduct = window.cart[SKU];
+      // const productData = Object.fromEntries(new FormData(form)) as ProductData,
+      //   { SKU } = productData,
+      //   inCartProduct = window.cart[SKU];
 
-      const quantity =
-        Number(productData.quantity) + (inCartProduct?.quantity || 0);
+      // const quantity =
+      //   Number(productData.quantity) + (inCartProduct?.quantity || 0);
 
-      window.cart[SKU] = { quantity };
+      // window.cart[SKU] = { quantity };
 
-      cartAddingForms.forEach((form: HTMLFormElement) => {
-        form.reset();
+      // cartAddingForms.forEach((form: HTMLFormElement) => {
+      //   form.reset();
 
-        const decrementBtn = form.querySelector<HTMLButtonElement>(
-          "button[data-action='decrement']",
-        );
+      //   const decrementBtn = form.querySelector<HTMLButtonElement>(
+      //     "button[data-action='decrement']",
+      //   );
 
-        decrementBtn.disabled = true;
-      });
+      //   decrementBtn.disabled = true;
+      // });
 
-      const [_, priceIncludingTax] = getPriceIncludingTax({
-        Price: window.productPrice,
-        VatPercentage: window.productVatPercentage,
-        quantity: 1,
-      });
+      // const [_, priceIncludingTax] = getPriceIncludingTax({
+      //   Price: window.productPrice,
+      //   VatPercentage: window.productVatPercentage,
+      //   quantity: 1,
+      // });
 
-      [
-        productAmountPriceOutput,
-        productAmountPriceOutputSm,
-        productAmountPriceOutputSmFixed,
-      ].forEach(
-        (element) => (element.textContent = formatPrice(priceIncludingTax)),
-      );
+      // [
+      //   productAmountPriceOutput,
+      //   productAmountPriceOutputSm,
+      //   productAmountPriceOutputSmFixed,
+      // ].forEach(
+      //   (element) => (element.textContent = formatPrice(priceIncludingTax)),
+      // );
 
-      window.openCart();
+      // window.openCart();
     });
   });
 
-  function tweakAmountCallback(input) {
-    productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
-      if (otherAmountInput !== input) {
-        otherAmountInput.value = input.value;
+  // function tweakAmountCallback(input) {
+  //   productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
+  //     if (otherAmountInput !== input) {
+  //       otherAmountInput.value = input.value;
 
-        const decrementBtn =
-          otherAmountInput.previousElementSibling as HTMLButtonElement;
+  //       const decrementBtn =
+  //         otherAmountInput.previousElementSibling as HTMLButtonElement;
 
-        decrementBtn.disabled = input.value === "1";
-      }
-    });
+  //       decrementBtn.disabled = input.value === "1";
+  //     }
+  //   });
 
-    const quantity = Number(input.value),
-      [_, priceIncludingTax] = getPriceIncludingTax({
-        Price: window.productPrice,
-        VatPercentage: window.productVatPercentage,
-        quantity,
-      });
+  //   const quantity = Number(input.value),
+  //     [_, priceIncludingTax] = getPriceIncludingTax({
+  //       Price: window.productPrice,
+  //       VatPercentage: window.productVatPercentage,
+  //       quantity,
+  //     });
 
-    [
-      productAmountPriceOutput,
-      productAmountPriceOutputSm,
-      productAmountPriceOutputSmFixed,
-    ].forEach(
-      (element) => (element.textContent = formatPrice(priceIncludingTax)),
-    );
-  }
+  //   [
+  //     productAmountPriceOutput,
+  //     productAmountPriceOutputSm,
+  //     productAmountPriceOutputSmFixed,
+  //   ].forEach(
+  //     (element) => (element.textContent = formatPrice(priceIncludingTax)),
+  //   );
+  // }
 
-  tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
+  // tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
 </script>
 
 <Schema
