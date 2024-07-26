@@ -330,50 +330,50 @@ const generateId = (inputString) =>
   >
     <input type="hidden" name="SKU" value={productSKU} />
 
-    {
-      stockAmount > 0 && (
-        <div class="w-full flex flex-wrap division-in-element-gap items-center">
-          {availableVariants.length > 0 && (
-            <label class="grid division-in-element-gap grow">
-              <span class="input-label">{recurData.text_variant}:</span>
+    <div class="w-full flex flex-wrap division-in-element-gap items-center">
+      {
+        availableVariants.length > 0 && (
+          <label class="grid division-in-element-gap grow">
+            <span class="input-label">{recurData.text_variant}:</span>
 
-              <select
-                name="tea_variant"
-                class="selector-default-bordered !w-full"
-              >
-                {availableVariants.map(({ value, variant, link }) => (
-                  <option
-                    value={value}
-                    data-href={link}
-                    selected={value === productVariant ? "" : undefined}
-                  >
-                    {variant}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
+            <select
+              name="tea_variant"
+              class="selector-default-bordered !w-full"
+            >
+              {availableVariants.map(({ value, variant, link }) => (
+                <option
+                  value={value}
+                  data-href={link}
+                  selected={value === productVariant ? "" : undefined}
+                >
+                  {variant}
+                </option>
+              ))}
+            </select>
+          </label>
+        )
+      }
 
-          {availableSizes.length > 0 && (
-            <label class="grid division-in-element-gap grow">
-              <span class="input-label">{recurData.text_size}:</span>
+      {
+        availableSizes.length > 0 && (
+          <label class="grid division-in-element-gap grow">
+            <span class="input-label">{recurData.text_size}:</span>
 
-              <select name="tea_size" class="selector-default-bordered !w-full">
-                {availableSizes.map(({ value, size, link }) => (
-                  <option
-                    value={value}
-                    data-href={link}
-                    selected={value === productSize ? "" : undefined}
-                  >
-                    {size}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-        </div>
-      )
-    }
+            <select name="tea_size" class="selector-default-bordered !w-full">
+              {availableSizes.map(({ value, size, link }) => (
+                <option
+                  value={value}
+                  data-href={link}
+                  selected={value === productSize ? "" : undefined}
+                >
+                  {size}
+                </option>
+              ))}
+            </select>
+          </label>
+        )
+      }
+    </div>
 
     <div
       class="w-full flex flex-wrap justify-between items-center division-in-element-gap"
