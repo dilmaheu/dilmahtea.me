@@ -9,14 +9,12 @@ import RelevantPosts from "@components/RelevantPosts.astro";
 import AdvancedNotification from "@components/AdvancedNotification.astro";
 import OptimizeContentImages from "@components/OptimizeContentImages.astro";
 
-import CMS from "@store/CMS";
-import RecurringImages from "@store/RecurringImages";
-
 import renderMarkdown from "@utils/renderMarkdown";
 import localizeCMSImage from "@utils/localizeCMSImage";
 
 import PostDetailsLayout from "@layouts/PostDetailsLayout.astro";
 import getPriceIncludingTax from "@utils/shared/getPriceIncludingTax";
+import ProductQuantityInput from "@components/ProductQuantityInput.astro";
 
 const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
@@ -31,6 +29,7 @@ const {
   availableSizes,
   availableFormats,
   Stock_amount: stockAmount,
+  Shopify_URL,
 } = page;
 
 const { SKU: productSKU, Price, VatPercentage } = page,
@@ -251,83 +250,43 @@ const generateId = (inputString) =>
       <div class="division-in-gap flex flex-wrap items-center">
         {
           stockAmount > 0 && (
-            <div class="button-cart-quantity-default">
-              <button
-                data-action="decrement"
-                aria-label={
-                  ariaLabelRecurData.Product_quantity_minus_button_text
-                }
-                class="product-amount-tweak-btn button-cart-quantity-item"
-                disabled
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  class="button-cart-quantity-icon"
-                >
-                  <path stroke="currentColor" stroke-width="2" d="M5 12h14" />
-                </svg>
-              </button>
-
-              <input
-                type="number"
-                name="quantity"
-                aria-label={ariaLabelRecurData.Product_quantity_text}
-                min={1}
-                max={stockAmount}
-                value={1}
-                class="product-amount-input"
-                required
-              />
-
-              <button
-                data-action="increment"
-                aria-label={
-                  ariaLabelRecurData.Product_quantity_plus_button_text
-                }
-                class="product-amount-tweak-btn button-cart-quantity-item"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  class="button-cart-quantity-icon"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-width="2"
-                    d="M12 5v14m-7-7h14"
-                  />
-                </svg>
-              </button>
-            </div>
+            <ProductQuantityInput
+              type="default"
+              stockAmount={stockAmount}
+              ariaLabelRecurData={ariaLabelRecurData}
+            />
           )
         }
 
-        <button
-          class:list={[
-            "justify-center grow",
-            stockAmount > 0 ? "button-cart-default" : "button-cart-disabled",
-          ]}
-          disabled={stockAmount < 1}
-        >
-          <Icon name="mi:shopping-cart" class="cart-icon" />
+        <a href={Shopify_URL} class="flex grow">
+          <button
+            type="button"
+            class:list={[
+              "justify-center grow",
+              // stockAmount > 0 ? "button-cart-default" : "button-cart-disabled",
+              "button-cart-default",
+            ]}
+            {/* disabled={stockAmount < 1} */}
+          >
+            <!-- <Icon name="mi:shopping-cart" class="cart-icon" /> -->
 
-          <span class="text-container">
-            {
-              stockAmount > 0
-                ? recurData.text_add_to_cart_for
-                : recurData.text_sold_out
-            }
-            <span>&#x2022;</span>€
-            <output class="product-amount-price">
-              {productPriceIncludingTax.toFixed(2).replace(".", ",")}
-            </output>
-          </span>
-        </button>
+            <span class="text-container">
+              <!-- {
+                stockAmount > 0
+                  ? recurData.text_add_to_cart_for
+                  : recurData.text_sold_out
+              } -->
+              {recurData.text_buy}
+              <span>&#x2022;</span>€
+              <output class="product-amount-price">
+                {productPriceIncludingTax.toFixed(2).replace(".", ",")}
+              </output>
+            </span>
+          </button>
+        </a>
       </div>
 
-      {
+      <!-- {
         stockAmount < 1 &&
           availableFormats.length > 0 &&
           (() => {
@@ -363,7 +322,7 @@ const generateId = (inputString) =>
               />
             );
           })
-      }
+      } -->
     </div>
   </form>
 
@@ -373,143 +332,102 @@ const generateId = (inputString) =>
   >
     <input type="hidden" name="SKU" value={productSKU} />
 
-    {
-      stockAmount > 0 && (
-        <div class="w-full flex flex-wrap division-in-element-gap items-center">
-          {availableVariants.length > 0 && (
-            <label class="grid division-in-element-gap grow">
-              <span class="input-label">{recurData.text_variant}:</span>
+    <div class="w-full flex flex-wrap division-in-element-gap items-center">
+      {
+        availableVariants.length > 0 && (
+          <label class="grid division-in-element-gap grow">
+            <span class="input-label">{recurData.text_variant}:</span>
 
-              <select
-                name="tea_variant"
-                class="selector-default-bordered !w-full"
-              >
-                {availableVariants.map(({ value, variant, link }) => (
-                  <option
-                    value={value}
-                    data-href={link}
-                    selected={value === productVariant ? "" : undefined}
-                  >
-                    {variant}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
+            <select
+              name="tea_variant"
+              class="selector-default-bordered !w-full"
+            >
+              {availableVariants.map(({ value, variant, link }) => (
+                <option
+                  value={value}
+                  data-href={link}
+                  selected={value === productVariant ? "" : undefined}
+                >
+                  {variant}
+                </option>
+              ))}
+            </select>
+          </label>
+        )
+      }
 
-          {availableSizes.length > 0 && (
-            <label class="grid division-in-element-gap grow">
-              <span class="input-label">{recurData.text_size}:</span>
+      {
+        availableSizes.length > 0 && (
+          <label class="grid division-in-element-gap grow">
+            <span class="input-label">{recurData.text_size}:</span>
 
-              <select name="tea_size" class="selector-default-bordered !w-full">
-                {availableSizes.map(({ value, size, link }) => (
-                  <option
-                    value={value}
-                    data-href={link}
-                    selected={value === productSize ? "" : undefined}
-                  >
-                    {size}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-        </div>
-      )
-    }
+            <select name="tea_size" class="selector-default-bordered !w-full">
+              {availableSizes.map(({ value, size, link }) => (
+                <option
+                  value={value}
+                  data-href={link}
+                  selected={value === productSize ? "" : undefined}
+                >
+                  {size}
+                </option>
+              ))}
+            </select>
+          </label>
+        )
+      }
+    </div>
 
     <div
       class="w-full flex flex-wrap justify-between items-center division-in-element-gap"
     >
       {
         stockAmount > 0 && (
-          <div class="button-cart-quantity-primary">
-            <button
-              data-action="decrement"
-              aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
-              class="product-amount-tweak-btn button-cart-quantity-item"
-              disabled
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="button-cart-quantity-icon"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  d="M5 12h14"
-                />
-              </svg>
-            </button>
-
-            <input
-              type="number"
-              name="quantity"
-              aria-label={ariaLabelRecurData.Product_quantity_text}
-              min={1}
-              max={stockAmount}
-              value={1}
-              class="product-amount-input"
-              required
-            />
-
-            <button
-              data-action="increment"
-              aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
-              class="product-amount-tweak-btn button-cart-quantity-item"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="button-cart-quantity-icon"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  d="M12 5v14m-7-7h14"
-                />
-              </svg>
-            </button>
-          </div>
+          <ProductQuantityInput
+            type="primary"
+            stockAmount={stockAmount}
+            ariaLabelRecurData={ariaLabelRecurData}
+          />
         )
       }
 
-      <button
-        class:list={[
-          "justify-center grow",
-          stockAmount > 0 ? "button-cart-primary" : "button-cart-disabled",
-        ]}
-        disabled={stockAmount < 1}
-      >
-        <Icon name="mi:shopping-cart" class="cart-icon" />
+      <a href={Shopify_URL} class="flex grow">
+        <button
+          type="button"
+          class:list={[
+            "justify-center grow",
+            // stockAmount > 0 ? "button-cart-primary" : "button-cart-disabled",
+            "button-cart-primary",
+          ]}
+          {/* disabled={stockAmount < 1} */}
+        >
+          <!-- <Icon name="mi:shopping-cart" class="cart-icon" /> -->
 
-        <span class="text-container">
-          <span class="hidden xl:block"
-            >{
-              stockAmount > 0
-                ? recurData.text_add_to_cart
-                : recurData.text_sold_out
-            }</span
-          >
-          <span class="block xl:hidden"
-            >{
-              stockAmount > 0 ? recurData.text_add : recurData.text_sold_out
-            }</span
-          >
-          <span>&#x2022;</span>€
-          <output class="product-amount-price-sm">
-            {productPriceIncludingTax.toFixed(2).replace(".", ",")}
-          </output>
-        </span>
-      </button>
+          <span class="text-container">
+            <span class="hidden xl:block">
+              <!-- {
+                stockAmount > 0
+                  ? recurData.text_add_to_cart
+                  : recurData.text_sold_out
+              } -->
+              {recurData.text_buy}
+            </span>
+            <span class="block xl:hidden">
+              <!-- {stockAmount > 0 ? recurData.text_add : recurData.text_sold_out} -->
+              {recurData.text_buy}
+            </span>
+            <span>&#x2022;</span>€
+            <output class="product-amount-price-sm">
+              {productPriceIncludingTax.toFixed(2).replace(".", ",")}
+            </output>
+          </span>
+        </button>
+      </a>
     </div>
   </form>
 
   {
-    stockAmount > 0 && (
+    // stockAmount > 0
+    true && (
       <form
         slot="cart-adding-form-fixed-sm"
         class:list={[
@@ -521,69 +439,29 @@ const generateId = (inputString) =>
         <input type="hidden" name="SKU" value={productSKU} />
 
         <div class="wrapper flex items-center division-in-gap justify-between">
-          <div class="button-cart-quantity-primary">
+          <ProductQuantityInput
+            type="primary"
+            stockAmount={stockAmount}
+            ariaLabelRecurData={ariaLabelRecurData}
+          />
+
+          <a href={Shopify_URL} class="flex grow">
             <button
-              data-action="decrement"
-              aria-label={ariaLabelRecurData.Product_quantity_minus_button_text}
-              class="product-amount-tweak-btn button-cart-quantity-item"
-              disabled
+              type="button"
+              class="button-cart-primary justify-center grow"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="button-cart-quantity-icon"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  d="M5 12h14"
-                />
-              </svg>
+              {/* <Icon name="mi:shopping-cart" class="cart-icon" /> */}
+
+              <span class="text-container">
+                {/* {recurData.text_add} */}
+                {recurData.text_buy}
+                <span>&#x2022;</span>€
+                <output class="product-amount-price-sm-fixed">
+                  {productPriceIncludingTax.toFixed(2).replace(".", ",")}
+                </output>
+              </span>
             </button>
-
-            <input
-              type="number"
-              name="quantity"
-              aria-label={ariaLabelRecurData.Product_quantity_text}
-              min={1}
-              max={stockAmount}
-              value={1}
-              class="product-amount-input"
-              required
-            />
-
-            <button
-              data-action="increment"
-              aria-label={ariaLabelRecurData.Product_quantity_plus_button_text}
-              class="product-amount-tweak-btn button-cart-quantity-item"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="button-cart-quantity-icon"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  d="M12 5v14m-7-7h14"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <button class="button-cart-primary justify-center grow">
-            <Icon name="mi:shopping-cart" class="cart-icon" />
-
-            <span class="text-container">
-              {recurData.text_add}
-              <span>&#x2022;</span>€
-              <output class="product-amount-price-sm-fixed">
-                {productPriceIncludingTax.toFixed(2).replace(".", ",")}
-              </output>
-            </span>
-          </button>
+          </a>
         </div>
       </form>
     )
@@ -879,75 +757,73 @@ const generateId = (inputString) =>
       }
     });
 
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
+    // form.addEventListener("submit", (event) => {
+    //   event.preventDefault();
 
-      const productData = Object.fromEntries(new FormData(form)) as ProductData,
-        { SKU } = productData,
-        inCartProduct = window.cart[SKU];
+    //   const productData = Object.fromEntries(new FormData(form)) as ProductData,
+    //     { SKU } = productData,
+    //     inCartProduct = window.cart[SKU];
 
-      const quantity =
-        Number(productData.quantity) + (inCartProduct?.quantity || 0);
+    //   const quantity =
+    //     Number(productData.quantity) + (inCartProduct?.quantity || 0);
 
-      window.cart[SKU] = { quantity };
+    //   window.cart[SKU] = { quantity };
 
-      cartAddingForms.forEach((form: HTMLFormElement) => {
-        form.reset();
+    //   cartAddingForms.forEach((form: HTMLFormElement) => {
+    //     form.reset();
+    //     const decrementBtn = form.querySelector<HTMLButtonElement>(
+    //       "button[data-action='decrement']",
+    //     );
+    //     decrementBtn.disabled = true;
+    //   });
 
-        const decrementBtn = form.querySelector<HTMLButtonElement>(
-          "button[data-action='decrement']",
-        );
+    //   const [_, priceIncludingTax] = getPriceIncludingTax({
+    //     Price: window.productPrice,
+    //     VatPercentage: window.productVatPercentage,
+    //     quantity: 1,
+    //   });
 
-        decrementBtn.disabled = true;
-      });
+    //   [
+    //     productAmountPriceOutput,
+    //     productAmountPriceOutputSm,
+    //     productAmountPriceOutputSmFixed,
+    //   ].forEach(
+    //     (element) => (element.textContent = formatPrice(priceIncludingTax)),
+    //   );
 
-      const [_, priceIncludingTax] = getPriceIncludingTax({
-        Price: window.productPrice,
-        VatPercentage: window.productVatPercentage,
-        quantity: 1,
-      });
-
-      [
-        productAmountPriceOutput,
-        productAmountPriceOutputSm,
-        productAmountPriceOutputSmFixed,
-      ].forEach(
-        (element) => (element.textContent = formatPrice(priceIncludingTax)),
-      );
-
-      window.openCart();
-    });
+    //   window.openCart();
+    // });
   });
 
-  function tweakAmountCallback(input) {
-    productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
-      if (otherAmountInput !== input) {
-        otherAmountInput.value = input.value;
+  // function tweakAmountCallback(input) {
+  //   productAmountInputs.forEach((otherAmountInput: HTMLInputElement) => {
+  //     if (otherAmountInput !== input) {
+  //       otherAmountInput.value = input.value;
 
-        const decrementBtn =
-          otherAmountInput.previousElementSibling as HTMLButtonElement;
+  //       const decrementBtn =
+  //         otherAmountInput.previousElementSibling as HTMLButtonElement;
 
-        decrementBtn.disabled = input.value === "1";
-      }
-    });
+  //       decrementBtn.disabled = input.value === "1";
+  //     }
+  //   });
 
-    const quantity = Number(input.value),
-      [_, priceIncludingTax] = getPriceIncludingTax({
-        Price: window.productPrice,
-        VatPercentage: window.productVatPercentage,
-        quantity,
-      });
+  //   const quantity = Number(input.value),
+  //     [_, priceIncludingTax] = getPriceIncludingTax({
+  //       Price: window.productPrice,
+  //       VatPercentage: window.productVatPercentage,
+  //       quantity,
+  //     });
 
-    [
-      productAmountPriceOutput,
-      productAmountPriceOutputSm,
-      productAmountPriceOutputSmFixed,
-    ].forEach(
-      (element) => (element.textContent = formatPrice(priceIncludingTax)),
-    );
-  }
+  //   [
+  //     productAmountPriceOutput,
+  //     productAmountPriceOutputSm,
+  //     productAmountPriceOutputSmFixed,
+  //   ].forEach(
+  //     (element) => (element.textContent = formatPrice(priceIncludingTax)),
+  //   );
+  // }
 
-  tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
+  // tweakAmount(productAmountTweakBtns, productAmountInputs, tweakAmountCallback);
 </script>
 
 <Schema
