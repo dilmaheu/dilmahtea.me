@@ -1,6 +1,7 @@
 ---
 import CMS from "@store/CMS";
 import RecurringImages from "@store/RecurringImages";
+import HandleNotificationCloseButton from "@scripts/HandleNotificationCloseButton.astro";
 
 declare interface Notification {
   locale: string;
@@ -87,14 +88,4 @@ const ariaLabelRecurData = CMS.get("ariaLabelRecurringElement", locale);
   }
 </div>
 
-<script>
-  const notificationCloseButtons = document.querySelectorAll(
-    ".notification .close-button",
-  );
-
-  notificationCloseButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      window.slideOutTopNotification(button.parentElement);
-    });
-  });
-</script>
+<HandleNotificationCloseButton />
