@@ -14,7 +14,6 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
   headingName = recurData.text_chapter,
   optional_data = page.Optional_data,
   { STRAPI_URL } = import.meta.env;
-
 ---
 
 <PostDetailsLayout {page} {recurData} {ariaLabelRecurData} {headingName}>
@@ -39,7 +38,11 @@ const { page, recurData, ariaLabelRecurData } = Astro.props,
             {page.Estate_name} {recurData.estate_location}
           </h2>
 
-          <a href={page.Location_link} aria-label={ariaLabelRecurData.Estate_location_map_link_text} class="block w-full">
+          <a
+            href={page.Location_link}
+            aria-label={ariaLabelRecurData.Estate_location_map_link_text}
+            class="block w-full"
+          >
             <div class="hidden sm:block h-[500px]">
               <ClippedPicture
                 id="estate-map-curve"

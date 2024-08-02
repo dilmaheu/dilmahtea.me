@@ -213,9 +213,12 @@ export async function getStaticPaths() {
     allPlans: locale && getPosts(crowdfundingPlans, locale),
   }));
 
-  const crowdfundingPaymentPages = getRoutes(crowdfundingPayment, (_, { locale }) => ({
-    type: "crowdfundingPayment",
-  }));
+  const crowdfundingPaymentPages = getRoutes(
+    crowdfundingPayment,
+    (_, { locale }) => ({
+      type: "crowdfundingPayment",
+    }),
+  );
 
   const basicPages = getRoutes(basicPagesData, () => ({ type: "basic" }));
 
@@ -438,7 +441,8 @@ const { defaultRoute, translationNotFound, availableLocalesRecord } =
           ? Cart
           : page.type === "checkoutSuccess"
             ? CheckoutSuccess
-            : page.type.startsWith("checkout") || page.type === "crowdfundingPayment"
+            : page.type.startsWith("checkout") ||
+                page.type === "crowdfundingPayment"
               ? CheckoutLayout
               : PageLayout;
 
