@@ -61,69 +61,67 @@ const { page, recurData } = Astro.props;
             stroke="currentColor"
             stroke-linecap="round"
             stroke-width="2"
-            d="M12 5v14m-7-7h14"
-          />
+            d="M12 5v14m-7-7h14"></path>
         </svg>
-      <Fragment>
+        <Fragment>
+          <Fragment slot="trashCanIcon">
+            <Icon name="mdi:trash-can-outline" class="w-6 text-error-dark" />
+            <Fragment> </Fragment>
+          </Fragment>
+        </Fragment>
 
-      <Fragment slot="trashCanIcon">
-        <Icon
-          name="mdi:trash-can-outline"
-          class="w-6 text-error-dark"
-        />
-      <Fragment>
-    </SavedAddresses>
-  </Fragment>
-</UserAccountLayout>
+        <script is:inline>
+          const query = document.querySelector.bind(document),
+            newAddress = query("#new-address"),
+            moreAddress = query("#more-address"),
+            quitOthers = query("#quit-others"),
+            othersTagButton = query("#others-tag-button"),
+            showMoreAddress = query("#show-more-address"),
+            hideMoreAddress = query("#hide-more-address"),
+            toggleMoreAddress = query("#toggle-more-address"),
+            addressOpenButton = query("#new-address-open-btn"),
+            addressCloseButton = query("#new-address-close-btn");
 
-<script is:inline>
-  const query = document.querySelector.bind(document),
-    newAddress = query("#new-address"),
-    moreAddress = query("#more-address"),
-    quitOthers = query("#quit-others"),
-    othersTagButton = query("#others-tag-button"),
-    showMoreAddress = query("#show-more-address"),
-    hideMoreAddress = query("#hide-more-address"),
-    toggleMoreAddress = query("#toggle-more-address"),
-    addressOpenButton = query("#new-address-open-btn"),
-    addressCloseButton = query("#new-address-close-btn");
+          function addressToggle() {
+            newAddress.style.display = "block";
+            addressOpenButton.style.display = "none";
+          }
 
-  function addressToggle() {
-    newAddress.style.display = "block";
-    addressOpenButton.style.display = "none";
-  }
+          addressOpenButton?.addEventListener("click", () => {
+            newAddress.style.display = "block";
+            addressOpenButton.style.display = "none";
+          });
 
-  addressOpenButton?.addEventListener("click", () => {
-    newAddress.style.display = "block";
-    addressOpenButton.style.display = "none";
-  });
+          addressCloseButton?.addEventListener("click", () => {
+            newAddress.style.display = "none";
+            addressOpenButton.style.display = "flex";
+          });
 
-  addressCloseButton?.addEventListener("click", () => {
-    newAddress.style.display = "none";
-    addressOpenButton.style.display = "flex";
-  });
+          toggleMoreAddress?.addEventListener("click", () => {
+            if (moreAddress.style.display === "block") {
+              moreAddress.style.display = "none";
+              showMoreAddress.style.display = "flex";
+              hideMoreAddress.style.display = "none";
+            } else {
+              moreAddress.style.display = "block";
+              showMoreAddress.style.display = "none";
+              hideMoreAddress.style.display = "flex";
+            }
+          });
 
-  toggleMoreAddress?.addEventListener("click", () => {
-    if (moreAddress.style.display === "block") {
-      moreAddress.style.display = "none";
-      showMoreAddress.style.display = "flex";
-      hideMoreAddress.style.display = "none";
-    } else {
-      moreAddress.style.display = "block";
-      showMoreAddress.style.display = "none";
-      hideMoreAddress.style.display = "flex";
-    }
-  });
+          othersTagButton?.addEventListener("click", () => {
+            othersTagButton.style.display = "none";
+            othersTagButton.previousElementSibling.style.display = "none";
+            othersTagButton.nextElementSibling.style.display = "block";
+          });
 
-  othersTagButton?.addEventListener("click", () => {
-    othersTagButton.style.display = "none";
-    othersTagButton.previousElementSibling.style.display = "none";
-    othersTagButton.nextElementSibling.style.display = "block";
-  });
-
-  quitOthers?.addEventListener("click", () => {
-    othersTagButton.style.display = "block";
-    othersTagButton.previousElementSibling.style.display = "flex";
-    othersTagButton.nextElementSibling.style.display = "none";
-  });
-</script>
+          quitOthers?.addEventListener("click", () => {
+            othersTagButton.style.display = "block";
+            othersTagButton.previousElementSibling.style.display = "flex";
+            othersTagButton.nextElementSibling.style.display = "none";
+          });
+        </script>
+      </Fragment></SavedAddresses
+    ></Fragment
+  ></UserAccountLayout
+>
