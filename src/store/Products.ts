@@ -1,3 +1,5 @@
+/* Dynamic Tea Bag categorization logic has been commented out */
+
 import CMS from "@store/CMS";
 
 const catalog = CMS.get("catalog").data.attributes,
@@ -32,16 +34,16 @@ export const variantsOrder = [
   ),
 ];
 
-export const teaBag = productVariants.data.find(
-  ({ attributes }) => attributes.is_tea_bag,
-).attributes.Title;
+// export const teaBag = productVariants.data.find(
+//   ({ attributes }) => attributes.is_tea_bag,
+// ).attributes.Title;
 
-export const teaBagVariants = [
-  teaBag,
-  ...productVariants.data
-    .filter(({ attributes }) => attributes.is_tea_bag_subvariant)
-    .map(({ attributes }) => attributes.Title),
-];
+// export const teaBagVariants = [
+//   teaBag,
+//   ...productVariants.data
+//     .filter(({ attributes }) => attributes.is_tea_bag_subvariant)
+//     .map(({ attributes }) => attributes.Title),
+// ];
 
 const ProxyHandler = {
   get: (target, key) => {
@@ -108,19 +110,19 @@ const allProducts = catalog.Products.flatMap(
         ]);
 
         if (variant) {
-          if (variant !== teaBag) {
-            variantsPerProduct[locale + " | " + variant].push([
-              size || "None",
-              attributes,
-            ]);
-          }
+          // if (variant !== teaBag) {
+          variantsPerProduct[locale + " | " + variant].push([
+            size || "None",
+            attributes,
+          ]);
+          // }
 
-          if (teaBagVariants.includes(variant)) {
-            variantsPerProduct[locale + " | " + teaBag].push([
-              variant + " | " + size,
-              attributes,
-            ]);
-          }
+          // if (teaBagVariants.includes(variant)) {
+          //   variantsPerProduct[locale + " | " + teaBag].push([
+          //     variant + " | " + size,
+          //     attributes,
+          //   ]);
+          // }
         }
 
         if (size) {
@@ -129,20 +131,20 @@ const allProducts = catalog.Products.flatMap(
             attributes,
           ]);
 
-          if (teaBagVariants.includes(variant)) {
-            variantsPerProduct[locale + " | " + size].push([
-              teaBag,
-              attributes,
-            ]);
-          }
+          // if (teaBagVariants.includes(variant)) {
+          //   variantsPerProduct[locale + " | " + size].push([
+          //     teaBag,
+          //     attributes,
+          //   ]);
+          // }
         }
 
         if (variant && size) {
           Products[locale + " | " + variant + " | " + size].push(attributes);
 
-          if (teaBagVariants.includes(variant)) {
-            Products[locale + " | " + teaBag + " | " + size].push(attributes);
-          }
+          // if (teaBagVariants.includes(variant)) {
+          //   Products[locale + " | " + teaBag + " | " + size].push(attributes);
+          // }
         }
 
         attributes.names = names;
